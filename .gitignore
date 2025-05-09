@@ -1,0 +1,11 @@
+# Ignore compiled Python files
+*.pyc
+__pycache__/
+*.log
+logs/app.log
+dist/
+build/
+.env
+.DS_Store
+
+node_modules/

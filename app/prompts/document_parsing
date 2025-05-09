@@ -1,0 +1,147 @@
+Extract zoning parameters from the provided document. Your response must include two structured JSON objects and, if applicable, a third. The output must be valid JSON and must not include markdown, tables, or explanatory text.
+
+---
+
+🔹 Part 1: Zoning Parameters
+
+Return a top-level JSON object where each parameter is a named field. Use the following schemas depending on the logic used:
+
+---
+
+✅ For a single numeric value:
+
+{
+  "units": "e.g., m², %, ratio, storeys",
+  "isRatioOf": "What this value is a ratio of (e.g., lotArea, siteArea, floorArea, or 'N/A')",
+  "value": numeric value (e.g., 45 or 0.10 for 10%),
+  "is_minimum": true/false,
+  "is_maximum": true/false
+}
+
+---
+
+✅ If the value depends on a numeric threshold (e.g., site width or lot area), use:
+
+{
+  "threshold": "e.g., site_width",
+  "threshold_units": "e.g., m",
+  "conditions": [
+    {
+      "minimum": numeric or "N/A",
+      "maximum": numeric or "N/A",
+      "value_if_threshold": {
+        "units": "...",
+        "isRatioOf": "...",
+        "value": numeric,
+        "is_minimum": true/false,
+        "is_maximum": true/false
+      }
+    },
+    ...
+  ]
+}
+
+---
+
+✅ If the value depends on a **discrete category** (e.g., dwelling type):
+
+[
+  {
+    "condition": "e.g., duplex",
+    "value_if_condition": {
+      "units": "...",
+      "isRatioOf": "...",
+      "value": numeric,
+      "is_minimum": true/false,
+      "is_maximum": true/false
+    }
+  },
+  ...
+]
+
+---
+
+✅ If the value depends on **complex or freeform logic** (e.g., “subject to design review”):
+
+[
+  {
+    "condition": "[Freeform condition text]",
+    "value_if_condition": {
+      "units": "...",
+      "isRatioOf": "...",
+      "value": numeric,
+      "is_minimum": true/false,
+      "is_maximum": true/false
+    }
+  },
+  ...
+]
+
+---
+
+✅ If the value is expressed as a **comparison between multiple values**, use:
+
+{
+  "whichever_is": "greater" or "lesser",
+  "options": [
+    {
+      "units": "...",
+      "isRatioOf": "...",
+      "value": numeric,
+      "is_minimum": true/false,
+      "is_maximum": true/false
+    },
+    ...
+  ]
+}
+
+---
+
+Special cases:
+- If a parameter is explicitly marked not applicable, return "N/A"
+- If insufficient information is available, return "uncertain"
+- If the value is conditional and refers to an external rule or schedule not explained in the document, return: "conditional_rule: rule_<name>_<unique_id>"
+
+---
+
+📌 Parameters to extract:
+
+1. unit_density_per_lot  
+2. lot_coverage  
+3. FAR/FSI (floor space index)  
+4. maximum_building_height  
+5. maximum_stories  
+6. setback_distances  
+7. floodplain_and_environmental_overlays  
+8. parking_requirements  
+9. unit_mix_rules  
+10. explicitly_permit_manufactured_housing  
+11. material_fire_rating_requirements  
+12. permitted_use_and_dwelling_type  
+13. zone_name  
+
+---
+
+🔹 Part 2: Conditional Rules
+
+If any parameter uses a "conditional_rule" reference, return a second JSON object using this format:
+
+{
+  "rule_<name>_<unique_id>": {
+    "rule_name": "rule_<name>_<unique_id>",
+    "text": "Quoted or paraphrased content from the source document",
+    "applies_to": "parameter_name"
+  }
+}
+
+---
+
+🔹 Part 3 (Optional): Derived Value Calculation
+
+If the zoning document defines a rule for how a derived value is calculated (e.g., floor area exclusions, percentage caps), return it in this format:
+
+{
+  "rule_name": "calculationRule_<name>",
+  "text": "Exact or summarized text of the calculation method",
+  "associated_zone": "zone name from the document"
+}
