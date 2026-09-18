@@ -5,7 +5,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 import uvicorn
 from app.services.db import init_models
-from app.routes import routers
+from app.api.routes import routers
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
