@@ -8,7 +8,7 @@ The initial product is preliminary zoning scouting across municipalities, follow
 
 This repository contains exploratory code and a restart assessment. The application is not yet a working end-to-end demonstration. Known issues include startup imports, extraction validation, persistence mismatches, and disconnected frontend scaffolding. Cloud hosting, CI/CD, and the architecture below are proposed, not implemented.
 
-The first technical target is Vancouver. Regional coverage is a business hypothesis to test after a narrow source-to-result demonstration.
+City of Victoria garden suites are the leading technical prototype candidate, subject to verified design/site inputs and current rule applicability; Vancouver is the fallback. Regional coverage is a business hypothesis to test after a narrow source-to-result demonstration.
 
 ## Product and architecture
 
@@ -26,6 +26,7 @@ Results distinguish **candidate**, **needs investigation**, and **no match under
 |---|---|
 | [Architecture](docs/architecture.md) | Minimal system boundaries, deployment direction, and implementation sequence |
 | [Quality agreement](docs/quality.md) | Data contracts, testing, publication, and definition of done |
+| [MVP ticket backlog](docs/backlog/README.md) | Sequenced technical proof, CI/CD, customer pilot, and expansion experiments |
 | [Research plan](docs/research.md) | Commercial hypotheses and experiments before expansion |
 | [Restart assessment](docs/restart-assessment.md) | Detailed source/schema/code review and rationale |
 | [Original technical handoff](docs/prior-work/design-decisions.md) | Historical hypotheses; retained for context, not binding requirements |
@@ -33,7 +34,7 @@ Results distinguish **candidate**, **needs investigation**, and **no match under
 
 ## First demonstration
 
-Use two fixed designs, one reviewed R1-1 development pathway, and approximately 20–30 sample parcels. Demonstrate:
+Start with one actual fixed small design and about three reviewed site fixtures with supplied placements. The Landing is an initial design candidate, not a verified dimensional fit. A failed placement does not establish that no placement works, and outside coverage is not a zoning exclusion. Expand to approximately 20–30 real enquiries for the user-tested MVP; customer recruitment and willingness-to-pay validation follow the prototype. Demonstrate:
 
 `pinned sources → extraction → validation/review → published dataset → screening → cited rule inspection`
 

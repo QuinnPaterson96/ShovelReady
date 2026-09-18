@@ -41,7 +41,9 @@ Canonical units include metres, square metres, counts, and dimensionally explici
 
 ## First scope
 
-Two fixed design variants, one planner-reviewed R1-1 principal-dwelling pathway, and roughly 20–30 reviewed parcels. Change the pathway if customer discovery identifies a stronger need; do not silently expand to several use types.
+September 18 research refinement: one actual fixed small design, one reviewed pathway, and about three real site fixtures with supplied placements for the technical proof; approximately 20–30 real enquiries for the subsequent customer pilot. City of Victoria garden suites are the leading candidate, The Landing is an unverified initial design candidate, and Vancouver is the fallback. Obtain actual inputs and review current rule applicability before confirming fit. See the [MVP backlog](backlog/README.md) for dependencies and acceptance criteria. Do not silently expand to several use types.
+
+Persist versioned principal-building geometry, lot-line classifications, rear-yard boundaries, and proposed placements with source/manual-review provenance. Keep physical and regulatory measurements distinct. A failed supplied placement is not proof of universal site incompatibility; outside supported coverage is not a zoning exclusion. No automatic placement search is required.
 
 Support a small set of dimensional/use checks. Irregular geometry, split zoning, missing facts, and unmodeled overlays remain visible investigation cases. Add PostGIS when importing spatial data and performing spatial operations. A small GeoJSON response is sufficient for this sample.
 
@@ -66,7 +68,9 @@ Data publication is separate: validated draft -> reviewed immutable release -> a
 
 ## Implementation sequence
 
-1. Confirm one customer workflow and create the reviewed clause/parcel reference corpus.
+The [ticket backlog](backlog/README.md) refines this sequence: pilot acquisition, scaffold repair, and provisional contracts can start together; CI starts after safe startup, and deployment follows the local end-to-end image. Cloud and accepted-data publication remain separate work items. Research is not a blanket prerequisite for implementation.
+
+1. Select a provisional screening workflow and create the reviewed source/site/placement corpus; customer recruitment and willingness-to-pay validation follow the prototype and do not gate the technical build.
 2. Benchmark the existing prompt and record empirical failures.
 3. Repair minimal backend/frontend scaffolding and establish typed contracts and focused regression fixtures.
 4. Add CI, then the single demo deployment once startup/build checks pass.
