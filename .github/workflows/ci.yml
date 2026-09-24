@@ -73,6 +73,10 @@ jobs:
             }
             Write-Output $version
           }
+          # Credential-free initialization probe; never starts a server.
+          $probe = Join-Path $env:RUNNER_TEMP "postgres-probe-$([guid]::NewGuid())"
+          & (Join-Path $env:SHOVELREADY_LOCAL_LIFECYCLE_POSTGRES_BIN 'initdb.exe') -D $probe -U fixture --auth=trust --encoding=UTF8 --no-locale
+          if ($LASTEXITCODE -ne 0) { throw 'PostgreSQL initialization probe failed' }
       - run: uv sync --locked
       - name: Verify owned scratch lifecycle and refusal checks (no skips)
         # No tracebacks/captured output: driver failures may include credentials or SQL data.
