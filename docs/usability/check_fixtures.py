@@ -24,7 +24,9 @@ from app.contracts.rules import AcceptedRuleRevision  # noqa: E402
 class PreviewFixtures(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.saved = json.loads((ROOT / "frontend/src/preview/fixtures.json").read_text(encoding="utf-8"))
+        cls.saved = json.loads(
+            (ROOT / "frontend/src/preview/fixtures.json").read_text(encoding="utf-8")
+        )
 
     def test_saved_payloads_and_evidence_references(self):
         sources = {
@@ -50,7 +52,9 @@ class PreviewFixtures(unittest.TestCase):
                         self.assertIn(check.rule, rules)
                         for evidence in check.evidence:
                             self.assertIn(evidence.snapshot_id, sources)
-                            text = (ROOT / sources[evidence.snapshot_id].artifact.uri).read_text(encoding="utf-8")
+                            text = (ROOT / sources[evidence.snapshot_id].artifact.uri).read_text(
+                                encoding="utf-8"
+                            )
                             self.assertIn(evidence.excerpt, text)
                             self.assertIn(evidence, rules[check.rule].content.evidence)
                 self.assertEqual(
