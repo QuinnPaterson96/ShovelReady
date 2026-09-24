@@ -19,7 +19,7 @@ jobs:
           version: "0.12.17"
           enable-cache: true
       - run: uv sync --locked
-      - run: uv run --locked ruff check app tests
+      - run: uv run --locked ruff check app tests contract_tests
       - run: uv run --locked python docs/pilot-inputs/test_acquire.py
       - run: uv run --locked pytest -q
         env:
