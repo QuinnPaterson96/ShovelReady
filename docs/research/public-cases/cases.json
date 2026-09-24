@@ -1,6 +1,6 @@
 {
   "schema_version": "public-cases.v1",
-  "inventory_revision": "2026-09-24.1",
+  "inventory_revision": "2026-09-24.integration-1",
   "access_date": "2026-09-24",
   "purpose": "Provisional discovery metadata; no accepted reference outcomes",
   "counts": {
@@ -397,6 +397,10 @@
             {
               "source_id": "tracker-REZ00787",
               "locator": "Documents and Related Permits: DDP01047"
+            },
+            {
+              "source_id": "REZ00787-9",
+              "locator": "PDF p1 C1 received and final-approved stamps"
             }
           ]
         }

@@ -140,3 +140,12 @@ application duplication, missing source/artifact references, path escape, false
 acceptance/current-law claims, premature split assignment and non-finite JSON.
 Focused Ruff checks and `git diff --check` passed after formatting the verifier.
 No application or database tests were run for this metadata-only change.
+
+Integration review independently spot-checked Stannard C1, the Kingsley staff report
+and the November 2023 Vancouver board minutes. Fresh Stannard PDF bytes matched the
+inventory hash; visual/text inspection confirmed the table's 28.50 m separation
+against its listed 2.40 m minimum, and its received/approved stamps. The stamp fact
+now also cites the plan itself. This confirms transcription only, not the legal
+measurement basis or applicability. Kingsley remains a recommendation; Vancouver's
+2204 East 38th decision retains its conditions. The other seven case packets were
+reviewed as metadata, not independently re-audited against every source page.
