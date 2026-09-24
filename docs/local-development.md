@@ -144,3 +144,99 @@ without substituting the connection/repository, preserving the exact seeded spat
 payload and all 15 source records. The combined suite passed 211 cases and 28
 contract subtests with the native lifecycle opt-in enabled, with no database skips.
 The manual review used a separate fresh scratch database, not the persistent default.
+
+## Reproducible observation demo (SR-21)
+
+After explicitly running `start`, `migrate` and `seed` above, launch from a clean
+committed checkout with Python 3.12 and Node 22.14+ (22.x):
+
+```powershell
+./scripts/demo.ps1 -Config "$env:LOCALAPPDATA/ShovelReady/local-database/local.json" -Revision '<exact spatial:sha256:... printed by seed>'
+# Optional: -Port 8013 (default is 8012; loopback only)
+```
+
+The script can be invoked by absolute path from another working directory. Relative
+configuration paths resolve against the caller's directory. It installs locked npm
+dependencies and builds the frontend on each launch, then runs one foreground FastAPI
+server. `uv run --locked` prepares Python dependencies if needed. No migration, seed,
+publication or database start/stop happens during launch. Ctrl+C stops HTTP only;
+stop the owned database separately when desired.
+
+The launcher refuses dirty/untracked checkout files, unsupported Python/Node/environment,
+missing or foreign configuration, a stopped/unavailable database, an invalid or missing
+exact licensed revision, occupied HTTP ports and failed frontend builds. It reserves
+the serving socket before building and rechecks checkout identity after building.
+It never pulls, switches branches, resets, stashes or adopts/kills an existing process.
+Do not edit the checkout while it is serving: the process and frontend retain their
+launch/build identity and do not hot-reload later changes. Ignored local files and
+installed toolchains are outside the Git cleanliness guarantee.
+
+Expand **Application and observation identity** near the top of the page to inspect
+the API application commit, frontend build commit and selected spatial revision.
+`GET /api/identity` returns `sr-21.identity.v1`, a nonsecret snapshot captured at app
+creation. The frontend also embeds its own commit at build time and warns when that
+differs from the API's declared frontend build. Identity is diagnostic, not signed
+attestation. Generic/container starts without identity variables report unavailable;
+`/health` remains liveness-only and no-database startup remains supported.
+
+Only commit hashes, revision identifiers and explicit no-screening status are returned;
+configuration paths, URLs, passwords and environment dumps are excluded. A selected
+observation revision is not an accepted dataset. The fictional preview stays separate.
+The integrator selects the stable demo checkout after merge.
+
+Focused checks: `python -m uv run --locked pytest -q tests/test_demo_identity.py tests/test_startup.py`,
+`python -m uv run --locked ruff check app/identity.py app/main.py scripts/demo.py tests/test_demo_identity.py`,
+and frontend `npm test`, `npm run typecheck`, `npm run build`. Initial implementation
+checks passed 10 backend cases and 4 frontend cases; the existing Starlette/httpx warning
+remains. Clean-commit scratch-launch evidence is recorded below after verification.
+
+### Clean-commit launch evidence, September 24, 2026
+
+Implementation commit `3bc010aafadd0a96a20c92ea2c41ff30f5b09d32` was committed
+before launch and remained clean throughout the real launch. Windows PowerShell,
+Python 3.12.3, Node 22.14.0 and PostgreSQL 17.2 were used. A new scratch root outside
+Git was allocated under the system temporary directory; no existing preview or default
+persistent database was changed. The exact commands were (with `$scratchRoot` the
+new GUID-named temporary root, and `$repo` this managed task checkout):
+
+```powershell
+python -m uv run --locked python scripts/local_database.py start --root $scratchRoot --port 55581
+python -m uv run --locked python scripts/local_database.py migrate --root $scratchRoot --port 55581
+python -m uv run --locked python scripts/local_database.py seed --root $scratchRoot --port 55581
+$revision = 'spatial:sha256:db45fb736cd0fe2455d65b64105b038539bc7695e62666be6b2840474af8aee7'
+# From C:/Temp, not the repository directory:
+& "$repo/scripts/demo.ps1" -Config "$scratchRoot/local.json" -Revision $revision -Port 58121
+Invoke-RestMethod http://127.0.0.1:58121/health
+Invoke-RestMethod http://127.0.0.1:58121/api/identity
+```
+
+The actual PowerShell launch rebuilt the frontend, served the real three-lead viewer,
+and returned health 200. Browser inspection expanded the identity panel and found both
+full commit hashes matching the launch commit, the exact seeded revision, and the
+explicit no-screening/non-accepted-release notice. The real observation view also
+showed that same selected revision. No database URL or local path appeared in identity.
+
+While it ran, repeat Python launcher invocations with the same port, missing config
+(on port 58122), and an all-zero spatial digest (on port 58122) each exited 1 with
+specific redacted diagnostics. Ctrl+C completed Uvicorn shutdown; the captured HTTP
+PID no longer existed and port 58121 had no listener. `local_database.py status`
+still reported running. Explicit `stop --root $scratchRoot --port 55581` followed by
+`status` reported stopped. Launch with that stopped database then exited 1; neither
+scratch port retained a listener. Scratch files remain outside Git for diagnosis.
+
+Focused backend checks now include 12 passing cases: immutable identity snapshots,
+invalid-value redaction, no-database health, dirty-checkout refusal, missing/invalid
+configuration and revision, frontend build failure, checkout changes during build,
+and unsupported environment. Actual CLI dirty-checkout refusal was also exercised
+after adding this evidence. Lint passes; frontend results remain 4 tests, typecheck
+and build passing. No live model calls or accepted screening were exercised.
+Linux/macOS, alternate Node versions, browser stale-build warning, and cancellation
+mid-npm-install were not manually exercised. Unit tests simulate failed builds and
+checkout changes; the actual build succeeded. The later evidence/test-only commit
+does not replace the launch commit recorded above.
+
+Integration review reproduced and fixed relative `-Config` resolution when PowerShell's
+current location differs from its process working directory. The wrapper now uses
+PowerShell's path resolver. A regression runs the actual wrapper from another directory
+with a stubbed Python dispatch, checking the selected path and restored caller location;
+it does not start a database or claim to replace the full launch check.

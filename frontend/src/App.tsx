@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import RealObservations from './investigation/RealObservations'
 import InvestigationPreview from './preview/InvestigationPreview'
+import IdentityPanel from './Identity'
 
 export default function App() {
   const [mode, setMode] = useState('real')
@@ -37,6 +38,7 @@ export default function App() {
     <main>
       <p className="eyebrow">Exploratory checkpoint</p>
       <h1>ShovelReady</h1>
+      <IdentityPanel />
       <p>Preliminary zoning scouting and source-backed investigation.</p>
       <label htmlFor="mode">Investigation mode</label>
       <select id="mode" value={mode} onChange={e => setMode(e.target.value)}>
