@@ -18,6 +18,13 @@ Each rule belongs to a named pathway and alternative. A dataset pins source snap
 
 ## Verification and handoff
 
+SR-09 adds a separate `app.spatial.payloads.SpatialImport` (`sr-09.v1`) boundary
+for raw Esri XY/XYZ rings and query-scoped geometry diagnostics. It does not widen
+or silently coerce SR-04 legal `Geometry`. Its reader, collection revision identity,
+source links, explicit CRS conversion and `0003` storage migration are documented
+in [the spatial handoff](spatial.md). It cannot substitute for reviewed site facts
+or be used as an accepted dataset/evaluation result.
+
 Run focused, database-free tests with `python -m unittest discover -s contract_tests -p test_contracts.py -v`. The fixtures cover every root boundary, JSON round trips, malformed/extra/versioned payloads, percentage and FSR bases, unit equivalence, missing design facts, geometry/CRS errors, unresolved references and comparisons, exact operators, extraction failures, incomplete alternatives, evidence-free exclusions, and failed placements. They do **not** establish extraction accuracy or legal interpretation. The foundation PR replaced the historical database suite with isolated tests; `uv run --locked pytest -q` now runs both foundation and contract tests.
 
 | SR-04 acceptance area | Verification status |

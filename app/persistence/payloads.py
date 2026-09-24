@@ -18,6 +18,7 @@ Kind = Literal[
     "draft",
     "evaluation",
     "review",
+    "spatial",
 ]
 
 
