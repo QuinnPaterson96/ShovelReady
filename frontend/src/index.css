@@ -1,3 +1,8 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+:root { font-family: system-ui, sans-serif; color: #19372e; background: #f4f5ef; font-synthesis: none; }
+body { margin: 0; }
+main { max-width: 48rem; margin: 8vh auto; padding: 2rem; }
+h1 { font-size: clamp(2.5rem, 8vw, 4.5rem); margin: .5rem 0 1rem; letter-spacing: -.05em; }
+p { line-height: 1.7; }
+.eyebrow { text-transform: uppercase; letter-spacing: .15em; font-size: .8rem; }
+section { background: white; border: 1px solid #cdd7cb; border-radius: .7rem; padding: 1.5rem; margin-top: 2rem; }
+h2 { margin-top: 0; }
