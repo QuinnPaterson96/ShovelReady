@@ -189,3 +189,48 @@ Focused checks: `python -m uv run --locked pytest -q tests/test_demo_identity.py
 and frontend `npm test`, `npm run typecheck`, `npm run build`. Initial implementation
 checks passed 10 backend cases and 4 frontend cases; the existing Starlette/httpx warning
 remains. Clean-commit scratch-launch evidence is recorded below after verification.
+
+### Clean-commit launch evidence, September 24, 2026
+
+Implementation commit `3bc010aafadd0a96a20c92ea2c41ff30f5b09d32` was committed
+before launch and remained clean throughout the real launch. Windows PowerShell,
+Python 3.12.3, Node 22.14.0 and PostgreSQL 17.2 were used. A new scratch root outside
+Git was allocated under the system temporary directory; no existing preview or default
+persistent database was changed. The exact commands were (with `$scratchRoot` the
+new GUID-named temporary root, and `$repo` this managed task checkout):
+
+```powershell
+python -m uv run --locked python scripts/local_database.py start --root $scratchRoot --port 55581
+python -m uv run --locked python scripts/local_database.py migrate --root $scratchRoot --port 55581
+python -m uv run --locked python scripts/local_database.py seed --root $scratchRoot --port 55581
+$revision = 'spatial:sha256:db45fb736cd0fe2455d65b64105b038539bc7695e62666be6b2840474af8aee7'
+# From C:/Temp, not the repository directory:
+& "$repo/scripts/demo.ps1" -Config "$scratchRoot/local.json" -Revision $revision -Port 58121
+Invoke-RestMethod http://127.0.0.1:58121/health
+Invoke-RestMethod http://127.0.0.1:58121/api/identity
+```
+
+The actual PowerShell launch rebuilt the frontend, served the real three-lead viewer,
+and returned health 200. Browser inspection expanded the identity panel and found both
+full commit hashes matching the launch commit, the exact seeded revision, and the
+explicit no-screening/non-accepted-release notice. The real observation view also
+showed that same selected revision. No database URL or local path appeared in identity.
+
+While it ran, repeat Python launcher invocations with the same port, missing config
+(on port 58122), and an all-zero spatial digest (on port 58122) each exited 1 with
+specific redacted diagnostics. Ctrl+C completed Uvicorn shutdown; the captured HTTP
+PID no longer existed and port 58121 had no listener. `local_database.py status`
+still reported running. Explicit `stop --root $scratchRoot --port 55581` followed by
+`status` reported stopped. Launch with that stopped database then exited 1; neither
+scratch port retained a listener. Scratch files remain outside Git for diagnosis.
+
+Focused backend checks now include 12 passing cases: immutable identity snapshots,
+invalid-value redaction, no-database health, dirty-checkout refusal, missing/invalid
+configuration and revision, frontend build failure, checkout changes during build,
+and unsupported environment. Actual CLI dirty-checkout refusal was also exercised
+after adding this evidence. Lint passes; frontend results remain 4 tests, typecheck
+and build passing. No live model calls or accepted screening were exercised.
+Linux/macOS, alternate Node versions, browser stale-build warning, and cancellation
+mid-npm-install were not manually exercised. Unit tests simulate failed builds and
+checkout changes; the actual build succeeded. The later evidence/test-only commit
+does not replace the launch commit recorded above.

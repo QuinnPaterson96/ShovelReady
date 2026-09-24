@@ -20,6 +20,7 @@ def test_identity_is_frozen_at_creation_and_nonsecret(monkeypatch, tmp_path):
     monkeypatch.setenv("SHOVELREADY_SPATIAL_REVISION", "spatial:sha256:" + "c" * 64)
     app = create_app(frontend_dist=tmp_path)
     monkeypatch.setenv("SHOVELREADY_APPLICATION_COMMIT", "d" * 40)
+    monkeypatch.setenv("SHOVELREADY_SPATIAL_REVISION", "spatial:sha256:" + "e" * 64)
     monkeypatch.setenv("SHOVELREADY_DATABASE_URL", "secret://password/private/path")
     with TestClient(app) as client:
         assert client.get("/api/identity").json() == {
@@ -73,4 +74,23 @@ def test_build_failure_does_not_start_http(monkeypatch, tmp_path):
         demo.subprocess, "run", lambda *a, **k: type("Result", (), {"returncode": 1})()
     )
     with pytest.raises(demo.DemoError, match="build failed"):
+        demo.serve(tmp_path / "local.json", "spatial:sha256:" + "a" * 64, 0)
+
+
+def test_checkout_changed_during_build_refused(monkeypatch, tmp_path):
+    commits = iter(["a" * 40, "b" * 40])
+    monkeypatch.setattr(demo, "clean_commit", lambda: next(commits))
+    monkeypatch.setattr(demo, "database_url", lambda *a: "secret")
+    monkeypatch.setattr(demo.shutil, "which", lambda name: name)
+    monkeypatch.setattr(demo.subprocess, "check_output", lambda *a, **k: "v22.14.0")
+    monkeypatch.setattr(
+        demo.subprocess, "run", lambda *a, **k: type("Result", (), {"returncode": 0})()
+    )
+    with pytest.raises(demo.DemoError, match="Checkout changed during build"):
+        demo.serve(tmp_path / "local.json", "spatial:sha256:" + "a" * 64, 0)
+
+
+def test_unsupported_environment_refused_before_database(monkeypatch, tmp_path):
+    monkeypatch.setenv("SHOVELREADY_ENV", "production")
+    with pytest.raises(demo.DemoError, match="development/test"):
         demo.serve(tmp_path / "local.json", "spatial:sha256:" + "a" * 64, 0)
