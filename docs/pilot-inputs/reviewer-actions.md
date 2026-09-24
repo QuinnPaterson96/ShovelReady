@@ -132,5 +132,5 @@ benchmark run. Shared Python tooling/CI remains SR-08-owned.
   path were copied into the output or Git. This establishes local availability only;
   authorized durable/shared retention is still missing.
 - No raw snapshot or acquisition-manifest bytes changed. No database, live model,
-  evaluator, API/UI, source recapture or cloud test was performed. New intake tests
-  are a standalone command; CI wiring is deferred to the shared-tooling owner.
+  evaluator, API/UI, source recapture or cloud test was performed. Integration review added the intake tests and lint checks to the existing backend CI job.
+  A saved-packet regression also verifies that fresh portable intake matches intake-packet.json.

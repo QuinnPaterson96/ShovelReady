@@ -19,6 +19,10 @@ class IntakeTests(unittest.TestCase):
 
     def test_real_portable_subset_and_roundtrip(self):
         packet = self.packet
+        saved = IntakePacket.model_validate_json(
+            (ROOT / "intake-packet.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual(packet, saved)  # Saved portable packet must match verified inputs.
         self.assertEqual(len(packet.sources), 26)
         verified = [s for s in packet.sources if s.status == "verified_repository"]
         self.assertEqual(len(verified), 15)
