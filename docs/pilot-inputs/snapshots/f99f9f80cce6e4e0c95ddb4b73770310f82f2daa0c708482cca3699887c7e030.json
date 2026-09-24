@@ -1,0 +1,68 @@
+{
+  "id": "901cb49452d14dd2855fa701311f0545",
+  "owner": "CityOfVictoriaBC",
+  "ownerId": "8c73dcb31d5f7a9a4b68e463b1511df0",
+  "orgId": "EHSKalEvBxdO9ljW",
+  "created": 1546466899000,
+  "modified": 1730740317000,
+  "guid": null,
+  "name": null,
+  "title": "Parcels (PID based)",
+  "type": "Feature Service",
+  "typeKeywords": [
+    "ArcGIS Server",
+    "Data",
+    "Feature Access",
+    "Feature Service",
+    "Service"
+  ],
+  "description": "<p>The Parcels (PID based) dataset is parcel geometry drawn by Parcel Identifier (PID).  A PID uniquely identifies a parcel in the Land Title Register of BC.  Strata lots are represented by an overlapping copy of the parent parcel.  Data gets copied to the Open Data Portal daily. <\/p><p>Parcel Types: Air Parcel (AP), Bare Land Strata Common Property (BLSCP), Bare Land Strata Lot (BLSL), Church Plan (CP), Land (LA), Lease (LE), Other (OTH), Park (PA), Strata Common Property (SCP), Strata Lot (SL).<\/p><p>The &quot;Last Updated&quot; date shown on our Open Data Portal refers to the last time the data schema was modified in the portal, or any changes were made to this description.  We update our data through scripts which does not trigger the &quot;last updated&quot; date to change.<\/p><p><\/p><p>Note: Attributes represent each field in a dataset, and some fields will contain information such as ID numbers.  As a result some visualizations on the tabs on our Open Data page will not be relevant.<\/p>",
+  "tags": [
+    "land",
+    "GIS",
+    "parcels"
+  ],
+  "snippet": "The Parcels (PID based) dataset is parcel geometry drawn by Parcel Identifier (PID).  A PID uniquely identifies a parcel in the Land Title Register of BC.  Strata lots are represented by an overlapping copy of the parent parcel.  Data gets copied to the Open Data Portal daily. \n\nParcel Types: Air Parcel (AP), Bare Land Strata Common Property (BLSCP), Bare Land Strata Lot (BLSL), Church Plan (CP), Land (LA), Lease (LE), Other (OTH), Park (PA), Strata Common Property (SCP), Strata Lot (SL).\n\nThe \"Last Updated\" date shown on our Open Data Portal refers to the last time the data schema was modified in the portal, or any changes were made to this description.  We update our data through scripts which does not trigger the \"last updated\" date to change.",
+  "thumbnail": "thumbnail/ago_downloaded.png",
+  "documentation": null,
+  "extent": [
+    [
+      -123.3952,
+      48.3936
+    ],
+    [
+      -123.3216,
+      48.4505
+    ]
+  ],
+  "categories": [],
+  "spatialReference": null,
+  "accessInformation": null,
+  "classification": null,
+  "licenseInfo": "<a href='http://opendata.victoria.ca/pages/open-data-licence' target='_blank'>Open Data Licence<\/a>",
+  "culture": "en-us",
+  "properties": null,
+  "advancedSettings": null,
+  "url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11",
+  "proxyFilter": null,
+  "access": "public",
+  "size": 82,
+  "subInfo": 0,
+  "appCategories": [],
+  "industries": [],
+  "languages": [],
+  "largeThumbnail": null,
+  "banner": null,
+  "screenshots": [],
+  "listed": false,
+  "commentsEnabled": false,
+  "numComments": 0,
+  "numRatings": 0,
+  "avgRating": 0,
+  "numViews": 9614,
+  "scoreCompleteness": 100,
+  "groupDesignations": null,
+  "apiToken1ExpirationDate": -1,
+  "apiToken2ExpirationDate": -1,
+  "lastViewed": 1790254800000
+}

@@ -70,6 +70,7 @@ Results distinguish **candidate**, **needs investigation**, and **no match under
 | [Architecture](docs/architecture.md) | Minimal system boundaries, deployment direction, and implementation sequence |
 | [Quality agreement](docs/quality.md) | Data contracts, testing, publication, and definition of done |
 | [MVP ticket backlog](docs/backlog/README.md) | Sequenced technical proof, CI/CD, customer pilot, and expansion experiments |
+| [Prototype input evidence](docs/pilot-inputs/README.md) | Captured Victoria sources, licensed GIS samples, provisional design/site specifications, and unresolved review inputs |
 | [Research plan](docs/research.md) | Commercial hypotheses and experiments before expansion |
 | [Restart assessment](docs/restart-assessment.md) | Detailed source/schema/code review and rationale |
 | [Original technical handoff](docs/prior-work/design-decisions.md) | Historical hypotheses; retained for context, not binding requirements |

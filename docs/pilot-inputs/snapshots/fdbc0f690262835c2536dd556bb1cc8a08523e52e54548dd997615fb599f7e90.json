@@ -1,0 +1,415 @@
+{
+ "currentVersion": 11.3,
+ "cimVersion": "3.3.0",
+ "id": 11,
+ "name": "Parcels (PID based)",
+ "type": "Feature Layer",
+ "description": "",
+ "geometryType": "esriGeometryPolygon",
+ "sourceSpatialReference": {
+  "wkid": 3157,
+  "latestWkid": 3157,
+  "xyTolerance": 0.001,
+  "zTolerance": 0.001,
+  "mTolerance": 0.001,
+  "falseX": -5120900,
+  "falseY": -9998100,
+  "xyUnits": 10000,
+  "falseZ": -100000,
+  "zUnits": 10000,
+  "falseM": -100000,
+  "mUnits": 10000
+ },
+ "copyrightText": "",
+ "parentLayer": null,
+ "subLayers": [],
+ "minScale": 0,
+ "maxScale": 0,
+ "referenceScale": 0.0,
+ "drawingInfo": {
+  "renderer": {
+   "type": "simple",
+   "symbol": {
+    "type": "esriSFS",
+    "style": "esriSFSSolid",
+    "color": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "outline": {
+     "type": "esriSLS",
+     "style": "esriSLSSolid",
+     "color": [
+      255,
+      211,
+      127,
+      255
+     ],
+     "width": 0.4
+    }
+   }
+  },
+  "scaleSymbols": true,
+  "transparency": 0,
+  "labelingInfo": null
+ },
+ "defaultVisibility": true,
+ "extent": {
+  "xmin": 470734.70529999956,
+  "ymin": 5360122.9001,
+  "xmax": 476191.44240000006,
+  "ymax": 5366422.7217,
+  "spatialReference": {
+   "wkid": 3157,
+   "latestWkid": 3157,
+   "xyTolerance": 0.001,
+   "zTolerance": 0.001,
+   "mTolerance": 0.001,
+   "falseX": -5120900,
+   "falseY": -9998100,
+   "xyUnits": 4.504455473910538E8,
+   "falseZ": -100000,
+   "zUnits": 10000,
+   "falseM": -100000,
+   "mUnits": 10000
+  }
+ },
+ "hasAttachments": false,
+ "htmlPopupType": "esriServerHTMLPopupTypeAsHTMLText",
+ "displayField": "Name",
+ "typeIdField": null,
+ "subtypeFieldName": null,
+ "subtypeField": null,
+ "defaultSubtypeCode": null,
+ "fields": [
+  {
+   "name": "OBJECTID",
+   "type": "esriFieldTypeOID",
+   "alias": "OBJECTID",
+   "domain": null
+  },
+  {
+   "name": "Shape",
+   "type": "esriFieldTypeGeometry",
+   "alias": "Shape",
+   "domain": null
+  },
+  {
+   "name": "VicPID",
+   "type": "esriFieldTypeString",
+   "alias": "VicPID",
+   "length": 50,
+   "domain": null
+  },
+  {
+   "name": "Name",
+   "type": "esriFieldTypeString",
+   "alias": "Name",
+   "length": 200,
+   "domain": null
+  },
+  {
+   "name": "Parcel",
+   "type": "esriFieldTypeString",
+   "alias": "Parcel",
+   "length": 30,
+   "domain": null
+  },
+  {
+   "name": "Lot",
+   "type": "esriFieldTypeString",
+   "alias": "Lot",
+   "length": 30,
+   "domain": null
+  },
+  {
+   "name": "Block",
+   "type": "esriFieldTypeString",
+   "alias": "Block",
+   "length": 30,
+   "domain": null
+  },
+  {
+   "name": "PlanNumber",
+   "type": "esriFieldTypeString",
+   "alias": "PlanNumber",
+   "length": 128,
+   "domain": null
+  },
+  {
+   "name": "PID",
+   "type": "esriFieldTypeString",
+   "alias": "PID",
+   "length": 50,
+   "domain": null
+  },
+  {
+   "name": "LTSA_Number",
+   "type": "esriFieldTypeString",
+   "alias": "LTSA_Number",
+   "length": 200,
+   "domain": null
+  },
+  {
+   "name": "ParcelStatus",
+   "type": "esriFieldTypeString",
+   "alias": "ParcelStatus",
+   "length": 20,
+   "domain": {
+    "type": "codedValue",
+    "name": "DomainLifecycleStatus",
+    "description": "LifecycleStatus",
+    "codedValues": [
+     {
+      "name": "Active",
+      "code": "ACT"
+     },
+     {
+      "name": "Proposed",
+      "code": "PRP"
+     },
+     {
+      "name": "Removed",
+      "code": "RMV"
+     },
+     {
+      "name": "Inactive",
+      "code": "INA"
+     },
+     {
+      "name": "Abandoned",
+      "code": "ABD"
+     },
+     {
+      "name": "Insufficient Data",
+      "code": "IDT"
+     },
+     {
+      "name": "Proposed Existing Structure",
+      "code": "PEX"
+     },
+     {
+      "name": "Reserved",
+      "code": "RSV"
+     },
+     {
+      "name": "Does Not Exist",
+      "code": "DNE"
+     },
+     {
+      "name": "New",
+      "code": "NEW"
+     }
+    ],
+    "mergePolicy": "esriMPTDefaultValue",
+    "splitPolicy": "esriSPTDuplicate"
+   }
+  },
+  {
+   "name": "City",
+   "type": "esriFieldTypeString",
+   "alias": "City",
+   "length": 200,
+   "domain": {
+    "type": "codedValue",
+    "name": "DomainAdministrativeArea",
+    "description": "Owner or location of infrastructure",
+    "codedValues": [
+     {
+      "name": "City of Victoria",
+      "code": "VC"
+     },
+     {
+      "name": "District of Saanich",
+      "code": "SN"
+     },
+     {
+      "name": "Town of View Royal",
+      "code": "VR"
+     },
+     {
+      "name": "Township of Esquimalt",
+      "code": "ES"
+     },
+     {
+      "name": "Department of National Defence",
+      "code": "DND"
+     },
+     {
+      "name": "Songhees First Nation",
+      "code": "SGF"
+     },
+     {
+      "name": "Private",
+      "code": "PRI"
+     },
+     {
+      "name": "Unknown",
+      "code": "UNK"
+     },
+     {
+      "name": "District of Oak Bay",
+      "code": "OB"
+     },
+     {
+      "name": "Capital Regional District",
+      "code": "CRD"
+     },
+     {
+      "name": "Province of British Columbia",
+      "code": "BC"
+     },
+     {
+      "name": "Federal Government",
+      "code": "CAN"
+     }
+    ],
+    "mergePolicy": "esriMPTDefaultValue",
+    "splitPolicy": "esriSPTDefaultValue"
+   }
+  },
+  {
+   "name": "GISLINK",
+   "type": "esriFieldTypeString",
+   "alias": "GISLINK",
+   "length": 255,
+   "domain": null
+  },
+  {
+   "name": "ParcelType",
+   "type": "esriFieldTypeString",
+   "alias": "ParcelType",
+   "length": 30,
+   "domain": null
+  },
+  {
+   "name": "PrimarySurveyParcel",
+   "type": "esriFieldTypeString",
+   "alias": "PrimarySurveyParcel",
+   "length": 50,
+   "domain": null
+  },
+  {
+   "name": "ByLaw",
+   "type": "esriFieldTypeString",
+   "alias": "ByLaw",
+   "length": 50,
+   "domain": null
+  },
+  {
+   "name": "CityEquity",
+   "type": "esriFieldTypeSmallInteger",
+   "alias": "CityEquity",
+   "domain": null
+  },
+  {
+   "name": "Shape_Length",
+   "type": "esriFieldTypeDouble",
+   "alias": "Shape_Length",
+   "domain": null
+  },
+  {
+   "name": "Shape_Area",
+   "type": "esriFieldTypeDouble",
+   "alias": "Shape_Area",
+   "domain": null
+  }
+ ],
+ "geometryField": {
+  "name": "Shape",
+  "type": "esriFieldTypeGeometry",
+  "alias": "Shape"
+ },
+ "indexes": [
+  {
+   "name": "FDO_OBJECTID",
+   "fields": "OBJECTID",
+   "isAscending": true,
+   "isUnique": true,
+   "description": ""
+  },
+  {
+   "name": "FDO_Shape",
+   "fields": "Shape",
+   "isAscending": true,
+   "isUnique": false,
+   "description": ""
+  },
+  {
+   "name": "ParcelStatus",
+   "fields": "ParcelStatus",
+   "isAscending": true,
+   "isUnique": false,
+   "description": ""
+  }
+ ],
+ "subtypes": [],
+ "relationships": [],
+ "canModifyLayer": true,
+ "canScaleSymbols": false,
+ "hasLabels": false,
+ "capabilities": "Map,Query,Data",
+ "maxRecordCount": 2000,
+ "supportsStatistics": true,
+ "supportsExceedsLimitStatistics": true,
+ "supportsAdvancedQueries": true,
+ "supportedQueryFormats": "JSON, geoJSON, PBF",
+ "isDataVersioned": false,
+ "ownershipBasedAccessControlForFeatures": {"allowOthersToQuery": true},
+ "useStandardizedQueries": true,
+ "supportedSpatialRelationships": [
+  "esriSpatialRelIntersects",
+  "esriSpatialRelContains",
+  "esriSpatialRelCrosses",
+  "esriSpatialRelEnvelopeIntersects",
+  "esriSpatialRelIndexIntersects",
+  "esriSpatialRelOverlaps",
+  "esriSpatialRelTouches",
+  "esriSpatialRelWithin",
+  "esriSpatialRelRelation"
+ ],
+ "advancedQueryCapabilities": {
+  "useStandardizedQueries": true,
+  "supportsStatistics": true,
+  "supportsPercentileStatistics": true,
+  "supportsHavingClause": true,
+  "supportsOrderBy": true,
+  "supportsDistinct": true,
+  "supportsCountDistinct": true,
+  "supportsAdvancedQueryRelated": true,
+  "supportsQueryRelatedPagination": true,
+  "supportsPagination": true,
+  "supportsLod": false,
+  "supportsQueryWithLodSR": false,
+  "supportsTrueCurve": true,
+  "supportsQueryWithDatumTransformation": true,
+  "supportsReturningQueryExtent": true,
+  "supportsQueryWithDistance": true,
+  "supportsSqlExpression": true,
+  "supportsTimeRelation": true,
+  "supportsSqlFormat": false,
+  "supportsQueryAnalytic": false,
+  "supportsCurrentUserQueries": true
+ },
+ "supportsDatumTransformation": true,
+ "dateFieldsTimeReference": null,
+ "preferredTimeReference": null,
+ "datesInUnknownTimezone": false,
+ "hasGeometryProperties": true,
+ "geometryProperties": {
+  "shapeAreaFieldName": "Shape_Area",
+  "shapeLengthFieldName": "Shape_Length",
+  "units": "esriMeters",
+  "mapUnits": {"uwkid": 9001}
+ },
+ "hasMetadata": true,
+ "isDataArchived": false,
+ "archivingInfo": {
+  "supportsQueryWithHistoricMoment": false,
+  "startArchivingMoment": -1
+ },
+ "supportsCoordinatesQuantization": true,
+ "supportsDynamicLegends": true
+}
