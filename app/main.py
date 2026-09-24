@@ -7,6 +7,8 @@ from fastapi import FastAPI
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
+from app.investigation import router
+
 FRONTEND_DIST = Path(__file__).resolve().parents[1] / "frontend" / "dist"
 
 
@@ -17,6 +19,8 @@ def create_app(*, frontend_dist: Path = FRONTEND_DIST) -> FastAPI:
             "SHOVELREADY_ENV must be development or test; deployment is not configured"
         )
     application = FastAPI(title="ShovelReady", version="0.1.0")
+
+    application.include_router(router)
 
     @application.get("/health")
     def health() -> dict[str, str]:

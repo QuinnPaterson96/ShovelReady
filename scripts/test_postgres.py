@@ -17,6 +17,12 @@ from uuid import uuid4
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--postgres-bin", type=Path, required=True)
+    parser.add_argument(
+        "--demo",
+        action="store_true",
+        help="after passing tests, explicitly migrate/import and serve until Ctrl+C",
+    )
+    parser.add_argument("--http-port", type=int, default=8000)
     args = parser.parse_args()
     root = Path(tempfile.mkdtemp(prefix="shovelready-postgres-"))
     data = root / "data"
@@ -78,6 +84,47 @@ def main():
         )
         print(result.stdout, end="", flush=True)
         print(result.stderr, end="", file=sys.stderr, flush=True)
+        if result.returncode == 0 and args.demo:
+            # Separate operator-requested commands, never HTTP startup work.
+            demo_env = dict(
+                env,
+                SHOVELREADY_DATABASE_URL=env["SHOVELREADY_TEST_DATABASE_URL"],
+                SHOVELREADY_SPATIAL_COLLECTION="victoria-pilot-three-leads",
+            )
+            subprocess.run(
+                [sys.executable, "-m", "app.persistence.migrate"], env=demo_env, check=True
+            )
+            imported = subprocess.run(
+                [sys.executable, "-m", "app.spatial", "--import-records"],
+                env=demo_env,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            print(imported.stdout, flush=True)
+            demo_env["SHOVELREADY_SPATIAL_REVISION"] = imported.stdout.split(": ", 1)[0]
+            print(
+                f"Real observations: http://127.0.0.1:{args.http_port}; Ctrl+C stops demo/DB",
+                flush=True,
+            )
+            try:
+                subprocess.run(
+                    [
+                        sys.executable,
+                        "-m",
+                        "uvicorn",
+                        "app.main:app",
+                        "--host",
+                        "127.0.0.1",
+                        "--port",
+                        str(args.http_port),
+                    ],
+                    env=demo_env,
+                    creationflags=flags,
+                    check=True,
+                )
+            except KeyboardInterrupt:
+                pass
         return result.returncode
     finally:
         if started:

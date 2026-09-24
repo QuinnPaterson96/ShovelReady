@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
+import RealObservations from './investigation/RealObservations'
 import InvestigationPreview from './preview/InvestigationPreview'
 
 export default function App() {
+  const [mode, setMode] = useState('real')
   const [health, setHealth] = useState('Checking backend…')
 
   useEffect(() => {
@@ -36,7 +38,12 @@ export default function App() {
       <p className="eyebrow">Exploratory checkpoint</p>
       <h1>ShovelReady</h1>
       <p>Preliminary zoning scouting and source-backed investigation.</p>
-      <InvestigationPreview />
+      <label htmlFor="mode">Investigation mode</label>
+      <select id="mode" value={mode} onChange={e => setMode(e.target.value)}>
+        <option value="real">Real observations · unreviewed licensed captures</option>
+        <option value="synthetic">Fictional preview · synthetic saved scenarios</option>
+      </select>
+      {mode === 'real' ? <RealObservations /> : <InvestigationPreview />}
       <section aria-labelledby="status-heading">
         <h2 id="status-heading">Foundation status</h2>
         <p role="status">{health}</p>
