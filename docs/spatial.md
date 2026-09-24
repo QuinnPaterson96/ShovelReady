@@ -174,6 +174,14 @@ are provided by the existing PR CI checks, not claimed as local runs. The import
 command currently runs from a repository checkout; the HTTP image does not bundle
 the acquisition notebook or automatically ingest it.
 
+Integration review on September 24 reproduced and corrected triple-zone overlap:
+`overlapping_zone_area_m2` measures the physical area covered by at least two zone
+features, counted once even where three or more coincide. The independent 100 m²
+rectangle regression previously returned 200 m²; it now returns 100 m² while
+retaining all three intersections. After merging PR #28 into this branch, full lint,
+119 pytest cases, 28 contract subtests, two acquisition, ten intake and three preview
+checks passed. PostgreSQL checks used a new disposable local cluster with no skips.
+
 ## Remaining acceptance gates
 
 - Source service geometry/schema has been checked against saved September 24

@@ -183,9 +183,14 @@ def intersect_parcel(
             issues.append("sliver_requires_review_not_discarded")
     uncovered = overlap = None
     if not incomplete:
-        union = unary_union(pieces)
+        union = Polygon()
+        overlaps = []
+        for piece in pieces:
+            overlaps.append(union.intersection(piece))
+            union = union.union(piece)
         uncovered = parcel.difference(union).area
-        overlap = max(0.0, sum(p.area for p in pieces) - union.area)
+        # Report physical area covered by at least two zones, not coverage multiplicity.
+        overlap = unary_union(overlaps).area
         if uncovered > 0:
             issues.append("uncovered_query_area")
         if overlap > 0:

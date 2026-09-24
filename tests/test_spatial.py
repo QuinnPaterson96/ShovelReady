@@ -83,6 +83,10 @@ def test_synthetic_split_sliver_boundary_uncovered_and_overlap():
     overlap = intersect_parcel(parcel, [box(0, 0, 6, 10), box(4, 0, 10, 10)], "p", 0, "z")
     assert overlap.overlapping_zone_area_m2 == 20
     assert overlap.uncovered_area_m2 == 0
+    # Physical overlap area is counted once even where three zone features coincide.
+    triple = intersect_parcel(parcel, [parcel, parcel, parcel], "p", 0, "z")
+    assert triple.overlapping_zone_area_m2 == 100
+    assert len(triple.intersections) == 3
     incomplete = intersect_parcel(parcel, [zones[0], None], "p", 0, "z")
     assert len(incomplete.intersections) == 1
     assert incomplete.uncovered_area_m2 is None
