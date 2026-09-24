@@ -1,7 +1,7 @@
 """Database-free saved preview validation, not an evaluator or legal oracle.
 
 Run from repository root: python docs/usability/check_fixtures.py
-Uses the existing Pydantic contracts; does not alter shared test discovery/CI.
+Uses the existing Pydantic contracts; also runs explicitly in backend CI.
 """
 
 import json
@@ -24,7 +24,7 @@ from app.contracts.rules import AcceptedRuleRevision  # noqa: E402
 class PreviewFixtures(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.saved = json.loads((ROOT / "frontend/src/preview/fixtures.json").read_text())
+        cls.saved = json.loads((ROOT / "frontend/src/preview/fixtures.json").read_text(encoding="utf-8"))
 
     def test_saved_payloads_and_evidence_references(self):
         sources = {
@@ -50,7 +50,7 @@ class PreviewFixtures(unittest.TestCase):
                         self.assertIn(check.rule, rules)
                         for evidence in check.evidence:
                             self.assertIn(evidence.snapshot_id, sources)
-                            text = (ROOT / sources[evidence.snapshot_id].artifact.uri).read_text()
+                            text = (ROOT / sources[evidence.snapshot_id].artifact.uri).read_text(encoding="utf-8")
                             self.assertIn(evidence.excerpt, text)
                             self.assertIn(evidence, rules[check.rule].content.evidence)
                 self.assertEqual(

@@ -64,9 +64,8 @@ npm run typecheck
 npm run build
 ```
 
-The checks are database-free and use existing dependencies. Shared Python tooling,
-CI and contracts are unchanged. The preview checker is an explicit local command,
-not automatically included in current CI.
+The checks are database-free and use existing dependencies. Integration review added
+the preview checker and its lint check to the existing backend CI job; contracts remain unchanged.
 
 SR-12 can reuse the result presentation after adding a validated API adapter, real
 source access, and handling all contract-permitted optional fields/states. The fixture
