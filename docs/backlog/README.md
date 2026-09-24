@@ -1,6 +1,6 @@
 # MVP backlog
 
-Planning baseline: September 18, 2026; post-merge checkpoint: September 24, 2026. PRs #20, #21 and #19 merged the scaffold/CI, provisional contracts and raw pilot evidence; PRs #24-#26 added typed intake, persistence and the synthetic investigation preview; PRs #28/#29 added offline extraction replay and licensed spatial import. There is still no source-to-result evaluator, accepted dataset or cloud deployment.
+Planning baseline: September 18, 2026; post-merge checkpoint: September 24, 2026. PRs #20, #21 and #19 merged the scaffold/CI, provisional contracts and raw pilot evidence; PRs #24-#26 added typed intake, persistence and the synthetic investigation preview; PRs #28/#29 added offline extraction replay and licensed spatial import. PRs #31-#33 added the draft scalar evaluator, persistent local database and real-observation API/UI. There is still no accepted real-site source-to-screening path, accepted dataset or cloud deployment.
 
 GitHub issues are the execution/status source of truth once published. These Markdown files preserve specifications and dated implementation handoffs; update both when scope changes. Dated checkpoints are not a second live status board. SR identifiers remain stable independently of GitHub issue numbers.
 
@@ -40,15 +40,20 @@ The first evaluator checks a supplied reviewed placement. Preserve manual site f
 | [SR-17](SR-17.md) | Measure transfer cost in a second municipality | M3: Expansion experiment | SR-16 |
 | [SR-18](SR-18.md) | Resolve provider buy-versus-build questions with actual samples | M0: Scope | None |
 | [SR-19](SR-19.md) / [issue #22](https://github.com/QuinnPaterson96/ShovelReady/issues/22) | Fixture-driven investigation preview and simulated task rehearsal | M1 preparation | SR-02, provisional SR-04 |
+| [SR-20](SR-20.md) / [issue #35](https://github.com/QuinnPaterson96/ShovelReady/issues/35) | Native database lifecycle in Windows CI | M1 support | Merged PRs #32/#33 |
+| [SR-21](SR-21.md) / [issue #36](https://github.com/QuinnPaterson96/ShovelReady/issues/36) | Reproducible local demo and visible app/data identity | M1 support | Merged PRs #32/#33 |
+| [SR-22](SR-22.md) / [issue #37](https://github.com/QuinnPaterson96/ShovelReady/issues/37) | Short PR handoff template and integration checklist | M1 support | None |
+| [SR-23](SR-23.md) / [issue #38](https://github.com/QuinnPaterson96/ShovelReady/issues/38) | Research 10-20 public development cases for test references | M1 preparation | None for research; independent acceptance remains SR-06 |
 
 ## Next parallel work
 
-[Wave-three prompts and ownership](wave-three-prompts.md) are the current launch instructions. The [second-wave](wave-two-prompts.md) and [first-wave prompts](next-wave-prompts.md) remain historical handoff context.
+[Wave-four scope and ownership](wave-four-prompts.md) are the current launch instructions. [Wave three](wave-three-prompts.md), [wave two](wave-two-prompts.md) and [wave one](next-wave-prompts.md) remain historical handoff context.
 
 - SR-02/SR-03/SR-04 are complete in their scaffold/provisional scopes. SR-08 persistence and SR-19 / issue #22 synthetic preview/rehearsal are now complete.
 - SR-01/SR-05/SR-06 remain partial: typed licensed inputs and a provisional corpus exist, but controlled design, reviewed site/placement facts, authorized durable private sources and independent acceptance are missing.
 - SR-07's offline replay and eligibility gates are implemented; all 25 real entries remain blocked with no accuracy/cost/timing measurement. SR-09's licensed import and bounded XY/CRS/intersection checks are implemented. Both tickets remain open for their outstanding criteria; address joins are deferred for the sample-selection workflow and reviewed legal site facts remain absent.
-- Launch F3 / SR-10's bounded deterministic core alongside G3 / SR-12's read-only real spatial investigation API/UI. F3 uses labelled synthetic rules/facts and owns evaluator/scalar contract work; G3 consumes existing spatial/source payloads and owns shared tooling/CI. Neither depends on the other's output. Both open PRs without merging.
+- PR #31's bounded deterministic core is verified with labelled synthetic rules/facts. PR #33's read-only investigation API/UI consumes the pinned licensed observations; PR #32's local database helper supports a persistent development workflow. Combined integration passed 211 tests and 28 contract subtests with native lifecycle enabled, plus frontend checks and a seeded-database browser walkthrough. See the [integration review](../integration-review-2026-09-24.md).
+- Launch SR-20 native lifecycle CI, SR-21 reproducible demo and SR-22 concise PR handoffs independently. SR-23 researches public cases in parallel and does not block those engineering improvements. Research output supplies provisional evidence leads, not automatically accepted SR-06 reference outcomes.
 - A real licensed intake-to-spatial-storage roundtrip passes without changing unreviewed status. Reading a pinned observation revision is not accepted data publication. SR-10 real checks, SR-11 accepted publication and SR-12 screening integration retain their evidence gates. No live model run, real fit or cloud deployment is claimed.
 - SR-13 completes full end-to-end verification before SR-14 hosting and SR-15 CD. SR-16 remains actual customer validation after a usable prototype; SR-17/SR-18 remain deferred.
 

@@ -18,6 +18,10 @@ dataset, real-site screening result or active publication. The health endpoint c
 liveness only. See the [integration review](docs/integration-review-2026-09-24.md)
 for combined verification, remaining gates and proposed process improvements.
 
+The [next parallel work](docs/backlog/wave-four-prompts.md) covers native lifecycle CI,
+a reproducible local demo, concise PR handoffs and research into 10-20 public cases
+that could become reviewed test references.
+
 City of Victoria garden suites remain the leading technical prototype candidate, subject
 to verified design/site inputs and current rule applicability; Vancouver is the fallback.
 
