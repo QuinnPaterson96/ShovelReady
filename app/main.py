@@ -1,55 +1,41 @@
+"""Scaffold only: no ingestion, database connections, or schema creation at startup."""
+
 import os
+from pathlib import Path
+
 from fastapi import FastAPI
-from contextlib import asynccontextmanager
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
-import uvicorn
-from app.services.db import init_models
-from app.api.routes import routers
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    print("✅ Starting up app")
-    try:
-        print("🔹 About to init models")
-        init_models()
-        print("✅ Startup completed")
-    except Exception as e:
-        print(f"❌ Exception during lifespan startup: {e}")
-        raise
-
-    yield
+FRONTEND_DIST = Path(__file__).resolve().parents[1] / "frontend" / "dist"
 
 
-# ✅ Create the FastAPI app using lifespan context
-app = FastAPI(
-    title="ShovelReady",
-    description="AI Backed Zoning Analysis",
-    version="1.0.0",
-    lifespan=lifespan,  # ✅ Use new lifespan handler
-)
+def create_app(*, frontend_dist: Path = FRONTEND_DIST) -> FastAPI:
+    environment = os.environ.get("SHOVELREADY_ENV", "development")
+    if environment not in {"development", "test"}:
+        raise RuntimeError(
+            "SHOVELREADY_ENV must be development or test; deployment is not configured"
+        )
+    application = FastAPI(title="ShovelReady", version="0.1.0")
 
-# ✅ Register all routers
-for router in routers:
-    app.include_router(router)
+    @application.get("/health")
+    def health() -> dict[str, str]:
+        """Process liveness only; does not assert data or database readiness."""
+        return {"status": "ok"}
 
-app.mount("/static", StaticFiles(directory="app/static", html=True), name="static")
+    @application.get("/", response_model=None)
+    def home() -> FileResponse | JSONResponse:
+        index = frontend_dist / "index.html"
+        if index.is_file():
+            return FileResponse(index)
+        return JSONResponse(
+            {"detail": "Frontend is not built. Run npm ci and npm run build in frontend/."},
+            status_code=503,
+        )
 
-@app.get("/")
-def home():
-    return {}
+    if (frontend_dist / "assets").is_dir():
+        application.mount("/assets", StaticFiles(directory=frontend_dist / "assets"), name="assets")
+    return application
 
 
-
-
-@app.get("/")
-def serve_index():
-    return FileResponse(os.path.join("app", "static", "index.html"))
-
-# ✅ If running locally, use this
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)
-
-@app.get("/health")
-def health_check():
-    return {"status": "ok"}
+app = create_app()
