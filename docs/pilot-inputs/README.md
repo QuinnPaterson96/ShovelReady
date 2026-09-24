@@ -8,6 +8,13 @@ Acquired September 18, 2026; refreshed September 24, 2026 (UTC timestamps in the
 - [Design questions](manufacturer-inputs.md): observed Landing marketing facts and precise missing inputs; no outreach sent.
 - [Site fixture specifications](site-fixtures.md): three real parcel leads, raw responses and missing supplied/manual facts.
 - [Clause review queue](clause-review-queue.md): provisional evidence locators and regression categories, awaiting independent review and authorized source-text retention.
+- [Typed intake packet](intake-packet.json): portable verification of the pinned captures,
+  shared SourceSnapshot payloads for available objects, explicit blocked private artifacts,
+  and raw spatial references; not a dataset release.
+- [Corpus manifest](corpus.json): 25 grouped provisional clause annotations and three site
+  blocker records, with no accepted interpretations, design revision, placement or fit.
+- [Owner/reviewer actions and intake handoff](reviewer-actions.md): commands, URI mapping,
+  contract gaps, held-out handling, exact external inputs and SR-07/SR-09 gates.
 
 ## Reproduce acquisition
 
@@ -42,3 +49,15 @@ Contains information licensed under the [Open Government Licence - City of Victo
 ## Foundation integration
 
 The acquisition tests run offline in the backend CI job using the locked Python environment. Retained snapshot hashes and byte lengths were rechecked against all 15 manifest records during integration review. This does not resolve the input/review gates above.
+
+## File-based intake follow-up (September 24)
+
+`python -m uv run --locked python docs/pilot-inputs/intake.py` verifies all 15 licensed
+records (14 objects), maps them into the provisional shared SourceSnapshot contract,
+and returns nine raw spatial sample references. Eleven withheld records report an
+actionable private-root diagnostic; no local path is required by default. Optional
+private verification never promotes retention rights or review status. The original
+snapshots and acquisition notebook are unchanged. This supersedes the earlier
+statement that no typed intake was run; it does not establish legal applicability.
+
+See reviewer-actions.md for actual verification results and remaining acceptance gates.

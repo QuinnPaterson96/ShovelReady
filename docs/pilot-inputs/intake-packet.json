@@ -1,0 +1,2283 @@
+{
+  "schema_version": "pilot-intake.v1",
+  "sources": [
+    {
+      "capture": {
+        "source_id": "zoning-metadata",
+        "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12?f=pjson",
+        "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12?f=pjson",
+        "captured_at_utc": "2026-09-24T18:18:34.227504Z",
+        "sha256": "ff7ee0b0b99008d72aad56ff5a83b50522655be98399d649e4150e4c6d7b9a58",
+        "byte_count": 5040,
+        "object": "objects/ff7ee0b0b99008d72aad56ff5a83b50522655be98399d649e4150e4c6d7b9a58.json",
+        "http_metadata": {
+          "content-type": "text/plain; charset=UTF-8",
+          "last-modified": null,
+          "etag": "\"a5822626\"",
+          "date": "Thu, 24 Sep 2026 18:18:34 GMT"
+        },
+        "redistribution": "victoria-open-data-v1",
+        "repository_path": "snapshots/ff7ee0b0b99008d72aad56ff5a83b50522655be98399d649e4150e4c6d7b9a58.json",
+        "original_crs": {
+          "wkid": 3157,
+          "latestWkid": 3157
+        },
+        "original_units": {
+          "horizontal": "metres; service metadata esriMeters",
+          "area": "coordinate-derived square metres, not verified regulatory area",
+          "vertical": "unknown; Z present only in roofline responses; datum and accuracy unverified"
+        },
+        "version_evidence": null,
+        "effective_date": null,
+        "technical_review": "agent-inspected; not independently or professionally reviewed",
+        "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+        "same_bytes_as_2026_09_18": true
+      },
+      "snapshot_id": "zoning-metadata:sha256:ff7ee0b0b99008d72aad56ff5a83b50522655be98399d649e4150e4c6d7b9a58",
+      "status": "verified_repository",
+      "diagnostics": [],
+      "snapshot": {
+        "schema_version": "sr-04.v1-provisional",
+        "source_id": "zoning-metadata",
+        "snapshot_id": "zoning-metadata:sha256:ff7ee0b0b99008d72aad56ff5a83b50522655be98399d649e4150e4c6d7b9a58",
+        "category": "spatial",
+        "jurisdiction": "City of Victoria, BC (provisional pilot scope)",
+        "instrument": "zoning-metadata",
+        "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12?f=pjson",
+        "artifact": {
+          "uri": "repo:docs/pilot-inputs/snapshots/ff7ee0b0b99008d72aad56ff5a83b50522655be98399d649e4150e4c6d7b9a58.json",
+          "sha256": "ff7ee0b0b99008d72aad56ff5a83b50522655be98399d649e4150e4c6d7b9a58"
+        },
+        "captured_at": "2026-09-24T18:18:34.227504Z",
+        "printed_revision": null,
+        "effective_from": null,
+        "effective_to": null,
+        "effective_date_evidence": [],
+        "original_crs": "EPSG:3157",
+        "original_units": [
+          "horizontal: metres; service metadata esriMeters",
+          "area: coordinate-derived square metres, not verified regulatory area",
+          "vertical: unknown; Z present only in roofline responses; datum and accuracy unverified"
+        ],
+        "reuse_constraints": "victoria-open-data-v1; see acquisition-evidence.md; Contains information licensed under the Open Government Licence - City of Victoria.",
+        "review": {
+          "status": "unreviewed",
+          "reviewer": null,
+          "reviewed_at": null,
+          "scope": "source intake; no legal acceptance",
+          "rationale": "agent-inspected; not independently or professionally reviewed"
+        }
+      }
+    },
+    {
+      "capture": {
+        "source_id": "zoning-catalogue",
+        "requested_url": "https://www.arcgis.com/sharing/rest/content/items/84dde8f57dd7428f8a34d67f13c55051?f=pjson",
+        "resolved_url": "https://www.arcgis.com/sharing/rest/content/items/84dde8f57dd7428f8a34d67f13c55051?f=pjson",
+        "captured_at_utc": "2026-09-24T18:18:34.451865Z",
+        "sha256": "0898645479a9f928d782cf79b4255777a68bcc475972f3f2d99d9f2d4544fb01",
+        "byte_count": 3412,
+        "object": "objects/0898645479a9f928d782cf79b4255777a68bcc475972f3f2d99d9f2d4544fb01.json",
+        "http_metadata": {
+          "content-type": "text/plain;charset=utf-8",
+          "last-modified": null,
+          "etag": null,
+          "date": "Thu, 24 Sep 2026 18:18:34 GMT"
+        },
+        "redistribution": "victoria-open-data-v1",
+        "repository_path": "snapshots/0898645479a9f928d782cf79b4255777a68bcc475972f3f2d99d9f2d4544fb01.json",
+        "original_crs": null,
+        "original_units": null,
+        "version_evidence": {
+          "item_id": "84dde8f57dd7428f8a34d67f13c55051",
+          "item_modified_unix_ms": 1760552685000,
+          "note": "Item modified time is not dataset currency; inspect catalogue description."
+        },
+        "effective_date": null,
+        "technical_review": "agent-inspected; not independently or professionally reviewed",
+        "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+        "same_bytes_as_2026_09_18": false
+      },
+      "snapshot_id": "zoning-catalogue:sha256:0898645479a9f928d782cf79b4255777a68bcc475972f3f2d99d9f2d4544fb01",
+      "status": "verified_repository",
+      "diagnostics": [],
+      "snapshot": {
+        "schema_version": "sr-04.v1-provisional",
+        "source_id": "zoning-catalogue",
+        "snapshot_id": "zoning-catalogue:sha256:0898645479a9f928d782cf79b4255777a68bcc475972f3f2d99d9f2d4544fb01",
+        "category": "spatial",
+        "jurisdiction": "City of Victoria, BC (provisional pilot scope)",
+        "instrument": "zoning-catalogue",
+        "source_url": "https://www.arcgis.com/sharing/rest/content/items/84dde8f57dd7428f8a34d67f13c55051?f=pjson",
+        "artifact": {
+          "uri": "repo:docs/pilot-inputs/snapshots/0898645479a9f928d782cf79b4255777a68bcc475972f3f2d99d9f2d4544fb01.json",
+          "sha256": "0898645479a9f928d782cf79b4255777a68bcc475972f3f2d99d9f2d4544fb01"
+        },
+        "captured_at": "2026-09-24T18:18:34.451865Z",
+        "printed_revision": null,
+        "effective_from": null,
+        "effective_to": null,
+        "effective_date_evidence": [],
+        "original_crs": null,
+        "original_units": [],
+        "reuse_constraints": "victoria-open-data-v1; see acquisition-evidence.md; Contains information licensed under the Open Government Licence - City of Victoria.",
+        "review": {
+          "status": "unreviewed",
+          "reviewer": null,
+          "reviewed_at": null,
+          "scope": "source intake; no legal acceptance",
+          "rationale": "agent-inspected; not independently or professionally reviewed"
+        }
+      }
+    },
+    {
+      "capture": {
+        "source_id": "parcels-metadata",
+        "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11?f=pjson",
+        "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11?f=pjson",
+        "captured_at_utc": "2026-09-24T18:18:34.683865Z",
+        "sha256": "fdbc0f690262835c2536dd556bb1cc8a08523e52e54548dd997615fb599f7e90",
+        "byte_count": 8484,
+        "object": "objects/fdbc0f690262835c2536dd556bb1cc8a08523e52e54548dd997615fb599f7e90.json",
+        "http_metadata": {
+          "content-type": "text/plain; charset=UTF-8",
+          "last-modified": null,
+          "etag": "\"21f05f01\"",
+          "date": "Thu, 24 Sep 2026 18:18:34 GMT"
+        },
+        "redistribution": "victoria-open-data-v1",
+        "repository_path": "snapshots/fdbc0f690262835c2536dd556bb1cc8a08523e52e54548dd997615fb599f7e90.json",
+        "original_crs": {
+          "wkid": 3157,
+          "latestWkid": 3157
+        },
+        "original_units": {
+          "horizontal": "metres; service metadata esriMeters",
+          "area": "coordinate-derived square metres, not verified regulatory area",
+          "vertical": "unknown; Z present only in roofline responses; datum and accuracy unverified"
+        },
+        "version_evidence": null,
+        "effective_date": null,
+        "technical_review": "agent-inspected; not independently or professionally reviewed",
+        "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+        "same_bytes_as_2026_09_18": true
+      },
+      "snapshot_id": "parcels-metadata:sha256:fdbc0f690262835c2536dd556bb1cc8a08523e52e54548dd997615fb599f7e90",
+      "status": "verified_repository",
+      "diagnostics": [],
+      "snapshot": {
+        "schema_version": "sr-04.v1-provisional",
+        "source_id": "parcels-metadata",
+        "snapshot_id": "parcels-metadata:sha256:fdbc0f690262835c2536dd556bb1cc8a08523e52e54548dd997615fb599f7e90",
+        "category": "spatial",
+        "jurisdiction": "City of Victoria, BC (provisional pilot scope)",
+        "instrument": "parcels-metadata",
+        "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11?f=pjson",
+        "artifact": {
+          "uri": "repo:docs/pilot-inputs/snapshots/fdbc0f690262835c2536dd556bb1cc8a08523e52e54548dd997615fb599f7e90.json",
+          "sha256": "fdbc0f690262835c2536dd556bb1cc8a08523e52e54548dd997615fb599f7e90"
+        },
+        "captured_at": "2026-09-24T18:18:34.683865Z",
+        "printed_revision": null,
+        "effective_from": null,
+        "effective_to": null,
+        "effective_date_evidence": [],
+        "original_crs": "EPSG:3157",
+        "original_units": [
+          "horizontal: metres; service metadata esriMeters",
+          "area: coordinate-derived square metres, not verified regulatory area",
+          "vertical: unknown; Z present only in roofline responses; datum and accuracy unverified"
+        ],
+        "reuse_constraints": "victoria-open-data-v1; see acquisition-evidence.md; Contains information licensed under the Open Government Licence - City of Victoria.",
+        "review": {
+          "status": "unreviewed",
+          "reviewer": null,
+          "reviewed_at": null,
+          "scope": "source intake; no legal acceptance",
+          "rationale": "agent-inspected; not independently or professionally reviewed"
+        }
+      }
+    },
+    {
+      "capture": {
+        "source_id": "parcels-catalogue",
+        "requested_url": "https://www.arcgis.com/sharing/rest/content/items/901cb49452d14dd2855fa701311f0545?f=pjson",
+        "resolved_url": "https://www.arcgis.com/sharing/rest/content/items/901cb49452d14dd2855fa701311f0545?f=pjson",
+        "captured_at_utc": "2026-09-24T18:18:34.873923Z",
+        "sha256": "f99f9f80cce6e4e0c95ddb4b73770310f82f2daa0c708482cca3699887c7e030",
+        "byte_count": 3353,
+        "object": "objects/f99f9f80cce6e4e0c95ddb4b73770310f82f2daa0c708482cca3699887c7e030.json",
+        "http_metadata": {
+          "content-type": "text/plain;charset=utf-8",
+          "last-modified": null,
+          "etag": null,
+          "date": "Thu, 24 Sep 2026 18:18:34 GMT"
+        },
+        "redistribution": "victoria-open-data-v1",
+        "repository_path": "snapshots/f99f9f80cce6e4e0c95ddb4b73770310f82f2daa0c708482cca3699887c7e030.json",
+        "original_crs": null,
+        "original_units": null,
+        "version_evidence": {
+          "item_id": "901cb49452d14dd2855fa701311f0545",
+          "item_modified_unix_ms": 1730740317000,
+          "note": "Item modified time is not dataset currency; inspect catalogue description."
+        },
+        "effective_date": null,
+        "technical_review": "agent-inspected; not independently or professionally reviewed",
+        "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+        "same_bytes_as_2026_09_18": false
+      },
+      "snapshot_id": "parcels-catalogue:sha256:f99f9f80cce6e4e0c95ddb4b73770310f82f2daa0c708482cca3699887c7e030",
+      "status": "verified_repository",
+      "diagnostics": [],
+      "snapshot": {
+        "schema_version": "sr-04.v1-provisional",
+        "source_id": "parcels-catalogue",
+        "snapshot_id": "parcels-catalogue:sha256:f99f9f80cce6e4e0c95ddb4b73770310f82f2daa0c708482cca3699887c7e030",
+        "category": "spatial",
+        "jurisdiction": "City of Victoria, BC (provisional pilot scope)",
+        "instrument": "parcels-catalogue",
+        "source_url": "https://www.arcgis.com/sharing/rest/content/items/901cb49452d14dd2855fa701311f0545?f=pjson",
+        "artifact": {
+          "uri": "repo:docs/pilot-inputs/snapshots/f99f9f80cce6e4e0c95ddb4b73770310f82f2daa0c708482cca3699887c7e030.json",
+          "sha256": "f99f9f80cce6e4e0c95ddb4b73770310f82f2daa0c708482cca3699887c7e030"
+        },
+        "captured_at": "2026-09-24T18:18:34.873923Z",
+        "printed_revision": null,
+        "effective_from": null,
+        "effective_to": null,
+        "effective_date_evidence": [],
+        "original_crs": null,
+        "original_units": [],
+        "reuse_constraints": "victoria-open-data-v1; see acquisition-evidence.md; Contains information licensed under the Open Government Licence - City of Victoria.",
+        "review": {
+          "status": "unreviewed",
+          "reviewer": null,
+          "reviewed_at": null,
+          "scope": "source intake; no legal acceptance",
+          "rationale": "agent-inspected; not independently or professionally reviewed"
+        }
+      }
+    },
+    {
+      "capture": {
+        "source_id": "rooflines-metadata",
+        "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1?f=pjson",
+        "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1?f=pjson",
+        "captured_at_utc": "2026-09-24T18:18:35.100760Z",
+        "sha256": "7b97a02649ffbd3037cd65497f1a10a79bd3ae21c334f625e643014d5bd92e44",
+        "byte_count": 4682,
+        "object": "objects/7b97a02649ffbd3037cd65497f1a10a79bd3ae21c334f625e643014d5bd92e44.json",
+        "http_metadata": {
+          "content-type": "text/plain; charset=UTF-8",
+          "last-modified": null,
+          "etag": "\"21f05f01\"",
+          "date": "Thu, 24 Sep 2026 18:18:34 GMT"
+        },
+        "redistribution": "victoria-open-data-v1",
+        "repository_path": "snapshots/7b97a02649ffbd3037cd65497f1a10a79bd3ae21c334f625e643014d5bd92e44.json",
+        "original_crs": {
+          "wkid": 3157,
+          "latestWkid": 3157
+        },
+        "original_units": {
+          "horizontal": "metres; service metadata esriMeters",
+          "area": "coordinate-derived square metres, not verified regulatory area",
+          "vertical": "unknown; Z present only in roofline responses; datum and accuracy unverified"
+        },
+        "version_evidence": null,
+        "effective_date": null,
+        "technical_review": "agent-inspected; not independently or professionally reviewed",
+        "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+        "same_bytes_as_2026_09_18": true
+      },
+      "snapshot_id": "rooflines-metadata:sha256:7b97a02649ffbd3037cd65497f1a10a79bd3ae21c334f625e643014d5bd92e44",
+      "status": "verified_repository",
+      "diagnostics": [],
+      "snapshot": {
+        "schema_version": "sr-04.v1-provisional",
+        "source_id": "rooflines-metadata",
+        "snapshot_id": "rooflines-metadata:sha256:7b97a02649ffbd3037cd65497f1a10a79bd3ae21c334f625e643014d5bd92e44",
+        "category": "spatial",
+        "jurisdiction": "City of Victoria, BC (provisional pilot scope)",
+        "instrument": "rooflines-metadata",
+        "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1?f=pjson",
+        "artifact": {
+          "uri": "repo:docs/pilot-inputs/snapshots/7b97a02649ffbd3037cd65497f1a10a79bd3ae21c334f625e643014d5bd92e44.json",
+          "sha256": "7b97a02649ffbd3037cd65497f1a10a79bd3ae21c334f625e643014d5bd92e44"
+        },
+        "captured_at": "2026-09-24T18:18:35.100760Z",
+        "printed_revision": null,
+        "effective_from": null,
+        "effective_to": null,
+        "effective_date_evidence": [],
+        "original_crs": "EPSG:3157",
+        "original_units": [
+          "horizontal: metres; service metadata esriMeters",
+          "area: coordinate-derived square metres, not verified regulatory area",
+          "vertical: unknown; Z present only in roofline responses; datum and accuracy unverified"
+        ],
+        "reuse_constraints": "victoria-open-data-v1; see acquisition-evidence.md; Contains information licensed under the Open Government Licence - City of Victoria.",
+        "review": {
+          "status": "unreviewed",
+          "reviewer": null,
+          "reviewed_at": null,
+          "scope": "source intake; no legal acceptance",
+          "rationale": "agent-inspected; not independently or professionally reviewed"
+        }
+      }
+    },
+    {
+      "capture": {
+        "source_id": "rooflines-catalogue",
+        "requested_url": "https://www.arcgis.com/sharing/rest/content/items/dc37de452a614b599dd9c9ff473739d3?f=pjson",
+        "resolved_url": "https://www.arcgis.com/sharing/rest/content/items/dc37de452a614b599dd9c9ff473739d3?f=pjson",
+        "captured_at_utc": "2026-09-24T18:18:35.285979Z",
+        "sha256": "8ca7f3012378fca3d1f4e261329c71b8c4d194ead481e6799ae15b4887da7e99",
+        "byte_count": 3121,
+        "object": "objects/8ca7f3012378fca3d1f4e261329c71b8c4d194ead481e6799ae15b4887da7e99.json",
+        "http_metadata": {
+          "content-type": "text/plain;charset=utf-8",
+          "last-modified": null,
+          "etag": null,
+          "date": "Thu, 24 Sep 2026 18:18:35 GMT"
+        },
+        "redistribution": "victoria-open-data-v1",
+        "repository_path": "snapshots/8ca7f3012378fca3d1f4e261329c71b8c4d194ead481e6799ae15b4887da7e99.json",
+        "original_crs": null,
+        "original_units": null,
+        "version_evidence": {
+          "item_id": "dc37de452a614b599dd9c9ff473739d3",
+          "item_modified_unix_ms": 1770401123000,
+          "note": "Item modified time is not dataset currency; inspect catalogue description."
+        },
+        "effective_date": null,
+        "technical_review": "agent-inspected; not independently or professionally reviewed",
+        "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+        "same_bytes_as_2026_09_18": false
+      },
+      "snapshot_id": "rooflines-catalogue:sha256:8ca7f3012378fca3d1f4e261329c71b8c4d194ead481e6799ae15b4887da7e99",
+      "status": "verified_repository",
+      "diagnostics": [],
+      "snapshot": {
+        "schema_version": "sr-04.v1-provisional",
+        "source_id": "rooflines-catalogue",
+        "snapshot_id": "rooflines-catalogue:sha256:8ca7f3012378fca3d1f4e261329c71b8c4d194ead481e6799ae15b4887da7e99",
+        "category": "spatial",
+        "jurisdiction": "City of Victoria, BC (provisional pilot scope)",
+        "instrument": "rooflines-catalogue",
+        "source_url": "https://www.arcgis.com/sharing/rest/content/items/dc37de452a614b599dd9c9ff473739d3?f=pjson",
+        "artifact": {
+          "uri": "repo:docs/pilot-inputs/snapshots/8ca7f3012378fca3d1f4e261329c71b8c4d194ead481e6799ae15b4887da7e99.json",
+          "sha256": "8ca7f3012378fca3d1f4e261329c71b8c4d194ead481e6799ae15b4887da7e99"
+        },
+        "captured_at": "2026-09-24T18:18:35.285979Z",
+        "printed_revision": null,
+        "effective_from": null,
+        "effective_to": null,
+        "effective_date_evidence": [],
+        "original_crs": null,
+        "original_units": [],
+        "reuse_constraints": "victoria-open-data-v1; see acquisition-evidence.md; Contains information licensed under the Open Government Licence - City of Victoria.",
+        "review": {
+          "status": "unreviewed",
+          "reviewer": null,
+          "reviewed_at": null,
+          "scope": "source intake; no legal acceptance",
+          "rationale": "agent-inspected; not independently or professionally reviewed"
+        }
+      }
+    },
+    {
+      "capture": {
+        "source_id": "open-data-licence",
+        "requested_url": "https://www.arcgis.com/sharing/rest/content/items/60eb753ce52d432484c7403d968c530e/data?f=json",
+        "resolved_url": "https://www.arcgis.com/sharing/rest/content/items/60eb753ce52d432484c7403d968c530e/data?f=json",
+        "captured_at_utc": "2026-09-24T18:18:35.567182Z",
+        "sha256": "30de456aa367d5a9b71b22233f0d554c120bf0517a128a0646fd424803b3ffd3",
+        "byte_count": 5548,
+        "object": "objects/30de456aa367d5a9b71b22233f0d554c120bf0517a128a0646fd424803b3ffd3.json",
+        "http_metadata": {
+          "content-type": "application/json;charset=utf-8",
+          "last-modified": null,
+          "etag": "\"18b4e73b9e8\"",
+          "date": "Thu, 24 Sep 2026 18:18:35 GMT"
+        },
+        "redistribution": "withheld-terms-evidence",
+        "repository_path": null,
+        "original_crs": null,
+        "original_units": null,
+        "version_evidence": null,
+        "effective_date": null,
+        "technical_review": "agent-inspected; not independently or professionally reviewed",
+        "licence_url": null,
+        "same_bytes_as_2026_09_18": true
+      },
+      "snapshot_id": "open-data-licence:sha256:30de456aa367d5a9b71b22233f0d554c120bf0517a128a0646fd424803b3ffd3",
+      "status": "blocked",
+      "diagnostics": [
+        "private_root_required: pass --private-root to authorized capture directory; resolve durable/shared retention rights separately"
+      ],
+      "snapshot": null
+    },
+    {
+      "capture": {
+        "source_id": "zoning-2018",
+        "requested_url": "https://www.victoria.ca/media/file/zoning-bylaw-2018",
+        "resolved_url": "https://www.victoria.ca/media/file/zoning-bylaw-2018",
+        "captured_at_utc": "2026-09-24T18:18:37.482495Z",
+        "sha256": "6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+        "byte_count": 4600202,
+        "object": "objects/6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33.pdf",
+        "http_metadata": {
+          "content-type": "application/pdf",
+          "last-modified": "Wed, 05 Aug 2026 16:16:10 GMT",
+          "etag": null,
+          "date": "Thu, 24 Sep 2026 18:18:35 GMT"
+        },
+        "redistribution": "withheld-city-website-terms",
+        "repository_path": null,
+        "original_crs": null,
+        "original_units": [
+          "m",
+          "m2",
+          "ratios with provision-specific bases"
+        ],
+        "version_evidence": {
+          "instrument": "18-072, Zoning Bylaw 2018",
+          "pdf_pages": 133,
+          "pdf_creation_date": "2026-08-04T16:24:26-07:00",
+          "publishing_note": "Consolidated June 9, 2022 through 22-048 (PDF p2)",
+          "last_listed_amendment": "26-060, July 30, 2026 (PDF p4)",
+          "limitation": "Contradictory front matter; latest official certification/amendment completeness unverified"
+        },
+        "effective_date": null,
+        "technical_review": "agent-inspected; not independently or professionally reviewed",
+        "licence_url": null,
+        "same_bytes_as_2026_09_18": true
+      },
+      "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+      "status": "blocked",
+      "diagnostics": [
+        "private_root_required: pass --private-root to authorized capture directory; resolve durable/shared retention rights separately"
+      ],
+      "snapshot": null
+    },
+    {
+      "capture": {
+        "source_id": "amendment-25-038",
+        "requested_url": "https://www.victoria.ca/media/file/bylaw-no-25-038",
+        "resolved_url": "https://www.victoria.ca/media/file/bylaw-no-25-038",
+        "captured_at_utc": "2026-09-24T18:18:39.072250Z",
+        "sha256": "370ceaca59f12deadb9582d977c3381039eeecbc90238fb006ced9464a0291b5",
+        "byte_count": 2432718,
+        "object": "objects/370ceaca59f12deadb9582d977c3381039eeecbc90238fb006ced9464a0291b5.pdf",
+        "http_metadata": {
+          "content-type": "application/pdf",
+          "last-modified": "Fri, 29 Aug 2025 16:27:44 GMT",
+          "etag": null,
+          "date": "Thu, 24 Sep 2026 18:18:37 GMT"
+        },
+        "redistribution": "withheld-city-website-terms",
+        "repository_path": null,
+        "original_crs": null,
+        "original_units": null,
+        "version_evidence": {
+          "instrument": "25-038",
+          "pdf_pages": 71,
+          "limitation": "Retrieved copy has blank adoption fields on PDF p22; consolidation amendment table reports October 2, 2025. Do not use unsigned copy alone as adoption proof."
+        },
+        "effective_date": null,
+        "technical_review": "agent-inspected; not independently or professionally reviewed",
+        "licence_url": null,
+        "same_bytes_as_2026_09_18": true
+      },
+      "snapshot_id": "amendment-25-038:sha256:370ceaca59f12deadb9582d977c3381039eeecbc90238fb006ced9464a0291b5",
+      "status": "blocked",
+      "diagnostics": [
+        "private_root_required: pass --private-root to authorized capture directory; resolve durable/shared retention rights separately"
+      ],
+      "snapshot": null
+    },
+    {
+      "capture": {
+        "source_id": "historical-schedule-m",
+        "requested_url": "https://www.victoria.ca/media/file/schedule-mpdf",
+        "resolved_url": "https://www.victoria.ca/media/file/schedule-mpdf",
+        "captured_at_utc": "2026-09-24T18:18:39.830319Z",
+        "sha256": "e8850a9e48f203d9074963a0c42038c3de983a84ff2e76cc05842325901c0ac7",
+        "byte_count": 246617,
+        "object": "objects/e8850a9e48f203d9074963a0c42038c3de983a84ff2e76cc05842325901c0ac7.pdf",
+        "http_metadata": {
+          "content-type": "application/pdf",
+          "last-modified": "Wed, 13 Sep 2023 20:37:54 GMT",
+          "etag": null,
+          "date": "Thu, 24 Sep 2026 18:18:39 GMT"
+        },
+        "redistribution": "withheld-city-website-terms",
+        "repository_path": null,
+        "original_crs": null,
+        "original_units": null,
+        "version_evidence": {
+          "classification": "historical/comparison only; not accepted for selected ZB2018 site leads"
+        },
+        "effective_date": null,
+        "technical_review": "agent-inspected; not independently or professionally reviewed",
+        "licence_url": null,
+        "same_bytes_as_2026_09_18": true
+      },
+      "snapshot_id": "historical-schedule-m:sha256:e8850a9e48f203d9074963a0c42038c3de983a84ff2e76cc05842325901c0ac7",
+      "status": "blocked",
+      "diagnostics": [
+        "private_root_required: pass --private-root to authorized capture directory; resolve durable/shared retention rights separately"
+      ],
+      "snapshot": null
+    },
+    {
+      "capture": {
+        "source_id": "zoning-index",
+        "requested_url": "https://www.victoria.ca/building-business/permits-development-construction/zoning",
+        "resolved_url": "https://www.victoria.ca/building-business/permits-development-construction/zoning",
+        "captured_at_utc": "2026-09-24T18:18:40.379238Z",
+        "sha256": "4259e06abd0f054244fe3e545c148fd094925ea06939f17071329edd3ebd1d7a",
+        "byte_count": 159329,
+        "object": "objects/4259e06abd0f054244fe3e545c148fd094925ea06939f17071329edd3ebd1d7a.html",
+        "http_metadata": {
+          "content-type": "text/html; charset=UTF-8",
+          "last-modified": "Thu, 24 Sep 2026 16:28:03 GMT",
+          "etag": "\"1790267283\"",
+          "date": "Thu, 24 Sep 2026 18:18:39 GMT"
+        },
+        "redistribution": "withheld-no-redistribution-grant",
+        "repository_path": null,
+        "original_crs": null,
+        "original_units": null,
+        "version_evidence": null,
+        "effective_date": null,
+        "technical_review": "agent-inspected; not independently or professionally reviewed",
+        "licence_url": null,
+        "same_bytes_as_2026_09_18": false
+      },
+      "snapshot_id": "zoning-index:sha256:4259e06abd0f054244fe3e545c148fd094925ea06939f17071329edd3ebd1d7a",
+      "status": "blocked",
+      "diagnostics": [
+        "private_root_required: pass --private-root to authorized capture directory; resolve durable/shared retention rights separately"
+      ],
+      "snapshot": null
+    },
+    {
+      "capture": {
+        "source_id": "city-terms",
+        "requested_url": "https://www.victoria.ca/legal-disclaimer",
+        "resolved_url": "https://www.victoria.ca/legal-disclaimer",
+        "captured_at_utc": "2026-09-24T18:18:40.917461Z",
+        "sha256": "f13ceca8d10d80df18886f4e2a8eea9666f5e6ea2737e4b1862f6e482851fc47",
+        "byte_count": 138864,
+        "object": "objects/f13ceca8d10d80df18886f4e2a8eea9666f5e6ea2737e4b1862f6e482851fc47.html",
+        "http_metadata": {
+          "content-type": "text/html; charset=UTF-8",
+          "last-modified": "Thu, 24 Sep 2026 16:26:59 GMT",
+          "etag": "\"1790267219\"",
+          "date": "Thu, 24 Sep 2026 18:18:40 GMT"
+        },
+        "redistribution": "withheld-no-redistribution-grant",
+        "repository_path": null,
+        "original_crs": null,
+        "original_units": null,
+        "version_evidence": null,
+        "effective_date": null,
+        "technical_review": "agent-inspected; not independently or professionally reviewed",
+        "licence_url": null,
+        "same_bytes_as_2026_09_18": false
+      },
+      "snapshot_id": "city-terms:sha256:f13ceca8d10d80df18886f4e2a8eea9666f5e6ea2737e4b1862f6e482851fc47",
+      "status": "blocked",
+      "diagnostics": [
+        "private_root_required: pass --private-root to authorized capture directory; resolve durable/shared retention rights separately"
+      ],
+      "snapshot": null
+    },
+    {
+      "capture": {
+        "source_id": "landing",
+        "requested_url": "https://www.clickmodular.com/the-landing",
+        "resolved_url": "https://www.clickmodular.com/the-landing",
+        "captured_at_utc": "2026-09-24T18:18:41.441394Z",
+        "sha256": "852ecb9cc0202b4385cb17b0f69e46849e86924bf15f835bfd5ba1e90e55cfad",
+        "byte_count": 563651,
+        "object": "objects/852ecb9cc0202b4385cb17b0f69e46849e86924bf15f835bfd5ba1e90e55cfad.html",
+        "http_metadata": {
+          "content-type": "text/html; charset=UTF-8",
+          "last-modified": null,
+          "etag": "W/\"697be0aa65b3e5f301f27e3589346c17\"",
+          "date": "Thu, 24 Sep 2026 18:18:41 GMT"
+        },
+        "redistribution": "withheld-no-redistribution-grant",
+        "repository_path": null,
+        "original_crs": null,
+        "original_units": [
+          "feet",
+          "square feet"
+        ],
+        "version_evidence": {
+          "manufacturer_revision": null,
+          "classification": "dated webpage snapshot, not dimensioned fixed design"
+        },
+        "effective_date": null,
+        "technical_review": "agent-inspected; not independently or professionally reviewed",
+        "licence_url": null,
+        "same_bytes_as_2026_09_18": false
+      },
+      "snapshot_id": "landing:sha256:852ecb9cc0202b4385cb17b0f69e46849e86924bf15f835bfd5ba1e90e55cfad",
+      "status": "blocked",
+      "diagnostics": [
+        "private_root_required: pass --private-root to authorized capture directory; resolve durable/shared retention rights separately"
+      ],
+      "snapshot": null
+    },
+    {
+      "capture": {
+        "source_id": "site-59-parcel",
+        "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=59&outFields=%2A&returnGeometry=true&outSR=3157",
+        "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=59&outFields=%2A&returnGeometry=true&outSR=3157",
+        "captured_at_utc": "2026-09-24T18:18:41.710816Z",
+        "sha256": "8d666d1dffaaa039101ee84f407e7bb84d80ed7c933f70fde0e8e8b87d7a7f92",
+        "byte_count": 3419,
+        "object": "objects/8d666d1dffaaa039101ee84f407e7bb84d80ed7c933f70fde0e8e8b87d7a7f92.json",
+        "http_metadata": {
+          "content-type": "text/plain; charset=UTF-8",
+          "last-modified": null,
+          "etag": "\"1790232144\"",
+          "date": "Thu, 24 Sep 2026 18:18:41 GMT"
+        },
+        "redistribution": "victoria-open-data-v1",
+        "repository_path": "snapshots/8d666d1dffaaa039101ee84f407e7bb84d80ed7c933f70fde0e8e8b87d7a7f92.json",
+        "original_crs": {
+          "wkid": 3157,
+          "latestWkid": 3157
+        },
+        "original_units": {
+          "horizontal": "metres; service metadata esriMeters",
+          "area": "coordinate-derived square metres, not verified regulatory area",
+          "vertical": "unknown; Z present only in roofline responses; datum and accuracy unverified"
+        },
+        "version_evidence": null,
+        "effective_date": null,
+        "technical_review": "agent-inspected; not independently or professionally reviewed",
+        "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+        "same_bytes_as_2026_09_18": true
+      },
+      "snapshot_id": "site-59-parcel:sha256:8d666d1dffaaa039101ee84f407e7bb84d80ed7c933f70fde0e8e8b87d7a7f92",
+      "status": "verified_repository",
+      "diagnostics": [],
+      "snapshot": {
+        "schema_version": "sr-04.v1-provisional",
+        "source_id": "site-59-parcel",
+        "snapshot_id": "site-59-parcel:sha256:8d666d1dffaaa039101ee84f407e7bb84d80ed7c933f70fde0e8e8b87d7a7f92",
+        "category": "spatial",
+        "jurisdiction": "City of Victoria, BC (provisional pilot scope)",
+        "instrument": "site-59-parcel",
+        "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=59&outFields=%2A&returnGeometry=true&outSR=3157",
+        "artifact": {
+          "uri": "repo:docs/pilot-inputs/snapshots/8d666d1dffaaa039101ee84f407e7bb84d80ed7c933f70fde0e8e8b87d7a7f92.json",
+          "sha256": "8d666d1dffaaa039101ee84f407e7bb84d80ed7c933f70fde0e8e8b87d7a7f92"
+        },
+        "captured_at": "2026-09-24T18:18:41.710816Z",
+        "printed_revision": null,
+        "effective_from": null,
+        "effective_to": null,
+        "effective_date_evidence": [],
+        "original_crs": "EPSG:3157",
+        "original_units": [
+          "horizontal: metres; service metadata esriMeters",
+          "area: coordinate-derived square metres, not verified regulatory area",
+          "vertical: unknown; Z present only in roofline responses; datum and accuracy unverified"
+        ],
+        "reuse_constraints": "victoria-open-data-v1; see acquisition-evidence.md; Contains information licensed under the Open Government Licence - City of Victoria.",
+        "review": {
+          "status": "unreviewed",
+          "reviewer": null,
+          "reviewed_at": null,
+          "scope": "source intake; no legal acceptance",
+          "rationale": "agent-inspected; not independently or professionally reviewed"
+        }
+      }
+    },
+    {
+      "capture": {
+        "source_id": "site-59-zones",
+        "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B474296.0544999996%2C5364508.7839%5D%2C%5B474295.09669999965%2C5364485.246300001%5D%2C%5B474270.6321999999%2C5364487.5458%5D%2C%5B474272.8002000004%2C5364510.9716%5D%2C%5B474296.0544999996%2C5364508.7839%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+        "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B474296.0544999996%2C5364508.7839%5D%2C%5B474295.09669999965%2C5364485.246300001%5D%2C%5B474270.6321999999%2C5364487.5458%5D%2C%5B474272.8002000004%2C5364510.9716%5D%2C%5B474296.0544999996%2C5364508.7839%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+        "captured_at_utc": "2026-09-24T18:18:42.052006Z",
+        "sha256": "4899f071d466017ef6068119cd66b2ce13b34d144de51500e53aa361835ae75a",
+        "byte_count": 21733,
+        "object": "objects/4899f071d466017ef6068119cd66b2ce13b34d144de51500e53aa361835ae75a.json",
+        "http_metadata": {
+          "content-type": "text/plain; charset=UTF-8",
+          "last-modified": null,
+          "etag": "\"1790225371\"",
+          "date": "Thu, 24 Sep 2026 18:18:41 GMT"
+        },
+        "redistribution": "victoria-open-data-v1",
+        "repository_path": "snapshots/4899f071d466017ef6068119cd66b2ce13b34d144de51500e53aa361835ae75a.json",
+        "original_crs": {
+          "wkid": 3157,
+          "latestWkid": 3157
+        },
+        "original_units": {
+          "horizontal": "metres; service metadata esriMeters",
+          "area": "coordinate-derived square metres, not verified regulatory area",
+          "vertical": "unknown; Z present only in roofline responses; datum and accuracy unverified"
+        },
+        "version_evidence": null,
+        "effective_date": null,
+        "technical_review": "agent-inspected; not independently or professionally reviewed",
+        "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+        "same_bytes_as_2026_09_18": true
+      },
+      "snapshot_id": "site-59-zones:sha256:4899f071d466017ef6068119cd66b2ce13b34d144de51500e53aa361835ae75a",
+      "status": "verified_repository",
+      "diagnostics": [],
+      "snapshot": {
+        "schema_version": "sr-04.v1-provisional",
+        "source_id": "site-59-zones",
+        "snapshot_id": "site-59-zones:sha256:4899f071d466017ef6068119cd66b2ce13b34d144de51500e53aa361835ae75a",
+        "category": "spatial",
+        "jurisdiction": "City of Victoria, BC (provisional pilot scope)",
+        "instrument": "site-59-zones",
+        "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B474296.0544999996%2C5364508.7839%5D%2C%5B474295.09669999965%2C5364485.246300001%5D%2C%5B474270.6321999999%2C5364487.5458%5D%2C%5B474272.8002000004%2C5364510.9716%5D%2C%5B474296.0544999996%2C5364508.7839%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+        "artifact": {
+          "uri": "repo:docs/pilot-inputs/snapshots/4899f071d466017ef6068119cd66b2ce13b34d144de51500e53aa361835ae75a.json",
+          "sha256": "4899f071d466017ef6068119cd66b2ce13b34d144de51500e53aa361835ae75a"
+        },
+        "captured_at": "2026-09-24T18:18:42.052006Z",
+        "printed_revision": null,
+        "effective_from": null,
+        "effective_to": null,
+        "effective_date_evidence": [],
+        "original_crs": "EPSG:3157",
+        "original_units": [
+          "horizontal: metres; service metadata esriMeters",
+          "area: coordinate-derived square metres, not verified regulatory area",
+          "vertical: unknown; Z present only in roofline responses; datum and accuracy unverified"
+        ],
+        "reuse_constraints": "victoria-open-data-v1; see acquisition-evidence.md; Contains information licensed under the Open Government Licence - City of Victoria.",
+        "review": {
+          "status": "unreviewed",
+          "reviewer": null,
+          "reviewed_at": null,
+          "scope": "source intake; no legal acceptance",
+          "rationale": "agent-inspected; not independently or professionally reviewed"
+        }
+      }
+    },
+    {
+      "capture": {
+        "source_id": "site-59-rooflines",
+        "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B474296.0544999996%2C5364508.7839%5D%2C%5B474295.09669999965%2C5364485.246300001%5D%2C%5B474270.6321999999%2C5364487.5458%5D%2C%5B474272.8002000004%2C5364510.9716%5D%2C%5B474296.0544999996%2C5364508.7839%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+        "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B474296.0544999996%2C5364508.7839%5D%2C%5B474295.09669999965%2C5364485.246300001%5D%2C%5B474270.6321999999%2C5364487.5458%5D%2C%5B474272.8002000004%2C5364510.9716%5D%2C%5B474296.0544999996%2C5364508.7839%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+        "captured_at_utc": "2026-09-24T18:18:42.428843Z",
+        "sha256": "1b8397d008bf2717568d831e38dbe159508883dba47021887ddd7fe40ef0f992",
+        "byte_count": 2914,
+        "object": "objects/1b8397d008bf2717568d831e38dbe159508883dba47021887ddd7fe40ef0f992.json",
+        "http_metadata": {
+          "content-type": "text/plain; charset=UTF-8",
+          "last-modified": null,
+          "etag": "\"1770398264\"",
+          "date": "Thu, 24 Sep 2026 18:18:42 GMT"
+        },
+        "redistribution": "victoria-open-data-v1",
+        "repository_path": "snapshots/1b8397d008bf2717568d831e38dbe159508883dba47021887ddd7fe40ef0f992.json",
+        "original_crs": {
+          "wkid": 3157,
+          "latestWkid": 3157
+        },
+        "original_units": {
+          "horizontal": "metres; service metadata esriMeters",
+          "area": "coordinate-derived square metres, not verified regulatory area",
+          "vertical": "unknown; Z present only in roofline responses; datum and accuracy unverified"
+        },
+        "version_evidence": null,
+        "effective_date": null,
+        "technical_review": "agent-inspected; not independently or professionally reviewed",
+        "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+        "same_bytes_as_2026_09_18": true
+      },
+      "snapshot_id": "site-59-rooflines:sha256:1b8397d008bf2717568d831e38dbe159508883dba47021887ddd7fe40ef0f992",
+      "status": "verified_repository",
+      "diagnostics": [],
+      "snapshot": {
+        "schema_version": "sr-04.v1-provisional",
+        "source_id": "site-59-rooflines",
+        "snapshot_id": "site-59-rooflines:sha256:1b8397d008bf2717568d831e38dbe159508883dba47021887ddd7fe40ef0f992",
+        "category": "spatial",
+        "jurisdiction": "City of Victoria, BC (provisional pilot scope)",
+        "instrument": "site-59-rooflines",
+        "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B474296.0544999996%2C5364508.7839%5D%2C%5B474295.09669999965%2C5364485.246300001%5D%2C%5B474270.6321999999%2C5364487.5458%5D%2C%5B474272.8002000004%2C5364510.9716%5D%2C%5B474296.0544999996%2C5364508.7839%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+        "artifact": {
+          "uri": "repo:docs/pilot-inputs/snapshots/1b8397d008bf2717568d831e38dbe159508883dba47021887ddd7fe40ef0f992.json",
+          "sha256": "1b8397d008bf2717568d831e38dbe159508883dba47021887ddd7fe40ef0f992"
+        },
+        "captured_at": "2026-09-24T18:18:42.428843Z",
+        "printed_revision": null,
+        "effective_from": null,
+        "effective_to": null,
+        "effective_date_evidence": [],
+        "original_crs": "EPSG:3157",
+        "original_units": [
+          "horizontal: metres; service metadata esriMeters",
+          "area: coordinate-derived square metres, not verified regulatory area",
+          "vertical: unknown; Z present only in roofline responses; datum and accuracy unverified"
+        ],
+        "reuse_constraints": "victoria-open-data-v1; see acquisition-evidence.md; Contains information licensed under the Open Government Licence - City of Victoria.",
+        "review": {
+          "status": "unreviewed",
+          "reviewer": null,
+          "reviewed_at": null,
+          "scope": "source intake; no legal acceptance",
+          "rationale": "agent-inspected; not independently or professionally reviewed"
+        }
+      }
+    },
+    {
+      "capture": {
+        "source_id": "site-80-parcel",
+        "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=80&outFields=%2A&returnGeometry=true&outSR=3157",
+        "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=80&outFields=%2A&returnGeometry=true&outSR=3157",
+        "captured_at_utc": "2026-09-24T18:18:42.684481Z",
+        "sha256": "ed59084b6d130989d8bd3110487e6834a1c0d4e2896e7da282763e5dab7c3844",
+        "byte_count": 3421,
+        "object": "objects/ed59084b6d130989d8bd3110487e6834a1c0d4e2896e7da282763e5dab7c3844.json",
+        "http_metadata": {
+          "content-type": "text/plain; charset=UTF-8",
+          "last-modified": null,
+          "etag": "\"1790232144\"",
+          "date": "Thu, 24 Sep 2026 18:18:42 GMT"
+        },
+        "redistribution": "victoria-open-data-v1",
+        "repository_path": "snapshots/ed59084b6d130989d8bd3110487e6834a1c0d4e2896e7da282763e5dab7c3844.json",
+        "original_crs": {
+          "wkid": 3157,
+          "latestWkid": 3157
+        },
+        "original_units": {
+          "horizontal": "metres; service metadata esriMeters",
+          "area": "coordinate-derived square metres, not verified regulatory area",
+          "vertical": "unknown; Z present only in roofline responses; datum and accuracy unverified"
+        },
+        "version_evidence": null,
+        "effective_date": null,
+        "technical_review": "agent-inspected; not independently or professionally reviewed",
+        "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+        "same_bytes_as_2026_09_18": true
+      },
+      "snapshot_id": "site-80-parcel:sha256:ed59084b6d130989d8bd3110487e6834a1c0d4e2896e7da282763e5dab7c3844",
+      "status": "verified_repository",
+      "diagnostics": [],
+      "snapshot": {
+        "schema_version": "sr-04.v1-provisional",
+        "source_id": "site-80-parcel",
+        "snapshot_id": "site-80-parcel:sha256:ed59084b6d130989d8bd3110487e6834a1c0d4e2896e7da282763e5dab7c3844",
+        "category": "spatial",
+        "jurisdiction": "City of Victoria, BC (provisional pilot scope)",
+        "instrument": "site-80-parcel",
+        "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=80&outFields=%2A&returnGeometry=true&outSR=3157",
+        "artifact": {
+          "uri": "repo:docs/pilot-inputs/snapshots/ed59084b6d130989d8bd3110487e6834a1c0d4e2896e7da282763e5dab7c3844.json",
+          "sha256": "ed59084b6d130989d8bd3110487e6834a1c0d4e2896e7da282763e5dab7c3844"
+        },
+        "captured_at": "2026-09-24T18:18:42.684481Z",
+        "printed_revision": null,
+        "effective_from": null,
+        "effective_to": null,
+        "effective_date_evidence": [],
+        "original_crs": "EPSG:3157",
+        "original_units": [
+          "horizontal: metres; service metadata esriMeters",
+          "area: coordinate-derived square metres, not verified regulatory area",
+          "vertical: unknown; Z present only in roofline responses; datum and accuracy unverified"
+        ],
+        "reuse_constraints": "victoria-open-data-v1; see acquisition-evidence.md; Contains information licensed under the Open Government Licence - City of Victoria.",
+        "review": {
+          "status": "unreviewed",
+          "reviewer": null,
+          "reviewed_at": null,
+          "scope": "source intake; no legal acceptance",
+          "rationale": "agent-inspected; not independently or professionally reviewed"
+        }
+      }
+    },
+    {
+      "capture": {
+        "source_id": "site-80-zones",
+        "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473783.48649999965%2C5362194.019200001%5D%2C%5B473776.5218000002%2C5362152.4957%5D%2C%5B473762.99909999967%2C5362154.761%5D%2C%5B473769.9648000002%2C5362196.2905%5D%2C%5B473783.48649999965%2C5362194.019200001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+        "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473783.48649999965%2C5362194.019200001%5D%2C%5B473776.5218000002%2C5362152.4957%5D%2C%5B473762.99909999967%2C5362154.761%5D%2C%5B473769.9648000002%2C5362196.2905%5D%2C%5B473783.48649999965%2C5362194.019200001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+        "captured_at_utc": "2026-09-24T18:18:43.209318Z",
+        "sha256": "eef0512aa4b0fed857923e51a733f4ac56091d44157a4e8ece843d24fd0941af",
+        "byte_count": 225941,
+        "object": "objects/eef0512aa4b0fed857923e51a733f4ac56091d44157a4e8ece843d24fd0941af.json",
+        "http_metadata": {
+          "content-type": "text/plain; charset=UTF-8",
+          "last-modified": null,
+          "etag": "\"1790225371\"",
+          "date": "Thu, 24 Sep 2026 18:18:42 GMT"
+        },
+        "redistribution": "victoria-open-data-v1",
+        "repository_path": "snapshots/eef0512aa4b0fed857923e51a733f4ac56091d44157a4e8ece843d24fd0941af.json",
+        "original_crs": {
+          "wkid": 3157,
+          "latestWkid": 3157
+        },
+        "original_units": {
+          "horizontal": "metres; service metadata esriMeters",
+          "area": "coordinate-derived square metres, not verified regulatory area",
+          "vertical": "unknown; Z present only in roofline responses; datum and accuracy unverified"
+        },
+        "version_evidence": null,
+        "effective_date": null,
+        "technical_review": "agent-inspected; not independently or professionally reviewed",
+        "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+        "same_bytes_as_2026_09_18": true
+      },
+      "snapshot_id": "site-80-zones:sha256:eef0512aa4b0fed857923e51a733f4ac56091d44157a4e8ece843d24fd0941af",
+      "status": "verified_repository",
+      "diagnostics": [],
+      "snapshot": {
+        "schema_version": "sr-04.v1-provisional",
+        "source_id": "site-80-zones",
+        "snapshot_id": "site-80-zones:sha256:eef0512aa4b0fed857923e51a733f4ac56091d44157a4e8ece843d24fd0941af",
+        "category": "spatial",
+        "jurisdiction": "City of Victoria, BC (provisional pilot scope)",
+        "instrument": "site-80-zones",
+        "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473783.48649999965%2C5362194.019200001%5D%2C%5B473776.5218000002%2C5362152.4957%5D%2C%5B473762.99909999967%2C5362154.761%5D%2C%5B473769.9648000002%2C5362196.2905%5D%2C%5B473783.48649999965%2C5362194.019200001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+        "artifact": {
+          "uri": "repo:docs/pilot-inputs/snapshots/eef0512aa4b0fed857923e51a733f4ac56091d44157a4e8ece843d24fd0941af.json",
+          "sha256": "eef0512aa4b0fed857923e51a733f4ac56091d44157a4e8ece843d24fd0941af"
+        },
+        "captured_at": "2026-09-24T18:18:43.209318Z",
+        "printed_revision": null,
+        "effective_from": null,
+        "effective_to": null,
+        "effective_date_evidence": [],
+        "original_crs": "EPSG:3157",
+        "original_units": [
+          "horizontal: metres; service metadata esriMeters",
+          "area: coordinate-derived square metres, not verified regulatory area",
+          "vertical: unknown; Z present only in roofline responses; datum and accuracy unverified"
+        ],
+        "reuse_constraints": "victoria-open-data-v1; see acquisition-evidence.md; Contains information licensed under the Open Government Licence - City of Victoria.",
+        "review": {
+          "status": "unreviewed",
+          "reviewer": null,
+          "reviewed_at": null,
+          "scope": "source intake; no legal acceptance",
+          "rationale": "agent-inspected; not independently or professionally reviewed"
+        }
+      }
+    },
+    {
+      "capture": {
+        "source_id": "site-80-rooflines",
+        "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473783.48649999965%2C5362194.019200001%5D%2C%5B473776.5218000002%2C5362152.4957%5D%2C%5B473762.99909999967%2C5362154.761%5D%2C%5B473769.9648000002%2C5362196.2905%5D%2C%5B473783.48649999965%2C5362194.019200001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+        "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473783.48649999965%2C5362194.019200001%5D%2C%5B473776.5218000002%2C5362152.4957%5D%2C%5B473762.99909999967%2C5362154.761%5D%2C%5B473769.9648000002%2C5362196.2905%5D%2C%5B473783.48649999965%2C5362194.019200001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+        "captured_at_utc": "2026-09-24T18:18:43.499428Z",
+        "sha256": "34c16b1a71ce9b723c19b8312e66ac44b1aebcccae6fd28eefadf81bb695b5f8",
+        "byte_count": 1992,
+        "object": "objects/34c16b1a71ce9b723c19b8312e66ac44b1aebcccae6fd28eefadf81bb695b5f8.json",
+        "http_metadata": {
+          "content-type": "text/plain; charset=UTF-8",
+          "last-modified": null,
+          "etag": "\"1770398264\"",
+          "date": "Thu, 24 Sep 2026 18:18:43 GMT"
+        },
+        "redistribution": "victoria-open-data-v1",
+        "repository_path": "snapshots/34c16b1a71ce9b723c19b8312e66ac44b1aebcccae6fd28eefadf81bb695b5f8.json",
+        "original_crs": {
+          "wkid": 3157,
+          "latestWkid": 3157
+        },
+        "original_units": {
+          "horizontal": "metres; service metadata esriMeters",
+          "area": "coordinate-derived square metres, not verified regulatory area",
+          "vertical": "unknown; Z present only in roofline responses; datum and accuracy unverified"
+        },
+        "version_evidence": null,
+        "effective_date": null,
+        "technical_review": "agent-inspected; not independently or professionally reviewed",
+        "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+        "same_bytes_as_2026_09_18": true
+      },
+      "snapshot_id": "site-80-rooflines:sha256:34c16b1a71ce9b723c19b8312e66ac44b1aebcccae6fd28eefadf81bb695b5f8",
+      "status": "verified_repository",
+      "diagnostics": [],
+      "snapshot": {
+        "schema_version": "sr-04.v1-provisional",
+        "source_id": "site-80-rooflines",
+        "snapshot_id": "site-80-rooflines:sha256:34c16b1a71ce9b723c19b8312e66ac44b1aebcccae6fd28eefadf81bb695b5f8",
+        "category": "spatial",
+        "jurisdiction": "City of Victoria, BC (provisional pilot scope)",
+        "instrument": "site-80-rooflines",
+        "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473783.48649999965%2C5362194.019200001%5D%2C%5B473776.5218000002%2C5362152.4957%5D%2C%5B473762.99909999967%2C5362154.761%5D%2C%5B473769.9648000002%2C5362196.2905%5D%2C%5B473783.48649999965%2C5362194.019200001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+        "artifact": {
+          "uri": "repo:docs/pilot-inputs/snapshots/34c16b1a71ce9b723c19b8312e66ac44b1aebcccae6fd28eefadf81bb695b5f8.json",
+          "sha256": "34c16b1a71ce9b723c19b8312e66ac44b1aebcccae6fd28eefadf81bb695b5f8"
+        },
+        "captured_at": "2026-09-24T18:18:43.499428Z",
+        "printed_revision": null,
+        "effective_from": null,
+        "effective_to": null,
+        "effective_date_evidence": [],
+        "original_crs": "EPSG:3157",
+        "original_units": [
+          "horizontal: metres; service metadata esriMeters",
+          "area: coordinate-derived square metres, not verified regulatory area",
+          "vertical: unknown; Z present only in roofline responses; datum and accuracy unverified"
+        ],
+        "reuse_constraints": "victoria-open-data-v1; see acquisition-evidence.md; Contains information licensed under the Open Government Licence - City of Victoria.",
+        "review": {
+          "status": "unreviewed",
+          "reviewer": null,
+          "reviewed_at": null,
+          "scope": "source intake; no legal acceptance",
+          "rationale": "agent-inspected; not independently or professionally reviewed"
+        }
+      }
+    },
+    {
+      "capture": {
+        "source_id": "site-86-parcel",
+        "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=86&outFields=%2A&returnGeometry=true&outSR=3157",
+        "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=86&outFields=%2A&returnGeometry=true&outSR=3157",
+        "captured_at_utc": "2026-09-24T18:18:43.757889Z",
+        "sha256": "d824f4fead8ca0d6924fe31f918f399c276c20026d5fc2ea37b0f218be56a03f",
+        "byte_count": 3402,
+        "object": "objects/d824f4fead8ca0d6924fe31f918f399c276c20026d5fc2ea37b0f218be56a03f.json",
+        "http_metadata": {
+          "content-type": "text/plain; charset=UTF-8",
+          "last-modified": null,
+          "etag": "\"1790232144\"",
+          "date": "Thu, 24 Sep 2026 18:18:43 GMT"
+        },
+        "redistribution": "victoria-open-data-v1",
+        "repository_path": "snapshots/d824f4fead8ca0d6924fe31f918f399c276c20026d5fc2ea37b0f218be56a03f.json",
+        "original_crs": {
+          "wkid": 3157,
+          "latestWkid": 3157
+        },
+        "original_units": {
+          "horizontal": "metres; service metadata esriMeters",
+          "area": "coordinate-derived square metres, not verified regulatory area",
+          "vertical": "unknown; Z present only in roofline responses; datum and accuracy unverified"
+        },
+        "version_evidence": null,
+        "effective_date": null,
+        "technical_review": "agent-inspected; not independently or professionally reviewed",
+        "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+        "same_bytes_as_2026_09_18": true
+      },
+      "snapshot_id": "site-86-parcel:sha256:d824f4fead8ca0d6924fe31f918f399c276c20026d5fc2ea37b0f218be56a03f",
+      "status": "verified_repository",
+      "diagnostics": [],
+      "snapshot": {
+        "schema_version": "sr-04.v1-provisional",
+        "source_id": "site-86-parcel",
+        "snapshot_id": "site-86-parcel:sha256:d824f4fead8ca0d6924fe31f918f399c276c20026d5fc2ea37b0f218be56a03f",
+        "category": "spatial",
+        "jurisdiction": "City of Victoria, BC (provisional pilot scope)",
+        "instrument": "site-86-parcel",
+        "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=86&outFields=%2A&returnGeometry=true&outSR=3157",
+        "artifact": {
+          "uri": "repo:docs/pilot-inputs/snapshots/d824f4fead8ca0d6924fe31f918f399c276c20026d5fc2ea37b0f218be56a03f.json",
+          "sha256": "d824f4fead8ca0d6924fe31f918f399c276c20026d5fc2ea37b0f218be56a03f"
+        },
+        "captured_at": "2026-09-24T18:18:43.757889Z",
+        "printed_revision": null,
+        "effective_from": null,
+        "effective_to": null,
+        "effective_date_evidence": [],
+        "original_crs": "EPSG:3157",
+        "original_units": [
+          "horizontal: metres; service metadata esriMeters",
+          "area: coordinate-derived square metres, not verified regulatory area",
+          "vertical: unknown; Z present only in roofline responses; datum and accuracy unverified"
+        ],
+        "reuse_constraints": "victoria-open-data-v1; see acquisition-evidence.md; Contains information licensed under the Open Government Licence - City of Victoria.",
+        "review": {
+          "status": "unreviewed",
+          "reviewer": null,
+          "reviewed_at": null,
+          "scope": "source intake; no legal acceptance",
+          "rationale": "agent-inspected; not independently or professionally reviewed"
+        }
+      }
+    },
+    {
+      "capture": {
+        "source_id": "site-86-zones",
+        "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473720.0307%2C5362204.677999999%5D%2C%5B473713.0613000002%2C5362163.1262%5D%2C%5B473697.6003999999%2C5362165.7161%5D%2C%5B473704.5708999997%2C5362207.274800001%5D%2C%5B473720.0307%2C5362204.677999999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+        "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473720.0307%2C5362204.677999999%5D%2C%5B473713.0613000002%2C5362163.1262%5D%2C%5B473697.6003999999%2C5362165.7161%5D%2C%5B473704.5708999997%2C5362207.274800001%5D%2C%5B473720.0307%2C5362204.677999999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+        "captured_at_utc": "2026-09-24T18:18:45.271904Z",
+        "sha256": "eef0512aa4b0fed857923e51a733f4ac56091d44157a4e8ece843d24fd0941af",
+        "byte_count": 225941,
+        "object": "objects/eef0512aa4b0fed857923e51a733f4ac56091d44157a4e8ece843d24fd0941af.json",
+        "http_metadata": {
+          "content-type": "text/plain; charset=UTF-8",
+          "last-modified": null,
+          "etag": "\"1790225371\"",
+          "date": "Thu, 24 Sep 2026 18:18:43 GMT"
+        },
+        "redistribution": "victoria-open-data-v1",
+        "repository_path": "snapshots/eef0512aa4b0fed857923e51a733f4ac56091d44157a4e8ece843d24fd0941af.json",
+        "original_crs": {
+          "wkid": 3157,
+          "latestWkid": 3157
+        },
+        "original_units": {
+          "horizontal": "metres; service metadata esriMeters",
+          "area": "coordinate-derived square metres, not verified regulatory area",
+          "vertical": "unknown; Z present only in roofline responses; datum and accuracy unverified"
+        },
+        "version_evidence": null,
+        "effective_date": null,
+        "technical_review": "agent-inspected; not independently or professionally reviewed",
+        "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+        "same_bytes_as_2026_09_18": true
+      },
+      "snapshot_id": "site-86-zones:sha256:eef0512aa4b0fed857923e51a733f4ac56091d44157a4e8ece843d24fd0941af",
+      "status": "verified_repository",
+      "diagnostics": [],
+      "snapshot": {
+        "schema_version": "sr-04.v1-provisional",
+        "source_id": "site-86-zones",
+        "snapshot_id": "site-86-zones:sha256:eef0512aa4b0fed857923e51a733f4ac56091d44157a4e8ece843d24fd0941af",
+        "category": "spatial",
+        "jurisdiction": "City of Victoria, BC (provisional pilot scope)",
+        "instrument": "site-86-zones",
+        "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473720.0307%2C5362204.677999999%5D%2C%5B473713.0613000002%2C5362163.1262%5D%2C%5B473697.6003999999%2C5362165.7161%5D%2C%5B473704.5708999997%2C5362207.274800001%5D%2C%5B473720.0307%2C5362204.677999999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+        "artifact": {
+          "uri": "repo:docs/pilot-inputs/snapshots/eef0512aa4b0fed857923e51a733f4ac56091d44157a4e8ece843d24fd0941af.json",
+          "sha256": "eef0512aa4b0fed857923e51a733f4ac56091d44157a4e8ece843d24fd0941af"
+        },
+        "captured_at": "2026-09-24T18:18:45.271904Z",
+        "printed_revision": null,
+        "effective_from": null,
+        "effective_to": null,
+        "effective_date_evidence": [],
+        "original_crs": "EPSG:3157",
+        "original_units": [
+          "horizontal: metres; service metadata esriMeters",
+          "area: coordinate-derived square metres, not verified regulatory area",
+          "vertical: unknown; Z present only in roofline responses; datum and accuracy unverified"
+        ],
+        "reuse_constraints": "victoria-open-data-v1; see acquisition-evidence.md; Contains information licensed under the Open Government Licence - City of Victoria.",
+        "review": {
+          "status": "unreviewed",
+          "reviewer": null,
+          "reviewed_at": null,
+          "scope": "source intake; no legal acceptance",
+          "rationale": "agent-inspected; not independently or professionally reviewed"
+        }
+      }
+    },
+    {
+      "capture": {
+        "source_id": "site-86-rooflines",
+        "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473720.0307%2C5362204.677999999%5D%2C%5B473713.0613000002%2C5362163.1262%5D%2C%5B473697.6003999999%2C5362165.7161%5D%2C%5B473704.5708999997%2C5362207.274800001%5D%2C%5B473720.0307%2C5362204.677999999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+        "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473720.0307%2C5362204.677999999%5D%2C%5B473713.0613000002%2C5362163.1262%5D%2C%5B473697.6003999999%2C5362165.7161%5D%2C%5B473704.5708999997%2C5362207.274800001%5D%2C%5B473720.0307%2C5362204.677999999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+        "captured_at_utc": "2026-09-24T18:18:45.572918Z",
+        "sha256": "02202bdce96a4544663b0c252dda8ffa580116069da8e8475bd5fb2688139cbd",
+        "byte_count": 1889,
+        "object": "objects/02202bdce96a4544663b0c252dda8ffa580116069da8e8475bd5fb2688139cbd.json",
+        "http_metadata": {
+          "content-type": "text/plain; charset=UTF-8",
+          "last-modified": null,
+          "etag": "\"1770398264\"",
+          "date": "Thu, 24 Sep 2026 18:18:45 GMT"
+        },
+        "redistribution": "victoria-open-data-v1",
+        "repository_path": "snapshots/02202bdce96a4544663b0c252dda8ffa580116069da8e8475bd5fb2688139cbd.json",
+        "original_crs": {
+          "wkid": 3157,
+          "latestWkid": 3157
+        },
+        "original_units": {
+          "horizontal": "metres; service metadata esriMeters",
+          "area": "coordinate-derived square metres, not verified regulatory area",
+          "vertical": "unknown; Z present only in roofline responses; datum and accuracy unverified"
+        },
+        "version_evidence": null,
+        "effective_date": null,
+        "technical_review": "agent-inspected; not independently or professionally reviewed",
+        "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+        "same_bytes_as_2026_09_18": true
+      },
+      "snapshot_id": "site-86-rooflines:sha256:02202bdce96a4544663b0c252dda8ffa580116069da8e8475bd5fb2688139cbd",
+      "status": "verified_repository",
+      "diagnostics": [],
+      "snapshot": {
+        "schema_version": "sr-04.v1-provisional",
+        "source_id": "site-86-rooflines",
+        "snapshot_id": "site-86-rooflines:sha256:02202bdce96a4544663b0c252dda8ffa580116069da8e8475bd5fb2688139cbd",
+        "category": "spatial",
+        "jurisdiction": "City of Victoria, BC (provisional pilot scope)",
+        "instrument": "site-86-rooflines",
+        "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473720.0307%2C5362204.677999999%5D%2C%5B473713.0613000002%2C5362163.1262%5D%2C%5B473697.6003999999%2C5362165.7161%5D%2C%5B473704.5708999997%2C5362207.274800001%5D%2C%5B473720.0307%2C5362204.677999999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+        "artifact": {
+          "uri": "repo:docs/pilot-inputs/snapshots/02202bdce96a4544663b0c252dda8ffa580116069da8e8475bd5fb2688139cbd.json",
+          "sha256": "02202bdce96a4544663b0c252dda8ffa580116069da8e8475bd5fb2688139cbd"
+        },
+        "captured_at": "2026-09-24T18:18:45.572918Z",
+        "printed_revision": null,
+        "effective_from": null,
+        "effective_to": null,
+        "effective_date_evidence": [],
+        "original_crs": "EPSG:3157",
+        "original_units": [
+          "horizontal: metres; service metadata esriMeters",
+          "area: coordinate-derived square metres, not verified regulatory area",
+          "vertical: unknown; Z present only in roofline responses; datum and accuracy unverified"
+        ],
+        "reuse_constraints": "victoria-open-data-v1; see acquisition-evidence.md; Contains information licensed under the Open Government Licence - City of Victoria.",
+        "review": {
+          "status": "unreviewed",
+          "reviewer": null,
+          "reviewed_at": null,
+          "scope": "source intake; no legal acceptance",
+          "rationale": "agent-inspected; not independently or professionally reviewed"
+        }
+      }
+    },
+    {
+      "capture": {
+        "source_id": "planninganddevelopment-service",
+        "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer?f=pjson",
+        "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer?f=pjson",
+        "captured_at_utc": "2026-09-24T18:19:26.792867Z",
+        "sha256": "2a8455a41b46fa59f46e2bf765098da10b90ad13b7d89ede3b88775ad052549b",
+        "byte_count": 6213,
+        "object": "objects/2a8455a41b46fa59f46e2bf765098da10b90ad13b7d89ede3b88775ad052549b.json",
+        "http_metadata": {
+          "content-type": "text/plain; charset=UTF-8",
+          "last-modified": null,
+          "etag": "\"a5822626\"",
+          "date": "Thu, 24 Sep 2026 18:19:26 GMT"
+        },
+        "redistribution": "withheld-service-wide-scope",
+        "repository_path": null,
+        "original_crs": null,
+        "original_units": null,
+        "version_evidence": null,
+        "effective_date": null,
+        "technical_review": "agent-inspected; not independently or professionally reviewed",
+        "licence_url": null,
+        "same_bytes_as_2026_09_18": null
+      },
+      "snapshot_id": "planninganddevelopment-service:sha256:2a8455a41b46fa59f46e2bf765098da10b90ad13b7d89ede3b88775ad052549b",
+      "status": "blocked",
+      "diagnostics": [
+        "private_root_required: pass --private-root to authorized capture directory; resolve durable/shared retention rights separately"
+      ],
+      "snapshot": null
+    },
+    {
+      "capture": {
+        "source_id": "land-service",
+        "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer?f=pjson",
+        "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer?f=pjson",
+        "captured_at_utc": "2026-09-24T18:19:27.018962Z",
+        "sha256": "3c74eaa40ae1f3d83a90904f1fb223e14bc406f30b4d57954b5b5446104a94ac",
+        "byte_count": 6519,
+        "object": "objects/3c74eaa40ae1f3d83a90904f1fb223e14bc406f30b4d57954b5b5446104a94ac.json",
+        "http_metadata": {
+          "content-type": "text/plain; charset=UTF-8",
+          "last-modified": null,
+          "etag": "\"21f05f01\"",
+          "date": "Thu, 24 Sep 2026 18:19:26 GMT"
+        },
+        "redistribution": "withheld-service-wide-scope",
+        "repository_path": null,
+        "original_crs": null,
+        "original_units": null,
+        "version_evidence": null,
+        "effective_date": null,
+        "technical_review": "agent-inspected; not independently or professionally reviewed",
+        "licence_url": null,
+        "same_bytes_as_2026_09_18": null
+      },
+      "snapshot_id": "land-service:sha256:3c74eaa40ae1f3d83a90904f1fb223e14bc406f30b4d57954b5b5446104a94ac",
+      "status": "blocked",
+      "diagnostics": [
+        "private_root_required: pass --private-root to authorized capture directory; resolve durable/shared retention rights separately"
+      ],
+      "snapshot": null
+    },
+    {
+      "capture": {
+        "source_id": "landing-plan-section",
+        "requested_url": "https://static.wixstatic.com/media/371102_f648ddb739f443c1ba15a608e65663fc~mv2.png",
+        "resolved_url": "https://static.wixstatic.com/media/371102_f648ddb739f443c1ba15a608e65663fc~mv2.png",
+        "captured_at_utc": "2026-09-24T18:27:59.175188Z",
+        "sha256": "112da634781e2f466b20f4a07bb44d5a7ef31719a7e6c422fb936761d99bb258",
+        "byte_count": 38127,
+        "object": "objects/112da634781e2f466b20f4a07bb44d5a7ef31719a7e6c422fb936761d99bb258.png",
+        "http_metadata": {
+          "content-type": "image/png",
+          "last-modified": "Tue, 24 Sep 2024 17:52:04 GMT",
+          "etag": "\"ca352f666116f84f1067a4a725405218\"",
+          "date": "Thu, 24 Sep 2026 18:27:58 GMT"
+        },
+        "redistribution": "withheld-manufacturer-image-rights",
+        "repository_path": null,
+        "original_crs": null,
+        "original_units": [
+          "feet",
+          "feet and inches on dimensioned plan"
+        ],
+        "version_evidence": {
+          "parent_source_id": "landing",
+          "asset_kind": "public raster plan/elevation, not complete controlled drawing set",
+          "visible_plan_date": null,
+          "controlled_revision": null,
+          "drawing_approval": "unverified"
+        },
+        "effective_date": null,
+        "technical_review": "agent-inspected; not independently or professionally reviewed",
+        "licence_url": null,
+        "same_bytes_as_2026_09_18": null
+      },
+      "snapshot_id": "landing-plan-section:sha256:112da634781e2f466b20f4a07bb44d5a7ef31719a7e6c422fb936761d99bb258",
+      "status": "blocked",
+      "diagnostics": [
+        "private_root_required: pass --private-root to authorized capture directory; resolve durable/shared retention rights separately"
+      ],
+      "snapshot": null
+    },
+    {
+      "capture": {
+        "source_id": "landing-elevations",
+        "requested_url": "https://static.wixstatic.com/media/371102_7a3f3a36310b4e07a8577ac0fb1127a5~mv2.png",
+        "resolved_url": "https://static.wixstatic.com/media/371102_7a3f3a36310b4e07a8577ac0fb1127a5~mv2.png",
+        "captured_at_utc": "2026-09-24T18:27:59.576889Z",
+        "sha256": "db9ff1861ee7dd958fa0465cbf97b214b05bceb034fe7d381534268b46079f95",
+        "byte_count": 203388,
+        "object": "objects/db9ff1861ee7dd958fa0465cbf97b214b05bceb034fe7d381534268b46079f95.png",
+        "http_metadata": {
+          "content-type": "image/png",
+          "last-modified": "Wed, 25 Sep 2024 16:54:43 GMT",
+          "etag": "\"f8eab046a2f62bbcb67da6554b194ae6\"",
+          "date": "Thu, 24 Sep 2026 18:27:59 GMT"
+        },
+        "redistribution": "withheld-manufacturer-image-rights",
+        "repository_path": null,
+        "original_crs": null,
+        "original_units": [
+          "feet",
+          "feet and inches on dimensioned plan"
+        ],
+        "version_evidence": {
+          "parent_source_id": "landing",
+          "asset_kind": "public raster plan/elevation, not complete controlled drawing set",
+          "visible_plan_date": "2024-04-18",
+          "controlled_revision": null,
+          "drawing_approval": "blank in elevation-sheet title block"
+        },
+        "effective_date": null,
+        "technical_review": "agent-inspected; not independently or professionally reviewed",
+        "licence_url": null,
+        "same_bytes_as_2026_09_18": null
+      },
+      "snapshot_id": "landing-elevations:sha256:db9ff1861ee7dd958fa0465cbf97b214b05bceb034fe7d381534268b46079f95",
+      "status": "blocked",
+      "diagnostics": [
+        "private_root_required: pass --private-root to authorized capture directory; resolve durable/shared retention rights separately"
+      ],
+      "snapshot": null
+    }
+  ],
+  "spatial_samples": [
+    {
+      "source_id": "site-59-parcel",
+      "snapshot_id": "site-59-parcel:sha256:8d666d1dffaaa039101ee84f407e7bb84d80ed7c933f70fde0e8e8b87d7a7f92",
+      "artifact": {
+        "uri": "repo:docs/pilot-inputs/snapshots/8d666d1dffaaa039101ee84f407e7bb84d80ed7c933f70fde0e8e8b87d7a7f92.json",
+        "sha256": "8d666d1dffaaa039101ee84f407e7bb84d80ed7c933f70fde0e8e8b87d7a7f92"
+      },
+      "layer_metadata_source_id": "parcels-metadata",
+      "catalogue_source_id": "parcels-catalogue",
+      "crs": "EPSG:3157",
+      "horizontal_unit": "m",
+      "vertical_unit": null,
+      "vertical_datum": null,
+      "feature_ids": [
+        59
+      ],
+      "coordinate_dimensions": [
+        2
+      ],
+      "interpretation": "raw_esri_json_only"
+    },
+    {
+      "source_id": "site-59-zones",
+      "snapshot_id": "site-59-zones:sha256:4899f071d466017ef6068119cd66b2ce13b34d144de51500e53aa361835ae75a",
+      "artifact": {
+        "uri": "repo:docs/pilot-inputs/snapshots/4899f071d466017ef6068119cd66b2ce13b34d144de51500e53aa361835ae75a.json",
+        "sha256": "4899f071d466017ef6068119cd66b2ce13b34d144de51500e53aa361835ae75a"
+      },
+      "layer_metadata_source_id": "zoning-metadata",
+      "catalogue_source_id": "zoning-catalogue",
+      "crs": "EPSG:3157",
+      "horizontal_unit": "m",
+      "vertical_unit": null,
+      "vertical_datum": null,
+      "feature_ids": [
+        601
+      ],
+      "coordinate_dimensions": [
+        2
+      ],
+      "interpretation": "raw_esri_json_only"
+    },
+    {
+      "source_id": "site-59-rooflines",
+      "snapshot_id": "site-59-rooflines:sha256:1b8397d008bf2717568d831e38dbe159508883dba47021887ddd7fe40ef0f992",
+      "artifact": {
+        "uri": "repo:docs/pilot-inputs/snapshots/1b8397d008bf2717568d831e38dbe159508883dba47021887ddd7fe40ef0f992.json",
+        "sha256": "1b8397d008bf2717568d831e38dbe159508883dba47021887ddd7fe40ef0f992"
+      },
+      "layer_metadata_source_id": "rooflines-metadata",
+      "catalogue_source_id": "rooflines-catalogue",
+      "crs": "EPSG:3157",
+      "horizontal_unit": "m",
+      "vertical_unit": null,
+      "vertical_datum": null,
+      "feature_ids": [
+        72944,
+        76767
+      ],
+      "coordinate_dimensions": [
+        3
+      ],
+      "interpretation": "raw_esri_json_only"
+    },
+    {
+      "source_id": "site-80-parcel",
+      "snapshot_id": "site-80-parcel:sha256:ed59084b6d130989d8bd3110487e6834a1c0d4e2896e7da282763e5dab7c3844",
+      "artifact": {
+        "uri": "repo:docs/pilot-inputs/snapshots/ed59084b6d130989d8bd3110487e6834a1c0d4e2896e7da282763e5dab7c3844.json",
+        "sha256": "ed59084b6d130989d8bd3110487e6834a1c0d4e2896e7da282763e5dab7c3844"
+      },
+      "layer_metadata_source_id": "parcels-metadata",
+      "catalogue_source_id": "parcels-catalogue",
+      "crs": "EPSG:3157",
+      "horizontal_unit": "m",
+      "vertical_unit": null,
+      "vertical_datum": null,
+      "feature_ids": [
+        80
+      ],
+      "coordinate_dimensions": [
+        2
+      ],
+      "interpretation": "raw_esri_json_only"
+    },
+    {
+      "source_id": "site-80-zones",
+      "snapshot_id": "site-80-zones:sha256:eef0512aa4b0fed857923e51a733f4ac56091d44157a4e8ece843d24fd0941af",
+      "artifact": {
+        "uri": "repo:docs/pilot-inputs/snapshots/eef0512aa4b0fed857923e51a733f4ac56091d44157a4e8ece843d24fd0941af.json",
+        "sha256": "eef0512aa4b0fed857923e51a733f4ac56091d44157a4e8ece843d24fd0941af"
+      },
+      "layer_metadata_source_id": "zoning-metadata",
+      "catalogue_source_id": "zoning-catalogue",
+      "crs": "EPSG:3157",
+      "horizontal_unit": "m",
+      "vertical_unit": null,
+      "vertical_datum": null,
+      "feature_ids": [
+        3
+      ],
+      "coordinate_dimensions": [
+        2
+      ],
+      "interpretation": "raw_esri_json_only"
+    },
+    {
+      "source_id": "site-80-rooflines",
+      "snapshot_id": "site-80-rooflines:sha256:34c16b1a71ce9b723c19b8312e66ac44b1aebcccae6fd28eefadf81bb695b5f8",
+      "artifact": {
+        "uri": "repo:docs/pilot-inputs/snapshots/34c16b1a71ce9b723c19b8312e66ac44b1aebcccae6fd28eefadf81bb695b5f8.json",
+        "sha256": "34c16b1a71ce9b723c19b8312e66ac44b1aebcccae6fd28eefadf81bb695b5f8"
+      },
+      "layer_metadata_source_id": "rooflines-metadata",
+      "catalogue_source_id": "rooflines-catalogue",
+      "crs": "EPSG:3157",
+      "horizontal_unit": "m",
+      "vertical_unit": null,
+      "vertical_datum": null,
+      "feature_ids": [
+        69970
+      ],
+      "coordinate_dimensions": [
+        3
+      ],
+      "interpretation": "raw_esri_json_only"
+    },
+    {
+      "source_id": "site-86-parcel",
+      "snapshot_id": "site-86-parcel:sha256:d824f4fead8ca0d6924fe31f918f399c276c20026d5fc2ea37b0f218be56a03f",
+      "artifact": {
+        "uri": "repo:docs/pilot-inputs/snapshots/d824f4fead8ca0d6924fe31f918f399c276c20026d5fc2ea37b0f218be56a03f.json",
+        "sha256": "d824f4fead8ca0d6924fe31f918f399c276c20026d5fc2ea37b0f218be56a03f"
+      },
+      "layer_metadata_source_id": "parcels-metadata",
+      "catalogue_source_id": "parcels-catalogue",
+      "crs": "EPSG:3157",
+      "horizontal_unit": "m",
+      "vertical_unit": null,
+      "vertical_datum": null,
+      "feature_ids": [
+        86
+      ],
+      "coordinate_dimensions": [
+        2
+      ],
+      "interpretation": "raw_esri_json_only"
+    },
+    {
+      "source_id": "site-86-zones",
+      "snapshot_id": "site-86-zones:sha256:eef0512aa4b0fed857923e51a733f4ac56091d44157a4e8ece843d24fd0941af",
+      "artifact": {
+        "uri": "repo:docs/pilot-inputs/snapshots/eef0512aa4b0fed857923e51a733f4ac56091d44157a4e8ece843d24fd0941af.json",
+        "sha256": "eef0512aa4b0fed857923e51a733f4ac56091d44157a4e8ece843d24fd0941af"
+      },
+      "layer_metadata_source_id": "zoning-metadata",
+      "catalogue_source_id": "zoning-catalogue",
+      "crs": "EPSG:3157",
+      "horizontal_unit": "m",
+      "vertical_unit": null,
+      "vertical_datum": null,
+      "feature_ids": [
+        3
+      ],
+      "coordinate_dimensions": [
+        2
+      ],
+      "interpretation": "raw_esri_json_only"
+    },
+    {
+      "source_id": "site-86-rooflines",
+      "snapshot_id": "site-86-rooflines:sha256:02202bdce96a4544663b0c252dda8ffa580116069da8e8475bd5fb2688139cbd",
+      "artifact": {
+        "uri": "repo:docs/pilot-inputs/snapshots/02202bdce96a4544663b0c252dda8ffa580116069da8e8475bd5fb2688139cbd.json",
+        "sha256": "02202bdce96a4544663b0c252dda8ffa580116069da8e8475bd5fb2688139cbd"
+      },
+      "layer_metadata_source_id": "rooflines-metadata",
+      "catalogue_source_id": "rooflines-catalogue",
+      "crs": "EPSG:3157",
+      "horizontal_unit": "m",
+      "vertical_unit": null,
+      "vertical_datum": null,
+      "feature_ids": [
+        69967
+      ],
+      "coordinate_dimensions": [
+        3
+      ],
+      "interpretation": "raw_esri_json_only"
+    }
+  ],
+  "corpus": {
+    "schema_version": "pilot-corpus.v1",
+    "clauses": [
+      {
+        "clause_id": "VIC-01",
+        "group": "A",
+        "split": "development",
+        "source_id": "zoning-2018",
+        "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+        "locator": "Part 1.1(2)-(4), PDF p6, Map 1",
+        "provisional_annotation": "Check geographic instrument selection and zoning-map linkage; old 80-159 provisions are not the default within the 2018 map area.",
+        "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+        "exact_excerpt": null,
+        "review_status": "unreviewed",
+        "reviewer": null,
+        "disagreements": [],
+        "disagreement_status": "not_solicited",
+        "dependency_groups": [],
+        "benchmark_eligible": false,
+        "blockers": [
+          "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+          "Independent interpretation, rationale and dependency-completeness review required.",
+          "Current per-site instrument/amendment applicability unresolved."
+        ]
+      },
+      {
+        "clause_id": "VIC-02",
+        "group": "A",
+        "split": "development",
+        "source_id": "zoning-2018",
+        "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+        "locator": "Part 1.1(5)-(6), PDF p7",
+        "provisional_annotation": "Site-specific provisions and split zones must survive interpretation; an intersection is not whole-lot coverage proof.",
+        "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+        "exact_excerpt": null,
+        "review_status": "unreviewed",
+        "reviewer": null,
+        "disagreements": [],
+        "disagreement_status": "not_solicited",
+        "dependency_groups": [],
+        "benchmark_eligible": false,
+        "blockers": [
+          "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+          "Independent interpretation, rationale and dependency-completeness review required.",
+          "Current per-site instrument/amendment applicability unresolved."
+        ]
+      },
+      {
+        "clause_id": "VIC-03",
+        "group": "A",
+        "split": "development",
+        "source_id": "zoning-2018",
+        "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+        "locator": "Part 1.1(21), PDF pp9-10",
+        "provisional_annotation": "Review transition provisions if actual permits/agreements exist; do not use historic approvals as present design fit.",
+        "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+        "exact_excerpt": null,
+        "review_status": "unreviewed",
+        "reviewer": null,
+        "disagreements": [],
+        "disagreement_status": "not_solicited",
+        "dependency_groups": [],
+        "benchmark_eligible": false,
+        "blockers": [
+          "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+          "Independent interpretation, rationale and dependency-completeness review required.",
+          "Current per-site instrument/amendment applicability unresolved."
+        ]
+      },
+      {
+        "clause_id": "VIC-04",
+        "group": "U",
+        "split": "development",
+        "source_id": "zoning-2018",
+        "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+        "locator": "Part 2.2, Garden Suite definition, PDF p21",
+        "provisional_annotation": "Foundation attachment and companion single-detached/duplex use need actual facts. Roofline size cannot establish use.",
+        "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+        "exact_excerpt": null,
+        "review_status": "unreviewed",
+        "reviewer": null,
+        "disagreements": [],
+        "disagreement_status": "not_solicited",
+        "dependency_groups": [
+          "A"
+        ],
+        "benchmark_eligible": false,
+        "blockers": [
+          "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+          "Independent interpretation, rationale and dependency-completeness review required.",
+          "Current per-site instrument/amendment applicability unresolved."
+        ]
+      },
+      {
+        "clause_id": "VIC-05",
+        "group": "U",
+        "split": "development",
+        "source_id": "zoning-2018",
+        "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+        "locator": "Part 4.1(1), PDF p30; Residential definition, Part 2.2, PDF p22",
+        "provisional_annotation": "Resolve the use permission and garden-suite relationship within GRD-1.",
+        "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+        "exact_excerpt": null,
+        "review_status": "unreviewed",
+        "reviewer": null,
+        "disagreements": [],
+        "disagreement_status": "not_solicited",
+        "dependency_groups": [
+          "A"
+        ],
+        "benchmark_eligible": false,
+        "blockers": [
+          "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+          "Independent interpretation, rationale and dependency-completeness review required.",
+          "Current per-site instrument/amendment applicability unresolved."
+        ]
+      },
+      {
+        "clause_id": "VIC-06",
+        "group": "U",
+        "split": "development",
+        "source_id": "zoning-2018",
+        "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+        "locator": "Part 3.1(28)(b), PDF p27",
+        "provisional_annotation": "One garden suite on a lot; actual existing use/count unknown.",
+        "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+        "exact_excerpt": null,
+        "review_status": "unreviewed",
+        "reviewer": null,
+        "disagreements": [],
+        "disagreement_status": "not_solicited",
+        "dependency_groups": [
+          "A"
+        ],
+        "benchmark_eligible": false,
+        "blockers": [
+          "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+          "Independent interpretation, rationale and dependency-completeness review required.",
+          "Current per-site instrument/amendment applicability unresolved."
+        ]
+      },
+      {
+        "clause_id": "VIC-07",
+        "group": "U",
+        "split": "development",
+        "source_id": "zoning-2018",
+        "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+        "locator": "Part 3.1(28)(c), PDF p27",
+        "provisional_annotation": "Conversion age restriction is conditional on converting an accessory building. New installation cannot inherit an assumed conversion history.",
+        "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+        "exact_excerpt": null,
+        "review_status": "unreviewed",
+        "reviewer": null,
+        "disagreements": [],
+        "disagreement_status": "not_solicited",
+        "dependency_groups": [
+          "A"
+        ],
+        "benchmark_eligible": false,
+        "blockers": [
+          "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+          "Independent interpretation, rationale and dependency-completeness review required.",
+          "Current per-site instrument/amendment applicability unresolved."
+        ]
+      },
+      {
+        "clause_id": "VIC-08",
+        "group": "R",
+        "split": "development",
+        "source_id": "zoning-2018",
+        "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+        "locator": "Part 3.1(28)(a), PDF p27",
+        "provisional_annotation": "Rear-yard location requires a reviewed rear-yard polygon.",
+        "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+        "exact_excerpt": null,
+        "review_status": "unreviewed",
+        "reviewer": null,
+        "disagreements": [],
+        "disagreement_status": "not_solicited",
+        "dependency_groups": [
+          "A",
+          "U"
+        ],
+        "benchmark_eligible": false,
+        "blockers": [
+          "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+          "Independent interpretation, rationale and dependency-completeness review required.",
+          "Current per-site instrument/amendment applicability unresolved."
+        ]
+      },
+      {
+        "clause_id": "VIC-09",
+        "group": "R",
+        "split": "development",
+        "source_id": "zoning-2018",
+        "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+        "locator": "Part 2.1, Front Lot Line, PDF p16",
+        "provisional_annotation": "Branch on corner, through-lot and access facts; no automatic orientation from a bounding box.",
+        "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+        "exact_excerpt": null,
+        "review_status": "unreviewed",
+        "reviewer": null,
+        "disagreements": [],
+        "disagreement_status": "not_solicited",
+        "dependency_groups": [
+          "A",
+          "U"
+        ],
+        "benchmark_eligible": false,
+        "blockers": [
+          "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+          "Independent interpretation, rationale and dependency-completeness review required.",
+          "Current per-site instrument/amendment applicability unresolved."
+        ]
+      },
+      {
+        "clause_id": "VIC-10",
+        "group": "R",
+        "split": "development",
+        "source_id": "zoning-2018",
+        "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+        "locator": "Part 2.1, Rear Lot Line / Rear Yard, PDF pp18-19",
+        "provisional_annotation": "Resolve rear boundary and full-width yard from principal building and lot lines.",
+        "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+        "exact_excerpt": null,
+        "review_status": "unreviewed",
+        "reviewer": null,
+        "disagreements": [],
+        "disagreement_status": "not_solicited",
+        "dependency_groups": [
+          "A",
+          "U"
+        ],
+        "benchmark_eligible": false,
+        "blockers": [
+          "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+          "Independent interpretation, rationale and dependency-completeness review required.",
+          "Current per-site instrument/amendment applicability unresolved."
+        ]
+      },
+      {
+        "clause_id": "VIC-11",
+        "group": "F",
+        "split": "development",
+        "source_id": "zoning-2018",
+        "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+        "locator": "Part 2.1, Floor Area, PDF p16",
+        "provisional_annotation": "Interior wall basis plus stated inclusions/exclusions; marketing interior area alone is insufficient.",
+        "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+        "exact_excerpt": null,
+        "review_status": "unreviewed",
+        "reviewer": null,
+        "disagreements": [],
+        "disagreement_status": "not_solicited",
+        "dependency_groups": [
+          "A",
+          "U"
+        ],
+        "benchmark_eligible": false,
+        "blockers": [
+          "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+          "Independent interpretation, rationale and dependency-completeness review required.",
+          "Current per-site instrument/amendment applicability unresolved."
+        ]
+      },
+      {
+        "clause_id": "VIC-12",
+        "group": "F",
+        "split": "development",
+        "source_id": "zoning-2018",
+        "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+        "locator": "Part 3.1(28)(d), PDF p27",
+        "provisional_annotation": "Published maximum 56 m2; comparison awaits reviewed Floor Area and applicability.",
+        "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+        "exact_excerpt": null,
+        "review_status": "unreviewed",
+        "reviewer": null,
+        "disagreements": [],
+        "disagreement_status": "not_solicited",
+        "dependency_groups": [
+          "A",
+          "U"
+        ],
+        "benchmark_eligible": false,
+        "blockers": [
+          "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+          "Independent interpretation, rationale and dependency-completeness review required.",
+          "Current per-site instrument/amendment applicability unresolved."
+        ]
+      },
+      {
+        "clause_id": "VIC-13",
+        "group": "H",
+        "split": "held_out",
+        "source_id": "zoning-2018",
+        "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+        "locator": "Part 2.1, Average Grade, PDF p12",
+        "provisional_annotation": "Natural/finished-grade method and illustration require site elevations, not 2D slope inference.",
+        "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+        "exact_excerpt": null,
+        "review_status": "unreviewed",
+        "reviewer": null,
+        "disagreements": [],
+        "disagreement_status": "not_solicited",
+        "dependency_groups": [],
+        "benchmark_eligible": false,
+        "blockers": [
+          "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+          "Independent interpretation, rationale and dependency-completeness review required.",
+          "Current per-site instrument/amendment applicability unresolved."
+        ]
+      },
+      {
+        "clause_id": "VIC-14",
+        "group": "H",
+        "split": "held_out",
+        "source_id": "zoning-2018",
+        "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+        "locator": "Part 2.1, Height, PDF p17",
+        "provisional_annotation": "Flat/domed, pitched and gambrel roof branches and exclusions need actual roof/datum facts.",
+        "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+        "exact_excerpt": null,
+        "review_status": "unreviewed",
+        "reviewer": null,
+        "disagreements": [],
+        "disagreement_status": "not_solicited",
+        "dependency_groups": [],
+        "benchmark_eligible": false,
+        "blockers": [
+          "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+          "Independent interpretation, rationale and dependency-completeness review required.",
+          "Current per-site instrument/amendment applicability unresolved."
+        ]
+      },
+      {
+        "clause_id": "VIC-15",
+        "group": "H",
+        "split": "held_out",
+        "source_id": "zoning-2018",
+        "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+        "locator": "Part 3.1(28)(e), PDF p27",
+        "provisional_annotation": "Published maximum 4.2 m is regulatory Height; 9 ft ceiling height is not evidence of compliance.",
+        "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+        "exact_excerpt": null,
+        "review_status": "unreviewed",
+        "reviewer": null,
+        "disagreements": [],
+        "disagreement_status": "not_solicited",
+        "dependency_groups": [],
+        "benchmark_eligible": false,
+        "blockers": [
+          "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+          "Independent interpretation, rationale and dependency-completeness review required.",
+          "Current per-site instrument/amendment applicability unresolved."
+        ]
+      },
+      {
+        "clause_id": "VIC-16",
+        "group": "S",
+        "split": "development",
+        "source_id": "zoning-2018",
+        "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+        "locator": "Part 3.1(28)(f), PDF p27",
+        "provisional_annotation": "Published side/rear minimum 0.6 m, subject to correct line identity and applicable definitions/exceptions.",
+        "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+        "exact_excerpt": null,
+        "review_status": "unreviewed",
+        "reviewer": null,
+        "disagreements": [],
+        "disagreement_status": "not_solicited",
+        "dependency_groups": [
+          "A",
+          "U",
+          "R"
+        ],
+        "benchmark_eligible": false,
+        "blockers": [
+          "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+          "Independent interpretation, rationale and dependency-completeness review required.",
+          "Current per-site instrument/amendment applicability unresolved."
+        ]
+      },
+      {
+        "clause_id": "VIC-17",
+        "group": "S",
+        "split": "development",
+        "source_id": "zoning-2018",
+        "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+        "locator": "Part 3.1(28)(g), PDF p27",
+        "provisional_annotation": "Published flanking minimum 3.5 m; needs confirmed street/lot classification.",
+        "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+        "exact_excerpt": null,
+        "review_status": "unreviewed",
+        "reviewer": null,
+        "disagreements": [],
+        "disagreement_status": "not_solicited",
+        "dependency_groups": [
+          "A",
+          "U",
+          "R"
+        ],
+        "benchmark_eligible": false,
+        "blockers": [
+          "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+          "Independent interpretation, rationale and dependency-completeness review required.",
+          "Current per-site instrument/amendment applicability unresolved."
+        ]
+      },
+      {
+        "clause_id": "VIC-18",
+        "group": "S",
+        "split": "development",
+        "source_id": "zoning-2018",
+        "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+        "locator": "Part 3.1(28)(h), PDF p28",
+        "provisional_annotation": "Published principal-building separation 2.4 m; roof polygons are not verified wall faces.",
+        "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+        "exact_excerpt": null,
+        "review_status": "unreviewed",
+        "reviewer": null,
+        "disagreements": [],
+        "disagreement_status": "not_solicited",
+        "dependency_groups": [
+          "A",
+          "U",
+          "R"
+        ],
+        "benchmark_eligible": false,
+        "blockers": [
+          "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+          "Independent interpretation, rationale and dependency-completeness review required.",
+          "Current per-site instrument/amendment applicability unresolved."
+        ]
+      },
+      {
+        "clause_id": "VIC-19",
+        "group": "S",
+        "split": "development",
+        "source_id": "zoning-2018",
+        "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+        "locator": "Part 2.1, Setback, PDF p19; Part 1.1(12), PDF p8; Part 4.1(4), PDF pp31-32",
+        "provisional_annotation": "Resolve measurement faces, projection treatment and relationship between general zone setbacks and garden-suite requirements. No optimistic mixing.",
+        "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+        "exact_excerpt": null,
+        "review_status": "unreviewed",
+        "reviewer": null,
+        "disagreements": [],
+        "disagreement_status": "not_solicited",
+        "dependency_groups": [
+          "A",
+          "U",
+          "R"
+        ],
+        "benchmark_eligible": false,
+        "blockers": [
+          "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+          "Independent interpretation, rationale and dependency-completeness review required.",
+          "Current per-site instrument/amendment applicability unresolved."
+        ]
+      },
+      {
+        "clause_id": "VIC-20",
+        "group": "R",
+        "split": "development",
+        "source_id": "zoning-2018",
+        "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+        "locator": "Part 3.1(28)(i), PDF p28",
+        "provisional_annotation": "Published rear-yard occupancy cap 25%; denominator is rear yard, not total parcel area. Review occupancy numerator/projections.",
+        "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+        "exact_excerpt": null,
+        "review_status": "unreviewed",
+        "reviewer": null,
+        "disagreements": [],
+        "disagreement_status": "not_solicited",
+        "dependency_groups": [
+          "A",
+          "U"
+        ],
+        "benchmark_eligible": false,
+        "blockers": [
+          "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+          "Independent interpretation, rationale and dependency-completeness review required.",
+          "Current per-site instrument/amendment applicability unresolved."
+        ]
+      },
+      {
+        "clause_id": "VIC-21",
+        "group": "D",
+        "split": "development",
+        "source_id": "zoning-2018",
+        "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+        "locator": "Part 2.1, Lot/Lot Coverage, PDF p18; Part 4.1(6), PDF p33",
+        "provisional_annotation": "Separate whole-lot coverage from rear-yard occupancy and select a coherent development column.",
+        "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+        "exact_excerpt": null,
+        "review_status": "unreviewed",
+        "reviewer": null,
+        "disagreements": [],
+        "disagreement_status": "not_solicited",
+        "dependency_groups": [
+          "A",
+          "U",
+          "F",
+          "R"
+        ],
+        "benchmark_eligible": false,
+        "blockers": [
+          "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+          "Independent interpretation, rationale and dependency-completeness review required.",
+          "Current per-site instrument/amendment applicability unresolved."
+        ]
+      },
+      {
+        "clause_id": "VIC-22",
+        "group": "D",
+        "split": "development",
+        "source_id": "zoning-2018",
+        "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+        "locator": "Part 2.1, FSR, PDF p16; Part 4.1(2), PDF p30; Part 1.1(16)-(18), PDF p8",
+        "provisional_annotation": "Preserve all-building Floor Area, Lot basis, unit-count branches and any dedication exception. Unresolved whole-lot facts prevent an overall pass.",
+        "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+        "exact_excerpt": null,
+        "review_status": "unreviewed",
+        "reviewer": null,
+        "disagreements": [],
+        "disagreement_status": "not_solicited",
+        "dependency_groups": [
+          "A",
+          "U",
+          "F",
+          "R"
+        ],
+        "benchmark_eligible": false,
+        "blockers": [
+          "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+          "Independent interpretation, rationale and dependency-completeness review required.",
+          "Current per-site instrument/amendment applicability unresolved."
+        ]
+      },
+      {
+        "clause_id": "VIC-23",
+        "group": "U",
+        "split": "development",
+        "source_id": "zoning-2018",
+        "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+        "locator": "Part 3.1(30), PDF p28",
+        "provisional_annotation": "Review general residential size/unit-mix provisions and interaction with this proposed installation; do not omit because subsection 28 looks simpler.",
+        "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+        "exact_excerpt": null,
+        "review_status": "unreviewed",
+        "reviewer": null,
+        "disagreements": [],
+        "disagreement_status": "not_solicited",
+        "dependency_groups": [
+          "A"
+        ],
+        "benchmark_eligible": false,
+        "blockers": [
+          "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+          "Independent interpretation, rationale and dependency-completeness review required.",
+          "Current per-site instrument/amendment applicability unresolved."
+        ]
+      },
+      {
+        "clause_id": "VIC-24",
+        "group": "X",
+        "split": "development",
+        "source_id": "zoning-2018",
+        "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+        "locator": "Part 3.1(35), PDF p28; Part 4.1(1.1)(c), PDF p30",
+        "provisional_annotation": "Waterfront-specific restrictions can change applicable siting; absence of a waterfront field does not establish not applicable.",
+        "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+        "exact_excerpt": null,
+        "review_status": "unreviewed",
+        "reviewer": null,
+        "disagreements": [],
+        "disagreement_status": "not_solicited",
+        "dependency_groups": [
+          "A",
+          "U",
+          "S",
+          "D"
+        ],
+        "benchmark_eligible": false,
+        "blockers": [
+          "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+          "Independent interpretation, rationale and dependency-completeness review required.",
+          "Current per-site instrument/amendment applicability unresolved."
+        ]
+      },
+      {
+        "clause_id": "VIC-25",
+        "group": "X",
+        "split": "development",
+        "source_id": "zoning-2018",
+        "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+        "locator": "Part 4.1(5), PDF p32; Part 5; Part 4.1(8), PDF pp33-43",
+        "provisional_annotation": "Parking and site-specific provisions are dependencies, not automatic passes; capture/resolve exact applicable clauses after site facts are supplied.",
+        "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+        "exact_excerpt": null,
+        "review_status": "unreviewed",
+        "reviewer": null,
+        "disagreements": [],
+        "disagreement_status": "not_solicited",
+        "dependency_groups": [
+          "A",
+          "U",
+          "S",
+          "D"
+        ],
+        "benchmark_eligible": false,
+        "blockers": [
+          "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+          "Independent interpretation, rationale and dependency-completeness review required.",
+          "Current per-site instrument/amendment applicability unresolved."
+        ]
+      }
+    ],
+    "sites": [
+      {
+        "site_id": "VIC-059",
+        "source_ids": [
+          "site-59-parcel",
+          "site-59-zones",
+          "site-59-rooflines"
+        ],
+        "status": "unreviewed_lead",
+        "supplied_placement": null,
+        "expected_fit": null,
+        "missing_facts": [
+          "Controlled fixed design revision/configuration",
+          "Survey and verified legal lot identity/boundaries",
+          "Principal-building wall/projection geometry, use and dwelling counts",
+          "Classified front/rear/side/flanking lot lines",
+          "Reviewed rear-yard polygon and occupancy basis",
+          "Human-supplied placement with anchor, rotation and CRS",
+          "Natural/finished grade and vertical datum tied to installation/roof elevations",
+          "Regulatory Floor Area and whole-lot density/coverage accounting",
+          "Current governing instrument, amendments, site-specific rules and overlays",
+          "Named independent reviewer and evidenced expected checks"
+        ],
+        "specific_action": "Identify both rooflines, principal dwelling and retained/removed structures; reconcile Residential_2023 and Residential labels."
+      },
+      {
+        "site_id": "VIC-080",
+        "source_ids": [
+          "site-80-parcel",
+          "site-80-zones",
+          "site-80-rooflines"
+        ],
+        "status": "unreviewed_lead",
+        "supplied_placement": null,
+        "expected_fit": null,
+        "missing_facts": [
+          "Controlled fixed design revision/configuration",
+          "Survey and verified legal lot identity/boundaries",
+          "Principal-building wall/projection geometry, use and dwelling counts",
+          "Classified front/rear/side/flanking lot lines",
+          "Reviewed rear-yard polygon and occupancy basis",
+          "Human-supplied placement with anchor, rotation and CRS",
+          "Natural/finished grade and vertical datum tied to installation/roof elevations",
+          "Regulatory Floor Area and whole-lot density/coverage accounting",
+          "Current governing instrument, amendments, site-specific rules and overlays",
+          "Named independent reviewer and evidenced expected checks"
+        ],
+        "specific_action": "Verify PGA designation and principal dwelling/unit count; establish frontage and classified lot lines from supplied plans."
+      },
+      {
+        "site_id": "VIC-086",
+        "source_ids": [
+          "site-86-parcel",
+          "site-86-zones",
+          "site-86-rooflines"
+        ],
+        "status": "unreviewed_lead",
+        "supplied_placement": null,
+        "expected_fit": null,
+        "missing_facts": [
+          "Controlled fixed design revision/configuration",
+          "Survey and verified legal lot identity/boundaries",
+          "Principal-building wall/projection geometry, use and dwelling counts",
+          "Classified front/rear/side/flanking lot lines",
+          "Reviewed rear-yard polygon and occupancy basis",
+          "Human-supplied placement with anchor, rotation and CRS",
+          "Natural/finished grade and vertical datum tied to installation/roof elevations",
+          "Regulatory Floor Area and whole-lot density/coverage accounting",
+          "Current governing instrument, amendments, site-specific rules and overlays",
+          "Named independent reviewer and evidenced expected checks"
+        ],
+        "specific_action": "Independently establish principal building, legal rear yard and placement; do not copy site 80 facts because zoning bytes match."
+      }
+    ]
+  },
+  "publication_eligible": false
+}
