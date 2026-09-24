@@ -6,12 +6,14 @@ The initial product is preliminary zoning scouting across municipalities, follow
 
 ## Status
 
-The FastAPI and React/TypeScript/Vite foundation runs locally. It is still an exploratory
-checkpoint: no zoning data is ingested or published, and no site evaluation is available.
-The health endpoint checks process liveness only. SR-04 owns provisional typed contracts;
-the application does not yet expose those contracts through an API. PRs #19-#21 are merged;
-the required backend, frontend and container-startup checks passed on combined main.
-See the [next parallel tasks](docs/backlog/next-wave-prompts.md) for the current handoff.
+The FastAPI and React/TypeScript/Vite foundation, immutable PostgreSQL persistence,
+typed pilot intake and synthetic investigation preview are implemented. The preview
+contains hand-authored examples, not real evaluated sites. There is no accepted dataset,
+working zoning evaluator or active publication. The health endpoint checks liveness only.
+
+PRs #24-#26 are merged. Intake, preview and disposable-database tests are integrated
+with the required backend, frontend and container-startup checks. See the
+[next parallel tasks](docs/backlog/wave-two-prompts.md) for the current handoff.
 
 City of Victoria garden suites remain the leading technical prototype candidate, subject
 to verified design/site inputs and current rule applicability; Vancouver is the fallback.
@@ -43,14 +45,19 @@ parsing and projection can give unsupported zoning answers.
 Run focused checks from the repository root with:
 
 ```powershell
-python -m uv run --locked ruff check app tests contract_tests
+python -m uv run --locked ruff check app tests contract_tests migrations scripts docs/pilot-inputs/intake.py docs/pilot-inputs/test_intake.py docs/usability/check_fixtures.py
 python -m uv run --locked pytest -q
 python -m uv run --locked python docs/pilot-inputs/test_acquire.py
+python -m uv run --locked python docs/pilot-inputs/test_intake.py
+python -m uv run --locked python docs/usability/check_fixtures.py
 cd frontend
 npm ci
 npm run typecheck
 npm run build
 ```
+
+Without disposable PostgreSQL configuration, database tests skip. Use the temporary
+cluster runner in the [persistence handoff](docs/persistence.md) for a full database run.
 
 See [CI and verification notes](docs/foundation-verification.md) for exact results and
 remaining work. Do not run the retired legacy tests from repository history: they contain
@@ -72,6 +79,7 @@ Results distinguish **candidate**, **needs investigation**, and **no match under
 |---|---|
 | [Architecture](docs/architecture.md) | Minimal system boundaries, deployment direction, and implementation sequence |
 | [Quality agreement](docs/quality.md) | Data contracts, testing, publication, and definition of done |
+| [Synthetic preview and walkthrough](docs/usability/README.md) | Local scenarios, fixture checks and usability rehearsal limits |
 | [Persistence interface](docs/persistence.md) | Immutable imports, draft metadata, migrations and disposable PostgreSQL checks |
 | [MVP ticket backlog](docs/backlog/README.md) | Sequenced technical proof, CI/CD, customer pilot, and expansion experiments |
 | [Prototype input evidence](docs/pilot-inputs/README.md) | Captured Victoria sources, licensed GIS samples, provisional design/site specifications, and unresolved review inputs |
@@ -92,7 +100,7 @@ Show missing inputs and unsupported cases. Reproduce an earlier result against i
 
 The intended stack is FastAPI, Pydantic, SQLAlchemy, PostgreSQL, and React/TypeScript/Vite. Introduce PostGIS when spatial operations require it. Initially run ingestion as an explicit local batch command.
 
-Startup, frontend repair, focused offline tests and immutable PostgreSQL persistence are implemented. See the [persistence handoff](docs/persistence.md) for draft-only storage, explicit migrations and isolated database checks. Pilot intake/review and a synthetic investigation preview can proceed independently; active publication remains future work. Do not run the retired database tests from repository history.
+Startup, frontend repair, focused offline tests and immutable PostgreSQL persistence are implemented. See the [persistence handoff](docs/persistence.md) for draft-only storage, explicit migrations and isolated database checks. Licensed typed intake and a synthetic investigation preview are integrated; independent source/site review and active publication remain future work. Do not run the retired database tests from repository history.
 
 The scaffold setup above is verified locally. Never use historical embedded credentials or remote test defaults.
 

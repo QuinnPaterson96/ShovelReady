@@ -1,6 +1,6 @@
 # MVP backlog
 
-Planning baseline: September 18, 2026; post-merge checkpoint: September 24, 2026. PRs #20, #21 and #19 merged the working scaffold/CI, provisional contracts and raw pilot evidence. There is still no source-to-result evaluator, accepted dataset or cloud deployment.
+Planning baseline: September 18, 2026; post-merge checkpoint: September 24, 2026. PRs #20, #21 and #19 merged the scaffold/CI, provisional contracts and raw pilot evidence; PRs #24-#26 added typed intake, persistence and the synthetic investigation preview. There is still no source-to-result evaluator, accepted dataset or cloud deployment.
 
 GitHub issues are the execution/status source of truth once published. These Markdown files preserve specifications and dated implementation handoffs; update both when scope changes. Dated checkpoints are not a second live status board. SR identifiers remain stable independently of GitHub issue numbers.
 
@@ -43,15 +43,15 @@ The first evaluator checks a supplied reviewed placement. Preserve manual site f
 
 ## Next parallel work
 
-[Copy-ready task prompts and file ownership](next-wave-prompts.md) define the next two waves.
+[Wave-two prompts and ownership](wave-two-prompts.md) are the current launch instructions. The [first-wave prompts](next-wave-prompts.md) remain historical handoff context.
 
-- SR-02/SR-03 are complete for the foundation; SR-04 is complete for provisional boundaries. The merged main CI passed. Corpus validation, database integrity and runtime semantics remain downstream responsibilities.
-- Start the SR-01/SR-05/SR-06 intake and reviewer-ready packet alongside SR-08 persistence. The packet already contains real captured inputs but still lacks a controlled design revision, independent reviewer and supplied reviewed placements. Keep these tickets open until their actual acceptance criteria are met.
-- Optionally start SR-19 / issue #22: a small synthetic results preview and simulated browser walkthrough. This can reveal presentation problems without asserting real site fit or customer validation. SR-12 still owns real API/UI integration; SR-16 still owns actual customer validation.
-- Next, run SR-07 extraction against a usable reviewed clause subset alongside SR-09 spatial import once typed licensed spatial inputs and SR-08 are merged. Offline preparation can precede those gates; do not label it a completed benchmark/import. Manufacturer input gaps do not prevent importing spatial facts with unknowns retained.
-- Then integrate SR-10 evaluation, SR-11 publication and SR-12 API/UI, followed by SR-13 end-to-end verification, SR-14 hosting and SR-15 deployment. The working startup container is not the completed source-to-result image.
+- SR-02/SR-03/SR-04 are complete in their scaffold/provisional scopes. SR-08 persistence and SR-19 / issue #22 synthetic preview/rehearsal are now complete.
+- SR-01/SR-05/SR-06 remain partial: typed licensed inputs and a provisional corpus exist, but controlled design, reviewed site/placement facts, authorized durable private sources and independent acceptance are missing.
+- Launch SR-09 spatial import alongside the offline preparation portion of SR-07. The real extraction benchmark remains gated; synthetic saved-response checks cannot satisfy it. SR-09 owns shared dependencies/CI this wave, and both tasks open PRs for integration review.
+- A real licensed intake-to-storage roundtrip passes without changing unreviewed status. This does not establish an accepted source-to-result release. SR-10 evaluation, SR-11 publication and SR-12 API integration still need their stated evidence gates. Reuse the preview presentation after introducing a real validated API adapter.
+- SR-13 completes full end-to-end verification before SR-14 hosting and SR-15 CD. SR-16 remains actual customer validation after a usable prototype; SR-17/SR-18 remain deferred.
 
-Dependencies indicate completion gates, not a prohibition on early technical preparation. SR-08 owns shared Python dependency/CI changes in the first parallel wave. Keep schema revisions evidence-driven and coordinate them across consumers. Customer interviews, recruitment and measured use in SR-16 remain post-prototype; professional rule review and technical-input acquisition can happen earlier. SR-17/SR-18 remain deferred.
+Dependencies are completion gates, not a prohibition on useful offline preparation. Do not block technical work on customer commitments, and do not disguise missing evidence as completed review. The precise owner inputs are listed in [reviewer actions](../pilot-inputs/reviewer-actions.md).
 
 ## Shared completion rules
 
