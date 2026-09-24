@@ -25,13 +25,26 @@ The job neither starts nor stops the installed service and never uses its data d
 
 ```powershell
 $env:SHOVELREADY_LOCAL_LIFECYCLE_POSTGRES_BIN = 'C:/Program Files/PostgreSQL/17/bin'
-uv run --locked python -m pytest -v tests/test_local_database.py -p tests.native_lifecycle_guard --tb=no --show-capture=no -rN
+$scratch = Join-Path ([IO.Path]::GetTempPath()) "native-lifecycle-$([guid]::NewGuid())"
+uv run --locked python -m pytest --basetemp "$scratch" -v tests/test_local_database.py -p tests.native_lifecycle_guard --tb=no --show-capture=no -rN
 ```
 
 The explicit plugin requires successful setup, call, and teardown reports for
 `tests/test_local_database.py::test_native_lifecycle`. Skipping, deselecting, collecting
 without running, or selecting no tests cannot return success. Ordinary pytest runs
 without the plugin retain the native test's optional local opt-in.
+
+CI uses the same fresh GUID basename under `RUNNER_TEMP`, outside the checkout.
+On elevated Windows, the plugin grants only the current user SID inheritable full
+access to the three fresh test directories (pytest base, test directory, scratch).
+It adds no Users/Everyone access and does not recursively operate on another directory.
+Python's restrictive temporary-directory ACL uses OWNER RIGHTS; elevated processes
+can create files owned by Administrators, which
+[PostgreSQL removes from its restricted token](https://github.com/postgres/postgres/blob/REL_17_STABLE/src/common/restricted_token.c).
+An explicit current-user ACE lets initdb read the password file while retaining restricted
+execution. This is test setup for the elevated hosted runner, not a change to the
+helper or evidence that manual elevated development has been fixed. Normal unelevated
+local use needs no ACL adjustment.
 
 ## Isolation, behavior and diagnostics
 
@@ -49,7 +62,8 @@ failure. Ownership verification still applies during cleanup; it never bypasses 
 refusal to stop another server. A forcibly terminated job relies on destruction of
 the disposable hosted runner. No persistent development database is involved.
 
-Verbose test names, outcomes and binary versions are logged. Tracebacks, failure
+Verbose test names, outcomes, exception types/stack locations and binary versions are
+logged. Exception messages, full tracebacks, failure
 summary details and captured test output are suppressed because exceptions can contain SQL data or
 credentials. No artifacts upload `local.json`, server logs, database contents or
 connection strings. Investigate failures with an isolated local reproduction; do not
@@ -58,7 +72,7 @@ enable unredacted CI output to diagnose driver errors.
 ## Verification evidence
 
 Local Windows, September 24, 2026: the command above completed **5 passed, 0 skipped**
-on Python 3.12.3 and PostgreSQL 17.2. One upstream FastAPI/Starlette TestClient
+on Python 3.12.3 and 3.12.10 with PostgreSQL 17.2. One upstream FastAPI/Starlette TestClient
 deprecation warning remains. Ruff passed for the new plugin.
 
 Controlled invocations used the same plugin and file, without starting any cluster:
@@ -70,7 +84,20 @@ Controlled invocations used the same plugin and file, without starting any clust
 All three emitted `Native lifecycle NOT verified` naming the required test. These
 intentional failures are local checks, not failing committed workflow steps.
 
-Hosted Windows CI evidence will be recorded here after the PR run completes.
+Hosted evidence: [successful CI run 36073246987](https://github.com/QuinnPaterson96/ShovelReady/actions/runs/36073246987),
+commit `ae7707d`, September 24, 2026. The
+[Windows job log](https://github.com/QuinnPaterson96/ShovelReady/actions/runs/36073246987/job/107878724938)
+records image `windows-2025-vs2026` version `20260922.246.2`, Python 3.12.10,
+PostgreSQL 17.11 for all four binaries, and the exact command above with a fresh
+`RUNNER_TEMP` base. All five named tests passed, including `test_native_lifecycle`:
+**5 passed, 0 skipped, 1 warning in 10.45s**. The Linux service job also passed
+**210 tests and 28 subtests**, with the single expected native opt-in skip there;
+frontend and container-startup passed.
+
+Earlier hosted runs caught inherited PGUSER/PGPASSWORD settings and elevated scratch
+ACL behavior. Credential-free, non-server initialization probes isolated the ACL issue;
+those diagnostic probes were removed from the final workflow. The helper was unchanged.
+
 This verifies native tooling and observation retrieval, not accepted zoning data,
 legal interpretation, screening, publication or deployment.
 
