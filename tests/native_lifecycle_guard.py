@@ -12,19 +12,20 @@ NODE = "tests/test_local_database.py::test_native_lifecycle"
 
 @pytest.fixture(autouse=True)
 def windows_scratch_owner(request, tmp_path, tmp_path_factory):
-    """Elevated runners must give PostgreSQL's restricted token an actual user owner."""
+    """Keep the current user accessible to PostgreSQL's restricted Windows token."""
     if (request.node.nodeid != NODE or os.name != "nt"
             or not ctypes.windll.shell32.IsUserAnAdmin()):
         return
     # Python's mode=0700 uses OWNER RIGHTS. Elevated Windows defaults the owner to
     # Administrators, which initdb deliberately strips from its restricted token.
-    # Change ownership, never broaden ACLs or touch the installed service/data.
+    # Add only that same user's inheritable access, not Users/Everyone. Child files
+    # may still default to an Administrators owner under the elevated runner token.
     identity = subprocess.check_output(["whoami", "/user", "/fo", "csv", "/nh"], text=True)
     sid = next(csv.reader([identity.strip()]))[1]
     scratch = tmp_path / "scratch"
     scratch.mkdir()
     for path in (tmp_path_factory.getbasetemp(), tmp_path, scratch):
-        subprocess.run(["icacls", str(path), "/setowner", f"*{sid}"], check=True,
+        subprocess.run(["icacls", str(path), "/grant:r", f"*{sid}:(OI)(CI)F"], check=True,
                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
