@@ -54,6 +54,30 @@ A user should be able to identify why a case was included/excluded, what was che
 
 Record errors by stage and retain run/release identifiers. Monitor ingestion failures and unresolved-case rates, not just HTTP uptime. Unexpected decision changes are investigated before promotion. Maintain a known-good application image and dataset release; test recovery with backward-compatible schemas and backups.
 
+## Integration handoff
+
+Use the [PR template](../.github/pull_request_template.md) to leave a short, reproducible
+handoff. Small documentation changes can use one-line fields and explicit N/A reasons;
+link existing evidence rather than repeat it. See the [recorded rehearsals](pr-handoffs.md)
+for examples and historical evidence gaps. This checklist uses existing checks and
+ownership; it adds no reviewer, approval, bot or branch-protection requirement.
+
+- [ ] Review the actual diff and changed interfaces/configuration/migrations against the
+  linked criteria, including compatibility and recovery implications where relevant.
+- [ ] Identify the starting base and PR head, and which revision each check covers.
+  GitHub's PR head is sufficient for the handoff; record older evidence explicitly.
+- [ ] Run appropriate combined checks for the integrated changes, recording exact commands,
+  setup, outcomes and skips. Documentation/link review suffices for documentation-only
+  changes. Database checks must use isolated disposable resources; no live model calls.
+- [ ] Confirm existing required CI succeeds for the final PR head before integration;
+  earlier-head success and local checks do not establish final-head CI success.
+- [ ] Reconcile central README, architecture and backlog status under integration ownership.
+  Record satisfied and remaining criteria; a partial implementation does not close its
+  parent objective. Coordinate shared-file changes with their declared owners.
+- [ ] Check the demo command/setup and expected result where applicable, and retain
+  limitations and dependencies. Keep software verification, independent source review,
+  accepted data publication and real-user validation distinct; code merge is not publication.
+
 ## Definition of done
 
 A consequential change is done when:
