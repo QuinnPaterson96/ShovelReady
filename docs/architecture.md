@@ -60,7 +60,13 @@ The observational investigation API exposes an explicitly selected licensed spat
 
 ## CI/CD direction
 
-GitHub Actions requires backend lint/offline tests with disposable PostgreSQL migrations, frontend type-check/build and container startup checks. The full accepted ingestion-to-result integration fixture remains SR-13 work; existing checks do not establish that path.
+GitHub Actions requires backend lint/offline tests with disposable PostgreSQL migrations, frontend tests/type-check/build, container startup and native Windows local-database lifecycle checks. The latter verifies the owned helper through restart and real API retrieval and refuses an unexpected skip. The full accepted ingestion-to-result integration fixture remains SR-13 work; existing checks do not establish that path.
+
+The local demo launcher serves one built app from a clean commit with explicit owned
+database configuration and spatial revision, displaying nonsecret build/data identity.
+The ten-case public research inventory remains provisional and separate from accepted
+rule data. The next read-only evidence view does not publish it or establish a fit.
+See [wave-four integration](integration-wave-four.md) and [wave-five scope](backlog/wave-five-prompts.md).
 
 Once SR-14 configures a protected demo environment, SR-15 will deploy the tested immutable image and smoke-test it. Identify images by commit. Serialize deployments to a given environment and avoid obsolete runs overwriting newer deployments. Preserve a known-good image for rollback. No deployment currently runs on merge.
 

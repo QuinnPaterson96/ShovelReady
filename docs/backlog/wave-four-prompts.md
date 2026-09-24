@@ -1,5 +1,9 @@
 # Wave four: development workflow and public reference cases
 
+Completed implementation/research wave: PRs #40-#43 are merged. These launch instructions
+are historical. See [integration evidence](../integration-wave-four.md) and the current
+[wave-five handoff](wave-five-prompts.md). Public-case inventory acceptance remains separate.
+
 September 24, 2026, after merged implementation PRs #31-#33 and integration note #34.
 This wave implements three small process improvements and investigates evidence for
 the next real-case integration. It does not launch accepted screening or deployment.
