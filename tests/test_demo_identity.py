@@ -1,4 +1,8 @@
 import importlib.util
+import json
+import os
+import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -12,6 +16,35 @@ sys.path.insert(0, str(SCRIPTS))
 spec = importlib.util.spec_from_file_location("demo", SCRIPTS / "demo.py")
 demo = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(demo)
+
+
+def test_powershell_config_uses_callers_location(tmp_path):
+    shell = shutil.which("pwsh") or shutil.which("powershell")
+    if not shell:
+        pytest.skip("PowerShell executable needed for launcher path regression")
+    caller = tmp_path / "caller directory"
+    caller.mkdir()
+    # PowerShell's current location can differ from the underlying process cwd.
+    # Stub only Python dispatch so this exercises the actual wrapper without a DB/build.
+    command = r'''
+        $ErrorActionPreference = 'Stop'
+        function python {
+            [Console]::WriteLine((ConvertTo-Json -InputObject @($args) -Compress))
+            $global:LASTEXITCODE = 0
+        }
+        Set-Location -LiteralPath $env:SR_TEST_CALLER
+        & $env:SR_TEST_WRAPPER -Config 'relative config.json' -Revision 'test-revision'
+        if ((Get-Location).Path -ne $env:SR_TEST_CALLER) { throw 'Caller location changed' }
+    '''
+    completed = subprocess.run(
+        [shell, "-NoProfile", "-NonInteractive", "-Command", command],
+        cwd=tmp_path,
+        env=dict(os.environ, SR_TEST_CALLER=str(caller),
+                 SR_TEST_WRAPPER=str(SCRIPTS / "demo.ps1")),
+        text=True, capture_output=True, check=True,
+    )
+    arguments = json.loads(completed.stdout.strip())
+    assert Path(arguments[arguments.index("--config") + 1]) == caller / "relative config.json"
 
 
 def test_identity_is_frozen_at_creation_and_nonsecret(monkeypatch, tmp_path):

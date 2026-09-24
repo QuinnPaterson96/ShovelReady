@@ -234,3 +234,9 @@ Linux/macOS, alternate Node versions, browser stale-build warning, and cancellat
 mid-npm-install were not manually exercised. Unit tests simulate failed builds and
 checkout changes; the actual build succeeded. The later evidence/test-only commit
 does not replace the launch commit recorded above.
+
+Integration review reproduced and fixed relative `-Config` resolution when PowerShell's
+current location differs from its process working directory. The wrapper now uses
+PowerShell's path resolver. A regression runs the actual wrapper from another directory
+with a stubbed Python dispatch, checking the selected path and restored caller location;
+it does not start a database or claim to replace the full launch check.
