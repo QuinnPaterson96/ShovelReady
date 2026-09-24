@@ -1,6 +1,6 @@
 # SR-02 and SR-03 foundation verification
 
-Status: verified implementation on `codex/foundation`, 2026-09-24. This is an application scaffold,
+Status: verified implementation merged via PR #20, 2026-09-24. This is an application scaffold,
 not a working zoning release. Exact local results below were run in the isolated foundation
 checkout on Windows with Python 3.12.3 and Node 22.14.0. GitHub Actions results are recorded
 below for the pull-request run.
@@ -74,5 +74,8 @@ single-owner repository. Force pushes and branch deletion are disabled.
 - `gh api repos/QuinnPaterson96/ShovelReady/branches/main/protection` confirmed
   required contexts `backend`, `frontend`, `container-startup`, `strict: true`,
   `enforce_admins: true`.
-- The workflow is configured for pushes to `main`, but that trigger has not run on
-  this branch. The PR is intentionally unmerged.
+- PR #20 and the subsequent contracts/input PRs #21/#19 are merged.
+  [Combined main CI run 36044657657](https://github.com/QuinnPaterson96/ShovelReady/actions/runs/36044657657)
+  completed successfully. The integrated suite contains 37 foundation/contract tests plus
+  two standalone acquisition tests. The earlier 23-test record above describes foundation alone.
+  Contract lint/test discovery and direct locked Pydantic were added during integration.
