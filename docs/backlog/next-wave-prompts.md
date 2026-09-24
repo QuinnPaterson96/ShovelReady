@@ -1,4 +1,6 @@
-# Next parallel work, after PRs #19-#21
+# First-wave prompts, after PRs #19-#21
+
+**Historical launch pack:** A/B/C are now merged in PRs #24-#26. Use [wave-two prompts](wave-two-prompts.md) for the current extraction/spatial tasks.
 
 Checkpoint: September 24, 2026. GitHub issues remain the live status source. Start each task in its own worktree from the latest merged `main`, with a `codex/` branch. The original working checkout contains unrelated uncommitted changes: do not reuse, reset or sweep those changes into a task.
 
