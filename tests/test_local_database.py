@@ -120,6 +120,23 @@ def test_native_lifecycle(tmp_path, monkeypatch):
             assert Repository(engine).get("spatial", expected.identity.revision_id) == expected
         finally:
             engine.dispose()
+        # Exercise the integration seam without replacing connect/Repository: the
+        # restarted helper's actual configuration must serve its exact seeded revision.
+        from fastapi.testclient import TestClient
+
+        from app.main import create_app
+
+        monkeypatch.setenv("SHOVELREADY_DATABASE_URL", url)
+        monkeypatch.setenv("SHOVELREADY_SPATIAL_COLLECTION", expected.identity.logical_id)
+        monkeypatch.setenv("SHOVELREADY_SPATIAL_REVISION", expected.identity.revision_id)
+        with TestClient(create_app()) as client:
+            response = client.get("/api/investigation")
+            assert response.status_code == 200
+            payload = response.json()
+            assert payload["spatial"] == expected.model_dump(mode="json")
+            assert len(payload["sources"]) == 15
+            assert payload["screening_status"] == "not_performed"
+            assert "SHOVELREADY_DATABASE_URL" not in response.text
         original = helper.config.read_text()
         config["system_identifier"] = "foreign-cluster"
         helper.config.write_text(json.dumps(config))

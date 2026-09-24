@@ -1,0 +1,527 @@
+{
+  "$defs": {
+    "FeatureAssessment": {
+      "additionalProperties": false,
+      "properties": {
+        "snapshot_id": {
+          "minLength": 1,
+          "title": "Snapshot Id",
+          "type": "string"
+        },
+        "feature_index": {
+          "minimum": 0,
+          "title": "Feature Index",
+          "type": "integer"
+        },
+        "status": {
+          "enum": [
+            "usable_xy",
+            "needs_investigation"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "issues": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Issues",
+          "type": "array"
+        },
+        "geometric_area_m2": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Geometric Area M2"
+        },
+        "geographic_xy": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "$ref": "#/$defs/JsonValue"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Geographic Xy"
+        }
+      },
+      "required": [
+        "snapshot_id",
+        "feature_index",
+        "status",
+        "issues"
+      ],
+      "title": "FeatureAssessment",
+      "type": "object"
+    },
+    "Intersection": {
+      "additionalProperties": false,
+      "properties": {
+        "zoning_snapshot_id": {
+          "minLength": 1,
+          "title": "Zoning Snapshot Id",
+          "type": "string"
+        },
+        "zoning_feature_index": {
+          "minimum": 0,
+          "title": "Zoning Feature Index",
+          "type": "integer"
+        },
+        "area_m2": {
+          "minimum": 0,
+          "title": "Area M2",
+          "type": "number"
+        },
+        "classification": {
+          "enum": [
+            "material",
+            "sliver",
+            "boundary_touch"
+          ],
+          "title": "Classification",
+          "type": "string"
+        },
+        "geometry": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Geometry",
+          "type": "object"
+        }
+      },
+      "required": [
+        "zoning_snapshot_id",
+        "zoning_feature_index",
+        "area_m2",
+        "classification",
+        "geometry"
+      ],
+      "title": "Intersection",
+      "type": "object"
+    },
+    "JsonValue": {},
+    "LayerObservation": {
+      "additionalProperties": false,
+      "properties": {
+        "source_id": {
+          "minLength": 1,
+          "title": "Source Id",
+          "type": "string"
+        },
+        "snapshot_id": {
+          "minLength": 1,
+          "title": "Snapshot Id",
+          "type": "string"
+        },
+        "metadata_snapshot_id": {
+          "minLength": 1,
+          "title": "Metadata Snapshot Id",
+          "type": "string"
+        },
+        "catalogue_snapshot_id": {
+          "minLength": 1,
+          "title": "Catalogue Snapshot Id",
+          "type": "string"
+        },
+        "layer_url": {
+          "minLength": 1,
+          "title": "Layer Url",
+          "type": "string"
+        },
+        "request_url": {
+          "minLength": 1,
+          "title": "Request Url",
+          "type": "string"
+        },
+        "attribution": {
+          "minLength": 1,
+          "title": "Attribution",
+          "type": "string"
+        },
+        "response": {
+          "additionalProperties": {
+            "$ref": "#/$defs/JsonValue"
+          },
+          "title": "Response",
+          "type": "object"
+        }
+      },
+      "required": [
+        "source_id",
+        "snapshot_id",
+        "metadata_snapshot_id",
+        "catalogue_snapshot_id",
+        "layer_url",
+        "request_url",
+        "attribution",
+        "response"
+      ],
+      "title": "LayerObservation",
+      "type": "object"
+    },
+    "ParcelAnalysis": {
+      "additionalProperties": false,
+      "properties": {
+        "parcel_snapshot_id": {
+          "minLength": 1,
+          "title": "Parcel Snapshot Id",
+          "type": "string"
+        },
+        "parcel_feature_index": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Parcel Feature Index"
+        },
+        "zoning_snapshot_id": {
+          "minLength": 1,
+          "title": "Zoning Snapshot Id",
+          "type": "string"
+        },
+        "intersections": {
+          "items": {
+            "$ref": "#/$defs/Intersection"
+          },
+          "title": "Intersections",
+          "type": "array"
+        },
+        "uncovered_area_m2": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Uncovered Area M2"
+        },
+        "overlapping_zone_area_m2": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Overlapping Zone Area M2"
+        },
+        "status": {
+          "const": "needs_investigation",
+          "default": "needs_investigation",
+          "title": "Status",
+          "type": "string"
+        },
+        "issues": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Issues",
+          "type": "array"
+        }
+      },
+      "required": [
+        "parcel_snapshot_id",
+        "parcel_feature_index",
+        "zoning_snapshot_id",
+        "intersections",
+        "issues"
+      ],
+      "title": "ParcelAnalysis",
+      "type": "object"
+    },
+    "RevisionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "logical_id": {
+          "minLength": 1,
+          "title": "Logical Id",
+          "type": "string"
+        },
+        "revision_id": {
+          "minLength": 1,
+          "title": "Revision Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "logical_id",
+        "revision_id"
+      ],
+      "title": "RevisionRef",
+      "type": "object"
+    },
+    "SourceMetadata": {
+      "additionalProperties": false,
+      "properties": {
+        "source_id": {
+          "minLength": 1,
+          "title": "Source Id",
+          "type": "string"
+        },
+        "snapshot_id": {
+          "minLength": 1,
+          "title": "Snapshot Id",
+          "type": "string"
+        },
+        "source_url": {
+          "minLength": 1,
+          "title": "Source Url",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        },
+        "captured_at": {
+          "format": "date-time",
+          "title": "Captured At",
+          "type": "string"
+        },
+        "printed_revision": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Printed Revision"
+        },
+        "effective_from": {
+          "default": null,
+          "title": "Effective From",
+          "type": "null"
+        },
+        "effective_to": {
+          "default": null,
+          "title": "Effective To",
+          "type": "null"
+        },
+        "original_crs": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Original Crs"
+        },
+        "original_units": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Original Units",
+          "type": "array"
+        },
+        "attribution": {
+          "minLength": 1,
+          "title": "Attribution",
+          "type": "string"
+        },
+        "review_status": {
+          "const": "unreviewed",
+          "default": "unreviewed",
+          "title": "Review Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_id",
+        "snapshot_id",
+        "source_url",
+        "sha256",
+        "captured_at",
+        "printed_revision",
+        "original_crs",
+        "original_units",
+        "attribution"
+      ],
+      "title": "SourceMetadata",
+      "type": "object"
+    },
+    "SpatialImport": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "sr-09.v1",
+          "default": "sr-09.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "identity": {
+          "$ref": "#/$defs/RevisionRef"
+        },
+        "identity_scope": {
+          "const": "bounded_capture_collection_not_permanent_features",
+          "default": "bounded_capture_collection_not_permanent_features",
+          "title": "Identity Scope",
+          "type": "string"
+        },
+        "source_snapshot_ids": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Source Snapshot Ids",
+          "type": "array"
+        },
+        "source_crs": {
+          "const": "EPSG:3157",
+          "default": "EPSG:3157",
+          "title": "Source Crs",
+          "type": "string"
+        },
+        "geographic_crs": {
+          "const": "EPSG:4617",
+          "default": "EPSG:4617",
+          "title": "Geographic Crs",
+          "type": "string"
+        },
+        "vertical_unit": {
+          "default": null,
+          "title": "Vertical Unit",
+          "type": "null"
+        },
+        "vertical_datum": {
+          "default": null,
+          "title": "Vertical Datum",
+          "type": "null"
+        },
+        "algorithm": {
+          "const": "sr-09.xy.v1",
+          "default": "sr-09.xy.v1",
+          "title": "Algorithm",
+          "type": "string"
+        },
+        "runtime": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Runtime",
+          "type": "object"
+        },
+        "transform": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Transform",
+          "type": "object"
+        },
+        "sliver_area_m2": {
+          "const": 0.01,
+          "default": 0.01,
+          "title": "Sliver Area M2",
+          "type": "number"
+        },
+        "observations": {
+          "items": {
+            "$ref": "#/$defs/LayerObservation"
+          },
+          "title": "Observations",
+          "type": "array"
+        },
+        "features": {
+          "items": {
+            "$ref": "#/$defs/FeatureAssessment"
+          },
+          "title": "Features",
+          "type": "array"
+        },
+        "parcels": {
+          "items": {
+            "$ref": "#/$defs/ParcelAnalysis"
+          },
+          "title": "Parcels",
+          "type": "array"
+        },
+        "review_status": {
+          "const": "unreviewed",
+          "default": "unreviewed",
+          "title": "Review Status",
+          "type": "string"
+        },
+        "publication_eligible": {
+          "const": false,
+          "default": false,
+          "title": "Publication Eligible",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "identity",
+        "source_snapshot_ids",
+        "runtime",
+        "transform",
+        "observations",
+        "features",
+        "parcels"
+      ],
+      "title": "SpatialImport",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "sr-12.observations.v1",
+      "default": "sr-12.observations.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "screening_status": {
+      "const": "not_performed",
+      "default": "not_performed",
+      "title": "Screening Status",
+      "type": "string"
+    },
+    "spatial": {
+      "$ref": "#/$defs/SpatialImport"
+    },
+    "sources": {
+      "items": {
+        "$ref": "#/$defs/SourceMetadata"
+      },
+      "title": "Sources",
+      "type": "array"
+    }
+  },
+  "required": [
+    "spatial",
+    "sources"
+  ],
+  "title": "Investigation",
+  "type": "object"
+}
