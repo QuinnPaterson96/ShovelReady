@@ -7,6 +7,11 @@ invented. The six fictional preview scenarios remain a separate selectable mode.
 
 ## Run the real observations locally
 
+For daily manual exploration, use the merged [persistent local database workflow](local-development.md).
+It supplies explicit migration/seed commands and the API's database, collection and
+exact revision configuration. The scratch demo below is an alternative for disposable
+rehearsals; it is not required before every local application start.
+
 From this checkout, with Python 3.12, Node 22.14 and PostgreSQL 17 binaries installed:
 
 ```powershell
@@ -166,3 +171,15 @@ batch evaluation, accepted-release/result identity, full saved-source-to-result
 integration (SR-13), deployment and independent customer validation remain open.
 Address resolution and positional/legal accuracy are also unverified. The selected
 observation revision never becomes an active release merely by being displayed.
+
+## Integration review
+
+With PRs #31/#32 integrated, 211 pytest cases and 28 contract subtests passed using
+disposable PostgreSQL, including the opt-in native lifecycle case. That case now
+checks the helper's restarted database through the real API configuration without a
+mocked connection. Full backend lint, acquisition/intake/preview checks, four frontend
+test groups, typecheck and build passed. A fresh scratch helper database also served
+the built UI in a browser: all three parcel leads loaded with their exact observation
+revision and investigation status; roofline inspection, layer toggle, zoom/reset and
+the map were checked. These are integration/author checks, not customer evidence or
+legal review. Scratch HTTP/database processes were stopped after inspection.

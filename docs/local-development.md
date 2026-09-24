@@ -55,7 +55,11 @@ Supply configuration explicitly in the shell that will launch the API:
 ```powershell
 $localDbConfig = Get-Content -Raw "$env:LOCALAPPDATA/ShovelReady/local-database/local.json" | ConvertFrom-Json
 $env:SHOVELREADY_DATABASE_URL = $localDbConfig.SHOVELREADY_DATABASE_URL
-# Launch the API using the reviewed SR-12 instructions in that checkout.
+$env:SHOVELREADY_SPATIAL_COLLECTION = 'victoria-pilot-three-leads'
+$env:SHOVELREADY_SPATIAL_REVISION = '<paste the exact revision printed by seed>'
+npm ci --prefix frontend
+npm run build --prefix frontend
+python -m uv run --locked uvicorn app.main:app --host 127.0.0.1 --port 8012
 ```
 
 This assignment does not print the password. No `.env` auto-loading is assumed.
@@ -78,6 +82,12 @@ The bounded checked-in licensed Victoria packet contains 15 sources, nine respon
 ten source-scoped features and three parcel analyses. Source hashes, source/revision
 identities and unreviewed status are preserved by the existing importer. No source
 recapture, accepted zoning release, screening result or publication is created.
+
+The integrated API uses `SHOVELREADY_SPATIAL_REVISION` and the collection value above.
+Open `http://127.0.0.1:8012` for the built real-observations UI. Use a free HTTP port
+and launch from the merged checkout; an already-running preview in another worktree
+does not pick up these changes. Ctrl+C stops HTTP; the database remains available
+until its explicit `stop` command. See [the API handoff](investigation-api.md).
 
 ## Ownership and recovery limits
 
@@ -128,3 +138,9 @@ checked for nonzero exit and secret redaction. Linux/macOS paths are supported t
 `--postgres-bin` and default to `~/.local/share/ShovelReady/local-database` when
 `LOCALAPPDATA` is absent, but those platforms have not been exercised. Run PostgreSQL
 as an unprivileged user. No API/UI servers were started or restarted by this task.
+
+Integration review subsequently verified the helper -> restart -> real API path
+without substituting the connection/repository, preserving the exact seeded spatial
+payload and all 15 source records. The combined suite passed 211 cases and 28
+contract subtests with the native lifecycle opt-in enabled, with no database skips.
+The manual review used a separate fresh scratch database, not the persistent default.
