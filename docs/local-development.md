@@ -144,3 +144,48 @@ without substituting the connection/repository, preserving the exact seeded spat
 payload and all 15 source records. The combined suite passed 211 cases and 28
 contract subtests with the native lifecycle opt-in enabled, with no database skips.
 The manual review used a separate fresh scratch database, not the persistent default.
+
+## Reproducible observation demo (SR-21)
+
+After explicitly running `start`, `migrate` and `seed` above, launch from a clean
+committed checkout with Python 3.12 and Node 22.14+ (22.x):
+
+```powershell
+./scripts/demo.ps1 -Config "$env:LOCALAPPDATA/ShovelReady/local-database/local.json" -Revision '<exact spatial:sha256:... printed by seed>'
+# Optional: -Port 8013 (default is 8012; loopback only)
+```
+
+The script can be invoked by absolute path from another working directory. Relative
+configuration paths resolve against the caller's directory. It installs locked npm
+dependencies and builds the frontend on each launch, then runs one foreground FastAPI
+server. `uv run --locked` prepares Python dependencies if needed. No migration, seed,
+publication or database start/stop happens during launch. Ctrl+C stops HTTP only;
+stop the owned database separately when desired.
+
+The launcher refuses dirty/untracked checkout files, unsupported Python/Node/environment,
+missing or foreign configuration, a stopped/unavailable database, an invalid or missing
+exact licensed revision, occupied HTTP ports and failed frontend builds. It reserves
+the serving socket before building and rechecks checkout identity after building.
+It never pulls, switches branches, resets, stashes or adopts/kills an existing process.
+Do not edit the checkout while it is serving: the process and frontend retain their
+launch/build identity and do not hot-reload later changes. Ignored local files and
+installed toolchains are outside the Git cleanliness guarantee.
+
+Expand **Application and observation identity** near the top of the page to inspect
+the API application commit, frontend build commit and selected spatial revision.
+`GET /api/identity` returns `sr-21.identity.v1`, a nonsecret snapshot captured at app
+creation. The frontend also embeds its own commit at build time and warns when that
+differs from the API's declared frontend build. Identity is diagnostic, not signed
+attestation. Generic/container starts without identity variables report unavailable;
+`/health` remains liveness-only and no-database startup remains supported.
+
+Only commit hashes, revision identifiers and explicit no-screening status are returned;
+configuration paths, URLs, passwords and environment dumps are excluded. A selected
+observation revision is not an accepted dataset. The fictional preview stays separate.
+The integrator selects the stable demo checkout after merge.
+
+Focused checks: `python -m uv run --locked pytest -q tests/test_demo_identity.py tests/test_startup.py`,
+`python -m uv run --locked ruff check app/identity.py app/main.py scripts/demo.py tests/test_demo_identity.py`,
+and frontend `npm test`, `npm run typecheck`, `npm run build`. Initial implementation
+checks passed 10 backend cases and 4 frontend cases; the existing Starlette/httpx warning
+remains. Clean-commit scratch-launch evidence is recorded below after verification.
