@@ -12,6 +12,18 @@ jobs:
   backend:
     name: backend
     runs-on: ubuntu-24.04
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: fixture
+          POSTGRES_PASSWORD: disposable-ci-only
+          POSTGRES_DB: shovelready_test_00000000000000000000000000000000
+        ports:
+          - 5432/tcp
+        options: >-
+          --health-cmd "pg_isready -U fixture -d shovelready_test_00000000000000000000000000000000"
+          --health-interval 5s --health-timeout 5s --health-retries 12
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
@@ -19,11 +31,13 @@ jobs:
           version: "0.12.17"
           enable-cache: true
       - run: uv sync --locked
-      - run: uv run --locked ruff check app tests contract_tests
+      - run: uv run --locked ruff check app tests contract_tests migrations scripts
       - run: uv run --locked python docs/pilot-inputs/test_acquire.py
       - run: uv run --locked pytest -q
         env:
           SHOVELREADY_ENV: test
+          SHOVELREADY_TEST_DATABASE_DISPOSABLE: "yes"
+          SHOVELREADY_TEST_DATABASE_URL: postgresql://fixture:disposable-ci-only@127.0.0.1:${{ job.services.postgres.ports[5432] }}/shovelready_test_00000000000000000000000000000000
 
   frontend:
     name: frontend
