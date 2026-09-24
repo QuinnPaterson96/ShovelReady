@@ -1,5 +1,11 @@
 # Wave three: evaluator core and real spatial evidence viewer
 
+**Completed implementation wave:** PRs #31 (evaluator), #32 (local database) and #33
+(observation API/UI) are merged. The prompts below are historical launch instructions,
+not tasks to dispatch again. See the [integration review](../integration-review-2026-09-24.md)
+for the current verification and remaining gates; the parent MVP tickets are not
+completed by these partial deliveries.
+
 Checkpoint: September 24, 2026, after PRs [#28](https://github.com/QuinnPaterson96/ShovelReady/pull/28) and [#29](https://github.com/QuinnPaterson96/ShovelReady/pull/29). This supersedes the launch instructions in [wave two](wave-two-prompts.md). GitHub issues remain the live status source. These two tasks are partial deliveries toward existing tickets, not a claim that M1 is complete.
 
 ## Integration evidence and limits
