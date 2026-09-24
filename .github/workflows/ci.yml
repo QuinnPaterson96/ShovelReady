@@ -79,10 +79,11 @@ jobs:
         shell: pwsh
         run: |
           # Runner image metadata points at its installed service; never use that cluster.
-          'PGBIN', 'PGDATA', 'PGROOT' | ForEach-Object {
-            Remove-Item "Env:$_" -ErrorAction SilentlyContinue
+          Get-ChildItem Env:PG* | ForEach-Object {
+            Write-Output "Clearing inherited PostgreSQL setting: $($_.Name)"
+            Remove-Item -LiteralPath "Env:$($_.Name)"
           }
-          uv run --locked python -m pytest -v tests/test_local_database.py -p tests.native_lifecycle_guard --tb=no --show-capture=no
+          uv run --locked python -m pytest -v tests/test_local_database.py -p tests.native_lifecycle_guard --tb=no --show-capture=no -rN
           exit $LASTEXITCODE
 
   frontend:

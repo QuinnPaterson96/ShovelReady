@@ -18,13 +18,14 @@ The runner image's patch version may advance; the actual versions appear in the 
 Checkout and setup-uv actions are commit-pinned. uv 0.12.17 installs Python 3.12 and
 syncs the committed lockfile.
 
-The runner's known `PGBIN`, `PGDATA`, and `PGROOT` metadata is removed from the test
-process environment. Other unexpected PG overrides still trigger the helper's refusal.
+All inherited `PG*` variables are removed from this isolated job's test process
+environment, logging names only. The refusal test injects a PG override and verifies
+that the helper still rejects it; the helper's safeguards are unchanged.
 The job neither starts nor stops the installed service and never uses its data directory.
 
 ```powershell
 $env:SHOVELREADY_LOCAL_LIFECYCLE_POSTGRES_BIN = 'C:/Program Files/PostgreSQL/17/bin'
-uv run --locked python -m pytest -v tests/test_local_database.py -p tests.native_lifecycle_guard --tb=no --show-capture=no
+uv run --locked python -m pytest -v tests/test_local_database.py -p tests.native_lifecycle_guard --tb=no --show-capture=no -rN
 ```
 
 The explicit plugin requires successful setup, call, and teardown reports for
@@ -48,8 +49,8 @@ failure. Ownership verification still applies during cleanup; it never bypasses 
 refusal to stop another server. A forcibly terminated job relies on destruction of
 the disposable hosted runner. No persistent development database is involved.
 
-Verbose test names, phase outcomes and binary versions are logged. Tracebacks and
-captured test output are suppressed because driver exceptions can contain SQL data or
+Verbose test names, outcomes and binary versions are logged. Tracebacks, failure
+summary details and captured test output are suppressed because exceptions can contain SQL data or
 credentials. No artifacts upload `local.json`, server logs, database contents or
 connection strings. Investigate failures with an isolated local reproduction; do not
 enable unredacted CI output to diagnose driver errors.
