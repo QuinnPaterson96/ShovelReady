@@ -1,0 +1,693 @@
+{
+  "schema_version": "pilot-corpus.v1",
+  "clauses": [
+    {
+      "clause_id": "VIC-01",
+      "group": "A",
+      "split": "development",
+      "source_id": "zoning-2018",
+      "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+      "locator": "Part 1.1(2)-(4), PDF p6, Map 1",
+      "provisional_annotation": "Check geographic instrument selection and zoning-map linkage; old 80-159 provisions are not the default within the 2018 map area.",
+      "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+      "exact_excerpt": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "disagreements": [],
+      "disagreement_status": "not_solicited",
+      "dependency_groups": [],
+      "benchmark_eligible": false,
+      "blockers": [
+        "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+        "Independent interpretation, rationale and dependency-completeness review required.",
+        "Current per-site instrument/amendment applicability unresolved."
+      ]
+    },
+    {
+      "clause_id": "VIC-02",
+      "group": "A",
+      "split": "development",
+      "source_id": "zoning-2018",
+      "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+      "locator": "Part 1.1(5)-(6), PDF p7",
+      "provisional_annotation": "Site-specific provisions and split zones must survive interpretation; an intersection is not whole-lot coverage proof.",
+      "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+      "exact_excerpt": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "disagreements": [],
+      "disagreement_status": "not_solicited",
+      "dependency_groups": [],
+      "benchmark_eligible": false,
+      "blockers": [
+        "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+        "Independent interpretation, rationale and dependency-completeness review required.",
+        "Current per-site instrument/amendment applicability unresolved."
+      ]
+    },
+    {
+      "clause_id": "VIC-03",
+      "group": "A",
+      "split": "development",
+      "source_id": "zoning-2018",
+      "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+      "locator": "Part 1.1(21), PDF pp9-10",
+      "provisional_annotation": "Review transition provisions if actual permits/agreements exist; do not use historic approvals as present design fit.",
+      "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+      "exact_excerpt": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "disagreements": [],
+      "disagreement_status": "not_solicited",
+      "dependency_groups": [],
+      "benchmark_eligible": false,
+      "blockers": [
+        "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+        "Independent interpretation, rationale and dependency-completeness review required.",
+        "Current per-site instrument/amendment applicability unresolved."
+      ]
+    },
+    {
+      "clause_id": "VIC-04",
+      "group": "U",
+      "split": "development",
+      "source_id": "zoning-2018",
+      "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+      "locator": "Part 2.2, Garden Suite definition, PDF p21",
+      "provisional_annotation": "Foundation attachment and companion single-detached/duplex use need actual facts. Roofline size cannot establish use.",
+      "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+      "exact_excerpt": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "disagreements": [],
+      "disagreement_status": "not_solicited",
+      "dependency_groups": [
+        "A"
+      ],
+      "benchmark_eligible": false,
+      "blockers": [
+        "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+        "Independent interpretation, rationale and dependency-completeness review required.",
+        "Current per-site instrument/amendment applicability unresolved."
+      ]
+    },
+    {
+      "clause_id": "VIC-05",
+      "group": "U",
+      "split": "development",
+      "source_id": "zoning-2018",
+      "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+      "locator": "Part 4.1(1), PDF p30; Residential definition, Part 2.2, PDF p22",
+      "provisional_annotation": "Resolve the use permission and garden-suite relationship within GRD-1.",
+      "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+      "exact_excerpt": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "disagreements": [],
+      "disagreement_status": "not_solicited",
+      "dependency_groups": [
+        "A"
+      ],
+      "benchmark_eligible": false,
+      "blockers": [
+        "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+        "Independent interpretation, rationale and dependency-completeness review required.",
+        "Current per-site instrument/amendment applicability unresolved."
+      ]
+    },
+    {
+      "clause_id": "VIC-06",
+      "group": "U",
+      "split": "development",
+      "source_id": "zoning-2018",
+      "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+      "locator": "Part 3.1(28)(b), PDF p27",
+      "provisional_annotation": "One garden suite on a lot; actual existing use/count unknown.",
+      "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+      "exact_excerpt": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "disagreements": [],
+      "disagreement_status": "not_solicited",
+      "dependency_groups": [
+        "A"
+      ],
+      "benchmark_eligible": false,
+      "blockers": [
+        "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+        "Independent interpretation, rationale and dependency-completeness review required.",
+        "Current per-site instrument/amendment applicability unresolved."
+      ]
+    },
+    {
+      "clause_id": "VIC-07",
+      "group": "U",
+      "split": "development",
+      "source_id": "zoning-2018",
+      "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+      "locator": "Part 3.1(28)(c), PDF p27",
+      "provisional_annotation": "Conversion age restriction is conditional on converting an accessory building. New installation cannot inherit an assumed conversion history.",
+      "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+      "exact_excerpt": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "disagreements": [],
+      "disagreement_status": "not_solicited",
+      "dependency_groups": [
+        "A"
+      ],
+      "benchmark_eligible": false,
+      "blockers": [
+        "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+        "Independent interpretation, rationale and dependency-completeness review required.",
+        "Current per-site instrument/amendment applicability unresolved."
+      ]
+    },
+    {
+      "clause_id": "VIC-08",
+      "group": "R",
+      "split": "development",
+      "source_id": "zoning-2018",
+      "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+      "locator": "Part 3.1(28)(a), PDF p27",
+      "provisional_annotation": "Rear-yard location requires a reviewed rear-yard polygon.",
+      "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+      "exact_excerpt": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "disagreements": [],
+      "disagreement_status": "not_solicited",
+      "dependency_groups": [
+        "A",
+        "U"
+      ],
+      "benchmark_eligible": false,
+      "blockers": [
+        "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+        "Independent interpretation, rationale and dependency-completeness review required.",
+        "Current per-site instrument/amendment applicability unresolved."
+      ]
+    },
+    {
+      "clause_id": "VIC-09",
+      "group": "R",
+      "split": "development",
+      "source_id": "zoning-2018",
+      "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+      "locator": "Part 2.1, Front Lot Line, PDF p16",
+      "provisional_annotation": "Branch on corner, through-lot and access facts; no automatic orientation from a bounding box.",
+      "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+      "exact_excerpt": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "disagreements": [],
+      "disagreement_status": "not_solicited",
+      "dependency_groups": [
+        "A",
+        "U"
+      ],
+      "benchmark_eligible": false,
+      "blockers": [
+        "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+        "Independent interpretation, rationale and dependency-completeness review required.",
+        "Current per-site instrument/amendment applicability unresolved."
+      ]
+    },
+    {
+      "clause_id": "VIC-10",
+      "group": "R",
+      "split": "development",
+      "source_id": "zoning-2018",
+      "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+      "locator": "Part 2.1, Rear Lot Line / Rear Yard, PDF pp18-19",
+      "provisional_annotation": "Resolve rear boundary and full-width yard from principal building and lot lines.",
+      "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+      "exact_excerpt": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "disagreements": [],
+      "disagreement_status": "not_solicited",
+      "dependency_groups": [
+        "A",
+        "U"
+      ],
+      "benchmark_eligible": false,
+      "blockers": [
+        "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+        "Independent interpretation, rationale and dependency-completeness review required.",
+        "Current per-site instrument/amendment applicability unresolved."
+      ]
+    },
+    {
+      "clause_id": "VIC-11",
+      "group": "F",
+      "split": "development",
+      "source_id": "zoning-2018",
+      "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+      "locator": "Part 2.1, Floor Area, PDF p16",
+      "provisional_annotation": "Interior wall basis plus stated inclusions/exclusions; marketing interior area alone is insufficient.",
+      "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+      "exact_excerpt": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "disagreements": [],
+      "disagreement_status": "not_solicited",
+      "dependency_groups": [
+        "A",
+        "U"
+      ],
+      "benchmark_eligible": false,
+      "blockers": [
+        "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+        "Independent interpretation, rationale and dependency-completeness review required.",
+        "Current per-site instrument/amendment applicability unresolved."
+      ]
+    },
+    {
+      "clause_id": "VIC-12",
+      "group": "F",
+      "split": "development",
+      "source_id": "zoning-2018",
+      "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+      "locator": "Part 3.1(28)(d), PDF p27",
+      "provisional_annotation": "Published maximum 56 m2; comparison awaits reviewed Floor Area and applicability.",
+      "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+      "exact_excerpt": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "disagreements": [],
+      "disagreement_status": "not_solicited",
+      "dependency_groups": [
+        "A",
+        "U"
+      ],
+      "benchmark_eligible": false,
+      "blockers": [
+        "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+        "Independent interpretation, rationale and dependency-completeness review required.",
+        "Current per-site instrument/amendment applicability unresolved."
+      ]
+    },
+    {
+      "clause_id": "VIC-13",
+      "group": "H",
+      "split": "held_out",
+      "source_id": "zoning-2018",
+      "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+      "locator": "Part 2.1, Average Grade, PDF p12",
+      "provisional_annotation": "Natural/finished-grade method and illustration require site elevations, not 2D slope inference.",
+      "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+      "exact_excerpt": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "disagreements": [],
+      "disagreement_status": "not_solicited",
+      "dependency_groups": [],
+      "benchmark_eligible": false,
+      "blockers": [
+        "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+        "Independent interpretation, rationale and dependency-completeness review required.",
+        "Current per-site instrument/amendment applicability unresolved."
+      ]
+    },
+    {
+      "clause_id": "VIC-14",
+      "group": "H",
+      "split": "held_out",
+      "source_id": "zoning-2018",
+      "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+      "locator": "Part 2.1, Height, PDF p17",
+      "provisional_annotation": "Flat/domed, pitched and gambrel roof branches and exclusions need actual roof/datum facts.",
+      "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+      "exact_excerpt": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "disagreements": [],
+      "disagreement_status": "not_solicited",
+      "dependency_groups": [],
+      "benchmark_eligible": false,
+      "blockers": [
+        "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+        "Independent interpretation, rationale and dependency-completeness review required.",
+        "Current per-site instrument/amendment applicability unresolved."
+      ]
+    },
+    {
+      "clause_id": "VIC-15",
+      "group": "H",
+      "split": "held_out",
+      "source_id": "zoning-2018",
+      "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+      "locator": "Part 3.1(28)(e), PDF p27",
+      "provisional_annotation": "Published maximum 4.2 m is regulatory Height; 9 ft ceiling height is not evidence of compliance.",
+      "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+      "exact_excerpt": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "disagreements": [],
+      "disagreement_status": "not_solicited",
+      "dependency_groups": [],
+      "benchmark_eligible": false,
+      "blockers": [
+        "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+        "Independent interpretation, rationale and dependency-completeness review required.",
+        "Current per-site instrument/amendment applicability unresolved."
+      ]
+    },
+    {
+      "clause_id": "VIC-16",
+      "group": "S",
+      "split": "development",
+      "source_id": "zoning-2018",
+      "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+      "locator": "Part 3.1(28)(f), PDF p27",
+      "provisional_annotation": "Published side/rear minimum 0.6 m, subject to correct line identity and applicable definitions/exceptions.",
+      "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+      "exact_excerpt": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "disagreements": [],
+      "disagreement_status": "not_solicited",
+      "dependency_groups": [
+        "A",
+        "U",
+        "R"
+      ],
+      "benchmark_eligible": false,
+      "blockers": [
+        "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+        "Independent interpretation, rationale and dependency-completeness review required.",
+        "Current per-site instrument/amendment applicability unresolved."
+      ]
+    },
+    {
+      "clause_id": "VIC-17",
+      "group": "S",
+      "split": "development",
+      "source_id": "zoning-2018",
+      "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+      "locator": "Part 3.1(28)(g), PDF p27",
+      "provisional_annotation": "Published flanking minimum 3.5 m; needs confirmed street/lot classification.",
+      "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+      "exact_excerpt": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "disagreements": [],
+      "disagreement_status": "not_solicited",
+      "dependency_groups": [
+        "A",
+        "U",
+        "R"
+      ],
+      "benchmark_eligible": false,
+      "blockers": [
+        "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+        "Independent interpretation, rationale and dependency-completeness review required.",
+        "Current per-site instrument/amendment applicability unresolved."
+      ]
+    },
+    {
+      "clause_id": "VIC-18",
+      "group": "S",
+      "split": "development",
+      "source_id": "zoning-2018",
+      "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+      "locator": "Part 3.1(28)(h), PDF p28",
+      "provisional_annotation": "Published principal-building separation 2.4 m; roof polygons are not verified wall faces.",
+      "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+      "exact_excerpt": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "disagreements": [],
+      "disagreement_status": "not_solicited",
+      "dependency_groups": [
+        "A",
+        "U",
+        "R"
+      ],
+      "benchmark_eligible": false,
+      "blockers": [
+        "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+        "Independent interpretation, rationale and dependency-completeness review required.",
+        "Current per-site instrument/amendment applicability unresolved."
+      ]
+    },
+    {
+      "clause_id": "VIC-19",
+      "group": "S",
+      "split": "development",
+      "source_id": "zoning-2018",
+      "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+      "locator": "Part 2.1, Setback, PDF p19; Part 1.1(12), PDF p8; Part 4.1(4), PDF pp31-32",
+      "provisional_annotation": "Resolve measurement faces, projection treatment and relationship between general zone setbacks and garden-suite requirements. No optimistic mixing.",
+      "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+      "exact_excerpt": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "disagreements": [],
+      "disagreement_status": "not_solicited",
+      "dependency_groups": [
+        "A",
+        "U",
+        "R"
+      ],
+      "benchmark_eligible": false,
+      "blockers": [
+        "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+        "Independent interpretation, rationale and dependency-completeness review required.",
+        "Current per-site instrument/amendment applicability unresolved."
+      ]
+    },
+    {
+      "clause_id": "VIC-20",
+      "group": "R",
+      "split": "development",
+      "source_id": "zoning-2018",
+      "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+      "locator": "Part 3.1(28)(i), PDF p28",
+      "provisional_annotation": "Published rear-yard occupancy cap 25%; denominator is rear yard, not total parcel area. Review occupancy numerator/projections.",
+      "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+      "exact_excerpt": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "disagreements": [],
+      "disagreement_status": "not_solicited",
+      "dependency_groups": [
+        "A",
+        "U"
+      ],
+      "benchmark_eligible": false,
+      "blockers": [
+        "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+        "Independent interpretation, rationale and dependency-completeness review required.",
+        "Current per-site instrument/amendment applicability unresolved."
+      ]
+    },
+    {
+      "clause_id": "VIC-21",
+      "group": "D",
+      "split": "development",
+      "source_id": "zoning-2018",
+      "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+      "locator": "Part 2.1, Lot/Lot Coverage, PDF p18; Part 4.1(6), PDF p33",
+      "provisional_annotation": "Separate whole-lot coverage from rear-yard occupancy and select a coherent development column.",
+      "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+      "exact_excerpt": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "disagreements": [],
+      "disagreement_status": "not_solicited",
+      "dependency_groups": [
+        "A",
+        "U",
+        "F",
+        "R"
+      ],
+      "benchmark_eligible": false,
+      "blockers": [
+        "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+        "Independent interpretation, rationale and dependency-completeness review required.",
+        "Current per-site instrument/amendment applicability unresolved."
+      ]
+    },
+    {
+      "clause_id": "VIC-22",
+      "group": "D",
+      "split": "development",
+      "source_id": "zoning-2018",
+      "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+      "locator": "Part 2.1, FSR, PDF p16; Part 4.1(2), PDF p30; Part 1.1(16)-(18), PDF p8",
+      "provisional_annotation": "Preserve all-building Floor Area, Lot basis, unit-count branches and any dedication exception. Unresolved whole-lot facts prevent an overall pass.",
+      "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+      "exact_excerpt": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "disagreements": [],
+      "disagreement_status": "not_solicited",
+      "dependency_groups": [
+        "A",
+        "U",
+        "F",
+        "R"
+      ],
+      "benchmark_eligible": false,
+      "blockers": [
+        "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+        "Independent interpretation, rationale and dependency-completeness review required.",
+        "Current per-site instrument/amendment applicability unresolved."
+      ]
+    },
+    {
+      "clause_id": "VIC-23",
+      "group": "U",
+      "split": "development",
+      "source_id": "zoning-2018",
+      "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+      "locator": "Part 3.1(30), PDF p28",
+      "provisional_annotation": "Review general residential size/unit-mix provisions and interaction with this proposed installation; do not omit because subsection 28 looks simpler.",
+      "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+      "exact_excerpt": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "disagreements": [],
+      "disagreement_status": "not_solicited",
+      "dependency_groups": [
+        "A"
+      ],
+      "benchmark_eligible": false,
+      "blockers": [
+        "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+        "Independent interpretation, rationale and dependency-completeness review required.",
+        "Current per-site instrument/amendment applicability unresolved."
+      ]
+    },
+    {
+      "clause_id": "VIC-24",
+      "group": "X",
+      "split": "development",
+      "source_id": "zoning-2018",
+      "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+      "locator": "Part 3.1(35), PDF p28; Part 4.1(1.1)(c), PDF p30",
+      "provisional_annotation": "Waterfront-specific restrictions can change applicable siting; absence of a waterfront field does not establish not applicable.",
+      "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+      "exact_excerpt": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "disagreements": [],
+      "disagreement_status": "not_solicited",
+      "dependency_groups": [
+        "A",
+        "U",
+        "S",
+        "D"
+      ],
+      "benchmark_eligible": false,
+      "blockers": [
+        "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+        "Independent interpretation, rationale and dependency-completeness review required.",
+        "Current per-site instrument/amendment applicability unresolved."
+      ]
+    },
+    {
+      "clause_id": "VIC-25",
+      "group": "X",
+      "split": "development",
+      "source_id": "zoning-2018",
+      "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+      "locator": "Part 4.1(5), PDF p32; Part 5; Part 4.1(8), PDF pp33-43",
+      "provisional_annotation": "Parking and site-specific provisions are dependencies, not automatic passes; capture/resolve exact applicable clauses after site facts are supplied.",
+      "annotation_provenance": "agent transcription of clause-review-queue.md; not new review",
+      "exact_excerpt": null,
+      "review_status": "unreviewed",
+      "reviewer": null,
+      "disagreements": [],
+      "disagreement_status": "not_solicited",
+      "dependency_groups": [
+        "A",
+        "U",
+        "S",
+        "D"
+      ],
+      "benchmark_eligible": false,
+      "blockers": [
+        "Authorized exact excerpt and full context not packaged; locator alone is not Evidence.",
+        "Independent interpretation, rationale and dependency-completeness review required.",
+        "Current per-site instrument/amendment applicability unresolved."
+      ]
+    }
+  ],
+  "sites": [
+    {
+      "site_id": "VIC-059",
+      "source_ids": [
+        "site-59-parcel",
+        "site-59-zones",
+        "site-59-rooflines"
+      ],
+      "status": "unreviewed_lead",
+      "supplied_placement": null,
+      "expected_fit": null,
+      "missing_facts": [
+        "Controlled fixed design revision/configuration",
+        "Survey and verified legal lot identity/boundaries",
+        "Principal-building wall/projection geometry, use and dwelling counts",
+        "Classified front/rear/side/flanking lot lines",
+        "Reviewed rear-yard polygon and occupancy basis",
+        "Human-supplied placement with anchor, rotation and CRS",
+        "Natural/finished grade and vertical datum tied to installation/roof elevations",
+        "Regulatory Floor Area and whole-lot density/coverage accounting",
+        "Current governing instrument, amendments, site-specific rules and overlays",
+        "Named independent reviewer and evidenced expected checks"
+      ],
+      "specific_action": "Identify both rooflines, principal dwelling and retained/removed structures; reconcile Residential_2023 and Residential labels."
+    },
+    {
+      "site_id": "VIC-080",
+      "source_ids": [
+        "site-80-parcel",
+        "site-80-zones",
+        "site-80-rooflines"
+      ],
+      "status": "unreviewed_lead",
+      "supplied_placement": null,
+      "expected_fit": null,
+      "missing_facts": [
+        "Controlled fixed design revision/configuration",
+        "Survey and verified legal lot identity/boundaries",
+        "Principal-building wall/projection geometry, use and dwelling counts",
+        "Classified front/rear/side/flanking lot lines",
+        "Reviewed rear-yard polygon and occupancy basis",
+        "Human-supplied placement with anchor, rotation and CRS",
+        "Natural/finished grade and vertical datum tied to installation/roof elevations",
+        "Regulatory Floor Area and whole-lot density/coverage accounting",
+        "Current governing instrument, amendments, site-specific rules and overlays",
+        "Named independent reviewer and evidenced expected checks"
+      ],
+      "specific_action": "Verify PGA designation and principal dwelling/unit count; establish frontage and classified lot lines from supplied plans."
+    },
+    {
+      "site_id": "VIC-086",
+      "source_ids": [
+        "site-86-parcel",
+        "site-86-zones",
+        "site-86-rooflines"
+      ],
+      "status": "unreviewed_lead",
+      "supplied_placement": null,
+      "expected_fit": null,
+      "missing_facts": [
+        "Controlled fixed design revision/configuration",
+        "Survey and verified legal lot identity/boundaries",
+        "Principal-building wall/projection geometry, use and dwelling counts",
+        "Classified front/rear/side/flanking lot lines",
+        "Reviewed rear-yard polygon and occupancy basis",
+        "Human-supplied placement with anchor, rotation and CRS",
+        "Natural/finished grade and vertical datum tied to installation/roof elevations",
+        "Regulatory Floor Area and whole-lot density/coverage accounting",
+        "Current governing instrument, amendments, site-specific rules and overlays",
+        "Named independent reviewer and evidenced expected checks"
+      ],
+      "specific_action": "Independently establish principal building, legal rear yard and placement; do not copy site 80 facts because zoning bytes match."
+    }
+  ]
+}
