@@ -34,8 +34,9 @@ a usable export. This is a local diagnostic bundle, not a persistence alternativ
 Store private runs in authorized restricted locations and keep credentials out of
 metadata. Console output contains states rather than private response content.
 
-Exit codes: `0` means all replay fields normalized (still unreviewed), or context
-checks passed; `2` means unresolved/quarantined fields or blocked eligibility;
+Exit codes: `0` means all replay fields normalized (still unreviewed) with no
+unresolved auxiliary objects, or context checks passed; `2` means
+unresolved/quarantined fields, auxiliary objects or blocked eligibility;
 `1` means invalid command input/metadata or a filesystem failure. Malformed response
 bytes are retained with a report and exit `2`. Malformed metadata is rejected with
 exit `1`; it cannot establish run/source identity. Missing output is `omitted`,
@@ -60,6 +61,9 @@ that sequence without JSON repair, fence stripping, duplicate-key overwrites or
 partial recovery. Auxiliary rule/calculation objects remain in raw bytes and are
 explicitly flagged unresolved; no expressions execute and no external references
 are automatically resolved from a paraphrase in Part 2.
+Empty or whitespace-padded parameter names quarantine the response as malformed,
+retaining exact bytes instead of dropping the diagnostic bundle or stripping names
+into another field's identity.
 
 Only the historical five-key scalar shape is normalized. Callers must supply
 field context with candidate ID, pathway/alternative, measurement definition,
@@ -194,3 +198,9 @@ Actual local results on September 24, 2026 (Python 3.12.3, locked dependencies):
 - Actual corpus inspection reports 25 blocked entries and no accuracy/cost/timing
   measurement. No source review, live model, cloud, database or frontend change was
   performed. Required remote checks are reported on the PR separately.
+
+Integration review on September 24 reproduced and fixed invalid parameter names
+losing their diagnostic bundle and unresolved auxiliary objects returning CLI
+success. Four added regression cases pass (37 focused extraction cases total).
+The branch passes full lint and 95 pytest cases plus 28 contract subtests using a
+new isolated disposable PostgreSQL 17 cluster, including all persistence checks.

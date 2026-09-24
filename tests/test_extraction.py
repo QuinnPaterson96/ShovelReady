@@ -227,3 +227,39 @@ def test_cli_replay_exit_and_retention(tmp_path, capsys):
     assert main(args) == 2
     assert (tmp_path / "result/response.bin").is_file()
     assert main(args) == 1
+
+
+@pytest.mark.parametrize("parameter", ["", " ", " setback_distances"])
+def test_invalid_parameter_names_are_quarantined_with_exact_bytes(tmp_path, parameter):
+    response = tmp_path / "input.response"
+    raw = json.dumps({parameter: 1}).encode()
+    response.write_bytes(raw)
+    output = tmp_path / "result"
+    report = save_replay(response, FIXTURES / "metadata.json", PROMPT, output)
+    assert report.outcomes[0].state == "malformed"
+    assert (output / "response.bin").read_bytes() == raw
+
+
+def test_auxiliary_objects_keep_cli_unresolved_even_with_normalized_scalars(tmp_path):
+    response = tmp_path / "input.response"
+    response.write_bytes((FIXTURES / "valid.response").read_bytes() + b'\n{"rule": "unresolved"}')
+    output = tmp_path / "result"
+    assert (
+        main(
+            [
+                "replay",
+                "--response",
+                str(response),
+                "--metadata",
+                str(FIXTURES / "metadata.json"),
+                "--prompt",
+                str(PROMPT),
+                "--output",
+                str(output),
+            ]
+        )
+        == 2
+    )
+    report = ReplayReport.model_validate_json((output / "report.json").read_bytes())
+    assert report.outcomes[0].state == "normalized"
+    assert report.parse_issues == ("auxiliary_objects_retained_unresolved",)

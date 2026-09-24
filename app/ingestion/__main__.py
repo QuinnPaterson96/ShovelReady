@@ -56,11 +56,16 @@ def main(argv=None):
                 json.dumps(
                     {
                         "benchmark_status": report.benchmark_status,
+                        "parse_issues": report.parse_issues,
                         "states": [o.state for o in report.outcomes],
                     }
                 )
             )
-            return 0 if all(o.state == "normalized" for o in report.outcomes) else 2
+            return (
+                0
+                if not report.parse_issues and all(o.state == "normalized" for o in report.outcomes)
+                else 2
+            )
         corpus = read_corpus(args.corpus)
         if args.command == "eligibility":
             print(json.dumps(assess(corpus), indent=2))

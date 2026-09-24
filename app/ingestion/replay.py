@@ -42,6 +42,9 @@ def parse_response(raw: bytes) -> list[dict]:
         value, offset = decoder.raw_decode(text, offset)
         if not isinstance(value, dict) or len(objects) == 3:
             raise ValueError("expected one to three top-level objects")
+        if not objects and any(not key or key != key.strip() for key in value):
+            # Outcome names must stay exact and nonempty; never strip into another identity.
+            raise ValueError("invalid parameter name")
         objects.append(value)
     if not objects:
         raise ValueError("empty response")
