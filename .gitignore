@@ -9,3 +9,9 @@ build/
 .DS_Store
 
 node_modules/
+
+.venv/
+.pytest_cache/
+.ruff_cache/
+.env.*
+!.env.example
