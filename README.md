@@ -72,6 +72,7 @@ Results distinguish **candidate**, **needs investigation**, and **no match under
 |---|---|
 | [Architecture](docs/architecture.md) | Minimal system boundaries, deployment direction, and implementation sequence |
 | [Quality agreement](docs/quality.md) | Data contracts, testing, publication, and definition of done |
+| [Persistence interface](docs/persistence.md) | Immutable imports, draft metadata, migrations and disposable PostgreSQL checks |
 | [MVP ticket backlog](docs/backlog/README.md) | Sequenced technical proof, CI/CD, customer pilot, and expansion experiments |
 | [Prototype input evidence](docs/pilot-inputs/README.md) | Captured Victoria sources, licensed GIS samples, provisional design/site specifications, and unresolved review inputs |
 | [Research plan](docs/research.md) | Commercial hypotheses and experiments before expansion |
@@ -91,7 +92,7 @@ Show missing inputs and unsupported cases. Reproduce an earlier result against i
 
 The intended stack is FastAPI, Pydantic, SQLAlchemy, PostgreSQL, and React/TypeScript/Vite. Introduce PostGIS when spatial operations require it. Initially run ingestion as an explicit local batch command.
 
-Startup and frontend repair and focused offline tests are implemented. Next, add the pilot intake/review packet and persistence; a synthetic investigation preview can proceed independently. All new persistence tests must use an explicitly isolated disposable database. Do not run the retired database tests from repository history.
+Startup, frontend repair, focused offline tests and immutable PostgreSQL persistence are implemented. See the [persistence handoff](docs/persistence.md) for draft-only storage, explicit migrations and isolated database checks. Pilot intake/review and a synthetic investigation preview can proceed independently; active publication remains future work. Do not run the retired database tests from repository history.
 
 The scaffold setup above is verified locally. Never use historical embedded credentials or remote test defaults.
 
