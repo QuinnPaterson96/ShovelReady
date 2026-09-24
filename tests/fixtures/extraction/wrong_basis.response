@@ -1,0 +1,1 @@
+{"setback_distances": {"units": "ft", "isRatioOf": "lotArea", "value": 10, "is_minimum": false, "is_maximum": true}}

@@ -1,0 +1,1 @@
+{"setback_distances": [{"condition": "subject to synthetic review", "value_if_condition": {"units": "ft", "isRatioOf": "N/A", "value": 10, "is_minimum": false, "is_maximum": true}}]}
