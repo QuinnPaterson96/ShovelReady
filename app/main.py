@@ -7,6 +7,7 @@ from fastapi import FastAPI
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
+from app.identity import AppIdentity, capture_identity
 from app.investigation import router
 
 FRONTEND_DIST = Path(__file__).resolve().parents[1] / "frontend" / "dist"
@@ -21,6 +22,11 @@ def create_app(*, frontend_dist: Path = FRONTEND_DIST) -> FastAPI:
     application = FastAPI(title="ShovelReady", version="0.1.0")
 
     application.include_router(router)
+    identity = capture_identity()
+
+    @application.get("/api/identity", response_model=AppIdentity)
+    def app_identity() -> AppIdentity:
+        return identity
 
     @application.get("/health")
     def health() -> dict[str, str]:

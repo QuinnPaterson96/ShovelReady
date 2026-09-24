@@ -44,6 +44,49 @@ jobs:
           SHOVELREADY_TEST_DATABASE_DISPOSABLE: "yes"
           SHOVELREADY_TEST_DATABASE_URL: postgresql://fixture:disposable-ci-only@127.0.0.1:${{ job.services.postgres.ports[5432] }}/shovelready_test_00000000000000000000000000000000
 
+  native-local-database-windows:
+    name: native-local-database-windows
+    runs-on: windows-2025
+    timeout-minutes: 15
+    env:
+      SHOVELREADY_ENV: test
+      SHOVELREADY_LOCAL_LIFECYCLE_POSTGRES_BIN: C:\Program Files\PostgreSQL\17\bin
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          version: "0.12.17"
+          python-version: "3.12"
+          enable-cache: true
+      - name: Verify explicit PostgreSQL 17 binaries
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          foreach ($name in @('postgres', 'initdb', 'pg_ctl', 'pg_controldata')) {
+            $binary = Join-Path $env:SHOVELREADY_LOCAL_LIFECYCLE_POSTGRES_BIN "$name.exe"
+            if (-not (Test-Path -LiteralPath $binary -PathType Leaf)) {
+              throw "Missing required PostgreSQL 17 binary: $name"
+            }
+            $version = & $binary --version
+            if ($LASTEXITCODE -ne 0 -or $version -notmatch '\(PostgreSQL\) 17\.') {
+              throw "Required PostgreSQL 17 version check failed: $name"
+            }
+            Write-Output $version
+          }
+      - run: uv sync --locked
+      - name: Verify owned scratch lifecycle and refusal checks (no skips)
+        # No tracebacks/captured output: driver failures may include credentials or SQL data.
+        shell: pwsh
+        run: |
+          # Runner image metadata points at its installed service; never use that cluster.
+          Get-ChildItem Env:PG* | ForEach-Object {
+            Write-Output "Clearing inherited PostgreSQL setting: $($_.Name)"
+            Remove-Item -LiteralPath "Env:$($_.Name)"
+          }
+          $scratch = Join-Path $env:RUNNER_TEMP "native-lifecycle-$([guid]::NewGuid())"
+          uv run --locked python -m pytest --basetemp "$scratch" -v tests/test_local_database.py -p tests.native_lifecycle_guard --tb=no --show-capture=no -rN
+          exit $LASTEXITCODE
+
   frontend:
     name: frontend
     runs-on: ubuntu-24.04
