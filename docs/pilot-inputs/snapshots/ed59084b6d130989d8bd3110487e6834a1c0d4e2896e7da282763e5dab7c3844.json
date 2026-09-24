@@ -1,0 +1,184 @@
+{
+ "displayFieldName": "Name",
+ "fieldAliases": {
+  "OBJECTID": "OBJECTID",
+  "VicPID": "VicPID",
+  "Name": "Name",
+  "Parcel": "Parcel",
+  "Lot": "Lot",
+  "Block": "Block",
+  "PlanNumber": "PlanNumber",
+  "PID": "PID",
+  "LTSA_Number": "LTSA_Number",
+  "ParcelStatus": "ParcelStatus",
+  "City": "City",
+  "GISLINK": "GISLINK",
+  "ParcelType": "ParcelType",
+  "PrimarySurveyParcel": "PrimarySurveyParcel",
+  "ByLaw": "ByLaw",
+  "CityEquity": "CityEquity",
+  "Shape_Length": "Shape_Length",
+  "Shape_Area": "Shape_Area"
+ },
+ "geometryType": "esriGeometryPolygon",
+ "spatialReference": {
+  "wkid": 3157,
+  "latestWkid": 3157
+ },
+ "fields": [
+  {
+   "name": "OBJECTID",
+   "type": "esriFieldTypeOID",
+   "alias": "OBJECTID"
+  },
+  {
+   "name": "VicPID",
+   "type": "esriFieldTypeString",
+   "alias": "VicPID",
+   "length": 50
+  },
+  {
+   "name": "Name",
+   "type": "esriFieldTypeString",
+   "alias": "Name",
+   "length": 200
+  },
+  {
+   "name": "Parcel",
+   "type": "esriFieldTypeString",
+   "alias": "Parcel",
+   "length": 30
+  },
+  {
+   "name": "Lot",
+   "type": "esriFieldTypeString",
+   "alias": "Lot",
+   "length": 30
+  },
+  {
+   "name": "Block",
+   "type": "esriFieldTypeString",
+   "alias": "Block",
+   "length": 30
+  },
+  {
+   "name": "PlanNumber",
+   "type": "esriFieldTypeString",
+   "alias": "PlanNumber",
+   "length": 128
+  },
+  {
+   "name": "PID",
+   "type": "esriFieldTypeString",
+   "alias": "PID",
+   "length": 50
+  },
+  {
+   "name": "LTSA_Number",
+   "type": "esriFieldTypeString",
+   "alias": "LTSA_Number",
+   "length": 200
+  },
+  {
+   "name": "ParcelStatus",
+   "type": "esriFieldTypeString",
+   "alias": "ParcelStatus",
+   "length": 20
+  },
+  {
+   "name": "City",
+   "type": "esriFieldTypeString",
+   "alias": "City",
+   "length": 200
+  },
+  {
+   "name": "GISLINK",
+   "type": "esriFieldTypeString",
+   "alias": "GISLINK",
+   "length": 255
+  },
+  {
+   "name": "ParcelType",
+   "type": "esriFieldTypeString",
+   "alias": "ParcelType",
+   "length": 30
+  },
+  {
+   "name": "PrimarySurveyParcel",
+   "type": "esriFieldTypeString",
+   "alias": "PrimarySurveyParcel",
+   "length": 50
+  },
+  {
+   "name": "ByLaw",
+   "type": "esriFieldTypeString",
+   "alias": "ByLaw",
+   "length": 50
+  },
+  {
+   "name": "CityEquity",
+   "type": "esriFieldTypeSmallInteger",
+   "alias": "CityEquity"
+  },
+  {
+   "name": "Shape_Length",
+   "type": "esriFieldTypeDouble",
+   "alias": "Shape_Length"
+  },
+  {
+   "name": "Shape_Area",
+   "type": "esriFieldTypeDouble",
+   "alias": "Shape_Area"
+  }
+ ],
+ "features": [
+  {
+   "attributes": {
+    "OBJECTID": 80,
+    "VicPID": "V02291034",
+    "Name": "008-140-723",
+    "Parcel": null,
+    "Lot": "Am.44",
+    "Block": null,
+    "PlanNumber": "VIP937",
+    "PID": "008-140-723",
+    "LTSA_Number": null,
+    "ParcelStatus": "ACTIVE",
+    "City": "Victoria",
+    "GISLINK": "03229026",
+    "ParcelType": "LA",
+    "PrimarySurveyParcel": null,
+    "ByLaw": null,
+    "CityEquity": null,
+    "Shape_Length": 111.63542326380914,
+    "Shape_Area": 577.32880146612831
+   },
+   "geometry": {
+    "rings": [
+     [
+      [
+       473783.48649999965,
+       5362194.0192000009
+      ],
+      [
+       473776.52180000022,
+       5362152.4956999999
+      ],
+      [
+       473762.99909999967,
+       5362154.7609999999
+      ],
+      [
+       473769.96480000019,
+       5362196.2905000001
+      ],
+      [
+       473783.48649999965,
+       5362194.0192000009
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

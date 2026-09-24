@@ -1,0 +1,105 @@
+{
+ "displayFieldName": "AUC_Group",
+ "hasZ": true,
+ "fieldAliases": {
+  "OBJECTID": "OBJECTID",
+  "SHAPE_Length": "SHAPE_Length",
+  "SHAPE_Area": "SHAPE_Area",
+  "LAYER": "LAYER"
+ },
+ "geometryType": "esriGeometryPolygon",
+ "spatialReference": {
+  "wkid": 3157,
+  "latestWkid": 3157
+ },
+ "fields": [
+  {
+   "name": "OBJECTID",
+   "type": "esriFieldTypeOID",
+   "alias": "OBJECTID"
+  },
+  {
+   "name": "SHAPE_Length",
+   "type": "esriFieldTypeDouble",
+   "alias": "SHAPE_Length"
+  },
+  {
+   "name": "SHAPE_Area",
+   "type": "esriFieldTypeDouble",
+   "alias": "SHAPE_Area"
+  },
+  {
+   "name": "LAYER",
+   "type": "esriFieldTypeString",
+   "alias": "LAYER",
+   "length": 255
+  }
+ ],
+ "features": [
+  {
+   "attributes": {
+    "OBJECTID": 69967,
+    "SHAPE_Length": 56.983014382877521,
+    "SHAPE_Area": 190.12707800076365,
+    "LAYER": "Residential"
+   },
+   "geometry": {
+    "hasZ": true,
+    "rings": [
+     [
+      [
+       473714.03600000031,
+       5362187.3169999998,
+       8.9180000000051223
+      ],
+      [
+       473711.37700000033,
+       5362171.625,
+       8.9180000000051223
+      ],
+      [
+       473707.31400000025,
+       5362172.3139999993,
+       9.0339999999996508
+      ],
+      [
+       473707.2790000001,
+       5362172.1070000008,
+       9.0339999999996508
+      ],
+      [
+       473707.21899999958,
+       5362171.7540000007,
+       9.0339999999996508
+      ],
+      [
+       473699.31699999981,
+       5362173.0940000005,
+       9.0339999999996508
+      ],
+      [
+       473700.57500000019,
+       5362180.5140000004,
+       8.9180000000051223
+      ],
+      [
+       473701.26400000043,
+       5362180.398,
+       8.9180000000051223
+      ],
+      [
+       473702.86199999973,
+       5362189.0789999999,
+       8.9180000000051223
+      ],
+      [
+       473714.03600000031,
+       5362187.3169999998,
+       8.9180000000051223
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

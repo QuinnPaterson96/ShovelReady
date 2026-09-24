@@ -1,0 +1,158 @@
+[
+  {
+    "id": "zoning-metadata",
+    "url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12?f=pjson",
+    "format": "json",
+    "redistribution": "victoria-open-data-v1"
+  },
+  {
+    "id": "zoning-catalogue",
+    "url": "https://www.arcgis.com/sharing/rest/content/items/84dde8f57dd7428f8a34d67f13c55051?f=pjson",
+    "format": "json",
+    "redistribution": "victoria-open-data-v1"
+  },
+  {
+    "id": "parcels-metadata",
+    "url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11?f=pjson",
+    "format": "json",
+    "redistribution": "victoria-open-data-v1"
+  },
+  {
+    "id": "parcels-catalogue",
+    "url": "https://www.arcgis.com/sharing/rest/content/items/901cb49452d14dd2855fa701311f0545?f=pjson",
+    "format": "json",
+    "redistribution": "victoria-open-data-v1"
+  },
+  {
+    "id": "rooflines-metadata",
+    "url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1?f=pjson",
+    "format": "json",
+    "redistribution": "victoria-open-data-v1"
+  },
+  {
+    "id": "rooflines-catalogue",
+    "url": "https://www.arcgis.com/sharing/rest/content/items/dc37de452a614b599dd9c9ff473739d3?f=pjson",
+    "format": "json",
+    "redistribution": "victoria-open-data-v1"
+  },
+  {
+    "id": "open-data-licence",
+    "url": "https://www.arcgis.com/sharing/rest/content/items/60eb753ce52d432484c7403d968c530e/data?f=json",
+    "format": "json",
+    "redistribution": "withheld-terms-evidence"
+  },
+  {
+    "id": "zoning-2018",
+    "url": "https://www.victoria.ca/media/file/zoning-bylaw-2018",
+    "format": "pdf",
+    "redistribution": "withheld-city-website-terms"
+  },
+  {
+    "id": "amendment-25-038",
+    "url": "https://www.victoria.ca/media/file/bylaw-no-25-038",
+    "format": "pdf",
+    "redistribution": "withheld-city-website-terms"
+  },
+  {
+    "id": "historical-schedule-m",
+    "url": "https://www.victoria.ca/media/file/schedule-mpdf",
+    "format": "pdf",
+    "redistribution": "withheld-city-website-terms"
+  },
+  {
+    "id": "zoning-index",
+    "url": "https://www.victoria.ca/building-business/permits-development-construction/zoning",
+    "format": "html",
+    "redistribution": "withheld-no-redistribution-grant"
+  },
+  {
+    "id": "city-terms",
+    "url": "https://www.victoria.ca/legal-disclaimer",
+    "format": "html",
+    "redistribution": "withheld-no-redistribution-grant"
+  },
+  {
+    "id": "landing",
+    "url": "https://www.clickmodular.com/the-landing",
+    "format": "html",
+    "redistribution": "withheld-no-redistribution-grant"
+  },
+  {
+    "id": "site-59-parcel",
+    "url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=59&outFields=%2A&returnGeometry=true&outSR=3157",
+    "format": "json",
+    "redistribution": "victoria-open-data-v1"
+  },
+  {
+    "id": "site-59-zones",
+    "url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B474296.0544999996%2C5364508.7839%5D%2C%5B474295.09669999965%2C5364485.246300001%5D%2C%5B474270.6321999999%2C5364487.5458%5D%2C%5B474272.8002000004%2C5364510.9716%5D%2C%5B474296.0544999996%2C5364508.7839%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+    "format": "json",
+    "redistribution": "victoria-open-data-v1"
+  },
+  {
+    "id": "site-59-rooflines",
+    "url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B474296.0544999996%2C5364508.7839%5D%2C%5B474295.09669999965%2C5364485.246300001%5D%2C%5B474270.6321999999%2C5364487.5458%5D%2C%5B474272.8002000004%2C5364510.9716%5D%2C%5B474296.0544999996%2C5364508.7839%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+    "format": "json",
+    "redistribution": "victoria-open-data-v1"
+  },
+  {
+    "id": "site-80-parcel",
+    "url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=80&outFields=%2A&returnGeometry=true&outSR=3157",
+    "format": "json",
+    "redistribution": "victoria-open-data-v1"
+  },
+  {
+    "id": "site-80-zones",
+    "url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473783.48649999965%2C5362194.019200001%5D%2C%5B473776.5218000002%2C5362152.4957%5D%2C%5B473762.99909999967%2C5362154.761%5D%2C%5B473769.9648000002%2C5362196.2905%5D%2C%5B473783.48649999965%2C5362194.019200001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+    "format": "json",
+    "redistribution": "victoria-open-data-v1"
+  },
+  {
+    "id": "site-80-rooflines",
+    "url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473783.48649999965%2C5362194.019200001%5D%2C%5B473776.5218000002%2C5362152.4957%5D%2C%5B473762.99909999967%2C5362154.761%5D%2C%5B473769.9648000002%2C5362196.2905%5D%2C%5B473783.48649999965%2C5362194.019200001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+    "format": "json",
+    "redistribution": "victoria-open-data-v1"
+  },
+  {
+    "id": "site-86-parcel",
+    "url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=86&outFields=%2A&returnGeometry=true&outSR=3157",
+    "format": "json",
+    "redistribution": "victoria-open-data-v1"
+  },
+  {
+    "id": "site-86-zones",
+    "url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473720.0307%2C5362204.677999999%5D%2C%5B473713.0613000002%2C5362163.1262%5D%2C%5B473697.6003999999%2C5362165.7161%5D%2C%5B473704.5708999997%2C5362207.274800001%5D%2C%5B473720.0307%2C5362204.677999999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+    "format": "json",
+    "redistribution": "victoria-open-data-v1"
+  },
+  {
+    "id": "site-86-rooflines",
+    "url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473720.0307%2C5362204.677999999%5D%2C%5B473713.0613000002%2C5362163.1262%5D%2C%5B473697.6003999999%2C5362165.7161%5D%2C%5B473704.5708999997%2C5362207.274800001%5D%2C%5B473720.0307%2C5362204.677999999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+    "format": "json",
+    "redistribution": "victoria-open-data-v1"
+  },
+  {
+    "id": "planninganddevelopment-service",
+    "url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer?f=pjson",
+    "format": "json",
+    "redistribution": "withheld-service-wide-scope"
+  },
+  {
+    "id": "land-service",
+    "url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer?f=pjson",
+    "format": "json",
+    "redistribution": "withheld-service-wide-scope"
+  },
+  {
+    "id": "landing-plan-section",
+    "url": "https://static.wixstatic.com/media/371102_f648ddb739f443c1ba15a608e65663fc~mv2.png",
+    "format": "png",
+    "redistribution": "withheld-manufacturer-image-rights"
+  },
+  {
+    "id": "landing-elevations",
+    "url": "https://static.wixstatic.com/media/371102_7a3f3a36310b4e07a8577ac0fb1127a5~mv2.png",
+    "format": "png",
+    "redistribution": "withheld-manufacturer-image-rights"
+  }
+]

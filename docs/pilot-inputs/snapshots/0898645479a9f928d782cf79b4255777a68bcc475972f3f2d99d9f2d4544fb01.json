@@ -1,0 +1,71 @@
+{
+  "id": "84dde8f57dd7428f8a34d67f13c55051",
+  "owner": "CityOfVictoriaBC",
+  "ownerId": "8c73dcb31d5f7a9a4b68e463b1511df0",
+  "orgId": "EHSKalEvBxdO9ljW",
+  "created": 1760552375000,
+  "modified": 1760552685000,
+  "guid": null,
+  "name": null,
+  "title": "Zoning",
+  "type": "Feature Service",
+  "typeKeywords": [
+    "ArcGIS Server",
+    "Data",
+    "Feature Access",
+    "Feature Service",
+    "Service",
+    "Singlelayer"
+  ],
+  "description": "<p>Zoning bylaws divide the city into different types of land uses, such as residential, commercial and industrial. Victoria\u2019s zoning bylaws regulate what uses are permitted, the type and size of buildings and structures that may be constructed, minimum lot sizes, landscaping requirements, off-street parking for motor vehicles and bicycles. The bylaws include regulations and maps that show what zone applies to each parcel of land.<\/p><p>More information about Zoning is available on the <a target='_blank' href='https://www.victoria.ca/building-business/permits-development-construction/zoning' rel='nofollow ugc noopener noreferrer'>City of Victoria website<\/a>.<\/p><p>Zoning data are maintained by the Planning department, and copied to VicMap and Open Data daily.<\/p><p>The \"Last Updated\" date shown on our Open Data Portal refers to the last time the data schema was modified in the portal, or any changes were made to this description. &nbsp;We update our data through automated scripts which does not trigger the \"last updated\" date to change.<\/p><p>Note: Attributes represent each field in a dataset, and some fields will contain information such as ID numbers. &nbsp;As a result some visualizations on the tabs on our Open Data page will not be relevant.<\/p>",
+  "tags": [
+    "Zoning",
+    "planning",
+    "planning and development",
+    "development",
+    "OCP"
+  ],
+  "snippet": "Zoning bylaws divide the city into different types of land uses, such as residential, commercial and industrial. Victoria\u2019s zoning bylaws regulate what uses are permitted, the type and size of buildings and structures that may be constructed, minimum lot sizes, landscaping requirements, off-street parking for motor vehicles and bicycles. The bylaws include regulations and maps that show what zone applies to each parcel of land.",
+  "thumbnail": "thumbnail/ago_downloaded.png",
+  "documentation": null,
+  "extent": [
+    [
+      -123.3945,
+      48.4028
+    ],
+    [
+      -123.3222,
+      48.4506
+    ]
+  ],
+  "categories": [],
+  "spatialReference": null,
+  "accessInformation": null,
+  "classification": null,
+  "licenseInfo": "<p><a target='_blank' href='https://opendata.victoria.ca/pages/open-data-licence' rel='nofollow ugc noopener noreferrer'>Open Data Licence<\/a><\/p>",
+  "culture": "en-us",
+  "properties": null,
+  "advancedSettings": null,
+  "url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12",
+  "proxyFilter": null,
+  "access": "public",
+  "size": 99,
+  "subInfo": 0,
+  "appCategories": [],
+  "industries": [],
+  "languages": [],
+  "largeThumbnail": null,
+  "banner": null,
+  "screenshots": [],
+  "listed": false,
+  "commentsEnabled": false,
+  "numComments": 0,
+  "numRatings": 0,
+  "avgRating": 0,
+  "numViews": 2888,
+  "scoreCompleteness": 83,
+  "groupDesignations": null,
+  "apiToken1ExpirationDate": -1,
+  "apiToken2ExpirationDate": -1,
+  "lastViewed": 1790254800000
+}

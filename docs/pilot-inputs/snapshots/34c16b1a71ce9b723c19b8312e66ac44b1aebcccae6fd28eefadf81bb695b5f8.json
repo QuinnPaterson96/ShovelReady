@@ -1,0 +1,110 @@
+{
+ "displayFieldName": "AUC_Group",
+ "hasZ": true,
+ "fieldAliases": {
+  "OBJECTID": "OBJECTID",
+  "SHAPE_Length": "SHAPE_Length",
+  "SHAPE_Area": "SHAPE_Area",
+  "LAYER": "LAYER"
+ },
+ "geometryType": "esriGeometryPolygon",
+ "spatialReference": {
+  "wkid": 3157,
+  "latestWkid": 3157
+ },
+ "fields": [
+  {
+   "name": "OBJECTID",
+   "type": "esriFieldTypeOID",
+   "alias": "OBJECTID"
+  },
+  {
+   "name": "SHAPE_Length",
+   "type": "esriFieldTypeDouble",
+   "alias": "SHAPE_Length"
+  },
+  {
+   "name": "SHAPE_Area",
+   "type": "esriFieldTypeDouble",
+   "alias": "SHAPE_Area"
+  },
+  {
+   "name": "LAYER",
+   "type": "esriFieldTypeString",
+   "alias": "LAYER",
+   "length": 255
+  }
+ ],
+ "features": [
+  {
+   "attributes": {
+    "OBJECTID": 69970,
+    "SHAPE_Length": 44.865249716995024,
+    "SHAPE_Area": 119.58795299515336,
+    "LAYER": "Residential"
+   },
+   "geometry": {
+    "hasZ": true,
+    "rings": [
+     [
+      [
+       473777.7209999999,
+       5362170.0789999999,
+       7.9470000000001164
+      ],
+      [
+       473776.60099999979,
+       5362163.7300000004,
+       7.9470000000001164
+      ],
+      [
+       473776.15299999993,
+       5362163.8090000004,
+       7.9470000000001164
+      ],
+      [
+       473775.42700000014,
+       5362159.6960000005,
+       7.9470000000001164
+      ],
+      [
+       473768.19000000041,
+       5362160.9729999993,
+       7.9470000000001164
+      ],
+      [
+       473768.32199999969,
+       5362161.7200000007,
+       7.9470000000001164
+      ],
+      [
+       473765.11600000039,
+       5362162.2860000003,
+       7.9470000000001164
+      ],
+      [
+       473766.86699999962,
+       5362172.7129999995,
+       7.9470000000001164
+      ],
+      [
+       473775.32699999958,
+       5362171.2170000002,
+       7.9470000000001164
+      ],
+      [
+       473775.20500000007,
+       5362170.523,
+       7.9470000000001164
+      ],
+      [
+       473777.7209999999,
+       5362170.0789999999,
+       7.9470000000001164
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}
