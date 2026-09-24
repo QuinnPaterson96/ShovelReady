@@ -1,0 +1,1045 @@
+{
+  "fixture_version": "synthetic-preview-v1",
+  "sources": [
+    {
+      "schema_version": "sr-04.v1-provisional",
+      "source_id": "synthetic-preview-source",
+      "snapshot_id": "synthetic-preview-snapshot-v1",
+      "category": "test_fixture",
+      "jurisdiction": "Fictional preview only",
+      "instrument": "Fictional preview provisions A\u2013E",
+      "source_url": "docs/usability/synthetic-source.txt",
+      "artifact": {
+        "uri": "docs/usability/synthetic-source.txt",
+        "sha256": "ab719f7a08437260d730f21153f9fa437bbbde8d81858b072c1a1e122af9acc2"
+      },
+      "captured_at": "2026-09-24T12:00:00Z",
+      "printed_revision": null,
+      "effective_from": null,
+      "effective_to": null,
+      "effective_date_evidence": [],
+      "original_crs": null,
+      "original_units": [
+        "%",
+        "m"
+      ],
+      "reuse_constraints": "Repository test reference only; no municipal material redistributed.",
+      "review": {
+        "status": "accepted",
+        "reviewer": "synthetic-fixture-reviewer",
+        "reviewed_at": "2026-09-24T12:00:00Z",
+        "scope": "Synthetic structural test only; no legal review",
+        "rationale": "Not a legal interpretation or verified pilot input."
+      }
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "example-1",
+      "title": "Synthetic example A",
+      "result": {
+        "schema_version": "sr-04.v1-provisional",
+        "evaluation_id": "synthetic-evaluation-1",
+        "dataset": {
+          "schema_version": "sr-04.v1-provisional",
+          "dataset_id": "synthetic-preview",
+          "release_id": "synthetic-example-1-release-1",
+          "source_snapshot_ids": [
+            "synthetic-preview-snapshot-v1"
+          ],
+          "spatial_snapshot_ids": [],
+          "alternatives": [
+            {
+              "pathway_id": "synthetic-garden-suite",
+              "alternative_id": "ordinary",
+              "rules": [
+                {
+                  "logical_id": "synthetic-rule-A",
+                  "revision_id": "synthetic-rule-A-r1"
+                }
+              ]
+            }
+          ],
+          "projection_version": "none-hand-authored-v1",
+          "evaluator_version": "none-hand-authored-v1",
+          "coverage": "Fictional examples A\u2013C, E\u2013F; occupancy ratio, supplied setback or stated unresolved check only.",
+          "exclusions": [
+            "All real-world and legal use",
+            "Building code, servicing, title, overlays and placement search"
+          ]
+        },
+        "design": {
+          "logical_id": "synthetic-design",
+          "revision_id": "synthetic-design-r1"
+        },
+        "site": {
+          "logical_id": "synthetic-site-1",
+          "revision_id": "synthetic-site-1-r1"
+        },
+        "placement": {
+          "logical_id": "synthetic-placement-1",
+          "revision_id": "synthetic-placement-1-r1"
+        },
+        "scope": "supplied_placement_only",
+        "coverage": "within_coverage",
+        "outcome": "candidate",
+        "scope_exclusions": [
+          "Only the supplied placement; no universal site or design conclusion",
+          "Building code, servicing, title and overlays not checked"
+        ],
+        "alternatives": [
+          {
+            "pathway_id": "synthetic-garden-suite",
+            "alternative_id": "ordinary",
+            "outcome": "candidate",
+            "approval": "as_of_right",
+            "conditions": [],
+            "checks": [
+              {
+                "check_id": "synthetic-check-1",
+                "rule": {
+                  "logical_id": "synthetic-rule-A",
+                  "revision_id": "synthetic-rule-A-r1"
+                },
+                "status": "pass",
+                "explanation": "Saved assertion: occupancy / lot area 0.40 fraction is at most 0.45. Only this coverage check was considered.",
+                "evidence": [
+                  {
+                    "snapshot_id": "synthetic-preview-snapshot-v1",
+                    "locator": "Synthetic section A",
+                    "excerpt": "A: Fictional occupancy / lot area maximum 45%. A saved example asserts 0.40 fraction.",
+                    "context": "Hand-authored fiction; not legal evidence. Inert source probe: <img src=x onerror=\"alert(1)\"> & <script>alert(1)</script>"
+                  }
+                ],
+                "missing_facts": []
+              }
+            ]
+          }
+        ]
+      },
+      "rules": [
+        {
+          "schema_version": "sr-04.v1-provisional",
+          "identity": {
+            "logical_id": "synthetic-rule-A",
+            "revision_id": "synthetic-rule-A-r1"
+          },
+          "candidate_id": "synthetic-candidate-A",
+          "content": {
+            "pathway_id": "synthetic-garden-suite",
+            "alternative_id": "ordinary",
+            "text": "A: Fictional occupancy / lot area maximum 45%. A saved example asserts 0.40 fraction.",
+            "evidence": [
+              {
+                "snapshot_id": "synthetic-preview-snapshot-v1",
+                "locator": "Synthetic section A",
+                "excerpt": "A: Fictional occupancy / lot area maximum 45%. A saved example asserts 0.40 fraction.",
+                "context": "Hand-authored fiction; not legal evidence. Inert source probe: <img src=x onerror=\"alert(1)\"> & <script>alert(1)</script>"
+              }
+            ],
+            "applicability": {
+              "jurisdiction": "synthetic",
+              "use": "garden suite",
+              "building_role": "accessory",
+              "conditions": [],
+              "exceptions": [],
+              "status": "reviewed_scope"
+            },
+            "approval": "as_of_right",
+            "runtime_support": "supported",
+            "references": [],
+            "semantics": {
+              "kind": "scalar_bound",
+              "subject": "lot_coverage",
+              "measurement_definition": "Synthetic occupancy / lot area",
+              "operator": "<=",
+              "threshold": {
+                "original_text": "45%",
+                "original_value": "45",
+                "original_unit": "%",
+                "dimension": "ratio",
+                "value": "0.45",
+                "unit": "fraction",
+                "basis": {
+                  "numerator": "occupied_site_area",
+                  "denominator": "lot_area"
+                }
+              }
+            }
+          },
+          "review": {
+            "status": "accepted",
+            "reviewer": "synthetic-fixture-reviewer",
+            "reviewed_at": "2026-09-24T12:00:00Z",
+            "scope": "Synthetic structure only; no legal review",
+            "rationale": "Not a legal interpretation or verified pilot input."
+          },
+          "supersedes": [],
+          "identity_decision": "Initial synthetic identity"
+        }
+      ],
+      "correction": null
+    },
+    {
+      "id": "example-2",
+      "title": "Synthetic example B",
+      "result": {
+        "schema_version": "sr-04.v1-provisional",
+        "evaluation_id": "synthetic-evaluation-2",
+        "dataset": {
+          "schema_version": "sr-04.v1-provisional",
+          "dataset_id": "synthetic-preview",
+          "release_id": "synthetic-example-2-release-1",
+          "source_snapshot_ids": [
+            "synthetic-preview-snapshot-v1"
+          ],
+          "spatial_snapshot_ids": [],
+          "alternatives": [
+            {
+              "pathway_id": "synthetic-garden-suite",
+              "alternative_id": "ordinary",
+              "rules": [
+                {
+                  "logical_id": "synthetic-rule-B",
+                  "revision_id": "synthetic-rule-B-r1"
+                }
+              ]
+            }
+          ],
+          "projection_version": "none-hand-authored-v1",
+          "evaluator_version": "none-hand-authored-v1",
+          "coverage": "Fictional examples A\u2013C, E\u2013F; occupancy ratio, supplied setback or stated unresolved check only.",
+          "exclusions": [
+            "All real-world and legal use",
+            "Building code, servicing, title, overlays and placement search"
+          ]
+        },
+        "design": {
+          "logical_id": "synthetic-design",
+          "revision_id": "synthetic-design-r1"
+        },
+        "site": {
+          "logical_id": "synthetic-site-2",
+          "revision_id": "synthetic-site-2-r1"
+        },
+        "placement": {
+          "logical_id": "synthetic-placement-2",
+          "revision_id": "synthetic-placement-2-r1"
+        },
+        "scope": "supplied_placement_only",
+        "coverage": "within_coverage",
+        "outcome": "needs_investigation",
+        "scope_exclusions": [
+          "Only the supplied placement; no universal site or design conclusion",
+          "Building code, servicing, title and overlays not checked"
+        ],
+        "alternatives": [
+          {
+            "pathway_id": "synthetic-garden-suite",
+            "alternative_id": "ordinary",
+            "outcome": "needs_investigation",
+            "approval": "unknown",
+            "conditions": [],
+            "checks": [
+              {
+                "check_id": "synthetic-check-2",
+                "rule": {
+                  "logical_id": "synthetic-rule-B",
+                  "revision_id": "synthetic-rule-B-r1"
+                },
+                "status": "missing_fact",
+                "explanation": "Roof peak and regulatory grade are missing. Ceiling height cannot establish regulatory height.",
+                "evidence": [
+                  {
+                    "snapshot_id": "synthetic-preview-snapshot-v1",
+                    "locator": "Synthetic section B",
+                    "excerpt": "B: Fictional height review needs roof peak and regulatory grade; ceiling height is insufficient.",
+                    "context": "Hand-authored fiction; not legal evidence. Inert source probe: <img src=x onerror=\"alert(1)\"> & <script>alert(1)</script>"
+                  }
+                ],
+                "missing_facts": [
+                  "Roof peak from foundation datum",
+                  "Regulatory grade and height definition"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "rules": [
+        {
+          "schema_version": "sr-04.v1-provisional",
+          "identity": {
+            "logical_id": "synthetic-rule-B",
+            "revision_id": "synthetic-rule-B-r1"
+          },
+          "candidate_id": "synthetic-candidate-B",
+          "content": {
+            "pathway_id": "synthetic-garden-suite",
+            "alternative_id": "ordinary",
+            "text": "B: Fictional height review needs roof peak and regulatory grade; ceiling height is insufficient.",
+            "evidence": [
+              {
+                "snapshot_id": "synthetic-preview-snapshot-v1",
+                "locator": "Synthetic section B",
+                "excerpt": "B: Fictional height review needs roof peak and regulatory grade; ceiling height is insufficient.",
+                "context": "Hand-authored fiction; not legal evidence. Inert source probe: <img src=x onerror=\"alert(1)\"> & <script>alert(1)</script>"
+              }
+            ],
+            "applicability": {
+              "jurisdiction": "synthetic",
+              "use": "garden suite",
+              "building_role": "accessory",
+              "conditions": [],
+              "exceptions": [],
+              "status": "reviewed_scope"
+            },
+            "approval": "as_of_right",
+            "runtime_support": "unresolved",
+            "references": [],
+            "semantics": {
+              "kind": "unresolved",
+              "text": "B: Fictional height review needs roof peak and regulatory grade; ceiling height is insufficient.",
+              "reason": "Roof peak and regulatory grade are missing. Ceiling height cannot establish regulatory height."
+            }
+          },
+          "review": {
+            "status": "accepted",
+            "reviewer": "synthetic-fixture-reviewer",
+            "reviewed_at": "2026-09-24T12:00:00Z",
+            "scope": "Synthetic structure only; no legal review",
+            "rationale": "Not a legal interpretation or verified pilot input."
+          },
+          "supersedes": [],
+          "identity_decision": "Initial synthetic identity"
+        }
+      ],
+      "correction": null
+    },
+    {
+      "id": "example-3",
+      "title": "Synthetic example C",
+      "result": {
+        "schema_version": "sr-04.v1-provisional",
+        "evaluation_id": "synthetic-evaluation-3",
+        "dataset": {
+          "schema_version": "sr-04.v1-provisional",
+          "dataset_id": "synthetic-preview",
+          "release_id": "synthetic-example-3-release-1",
+          "source_snapshot_ids": [
+            "synthetic-preview-snapshot-v1"
+          ],
+          "spatial_snapshot_ids": [],
+          "alternatives": [
+            {
+              "pathway_id": "synthetic-garden-suite",
+              "alternative_id": "ordinary",
+              "rules": [
+                {
+                  "logical_id": "synthetic-rule-C",
+                  "revision_id": "synthetic-rule-C-r1"
+                }
+              ]
+            }
+          ],
+          "projection_version": "none-hand-authored-v1",
+          "evaluator_version": "none-hand-authored-v1",
+          "coverage": "Fictional examples A\u2013C, E\u2013F; occupancy ratio, supplied setback or stated unresolved check only.",
+          "exclusions": [
+            "All real-world and legal use",
+            "Building code, servicing, title, overlays and placement search"
+          ]
+        },
+        "design": {
+          "logical_id": "synthetic-design",
+          "revision_id": "synthetic-design-r1"
+        },
+        "site": {
+          "logical_id": "synthetic-site-3",
+          "revision_id": "synthetic-site-3-r1"
+        },
+        "placement": {
+          "logical_id": "synthetic-placement-3",
+          "revision_id": "synthetic-placement-3-r1"
+        },
+        "scope": "supplied_placement_only",
+        "coverage": "within_coverage",
+        "outcome": "no_match_under_evaluated_pathways",
+        "scope_exclusions": [
+          "Only the supplied placement; no universal site or design conclusion",
+          "Building code, servicing, title and overlays not checked"
+        ],
+        "alternatives": [
+          {
+            "pathway_id": "synthetic-garden-suite",
+            "alternative_id": "ordinary",
+            "outcome": "no_match_under_evaluated_pathways",
+            "approval": "as_of_right",
+            "conditions": [],
+            "checks": [
+              {
+                "check_id": "synthetic-check-3",
+                "rule": {
+                  "logical_id": "synthetic-rule-C",
+                  "revision_id": "synthetic-rule-C-r1"
+                },
+                "status": "supported_failure",
+                "explanation": "Saved assertion: this supplied placement has 1 m setback against a 2 m minimum. Another placement has not been assessed.",
+                "evidence": [
+                  {
+                    "snapshot_id": "synthetic-preview-snapshot-v1",
+                    "locator": "Synthetic section C",
+                    "excerpt": "C: Fictional supplied placement fails a 2 m setback: saved distance 1 m. No placement search.",
+                    "context": "Hand-authored fiction; not legal evidence. Inert source probe: <img src=x onerror=\"alert(1)\"> & <script>alert(1)</script>"
+                  }
+                ],
+                "missing_facts": []
+              }
+            ]
+          }
+        ]
+      },
+      "rules": [
+        {
+          "schema_version": "sr-04.v1-provisional",
+          "identity": {
+            "logical_id": "synthetic-rule-C",
+            "revision_id": "synthetic-rule-C-r1"
+          },
+          "candidate_id": "synthetic-candidate-C",
+          "content": {
+            "pathway_id": "synthetic-garden-suite",
+            "alternative_id": "ordinary",
+            "text": "C: Fictional supplied placement fails a 2 m setback: saved distance 1 m. No placement search.",
+            "evidence": [
+              {
+                "snapshot_id": "synthetic-preview-snapshot-v1",
+                "locator": "Synthetic section C",
+                "excerpt": "C: Fictional supplied placement fails a 2 m setback: saved distance 1 m. No placement search.",
+                "context": "Hand-authored fiction; not legal evidence. Inert source probe: <img src=x onerror=\"alert(1)\"> & <script>alert(1)</script>"
+              }
+            ],
+            "applicability": {
+              "jurisdiction": "synthetic",
+              "use": "garden suite",
+              "building_role": "accessory",
+              "conditions": [],
+              "exceptions": [],
+              "status": "reviewed_scope"
+            },
+            "approval": "as_of_right",
+            "runtime_support": "supported",
+            "references": [],
+            "semantics": {
+              "kind": "scalar_bound",
+              "subject": "setback",
+              "measurement_definition": "Fictional distance to rear line",
+              "operator": ">=",
+              "threshold": {
+                "original_text": "2 m",
+                "original_value": "2",
+                "original_unit": "m",
+                "dimension": "length",
+                "value": "2",
+                "unit": "m",
+                "basis": null
+              }
+            }
+          },
+          "review": {
+            "status": "accepted",
+            "reviewer": "synthetic-fixture-reviewer",
+            "reviewed_at": "2026-09-24T12:00:00Z",
+            "scope": "Synthetic structure only; no legal review",
+            "rationale": "Not a legal interpretation or verified pilot input."
+          },
+          "supersedes": [],
+          "identity_decision": "Initial synthetic identity"
+        }
+      ],
+      "correction": null
+    },
+    {
+      "id": "example-4",
+      "title": "Synthetic example D",
+      "result": {
+        "schema_version": "sr-04.v1-provisional",
+        "evaluation_id": "synthetic-evaluation-4",
+        "dataset": {
+          "schema_version": "sr-04.v1-provisional",
+          "dataset_id": "synthetic-preview",
+          "release_id": "synthetic-example-4-release-1",
+          "source_snapshot_ids": [
+            "synthetic-preview-snapshot-v1"
+          ],
+          "spatial_snapshot_ids": [],
+          "alternatives": [
+            {
+              "pathway_id": "synthetic-garden-suite",
+              "alternative_id": "ordinary",
+              "rules": [
+                {
+                  "logical_id": "synthetic-rule-A",
+                  "revision_id": "synthetic-rule-A-r1"
+                }
+              ]
+            }
+          ],
+          "projection_version": "none-hand-authored-v1",
+          "evaluator_version": "none-hand-authored-v1",
+          "coverage": "Fictional examples A\u2013C, E\u2013F; occupancy ratio, supplied setback or stated unresolved check only.",
+          "exclusions": [
+            "All real-world and legal use",
+            "Building code, servicing, title, overlays and placement search"
+          ]
+        },
+        "design": {
+          "logical_id": "synthetic-design",
+          "revision_id": "synthetic-design-r1"
+        },
+        "site": {
+          "logical_id": "synthetic-site-4",
+          "revision_id": "synthetic-site-4-r1"
+        },
+        "placement": {
+          "logical_id": "synthetic-placement-4",
+          "revision_id": "synthetic-placement-4-r1"
+        },
+        "scope": "supplied_placement_only",
+        "coverage": "outside_coverage",
+        "outcome": "needs_investigation",
+        "scope_exclusions": [
+          "Only the supplied placement; no universal site or design conclusion",
+          "Building code, servicing, title and overlays not checked"
+        ],
+        "alternatives": [
+          {
+            "pathway_id": "synthetic-garden-suite",
+            "alternative_id": "ordinary",
+            "outcome": "needs_investigation",
+            "approval": "unknown",
+            "conditions": [],
+            "checks": [
+              {
+                "check_id": "synthetic-check-4",
+                "rule": {
+                  "logical_id": "synthetic-rule-A",
+                  "revision_id": "synthetic-rule-A-r1"
+                },
+                "status": "outside_coverage",
+                "explanation": "This fictional site is outside the saved dataset coverage. No zoning exclusion can be inferred.",
+                "evidence": [
+                  {
+                    "snapshot_id": "synthetic-preview-snapshot-v1",
+                    "locator": "Synthetic section A",
+                    "excerpt": "A: Fictional occupancy / lot area maximum 45%. A saved example asserts 0.40 fraction.",
+                    "context": "Hand-authored fiction; not legal evidence. Inert source probe: <img src=x onerror=\"alert(1)\"> & <script>alert(1)</script>"
+                  }
+                ],
+                "missing_facts": []
+              }
+            ]
+          }
+        ]
+      },
+      "rules": [
+        {
+          "schema_version": "sr-04.v1-provisional",
+          "identity": {
+            "logical_id": "synthetic-rule-A",
+            "revision_id": "synthetic-rule-A-r1"
+          },
+          "candidate_id": "synthetic-candidate-A",
+          "content": {
+            "pathway_id": "synthetic-garden-suite",
+            "alternative_id": "ordinary",
+            "text": "A: Fictional occupancy / lot area maximum 45%. A saved example asserts 0.40 fraction.",
+            "evidence": [
+              {
+                "snapshot_id": "synthetic-preview-snapshot-v1",
+                "locator": "Synthetic section A",
+                "excerpt": "A: Fictional occupancy / lot area maximum 45%. A saved example asserts 0.40 fraction.",
+                "context": "Hand-authored fiction; not legal evidence. Inert source probe: <img src=x onerror=\"alert(1)\"> & <script>alert(1)</script>"
+              }
+            ],
+            "applicability": {
+              "jurisdiction": "synthetic",
+              "use": "garden suite",
+              "building_role": "accessory",
+              "conditions": [],
+              "exceptions": [],
+              "status": "reviewed_scope"
+            },
+            "approval": "as_of_right",
+            "runtime_support": "supported",
+            "references": [],
+            "semantics": {
+              "kind": "scalar_bound",
+              "subject": "lot_coverage",
+              "measurement_definition": "Synthetic occupancy / lot area",
+              "operator": "<=",
+              "threshold": {
+                "original_text": "45%",
+                "original_value": "45",
+                "original_unit": "%",
+                "dimension": "ratio",
+                "value": "0.45",
+                "unit": "fraction",
+                "basis": {
+                  "numerator": "occupied_site_area",
+                  "denominator": "lot_area"
+                }
+              }
+            }
+          },
+          "review": {
+            "status": "accepted",
+            "reviewer": "synthetic-fixture-reviewer",
+            "reviewed_at": "2026-09-24T12:00:00Z",
+            "scope": "Synthetic structure only; no legal review",
+            "rationale": "Not a legal interpretation or verified pilot input."
+          },
+          "supersedes": [],
+          "identity_decision": "Initial synthetic identity"
+        }
+      ],
+      "correction": null
+    },
+    {
+      "id": "example-5",
+      "title": "Synthetic example E",
+      "result": {
+        "schema_version": "sr-04.v1-provisional",
+        "evaluation_id": "synthetic-evaluation-5",
+        "dataset": {
+          "schema_version": "sr-04.v1-provisional",
+          "dataset_id": "synthetic-preview",
+          "release_id": "synthetic-example-5-release-1",
+          "source_snapshot_ids": [
+            "synthetic-preview-snapshot-v1"
+          ],
+          "spatial_snapshot_ids": [],
+          "alternatives": [
+            {
+              "pathway_id": "synthetic-garden-suite",
+              "alternative_id": "ordinary",
+              "rules": [
+                {
+                  "logical_id": "synthetic-rule-D",
+                  "revision_id": "synthetic-rule-D-r1"
+                }
+              ]
+            }
+          ],
+          "projection_version": "none-hand-authored-v1",
+          "evaluator_version": "none-hand-authored-v1",
+          "coverage": "Fictional examples A\u2013C, E\u2013F; occupancy ratio, supplied setback or stated unresolved check only.",
+          "exclusions": [
+            "All real-world and legal use",
+            "Building code, servicing, title, overlays and placement search"
+          ]
+        },
+        "design": {
+          "logical_id": "synthetic-design",
+          "revision_id": "synthetic-design-r1"
+        },
+        "site": {
+          "logical_id": "synthetic-site-5",
+          "revision_id": "synthetic-site-5-r1"
+        },
+        "placement": {
+          "logical_id": "synthetic-placement-5",
+          "revision_id": "synthetic-placement-5-r1"
+        },
+        "scope": "supplied_placement_only",
+        "coverage": "within_coverage",
+        "outcome": "needs_investigation",
+        "scope_exclusions": [
+          "Only the supplied placement; no universal site or design conclusion",
+          "Building code, servicing, title and overlays not checked"
+        ],
+        "alternatives": [
+          {
+            "pathway_id": "synthetic-garden-suite",
+            "alternative_id": "ordinary",
+            "outcome": "needs_investigation",
+            "approval": "conditional",
+            "conditions": [
+              "Resolve fictional Schedule X before an approval conclusion"
+            ],
+            "checks": [
+              {
+                "check_id": "synthetic-check-5",
+                "rule": {
+                  "logical_id": "synthetic-rule-D",
+                  "revision_id": "synthetic-rule-D-r1"
+                },
+                "status": "unresolved_reference",
+                "explanation": "Fictional Schedule X is absent. Approval condition remains unresolved.",
+                "evidence": [
+                  {
+                    "snapshot_id": "synthetic-preview-snapshot-v1",
+                    "locator": "Synthetic section D",
+                    "excerpt": "D: Fictional Schedule X approval condition is not available in this fixture.",
+                    "context": "Hand-authored fiction; not legal evidence. Inert source probe: <img src=x onerror=\"alert(1)\"> & <script>alert(1)</script>"
+                  }
+                ],
+                "missing_facts": []
+              }
+            ]
+          }
+        ]
+      },
+      "rules": [
+        {
+          "schema_version": "sr-04.v1-provisional",
+          "identity": {
+            "logical_id": "synthetic-rule-D",
+            "revision_id": "synthetic-rule-D-r1"
+          },
+          "candidate_id": "synthetic-candidate-D",
+          "content": {
+            "pathway_id": "synthetic-garden-suite",
+            "alternative_id": "ordinary",
+            "text": "D: Fictional Schedule X approval condition is not available in this fixture.",
+            "evidence": [
+              {
+                "snapshot_id": "synthetic-preview-snapshot-v1",
+                "locator": "Synthetic section D",
+                "excerpt": "D: Fictional Schedule X approval condition is not available in this fixture.",
+                "context": "Hand-authored fiction; not legal evidence. Inert source probe: <img src=x onerror=\"alert(1)\"> & <script>alert(1)</script>"
+              }
+            ],
+            "applicability": {
+              "jurisdiction": "synthetic",
+              "use": "garden suite",
+              "building_role": "accessory",
+              "conditions": [],
+              "exceptions": [],
+              "status": "reviewed_scope"
+            },
+            "approval": "conditional",
+            "runtime_support": "unresolved",
+            "references": [
+              {
+                "instrument": "Fictional Schedule X",
+                "locator": "approval condition",
+                "relationship": "depends_on",
+                "status": "unresolved",
+                "target": null
+              }
+            ],
+            "semantics": {
+              "kind": "unresolved",
+              "text": "D: Fictional Schedule X approval condition is not available in this fixture.",
+              "reason": "Fictional Schedule X is absent. Approval condition remains unresolved."
+            }
+          },
+          "review": {
+            "status": "accepted",
+            "reviewer": "synthetic-fixture-reviewer",
+            "reviewed_at": "2026-09-24T12:00:00Z",
+            "scope": "Synthetic structure only; no legal review",
+            "rationale": "Not a legal interpretation or verified pilot input."
+          },
+          "supersedes": [],
+          "identity_decision": "Initial synthetic identity"
+        }
+      ],
+      "correction": null
+    },
+    {
+      "id": "example-6",
+      "title": "Synthetic example F \u00b7 archived result",
+      "result": {
+        "schema_version": "sr-04.v1-provisional",
+        "evaluation_id": "synthetic-evaluation-6",
+        "dataset": {
+          "schema_version": "sr-04.v1-provisional",
+          "dataset_id": "synthetic-preview",
+          "release_id": "synthetic-release-1",
+          "source_snapshot_ids": [
+            "synthetic-preview-snapshot-v1"
+          ],
+          "spatial_snapshot_ids": [],
+          "alternatives": [
+            {
+              "pathway_id": "synthetic-garden-suite",
+              "alternative_id": "ordinary",
+              "rules": [
+                {
+                  "logical_id": "synthetic-rule-A",
+                  "revision_id": "synthetic-rule-A-r1"
+                }
+              ]
+            }
+          ],
+          "projection_version": "none-hand-authored-v1",
+          "evaluator_version": "none-hand-authored-v1",
+          "coverage": "Fictional examples A\u2013C, E\u2013F; occupancy ratio, supplied setback or stated unresolved check only.",
+          "exclusions": [
+            "All real-world and legal use",
+            "Building code, servicing, title, overlays and placement search"
+          ]
+        },
+        "design": {
+          "logical_id": "synthetic-design",
+          "revision_id": "synthetic-design-r1"
+        },
+        "site": {
+          "logical_id": "synthetic-site-6",
+          "revision_id": "synthetic-site-6-r1"
+        },
+        "placement": {
+          "logical_id": "synthetic-placement-6",
+          "revision_id": "synthetic-placement-6-r1"
+        },
+        "scope": "supplied_placement_only",
+        "coverage": "within_coverage",
+        "outcome": "candidate",
+        "scope_exclusions": [
+          "Only the supplied placement; no universal site or design conclusion",
+          "Building code, servicing, title and overlays not checked"
+        ],
+        "alternatives": [
+          {
+            "pathway_id": "synthetic-garden-suite",
+            "alternative_id": "ordinary",
+            "outcome": "candidate",
+            "approval": "as_of_right",
+            "conditions": [],
+            "checks": [
+              {
+                "check_id": "synthetic-check-6",
+                "rule": {
+                  "logical_id": "synthetic-rule-A",
+                  "revision_id": "synthetic-rule-A-r1"
+                },
+                "status": "pass",
+                "explanation": "Historical saved assertion: 0.40 fraction is at most 0.45 in release 1. A correction exists; this result has not been overwritten.",
+                "evidence": [
+                  {
+                    "snapshot_id": "synthetic-preview-snapshot-v1",
+                    "locator": "Synthetic section A",
+                    "excerpt": "A: Fictional occupancy / lot area maximum 45%. A saved example asserts 0.40 fraction.",
+                    "context": "Hand-authored fiction; not legal evidence. Inert source probe: <img src=x onerror=\"alert(1)\"> & <script>alert(1)</script>"
+                  }
+                ],
+                "missing_facts": []
+              }
+            ]
+          }
+        ]
+      },
+      "rules": [
+        {
+          "schema_version": "sr-04.v1-provisional",
+          "identity": {
+            "logical_id": "synthetic-rule-A",
+            "revision_id": "synthetic-rule-A-r1"
+          },
+          "candidate_id": "synthetic-candidate-A",
+          "content": {
+            "pathway_id": "synthetic-garden-suite",
+            "alternative_id": "ordinary",
+            "text": "A: Fictional occupancy / lot area maximum 45%. A saved example asserts 0.40 fraction.",
+            "evidence": [
+              {
+                "snapshot_id": "synthetic-preview-snapshot-v1",
+                "locator": "Synthetic section A",
+                "excerpt": "A: Fictional occupancy / lot area maximum 45%. A saved example asserts 0.40 fraction.",
+                "context": "Hand-authored fiction; not legal evidence. Inert source probe: <img src=x onerror=\"alert(1)\"> & <script>alert(1)</script>"
+              }
+            ],
+            "applicability": {
+              "jurisdiction": "synthetic",
+              "use": "garden suite",
+              "building_role": "accessory",
+              "conditions": [],
+              "exceptions": [],
+              "status": "reviewed_scope"
+            },
+            "approval": "as_of_right",
+            "runtime_support": "supported",
+            "references": [],
+            "semantics": {
+              "kind": "scalar_bound",
+              "subject": "lot_coverage",
+              "measurement_definition": "Synthetic occupancy / lot area",
+              "operator": "<=",
+              "threshold": {
+                "original_text": "45%",
+                "original_value": "45",
+                "original_unit": "%",
+                "dimension": "ratio",
+                "value": "0.45",
+                "unit": "fraction",
+                "basis": {
+                  "numerator": "occupied_site_area",
+                  "denominator": "lot_area"
+                }
+              }
+            }
+          },
+          "review": {
+            "status": "accepted",
+            "reviewer": "synthetic-fixture-reviewer",
+            "reviewed_at": "2026-09-24T12:00:00Z",
+            "scope": "Synthetic structure only; no legal review",
+            "rationale": "Not a legal interpretation or verified pilot input."
+          },
+          "supersedes": [],
+          "identity_decision": "Initial synthetic identity"
+        }
+      ],
+      "correction": {
+        "result": {
+          "schema_version": "sr-04.v1-provisional",
+          "evaluation_id": "synthetic-evaluation-6-corrected",
+          "dataset": {
+            "schema_version": "sr-04.v1-provisional",
+            "dataset_id": "synthetic-preview",
+            "release_id": "synthetic-release-2",
+            "source_snapshot_ids": [
+              "synthetic-preview-snapshot-v1"
+            ],
+            "spatial_snapshot_ids": [],
+            "alternatives": [
+              {
+                "pathway_id": "synthetic-garden-suite",
+                "alternative_id": "ordinary",
+                "rules": [
+                  {
+                    "logical_id": "synthetic-rule-A",
+                    "revision_id": "synthetic-rule-A-r2"
+                  }
+                ]
+              }
+            ],
+            "projection_version": "none-hand-authored-v1",
+            "evaluator_version": "none-hand-authored-v1",
+            "coverage": "Fictional examples A\u2013C, E\u2013F; occupancy ratio, supplied setback or stated unresolved check only.",
+            "exclusions": [
+              "All real-world and legal use",
+              "Building code, servicing, title, overlays and placement search"
+            ]
+          },
+          "design": {
+            "logical_id": "synthetic-design",
+            "revision_id": "synthetic-design-r1"
+          },
+          "site": {
+            "logical_id": "synthetic-site-6",
+            "revision_id": "synthetic-site-6-r1"
+          },
+          "placement": {
+            "logical_id": "synthetic-placement-6",
+            "revision_id": "synthetic-placement-6-r1"
+          },
+          "scope": "supplied_placement_only",
+          "coverage": "within_coverage",
+          "outcome": "no_match_under_evaluated_pathways",
+          "scope_exclusions": [
+            "Only the supplied placement; no universal site or design conclusion",
+            "Building code, servicing, title and overlays not checked"
+          ],
+          "alternatives": [
+            {
+              "pathway_id": "synthetic-garden-suite",
+              "alternative_id": "ordinary",
+              "outcome": "no_match_under_evaluated_pathways",
+              "approval": "as_of_right",
+              "conditions": [],
+              "checks": [
+                {
+                  "check_id": "synthetic-check-6",
+                  "rule": {
+                    "logical_id": "synthetic-rule-A",
+                    "revision_id": "synthetic-rule-A-r2"
+                  },
+                  "status": "supported_failure",
+                  "explanation": "Saved corrected assertion: 0.40 exceeds 0.35 fraction. Only this supplied placement and fictional pathway are covered.",
+                  "evidence": [
+                    {
+                      "snapshot_id": "synthetic-preview-snapshot-v1",
+                      "locator": "Synthetic section E",
+                      "excerpt": "E: Fictional correction changes A to 35%; the same saved 0.40 example fails in release 2.",
+                      "context": "Hand-authored fiction; not legal evidence. Inert source probe: <img src=x onerror=\"alert(1)\"> & <script>alert(1)</script>"
+                    }
+                  ],
+                  "missing_facts": []
+                }
+              ]
+            }
+          ]
+        },
+        "rules": [
+          {
+            "schema_version": "sr-04.v1-provisional",
+            "identity": {
+              "logical_id": "synthetic-rule-A",
+              "revision_id": "synthetic-rule-A-r2"
+            },
+            "candidate_id": "synthetic-candidate-A",
+            "content": {
+              "pathway_id": "synthetic-garden-suite",
+              "alternative_id": "ordinary",
+              "text": "E: Fictional correction changes A to 35%; the same saved 0.40 example fails in release 2.",
+              "evidence": [
+                {
+                  "snapshot_id": "synthetic-preview-snapshot-v1",
+                  "locator": "Synthetic section E",
+                  "excerpt": "E: Fictional correction changes A to 35%; the same saved 0.40 example fails in release 2.",
+                  "context": "Hand-authored fiction; not legal evidence. Inert source probe: <img src=x onerror=\"alert(1)\"> & <script>alert(1)</script>"
+                }
+              ],
+              "applicability": {
+                "jurisdiction": "synthetic",
+                "use": "garden suite",
+                "building_role": "accessory",
+                "conditions": [],
+                "exceptions": [],
+                "status": "reviewed_scope"
+              },
+              "approval": "as_of_right",
+              "runtime_support": "supported",
+              "references": [],
+              "semantics": {
+                "kind": "scalar_bound",
+                "subject": "lot_coverage",
+                "measurement_definition": "Synthetic occupancy / lot area",
+                "operator": "<=",
+                "threshold": {
+                  "original_text": "35%",
+                  "original_value": "35",
+                  "original_unit": "%",
+                  "dimension": "ratio",
+                  "value": "0.35",
+                  "unit": "fraction",
+                  "basis": {
+                    "numerator": "occupied_site_area",
+                    "denominator": "lot_area"
+                  }
+                }
+              }
+            },
+            "review": {
+              "status": "accepted",
+              "reviewer": "synthetic-fixture-reviewer",
+              "reviewed_at": "2026-09-24T12:00:00Z",
+              "scope": "Synthetic structure only; no legal review",
+              "rationale": "Not a legal interpretation or verified pilot input."
+            },
+            "supersedes": [
+              {
+                "logical_id": "synthetic-rule-A",
+                "revision_id": "synthetic-rule-A-r1"
+              }
+            ],
+            "identity_decision": "Fictional corrected threshold; retain r1"
+          }
+        ]
+      }
+    }
+  ]
+}

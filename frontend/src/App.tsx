@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import InvestigationPreview from './preview/InvestigationPreview'
 
 export default function App() {
   const [health, setHealth] = useState('Checking backend…')
@@ -35,6 +36,7 @@ export default function App() {
       <p className="eyebrow">Exploratory checkpoint</p>
       <h1>ShovelReady</h1>
       <p>Preliminary zoning scouting and source-backed investigation.</p>
+      <InvestigationPreview />
       <section aria-labelledby="status-heading">
         <h2 id="status-heading">Foundation status</h2>
         <p role="status">{health}</p>

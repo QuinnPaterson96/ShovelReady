@@ -1,0 +1,7 @@
+Synthetic preview source v1. No municipality, parcel or manufacturer is represented.
+A: Fictional occupancy / lot area maximum 45%. A saved example asserts 0.40 fraction.
+B: Fictional height review needs roof peak and regulatory grade; ceiling height is insufficient.
+C: Fictional supplied placement fails a 2 m setback: saved distance 1 m. No placement search.
+D: Fictional Schedule X approval condition is not available in this fixture.
+E: Fictional correction changes A to 35%; the same saved 0.40 example fails in release 2.
+Inert source probe: <img src=x onerror="alert(1)"> & <script>alert(1)</script>
