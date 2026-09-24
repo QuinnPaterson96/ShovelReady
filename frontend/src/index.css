@@ -1,8 +1,25 @@
 :root { font-family: system-ui, sans-serif; color: #19372e; background: #f4f5ef; font-synthesis: none; }
 body { margin: 0; }
-main { max-width: 48rem; margin: 8vh auto; padding: 2rem; }
+main { max-width: 58rem; margin: 3vh auto; padding: 1.5rem; }
 h1 { font-size: clamp(2.5rem, 8vw, 4.5rem); margin: .5rem 0 1rem; letter-spacing: -.05em; }
 p { line-height: 1.7; }
 .eyebrow { text-transform: uppercase; letter-spacing: .15em; font-size: .8rem; }
 section { background: white; border: 1px solid #cdd7cb; border-radius: .7rem; padding: 1.5rem; margin-top: 2rem; }
 h2 { margin-top: 0; }
+label { display: block; font-weight: 650; margin-top: 1.5rem; }
+select { width: 100%; max-width: 34rem; padding: .8rem; font: inherit; color: inherit; background: white; border: 1px solid #566c60; border-radius: .3rem; margin: .5rem 0 2rem; }
+summary { cursor: pointer; padding: .8rem; font-weight: 650; background: #eaf0e8; border-radius: .3rem; }
+:focus-visible { outline: 3px solid #215bc2; outline-offset: 4px; }
+h3 { font-size: 1.6rem; } h4 { margin-bottom: .5rem; }
+.outcome::first-letter { text-transform: uppercase; }
+.notice { border-left: 4px solid #9b660e; padding: .8rem 1rem; background: #fff5df; }
+.identities { display: grid; grid-template-columns: max-content 1fr; gap: .6rem 1rem; }
+.identity { display: contents; } dt { font-weight: 650; text-transform: capitalize; } dd { margin: 0; }
+.alternative { margin-top: 1rem; padding: 1rem; }
+.check { border-top: 1px solid #cdd7cb; margin-top: 1rem; }
+.evidence { border-left: 2px solid #718c76; padding-left: 1rem; margin-top: 1rem; }
+blockquote { margin-left: 0; } article, dd, code, blockquote { overflow-wrap: anywhere; }
+li { line-height: 1.6; margin-bottom: .3rem; }
+.metadata { font-size: .85rem; color: #47584b; }
+.correction { border-top: 2px solid #718c76; padding-top: 1rem; }
+@media (max-width: 540px) { main { padding: .75rem; } section { padding: 1rem; } .identities { grid-template-columns: 1fr; gap: .3rem; } dd { margin-bottom: .6rem; } }

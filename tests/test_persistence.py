@@ -1,9 +1,11 @@
 """Synthetic storage tests only; no accepted zoning data or evaluation oracle."""
 
 import os
+import runpy
 from concurrent.futures import ThreadPoolExecutor
 from copy import deepcopy
 from datetime import date
+from pathlib import Path
 from uuid import uuid4
 
 import pytest
@@ -257,3 +259,19 @@ def test_concurrent_repeat_import_is_idempotent(repo):
     with ThreadPoolExecutor(max_workers=2) as workers:
         list(workers.map(lambda _: repo.import_records([source]), range(2)))
     assert repo.history("source", source.source_id) == [source]
+
+
+def test_verified_pilot_intake_roundtrips_without_acceptance(repo):
+    intake_path = Path(__file__).resolve().parents[1] / "docs/pilot-inputs/intake.py"
+    packet = runpy.run_path(str(intake_path))["build"]()
+    sources = [s.snapshot for s in packet.sources if s.status == "verified_repository"]
+    assert len(sources) == 15
+    assert all(s.snapshot is None for s in packet.sources if s.status == "blocked")
+    repo.import_records(sources)
+    repo.import_records(sources)
+    for source in sources:
+        retained = repo.get("source", source.snapshot_id)
+        assert retained == source
+        assert retained.review.status == "unreviewed"
+        assert retained.effective_from is None
+        assert repo.history("source", source.source_id) == [retained]
