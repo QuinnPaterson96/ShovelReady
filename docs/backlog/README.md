@@ -1,8 +1,8 @@
 # MVP backlog
 
-Planning baseline: September 18, 2026. Tickets specify proposed work; no CI, cloud deployment, customer validation, or application implementation is claimed by this backlog.
+Planning baseline: September 18, 2026; post-merge checkpoint: September 24, 2026. PRs #20, #21 and #19 merged the working scaffold/CI, provisional contracts and raw pilot evidence. There is still no source-to-result evaluator, accepted dataset or cloud deployment.
 
-GitHub issues are the execution/status source of truth once published. These Markdown files preserve the initial specification; update both when scope changes, and do not maintain a second live status board here. SR identifiers remain stable independently of GitHub issue numbers.
+GitHub issues are the execution/status source of truth once published. These Markdown files preserve specifications and dated implementation handoffs; update both when scope changes. Dated checkpoints are not a second live status board. SR identifiers remain stable independently of GitHub issue numbers.
 
 ## Scope and milestones
 
@@ -19,7 +19,7 @@ The first evaluator checks a supplied reviewed placement. Preserve manual site f
 
 ## Ticket index
 
-| Ticket | Outcome | Milestone | Initial dependencies |
+| Ticket | Outcome | Milestone | Completion dependencies |
 |---|---|---|---|
 | [SR-01](SR-01.md) | Select pilot workflow, real design, and municipality | M0: Scope | None |
 | [SR-02](SR-02.md) | Repair application scaffold and isolate development/test configuration | M1: Technical proof | None |
@@ -39,12 +39,19 @@ The first evaluator checks a supplied reviewed placement. Preserve manual site f
 | [SR-16](SR-16.md) | Run and measure a real customer qualification pilot | M2: User-tested MVP | SR-01, SR-06, SR-12, SR-15 |
 | [SR-17](SR-17.md) | Measure transfer cost in a second municipality | M3: Expansion experiment | SR-16 |
 | [SR-18](SR-18.md) | Resolve provider buy-versus-build questions with actual samples | M0: Scope | None |
+| [SR-19](SR-19.md) / [issue #22](https://github.com/QuinnPaterson96/ShovelReady/issues/22) | Fixture-driven investigation preview and simulated task rehearsal | M1 preparation | SR-02, provisional SR-04 |
 
-## Recommended starting order
+## Next parallel work
 
-Start SR-01 (pilot choice), SR-02 (safe scaffold), and SR-04 (contracts). SR-18 can consume provider-study results independently. Next, establish CI through SR-03 and frozen inputs through SR-05. Corpus and extraction work can proceed alongside persistence; integrate them before data publication. Cloud setup follows a functioning local image. SR-15 completes actual continuous deployment; SR-11 separately controls accepted-data publication.
+[Copy-ready task prompts and file ownership](next-wave-prompts.md) define the next two waves.
 
-Dependencies indicate completion gates, not a prohibition on early technical preparation. Customer interviews, recruitment and measured use in SR-16 follow a functioning prototype, as agreed. Do not block implementation on customer commitments or additional broad research. SR-18 is deferred unless an actual acquisition blocker makes a provider trial useful.
+- SR-02/SR-03 are complete for the foundation; SR-04 is complete for provisional boundaries. The merged main CI passed. Corpus validation, database integrity and runtime semantics remain downstream responsibilities.
+- Start the SR-01/SR-05/SR-06 intake and reviewer-ready packet alongside SR-08 persistence. The packet already contains real captured inputs but still lacks a controlled design revision, independent reviewer and supplied reviewed placements. Keep these tickets open until their actual acceptance criteria are met.
+- Optionally start SR-19 / issue #22: a small synthetic results preview and simulated browser walkthrough. This can reveal presentation problems without asserting real site fit or customer validation. SR-12 still owns real API/UI integration; SR-16 still owns actual customer validation.
+- Next, run SR-07 extraction against a usable reviewed clause subset alongside SR-09 spatial import once typed licensed spatial inputs and SR-08 are merged. Offline preparation can precede those gates; do not label it a completed benchmark/import. Manufacturer input gaps do not prevent importing spatial facts with unknowns retained.
+- Then integrate SR-10 evaluation, SR-11 publication and SR-12 API/UI, followed by SR-13 end-to-end verification, SR-14 hosting and SR-15 deployment. The working startup container is not the completed source-to-result image.
+
+Dependencies indicate completion gates, not a prohibition on early technical preparation. SR-08 owns shared Python dependency/CI changes in the first parallel wave. Keep schema revisions evidence-driven and coordinate them across consumers. Customer interviews, recruitment and measured use in SR-16 remain post-prototype; professional rule review and technical-input acquisition can happen earlier. SR-17/SR-18 remain deferred.
 
 ## Shared completion rules
 

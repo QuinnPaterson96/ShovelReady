@@ -9,7 +9,9 @@ The initial product is preliminary zoning scouting across municipalities, follow
 The FastAPI and React/TypeScript/Vite foundation runs locally. It is still an exploratory
 checkpoint: no zoning data is ingested or published, and no site evaluation is available.
 The health endpoint checks process liveness only. SR-04 owns provisional typed contracts;
-the application does not yet expose those contracts through an API.
+the application does not yet expose those contracts through an API. PRs #19-#21 are merged;
+the required backend, frontend and container-startup checks passed on combined main.
+See the [next parallel tasks](docs/backlog/next-wave-prompts.md) for the current handoff.
 
 City of Victoria garden suites remain the leading technical prototype candidate, subject
 to verified design/site inputs and current rule applicability; Vancouver is the fallback.
@@ -41,8 +43,9 @@ parsing and projection can give unsupported zoning answers.
 Run focused checks from the repository root with:
 
 ```powershell
-python -m uv run --locked ruff check app tests
+python -m uv run --locked ruff check app tests contract_tests
 python -m uv run --locked pytest -q
+python -m uv run --locked python docs/pilot-inputs/test_acquire.py
 cd frontend
 npm ci
 npm run typecheck
@@ -88,7 +91,7 @@ Show missing inputs and unsupported cases. Reproduce an earlier result against i
 
 The intended stack is FastAPI, Pydantic, SQLAlchemy, PostgreSQL, and React/TypeScript/Vite. Introduce PostGIS when spatial operations require it. Initially run ingestion as an explicit local batch command.
 
-Before adding features, repair the startup and frontend structure and establish focused regression fixtures. Do not assume the existing test suite is safe or relevant: it contains unrelated application scaffolding and database cleanup operations. Use a disposable local test database with explicit configuration.
+Startup and frontend repair and focused offline tests are implemented. Next, add the pilot intake/review packet and persistence; a synthetic investigation preview can proceed independently. All new persistence tests must use an explicitly isolated disposable database. Do not run the retired database tests from repository history.
 
 The scaffold setup above is verified locally. Never use historical embedded credentials or remote test defaults.
 
