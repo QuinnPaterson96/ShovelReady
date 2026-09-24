@@ -1,9 +1,9 @@
 # Native database lifecycle CI
 
 SR-20 adds the stable check **`native-local-database-windows`** to `CI` on every
-pull request and every push to main, without path filters. Propose this exact check
-for branch protection only after integration review of successful hosted evidence;
-this change does not alter repository settings. Existing Linux PostgreSQL service,
+pull request and every push to main, without path filters. Integration made this exact
+check required on September 24, 2026 after successful hosted evidence, preserving the
+existing required checks and strict up-to-date rule. Existing Linux PostgreSQL service,
 frontend and container jobs remain unchanged.
 
 ## Runner and command
@@ -100,4 +100,3 @@ those diagnostic probes were removed from the final workflow. The helper was unc
 
 This verifies native tooling and observation retrieval, not accepted zoning data,
 legal interpretation, screening, publication or deployment.
-

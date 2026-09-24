@@ -18,9 +18,11 @@ dataset, real-site screening result or active publication. The health endpoint c
 liveness only. See the [integration review](docs/integration-review-2026-09-24.md)
 for combined verification, remaining gates and proposed process improvements.
 
-The [next parallel work](docs/backlog/wave-four-prompts.md) covers native lifecycle CI,
-a reproducible local demo, concise PR handoffs and research into 10-20 public cases
-that could become reviewed test references.
+PRs #40-#43 add required native Windows lifecycle CI, a reproducible demo launcher,
+concise PR handoffs and ten provisional public case packets. See the
+[latest integration evidence](docs/integration-wave-four.md). The
+[next parallel work](docs/backlog/wave-five-prompts.md) covers a public-case evidence
+view, focused historical Stannard research and a blinded virtual-user walkthrough.
 
 City of Victoria garden suites remain the leading technical prototype candidate, subject
 to verified design/site inputs and current rule applicability; Vancouver is the fallback.
@@ -100,7 +102,9 @@ Results distinguish **candidate**, **needs investigation**, and **no match under
 | [Bounded evaluator](docs/evaluation.md) | Draft-only scalar evaluation, coherent alternatives and synthetic reference tests |
 | [Investigation API and UI](docs/investigation-api.md) | Pinned licensed observations, source inspection and no-screening boundary |
 | [Local development database](docs/local-development.md) | Persistent owned PostgreSQL, explicit migrations, seeding and launch commands |
-| [Latest integration review](docs/integration-review-2026-09-24.md) | PRs #31-#33, combined verification, remaining gates and process proposals |
+| [Evaluator/spatial integration](docs/integration-review-2026-09-24.md) | PRs #31-#33, combined verification, remaining gates and process proposals |
+| [Wave-four integration](docs/integration-wave-four.md) | PRs #40-#43, launcher correction, required lifecycle CI and research limits |
+| [Public case inventory](docs/research/public-cases/README.md) | Ten provisional historical cases and review shortlist; no accepted outcomes |
 | [MVP ticket backlog](docs/backlog/README.md) | Sequenced technical proof, CI/CD, customer pilot, and expansion experiments |
 | [Prototype input evidence](docs/pilot-inputs/README.md) | Captured Victoria sources, licensed GIS samples, provisional design/site specifications, and unresolved review inputs |
 | [Research plan](docs/research.md) | Commercial hypotheses and experiments before expansion |

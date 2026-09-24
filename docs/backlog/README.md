@@ -44,16 +44,19 @@ The first evaluator checks a supplied reviewed placement. Preserve manual site f
 | [SR-21](SR-21.md) / [issue #36](https://github.com/QuinnPaterson96/ShovelReady/issues/36) | Reproducible local demo and visible app/data identity | M1 support | Merged PRs #32/#33 |
 | [SR-22](SR-22.md) / [issue #37](https://github.com/QuinnPaterson96/ShovelReady/issues/37) | Short PR handoff template and integration checklist | M1 support | None |
 | [SR-23](SR-23.md) / [issue #38](https://github.com/QuinnPaterson96/ShovelReady/issues/38) | Research 10-20 public development cases for test references | M1 preparation | None for research; independent acceptance remains SR-06 |
+| [SR-24](SR-24.md) / [issue #44](https://github.com/QuinnPaterson96/ShovelReady/issues/44) | Read-only investigation of provisional public case evidence | M1 preparation | Merged SR-23 inventory |
+| [SR-25](SR-25.md) / [issue #45](https://github.com/QuinnPaterson96/ShovelReady/issues/45) | Bounded historical Stannard reference packet | M1 preparation | Merged SR-23 inventory; acceptance remains SR-06 |
+| [SR-26](SR-26.md) / [issue #46](https://github.com/QuinnPaterson96/ShovelReady/issues/46) | Blinded virtual-user walkthrough of existing VIC-080 | M1 preparation | Merged demo/viewer; independent of SR-24/SR-25 |
 
 ## Next parallel work
 
-[Wave-four scope and ownership](wave-four-prompts.md) are the current launch instructions. [Wave three](wave-three-prompts.md), [wave two](wave-two-prompts.md) and [wave one](next-wave-prompts.md) remain historical handoff context.
+[Wave-five scope and ownership](wave-five-prompts.md) are the current launch instructions. [Wave four](wave-four-prompts.md), [wave three](wave-three-prompts.md), [wave two](wave-two-prompts.md) and [wave one](next-wave-prompts.md) remain historical handoff context.
 
 - SR-02/SR-03/SR-04 are complete in their scaffold/provisional scopes. SR-08 persistence and SR-19 / issue #22 synthetic preview/rehearsal are now complete.
 - SR-01/SR-05/SR-06 remain partial: typed licensed inputs and a provisional corpus exist, but controlled design, reviewed site/placement facts, authorized durable private sources and independent acceptance are missing.
 - SR-07's offline replay and eligibility gates are implemented; all 25 real entries remain blocked with no accuracy/cost/timing measurement. SR-09's licensed import and bounded XY/CRS/intersection checks are implemented. Both tickets remain open for their outstanding criteria; address joins are deferred for the sample-selection workflow and reviewed legal site facts remain absent.
 - PR #31's bounded deterministic core is verified with labelled synthetic rules/facts. PR #33's read-only investigation API/UI consumes the pinned licensed observations; PR #32's local database helper supports a persistent development workflow. Combined integration passed 211 tests and 28 contract subtests with native lifecycle enabled, plus frontend checks and a seeded-database browser walkthrough. See the [integration review](../integration-review-2026-09-24.md).
-- Launch SR-20 native lifecycle CI, SR-21 reproducible demo and SR-22 concise PR handoffs independently. SR-23 researches public cases in parallel and does not block those engineering improvements. Research output supplies provisional evidence leads, not automatically accepted SR-06 reference outcomes.
+- SR-20/SR-21/SR-22 are implemented, and SR-23 delivered ten provisional case packets (seven Victoria plus three transfer examples), with no accepted outcomes. See [wave-four evidence](../integration-wave-four.md). The native Windows lifecycle check is now required. Launch SR-24 public-case evidence view, SR-25 focused historical review packet and SR-26 virtual-user walkthrough independently; the virtual run uses the current licensed viewer, not unmerged SR-24 work.
 - A real licensed intake-to-spatial-storage roundtrip passes without changing unreviewed status. Reading a pinned observation revision is not accepted data publication. SR-10 real checks, SR-11 accepted publication and SR-12 screening integration retain their evidence gates. No live model run, real fit or cloud deployment is claimed.
 - SR-13 completes full end-to-end verification before SR-14 hosting and SR-15 CD. SR-16 remains actual customer validation after a usable prototype; SR-17/SR-18 remain deferred.
 
