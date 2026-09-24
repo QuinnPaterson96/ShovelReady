@@ -39,6 +39,7 @@ error details.
 | `draft` | `DatasetReference` | release / dataset |
 | `evaluation` | `EvaluationResult` | evaluation / evaluation |
 | `review` | `app.persistence.payloads.ReviewEvent` | event / event |
+| `spatial` | `app.spatial.payloads.SpatialImport` (`sr-09.v1`) | collection revision / collection |
 
 Candidates automatically retain their trace as an immutable run. Multiple
 candidates from one run must agree on that trace. Standalone `ExtractionRun`
@@ -67,7 +68,8 @@ All nested evidence, candidate sources, resolved dependencies, predecessors,
 input references and draft memberships are checked. Placement CRS and evaluation
 input consistency are checked without geometric inference. Unresolved references
 stay unresolved. `spatial_snapshot_ids` currently identify spatial `SourceSnapshot`
-IDs (or labelled test fixtures); separate spatial feature storage is SR-09 work.
+IDs (or labelled test fixtures). SR-09 now stores raw observations and query-scoped
+geometry diagnostics as a separate immutable `spatial` record; see [spatial handoff](spatial.md).
 
 ## Storage and migrations
 
@@ -98,7 +100,10 @@ without a supplied connection fail closed.
 There is no prior production schema. `0001` is the initial fixture baseline
 (records, edges, immutability); `0002` admits attributed review events without
 rewriting payloads. Tests populate `0001`, upgrade to `0002`, and retrieve identical
-old inputs. Empty-to-head and repeat-to-head are also covered. Migrations run
+old inputs. `0003` admits SR-09 spatial imports without changing old payloads;
+populated `0002`-to-head compatibility is tested as well. Old readers cannot read
+the new kind, but can continue reading their earlier kinds. Empty-to-head and
+repeat-to-head are also covered. Migrations run
 transactionally and must be serialized by their operator, never raced at startup.
 
 Destructive downgrade is refused. Before shared persistence, take a backup and

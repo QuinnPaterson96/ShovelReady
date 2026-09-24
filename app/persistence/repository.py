@@ -10,6 +10,7 @@ from app.contracts.common import Evidence, SourceSnapshot
 from app.contracts.inputs import DesignRevision, PlacementRevision, SiteRevision
 from app.contracts.results import DatasetReference, EvaluationResult
 from app.contracts.rules import AcceptedRuleRevision, RuleCandidate
+from app.spatial.payloads import SpatialImport
 
 from .payloads import ExtractionRun, Kind, ReviewEvent
 from .tables import records, references
@@ -25,6 +26,7 @@ MODELS = {
     "draft": DatasetReference,
     "evaluation": EvaluationResult,
     "review": ReviewEvent,
+    "spatial": SpatialImport,
 }
 
 
@@ -40,7 +42,7 @@ def identify(value):
     kind = next((k for k, model in MODELS.items() if type(value) is model), None)
     if kind is None:
         raise TypeError("Unsupported persistence payload")
-    if kind in {"design", "site", "placement", "rule"}:
+    if kind in {"design", "site", "placement", "rule", "spatial"}:
         return kind, value.identity.revision_id, value.identity.logical_id
     if kind == "source":
         return kind, value.snapshot_id, value.source_id
@@ -179,6 +181,19 @@ class Repository:
 
         for evidence in evidence_in(value):
             ref("source", evidence.snapshot_id)
+        if isinstance(value, SpatialImport):
+            for snapshot in value.source_snapshot_ids:
+                source = ref("source", snapshot)
+                if source.category not in {"spatial", "test_fixture"}:
+                    raise ValueError("Spatial import requires spatial source bytes")
+            for observation in value.observations:
+                source = ref("source", observation.snapshot_id)
+                if (
+                    source.source_id != observation.source_id
+                    or source.source_url != observation.request_url
+                    or source.reuse_constraints != observation.attribution
+                ):
+                    raise ValueError("Spatial observation source mismatch")
         if isinstance(value, RuleCandidate):
             for snapshot in value.source_snapshot_ids:
                 ref("source", snapshot)

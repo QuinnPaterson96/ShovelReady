@@ -81,6 +81,7 @@ Results distinguish **candidate**, **needs investigation**, and **no match under
 | [Quality agreement](docs/quality.md) | Data contracts, testing, publication, and definition of done |
 | [Synthetic preview and walkthrough](docs/usability/README.md) | Local scenarios, fixture checks and usability rehearsal limits |
 | [Persistence interface](docs/persistence.md) | Immutable imports, draft metadata, migrations and disposable PostgreSQL checks |
+| [Spatial import](docs/spatial.md) | Licensed raw observations, explicit XY operations, migration and unresolved site facts |
 | [MVP ticket backlog](docs/backlog/README.md) | Sequenced technical proof, CI/CD, customer pilot, and expansion experiments |
 | [Prototype input evidence](docs/pilot-inputs/README.md) | Captured Victoria sources, licensed GIS samples, provisional design/site specifications, and unresolved review inputs |
 | [Research plan](docs/research.md) | Commercial hypotheses and experiments before expansion |
