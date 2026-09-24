@@ -1,8 +1,31 @@
 """Opt-in CI plugin: selection or skip is never native lifecycle verification."""
 
+import csv
+import ctypes
+import os
+import subprocess
+
 import pytest
 
 NODE = "tests/test_local_database.py::test_native_lifecycle"
+
+
+@pytest.fixture(autouse=True)
+def windows_scratch_owner(request, tmp_path, tmp_path_factory):
+    """Elevated runners must give PostgreSQL's restricted token an actual user owner."""
+    if (request.node.nodeid != NODE or os.name != "nt"
+            or not ctypes.windll.shell32.IsUserAnAdmin()):
+        return
+    # Python's mode=0700 uses OWNER RIGHTS. Elevated Windows defaults the owner to
+    # Administrators, which initdb deliberately strips from its restricted token.
+    # Change ownership, never broaden ACLs or touch the installed service/data.
+    identity = subprocess.check_output(["whoami", "/user", "/fo", "csv", "/nh"], text=True)
+    sid = next(csv.reader([identity.strip()]))[1]
+    scratch = tmp_path / "scratch"
+    scratch.mkdir()
+    for path in (tmp_path_factory.getbasetemp(), tmp_path, scratch):
+        subprocess.run(["icacls", str(path), "/setowner", f"*{sid}"], check=True,
+                       stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
 class NativeLifecycleGuard:
