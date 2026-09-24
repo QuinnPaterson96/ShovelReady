@@ -87,6 +87,20 @@ jobs:
             Write-Output "Clearing inherited PostgreSQL setting: $($_.Name)"
             Remove-Item -LiteralPath "Env:$($_.Name)"
           }
+          @'
+          import os, pathlib, subprocess, tempfile
+          root = pathlib.Path(tempfile.mkdtemp())
+          password = root / 'probe-password'
+          password.write_text('disposable-probe-only')
+          env = dict(os.environ, LC_ALL='C')
+          with tempfile.TemporaryFile(mode='w+t') as output:
+              result = subprocess.run([str(pathlib.Path(os.environ['SHOVELREADY_LOCAL_LIFECYCLE_POSTGRES_BIN']) / 'initdb.exe'), '-D', str(root / 'data'), '-U', 'fixture', '--auth=scram-sha-256', f'--pwfile={password}', '--encoding=UTF8', '--no-locale'], env=env, stdout=output, stderr=subprocess.STDOUT, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
+              output.seek(0)
+              print(output.read())
+          password.unlink()
+          raise SystemExit(result.returncode)
+          '@ | uv run --locked python -
+          if ($LASTEXITCODE -ne 0) { throw 'Python initialization probe failed' }
           uv run --locked python -m pytest -v tests/test_local_database.py -p tests.native_lifecycle_guard --tb=no --show-capture=no -rN
           exit $LASTEXITCODE
 
