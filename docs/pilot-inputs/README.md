@@ -38,3 +38,7 @@ The command performs public HTTP GETs only. It checks PDF signatures and JSON/se
 Issue requirements were inspected on September 18 and again September 24: [SR-01](https://github.com/QuinnPaterson96/ShovelReady/issues/1), [SR-04](https://github.com/QuinnPaterson96/ShovelReady/issues/4), [SR-05](https://github.com/QuinnPaterson96/ShovelReady/issues/5), [SR-06](https://github.com/QuinnPaterson96/ShovelReady/issues/6). All remained open, with no comments and the September 18 requirements. No merged/agreed SR-04 interface was established in this work. GitHub issues remain the live status source; this packet records what this acquisition delivered.
 
 Contains information licensed under the [Open Government Licence - City of Victoria](https://opendata.victoria.ca/pages/open-data-licence). No municipal or manufacturer endorsement is implied.
+
+## Foundation integration
+
+The acquisition tests run offline in the backend CI job using the locked Python environment. Retained snapshot hashes and byte lengths were rechecked against all 15 manifest records during integration review. This does not resolve the input/review gates above.
