@@ -1,9 +1,9 @@
 # SR-02 and SR-03 foundation verification
 
-Status: implementation on `codex/foundation`, 2026-09-24. This is an application scaffold,
+Status: verified implementation on `codex/foundation`, 2026-09-24. This is an application scaffold,
 not a working zoning release. Exact local results below were run in the isolated foundation
 checkout on Windows with Python 3.12.3 and Node 22.14.0. GitHub Actions results are recorded
-separately once the PR runs.
+below for the pull-request run.
 
 ## Decisions and limits
 
@@ -52,7 +52,7 @@ separately once the PR runs.
 | `git diff --check` | Passed. |
 
 `docker info` could not connect to the local Docker Desktop engine. The container image
-smoke check therefore requires the GitHub Actions run. No migrations, ingestion-to-result
+smoke check therefore ran in GitHub Actions, not locally. No migrations, ingestion-to-result
 fixture, or data publication exists; those checks are not represented as passed.
 
 ## CI and protection
@@ -62,8 +62,17 @@ permission and no deployment or model secrets. `backend` uses a locked uv instal
 and focused offline pytest. `frontend` uses `npm ci`, type-check and Vite build.
 `container-startup` builds the image, starts it, checks `/health`, and fetches `/`.
 Required check names for `main`: `backend`, `frontend`, `container-startup`.
-Enable branch protection with PR review and these exact required checks once the workflow
-has registered them. Record the actual protection API result below after the PR run.
+GitHub `main` branch protection now requires those exact checks with strict up-to-date
+validation and admin enforcement. The protection does not require a review; this is a
+single-owner repository. Force pushes and branch deletion are disabled.
 
-Workflow run: pending.
-Branch protection: pending.
+- [PR #20](https://github.com/QuinnPaterson96/ShovelReady/pull/20) triggered
+  [CI run 36041803349](https://github.com/QuinnPaterson96/ShovelReady/actions/runs/36041803349)
+  at commit `7011764`: completed with **success**. The `backend`, `frontend`, and
+  `container-startup` jobs each concluded **success**. GitHub also reported its
+  GitGuardian check as passing; this PR does not configure that external check.
+- `gh api repos/QuinnPaterson96/ShovelReady/branches/main/protection` confirmed
+  required contexts `backend`, `frontend`, `container-startup`, `strict: true`,
+  `enforce_admins: true`.
+- The workflow is configured for pushes to `main`, but that trigger has not run on
+  this branch. The PR is intentionally unmerged.
