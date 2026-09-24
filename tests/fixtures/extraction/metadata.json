@@ -1,0 +1,42 @@
+{
+  "schema_version": "sr-07.replay.v1",
+  "run_id": "synthetic:replay-1",
+  "origin": "synthetic",
+  "source_snapshot_ids": [
+    "synthetic:source"
+  ],
+  "searched_scope": "synthetic scalar parser fixture only",
+  "expected_parameters": [
+    "setback_distances"
+  ],
+  "fields": {
+    "setback_distances": {
+      "candidate_id": "synthetic:c1",
+      "rule_identity": {
+        "logical_id": "synthetic:r1",
+        "revision_id": "synthetic:r1-v1"
+      },
+      "pathway_id": "synthetic:p",
+      "alternative_id": "synthetic:a",
+      "measurement_definition": "synthetic length from reference line",
+      "dimension": "length",
+      "operator": "<=",
+      "evidence": [
+        {
+          "snapshot_id": "synthetic:source",
+          "locator": "synthetic clause 1",
+          "excerpt": "Synthetic limit: ten feet.",
+          "context": "Invented parser fixture, not zoning evidence."
+        }
+      ],
+      "applicability": {
+        "jurisdiction": "synthetic",
+        "use": "synthetic",
+        "building_role": "synthetic",
+        "conditions": [],
+        "exceptions": [],
+        "status": "unresolved"
+      }
+    }
+  }
+}
