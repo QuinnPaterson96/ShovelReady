@@ -1,6 +1,6 @@
 # Architecture direction
 
-Status: agreed direction for experimentation, updated September 24, 2026. Foundation, contracts, draft persistence, licensed spatial import, offline extraction replay and synthetic preview are implemented; accepted evaluation/publication and deployment remain future work. See the [restart assessment](restart-assessment.md) for evidence and the [original handoff](prior-work/design-decisions.md) for earlier reasoning.
+Status: agreed direction for experimentation, updated September 24, 2026. Foundation, contracts, draft persistence, licensed spatial import, offline extraction replay, draft scalar evaluator, observation API/UI and persistent local database tooling are implemented; accepted real-site evaluation/publication and deployment remain future work. See the [latest integration review](integration-review-2026-09-24.md), [restart assessment](restart-assessment.md) and [original handoff](prior-work/design-decisions.md) for evidence and earlier reasoning.
 
 ## Boundaries
 
@@ -47,7 +47,7 @@ Persist versioned principal-building geometry, lot-line classifications, rear-ya
 
 Support a small set of dimensional/use checks. Irregular geometry, split zoning, missing facts, and unmodeled overlays remain visible investigation cases. The bounded SR-09 import now uses Shapely/GEOS for XY intersections and pyproj for explicit CRS conversion, retaining immutable observations in PostgreSQL JSONB. PostGIS is deferred until larger-scale database spatial queries justify it; see the [implemented tradeoff and evidence](spatial.md). A small explicitly tagged geometry response is sufficient. Original XY is EPSG:3157; derived longitude/latitude is EPSG:4617 and must not be silently relabelled WGS84/RFC 7946 GeoJSON.
 
-An observational investigation API may expose an explicitly selected licensed spatial-import revision before regulatory publication, provided its UI clearly says no screening occurred. This is distinct from the screening API consuming an accepted dataset. The next evaluator core and observation viewer can be built independently; see [wave-three ownership](backlog/wave-three-prompts.md). Unknown source acceptance, site facts and placements remain gates for real conclusions.
+The observational investigation API exposes an explicitly selected licensed spatial-import revision before regulatory publication; its UI clearly says no screening occurred. This is distinct from a future screening API consuming an accepted dataset. The implemented draft evaluator remains independent of this viewer and is tested with synthetic reviewed inputs. Unknown source acceptance, site facts and placements remain gates for real conclusions. See the [evaluator](evaluation.md), [investigation API](investigation-api.md) and [local database workflow](local-development.md).
 
 ## Cloud direction
 
@@ -72,8 +72,8 @@ Data publication is separate: validated draft -> reviewed immutable release -> a
 
 The [ticket backlog](backlog/README.md) refines this sequence: pilot acquisition, scaffold repair, and provisional contracts can start together; CI starts after safe startup, and deployment follows the local end-to-end image. Cloud and accepted-data publication remain separate work items. Research is not a blanket prerequisite for implementation.
 
-1. Preserve the merged scaffold, typed boundaries, CI, immutable draft persistence, licensed spatial import and offline extraction tooling.
-2. In parallel, build the bounded evaluator core and real spatial evidence viewer while obtaining the controlled design and reviewed source/site/placement subset. Customer recruitment does not gate this technical work.
+1. Preserve the merged scaffold, typed boundaries, CI, immutable draft persistence, licensed spatial import, offline extraction tooling, draft evaluator and real spatial evidence viewer.
+2. Obtain the controlled design and reviewed source/site/placement subset needed to connect supported real rules to the evaluator. Use the existing observation viewer for a bounded workflow rehearsal; it does not yet screen designs. Customer recruitment does not gate this technical work.
 3. With authorized reviewed references, recorded human timing and an explicit budget, benchmark the original extraction prompt and diagnose actual failures before tuning.
 4. Integrate supported reviewed semantics and inputs with explicit dataset publication, coherent scouting projection and the screening API/UI. Do not turn a selected observation revision into an accepted release.
 5. Verify the complete source-to-result path and deployable image in SR-13, then configure the protected demo and CD with recovery evidence in SR-14/15.

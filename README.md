@@ -7,16 +7,16 @@ The initial product is preliminary zoning scouting across municipalities, follow
 ## Status
 
 The FastAPI and React/TypeScript/Vite foundation, immutable PostgreSQL persistence,
-typed pilot intake, offline extraction replay, licensed spatial import and synthetic
-investigation preview are implemented. The preview
-contains hand-authored examples, not real evaluated sites. There is no accepted dataset,
-working zoning evaluator or active publication. The health endpoint checks liveness only.
+typed pilot intake, offline extraction replay, licensed spatial import, draft scalar
+evaluator and read-only spatial investigation API/UI are implemented. A persistent
+local development database can seed the licensed observation packet. The separate
+synthetic preview contains hand-authored examples, not real evaluated sites.
 
-PRs #24-#26 and #28-#29 are merged. Offline extraction, spatial, intake, preview and
-disposable-database tests are integrated with the required backend, frontend and
-container-startup checks. See the [next parallel tasks](docs/backlog/wave-three-prompts.md):
-a bounded evaluator core and a read-only viewer for real spatial observations.
-Neither task establishes an accepted zoning release without the missing source/site review.
+PRs #31-#33 are merged. The evaluator has synthetic reference tests; the real spatial
+viewer explicitly reports that no screening occurred. There is no accepted zoning
+dataset, real-site screening result or active publication. The health endpoint checks
+liveness only. See the [integration review](docs/integration-review-2026-09-24.md)
+for combined verification, remaining gates and proposed process improvements.
 
 City of Victoria garden suites remain the leading technical prototype candidate, subject
 to verified design/site inputs and current rule applicability; Vancouver is the fallback.
@@ -38,12 +38,16 @@ npm run typecheck
 npm run build
 ```
 
-The development frontend proxies `/health` to the API on port 8000. Once built, FastAPI
+The development frontend proxies `/health` and `/api` to the API on port 8000. Once built, FastAPI
 also serves `frontend/dist` at `/`. Copy `.env.example` only if you need to set explicit
 local environment values; the scaffold needs no database or model credentials. `SHOVELREADY_ENV`
 accepts `development` or `test`; deployment configuration is a later ticket. `DATABASE_URL`
 from historical code is ignored. The old `/zones/upload` endpoint was retired because its
 parsing and projection can give unsupported zoning answers.
+
+For the real spatial viewer, follow the [persistent database and API setup](docs/local-development.md).
+It requires explicit database, collection and revision configuration; a running preview
+in an older worktree does not pick up merged changes automatically.
 
 Run focused checks from the repository root with:
 
@@ -55,12 +59,15 @@ python -m uv run --locked python docs/pilot-inputs/test_intake.py
 python -m uv run --locked python docs/usability/check_fixtures.py
 cd frontend
 npm ci
+npm test
 npm run typecheck
 npm run build
 ```
 
 Without disposable PostgreSQL configuration, database tests skip. Use the temporary
 cluster runner in the [persistence handoff](docs/persistence.md) for a full database run.
+The native local-database lifecycle test has a separate opt-in; see the
+[local development verification](docs/local-development.md#verification).
 
 See [CI and verification notes](docs/foundation-verification.md) for exact results and
 remaining work. Do not run the retired legacy tests from repository history: they contain
@@ -86,6 +93,10 @@ Results distinguish **candidate**, **needs investigation**, and **no match under
 | [Persistence interface](docs/persistence.md) | Immutable imports, draft metadata, migrations and disposable PostgreSQL checks |
 | [Spatial import](docs/spatial.md) | Licensed raw observations, explicit XY operations, migration and unresolved site facts |
 | [Extraction replay](docs/extraction.md) | Saved responses, conservative normalization and blocked real-benchmark gates |
+| [Bounded evaluator](docs/evaluation.md) | Draft-only scalar evaluation, coherent alternatives and synthetic reference tests |
+| [Investigation API and UI](docs/investigation-api.md) | Pinned licensed observations, source inspection and no-screening boundary |
+| [Local development database](docs/local-development.md) | Persistent owned PostgreSQL, explicit migrations, seeding and launch commands |
+| [Latest integration review](docs/integration-review-2026-09-24.md) | PRs #31-#33, combined verification, remaining gates and process proposals |
 | [MVP ticket backlog](docs/backlog/README.md) | Sequenced technical proof, CI/CD, customer pilot, and expansion experiments |
 | [Prototype input evidence](docs/pilot-inputs/README.md) | Captured Victoria sources, licensed GIS samples, provisional design/site specifications, and unresolved review inputs |
 | [Research plan](docs/research.md) | Commercial hypotheses and experiments before expansion |
@@ -105,7 +116,7 @@ Show missing inputs and unsupported cases. Reproduce an earlier result against i
 
 The stack is FastAPI, Pydantic, SQLAlchemy, PostgreSQL, and React/TypeScript/Vite. The bounded spatial import uses Shapely/pyproj; introduce PostGIS when database spatial queries justify it. Ingestion runs as an explicit local batch command.
 
-Startup, frontend repair, focused offline tests and immutable PostgreSQL persistence are implemented. See the [persistence handoff](docs/persistence.md) for draft-only storage, explicit migrations and isolated database checks. Licensed typed intake and a synthetic investigation preview are integrated; independent source/site review and active publication remain future work. Do not run the retired database tests from repository history.
+Startup, focused offline tests, immutable PostgreSQL persistence, the draft evaluator and licensed observation viewer are implemented. See the [persistence handoff](docs/persistence.md) for draft-only storage, explicit migrations and isolated database checks. Independent source/site review, accepted screening and active publication remain future work. Do not run the retired database tests from repository history.
 
 The scaffold setup above is verified locally. Never use historical embedded credentials or remote test defaults.
 
