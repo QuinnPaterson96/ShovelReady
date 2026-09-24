@@ -2,6 +2,9 @@
 
 Checkpoint: September 24, 2026, after PRs #24, #25 and #26. This supersedes the launch order in [the first-wave prompt pack](next-wave-prompts.md). GitHub issues remain the live status source.
 
+Historical handoff: PRs #28/#29 completed these bounded implementation slices.
+Use [wave three](wave-three-prompts.md) for current launch prompts and remaining gates.
+
 ## Integration result
 
 - PR #26: immutable PostgreSQL persistence, explicit migrations, review history and draft release metadata. There is no active publication or evaluator.

@@ -7,13 +7,16 @@ The initial product is preliminary zoning scouting across municipalities, follow
 ## Status
 
 The FastAPI and React/TypeScript/Vite foundation, immutable PostgreSQL persistence,
-typed pilot intake and synthetic investigation preview are implemented. The preview
+typed pilot intake, offline extraction replay, licensed spatial import and synthetic
+investigation preview are implemented. The preview
 contains hand-authored examples, not real evaluated sites. There is no accepted dataset,
 working zoning evaluator or active publication. The health endpoint checks liveness only.
 
-PRs #24-#26 are merged. Intake, preview and disposable-database tests are integrated
-with the required backend, frontend and container-startup checks. See the
-[next parallel tasks](docs/backlog/wave-two-prompts.md) for the current handoff.
+PRs #24-#26 and #28-#29 are merged. Offline extraction, spatial, intake, preview and
+disposable-database tests are integrated with the required backend, frontend and
+container-startup checks. See the [next parallel tasks](docs/backlog/wave-three-prompts.md):
+a bounded evaluator core and a read-only viewer for real spatial observations.
+Neither task establishes an accepted zoning release without the missing source/site review.
 
 City of Victoria garden suites remain the leading technical prototype candidate, subject
 to verified design/site inputs and current rule applicability; Vancouver is the fallback.
@@ -82,6 +85,7 @@ Results distinguish **candidate**, **needs investigation**, and **no match under
 | [Synthetic preview and walkthrough](docs/usability/README.md) | Local scenarios, fixture checks and usability rehearsal limits |
 | [Persistence interface](docs/persistence.md) | Immutable imports, draft metadata, migrations and disposable PostgreSQL checks |
 | [Spatial import](docs/spatial.md) | Licensed raw observations, explicit XY operations, migration and unresolved site facts |
+| [Extraction replay](docs/extraction.md) | Saved responses, conservative normalization and blocked real-benchmark gates |
 | [MVP ticket backlog](docs/backlog/README.md) | Sequenced technical proof, CI/CD, customer pilot, and expansion experiments |
 | [Prototype input evidence](docs/pilot-inputs/README.md) | Captured Victoria sources, licensed GIS samples, provisional design/site specifications, and unresolved review inputs |
 | [Research plan](docs/research.md) | Commercial hypotheses and experiments before expansion |
@@ -99,7 +103,7 @@ Show missing inputs and unsupported cases. Reproduce an earlier result against i
 
 ## Development direction
 
-The intended stack is FastAPI, Pydantic, SQLAlchemy, PostgreSQL, and React/TypeScript/Vite. Introduce PostGIS when spatial operations require it. Initially run ingestion as an explicit local batch command.
+The stack is FastAPI, Pydantic, SQLAlchemy, PostgreSQL, and React/TypeScript/Vite. The bounded spatial import uses Shapely/pyproj; introduce PostGIS when database spatial queries justify it. Ingestion runs as an explicit local batch command.
 
 Startup, frontend repair, focused offline tests and immutable PostgreSQL persistence are implemented. See the [persistence handoff](docs/persistence.md) for draft-only storage, explicit migrations and isolated database checks. Licensed typed intake and a synthetic investigation preview are integrated; independent source/site review and active publication remain future work. Do not run the retired database tests from repository history.
 

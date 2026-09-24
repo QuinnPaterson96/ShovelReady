@@ -1,6 +1,6 @@
 # Architecture direction
 
-Status: agreed direction for experimentation, September 17, 2026. The existing code does not yet implement this architecture. See the [restart assessment](restart-assessment.md) for evidence and the [original handoff](prior-work/design-decisions.md) for earlier reasoning.
+Status: agreed direction for experimentation, updated September 24, 2026. Foundation, contracts, draft persistence, licensed spatial import, offline extraction replay and synthetic preview are implemented; accepted evaluation/publication and deployment remain future work. See the [restart assessment](restart-assessment.md) for evidence and the [original handoff](prior-work/design-decisions.md) for earlier reasoning.
 
 ## Boundaries
 
@@ -45,7 +45,9 @@ September 18 research refinement: one actual fixed small design, one reviewed pa
 
 Persist versioned principal-building geometry, lot-line classifications, rear-yard boundaries, and proposed placements with source/manual-review provenance. Keep physical and regulatory measurements distinct. A failed supplied placement is not proof of universal site incompatibility; outside supported coverage is not a zoning exclusion. No automatic placement search is required.
 
-Support a small set of dimensional/use checks. Irregular geometry, split zoning, missing facts, and unmodeled overlays remain visible investigation cases. The bounded SR-09 import now uses Shapely/GEOS for XY intersections and pyproj for explicit CRS conversion, retaining immutable observations in PostgreSQL JSONB. PostGIS is deferred until larger-scale database spatial queries justify it; see the [implemented tradeoff and evidence](spatial.md). A small GeoJSON response is sufficient for this sample.
+Support a small set of dimensional/use checks. Irregular geometry, split zoning, missing facts, and unmodeled overlays remain visible investigation cases. The bounded SR-09 import now uses Shapely/GEOS for XY intersections and pyproj for explicit CRS conversion, retaining immutable observations in PostgreSQL JSONB. PostGIS is deferred until larger-scale database spatial queries justify it; see the [implemented tradeoff and evidence](spatial.md). A small explicitly tagged geometry response is sufficient. Original XY is EPSG:3157; derived longitude/latitude is EPSG:4617 and must not be silently relabelled WGS84/RFC 7946 GeoJSON.
+
+An observational investigation API may expose an explicitly selected licensed spatial-import revision before regulatory publication, provided its UI clearly says no screening occurred. This is distinct from the screening API consuming an accepted dataset. The next evaluator core and observation viewer can be built independently; see [wave-three ownership](backlog/wave-three-prompts.md). Unknown source acceptance, site facts and placements remain gates for real conclusions.
 
 ## Cloud direction
 
@@ -58,9 +60,9 @@ Support a small set of dimensional/use checks. Irregular geometry, split zoning,
 
 ## CI/CD direction
 
-If using GitHub Actions, use PR checks for Python lint/focused tests, frontend type-check/build, migrations against disposable PostgreSQL, a fixture-based ingestion-to-result integration test, and a container startup smoke test.
+GitHub Actions requires backend lint/offline tests with disposable PostgreSQL migrations, frontend type-check/build and container startup checks. The full accepted ingestion-to-result integration fixture remains SR-13 work; existing checks do not establish that path.
 
-On merge, deploy the tested immutable image to the demo environment and smoke-test it. Identify images by commit. Serialize deployments to a given environment and avoid obsolete runs overwriting newer deployments. Preserve a known-good image for rollback.
+Once SR-14 configures a protected demo environment, SR-15 will deploy the tested immutable image and smoke-test it. Identify images by commit. Serialize deployments to a given environment and avoid obsolete runs overwriting newer deployments. Preserve a known-good image for rollback. No deployment currently runs on merge.
 
 Apply database migrations as an explicit release step, not concurrent application startup table creation. Prefer backward-compatible changes; application rollback does not automatically roll back the database. Test backup restoration before customer reliance.
 
@@ -70,12 +72,11 @@ Data publication is separate: validated draft -> reviewed immutable release -> a
 
 The [ticket backlog](backlog/README.md) refines this sequence: pilot acquisition, scaffold repair, and provisional contracts can start together; CI starts after safe startup, and deployment follows the local end-to-end image. Cloud and accepted-data publication remain separate work items. Research is not a blanket prerequisite for implementation.
 
-1. Select a provisional screening workflow and create the reviewed source/site/placement corpus; customer recruitment and willingness-to-pay validation follow the prototype and do not gate the technical build.
-2. Benchmark the existing prompt and record empirical failures.
-3. Repair minimal backend/frontend scaffolding and establish typed contracts and focused regression fixtures.
-4. Add CI, then the single demo deployment once startup/build checks pass.
-5. Persist provenance, raw runs, reviewed rules, and controlled dataset releases.
-6. Implement bounded deterministic screening and a thin investigation interface.
-7. Measure customer time savings and update costs before expanding coverage.
+1. Preserve the merged scaffold, typed boundaries, CI, immutable draft persistence, licensed spatial import and offline extraction tooling.
+2. In parallel, build the bounded evaluator core and real spatial evidence viewer while obtaining the controlled design and reviewed source/site/placement subset. Customer recruitment does not gate this technical work.
+3. With authorized reviewed references, recorded human timing and an explicit budget, benchmark the original extraction prompt and diagnose actual failures before tuning.
+4. Integrate supported reviewed semantics and inputs with explicit dataset publication, coherent scouting projection and the screening API/UI. Do not turn a selected observation revision into an accepted release.
+5. Verify the complete source-to-result path and deployable image in SR-13, then configure the protected demo and CD with recovery evidence in SR-14/15.
+6. Measure customer time savings and update costs before expanding coverage.
 
 Defer multi-agent ingestion, vector databases, knowledge graphs, microservices, elaborate cloud infrastructure, custom model training, and a commercial third-party API. Record any later adoption in a decision note with the observed need, simpler alternatives, and revisit criteria.

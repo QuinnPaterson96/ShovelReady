@@ -1,6 +1,6 @@
 # MVP backlog
 
-Planning baseline: September 18, 2026; post-merge checkpoint: September 24, 2026. PRs #20, #21 and #19 merged the scaffold/CI, provisional contracts and raw pilot evidence; PRs #24-#26 added typed intake, persistence and the synthetic investigation preview. There is still no source-to-result evaluator, accepted dataset or cloud deployment.
+Planning baseline: September 18, 2026; post-merge checkpoint: September 24, 2026. PRs #20, #21 and #19 merged the scaffold/CI, provisional contracts and raw pilot evidence; PRs #24-#26 added typed intake, persistence and the synthetic investigation preview; PRs #28/#29 added offline extraction replay and licensed spatial import. There is still no source-to-result evaluator, accepted dataset or cloud deployment.
 
 GitHub issues are the execution/status source of truth once published. These Markdown files preserve specifications and dated implementation handoffs; update both when scope changes. Dated checkpoints are not a second live status board. SR identifiers remain stable independently of GitHub issue numbers.
 
@@ -43,12 +43,13 @@ The first evaluator checks a supplied reviewed placement. Preserve manual site f
 
 ## Next parallel work
 
-[Wave-two prompts and ownership](wave-two-prompts.md) are the current launch instructions. The [first-wave prompts](next-wave-prompts.md) remain historical handoff context.
+[Wave-three prompts and ownership](wave-three-prompts.md) are the current launch instructions. The [second-wave](wave-two-prompts.md) and [first-wave prompts](next-wave-prompts.md) remain historical handoff context.
 
 - SR-02/SR-03/SR-04 are complete in their scaffold/provisional scopes. SR-08 persistence and SR-19 / issue #22 synthetic preview/rehearsal are now complete.
 - SR-01/SR-05/SR-06 remain partial: typed licensed inputs and a provisional corpus exist, but controlled design, reviewed site/placement facts, authorized durable private sources and independent acceptance are missing.
-- Launch SR-09 spatial import alongside the offline preparation portion of SR-07. The real extraction benchmark remains gated; synthetic saved-response checks cannot satisfy it. SR-09 owns shared dependencies/CI this wave, and both tasks open PRs for integration review.
-- A real licensed intake-to-storage roundtrip passes without changing unreviewed status. This does not establish an accepted source-to-result release. SR-10 evaluation, SR-11 publication and SR-12 API integration still need their stated evidence gates. Reuse the preview presentation after introducing a real validated API adapter.
+- SR-07's offline replay and eligibility gates are implemented; all 25 real entries remain blocked with no accuracy/cost/timing measurement. SR-09's licensed import and bounded XY/CRS/intersection checks are implemented. Both tickets remain open for their outstanding criteria; address joins are deferred for the sample-selection workflow and reviewed legal site facts remain absent.
+- Launch F3 / SR-10's bounded deterministic core alongside G3 / SR-12's read-only real spatial investigation API/UI. F3 uses labelled synthetic rules/facts and owns evaluator/scalar contract work; G3 consumes existing spatial/source payloads and owns shared tooling/CI. Neither depends on the other's output. Both open PRs without merging.
+- A real licensed intake-to-spatial-storage roundtrip passes without changing unreviewed status. Reading a pinned observation revision is not accepted data publication. SR-10 real checks, SR-11 accepted publication and SR-12 screening integration retain their evidence gates. No live model run, real fit or cloud deployment is claimed.
 - SR-13 completes full end-to-end verification before SR-14 hosting and SR-15 CD. SR-16 remains actual customer validation after a usable prototype; SR-17/SR-18 remain deferred.
 
 Dependencies are completion gates, not a prohibition on useful offline preparation. Do not block technical work on customer commitments, and do not disguise missing evidence as completed review. The precise owner inputs are listed in [reviewer actions](../pilot-inputs/reviewer-actions.md).
