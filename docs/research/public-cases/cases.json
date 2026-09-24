@@ -1,0 +1,1807 @@
+{
+  "schema_version": "public-cases.v1",
+  "inventory_revision": "2026-09-24.integration-1",
+  "access_date": "2026-09-24",
+  "purpose": "Provisional discovery metadata; no accepted reference outcomes",
+  "counts": {
+    "total": 10,
+    "pilot_jurisdiction": 7,
+    "transfer_only": 3,
+    "accepted": 0
+  },
+  "local_artifacts": [
+    "README.md",
+    "search-gap-ledger.md",
+    "verify_inventory.py"
+  ],
+  "rights": {
+    "victoria": {
+      "evidence_url": "https://www.victoria.ca/legal-disclaimer",
+      "locator": "Copyright; Electronic Documentation",
+      "access_date": "2026-09-24",
+      "summary": "Private/informational use stated; broader reuse requires permission. Architectural sheets also reserve rights. No source redistribution grant established.",
+      "handling": "Citation metadata and short factual annotations only; source PDFs/renders/text withheld; inspection hashes are not authorized durable storage."
+    },
+    "saanich": {
+      "evidence_url": "https://saanich.ca.granicus.com/MetaViewer.php?clip_id=770&meta_id=59045&view_id=1",
+      "locator": "Published report and attached permit copy",
+      "access_date": "2026-09-24",
+      "summary": "Public access verified; no redistribution licence established for this packet.",
+      "handling": "Citation metadata and short factual annotations only; source PDF/renders/text withheld; authorized durable retention unresolved."
+    },
+    "vancouver": {
+      "evidence_url": "https://vancouver.ca/your-government/terms-of-use.aspx",
+      "locator": "Bylaws, Council minutes, and corporate policies; Limited license",
+      "access_date": "2026-09-24",
+      "summary": "Non-commercial record reproduction has attribution conditions; commercial rights not established.",
+      "handling": "Citations and short factual annotations only. No source bytes retained in repository; local retrieval failed."
+    }
+  },
+  "sources": {
+    "tracker-REZ00787": {
+      "url": "https://tender.victoria.ca/webapps/ourcity/Prospero/Details.aspx?folderNumber=REZ00787",
+      "title": "REZ00787 development tracker",
+      "kind": "municipal_tracker",
+      "access_date": "2026-09-24",
+      "access_method": "direct HTTP 200; parsed primary page",
+      "document_date": null,
+      "date_basis": "Live page; application dates recorded per case",
+      "sha256": null,
+      "byte_length": null,
+      "page_count": null,
+      "local_artifact": null,
+      "inspection": "Header, Purpose, Documents, Task Progress and Related Permits sections",
+      "rights_id": "victoria"
+    },
+    "REZ00787-9": {
+      "url": "https://tender.victoria.ca/webapps/ourcity/Prospero/FileDownload.aspx?fileId=6E1EAB8E-2871-4026-930E-84C2696B8048&folderId=30750C210608094939900822",
+      "title": "Final Approved",
+      "kind": "plan_or_draft_instrument",
+      "access_date": "2026-09-24",
+      "access_method": "direct HTTP 200; pypdf text and selected rendered pages",
+      "document_date": "2022-12-02",
+      "date_basis": "Printed drawing/report date or received stamp; see case version notes",
+      "sha256": "f87777a69ec3d3a37a6e182d0decbcaaa6ebef99113677f589441819c6718a78",
+      "byte_length": 8423264,
+      "page_count": 6,
+      "local_artifact": null,
+      "inspection": "PDF p1 C1 visually checked; complete extracted text searched",
+      "rights_id": "victoria"
+    },
+    "tracker-DPV00081": {
+      "url": "https://tender.victoria.ca/webapps/ourcity/Prospero/Details.aspx?folderNumber=DPV00081",
+      "title": "DPV00081 development tracker",
+      "kind": "municipal_tracker",
+      "access_date": "2026-09-24",
+      "access_method": "direct HTTP 200; parsed primary page",
+      "document_date": null,
+      "date_basis": "Live page; application dates recorded per case",
+      "sha256": null,
+      "byte_length": null,
+      "page_count": null,
+      "local_artifact": null,
+      "inspection": "Header, Purpose, Documents, Task Progress and Related Permits sections",
+      "rights_id": "victoria"
+    },
+    "DPV00081-5": {
+      "url": "https://tender.victoria.ca/webapps/ourcity/Prospero/FileDownload.aspx?fileId=FE567857-C636-42CF-A7A9-C52239B03D51&folderId=19389C180612094112407815",
+      "title": "2018-08-07 - Plans - Revisions.pdf",
+      "kind": "plan_or_draft_instrument",
+      "access_date": "2026-09-24",
+      "access_method": "direct HTTP 200; pypdf text and selected rendered pages",
+      "document_date": "2018-07-30",
+      "date_basis": "Printed drawing/report date or received stamp; see case version notes",
+      "sha256": "4791c9610b0f94d4e6648561fa356c77216e0849f555b94189d362fe6432d926",
+      "byte_length": 12361968,
+      "page_count": 2,
+      "local_artifact": null,
+      "inspection": "PDF p1 A-1 visually checked; both pages text inspected",
+      "rights_id": "victoria"
+    },
+    "tracker-REZ00774": {
+      "url": "https://tender.victoria.ca/webapps/ourcity/Prospero/Details.aspx?folderNumber=REZ00774",
+      "title": "REZ00774 development tracker",
+      "kind": "municipal_tracker",
+      "access_date": "2026-09-24",
+      "access_method": "direct HTTP 200; parsed primary page",
+      "document_date": null,
+      "date_basis": "Live page; application dates recorded per case",
+      "sha256": null,
+      "byte_length": null,
+      "page_count": null,
+      "local_artifact": null,
+      "inspection": "Header, Purpose, Documents, Task Progress and Related Permits sections",
+      "rights_id": "victoria"
+    },
+    "tracker-DPV00223": {
+      "url": "https://tender.victoria.ca/webapps/ourcity/Prospero/Details.aspx?folderNumber=DPV00223",
+      "title": "DPV00223 development tracker",
+      "kind": "municipal_tracker",
+      "access_date": "2026-09-24",
+      "access_method": "direct HTTP 200; parsed primary page",
+      "document_date": null,
+      "date_basis": "Live page; application dates recorded per case",
+      "sha256": null,
+      "byte_length": null,
+      "page_count": null,
+      "local_artifact": null,
+      "inspection": "Header, Purpose, Documents, Task Progress and Related Permits sections",
+      "rights_id": "victoria"
+    },
+    "REZ00774-17": {
+      "url": "https://tender.victoria.ca/webapps/ourcity/Prospero/FileDownload.aspx?fileId=CB2E297F-7A39-4BEB-9349-8B6EDC6DF2E1&folderId=12266C210406112350109800",
+      "title": "2023-01-11 - Plans - Revisions - Final Approved",
+      "kind": "plan_or_draft_instrument",
+      "access_date": "2026-09-24",
+      "access_method": "direct HTTP 200; pypdf text and selected rendered pages",
+      "document_date": "2023-01-11",
+      "date_basis": "Printed drawing/report date or received stamp; see case version notes",
+      "sha256": "7be944a18ecf7d99496bf57758e75d2f0d89bc422ff17f540ec70ac37a364690",
+      "byte_length": 8652449,
+      "page_count": 7,
+      "local_artifact": null,
+      "inspection": "PDF p1 A-1.0 visually checked; extracted text for all pages",
+      "rights_id": "victoria"
+    },
+    "REZ00774-18": {
+      "url": "https://tender.victoria.ca/webapps/ourcity/Prospero/FileDownload.aspx?fileId=64037C231005163329309209&folderId=12266C210406112350109800",
+      "title": "23-086.pdf",
+      "kind": "plan_or_draft_instrument",
+      "access_date": "2026-09-24",
+      "access_method": "direct HTTP 200; pypdf text and selected rendered pages",
+      "document_date": null,
+      "date_basis": "Printed drawing/report date or received stamp; see case version notes",
+      "sha256": "9796e11415b82d6717db1945acdcea12f06725606a1b597ed159e604ee1dd71b",
+      "byte_length": 1381505,
+      "page_count": 2,
+      "local_artifact": null,
+      "inspection": "PDF p1 text inspected; blank readings/adoption fields",
+      "rights_id": "victoria"
+    },
+    "tracker-REZ00708": {
+      "url": "https://tender.victoria.ca/webapps/ourcity/Prospero/Details.aspx?folderNumber=REZ00708",
+      "title": "REZ00708 development tracker",
+      "kind": "municipal_tracker",
+      "access_date": "2026-09-24",
+      "access_method": "direct HTTP 200; parsed primary page",
+      "document_date": null,
+      "date_basis": "Live page; application dates recorded per case",
+      "sha256": null,
+      "byte_length": null,
+      "page_count": null,
+      "local_artifact": null,
+      "inspection": "Header, Purpose, Documents, Task Progress and Related Permits sections",
+      "rights_id": "victoria"
+    },
+    "REZ00708-14": {
+      "url": "https://tender.victoria.ca/webapps/ourcity/Prospero/FileDownload.aspx?fileId=A078A0F1-C489-41CD-B380-FB6EBE0BA62E&folderId=43708C190712121013717591",
+      "title": "FINAL APPROVED PLANS",
+      "kind": "plan_or_draft_instrument",
+      "access_date": "2026-09-24",
+      "access_method": "direct HTTP 200; pypdf text and selected rendered pages",
+      "document_date": "2020-06-01",
+      "date_basis": "Printed drawing/report date or received stamp; see case version notes",
+      "sha256": "6f079ce29e6a3b7417ff310f437e06f6fb744d10009caf5508b06299cf89d997",
+      "byte_length": 9355989,
+      "page_count": 14,
+      "local_artifact": null,
+      "inspection": "PDF pp1-2 visually inspected; complete text extracted",
+      "rights_id": "victoria"
+    },
+    "REZ00708-12": {
+      "url": "https://tender.victoria.ca/webapps/ourcity/Prospero/FileDownload.aspx?fileId=62102C201005150712467408&folderId=43708C190712121013717591",
+      "title": "DRAFT Development Permit Form - Garden Suite.pdf",
+      "kind": "plan_or_draft_instrument",
+      "access_date": "2026-09-24",
+      "access_method": "direct HTTP 200; pypdf text and selected rendered pages",
+      "document_date": null,
+      "date_basis": "Printed drawing/report date or received stamp; see case version notes",
+      "sha256": "184bfd4263f2492774c47183b9026d4d65f114c929edb46aa3fb0ae11c6329d7",
+      "byte_length": 134903,
+      "page_count": 3,
+      "local_artifact": null,
+      "inspection": "PDF pp1-3 text inspected",
+      "rights_id": "victoria"
+    },
+    "tracker-REZ00507": {
+      "url": "https://tender.victoria.ca/webapps/ourcity/Prospero/Details.aspx?folderNumber=REZ00507",
+      "title": "REZ00507 development tracker",
+      "kind": "municipal_tracker",
+      "access_date": "2026-09-24",
+      "access_method": "direct HTTP 200; parsed primary page",
+      "document_date": null,
+      "date_basis": "Live page; application dates recorded per case",
+      "sha256": null,
+      "byte_length": null,
+      "page_count": null,
+      "local_artifact": null,
+      "inspection": "Header, Purpose, Documents, Task Progress and Related Permits sections",
+      "rights_id": "victoria"
+    },
+    "REZ00507-0": {
+      "url": "https://tender.victoria.ca/webapps/ourcity/Prospero/FileDownload.aspx?fileId=138CFA5D-9245-4B93-866E-0033134C0FA5&folderId=53380C160209132411330000",
+      "title": "2016-05-16_Plans-Revisions_REZ00507",
+      "kind": "plan_or_draft_instrument",
+      "access_date": "2026-09-24",
+      "access_method": "direct HTTP 200; pypdf text and selected rendered pages",
+      "document_date": "2016-05-16",
+      "date_basis": "Printed drawing/report date or received stamp; see case version notes",
+      "sha256": "94fdce9fca678064575207f7c37a2f38f1f657198df5b59446d023d131d856b3",
+      "byte_length": 1327406,
+      "page_count": 3,
+      "local_artifact": null,
+      "inspection": "PDF p1 visually inspected; text layer contains stamps only",
+      "rights_id": "victoria"
+    },
+    "tracker-DPV00282": {
+      "url": "https://tender.victoria.ca/webapps/ourcity/Prospero/Details.aspx?folderNumber=DPV00282",
+      "title": "DPV00282 development tracker",
+      "kind": "municipal_tracker",
+      "access_date": "2026-09-24",
+      "access_method": "direct HTTP 200; parsed primary page",
+      "document_date": null,
+      "date_basis": "Live page; application dates recorded per case",
+      "sha256": null,
+      "byte_length": null,
+      "page_count": null,
+      "local_artifact": null,
+      "inspection": "Header, Purpose, Documents, Task Progress and Related Permits sections",
+      "rights_id": "victoria"
+    },
+    "tracker-DDV00041": {
+      "url": "https://tender.victoria.ca/webapps/ourcity/Prospero/Details.aspx?folderNumber=DDV00041",
+      "title": "DDV00041 development tracker",
+      "kind": "municipal_tracker",
+      "access_date": "2026-09-24",
+      "access_method": "direct HTTP 200; parsed primary page",
+      "document_date": null,
+      "date_basis": "Live page; application dates recorded per case",
+      "sha256": null,
+      "byte_length": null,
+      "page_count": null,
+      "local_artifact": null,
+      "inspection": "Header, Purpose, Documents, Task Progress and Related Permits sections",
+      "rights_id": "victoria"
+    },
+    "DPV00282-0": {
+      "url": "https://tender.victoria.ca/webapps/ourcity/Prospero/FileDownload.aspx?fileId=88363C241113082508162906&folderId=86909C241107133733981593",
+      "title": "2024-11-12 - Plans_Submission.pdf",
+      "kind": "plan_or_draft_instrument",
+      "access_date": "2026-09-24",
+      "access_method": "direct HTTP 200; pypdf text and selected rendered pages",
+      "document_date": "2024-07-31",
+      "date_basis": "Printed drawing/report date or received stamp; see case version notes",
+      "sha256": "9d811c693f5a8a93e3346bbb8f3704292dc02f27c3c7f9a02b872b7bde5df580",
+      "byte_length": 6756281,
+      "page_count": 8,
+      "local_artifact": null,
+      "inspection": "PDF p1 A.100 visually inspected; text extraction available",
+      "rights_id": "victoria"
+    },
+    "tracker-REZ00589": {
+      "url": "https://tender.victoria.ca/webapps/ourcity/Prospero/Details.aspx?folderNumber=REZ00589",
+      "title": "REZ00589 development tracker",
+      "kind": "municipal_tracker",
+      "access_date": "2026-09-24",
+      "access_method": "direct HTTP 200; parsed primary page",
+      "document_date": null,
+      "date_basis": "Live page; application dates recorded per case",
+      "sha256": null,
+      "byte_length": null,
+      "page_count": null,
+      "local_artifact": null,
+      "inspection": "Header, Purpose, Documents, Task Progress and Related Permits sections",
+      "rights_id": "victoria"
+    },
+    "REZ00589-2": {
+      "url": "https://tender.victoria.ca/webapps/ourcity/Prospero/FileDownload.aspx?fileId=404BCE9C-3813-4F35-8AE3-DF3C3E74EC61&folderId=56261C170524123905190000",
+      "title": "2017-07-13 - Plans - Revisions - Bubbled",
+      "kind": "plan_or_draft_instrument",
+      "access_date": "2026-09-24",
+      "access_method": "direct HTTP 200; pypdf text and selected rendered pages",
+      "document_date": "2017-07-04",
+      "date_basis": "Printed drawing/report date or received stamp; see case version notes",
+      "sha256": "112f6334ef15bb0ded59b8b863be51908d862700e4245a73dc788f109ab16b38",
+      "byte_length": 7490683,
+      "page_count": 6,
+      "local_artifact": null,
+      "inspection": "PDF pp1-2 visually inspected; raster plan text layer sparse",
+      "rights_id": "victoria"
+    },
+    "SAA-kingsley": {
+      "url": "https://saanich.ca.granicus.com/MetaViewer.php?clip_id=770&meta_id=59045&view_id=1",
+      "title": "July 4 2023 staff report DPR00993",
+      "kind": "staff_report",
+      "access_date": "2026-09-24",
+      "access_method": "direct HTTP 200; pypdf text and selected rendered pages",
+      "document_date": "2023-07-04",
+      "date_basis": "Printed drawing/report date or received stamp; see case version notes",
+      "sha256": "51baf1cd11f44a6f26afa39f548f21068d73e877579fda94068149be900496fc",
+      "byte_length": 1629667,
+      "page_count": 11,
+      "local_artifact": null,
+      "inspection": "PDF pp3,9-11 visually inspected; relevant report text read",
+      "rights_id": "saanich"
+    },
+    "VAN-may": {
+      "url": "https://vancouver.ca/files/cov/may-21-2024-bov-minutes.pdf",
+      "title": "Board minutes 2024-05-21",
+      "kind": "board_minutes",
+      "access_date": "2026-09-24",
+      "access_method": "Web PDF parser opened primary document; local HTTP returned 403; no local bytes verified",
+      "document_date": "2024-05-21",
+      "date_basis": "Meeting date in minutes",
+      "sha256": null,
+      "byte_length": null,
+      "page_count": 16,
+      "local_artifact": null,
+      "inspection": "PDF p16, 825 East 37th Avenue entry; primary PDF web text opened; visual verification not completed",
+      "rights_id": "vancouver"
+    },
+    "VAN-nov": {
+      "url": "https://vancouver.ca/files/cov/november-21-2023-bov-minutes.pdf",
+      "title": "Board minutes 2023-11-21",
+      "kind": "board_minutes",
+      "access_date": "2026-09-24",
+      "access_method": "Web PDF parser opened primary document; local HTTP returned 403; no local bytes verified",
+      "document_date": "2023-11-21",
+      "date_basis": "Meeting date in minutes",
+      "sha256": null,
+      "byte_length": null,
+      "page_count": 13,
+      "local_artifact": null,
+      "inspection": "PDF pp5-7, 2204 East 38th Avenue; primary PDF web text opened; visual verification not completed",
+      "rights_id": "vancouver"
+    }
+  },
+  "cases": [
+    {
+      "case_id": "VIC-PC-001",
+      "jurisdiction": {
+        "name": "City of Victoria",
+        "province": "BC",
+        "country": "CA"
+      },
+      "scope": "pilot_jurisdiction",
+      "public_site_label": "419/421 Stannard Avenue",
+      "official_identifiers": [
+        "REZ00787",
+        "DP000603",
+        "DPV00268",
+        "DDP01047",
+        "CLC00328"
+      ],
+      "dependency_group": "VIC-PC-001",
+      "split": "unassigned",
+      "review_status": "provisional",
+      "benchmark_eligible": false,
+      "development": {
+        "summary": "New garden suite with retained duplex",
+        "evidence": [
+          {
+            "source_id": "tracker-REZ00787",
+            "locator": "Purpose"
+          }
+        ]
+      },
+      "prefab": {
+        "status": "unknown",
+        "evidence": [],
+        "note": "No explicit manufacturing-method evidence verified. Construction materials or conversion status do not establish prefab status."
+      },
+      "application_date": "2021-06-08",
+      "source_facts": [
+        {
+          "summary": "C1 has received and final-approved stamps; tracker lists a later form/character modification under DDP01047.",
+          "evidence": [
+            {
+              "source_id": "tracker-REZ00787",
+              "locator": "Documents and Related Permits: DDP01047"
+            },
+            {
+              "source_id": "REZ00787-9",
+              "locator": "PDF p1 C1 received and final-approved stamps"
+            }
+          ]
+        }
+      ],
+      "official_interpretations": [
+        {
+          "summary": "Tracker reports Council approval on 2023-10-12.",
+          "evidence": [
+            {
+              "source_id": "tracker-REZ00787",
+              "locator": "Purpose"
+            }
+          ]
+        }
+      ],
+      "researcher_inferences": [
+        "Best first historical scalar candidate: preserve the plan separation pair 28.50/2.40 m and its building roles, then obtain reviewed definitions and placement before comparison.",
+        "Do not treat the 2023 packet as the latest design: DDP01047 must stay grouped."
+      ],
+      "plan_version": {
+        "summary": "C1 issued/received 2022-12-02; approved stamp 2023-10-12. Later amendment is not reconciled.",
+        "evidence": [
+          {
+            "source_id": "REZ00787-9",
+            "locator": "PDF p1 C1 title block and stamps"
+          }
+        ]
+      },
+      "governing_rules": {
+        "summary": "C1 identifies existing R1-B and separate duplex/garden-suite permitted columns; this is plan evidence, not a verified governing enactment.",
+        "effective_date": null,
+        "current_applicability": "unverified",
+        "evidence": [
+          {
+            "source_id": "REZ00787-9",
+            "locator": "PDF p1 C1 top tables"
+          }
+        ]
+      },
+      "decision": {
+        "status": "council_approval_reported_by_tracker",
+        "date": "2023-10-12",
+        "evidence": [
+          {
+            "source_id": "tracker-REZ00787",
+            "locator": "Purpose"
+          },
+          {
+            "source_id": "REZ00787-9",
+            "locator": "PDF p1 final-approved stamp"
+          }
+        ],
+        "conditions": [
+          {
+            "summary": "Drawing calls for arborist supervision and tree protection; duplex combined-side-yard deficiency is marked as variance sought. Full executed permit conditions not inspected.",
+            "evidence": [
+              {
+                "source_id": "REZ00787-9",
+                "locator": "PDF p1 C1 notes and duplex table"
+              }
+            ]
+          }
+        ],
+        "issued_development_permit": null,
+        "issued_building_permit": null,
+        "as_built_verified": null
+      },
+      "measurements": [
+        {
+          "name": "Garden-suite separation from main building",
+          "original_value": "28.50",
+          "original_unit": "m",
+          "measurement_definition": "Plan table: proposed separation space; minimum column 2.40 m. Measurement endpoints require review.",
+          "normalized_value": null,
+          "normalization_status": "not_performed",
+          "review_status": "provisional",
+          "evidence": [
+            {
+              "source_id": "REZ00787-9",
+              "locator": "PDF p1 C1 garden-suite table"
+            }
+          ]
+        },
+        {
+          "name": "Garden-suite combined floor area",
+          "original_value": "55.70",
+          "original_unit": "m2",
+          "measurement_definition": "Plan table: proposed combined floor area; maximum column 56.00 m2. Floor-area definition not verified.",
+          "normalized_value": null,
+          "normalization_status": "not_performed",
+          "review_status": "provisional",
+          "evidence": [
+            {
+              "source_id": "REZ00787-9",
+              "locator": "PDF p1 C1 garden-suite table"
+            }
+          ]
+        },
+        {
+          "name": "Garden-suite north/south side setbacks",
+          "original_value": "1.20",
+          "original_unit": "m",
+          "measurement_definition": "Each side in proposed column; minimum 0.60 m. Building projection treatment unverified.",
+          "normalized_value": null,
+          "normalization_status": "not_performed",
+          "review_status": "provisional",
+          "evidence": [
+            {
+              "source_id": "REZ00787-9",
+              "locator": "PDF p1 C1 garden-suite table"
+            }
+          ]
+        }
+      ],
+      "test_uses": [
+        "document_extraction_fixture",
+        "historical_decision_condition_reference",
+        "potential_dimensional_check_requiring_review"
+      ],
+      "unsupported": [
+        "Current compliance",
+        "Fit for The Landing or any other prefab design",
+        "As-built condition",
+        "Complete regulatory coverage"
+      ],
+      "missing_inputs": [
+        "Independent source and interpretation review",
+        "Authorized durable evidence storage and reuse scope",
+        "Current governing instrument and amendment/transition chain",
+        "Verified design/site/placement revisions and legal measurement definitions",
+        "Executed variance conditions and 2025 amendment outcome"
+      ],
+      "local_artifacts": [],
+      "application_date_evidence": [
+        {
+          "source_id": "tracker-REZ00787",
+          "locator": "Application Date"
+        }
+      ]
+    },
+    {
+      "case_id": "VIC-PC-002",
+      "jurisdiction": {
+        "name": "City of Victoria",
+        "province": "BC",
+        "country": "CA"
+      },
+      "scope": "pilot_jurisdiction",
+      "public_site_label": "27 Pilot Street",
+      "official_identifiers": [
+        "DPV00081",
+        "DVP00216"
+      ],
+      "dependency_group": "VIC-PC-002",
+      "split": "unassigned",
+      "review_status": "provisional",
+      "benchmark_eligible": false,
+      "development": {
+        "summary": "Convert existing accessory building to garden suite",
+        "evidence": [
+          {
+            "source_id": "tracker-DPV00081",
+            "locator": "Purpose"
+          }
+        ]
+      },
+      "prefab": {
+        "status": "unknown",
+        "evidence": [],
+        "note": "No explicit manufacturing-method evidence verified. Construction materials or conversion status do not establish prefab status."
+      },
+      "application_date": "2018-06-07",
+      "source_facts": [
+        {
+          "summary": "Drawing area labels differ: site diagram 22.25 m2; floor-plan arithmetic 22.75 m2.",
+          "evidence": [
+            {
+              "source_id": "DPV00081-5",
+              "locator": "PDF p1 A-1 proposed site and suite floor plans"
+            }
+          ]
+        }
+      ],
+      "official_interpretations": [
+        {
+          "summary": "Tracker reports Council approval and rear-yard variance from 0.6 m to 0.2 m.",
+          "evidence": [
+            {
+              "source_id": "tracker-DPV00081",
+              "locator": "Purpose"
+            }
+          ]
+        }
+      ],
+      "researcher_inferences": [
+        "Can test conflicting-value retention and distinction between a variance target and an unvaried rule."
+      ],
+      "plan_version": {
+        "summary": "A-1 dated 18/7/30, City received 2018-08-07; no final-approved stamp verified.",
+        "evidence": [
+          {
+            "source_id": "DPV00081-5",
+            "locator": "PDF p1 title block and received stamp"
+          }
+        ]
+      },
+      "governing_rules": {
+        "summary": "A-1 project table names R-2; tracker states rear-yard variance. Applicable clause/version not verified.",
+        "effective_date": null,
+        "current_applicability": "unverified",
+        "evidence": [
+          {
+            "source_id": "DPV00081-5",
+            "locator": "PDF p1 project information table"
+          }
+        ]
+      },
+      "decision": {
+        "status": "council_approval_reported_by_tracker",
+        "date": "2018-11-22",
+        "evidence": [
+          {
+            "source_id": "tracker-DPV00081",
+            "locator": "Purpose"
+          }
+        ],
+        "conditions": [
+          {
+            "summary": "Rear-yard setback varied from 0.6 m to 0.2 m; full conditions unavailable. Related DVP describes separation, which requires reconciliation.",
+            "evidence": [
+              {
+                "source_id": "tracker-DPV00081",
+                "locator": "Purpose; Related Permits DVP00216"
+              }
+            ]
+          }
+        ],
+        "issued_development_permit": null,
+        "issued_building_permit": null,
+        "as_built_verified": null
+      },
+      "measurements": [
+        {
+          "name": "Rear-yard setback in tracker",
+          "original_value": "0.2",
+          "original_unit": "m",
+          "measurement_definition": "Variance target, not independently surveyed fact; original requirement 0.6 m.",
+          "normalized_value": null,
+          "normalization_status": "not_performed",
+          "review_status": "provisional",
+          "evidence": [
+            {
+              "source_id": "tracker-DPV00081",
+              "locator": "Purpose"
+            }
+          ]
+        },
+        {
+          "name": "Conflicting proposed suite area labels",
+          "original_value": [
+            "22.25",
+            "22.75"
+          ],
+          "original_unit": "m2",
+          "measurement_definition": "Two drawing labels, neither selected as canonical regulatory floor area.",
+          "normalized_value": null,
+          "normalization_status": "not_performed",
+          "review_status": "provisional",
+          "evidence": [
+            {
+              "source_id": "DPV00081-5",
+              "locator": "PDF p1 A-1 site/floor plans"
+            }
+          ]
+        }
+      ],
+      "test_uses": [
+        "document_extraction_fixture",
+        "historical_decision_condition_reference"
+      ],
+      "unsupported": [
+        "Current compliance",
+        "Fit for The Landing or any other prefab design",
+        "As-built condition",
+        "Complete regulatory coverage"
+      ],
+      "missing_inputs": [
+        "Independent source and interpretation review",
+        "Authorized durable evidence storage and reuse scope",
+        "Current governing instrument and amendment/transition chain",
+        "Verified design/site/placement revisions and legal measurement definitions",
+        "Area-label reconciliation",
+        "Final approved plan and executed permit",
+        "Resolve related DVP separation description"
+      ],
+      "local_artifacts": [],
+      "application_date_evidence": [
+        {
+          "source_id": "tracker-DPV00081",
+          "locator": "Application Date"
+        }
+      ]
+    },
+    {
+      "case_id": "VIC-PC-003",
+      "jurisdiction": {
+        "name": "City of Victoria",
+        "province": "BC",
+        "country": "CA"
+      },
+      "scope": "pilot_jurisdiction",
+      "public_site_label": "623/625 Avalon Road",
+      "official_identifiers": [
+        "REZ00774",
+        "DPV00223",
+        "DP000598",
+        "CLC00320"
+      ],
+      "dependency_group": "VIC-PC-003",
+      "split": "unassigned",
+      "review_status": "provisional",
+      "benchmark_eligible": false,
+      "development": {
+        "summary": "Convert garage/accessory building to garden suite with existing duplex",
+        "evidence": [
+          {
+            "source_id": "tracker-REZ00774",
+            "locator": "Purpose"
+          }
+        ]
+      },
+      "prefab": {
+        "status": "unknown",
+        "evidence": [],
+        "note": "No explicit manufacturing-method evidence verified. Construction materials or conversion status do not establish prefab status."
+      },
+      "application_date": "2021-03-31",
+      "source_facts": [
+        {
+          "summary": "Plan revision received 2023-01-11 and approved stamp dated 2024-04-18.",
+          "evidence": [
+            {
+              "source_id": "REZ00774-17",
+              "locator": "PDF p1 A-1.0 stamps"
+            }
+          ]
+        },
+        {
+          "summary": "Posted Bylaw 23-086 has blank reading/adoption fields.",
+          "evidence": [
+            {
+              "source_id": "REZ00774-18",
+              "locator": "PDF p1 enactment fields"
+            }
+          ]
+        }
+      ],
+      "official_interpretations": [
+        {
+          "summary": "Tracker reports Council approval on 2024-04-18.",
+          "evidence": [
+            {
+              "source_id": "tracker-REZ00774",
+              "locator": "Purpose"
+            }
+          ]
+        }
+      ],
+      "researcher_inferences": [
+        "Useful revision and ratio-basis case; indexed REZ00744 is not substituted for tracker REZ00774."
+      ],
+      "plan_version": {
+        "summary": "A-1.0 revision 7, received/plotted 2023-01-11; final-approved stamp 2024-04-18.",
+        "evidence": [
+          {
+            "source_id": "REZ00774-17",
+            "locator": "PDF p1 issue data and stamps"
+          }
+        ]
+      },
+      "governing_rules": {
+        "summary": "Posted 23-086 proposes R-2 to R2-65; blank adoption fields prevent establishing effective version from this copy.",
+        "effective_date": null,
+        "current_applicability": "unverified",
+        "evidence": [
+          {
+            "source_id": "REZ00774-18",
+            "locator": "PDF p1 clauses 1-2 and reading fields"
+          }
+        ]
+      },
+      "decision": {
+        "status": "council_approval_reported_by_tracker",
+        "date": "2024-04-18",
+        "evidence": [
+          {
+            "source_id": "tracker-REZ00774",
+            "locator": "Purpose"
+          },
+          {
+            "source_id": "REZ00774-17",
+            "locator": "PDF p1 approval stamp"
+          }
+        ],
+        "conditions": [
+          {
+            "summary": "Plan shows rear-yard coverage above its listed threshold; final variance terms not verified.",
+            "evidence": [
+              {
+                "source_id": "REZ00774-17",
+                "locator": "PDF p1 zoning information table"
+              }
+            ]
+          }
+        ],
+        "issued_development_permit": null,
+        "issued_building_permit": null,
+        "as_built_verified": null
+      },
+      "measurements": [
+        {
+          "name": "Garden-suite total floor area",
+          "original_value": "48.7",
+          "original_unit": "sq. m.",
+          "measurement_definition": "Proposed accessory/garden-suite total: 45 main plus 3.7 upper; regulatory exclusions need review.",
+          "normalized_value": null,
+          "normalization_status": "not_performed",
+          "review_status": "provisional",
+          "evidence": [
+            {
+              "source_id": "REZ00774-17",
+              "locator": "PDF p1 A-1.0 zoning information"
+            }
+          ]
+        },
+        {
+          "name": "Rear-yard site coverage",
+          "original_value": "28.1",
+          "original_unit": "%",
+          "measurement_definition": "Plan names rear-yard site coverage, compared with 25% requirement; rear-yard polygon and included footprints unverified.",
+          "normalized_value": null,
+          "normalization_status": "not_performed",
+          "review_status": "provisional",
+          "evidence": [
+            {
+              "source_id": "REZ00774-17",
+              "locator": "PDF p1 zoning information"
+            }
+          ]
+        }
+      ],
+      "test_uses": [
+        "document_extraction_fixture",
+        "potential_dimensional_check_requiring_review"
+      ],
+      "unsupported": [
+        "Current compliance",
+        "Fit for The Landing or any other prefab design",
+        "As-built condition",
+        "Complete regulatory coverage"
+      ],
+      "missing_inputs": [
+        "Independent source and interpretation review",
+        "Authorized durable evidence storage and reuse scope",
+        "Current governing instrument and amendment/transition chain",
+        "Verified design/site/placement revisions and legal measurement definitions",
+        "Enacted bylaw version and executed variance conditions",
+        "Rear-yard area and coverage definitions"
+      ],
+      "local_artifacts": [],
+      "application_date_evidence": [
+        {
+          "source_id": "tracker-REZ00774",
+          "locator": "Application Date"
+        }
+      ]
+    },
+    {
+      "case_id": "VIC-PC-004",
+      "jurisdiction": {
+        "name": "City of Victoria",
+        "province": "BC",
+        "country": "CA"
+      },
+      "scope": "pilot_jurisdiction",
+      "public_site_label": "2920/2926 Prior Street",
+      "official_identifiers": [
+        "REZ00708",
+        "DPV00151",
+        "DPV00147",
+        "DVP00245",
+        "DP000560",
+        "DDP00949",
+        "DDP01032",
+        "DDV00086"
+      ],
+      "dependency_group": "VIC-PC-004",
+      "split": "unassigned",
+      "review_status": "provisional",
+      "benchmark_eligible": false,
+      "development": {
+        "summary": "Existing accessory-building conversion plus subdivision and small-lot dwelling",
+        "evidence": [
+          {
+            "source_id": "tracker-REZ00708",
+            "locator": "Purpose"
+          }
+        ]
+      },
+      "prefab": {
+        "status": "unknown",
+        "evidence": [],
+        "note": "No explicit manufacturing-method evidence verified. Construction materials or conversion status do not establish prefab status."
+      },
+      "application_date": "2019-07-12",
+      "source_facts": [
+        {
+          "summary": "Tracker approval date is 2020-10-08; cover approval stamp is 2021-10-08. Conflict retained.",
+          "evidence": [
+            {
+              "source_id": "REZ00708-14",
+              "locator": "PDF p1 A000 approval stamp"
+            },
+            {
+              "source_id": "tracker-REZ00708",
+              "locator": "Purpose"
+            }
+          ]
+        },
+        {
+          "summary": "Draft permit approval and issue dates remain placeholders.",
+          "evidence": [
+            {
+              "source_id": "REZ00708-12",
+              "locator": "PDF p1 date fields"
+            }
+          ]
+        }
+      ],
+      "official_interpretations": [
+        {
+          "summary": "Tracker reports Council approval on 2020-10-08 for grouped applications.",
+          "evidence": [
+            {
+              "source_id": "tracker-REZ00708",
+              "locator": "Purpose and Related Permits"
+            }
+          ]
+        }
+      ],
+      "researcher_inferences": [
+        "Tests date-conflict and draft-versus-issued handling. Height-related content must stay outside development tuning."
+      ],
+      "plan_version": {
+        "summary": "Received 2020-06-01; cover revision 5 dated 2020-02-20; final stamp says 2021-10-08, inconsistent with tracker.",
+        "evidence": [
+          {
+            "source_id": "REZ00708-14",
+            "locator": "PDF p1 A000"
+          }
+        ]
+      },
+      "governing_rules": {
+        "summary": "Draft DPV00151 cites Zoning Regulation Bylaw Schedule M; effective applicability unverified.",
+        "effective_date": null,
+        "current_applicability": "unverified",
+        "evidence": [
+          {
+            "source_id": "REZ00708-12",
+            "locator": "PDF p1 Variances"
+          }
+        ]
+      },
+      "decision": {
+        "status": "approval_reported_date_conflict",
+        "date": null,
+        "evidence": [
+          {
+            "source_id": "tracker-REZ00708",
+            "locator": "Purpose"
+          },
+          {
+            "source_id": "REZ00708-14",
+            "locator": "PDF p1 final stamp"
+          }
+        ],
+        "conditions": [
+          {
+            "summary": "Draft references a height variance and standard conditions; draft dates are unfilled. No executed permit established.",
+            "evidence": [
+              {
+                "source_id": "REZ00708-12",
+                "locator": "PDF pp1-3"
+              }
+            ]
+          }
+        ],
+        "issued_development_permit": null,
+        "issued_building_permit": null,
+        "as_built_verified": null
+      },
+      "measurements": [],
+      "test_uses": [
+        "document_extraction_fixture",
+        "historical_decision_condition_reference"
+      ],
+      "unsupported": [
+        "Current compliance",
+        "Fit for The Landing or any other prefab design",
+        "As-built condition",
+        "Complete regulatory coverage"
+      ],
+      "missing_inputs": [
+        "Independent source and interpretation review",
+        "Authorized durable evidence storage and reuse scope",
+        "Current governing instrument and amendment/transition chain",
+        "Verified design/site/placement revisions and legal measurement definitions",
+        "Resolve conflicting approval years",
+        "Executed permit and plan linkage",
+        "Subdivision/later development reconciliation"
+      ],
+      "local_artifacts": [],
+      "application_date_evidence": [
+        {
+          "source_id": "tracker-REZ00708",
+          "locator": "Application Date"
+        }
+      ]
+    },
+    {
+      "case_id": "VIC-PC-005",
+      "jurisdiction": {
+        "name": "City of Victoria",
+        "province": "BC",
+        "country": "CA"
+      },
+      "scope": "pilot_jurisdiction",
+      "public_site_label": "155 Linden Avenue",
+      "official_identifiers": [
+        "REZ00507"
+      ],
+      "dependency_group": "VIC-PC-005",
+      "split": "unassigned",
+      "review_status": "provisional",
+      "benchmark_eligible": false,
+      "development": {
+        "summary": "Proposed garden suite",
+        "evidence": [
+          {
+            "source_id": "tracker-REZ00507",
+            "locator": "Purpose"
+          }
+        ]
+      },
+      "prefab": {
+        "status": "unknown",
+        "evidence": [],
+        "note": "No explicit manufacturing-method evidence verified. Construction materials or conversion status do not establish prefab status."
+      },
+      "application_date": "2016-02-09",
+      "source_facts": [
+        {
+          "summary": "Published revised site plan is a handwritten raster scan with metric annotations.",
+          "evidence": [
+            {
+              "source_id": "REZ00507-0",
+              "locator": "PDF p1 site plan"
+            }
+          ]
+        }
+      ],
+      "official_interpretations": [],
+      "researcher_inferences": [
+        "Tests image-only drawing intake and revision provenance. Archived status cannot establish approval."
+      ],
+      "plan_version": {
+        "summary": "City receipt 2016-05-16; drawing notes 2016-01-12 and revisions 2016-03-18/2016-04-22.",
+        "evidence": [
+          {
+            "source_id": "REZ00507-0",
+            "locator": "PDF p1 received stamp and bottom date notes"
+          }
+        ]
+      },
+      "governing_rules": {
+        "summary": "Not verified; inaccessible council minutes are discovery only.",
+        "effective_date": null,
+        "current_applicability": "unverified",
+        "evidence": []
+      },
+      "decision": {
+        "status": "unknown",
+        "date": null,
+        "evidence": [
+          {
+            "source_id": "tracker-REZ00507",
+            "locator": "Status: archived; no approval statement in Purpose"
+          }
+        ],
+        "conditions": [],
+        "issued_development_permit": null,
+        "issued_building_permit": null,
+        "as_built_verified": null
+      },
+      "measurements": [],
+      "test_uses": [
+        "document_extraction_fixture"
+      ],
+      "unsupported": [
+        "Current compliance",
+        "Fit for The Landing or any other prefab design",
+        "As-built condition",
+        "Complete regulatory coverage"
+      ],
+      "missing_inputs": [
+        "Independent source and interpretation review",
+        "Authorized durable evidence storage and reuse scope",
+        "Current governing instrument and amendment/transition chain",
+        "Verified design/site/placement revisions and legal measurement definitions",
+        "Independent drawing transcription with units",
+        "Opened decision record",
+        "Governing zone and rule version"
+      ],
+      "local_artifacts": [],
+      "application_date_evidence": [
+        {
+          "source_id": "tracker-REZ00507",
+          "locator": "Application Date"
+        }
+      ]
+    },
+    {
+      "case_id": "VIC-PC-006",
+      "jurisdiction": {
+        "name": "City of Victoria",
+        "province": "BC",
+        "country": "CA"
+      },
+      "scope": "pilot_jurisdiction",
+      "public_site_label": "1660/1670 Chandler Avenue",
+      "official_identifiers": [
+        "DPV00282",
+        "DDV00041"
+      ],
+      "dependency_group": "VIC-PC-006",
+      "split": "unassigned",
+      "review_status": "provisional",
+      "benchmark_eligible": false,
+      "development": {
+        "summary": "Subdivide and construct one dwelling and garden suite on each resulting lot",
+        "evidence": [
+          {
+            "source_id": "tracker-DPV00282",
+            "locator": "Purpose"
+          }
+        ]
+      },
+      "prefab": {
+        "status": "unknown",
+        "evidence": [],
+        "note": "No explicit manufacturing-method evidence verified. Construction materials or conversion status do not establish prefab status."
+      },
+      "application_date": "2024-11-07",
+      "source_facts": [
+        {
+          "summary": "Retired DPV00282 points to DDV00041; one development packet despite two addresses.",
+          "evidence": [
+            {
+              "source_id": "tracker-DPV00282",
+              "locator": "Purpose"
+            }
+          ]
+        },
+        {
+          "summary": "Active DDV tracker lists a permit-issued task without dates; issuance is not established.",
+          "evidence": [
+            {
+              "source_id": "tracker-DDV00041",
+              "locator": "Status and Task Progress"
+            }
+          ]
+        }
+      ],
+      "official_interpretations": [
+        {
+          "summary": "Tracker identifies required lot-width and east-side-setback variances.",
+          "evidence": [
+            {
+              "source_id": "tracker-DPV00282",
+              "locator": "Purpose"
+            }
+          ]
+        }
+      ],
+      "researcher_inferences": [
+        "Tests retired-to-replacement identity and prevents interpreting empty workflow milestones as issued permits."
+      ],
+      "plan_version": {
+        "summary": "A.100 dated 2024-07-31, issued for variance discussion; received 2024-11-12.",
+        "evidence": [
+          {
+            "source_id": "DPV00282-0",
+            "locator": "PDF p1 title block and received stamp"
+          }
+        ]
+      },
+      "governing_rules": {
+        "summary": "A.100 identifies R1-G and numbered Part 1.6 table references; full historical enactment not verified.",
+        "effective_date": null,
+        "current_applicability": "unverified",
+        "evidence": [
+          {
+            "source_id": "DPV00282-0",
+            "locator": "PDF p1 Project Information / Project Data"
+          }
+        ]
+      },
+      "decision": {
+        "status": "application_record_only",
+        "date": null,
+        "evidence": [
+          {
+            "source_id": "tracker-DDV00041",
+            "locator": "Status / Task Progress"
+          }
+        ],
+        "conditions": [
+          {
+            "summary": "Lot-width and east-side-setback variances requested; decision unknown.",
+            "evidence": [
+              {
+                "source_id": "tracker-DPV00282",
+                "locator": "Purpose"
+              }
+            ]
+          }
+        ],
+        "issued_development_permit": null,
+        "issued_building_permit": null,
+        "as_built_verified": null
+      },
+      "measurements": [
+        {
+          "name": "Proposed lot width",
+          "original_value": "10.65",
+          "original_unit": "m",
+          "measurement_definition": "Project Data typical for both developments; 15 m minimum average listed under 1.6.2.b. Does not measure suite setback.",
+          "normalized_value": null,
+          "normalization_status": "not_performed",
+          "review_status": "provisional",
+          "evidence": [
+            {
+              "source_id": "DPV00282-0",
+              "locator": "PDF p1 A.100 Project Data"
+            }
+          ]
+        }
+      ],
+      "test_uses": [
+        "document_extraction_fixture"
+      ],
+      "unsupported": [
+        "Current compliance",
+        "Fit for The Landing or any other prefab design",
+        "As-built condition",
+        "Complete regulatory coverage"
+      ],
+      "missing_inputs": [
+        "Independent source and interpretation review",
+        "Authorized durable evidence storage and reuse scope",
+        "Current governing instrument and amendment/transition chain",
+        "Verified design/site/placement revisions and legal measurement definitions",
+        "Dated delegated decision/issued permit",
+        "Final subdivision and plans"
+      ],
+      "local_artifacts": [],
+      "application_date_evidence": [
+        {
+          "source_id": "tracker-DPV00282",
+          "locator": "Application Date"
+        }
+      ]
+    },
+    {
+      "case_id": "VIC-PC-007",
+      "jurisdiction": {
+        "name": "City of Victoria",
+        "province": "BC",
+        "country": "CA"
+      },
+      "scope": "pilot_jurisdiction",
+      "public_site_label": "229 Government Street",
+      "official_identifiers": [
+        "REZ00589"
+      ],
+      "dependency_group": "VIC-PC-007",
+      "split": "unassigned",
+      "review_status": "provisional",
+      "benchmark_eligible": false,
+      "development": {
+        "summary": "Garden suite behind existing duplex",
+        "evidence": [
+          {
+            "source_id": "tracker-REZ00589",
+            "locator": "Purpose"
+          }
+        ]
+      },
+      "prefab": {
+        "status": "unknown",
+        "evidence": [],
+        "note": "No explicit manufacturing-method evidence verified. Construction materials or conversion status do not establish prefab status."
+      },
+      "application_date": "2017-05-24",
+      "source_facts": [
+        {
+          "summary": "A-2 shows proposed accessory building, separate floor-area rows and setback revision notes.",
+          "evidence": [
+            {
+              "source_id": "REZ00589-2",
+              "locator": "PDF p2 A-2"
+            }
+          ]
+        }
+      ],
+      "official_interpretations": [],
+      "researcher_inferences": [
+        "Tests revision-note versus stale-table disagreement; no final compliance assertion."
+      ],
+      "plan_version": {
+        "summary": "Plans dated 2017-07-04, received 2017-07-13; bubbled revisions.",
+        "evidence": [
+          {
+            "source_id": "REZ00589-2",
+            "locator": "PDF pp1-2 title blocks and stamps"
+          }
+        ]
+      },
+      "governing_rules": {
+        "summary": "A-1 table uses existing R-2; A-2 compares accessory and Plus Site dimensions. Enacted rezoning not verified.",
+        "effective_date": null,
+        "current_applicability": "unverified",
+        "evidence": [
+          {
+            "source_id": "REZ00589-2",
+            "locator": "PDF pp1-2 Project Data"
+          }
+        ]
+      },
+      "decision": {
+        "status": "unknown",
+        "date": null,
+        "evidence": [
+          {
+            "source_id": "tracker-REZ00589",
+            "locator": "Status and Task Progress; no approval statement"
+          }
+        ],
+        "conditions": [],
+        "issued_development_permit": null,
+        "issued_building_permit": null,
+        "as_built_verified": null
+      },
+      "measurements": [
+        {
+          "name": "Rear setback conflicting annotations",
+          "original_value": [
+            "0.6",
+            "1.3"
+          ],
+          "original_unit": "m",
+          "measurement_definition": "A-2 proposed table says 0.6; drawing/revision note says increased to 1.3. Do not resolve automatically.",
+          "normalized_value": null,
+          "normalization_status": "not_performed",
+          "review_status": "provisional",
+          "evidence": [
+            {
+              "source_id": "REZ00589-2",
+              "locator": "PDF p2 A-2 setback table and revision note 1"
+            }
+          ]
+        }
+      ],
+      "test_uses": [
+        "document_extraction_fixture"
+      ],
+      "unsupported": [
+        "Current compliance",
+        "Fit for The Landing or any other prefab design",
+        "As-built condition",
+        "Complete regulatory coverage"
+      ],
+      "missing_inputs": [
+        "Independent source and interpretation review",
+        "Authorized durable evidence storage and reuse scope",
+        "Current governing instrument and amendment/transition chain",
+        "Verified design/site/placement revisions and legal measurement definitions",
+        "Final decision and approved drawing",
+        "Reconcile table and bubbled setback"
+      ],
+      "local_artifacts": [],
+      "application_date_evidence": [
+        {
+          "source_id": "tracker-REZ00589",
+          "locator": "Application Date"
+        }
+      ]
+    },
+    {
+      "case_id": "SAA-PC-001",
+      "jurisdiction": {
+        "name": "District of Saanich",
+        "province": "BC",
+        "country": "CA"
+      },
+      "scope": "transfer_only",
+      "public_site_label": "3325 Kingsley Street",
+      "official_identifiers": [
+        "DPR00993"
+      ],
+      "dependency_group": "SAA-PC-001",
+      "split": "unassigned",
+      "review_status": "provisional",
+      "benchmark_eligible": false,
+      "development": {
+        "summary": "Convert accessory studio/office to garden suite",
+        "evidence": [
+          {
+            "source_id": "SAA-kingsley",
+            "locator": "PDF p1, Purpose"
+          }
+        ]
+      },
+      "prefab": {
+        "status": "unknown",
+        "evidence": [],
+        "note": "No explicit manufacturing-method evidence verified. Construction materials or conversion status do not establish prefab status."
+      },
+      "application_date": null,
+      "source_facts": [
+        {
+          "summary": "Attached permit copy has blank resolution/issue dates.",
+          "evidence": [
+            {
+              "source_id": "SAA-kingsley",
+              "locator": "PDF p10 signature/date fields"
+            }
+          ]
+        }
+      ],
+      "official_interpretations": [
+        {
+          "summary": "Staff recommends approval of a gross-floor-area variance.",
+          "evidence": [
+            {
+              "source_id": "SAA-kingsley",
+              "locator": "PDF pp1,3 Recommendation / Variance"
+            }
+          ]
+        }
+      ],
+      "researcher_inferences": [
+        "Useful transfer example for numeric exceedance plus discretionary recommendation; no approval inferred."
+      ],
+      "plan_version": {
+        "summary": "Permit copy refers to plans received 2023-06-29; complete controlled drawings not verified.",
+        "evidence": [
+          {
+            "source_id": "SAA-kingsley",
+            "locator": "PDF p9 clause 3(b)"
+          }
+        ]
+      },
+      "governing_rules": {
+        "summary": "Permit copy cites Zoning Bylaw 2003, Schedule H 4(a); staff report identifies DPA29. Amendment chain unverified.",
+        "effective_date": null,
+        "current_applicability": "unverified",
+        "evidence": [
+          {
+            "source_id": "SAA-kingsley",
+            "locator": "PDF pp3,9"
+          }
+        ]
+      },
+      "decision": {
+        "status": "staff_recommendation_only",
+        "date": null,
+        "evidence": [
+          {
+            "source_id": "SAA-kingsley",
+            "locator": "PDF p1 Recommendation; p10 blank dates"
+          }
+        ],
+        "conditions": [
+          {
+            "summary": "Proposed permit requires other bylaw compliance, parking completion and tree protection; it is not a building permit.",
+            "evidence": [
+              {
+                "source_id": "SAA-kingsley",
+                "locator": "PDF pp9-10 clauses 1,5,6,10"
+              }
+            ]
+          }
+        ],
+        "issued_development_permit": null,
+        "issued_building_permit": null,
+        "as_built_verified": null
+      },
+      "measurements": [
+        {
+          "name": "Garden-suite gross floor area",
+          "original_value": "51.66",
+          "original_unit": "m2",
+          "measurement_definition": "Staff variance table compares proposed GFA with maximum 46.5 m2 for small lot; measurement definition requires review.",
+          "normalized_value": null,
+          "normalization_status": "not_performed",
+          "review_status": "provisional",
+          "evidence": [
+            {
+              "source_id": "SAA-kingsley",
+              "locator": "PDF p3 Variance table"
+            }
+          ]
+        }
+      ],
+      "test_uses": [
+        "document_extraction_fixture",
+        "potential_dimensional_check_requiring_review"
+      ],
+      "unsupported": [
+        "Current compliance",
+        "Fit for The Landing or any other prefab design",
+        "As-built condition",
+        "Complete regulatory coverage"
+      ],
+      "missing_inputs": [
+        "Independent source and interpretation review",
+        "Authorized durable evidence storage and reuse scope",
+        "Current governing instrument and amendment/transition chain",
+        "Verified design/site/placement revisions and legal measurement definitions",
+        "Council decision and executed permit",
+        "Complete plans and GFA definition"
+      ],
+      "local_artifacts": [],
+      "application_date_evidence": []
+    },
+    {
+      "case_id": "VAN-PC-001",
+      "jurisdiction": {
+        "name": "City of Vancouver",
+        "province": "BC",
+        "country": "CA"
+      },
+      "scope": "transfer_only",
+      "public_site_label": "825 East 37th Avenue",
+      "official_identifiers": [
+        "DB451752"
+      ],
+      "dependency_group": "VAN-PC-001",
+      "split": "unassigned",
+      "review_status": "provisional",
+      "benchmark_eligible": false,
+      "development": {
+        "summary": "Laneway-house alterations and new carport",
+        "evidence": [
+          {
+            "source_id": "VAN-may",
+            "locator": "PDF p16, 825 East 37th Avenue"
+          }
+        ]
+      },
+      "prefab": {
+        "status": "unknown",
+        "evidence": [],
+        "note": "No explicit manufacturing-method evidence verified. Construction materials or conversion status do not establish prefab status."
+      },
+      "application_date": null,
+      "source_facts": [],
+      "official_interpretations": [
+        {
+          "summary": "Board approved a side-yard relaxation; development permits are still required.",
+          "evidence": [
+            {
+              "source_id": "VAN-may",
+              "locator": "PDF p16, introductory heading and 825 East 37th Avenue entry"
+            }
+          ]
+        }
+      ],
+      "researcher_inferences": [
+        "Tests approved relaxation versus permit issuance and preservation of imperial units."
+      ],
+      "plan_version": {
+        "summary": "unknown",
+        "evidence": []
+      },
+      "governing_rules": {
+        "summary": "Decision names R1-1 side-yard regulations; precise clause/version not verified.",
+        "effective_date": null,
+        "current_applicability": "unverified",
+        "evidence": [
+          {
+            "source_id": "VAN-may",
+            "locator": "PDF p16"
+          }
+        ]
+      },
+      "decision": {
+        "status": "board_relaxation_approved",
+        "date": "2024-05-21",
+        "evidence": [
+          {
+            "source_id": "VAN-may",
+            "locator": "PDF p16"
+          }
+        ],
+        "conditions": [
+          {
+            "summary": "Development permits required; complete permit conditions unavailable.",
+            "evidence": [
+              {
+                "source_id": "VAN-may",
+                "locator": "PDF p16 heading"
+              }
+            ]
+          }
+        ],
+        "issued_development_permit": null,
+        "issued_building_permit": null,
+        "as_built_verified": null
+      },
+      "measurements": [
+        {
+          "name": "Carport distance from property line",
+          "original_value": "2.0",
+          "original_unit": "feet",
+          "measurement_definition": "Approved carport-to-property-line distance, not a Victoria garden-suite setback.",
+          "normalized_value": null,
+          "normalization_status": "not_performed",
+          "review_status": "provisional",
+          "evidence": [
+            {
+              "source_id": "VAN-may",
+              "locator": "PDF p16, 825 East 37th Avenue"
+            }
+          ]
+        }
+      ],
+      "test_uses": [
+        "historical_decision_condition_reference"
+      ],
+      "unsupported": [
+        "Current compliance",
+        "Fit for The Landing or any other prefab design",
+        "As-built condition",
+        "Complete regulatory coverage"
+      ],
+      "missing_inputs": [
+        "Independent source and interpretation review",
+        "Authorized durable evidence storage and reuse scope",
+        "Current governing instrument and amendment/transition chain",
+        "Verified design/site/placement revisions and legal measurement definitions",
+        "Plans and revision",
+        "Issued development/building permits",
+        "Primary PDF visual check and authorized byte capture"
+      ],
+      "local_artifacts": [],
+      "application_date_evidence": []
+    },
+    {
+      "case_id": "VAN-PC-002",
+      "jurisdiction": {
+        "name": "City of Vancouver",
+        "province": "BC",
+        "country": "CA"
+      },
+      "scope": "transfer_only",
+      "public_site_label": "2204 East 38th Avenue",
+      "official_identifiers": [
+        "DP-2022-00934"
+      ],
+      "dependency_group": "VAN-PC-002",
+      "split": "unassigned",
+      "review_status": "provisional",
+      "benchmark_eligible": false,
+      "development": {
+        "summary": "House alterations including laneway-house carport addition",
+        "evidence": [
+          {
+            "source_id": "VAN-nov",
+            "locator": "PDF p5 Appeal Description"
+          }
+        ]
+      },
+      "prefab": {
+        "status": "unknown",
+        "evidence": [],
+        "note": "No explicit manufacturing-method evidence verified. Construction materials or conversion status do not establish prefab status."
+      },
+      "application_date": null,
+      "source_facts": [],
+      "official_interpretations": [
+        {
+          "summary": "Initial refusal was overturned on appeal with conditions; staff describes intervening R1-1 applicability.",
+          "evidence": [
+            {
+              "source_id": "VAN-nov",
+              "locator": "PDF pp5-7"
+            }
+          ]
+        }
+      ],
+      "researcher_inferences": [
+        "Tests decision chronology: refusal reasons cannot be carried forward as the final disposition."
+      ],
+      "plan_version": {
+        "summary": "unknown",
+        "evidence": []
+      },
+      "governing_rules": {
+        "summary": "R1-1; minutes cite density 3.2.1.1 and earlier refusal clauses. Complete transition history unverified.",
+        "effective_date": null,
+        "current_applicability": "unverified",
+        "evidence": [
+          {
+            "source_id": "VAN-nov",
+            "locator": "PDF pp5-6"
+          }
+        ]
+      },
+      "decision": {
+        "status": "refusal_overturned_with_conditions",
+        "date": "2023-11-21",
+        "evidence": [
+          {
+            "source_id": "VAN-nov",
+            "locator": "PDF p7 decision"
+          }
+        ],
+        "conditions": [
+          {
+            "summary": "Sundeck must remain open on three sides with curtains removed; impermeability allowance 75%; other bylaw requirements remain.",
+            "evidence": [
+              {
+                "source_id": "VAN-nov",
+                "locator": "PDF p7 conditions 1-3"
+              }
+            ]
+          }
+        ],
+        "issued_development_permit": null,
+        "issued_building_permit": null,
+        "as_built_verified": null
+      },
+      "measurements": [
+        {
+          "name": "Proposed FSR",
+          "original_value": "0.72",
+          "original_unit": "ratio",
+          "measurement_definition": "Minutes technical table: floor area/site area, exemptions not independently reconciled; permitted 0.70 and existing 0.67.",
+          "normalized_value": null,
+          "normalization_status": "not_performed",
+          "review_status": "provisional",
+          "evidence": [
+            {
+              "source_id": "VAN-nov",
+              "locator": "PDF p6 Technical Information"
+            }
+          ]
+        }
+      ],
+      "test_uses": [
+        "historical_decision_condition_reference"
+      ],
+      "unsupported": [
+        "Current compliance",
+        "Fit for The Landing or any other prefab design",
+        "As-built condition",
+        "Complete regulatory coverage"
+      ],
+      "missing_inputs": [
+        "Independent source and interpretation review",
+        "Authorized durable evidence storage and reuse scope",
+        "Current governing instrument and amendment/transition chain",
+        "Verified design/site/placement revisions and legal measurement definitions",
+        "Plan revision and original refusal date",
+        "Complete exemptions and governing transition",
+        "Issued permits",
+        "Primary PDF visual check and authorized byte capture"
+      ],
+      "local_artifacts": [],
+      "application_date_evidence": []
+    }
+  ],
+  "shortlist": [
+    "VIC-PC-001",
+    "VIC-PC-002",
+    "VIC-PC-003",
+    "SAA-PC-001",
+    "VIC-PC-004"
+  ],
+  "first_integration_candidate": "VIC-PC-001",
+  "split_policy": "Keep each case, address aliases, applications, all revisions, later modifications and derived facts together. Split unassigned. No prompts/tuning. Exclude height/grade content from development prompts; existing group H reservation unchanged."
+}
