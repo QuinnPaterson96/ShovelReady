@@ -1,0 +1,19 @@
+{
+  "schema_version": "virtual-qa-materialization/v1",
+  "baseline_commit": "303b40aeb9e69f476878959148ed299cad2a5e9b",
+  "case_id": "affirmative-label-clean",
+  "case_revision": "1",
+  "data": {
+    "kind": "synthetic_fixture",
+    "identity": {
+      "value": "synthetic-preview",
+      "unknown_reason": null
+    },
+    "revision": {
+      "value": "synthetic-preview-v1",
+      "unknown_reason": null
+    }
+  },
+  "entry_path": "/",
+  "replacements": []
+}

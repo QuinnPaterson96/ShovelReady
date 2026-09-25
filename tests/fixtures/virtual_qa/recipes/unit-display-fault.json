@@ -1,0 +1,26 @@
+{
+  "schema_version": "virtual-qa-materialization/v1",
+  "baseline_commit": "303b40aeb9e69f476878959148ed299cad2a5e9b",
+  "case_id": "unit-display-fault",
+  "case_revision": "1",
+  "data": {
+    "kind": "synthetic_fixture",
+    "identity": {
+      "value": "synthetic-preview",
+      "unknown_reason": null
+    },
+    "revision": {
+      "value": "synthetic-preview-v1",
+      "unknown_reason": null
+    }
+  },
+  "entry_path": "/",
+  "replacements": [
+    {
+      "path": "frontend/src/preview/InvestigationPreview.tsx",
+      "before_sha256": "0b0396f5ded81cf9e33d011b884ca78088f8c5182f607029e3e1cdfa7b5adafc",
+      "after_sha256": "42d7cb3b1519c851126a3a78b37028e367062ba01d110583877993aaa5f56130",
+      "asset": "assets/unit-display.tsx"
+    }
+  ]
+}

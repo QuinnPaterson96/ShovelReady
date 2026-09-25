@@ -1,0 +1,8 @@
+{
+  "frontend/src/preview/fixtures.json": "549d97cefa0c2973e1d7e0aea79f1df4a85d95d6558297869923e297ab36fe0d",
+  "frontend/src/preview/InvestigationPreview.tsx": "0b0396f5ded81cf9e33d011b884ca78088f8c5182f607029e3e1cdfa7b5adafc",
+  "frontend/src/investigation/observed.test.json": "f28ce476e8e4d6d6b60d93021c18097a7ba368f62fbdca8c5fb11418a8bf0abf",
+  "docs/usability/synthetic-source.txt": "ab719f7a08437260d730f21153f9fa437bbbde8d81858b072c1a1e122af9acc2",
+  "app/investigation/pins.json": "a7e992e1b3b970d30ca65c8b3865308785ba2927ddba5a9849c9416af85d366b",
+  "docs/pilot-inputs/source-manifest.json": "ed07d9baf0c2a0d30b78ba133168cbe2735b120deda242e1e2a669fcb79ccbb3"
+}

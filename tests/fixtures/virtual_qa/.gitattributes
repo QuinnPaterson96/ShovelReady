@@ -1,0 +1,2 @@
+*.json text eol=lf
+assets/*.tsx text eol=lf
