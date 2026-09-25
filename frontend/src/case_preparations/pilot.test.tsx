@@ -20,6 +20,9 @@ test('real producer fixture preserves uncertainty, exact provenance and next evi
     data.annotation_text_sha256, data.source_manifest_text_sha256, 'Next evidence needed',
     'unresolved_rule_dependencies', 'context_only_not_required_for_historical_request']) assert.ok(html.includes(text), text)
   assert.ok(html.includes('<details>'))
+  assert.ok(html.includes('sr-status-amber'))
+  assert.ok(!html.includes('sr-status-green'))
+  assert.ok(html.indexOf('sr-status-amber') < html.indexOf('Selected 2018 proposal'))
   assert.ok(html.includes('PM-PLAN'))
   assert.ok(!html.includes('href="file:'))
   assert.ok(renderToStaticMarkup(createElement(PilotPreparation)).includes('Loading Pilot preparation'))

@@ -32,6 +32,7 @@ export function AssessmentForm({ draft, dispatch, onSummary, onEvidence }: {
   useEffect(() => { if (Object.keys(draft.errors).length) form.current?.querySelector<HTMLInputElement>('[aria-invalid="true"]')?.focus() }, [draft.errors])
   return <section className="sr-assessment" aria-labelledby="inputs-title">
     <h2 id="inputs-title">Assessment inputs</h2>
+    <StatusBanner {...preparationStatus(draft)} />
     <p>Start with what you know. Dimensions are optional; leave unknown facts blank. Your draft stays in this session while you move between pages.</p>
     <p>Proposed research scope: City of Victoria · garden suite · accessory building. No accepted dataset is published.</p>
     <form ref={form} noValidate onSubmit={event => { event.preventDefault(); dispatch({ type: 'submit' }); onSummary() }}>
@@ -66,8 +67,7 @@ export function AssessmentForm({ draft, dispatch, onSummary, onEvidence }: {
     </details>
     <Provenance draft={draft} />
     <p>Pilot has unresolved historical observations, not canonical form dimensions.</p>
-    <button onClick={onEvidence}>Explore public-case evidence, including Pilot</button>
-    <StatusBanner {...preparationStatus(draft)} />
+    <button onClick={onEvidence}>Investigate Pilot evidence</button>
   </section>
 }
 

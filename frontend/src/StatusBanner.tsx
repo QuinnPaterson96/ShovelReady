@@ -25,10 +25,12 @@ export default function StatusBanner({ status, reason, coverage, unresolved, nex
     <h2 id={id}><span aria-hidden="true">{icon} </span>{label}</h2>
     {synthetic && <p><strong>Synthetic example · invented inputs, no real-site finding</strong></p>}
     <p>{reason}</p>
-    <p><strong>Checks and coverage:</strong> {coverage}</p>
-    <p><strong>Unresolved:</strong></p>
-    {unresolved.length ? <ul>{unresolved.map((item, i) => <li key={i}>{item}</li>)}</ul> : <p>None reported within these checks; excluded matters remain unassessed.</p>}
     <p><strong>Next action:</strong> {nextAction}</p>
-    <p>Approval is separate. This status grants no permit or legal approval.</p>
+    <details><summary>Scope and unresolved evidence</summary>
+      <p><strong>Checks and coverage:</strong> {coverage}</p>
+      <p><strong>Unresolved:</strong></p>
+      {unresolved.length ? <ul>{unresolved.map((item, i) => <li key={i}>{item}</li>)}</ul> : <p>None reported within these checks; excluded matters remain unassessed.</p>}
+      <p>Approval is separate. This status grants no permit or legal approval.</p>
+    </details>
   </section>
 }

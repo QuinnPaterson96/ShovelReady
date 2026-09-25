@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { evidenceUrl, startLoad } from './adapter'
 import type { Citation, LoadState, Preparation } from './adapter'
+import StatusBanner from '../StatusBanner'
 
 function Sources({ sources }: { sources: Citation[] }) {
   return <ul>{sources.map((s, i) => <li key={i}>{evidenceUrl(s.url)
@@ -12,8 +13,11 @@ function Raw({ value }: { value: unknown }) {
 }
 export function PreparationView({ data }: { data: Preparation }) {
   return <>
-    <div className="pilot-status" role="status"><strong>Needs investigation — evaluation not run</strong>
-      <p>evaluation_not_run · Provisional historical preparation. No EvaluationReport, accepted release, zoning fit or legal outcome.</p></div>
+    <StatusBanner status="needs_investigation"
+      reason="evaluation_not_run · Provisional historical preparation. No EvaluationReport, accepted release, zoning fit or legal outcome."
+      coverage={`${data.selected_period}: ${data.retained_observations.length} retained observations; ${data.mapped_fragments.facts.length} uncertain fact fragments. No regulatory evaluation performed.`}
+      unresolved={data.diagnostics.filter(d => d.scope === 'historical_preparation').map(d => d.detail)}
+      nextAction="Review the source-linked evidence requests below before attempting a supported evaluation." />
     <h2>Selected 2018 proposal</h2>
     <p>{data.case_id} · {data.selected_period} · Drawing {data.design_date}, received {data.received_date}; historical cutoff {data.historical_cutoff}.</p>
     <p>{data.mapped_fragments.design.configuration}. Later records cannot establish this proposal’s geometry or historical legal applicability.</p>
@@ -65,7 +69,6 @@ export default function PilotPreparation() {
   useEffect(() => { cancel.current = startLoad(setState); return () => cancel.current?.() }, [])
   return <section className="pilot-preparation" aria-label="Pilot preparation investigation">
     <style>{`.pilot-preparation { max-width: 72rem; margin: auto; padding: 1.5rem; color: #172c32; background: #fafcfc; }
-      .pilot-preparation .pilot-status { border-left: .4rem solid #a56508; padding: 1rem; background: #fff2d4; }
       .pilot-preparation details { border: 1px solid #bccbcd; border-radius: .4rem; padding: .85rem; margin: .7rem 0; }
       .pilot-preparation summary { cursor: pointer; font-weight: 600; }
       .pilot-preparation pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: .85rem; }
@@ -73,6 +76,6 @@ export default function PilotPreparation() {
       .pilot-preparation li { margin: .4rem 0; }
       .pilot-preparation a { color: #075b76; text-decoration: underline; }
       .pilot-preparation button { padding: .6rem 1rem; cursor: pointer; }`}</style>
-    <h1>Pilot preparation investigation</h1><button onClick={reload}>Reload preparation</button><LoadView state={state} />
+    <h2>Pilot preparation investigation</h2><button onClick={reload}>Reload preparation</button><LoadView state={state} />
   </section>
 }
