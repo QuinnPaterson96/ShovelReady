@@ -1,0 +1,557 @@
+{
+  "schema_version": "stannard-reference.v1",
+  "packet_revision": "2026-09-24.1",
+  "case_id": "VIC-PC-001",
+  "dependency_group": "VIC-PC-001",
+  "official_identifiers": [
+    "REZ00787",
+    "DP000603",
+    "DPV00268",
+    "DDP01047",
+    "CLC00328"
+  ],
+  "historical_cutoff": "2023-10-12",
+  "cutoff_basis": "End of Council meeting; selected December 2, 2022 drawing revision. Later material is contextual evidence only.",
+  "access_date": "2026-09-24",
+  "review_status": "provisional",
+  "benchmark_eligible": false,
+  "accepted_revisions": [],
+  "scope_exclusions": [
+    "current compliance",
+    "as-built verification",
+    "The Landing fit",
+    "height/grade holdout",
+    "whole-site outcome"
+  ],
+  "rights": {
+    "source_id": "rights",
+    "handling": "Metadata and concise factual summaries only; no PDFs, images or long extracts in Git. Public access and hashes are not redistribution or durable-retention permission. Architectural third-party rights unresolved.",
+    "durable_source_retention_authorized": false
+  },
+  "sources": {
+    "plan": {
+      "url": "https://tender.victoria.ca/webapps/ourcity/Prospero/FileDownload.aspx?fileId=6E1EAB8E-2871-4026-930E-84C2696B8048&folderId=30750C210608094939900822",
+      "sha256": "f87777a69ec3d3a37a6e182d0decbcaaa6ebef99113677f589441819c6718a78",
+      "byte_length": 8423264,
+      "page_count": 6,
+      "title": "Final Approved historical plans",
+      "version": "2022-12-02 drawing/received; 2023-10-12 approval stamp",
+      "inspection": "pypdf text; visual C1 p1",
+      "kind": "historical_plan",
+      "access": "HTTP 200 direct download",
+      "access_date": "2026-09-24",
+      "retained_in_git": false
+    },
+    "later": {
+      "url": "https://tender.victoria.ca/webapps/ourcity/Prospero/FileDownload.aspx?fileId=DD169D59-38DA-4AB3-9F4E-EEA1C9467CCA&folderId=47732C250527102909750354",
+      "sha256": "68c64f1cf7a43ecb73b5ddc557deccbd8e7ba9aba4e5dfb29571932b5d0c4199",
+      "byte_length": 36261112,
+      "page_count": 10,
+      "title": "DDP01047 FINAL APPROVED",
+      "version": "2025-06-25 drawing; 2025-06-27 received; 2025-07-07 approval stamp",
+      "inspection": "pypdf text fragmented; pdftotext -layout; visual A0.0 p1 and A0.1 p2",
+      "kind": "later_plan",
+      "access": "HTTP 200 direct download",
+      "access_date": "2026-09-24",
+      "retained_in_git": false
+    },
+    "zone": {
+      "url": "https://www.victoria.ca/media/file/2164",
+      "sha256": "a6d3e5c16e2b6efc3ccdd9b2d1a2076c0c2b24bf47bdc2211d9bf23027143da3",
+      "byte_length": 89610,
+      "page_count": 2,
+      "title": "Part 2.164 R2-65",
+      "version": "footer: Bylaw 23-077 adopted October 12, 2023; current download, not certified historical copy",
+      "inspection": "pypdf encoding unusable; visual both pages",
+      "kind": "current_instrument_copy",
+      "access": "HTTP 200 direct download",
+      "access_date": "2026-09-24",
+      "retained_in_git": false
+    },
+    "defs": {
+      "url": "https://www.victoria.ca/media/1195",
+      "sha256": "2e8ff4dc88cc4eb0b52c449721e68bb54888353bec1534007cc55e7d2f0caaf8",
+      "byte_length": 4947222,
+      "page_count": 22,
+      "title": "Schedule A Definitions",
+      "version": "mixed amendment annotations including August 1, 2024; not a 2023 consolidation",
+      "inspection": "pypdf all pages searched; visual pp2,18,20",
+      "kind": "current_instrument_copy",
+      "access": "HTTP 200 direct download",
+      "access_date": "2026-09-24",
+      "retained_in_git": false
+    },
+    "general": {
+      "url": "https://www.victoria.ca/media/1194",
+      "sha256": "eff1aa5578fa5d3416c3177c28538889567f6488b837dff0bd0ed8c97d1e6d8d",
+      "byte_length": 229569,
+      "page_count": 11,
+      "title": "Introduction and General Regulations, Bylaw 80-159",
+      "version": "current download; includes later provisions; historical chain unverified",
+      "inspection": "pypdf text; general cross-reference context only",
+      "kind": "current_instrument_copy",
+      "access": "HTTP 200 direct download",
+      "access_date": "2026-09-24",
+      "retained_in_git": false
+    },
+    "schedule_m": {
+      "url": "https://www.victoria.ca/media/1081",
+      "sha256": "e8850a9e48f203d9074963a0c42038c3de983a84ff2e76cc05842325901c0ac7",
+      "byte_length": 246617,
+      "page_count": 2,
+      "title": "Schedule M Garden Suites",
+      "version": "footer amended August 8, 2019, Bylaw 19-086; current download",
+      "inspection": "pypdf and visual both pages",
+      "kind": "current_instrument_copy",
+      "access": "HTTP 200 direct download",
+      "access_date": "2026-09-24",
+      "retained_in_git": false
+    },
+    "later_revised": {
+      "url": "https://tender.victoria.ca/webapps/ourcity/Prospero/FileDownload.aspx?fileId=438E8749-E6BF-40F6-A19C-07484A1B1A33&folderId=47732C250527102909750354",
+      "sha256": "7225e4a337aca446a3ae42505a7271ec16127abaa2b8b8b34f3cc05fe908dd4b",
+      "byte_length": 36198116,
+      "page_count": 10,
+      "title": "DDP01047 June 27 revised bubbled plans",
+      "version": "tracker label 2025-06-27; separate bytes from FINAL APPROVED",
+      "inspection": "download/hash/page count only; not relied on for facts",
+      "kind": "later_plan",
+      "access": "HTTP 200 direct download",
+      "access_date": "2026-09-24",
+      "retained_in_git": false
+    },
+    "tracker-REZ00787": {
+      "url": "https://tender.victoria.ca/webapps/ourcity/Prospero/Details.aspx?folderNumber=REZ00787",
+      "title": "REZ00787 tracker",
+      "version": "live page as accessed; not a historical snapshot",
+      "inspection": "Purpose, Documents, Task Progress and Related Permits",
+      "kind": "live_tracker",
+      "access": "HTTP 200 requests/BeautifulSoup; web open failed for REZ00787 and DDP01047",
+      "access_date": "2026-09-24",
+      "sha256": null,
+      "byte_length": null,
+      "page_count": null,
+      "retained_in_git": false
+    },
+    "tracker-DP000603": {
+      "url": "https://tender.victoria.ca/webapps/ourcity/Prospero/Details.aspx?folderNumber=DP000603",
+      "title": "DP000603 tracker",
+      "version": "live page as accessed; not a historical snapshot",
+      "inspection": "Purpose, Documents, Task Progress and Related Permits",
+      "kind": "live_tracker",
+      "access": "HTTP 200 requests/BeautifulSoup; web open failed for REZ00787 and DDP01047",
+      "access_date": "2026-09-24",
+      "sha256": null,
+      "byte_length": null,
+      "page_count": null,
+      "retained_in_git": false
+    },
+    "tracker-DPV00268": {
+      "url": "https://tender.victoria.ca/webapps/ourcity/Prospero/Details.aspx?folderNumber=DPV00268",
+      "title": "DPV00268 tracker",
+      "version": "live page as accessed; not a historical snapshot",
+      "inspection": "Purpose, Documents, Task Progress and Related Permits",
+      "kind": "live_tracker",
+      "access": "HTTP 200 requests/BeautifulSoup; web open failed for REZ00787 and DDP01047",
+      "access_date": "2026-09-24",
+      "sha256": null,
+      "byte_length": null,
+      "page_count": null,
+      "retained_in_git": false
+    },
+    "tracker-DDP01047": {
+      "url": "https://tender.victoria.ca/webapps/ourcity/Prospero/Details.aspx?folderNumber=DDP01047",
+      "title": "DDP01047 tracker",
+      "version": "live page as accessed; not a historical snapshot",
+      "inspection": "Purpose, Documents, Task Progress and Related Permits",
+      "kind": "live_tracker",
+      "access": "HTTP 200 requests/BeautifulSoup; web open failed for REZ00787 and DDP01047",
+      "access_date": "2026-09-24",
+      "sha256": null,
+      "byte_length": null,
+      "page_count": null,
+      "retained_in_git": false
+    },
+    "minutes": {
+      "url": "https://pub-victoria.escribemeetings.com/filestream.ashx?DocumentId=95470",
+      "title": "Council minutes",
+      "version": "October 12, 2023 meeting",
+      "inspection": "indexed official PDF pp2-4 E.1/E.1.a; direct HTTP and web open 403",
+      "kind": "indexed_official_record",
+      "access": "search-index text only; no source bytes verified",
+      "access_date": "2026-09-24",
+      "sha256": null,
+      "byte_length": null,
+      "page_count": null,
+      "retained_in_git": false
+    },
+    "draft-bylaw": {
+      "url": "https://pub-victoria.escribemeetings.com/filestream.ashx?DocumentId=93451",
+      "title": "Bylaw 23-077 agenda copy",
+      "version": "first/second reading September 14, 2023; adoption blanks",
+      "inspection": "indexed official PDF first page and Schedule 1 p1; full file not inspected",
+      "kind": "indexed_official_record",
+      "access": "search-index text only; no source bytes verified",
+      "access_date": "2026-09-24",
+      "sha256": null,
+      "byte_length": null,
+      "page_count": null,
+      "retained_in_git": false
+    },
+    "clerk": {
+      "url": "https://pub-victoria.escribemeetings.com/filestream.ashx?DocumentId=92900",
+      "title": "City Clerk report",
+      "version": "September 5, 2023 report",
+      "inspection": "indexed official PDF p1 background; no full-file inspection (related report copy 93441 returned HTTP 403)",
+      "kind": "indexed_official_record",
+      "access": "search-index text only; no source bytes verified",
+      "access_date": "2026-09-24",
+      "sha256": null,
+      "byte_length": null,
+      "page_count": null,
+      "retained_in_git": false
+    },
+    "staff": {
+      "url": "https://pub-victoria.escribemeetings.com/filestream.ashx?DocumentId=91300",
+      "title": "Committee of the Whole report",
+      "version": "June 15, 2023 report for June 29 meeting",
+      "inspection": "indexed official PDF pp1,5,6; tabular index flattened, no visual audit",
+      "kind": "indexed_official_record",
+      "access": "search-index text only; no source bytes verified",
+      "access_date": "2026-09-24",
+      "sha256": null,
+      "byte_length": null,
+      "page_count": null,
+      "retained_in_git": false
+    },
+    "cotw": {
+      "url": "https://pub-victoria.escribemeetings.com/filestream.ashx?DocumentId=94297",
+      "title": "Special Committee minutes",
+      "version": "June 29, 2023 meeting",
+      "inspection": "indexed official PDF C.1, printed pp5-6; direct HTTP 403",
+      "kind": "indexed_official_record",
+      "access": "search-index text only; no source bytes verified",
+      "access_date": "2026-09-24",
+      "sha256": null,
+      "byte_length": null,
+      "page_count": null,
+      "retained_in_git": false
+    },
+    "rights": {
+      "url": "https://www.victoria.ca/legal-disclaimer",
+      "title": "City legal disclaimer",
+      "version": "live page September 24, 2026",
+      "inspection": "Copyright; Electronic Documentation",
+      "kind": "rights_notice",
+      "access": "web page opened",
+      "access_date": "2026-09-24",
+      "sha256": null,
+      "byte_length": null,
+      "page_count": null,
+      "retained_in_git": false
+    }
+  },
+  "claims": [
+    {
+      "id": "plan-version",
+      "kind": "transcription",
+      "review_status": "provisional",
+      "summary": "C1 drawing and received date December 2, 2022; approval stamp October 12, 2023.",
+      "evidence": [
+        {
+          "source_id": "plan",
+          "locator": "C1 title block and stamps",
+          "page": 1
+        }
+      ]
+    },
+    {
+      "id": "pathway",
+      "kind": "researcher_interpretation",
+      "review_status": "provisional",
+      "summary": "R2-65 section 2.164.1(b) imports Schedule M with accessory-unit/garden-suite and duplex/single-family substitutions; this is not a simple R1-B garden-suite application.",
+      "evidence": [
+        {
+          "source_id": "zone",
+          "locator": "2.164.1(b), 2.164.2(a)",
+          "page": 1
+        },
+        {
+          "source_id": "draft-bylaw",
+          "locator": "Schedule 1, 2.164.1(b)",
+          "page": null
+        }
+      ]
+    },
+    {
+      "id": "adoption",
+      "kind": "official_record_summary",
+      "review_status": "provisional",
+      "summary": "Indexed minutes record adoption of 23-077 and authorization of DP with Variances 000603 tied to December 2 plans, conditional on car-share security, revised arborist material and zoning compliance except duplex parking 2 to 1 and accessory-building area 37 to 42 m2; two-year lapse wording retained. Not proof conditions were discharged or permit issued.",
+      "evidence": [
+        {
+          "source_id": "minutes",
+          "locator": "E.1.a, printed pp3-4",
+          "page": null
+        },
+        {
+          "source_id": "zone",
+          "locator": "adoption footer",
+          "page": 2
+        }
+      ]
+    },
+    {
+      "id": "identifier-gap",
+      "kind": "researcher_interpretation",
+      "review_status": "provisional",
+      "summary": "Decision uses 000603; trackers also identify DPV00268 and later DDP01047 refers to it. Same case group; executed permit crosswalk remains missing.",
+      "evidence": [
+        {
+          "source_id": "minutes",
+          "locator": "E.1.a, printed pp3-4",
+          "page": null
+        },
+        {
+          "source_id": "tracker-DPV00268",
+          "locator": "Purpose and Related Permits",
+          "page": null
+        },
+        {
+          "source_id": "tracker-DDP01047",
+          "locator": "Purpose",
+          "page": null
+        }
+      ]
+    },
+    {
+      "id": "later-event",
+      "kind": "official_record_summary",
+      "review_status": "provisional",
+      "summary": "Later tracker records Development Permit Issued July 9, 2025; plan approval stamp is July 7, 2025. These are different recorded events, not conflicting issuance dates.",
+      "evidence": [
+        {
+          "source_id": "tracker-DDP01047",
+          "locator": "Task Progress: Development Permit Issued",
+          "page": null
+        },
+        {
+          "source_id": "later",
+          "locator": "A0.0 approval stamp",
+          "page": 1
+        }
+      ]
+    },
+    {
+      "id": "later-design",
+      "kind": "transcription",
+      "review_status": "provisional",
+      "summary": "Later brief attributes custom redesign to discontinued prefab kit and asserts unchanged footprint, dimensions, siting and setbacks. This is a source assertion, not verified construction or identification of a manufacturer.",
+      "evidence": [
+        {
+          "source_id": "later",
+          "locator": "A0.0 DDP paragraph; A0.1 DDP paragraph",
+          "page": 1
+        },
+        {
+          "source_id": "later",
+          "locator": "A0.1 DDP paragraph",
+          "page": 2
+        }
+      ]
+    },
+    {
+      "id": "later-conflicts",
+      "kind": "researcher_interpretation",
+      "review_status": "provisional",
+      "summary": "Unchanged-setbacks narrative is not reconciled: original C1 rear 4.20 m and sides 1.20/1.20 m differ from A0.1 rear 3.40 m and sides 1.10/1.30 m. Lot area differs 985.6 versus 980 m2; A0.1 FSR row uses 1947 as denominator despite 980 lot-area row. Do not merge revisions or silently repair values.",
+      "evidence": [
+        {
+          "source_id": "plan",
+          "locator": "C1 garden-suite table",
+          "page": 1
+        },
+        {
+          "source_id": "later",
+          "locator": "A0.1 project info, DDP paragraph and zoning analysis",
+          "page": 2
+        }
+      ]
+    },
+    {
+      "id": "variance-conflict",
+      "kind": "researcher_interpretation",
+      "review_status": "provisional",
+      "summary": "C1 asks for combined-side-yard variance, but indexed adopted motion lists parking and accessory-building area variances. The drawing request is not evidence that Council granted that setback variance.",
+      "evidence": [
+        {
+          "source_id": "plan",
+          "locator": "C1 duplex table footnote",
+          "page": 1
+        },
+        {
+          "source_id": "minutes",
+          "locator": "E.1.a, printed pp3-4",
+          "page": null
+        }
+      ]
+    },
+    {
+      "id": "separation-endpoints",
+      "kind": "researcher_interpretation",
+      "review_status": "provisional",
+      "summary": "Schedule M 2(d) names the buildings but supplies no endpoint algorithm. No standalone separation-space definition found in searched Schedule A. Setback definition is lot-boundary to building face; transferring it to building-to-building distance is unsupported.",
+      "evidence": [
+        {
+          "source_id": "schedule_m",
+          "locator": "2(d)",
+          "page": 1
+        },
+        {
+          "source_id": "defs",
+          "locator": "alphabetic definitions; Setback",
+          "page": 18
+        }
+      ]
+    },
+    {
+      "id": "area-basis",
+      "kind": "researcher_interpretation",
+      "review_status": "provisional",
+      "summary": "Schedule A floor Area uses interior exterior-wall faces plus cantilevered elements and listed exclusions; Total Floor Area adds aggregation/exclusion semantics. Mapping C1 combined floor area/living area to Schedule M floor area remains unreviewed, including covered patio treatment.",
+      "evidence": [
+        {
+          "source_id": "defs",
+          "locator": "Area of floor",
+          "page": 2
+        },
+        {
+          "source_id": "defs",
+          "locator": "Total Floor Area",
+          "page": 20
+        },
+        {
+          "source_id": "plan",
+          "locator": "C1 area table and covered patio annotation",
+          "page": 1
+        }
+      ]
+    },
+    {
+      "id": "staff-corroboration",
+      "kind": "official_record_summary",
+      "review_status": "provisional",
+      "summary": "Indexed staff table calls the suite a plus site, lists 55.70 m2 against 56 and separation greater than 2.40 against 2.40. It does not independently establish the plan exact separation 28.50 or measurement endpoints.",
+      "evidence": [
+        {
+          "source_id": "staff",
+          "locator": "printed p6, Proposed Garden Suite (plus site) table",
+          "page": null
+        }
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "id": "separation",
+      "name": "Historical accessory dwelling to duplex separation",
+      "assertion_type": "proposed_transcription_assertion",
+      "review_status": "provisional",
+      "plan_source_id": "plan",
+      "building_roles": [
+        "historical_accessory_dwelling",
+        "existing_duplex"
+      ],
+      "row_label_ascii": "SEPARATION SPACE FROM MAIN BUILDING (MIN.)",
+      "original_values": {
+        "permitted_minimum": "2.40",
+        "proposed": "28.50"
+      },
+      "original_unit": "m",
+      "unit_basis": "Unit inferred from metric site/table context; this row does not print (M).",
+      "normalized_value": null,
+      "governing_bound_accepted": false,
+      "evaluator_ready": false,
+      "expected_evaluation": null,
+      "evidence": [
+        {
+          "source_id": "plan",
+          "locator": "C1 GARDEN SUITE table; duplicate row in DUPLEX BUILDING table",
+          "page": 1
+        },
+        {
+          "source_id": "schedule_m",
+          "locator": "2(d)",
+          "page": 1
+        },
+        {
+          "source_id": "zone",
+          "locator": "2.164.1(b)",
+          "page": 1
+        }
+      ],
+      "blockers": [
+        "2023 applicable definition/endpoint review",
+        "exact supplied placement and reviewed distance",
+        "R2-65 role substitution and source version review",
+        "permit conditions and exact rule bindings unsupported/unreviewed"
+      ]
+    },
+    {
+      "id": "floor-area",
+      "name": "Historical accessory dwelling floor area",
+      "assertion_type": "proposed_transcription_assertion",
+      "review_status": "provisional",
+      "plan_source_id": "plan",
+      "building_roles": [
+        "historical_accessory_dwelling",
+        "existing_duplex"
+      ],
+      "row_label_ascii": "COMBINED FLOOR AREA (M2) (MAX.)",
+      "original_values": {
+        "permitted_maximum": "56.00",
+        "proposed": "55.70"
+      },
+      "original_unit": "m2",
+      "unit_basis": "M squared printed in row; no ratio basis.",
+      "normalized_value": null,
+      "governing_bound_accepted": false,
+      "evaluator_ready": false,
+      "expected_evaluation": null,
+      "evidence": [
+        {
+          "source_id": "plan",
+          "locator": "C1 GARDEN SUITE table",
+          "page": 1
+        },
+        {
+          "source_id": "schedule_m",
+          "locator": "4(c)",
+          "page": 1
+        },
+        {
+          "source_id": "schedule_m",
+          "locator": "5(a), 5(b)(iii)",
+          "page": 2
+        },
+        {
+          "source_id": "defs",
+          "locator": "Area of floor",
+          "page": 2
+        }
+      ],
+      "blockers": [
+        "plus-site OR condition and section 5 override of section 4",
+        "historical definition chain and reviewed interior-area computation",
+        "patio/cantilever/exclusion treatment",
+        "unaccepted design/site/placement, rule and binding revisions"
+      ]
+    }
+  ],
+  "artifacts": [
+    "README.md",
+    "manifest.json",
+    "verify_packet.py",
+    "verification.md"
+  ]
+}
