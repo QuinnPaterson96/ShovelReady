@@ -1,0 +1,94 @@
+{
+  "schema_version": "virtual-qa/v1",
+  "record_type": "case",
+  "case_id": "evidence-access-clean",
+  "revision": "1",
+  "category": "control-evidence-access",
+  "evidence_status": "synthetic",
+  "fixtures": [
+    {
+      "uri": "frontend/src/preview/fixtures.json",
+      "revision": {
+        "value": "sha256:549d97cefa0c2973e1d7e0aea79f1df4a85d95d6558297869923e297ab36fe0d",
+        "unknown_reason": null
+      },
+      "locator": "/scenarios/0"
+    }
+  ],
+  "sources": [
+    {
+      "uri": "docs/usability/synthetic-source.txt",
+      "revision": {
+        "value": "sha256:ab719f7a08437260d730f21153f9fa437bbbde8d81858b072c1a1e122af9acc2",
+        "unknown_reason": null
+      },
+      "locator": "Synthetic preview source v1."
+    }
+  ],
+  "unknowns": [
+    "Authored saved assertions, not computed evaluations or accepted zoning truth.",
+    "No real design fit, permit entitlement or active accepted publication.",
+    "Legal effective dates unknown; capture date is not an effective date.",
+    "Building code, servicing, title, overlays and placement search excluded."
+  ],
+  "supported_modes": [
+    "defect_detection"
+  ],
+  "group": "occupancy-a-f",
+  "split": "development",
+  "participant_brief": "Use Fictional preview and select example A. Review that example for an observable inconsistency or evidence-access problem; cite what you find, or report none found. Include the selected result identity. Use only the local application browser UI.",
+  "facilitator": {
+    "revision": "1",
+    "expectations": [
+      {
+        "check_id": "control-observation",
+        "claim": "The selected A result has a working Inspect rule and source evidence disclosure exposing section A, threshold, source snapshot and capture details. Report no evidence-access defect for this control.",
+        "kind": "authored_software_expectation",
+        "scored": true,
+        "basis": {
+          "kind": "browser_observation",
+          "description": "The selected A result has a working Inspect rule and source evidence disclosure exposing section A, threshold, source snapshot and capture details. Report no evidence-access defect for this control.",
+          "evidence": [
+            {
+              "uri": "frontend/src/preview/InvestigationPreview.tsx",
+              "revision": {
+                "value": "sha256:0b0396f5ded81cf9e33d011b884ca78088f8c5182f607029e3e1cdfa7b5adafc",
+                "unknown_reason": null
+              },
+              "locator": "Result rendering; selected example A"
+            }
+          ]
+        },
+        "evidence": [
+          {
+            "uri": "frontend/src/preview/InvestigationPreview.tsx",
+            "revision": {
+              "value": "sha256:0b0396f5ded81cf9e33d011b884ca78088f8c5182f607029e3e1cdfa7b5adafc",
+              "unknown_reason": null
+            },
+            "locator": "Result rendering; selected example A"
+          }
+        ],
+        "review": {
+          "status": "reviewed",
+          "reviewer": {
+            "value": "Codex SR-28 fixture author",
+            "unknown_reason": null
+          },
+          "reviewed_at": {
+            "value": "2026-09-25T00:43:39Z",
+            "unknown_reason": null
+          },
+          "rationale": "Source/renderer review of authored software expectations; not independent legal review. Browser control verification is recorded separately in docs/usability/virtual-qa/browser-review.md.",
+          "disagreements": []
+        }
+      }
+    ],
+    "disagreements": [],
+    "seeded_fault": {
+      "pair_id": "evidence-access",
+      "variant": "clean",
+      "description": "The selected A result has a working Inspect rule and source evidence disclosure exposing section A, threshold, source snapshot and capture details. Report no evidence-access defect for this control."
+    }
+  }
+}
