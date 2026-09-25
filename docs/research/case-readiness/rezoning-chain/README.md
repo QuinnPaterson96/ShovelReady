@@ -161,3 +161,45 @@ inspected November deferral, April agenda, p2 map's 00774 identifier and precise
 labelled indexed permit-condition lead. Preserve null verified effective/issue
 dates, original source IDs and current provisional corpus status. Other tasks and
 the integrator own the inventory, central backlog and frozen Stannard packet.
+
+## Follow-up: conditions and later evidence (September 25, 2026)
+
+This follow-up preserves the January 2023 plan / April 2024 decision snapshot.
+It narrows car-share evidence but does not complete the adopted/issued chain.
+Verified adoption, legal-effective and permit-issue dates remain null. The
+REZ00774 / Council 00744 discrepancy remains unresolved for this DPV00223 case.
+
+The undated [Modo building page](https://www.modo.coop/buildings/623-625-avalon-road-victoria)
+(`RC-MODO`) advertises a $500 membership and $100 driving credit for eligible new
+resident members through an address-specific partnership. Inspected September 25,
+2026, it establishes an advertised offer, not its start date, three secured
+memberships, registration, City acceptance or permit issuance. No redemption or
+registration was attempted; no invite code or personal details are retained.
+
+The [January 11, 2023 revision letter](https://tender.victoria.ca/webapps/ourcity/Prospero/FileDownload.aspx?fileId=5BD94FBF-6682-4C5E-AEB4-6A366174E163&folderId=12266C210406112350109800)
+(`RC-REVISIONS-JAN`, p1) reports a staff proposal for perpetual memberships for
+each dwelling before setting a hearing date, and an applicant response proposing
+personal/tenancy-based arrangements. It also records disagreement about a proposed
+statutory right of way. These are pre-decision positions in applicant correspondence,
+not final conditions or evidence of performance.
+
+| Requirement / source strength | New evidence | Absent as of September 25, 2026 | Historical/current claim effect |
+|---|---|---|---|
+| Adopt Bylaw 23-086; indexed minutes, tracker and stamp (`RC-MIN-APR`, `RC-TRACKER`, `RC-PLAN`). | Tracker still reports April 18 approval. Alternative HTML route returns an agenda (`RC-APR-ALT`). | Full final minutes; completed adopted instrument and map; effective-date review. | Corroborated reported adoption remains short of instrument verification. |
+| Register required registrable agreements to solicitor satisfaction before adoption; indexed July minutes / October report (`RC-MIN-JUL`, `RC-CLERK-OCT`). | January letter identifies disputed/proposed terms. | Final agreement list, executed instruments, registration and acceptance. | Do not infer registration from reported adoption or impose proposed right-of-way terms as final conditions. |
+| Issue DPV00223 incorporating January 11 plans; indexed April resolution. | DPV tracker still reports approval with no permit download; REZ links the same selected plan and draft bylaw. | Executed permit, issue date, complete incorporated schedule and final conditions. | Approval and a plan stamp do not establish issuance. |
+| Meet zoning / Schedule M except reported 25% to 28.10% coverage variance; indexed April resolution. | No new compliance evidence. | Controlled rules, definition-specific facts and satisfaction of remaining requirements. | Prior dimensional observations remain provisional, not verified passes. |
+| Secure three car-share memberships with credits for each; indexed April resolution. | Modo advertises an address-specific offer; January letter clarifies earlier positions. | Three secured entitlements, duration, binding terms, dates and continuity. | Narrows provider/offer uncertainty at retrieval only; proposed perpetual terms are not silently added to final conditions. |
+| Contents acceptable to Engineering/Public Works director and form to City Solicitor; indexed April resolution. | No City acceptance evidence. | Dated acceptance or executed instrument establishing required contents/form. | Provider advertising does not discharge either requirement. |
+| Permit, if issued, subject to two-year lapse wording from resolution date; indexed April resolution. | No subsequent permit-state evidence located in the bounded search. | Executed permit and applicable terms; commencement, amendment or extension evidence. | April 18, 2026 is only the implied calendar anniversary; passage alone establishes neither actual lapse nor continuing validity. |
+
+Public tracker rechecks and targeted searches supplied no adopted copy, executed
+permit, registered agreement, acceptance or later permit-state record. This is a
+bounded retrieval result, not proof that records or events do not exist. No video
+segment was inspected or used as outcome evidence. The undated Modo observation
+must not be backdated to 2024. No new dimensional measurements are claimed.
+
+The next useful records remain the adopted text/map, complete April minutes,
+executed permit and schedules, final agreement/acceptance evidence and relevant
+subsequent permit-state records. The packet remains provisional, benchmark-ineligible
+and unsuitable for an accepted evaluator result or current permission claim.

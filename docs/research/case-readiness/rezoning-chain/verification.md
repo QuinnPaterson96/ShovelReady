@@ -137,3 +137,52 @@ returned `QuinnPaterson96`. Effective author/committer were both
 `quinnpaterson96 <60762693+QuinnPaterson96@users.noreply.github.com>`.
 Fetch/push use that verified CLI credential helper explicitly, with other helpers
 cleared for the command. No credential values are printed or stored in the packet.
+
+## Follow-up verification - September 25, 2026
+
+Starting head: `6d834f3781460e96a091b3aa76512c6f5c487bd0`; PR #73 was open,
+branch `codex/research-rezoning-chain`, and working tree clean. Read current project
+README, architecture and quality guidance. Only this packet's three files changed.
+Earlier research/access/cleanup history above remains unchanged.
+
+- Inspected full relevant Modo public page text, including eligibility footnote.
+  Page has no established partnership date. No login, redemption or outreach.
+- Rechecked official REZ00774 and DPV00223 pages with public HTTP GET (both 200).
+  REZ document links remain the selected final plan and previously inspected draft
+  bylaw; DPV has no document download. Related entries show the same rezoning,
+  retired DP000598 and pre-application CLC00320, not a later building permit.
+  This list is not a comprehensive permit-history certification.
+- Tried the April meeting's public `Agenda=PostMinutes` HTML route once: HTTP 200
+  but heading and F.7 are a revised agenda. Known denied PDF endpoints were not
+  retried. No final outcome inferred from the route name or agenda text.
+- Targeted public searches used the exact bylaw, DPV identifier, address and
+  adoption/car-share/permit/extension terms. Results mainly repeated prior City
+  sources; no newly inspected adopted instrument, issued permit, registered
+  agreement, acceptance or later commencement/amendment/extension record obtained.
+  Search-result publication ages were not treated as legal/document dates.
+- New January revision-letter PDF: web tool returned two pages of text; relevant
+  p1 and closing p2 inspected. Both screenshot requests timed out. This is text
+  inspection, not a visual audit. It supplies earlier proposed terms, not proof of
+  final conditions or their satisfaction. No dimensional remeasurement performed.
+- No video segment inspected. No new local third-party source files were saved.
+  Original scratch cleanup blocker above remains outstanding.
+
+The condition table separates each requirement's source strength, new evidence,
+missing evidence at retrieval and historical/current implications. Source metadata
+adds three IDs without changing previous IDs or verified-date nulls. Modo's undated
+offer is not assigned to the 2024 snapshot; the calendar anniversary of reported
+lapse wording is not a finding of lapse. No independent source/legal review,
+accepted publication, runtime/model/database use or real-user validation occurred.
+
+Automatic approval review rejected a shell-based documentation edit as "blocked
+by policy" without a further reason. The dedicated patch tool successfully applied
+the bounded documentation changes instead. No denied retrieval or deletion was
+routed around.
+
+Follow-up checks passed: inline Python strict JSON parsing (duplicate/nonfinite
+rejection), 22 unique source IDs and metadata keys, HTTPS citations, README source
+references and relative links, provisional/benchmark flags and null verified dates;
+`git diff --check` and full changed-diff inspection. Documentation-only scope:
+application/database tests are not relevant and were not run. Personal CLI account
+and effective author/committer were reverified with the commands above. Final-head
+CI remains a separate integration check; no merge authorized or performed.
