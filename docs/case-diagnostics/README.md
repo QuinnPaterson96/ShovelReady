@@ -154,12 +154,10 @@ revision hashes, missing fields, conditions and raw diagnostic JSON. Only explic
 allowed HTTPS evidence hosts become links; arbitrary artifact URIs are inert text.
 Scoped inline styles avoid changes to global styles or the shared banner.
 
-The integrator owns route/navigation wiring and adopting SR-36's shared status
-banner: this view's status is **needs investigation / evaluation not run**, never
-green. The integrator also adds `src/case_preparations/*.test.tsx` to frontend test
-discovery; package.json and App.tsx intentionally remain untouched here. The ordinary
-frontend build typechecks this component but cannot demonstrate shell integration
-until that wiring occurs.
+Integration now wires this component into the main navigation and input flow,
+adopts the shared amber status banner, and includes its tests in recursive frontend
+test discovery. See [wave-nine integration](../integration-wave-nine.md) for the
+combined API/database/browser verification. Original branch checks follow.
 
 Focused verification commands (repository root; Python 3.12, locked dependencies):
 

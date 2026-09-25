@@ -61,10 +61,10 @@ The first evaluator checks a supplied reviewed placement. Preserve manual site f
 
 ## Next parallel work
 
-[Wave nine](wave-nine-prompts.md) is the current UI assignment: SR-36 owns the
-home/input/status flow and SR-37 owns the read-only Pilot diagnostic/API and evidence
-wording correction. They develop independently, with final navigation/banner wiring
-at integration. See [wave-eight results](../integration-wave-eight.md) for merged
+[Wave nine](../integration-wave-nine.md) completes SR-36 and SR-37 in their bounded
+scopes: home/input/status flow, read-only Pilot diagnostic/API, evidence wording,
+and shared navigation/banner wiring. Reviewed real-case inputs and accepted rules
+remain the next substantive gate. See [wave-eight results](../integration-wave-eight.md) for merged
 work, actual app checks and the still-unaccepted real-data boundary.
 
 [Wave-seven assignments](wave-seven-prompts.md) are complete in their bounded scopes:

@@ -71,17 +71,12 @@ outside coverage. Its API, adapter, evidence and approval semantics are unchange
 Request errors display no report and do not use a regulatory failure banner.
 The authored preview remains explicitly hand-authored and distinct.
 
-SR-37 owns `case_preparations/PilotPreparation.tsx` and its API. That file was not
-available in this base and is neither fabricated nor imported here. Integration
-should add its no-props default export as an evidence mode (or separate page),
-then connect a dedicated Pilot action from the input flow and adopt StatusBanner
-for its preparation outcome. The present action opens existing public-case evidence
-where Pilot can be selected; it does not claim to show the new diagnostic.
-
-Test discovery now recursively includes `src/**/*.test.ts` and `*.test.tsx` through
-`tools/run_tests.mjs`, without platform-dependent shell globs. SR-37 tests will be
-included automatically after integration; rerun the combined suite and browser
-workflow after wiring. Central README/backlog reconciliation belongs to integration.
+Integration now connects the standalone Pilot component as a dedicated navigation
+page and directly from the input form. It uses the same amber StatusBanner.
+Input status appears immediately below the page heading, with scope details
+expandable. Recursive test discovery includes the Pilot tests.
+See [combined integration evidence](integration-wave-nine.md). The original
+branch verification below is retained as historical evidence.
 
 ## Verification performed September 25, 2026
 
