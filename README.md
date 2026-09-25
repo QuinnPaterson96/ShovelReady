@@ -20,8 +20,8 @@ for combined verification, remaining gates and proposed process improvements.
 
 PRs #40-#43 add required native Windows lifecycle CI, a reproducible demo launcher,
 concise PR handoffs and ten provisional public case packets. See the
-[latest integration evidence](docs/integration-wave-four.md). The
-[next parallel work](docs/backlog/wave-five-prompts.md) covers a public-case evidence
+[wave-four integration evidence](docs/integration-wave-four.md). The historical
+[wave-five assignments](docs/backlog/wave-five-prompts.md) cover a public-case evidence
 view, focused historical Stannard research and a blinded virtual-user walkthrough.
 
 PRs #48-#50 deliver that bounded work: a database-free public-case mode, a historical
@@ -36,6 +36,12 @@ completed six detection sessions: three authored faults detected, no confirmed n
 baseline defect, and two usability hypotheses retained. Keep this QA workflow on demand;
 ordinary-task reliability, independent human calibration and real-user validation remain
 unmeasured. The pilot ended without using the remaining ten session slots.
+
+[The next development round](docs/backlog/wave-seven-prompts.md) connects the existing
+evaluator to stored draft reports and a thin app inspector. Backend and frontend work
+can proceed in parallel; the combined demo depends on their integration. This is a
+planned computed synthetic path. Reviewed real inputs and accepted publication remain
+separate outstanding requirements.
 
 City of Victoria garden suites remain the leading technical prototype candidate, subject
 to verified design/site inputs and current rule applicability; Vancouver is the fallback.
