@@ -1,0 +1,6 @@
+.pilot-preparation { max-width: 72rem; margin-inline: auto; }
+.pilot-preparation details { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: .85rem; margin: .7rem 0; }
+.pilot-preparation summary { font-weight: 650; }
+.pilot-preparation pre { font-size: .85rem; }
+.pilot-preparation dd { overflow-wrap: anywhere; margin-bottom: .5rem; }
+.pilot-preparation li { margin: .4rem 0; }

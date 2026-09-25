@@ -68,14 +68,6 @@ export default function PilotPreparation() {
   const reload = () => { cancel.current?.(); cancel.current = startLoad(setState) }
   useEffect(() => { cancel.current = startLoad(setState); return () => cancel.current?.() }, [])
   return <section className="pilot-preparation" aria-label="Pilot preparation investigation">
-    <style>{`.pilot-preparation { max-width: 72rem; margin: auto; padding: 1.5rem; color: #172c32; background: #fafcfc; }
-      .pilot-preparation details { border: 1px solid #bccbcd; border-radius: .4rem; padding: .85rem; margin: .7rem 0; }
-      .pilot-preparation summary { cursor: pointer; font-weight: 600; }
-      .pilot-preparation pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: .85rem; }
-      .pilot-preparation dd { overflow-wrap: anywhere; margin-bottom: .5rem; }
-      .pilot-preparation li { margin: .4rem 0; }
-      .pilot-preparation a { color: #075b76; text-decoration: underline; }
-      .pilot-preparation button { padding: .6rem 1rem; cursor: pointer; }`}</style>
     <h2>Pilot preparation investigation</h2><button onClick={reload}>Reload preparation</button><LoadView state={state} />
   </section>
 }
