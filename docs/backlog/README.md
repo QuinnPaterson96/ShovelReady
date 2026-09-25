@@ -57,12 +57,19 @@ The first evaluator checks a supplied reviewed placement. Preserve manual site f
 
 [Wave-five scope and ownership](wave-five-prompts.md) are the current launch instructions. [Wave four](wave-four-prompts.md), [wave three](wave-three-prompts.md), [wave two](wave-two-prompts.md) and [wave one](next-wave-prompts.md) remain historical handoff context.
 
-The [virtual-user evaluation plan](virtual-qa-plan.md) adds SR-27 through SR-31 as
-follow-up specifications, not dispatched work. SR-27 establishes the file contract;
+The [virtual-user evaluation plan](virtual-qa-plan.md) adds SR-27 through SR-31.
+SR-27 implementation is dispatched; the other four tasks have bounded preparation
+only until their prerequisites are integrated. SR-27 establishes the file contract;
 SR-28/SR-29/SR-30 can then run in parallel, with SR-31 after integration. It keeps a
 fixed baseline plus seeded sampling, separate participant/grader assessment and
 adjudication before issue creation. No recurring automation or live-model CI is added.
 This supporting QA work does not replace the accepted-data or real-customer gates.
+
+SR-24/SR-25/SR-26 are complete in their bounded scopes through PRs #49/#50/#48.
+The evidence viewer, provisional historical review packet and single-agent rehearsal
+do not complete accepted screening, independent legal review or customer validation.
+See [wave-five integration](../integration-wave-five.md) for exact verification,
+selected research reconciliation and task gates.
 
 - SR-02/SR-03/SR-04 are complete in their scaffold/provisional scopes. SR-08 persistence and SR-19 / issue #22 synthetic preview/rehearsal are now complete.
 - SR-01/SR-05/SR-06 remain partial: typed licensed inputs and a provisional corpus exist, but controlled design, reviewed site/placement facts, authorized durable private sources and independent acceptance are missing.

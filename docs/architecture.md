@@ -65,8 +65,11 @@ GitHub Actions requires backend lint/offline tests with disposable PostgreSQL mi
 The local demo launcher serves one built app from a clean commit with explicit owned
 database configuration and spatial revision, displaying nonsecret build/data identity.
 The ten-case public research inventory remains provisional and separate from accepted
-rule data. The next read-only evidence view does not publish it or establish a fit.
-See [wave-four integration](integration-wave-four.md) and [wave-five scope](backlog/wave-five-prompts.md).
+rule data. The implemented database-free public-case evidence view does not publish
+it or establish a fit. Its inventory identity is separate from the licensed spatial
+observations; selected Stannard research updates remain provisional. The container
+smoke check probes this endpoint to verify metadata packaging. See
+[wave-five integration](integration-wave-five.md).
 
 Once SR-14 configures a protected demo environment, SR-15 will deploy the tested immutable image and smoke-test it. Identify images by commit. Serialize deployments to a given environment and avoid obsolete runs overwriting newer deployments. Preserve a known-good image for rollback. No deployment currently runs on merge.
 

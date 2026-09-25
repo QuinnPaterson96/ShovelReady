@@ -1,0 +1,13 @@
+{
+  "provenance": "Authored software calibration, not participant runs or accepted zoning truth.",
+  "reviewer": {"identity": "Codex SR-30 author", "role": "agent", "involvement": "Authored and manually inspected these synthetic saved answers and expectations; no independent human review."},
+  "reviewed_at": "2026-09-25T00:46:32Z",
+  "examples": [
+    {"id": "supported", "visible": "Synthetic C: No match under evaluated pathways for the supplied placement; other placements unassessed.", "answer": "This supplied placement fails; another placement has not been assessed.", "proposed": "supported", "expected": "supported", "rationale": "Preserves the visible limitation; authored software interpretation only."},
+    {"id": "critical-omission", "visible": "Synthetic C: No match under evaluated pathways for the supplied placement; other placements unassessed.", "answer": "The saved setback is 1 m and the minimum is 2 m.", "proposed": "not_attempted", "expected": "not_attempted", "rationale": "The atomic check asks for the placement limitation, which is absent. No assertion that the whole site fails is invented."},
+    {"id": "invented-bug", "visible": "Synthetic D: Needs investigation, outside coverage; not a zoning prohibition.", "answer": "The app is broken because every site outside coverage should be prohibited.", "proposed": "unsupported", "expected": "unsupported", "rationale": "Invents an app requirement contradicted by the saved visible boundary; false app-defect allegation, not a real bug."},
+    {"id": "correct-unknown", "visible": "Synthetic E: Schedule X missing; conditional approval unresolved.", "answer": "Approval cannot be established until the missing dependency is reviewed.", "proposed": "supported", "expected": "supported", "rationale": "Correct unknown satisfies the check; missing source remains a data gap."},
+    {"id": "disputed", "visible": "Authored ambiguous summary: intended use requested; existing principal-building use/count not explicit.", "answer": "Please confirm intended use.", "proposed": "supported", "expected": "unassessable", "rationale": "Saved reviewer suggestion calls this complete; this agent review disputes the evidence basis. Withhold grade rather than invent legal truth."},
+    {"id": "environment-failure", "visible": "Authored browser-start failure; no application evidence obtained.", "answer": "The browser could not open, so I could not inspect this case.", "proposed": "supported", "expected": "unassessable", "rationale": "A truthful obstacle report cannot establish a successful application checklist outcome."}
+  ]
+}

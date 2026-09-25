@@ -1,7 +1,8 @@
 # Bounded virtual-user evaluation plan
 
-Status: proposed implementation tickets, September 24, 2026. This document does not
-dispatch participants, introduce an automation, or report completed validation.
+Status: implementation/preparation dispatched September 24, 2026. SR-27 is implementing
+records; SR-28/SR-29/SR-30 prepare behind that gate and SR-31 prepares its readiness
+checklist only. No participant pilot or recurring automation has been launched.
 
 ## Purpose and limits
 
@@ -12,7 +13,7 @@ defects into deterministic regressions at the appropriate layer.
 
 The [SR-26 rehearsal](SR-26.md) is the first pilot, not a duplicate implementation target.
 Its report in [PR #48](https://github.com/QuinnPaterson96/ShovelReady/pull/48), pending
-integration when this plan was written, establishes no consequential app defect and
+integration when this plan was written and now reviewed/merged, establishes no consequential app defect and
 records participant omissions separately from UI hypotheses. Review that evidence
 before finalizing rubrics. Do not silently promote its proposals to confirmed bugs.
 
