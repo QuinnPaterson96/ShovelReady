@@ -322,3 +322,61 @@ def test_cleanup_readonly_git_object_and_foreign_owner(tmp_path):
     assert obj.exists()
     env.remove_owned_scratch(owned, tmp_path, owner)
     assert not owned.exists()
+
+
+@pytest.mark.parametrize("timeout", [False, True])
+def test_owned_process_cleanup_and_manual_clock_limit(tmp_path, monkeypatch, timeout):
+    root = experiment(tmp_path)
+    calls = []
+
+    def materialize(*args):
+        args[1].mkdir()
+        return {"derived_commit": "a" * 40}
+
+    class OwnedProcess:
+        stopped = False
+
+        def __init__(self, args, **kwargs):
+            ready = r.Path(args[-2])
+            owner = r.read(r.Path(args[-3]))["owner"]
+            env.exclusive_json(ready, {"owner": owner})
+
+        def poll(self):
+            return 0 if self.stopped else None
+
+        def terminate(self):
+            calls.append("terminate owned handle")
+            self.stopped = True
+
+        def wait(self, timeout):
+            assert self.stopped
+            calls.append("verified owned exit")
+
+    def checked(*args):
+        if timeout:
+            folder = next((root / "attempts").iterdir())
+            env.exclusive_json(folder / "dispatch.json", {
+                "started_at": (datetime.now(UTC) - timedelta(seconds=601)).isoformat(),
+                "adapter": "synthetic offline clock test, no participant",
+            })
+
+    monkeypatch.setattr(r, "materialize", materialize)
+    monkeypatch.setattr(r, "verify_inputs", lambda *args: None)
+    monkeypatch.setattr(r, "build", lambda *args: {})
+    monkeypatch.setattr(r.subprocess, "Popen", OwnedProcess)
+    monkeypatch.setattr(r, "http_check", checked)
+    folder = r.prepare(root, tmp_path, tmp_path / "scratch", 0, 18500, smoke=not timeout)
+    assert calls == ["terminate owned handle", "verified owned exit"]
+    lifecycle = r.read(folder / "lifecycle.json")
+    assert lifecycle["reason"] == ("timeout" if timeout else "smoke_only")
+    assert lifecycle["cleanup_ok"] and lifecycle["scratch_removed"]
+    assert not (root / "active.json").exists()
+
+
+def test_fixture_hash_drift_is_refused(tmp_path):
+    c = case().model_dump(mode="json")
+    c["fixtures"][0]["uri"] = "fixture.json"
+    c["fixtures"][0]["revision"] = r.known("sha256:" + env.digest(b"original"))
+    (tmp_path / "fixture.json").write_bytes(b"changed")
+    with pytest.raises(ValueError, match="bytes differ"):
+        env.verify_inputs(tmp_path, CaseDefinition.model_validate(c))

@@ -283,6 +283,7 @@ def prepare(root, source, scratch, index, port, *, postgres_bin=None, database_p
     process = None
     helper = None
     commit = None
+    stage = "scratch_allocation"
     reason = "preparation_failed"
     cleanup_errors = []
     prompt = folder / "participant.md"
@@ -293,9 +294,12 @@ def prepare(root, source, scratch, index, port, *, postgres_bin=None, database_p
         owned.mkdir(parents=True, exist_ok=False)
         exclusive_json(owned / "owner.json", {"owner": OWNER, "run_id": run_id})
         checkout = owned / "checkout"
+        stage = "materialization"
         receipt = materialize(source, checkout, recipe, assets)
+        stage = "fixture_verification"
         verify_inputs(checkout, case)
         commit = receipt["derived_commit"]
+        stage = "frontend_build"
         receipt["build_sha256"] = build(checkout, receipt)
         if recipe.data.kind == "observation":
             if postgres_bin is None or database_port is None:
@@ -304,6 +308,7 @@ def prepare(root, source, scratch, index, port, *, postgres_bin=None, database_p
                 raise ValueError("HTTP and database ports must differ")
             helper = database(owned / "database", postgres_bin, database_port)
             for action in ("start", "migrate", "seed"):
+                stage = "database_" + action
                 command([sys.executable, "scripts/local_database.py", action,
                          "--root", str(helper.root), "--postgres-bin", str(helper.bin),
                          "--port", str(database_port)], checkout, env=clean_env())
@@ -316,6 +321,7 @@ def prepare(root, source, scratch, index, port, *, postgres_bin=None, database_p
                        url=url, scratch=str(owned), database_required=helper is not None)
         exclusive_json(folder / "execution.json", receipt)
         config = owned / "serve.json"
+        stage = "http_startup"
         ready = owned / "ready.json"
         exclusive_json(config, {"owner": run_id, "commit": commit,
                                "database_config": str(helper.config) if helper else None,
@@ -345,6 +351,7 @@ def prepare(root, source, scratch, index, port, *, postgres_bin=None, database_p
         exclusive_json(folder / "run.prepared.json", record.model_dump(mode="json"))
         print(f"Ready: {url}\nManual brief: {prompt}", flush=True)
         reason = "smoke_only" if smoke else "stopped_before_dispatch"
+        stage = "manual_session"
         monotonic_deadline = None
         while not smoke:
             if process.poll() is not None:
@@ -366,7 +373,7 @@ def prepare(root, source, scratch, index, port, *, postgres_bin=None, database_p
         reason = "cancelled"
     except Exception as error:
         # Persist error category, not potentially secret driver/subprocess exception text.
-        exclusive_json(folder / "failure.json", {"stage": reason, "error": type(error).__name__})
+        exclusive_json(folder / "failure.json", {"stage": stage, "error": type(error).__name__})
     finally:
         stopped_at = now()
         if process is not None:
