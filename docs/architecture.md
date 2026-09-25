@@ -47,7 +47,7 @@ Persist versioned principal-building geometry, lot-line classifications, rear-ya
 
 Support a small set of dimensional/use checks. Irregular geometry, split zoning, missing facts, and unmodeled overlays remain visible investigation cases. The bounded SR-09 import now uses Shapely/GEOS for XY intersections and pyproj for explicit CRS conversion, retaining immutable observations in PostgreSQL JSONB. PostGIS is deferred until larger-scale database spatial queries justify it; see the [implemented tradeoff and evidence](spatial.md). A small explicitly tagged geometry response is sufficient. Original XY is EPSG:3157; derived longitude/latitude is EPSG:4617 and must not be silently relabelled WGS84/RFC 7946 GeoJSON.
 
-The observational investigation API exposes an explicitly selected licensed spatial-import revision before regulatory publication; its UI clearly says no screening occurred. This is distinct from a future screening API consuming an accepted dataset. The implemented draft evaluator remains independent of this viewer and is tested with synthetic reviewed inputs. Unknown source acceptance, site facts and placements remain gates for real conclusions. See the [evaluator](evaluation.md), [investigation API](investigation-api.md) and [local database workflow](local-development.md).
+The observational investigation API exposes an explicitly selected licensed spatial-import revision before regulatory publication; its UI clearly says no screening occurred. This is distinct from a future screening API consuming an accepted dataset. The draft evaluator now has a separate compute/import command, immutable diagnostic storage and an opt-in synthetic API/UI. The complete request/report is retained without inventing release membership or filling intentionally absent rule/fact records. HTTP aliases expose only pinned repository-owned examples and verify the request and recomputed report. Unknown source acceptance, site facts and placements remain gates for real conclusions. See the [draft bridge](draft-evaluations.md), [wave-seven verification](integration-wave-seven.md), [evaluator](evaluation.md), [investigation API](investigation-api.md) and [local database workflow](local-development.md).
 
 ## Cloud direction
 
@@ -61,6 +61,10 @@ The observational investigation API exposes an explicitly selected licensed spat
 ## CI/CD direction
 
 GitHub Actions requires backend lint/offline tests with disposable PostgreSQL migrations, frontend tests/type-check/build, container startup and native Windows local-database lifecycle checks. The latter verifies the owned helper through restart and real API retrieval and refuses an unexpected skip. The full accepted ingestion-to-result integration fixture remains SR-13 work; existing checks do not establish that path.
+
+The backend job also checks that the frontend report schema, TypeScript types and
+computed fixtures still match the Python exporter. The computed synthetic bridge is
+verified through storage/API/UI; it supplies no accepted source or published release.
 
 The local demo launcher serves one built app from a clean commit with explicit owned
 database configuration and spatial revision, displaying nonsecret build/data identity.
@@ -98,5 +102,10 @@ The [ticket backlog](backlog/README.md) refines this sequence: pilot acquisition
 4. Integrate supported reviewed semantics and inputs with explicit dataset publication, coherent scouting projection and the screening API/UI. Do not turn a selected observation revision into an accepted release.
 5. Verify the complete source-to-result path and deployable image in SR-13, then configure the protected demo and CD with recovery evidence in SR-14/15.
 6. Measure customer time savings and update costs before expanding coverage.
+
+After the computed draft bridge, use the [next-step plan](next-steps-after-wave-seven.md)
+to obtain one reviewable real case before choosing further conditional semantics or
+publication scope. File-based intake and release tooling can follow concrete supplied
+inputs; source acceptance and external input supply remain separate from code delivery.
 
 Defer multi-agent ingestion, vector databases, knowledge graphs, microservices, elaborate cloud infrastructure, custom model training, and a commercial third-party API. Record any later adoption in a decision note with the observed need, simpler alternatives, and revisit criteria.

@@ -48,6 +48,11 @@ Apply monotonicity assumptions only where justified within a particular pathway;
 
 Keep tests relevant to observed risks. Do not add tests that merely restate implementation details, or run paid/live extraction for every PR. The existing unrelated test suite must be repaired or isolated before reuse; never allow test cleanup to reach shared or production databases.
 
+Check generated boundary artifacts against their source in CI. Wave seven adds the
+Python-to-frontend report schema/type/fixture drift check to the existing backend job.
+Mocked consumer fixtures alone do not establish live producer/consumer compatibility;
+record a combined API/UI check when connecting those layers for the first time.
+
 ## Explain and recover
 
 A user should be able to identify why a case was included/excluded, what was checked, what remains unknown, and the source date. Test this understanding on real users. A disclaimer does not repair an affirmative label unsupported by the data.

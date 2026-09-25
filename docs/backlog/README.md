@@ -57,12 +57,17 @@ The first evaluator checks a supplied reviewed placement. Preserve manual site f
 
 ## Next parallel work
 
-[Wave-seven assignments](wave-seven-prompts.md) connect the existing draft evaluator
-to immutable diagnostic storage and the app. SR-32 backend and SR-33 frontend can be
-implemented concurrently against the existing report; the combined live demonstration
-depends on SR-32. These are computed synthetic examples, not accepted real screening.
-The external source/design/site review actions remain open and are not replaced by
-this implementation round. Central documentation/status remains integration-owned.
+[Wave-seven assignments](wave-seven-prompts.md) are complete in their bounded scopes:
+PRs #68/#69 and [combined verification](../integration-wave-seven.md) connect computed
+synthetic reports to storage/API/UI. SR-32 / #65 and SR-33 / #66 are complete. Parent
+SR-10/12/13 remain partial, and SR-11 has no accepted release or activation pointer.
+
+The [next-step plan](../next-steps-after-wave-seven.md) prioritizes one real reviewed
+source/design/site case, then bounded intake/evaluation, publication and a first
+accepted source-to-result regression. Source/rule and design/site evidence work can
+proceed in parallel; software integration follows the usable subset. No new worktrees
+or further QA pilot are dispatched by this integration. Existing owner/reviewer actions
+remain the external input dependency; central status is integration-owned.
 
 [Wave-five scope and ownership](wave-five-prompts.md), [wave four](wave-four-prompts.md), [wave three](wave-three-prompts.md), [wave two](wave-two-prompts.md) and [wave one](next-wave-prompts.md) remain historical handoff context.
 

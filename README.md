@@ -37,11 +37,11 @@ baseline defect, and two usability hypotheses retained. Keep this QA workflow on
 ordinary-task reliability, independent human calibration and real-user validation remain
 unmeasured. The pilot ended without using the remaining ten session slots.
 
-[The next development round](docs/backlog/wave-seven-prompts.md) connects the existing
-evaluator to stored draft reports and a thin app inspector. Backend and frontend work
-can proceed in parallel; the combined demo depends on their integration. This is a
-planned computed synthetic path. Reviewed real inputs and accepted publication remain
-separate outstanding requirements.
+[PRs #68/#69](docs/integration-wave-seven.md) connect the evaluator to immutable draft
+reports, a restricted read-only API and an app inspector. Three synthetic cases now
+run through PostgreSQL, HTTP and the browser with full diagnostic traces. Reviewed
+real inputs and accepted publication remain outstanding. The [next-step plan](docs/next-steps-after-wave-seven.md)
+starts with one real source/design/site case and a small reviewed check subset.
 
 City of Victoria garden suites remain the leading technical prototype candidate, subject
 to verified design/site inputs and current rule applicability; Vancouver is the fallback.
@@ -120,6 +120,8 @@ Results distinguish **candidate**, **needs investigation**, and **no match under
 | [Spatial import](docs/spatial.md) | Licensed raw observations, explicit XY operations, migration and unresolved site facts |
 | [Extraction replay](docs/extraction.md) | Saved responses, conservative normalization and blocked real-benchmark gates |
 | [Bounded evaluator](docs/evaluation.md) | Draft-only scalar evaluation, coherent alternatives and synthetic reference tests |
+| [Draft evaluation bridge](docs/draft-evaluations.md) | Explicit compute/import, immutable diagnostics and pinned synthetic API |
+| [Computed draft inspector](docs/draft-evaluation-ui.md) | App display of evaluator reports, scope and evidence |
 | [Investigation API and UI](docs/investigation-api.md) | Pinned licensed observations, source inspection and no-screening boundary |
 | [Local development database](docs/local-development.md) | Persistent owned PostgreSQL, explicit migrations, seeding and launch commands |
 | [Evaluator/spatial integration](docs/integration-review-2026-09-24.md) | PRs #31-#33, combined verification, remaining gates and process proposals |
@@ -127,6 +129,8 @@ Results distinguish **candidate**, **needs investigation**, and **no match under
 | [Wave-five integration](docs/integration-wave-five.md) | PRs #48-#50, provisional research reconciliation and bounded QA dispatch |
 | [Wave-six integration](docs/integration-wave-six.md) | PRs #59-#61, combined QA verification, review correction and pilot gates |
 | [Pilot results integration](docs/integration-pilot-01.md) | Reviewed six-session calibration, remaining human review and MVP implications |
+| [Wave-seven integration](docs/integration-wave-seven.md) | PRs #68/#69, combined database/API/browser verification and CI drift check |
+| [Next steps after wave seven](docs/next-steps-after-wave-seven.md) | Real-input gate, publication sequence and bounded next assignments |
 | [Public case inventory](docs/research/public-cases/README.md) | Ten provisional historical cases and review shortlist; no accepted outcomes |
 | [MVP ticket backlog](docs/backlog/README.md) | Sequenced technical proof, CI/CD, customer pilot, and expansion experiments |
 | [Prototype input evidence](docs/pilot-inputs/README.md) | Captured Victoria sources, licensed GIS samples, provisional design/site specifications, and unresolved review inputs |

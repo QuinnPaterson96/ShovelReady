@@ -31,8 +31,10 @@ The request requires `schema_version=sr-10.v1`,
 revision and `data_state=draft_only`. There is deliberately **no release ID or
 active-publication claim**. A future integration must separately prove accepted
 release membership and compatibility before adapting this result for screening.
-Neither the current persistence reader nor the observation API accepts this new
-envelope. There is no implicit adapter or latest-revision lookup.
+The [SR-32 bridge](draft-evaluations.md) now stores this complete report in a distinct
+immutable diagnostic kind and exposes pinned synthetic cases through a separate API.
+The observation API remains separate. There is no implicit release adapter or
+latest-revision lookup; [SR-33](draft-evaluation-ui.md) preserves the draft scope.
 
 The request pins full SR-04 design, site and supplied-placement revisions, source
 snapshots, exact accepted rule revisions and every declared `Alternative`. Scope
@@ -128,7 +130,7 @@ results. No shared reader, payload or migration changes are required.
 
 This is not a new rule language. Geometry measurement algorithms, conditional
 execution, reference evaluation, time applicability, accepted-release adaptation
-and a persistence kind for evaluation diagnostics remain unimplemented. Existing
+remain unimplemented. Diagnostic persistence is now supplied by SR-32. Existing
 SR-04 input geometry limitations also remain. Revisit these gaps only with actual
 reviewed cases and explicit version/compatibility decisions. A schema-valid review
 or citation is not proof of source support, review authority or accurate law.
