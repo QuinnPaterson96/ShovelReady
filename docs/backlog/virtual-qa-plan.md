@@ -1,11 +1,11 @@
 # Bounded virtual-user evaluation plan
 
 Status: September 24, 2026 integration checkpoint. SR-27 records and SR-28/29/30
-offline tooling are implemented and reviewed. SR-31 can proceed with its manifest,
-readiness checks and bounded participant pilot after the integration handoff. SR-30's
-empirical paired-control calibration remains open and must be reported during SR-31;
-independent human calibration is not claimed. No recurring automation is configured.
-See [integration evidence](../integration-wave-six.md).
+offline tooling are implemented and reviewed. SR-31 completed six detection sessions
+and ended with a reviewed decision to narrow to on-demand use; ten ordinary-task slots
+were unused. SR-30 now has actual paired-control records, but independent human
+calibration remains open. No recurring automation is configured. See
+[tooling integration](../integration-wave-six.md) and [pilot review](../integration-pilot-01.md).
 
 ## Purpose and limits
 
@@ -86,6 +86,13 @@ automatic issue creation, model comparisons, dashboards and a dedicated results
 database remain deferred until this pilot justifies them.
 
 ## Shared ownership
+
+The initial experiment is complete after three clean/fault pairs. Its six attempts
+detected three intentional stimuli; no new baseline defect was established. Keep
+ordinary-task performance, critical omissions and human effort N/A where unmeasured.
+The remaining ten slots do not authorize an automatic new experiment. Future runs
+should answer a concrete changed-UI or workflow question with a fresh manifest and
+appropriate review; no scheduling or automatic issue creation follows from this result.
 
 The integrator owns central README, architecture, quality/backlog indexes and workflow
 configuration. SR-27 owns common QA records. SR-28 owns fixtures and case notes; SR-29

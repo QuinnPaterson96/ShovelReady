@@ -58,7 +58,9 @@ Record errors by stage and retain run/release identifiers. Monitor ingestion fai
 
 [SR-27 through SR-31](backlog/virtual-qa-plan.md) specify a bounded follow-up to the
 SR-26 rehearsal. Records, cases, isolated manual execution and offline grading are
-implemented; participant calibration/value assessment remain SR-31 work. See
+implemented; SR-31 completed six detection-control sessions and an explicit narrowing
+decision. Ordinary-task coverage and independent human calibration remain unmeasured;
+see [reviewed results and limitations](integration-pilot-01.md). See
 [combined verification](integration-wave-six.md). A control's observability does not
 establish that the participant's response was reviewed: missing or unassessable outcome
 review cannot count as clean success or a seeded miss.
@@ -71,6 +73,14 @@ omissions, data gaps, tool failures and usability hypotheses as distinct categor
 Initially run on demand and keep live-model calls out of ordinary CI. Promote confirmed
 defects into suitable deterministic regressions. This supports software QA; it does
 not substitute for independent source review, accepted publication or real-user study.
+
+Keep seeded detection separate from newly discovered baseline defects. Accurate reports
+of a missing optional capability are observations; whether they constitute a defect or
+useful improvement needs an explicit requirement and evidence. The pilot's clean-control
+false-alarm count depends on that classification and is not general tester accuracy.
+Retain original judgments and add attributed revisions when a human reviewer disagrees.
+Preserve locally retained artifacts before cleaning temporary directories; a file hash
+or a tool-history locator alone does not make evidence portable or permanently available.
 
 ## Integration handoff
 
