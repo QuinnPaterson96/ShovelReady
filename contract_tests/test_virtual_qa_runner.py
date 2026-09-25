@@ -2,6 +2,7 @@
 
 import json
 import socket
+import stat
 from datetime import UTC, datetime, timedelta
 
 import pytest
@@ -306,3 +307,18 @@ def test_prepare_failure_keeps_diagnostic_and_releases_only_owned_lease(tmp_path
     assert "sensitive" not in (folder / "failure.json").read_text()
     assert not (root / "active.json").exists()
     assert (tmp_path / "scratch" / folder.name).is_dir()
+
+
+def test_cleanup_readonly_git_object_and_foreign_owner(tmp_path):
+    owned = tmp_path / "owned"
+    owned.mkdir()
+    owner = {"owner": r.OWNER, "run_id": "test"}
+    env.exclusive_json(owned / "owner.json", owner)
+    obj = owned / "readonly-object"
+    obj.write_bytes(b"synthetic git object")
+    obj.chmod(stat.S_IREAD)
+    with pytest.raises(ValueError, match="ownership"):
+        env.remove_owned_scratch(owned, tmp_path, {"owner": "foreign"})
+    assert obj.exists()
+    env.remove_owned_scratch(owned, tmp_path, owner)
+    assert not owned.exists()

@@ -4,7 +4,6 @@ import argparse
 import json
 import os
 import random
-import shutil
 import subprocess
 import sys
 import time
@@ -39,6 +38,7 @@ from scripts.virtual_qa.environment import (
     external_root,
     materialize,
     path_checked,
+    remove_owned_scratch,
     serve,
     verify_inputs,
 )
@@ -391,11 +391,7 @@ def prepare(root, source, scratch, index, port, *, postgres_bin=None, database_p
         if not cleanup_errors and reason in {"smoke_only", "completed", "timeout", "cancelled",
                                             "blocked", "stopped_before_dispatch"}:
             try:
-                if path_checked(owned).parent != scratch or read(owned / "owner.json") != {
-                    "owner": OWNER, "run_id": run_id
-                }:
-                    raise ValueError("scratch ownership mismatch")
-                shutil.rmtree(owned)
+                remove_owned_scratch(owned, scratch, {"owner": OWNER, "run_id": run_id})
                 removed = True
             except Exception:
                 cleanup_errors.append("scratch cleanup unverified; retained for inspection")

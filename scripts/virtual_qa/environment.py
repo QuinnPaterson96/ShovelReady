@@ -6,6 +6,7 @@ import os
 import re
 import shutil
 import socket
+import stat
 import subprocess
 import sys
 from pathlib import Path
@@ -98,6 +99,24 @@ def exclusive_json(path: Path, value):
     with path.open("x", encoding="utf-8", newline="\n") as stream:
         json.dump(value, stream, indent=2, ensure_ascii=False, allow_nan=False)
         stream.write("\n")
+
+
+def remove_owned_scratch(path: Path, parent: Path, owner: dict):
+    path, parent = path_checked(path), path_checked(parent)
+    if path.parent != parent or json.loads((path / "owner.json").read_text()) != owner:
+        raise ValueError("scratch ownership mismatch")
+
+    def writable_retry(function, filename, error):
+        # Git objects are read-only on Windows; do not broaden unrelated error handling.
+        if not isinstance(error, PermissionError):
+            raise error
+        target = path_checked(Path(filename))
+        if not target.is_relative_to(path):
+            raise ValueError("cleanup escaped owned scratch")
+        target.chmod(stat.S_IWRITE | stat.S_IREAD)
+        function(filename)
+
+    shutil.rmtree(path, onexc=writable_retry)
 
 
 def clean_env():
