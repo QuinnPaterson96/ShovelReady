@@ -1,0 +1,105 @@
+{
+  "purpose": "SR-35 acquisition metadata; not an accepted source bundle or evaluator payload",
+  "review_status": "provisional",
+  "benchmark_eligible": false,
+  "retrieval_date": "2026-09-25",
+  "retrieval_time_basis": "Inspection date only; exact retrieval timestamps not retained",
+  "new_approved_plans_acquired": false,
+  "requests_submitted": false,
+  "verified_permit_issue_dates": null,
+  "source_bytes_retained": false,
+  "rights": "Metadata and short original summaries only. No new source-byte hashes, redistribution grant or durable source retention authority claimed.",
+  "sources": [
+    {
+      "source_id": "AP-PIP",
+      "url": "https://tender.victoria.ca/WebApps/PIP/Pages/Search.aspx",
+      "title": "Property Information Portal - guest permit reports",
+      "inspection": "Browser search result, report selection and All Permits on Selected Properties inspected for both properties. No plan download exposed; permit numbers rendered as text. Session URLs and personal details not retained.",
+      "locators": ["623 Avalon: PID 009-283-978, folio 02163004, property 104965; BP059152, PP059811, EP081868", "27 Pilot: PID 004-775-376, folio 02127020, property 103616; BP055452, BP055393; Plan 5130/VIP5130"],
+      "basis": "Independent recheck of RC-PIP/PM-PIP observations; application dates and status only"
+    },
+    {
+      "source_id": "AP-AVALON-REZ",
+      "url": "https://tender.victoria.ca/webapps/ourcity/Prospero/Details.aspx?folderNumber=REZ00774",
+      "title": "Avalon rezoning Development Tracker",
+      "inspection": "HTTP 200; relevant page text, document listing and related applications inspected. No later building-permit drawing set identified.",
+      "locators": ["Documents: January 11, 2023 final-approved plans; Related Permits and Applications"],
+      "basis": "Existing RC-PLAN metadata used for historical comparison; PDF not downloaded again"
+    },
+    {
+      "source_id": "AP-AVALON-DPV",
+      "url": "https://tender.victoria.ca/webapps/ourcity/Prospero/Details.aspx?folderNumber=DPV00223",
+      "title": "Avalon DPV Development Tracker",
+      "inspection": "HTTP 200; Purpose and related applications inspected; points to concurrent REZ00774, no permit-plan download.",
+      "locators": ["Purpose; Related Permits and Applications"],
+      "basis": "Planning approval observation does not identify BP059152 incorporation"
+    },
+    {
+      "source_id": "AP-PILOT-DPV",
+      "url": "https://tender.victoria.ca/webapps/ourcity/Prospero/Details.aspx?folderNumber=DPV00081",
+      "title": "Pilot DPV Development Tracker",
+      "inspection": "HTTP 200; Purpose, document listing and related application inspected; listed plans remain June/August 2018 submissions.",
+      "locators": ["Documents; Purpose; related DVP00216"],
+      "basis": "Existing PM-PLAN visual observations inherited from merged packet; no new PDF measurement"
+    },
+    {
+      "source_id": "AP-PILOT-DVP",
+      "url": "https://tender.victoria.ca/webapps/ourcity/Prospero/Details.aspx?folderNumber=DVP00216",
+      "title": "Pilot related DVP tracker",
+      "inspection": "HTTP 200; directs to DPV00081; no later building-permit plan listing.",
+      "locators": ["Purpose; Related Permits and Applications"],
+      "basis": "One related application group, not an independent case"
+    },
+    {
+      "source_id": "AP-ACCESS",
+      "url": "https://www.victoria.ca/building-business/permits-development-construction/building-renovating/accessing-permit-records",
+      "title": "Accessing Permit Records",
+      "inspection": "Relevant full HTML text inspected through web tool.",
+      "locators": ["Permit Plan Search; Copying; Approved Building Plans"],
+      "basis": "Official public access guidance; actual record availability and delivery not confirmed"
+    },
+    {
+      "source_id": "AP-REQUEST",
+      "url": "https://tender.victoria.ca/WebApps/eApply/Prospero/Dashboard/Template/Welcome.aspx?TemplateName=PLAN+SEARCH+REQUESTS",
+      "title": "Plan Search Requests - public welcome page",
+      "inspection": "Full relevant public entry text inspected through web tool; stopped before Continue, login or application creation.",
+      "locators": ["Application conditions; MyCity profile; owner permission; waiver notice; copying; permits contact"],
+      "basis": "Verified published requirements, not verified logged-in form fields or authorization template"
+    },
+    {
+      "source_id": "AP-FEES",
+      "url": "https://www.victoria.ca/media/file/permits-and-inspections-fees-and-deposits",
+      "title": "Permits and Inspection fees and deposits",
+      "document_date": "2026-09-03",
+      "inspection": "Opened current one-page PDF text; plan-search row and printed date read. Search index had an older April 2024 date; current opened text used. No source bytes saved or new visual-audit claim.",
+      "locators": ["p1 Records access fee (plan search): $25; footer September 3, 2026"],
+      "basis": "Published schedule amount; waiver applicability, per-property charging and copy price unverified"
+    },
+    {
+      "source_id": "AP-RIGHTS",
+      "url": "https://www.victoria.ca/legal-disclaimer",
+      "title": "City legal disclaimer",
+      "inspection": "Copyright and Electronic Documentation sections read through web tool.",
+      "locators": ["Copyright; Electronic Documentation"],
+      "basis": "No source-specific permission, owner authority or designer licence obtained"
+    },
+    {
+      "source_id": "AP-FOI",
+      "url": "https://www.victoria.ca/city-government/freedom-information",
+      "title": "City records access guidance",
+      "inspection": "Public portal and plan-search links and routine-record routing read.",
+      "locators": ["Property Information Portal; MyCity Plan Search Request; routine records paragraph"],
+      "basis": "Discovery/routing only; no FOI request created or submitted"
+    },
+    {
+      "source_id": "AP-LTSA",
+      "url": "https://help.ltsa.ca/ltsa-explorer/search-titles-and-plans",
+      "related_url": "https://ltsa.ca/property-owners/how-can-i/find-information-on-a-title/",
+      "title": "LTSA title/plan acquisition instructions and title contents",
+      "document_date": "2026-01-19",
+      "inspection": "Official help text inspected; PID/title search, associated plans and paid order route. Related title-content page opened. No parcel record, account or order accessed.",
+      "locators": ["Search by PID/title; associated plan selection; order summary/fees", "Title legal description and PID explanation"],
+      "basis": "Identifies authoritative record type and acquisition route, not a resolution of Plan 5130/5230; document_date applies to help page only"
+    }
+  ]
+}
