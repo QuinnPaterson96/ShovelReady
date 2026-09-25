@@ -10,6 +10,7 @@ from app.contracts.common import Evidence, SourceSnapshot
 from app.contracts.inputs import DesignRevision, PlacementRevision, SiteRevision
 from app.contracts.results import DatasetReference, EvaluationResult
 from app.contracts.rules import AcceptedRuleRevision, RuleCandidate
+from app.evaluation import EvaluationReport, evaluate
 from app.spatial.payloads import SpatialImport
 
 from .payloads import ExtractionRun, Kind, ReviewEvent
@@ -27,6 +28,7 @@ MODELS = {
     "evaluation": EvaluationResult,
     "review": ReviewEvent,
     "spatial": SpatialImport,
+    "draft_evaluation": EvaluationReport,
 }
 
 
@@ -53,6 +55,7 @@ def identify(value):
         "candidate": lambda: value.candidate_id,
         "evaluation": lambda: value.evaluation_id,
         "review": lambda: value.event_id,
+        "draft_evaluation": lambda: value.request.evaluation_id,
     }[kind]()
     return kind, record_id, record_id
 
@@ -135,6 +138,8 @@ class Repository:
         for value in values:
             kind, _, _ = identify(value)
             value = MODELS[kind].model_validate(value.model_dump(mode="json"))
+            if kind == "draft_evaluation" and value != evaluate(value.request):
+                raise ValueError("Draft report differs from deterministic evaluation")
             validated.append(value)
             if isinstance(value, RuleCandidate):
                 validated.append(ExtractionRun(trace=value.trace))
@@ -158,6 +163,10 @@ class Repository:
                 self._link(connection, value)
 
     def _link(self, connection, value):
+        if isinstance(value, EvaluationReport):
+            # Self-contained diagnostic snapshot, not accepted relational membership.
+            # SR-10 validates embedded evidence but permits absent rule/fact revisions.
+            return
         owner_kind, owner_id, _ = identify(value)
 
         def ref(kind, record_id, logical_id=None):
