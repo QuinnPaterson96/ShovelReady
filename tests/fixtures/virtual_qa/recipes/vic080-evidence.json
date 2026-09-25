@@ -1,0 +1,19 @@
+{
+  "schema_version": "virtual-qa-materialization/v1",
+  "baseline_commit": "303b40aeb9e69f476878959148ed299cad2a5e9b",
+  "case_id": "vic080-evidence",
+  "case_revision": "1",
+  "data": {
+    "kind": "observation",
+    "identity": {
+      "value": "victoria-pilot-three-leads",
+      "unknown_reason": null
+    },
+    "revision": {
+      "value": "spatial:sha256:db45fb736cd0fe2455d65b64105b038539bc7695e62666be6b2840474af8aee7",
+      "unknown_reason": null
+    }
+  },
+  "entry_path": "/",
+  "replacements": []
+}

@@ -1,0 +1,133 @@
+{
+  "schema_version": "virtual-qa/v1",
+  "record_type": "case",
+  "case_id": "synthetic-c-negative",
+  "revision": "1",
+  "category": "bounded-negative",
+  "evidence_status": "synthetic",
+  "fixtures": [
+    {
+      "uri": "frontend/src/preview/fixtures.json",
+      "revision": {
+        "value": "sha256:549d97cefa0c2973e1d7e0aea79f1df4a85d95d6558297869923e297ab36fe0d",
+        "unknown_reason": null
+      },
+      "locator": "/scenarios/2"
+    }
+  ],
+  "sources": [
+    {
+      "uri": "docs/usability/synthetic-source.txt",
+      "revision": {
+        "value": "sha256:ab719f7a08437260d730f21153f9fa437bbbde8d81858b072c1a1e122af9acc2",
+        "unknown_reason": null
+      },
+      "locator": "Synthetic preview source v1."
+    }
+  ],
+  "unknowns": [
+    "Authored saved assertions, not computed evaluations or accepted zoning truth.",
+    "No real design fit, permit entitlement or active accepted publication.",
+    "Legal effective dates unknown; capture date is not an effective date.",
+    "Building code, servicing, title, overlays and placement search excluded."
+  ],
+  "supported_modes": [
+    "task_completion"
+  ],
+  "group": "setback-c",
+  "split": "development",
+  "participant_brief": "Use Fictional preview. Explain the saved result in example C, its supporting evidence and identifiers, and what a colleague can conclude about the site. Use only the local application browser UI.",
+  "facilitator": {
+    "revision": "1",
+    "expectations": [
+      {
+        "check_id": "bounded-failure",
+        "claim": "No match under evaluated pathways applies only to the supplied placement. No other placement was assessed; it does not exclude the whole site.",
+        "kind": "authored_software_expectation",
+        "scored": true,
+        "basis": {
+          "kind": "browser_observation",
+          "description": "No match under evaluated pathways applies only to the supplied placement. No other placement was assessed; it does not exclude the whole site.",
+          "evidence": [
+            {
+              "uri": "frontend/src/preview/fixtures.json",
+              "revision": {
+                "value": "sha256:549d97cefa0c2973e1d7e0aea79f1df4a85d95d6558297869923e297ab36fe0d",
+                "unknown_reason": null
+              },
+              "locator": "/scenarios/2"
+            }
+          ]
+        },
+        "evidence": [
+          {
+            "uri": "frontend/src/preview/fixtures.json",
+            "revision": {
+              "value": "sha256:549d97cefa0c2973e1d7e0aea79f1df4a85d95d6558297869923e297ab36fe0d",
+              "unknown_reason": null
+            },
+            "locator": "/scenarios/2"
+          }
+        ],
+        "review": {
+          "status": "reviewed",
+          "reviewer": {
+            "value": "Codex SR-28 fixture author",
+            "unknown_reason": null
+          },
+          "reviewed_at": {
+            "value": "2026-09-25T00:43:39Z",
+            "unknown_reason": null
+          },
+          "rationale": "Source/renderer review of authored software expectations; not independent legal review. Browser control verification is recorded separately in docs/usability/virtual-qa/browser-review.md.",
+          "disagreements": []
+        }
+      },
+      {
+        "check_id": "setback-evidence",
+        "claim": "Section C shows saved distance 1 m against >= 2 m minimum, rule synthetic-rule-C-r1 and synthetic-example-3-release-1; no real setback law is established.",
+        "kind": "authored_software_expectation",
+        "scored": true,
+        "basis": {
+          "kind": "browser_observation",
+          "description": "Section C shows saved distance 1 m against >= 2 m minimum, rule synthetic-rule-C-r1 and synthetic-example-3-release-1; no real setback law is established.",
+          "evidence": [
+            {
+              "uri": "frontend/src/preview/fixtures.json",
+              "revision": {
+                "value": "sha256:549d97cefa0c2973e1d7e0aea79f1df4a85d95d6558297869923e297ab36fe0d",
+                "unknown_reason": null
+              },
+              "locator": "/scenarios/2"
+            }
+          ]
+        },
+        "evidence": [
+          {
+            "uri": "frontend/src/preview/fixtures.json",
+            "revision": {
+              "value": "sha256:549d97cefa0c2973e1d7e0aea79f1df4a85d95d6558297869923e297ab36fe0d",
+              "unknown_reason": null
+            },
+            "locator": "/scenarios/2"
+          }
+        ],
+        "review": {
+          "status": "reviewed",
+          "reviewer": {
+            "value": "Codex SR-28 fixture author",
+            "unknown_reason": null
+          },
+          "reviewed_at": {
+            "value": "2026-09-25T00:43:39Z",
+            "unknown_reason": null
+          },
+          "rationale": "Source/renderer review of authored software expectations; not independent legal review. Browser control verification is recorded separately in docs/usability/virtual-qa/browser-review.md.",
+          "disagreements": []
+        }
+      }
+    ],
+    "disagreements": [],
+    "seeded_fault": null
+  }
+}
