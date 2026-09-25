@@ -1,0 +1,506 @@
+{
+  "purpose": "Research metadata only, not a production contract, SourceSnapshot, import or evaluation payload.",
+  "case_id": "VIC-PC-002",
+  "dependency_group": [
+    "DPV00081",
+    "DVP00216"
+  ],
+  "review_status": "provisional",
+  "benchmark_eligible": false,
+  "historical_cutoff": "2018-11-22",
+  "prefab": {
+    "status": "unknown",
+    "manufacturer": null,
+    "model": null,
+    "configuration": null
+  },
+  "rights_note": "Task-owned temporary inspection copies outside Git are not an authorized durable/shared bundle. No source PDFs, images, full extracted text, owner names, signatures or contact details committed.",
+  "sources": [
+    {
+      "source_id": "PM-PLAN",
+      "primary_url": "https://tender.victoria.ca/webapps/ourcity/Prospero/FileDownload.aspx?fileId=FE567857-C636-42CF-A7A9-C52239B03D51&folderId=19389C180612094112407815",
+      "title": "2018-08-07 - Plans - Revisions.pdf",
+      "type": "proposed_architectural_plans",
+      "access_date_utc": "2026-09-25",
+      "retrieved_at": "2026-09-25T02:59:39.119946+00:00",
+      "retrieval_time_basis": "Local inspection-file write completion (UTC); not issue/effective date.",
+      "printed_or_revision_date": "2018-07-30",
+      "received_date": "2018-08-07",
+      "effective_date": null,
+      "issue_date": null,
+      "event_date": null,
+      "locators": [
+        "PDF p1/A-1: SITE PLAN - NEW and SITE PLAN - EXISTING (both labelled 2/A-1), 4/A-1 floor plan, project table, receipt and title block",
+        "PDF p2/A-2: construction section, elevations and existing-studio photo"
+      ],
+      "access_and_inspection_status": "HTTP 200 PDF; 2 pages parsed; both visually inspected. p1 placement enlarged; 22.25 appears in extracted text but not visually confirmed in displayed site-plan label. No final approval stamp verified.",
+      "sha256": "4791c9610b0f94d4e6648561fa356c77216e0849f555b94189d362fe6432d926",
+      "byte_length": 12361968,
+      "rights_retention_disposition": "Public inspection only; no redistribution/commercial or durable shared-retention grant established. Metadata and original summaries only in Git. See PM-RIGHTS.",
+      "supersession_or_linkage": "Same URL/bytes as frozen DPV00081-5. PM-REVISIONS explains change; PM-OCT proposed motion names receipt date, not an executed final plan schedule.",
+      "existing_frozen_source_id": "DPV00081-5"
+    },
+    {
+      "source_id": "PM-REVISIONS",
+      "primary_url": "https://tender.victoria.ca/webapps/ourcity/Prospero/FileDownload.aspx?fileId=BF5359E0-9842-4E1F-9BE5-7A963644DBEA&folderId=19389C180612094112407815",
+      "title": "2018-08-07 - List of Revisions .pdf",
+      "type": "designer_revision_list",
+      "access_date_utc": "2026-09-25",
+      "retrieved_at": "2026-09-25T02:59:40.578458+00:00",
+      "retrieval_time_basis": "Local inspection-file write completion (UTC); not issue/effective date.",
+      "printed_or_revision_date": "2018-07-30",
+      "received_date": null,
+      "effective_date": null,
+      "issue_date": null,
+      "event_date": null,
+      "locators": [
+        "p1 items 1,3,6; p2 three permits/inspections responses"
+      ],
+      "access_and_inspection_status": "HTTP 200 PDF; both pages parsed and visually inspected.",
+      "sha256": "c09b34ca86660d7615de708ff339706385fd16db8fb8e9ff2f02ec5213e1e61b",
+      "byte_length": 106615,
+      "rights_retention_disposition": "Public inspection only; no redistribution/commercial or durable shared-retention grant established. Metadata and original summaries only in Git. See PM-RIGHTS.",
+      "supersession_or_linkage": "Describes west-to-south addition change and withdrawal of separation variance; references revised plans and letter. Attachment filename date is not a visually verified receipt stamp.",
+      "existing_frozen_source_id": null
+    },
+    {
+      "source_id": "PM-LETTER",
+      "primary_url": "https://tender.victoria.ca/webapps/ourcity/Prospero/FileDownload.aspx?fileId=A8FF9E85-6416-4377-BB62-7773ED5BDAC1&folderId=19389C180612094112407815",
+      "title": "2018-08-07 - Letter to Council .pdf",
+      "type": "revised_applicant_letter",
+      "access_date_utc": "2026-09-25",
+      "retrieved_at": "2026-09-25T02:59:41.935694+00:00",
+      "retrieval_time_basis": "Local inspection-file write completion (UTC); not issue/effective date.",
+      "printed_or_revision_date": "2018-07-30",
+      "received_date": null,
+      "effective_date": null,
+      "issue_date": null,
+      "event_date": null,
+      "locators": [
+        "p1 revision date; area paragraph; separation paragraph; rear-setback paragraph"
+      ],
+      "access_and_inspection_status": "HTTP 200 PDF; single page parsed and visually inspected. No receipt stamp in this separately downloaded copy.",
+      "sha256": "6dfbd13d71b230a67c6097207ce7d3393287e3bd892b0426ad3c2e7a0ee46804",
+      "byte_length": 71987,
+      "rights_retention_disposition": "Public inspection only; no redistribution/commercial or durable shared-retention grant established. Metadata and original summaries only in Git. See PM-RIGHTS.",
+      "supersession_or_linkage": "Corroborates July design revision; applicant claims, not municipal determination.",
+      "existing_frozen_source_id": null
+    },
+    {
+      "source_id": "PM-TRACKER",
+      "primary_url": "https://tender.victoria.ca/webapps/ourcity/Prospero/Details.aspx?folderNumber=DPV00081",
+      "title": "DPV00081 tracker",
+      "type": "municipal_tracker",
+      "access_date_utc": "2026-09-25",
+      "retrieved_at": null,
+      "retrieval_time_basis": "Exact web-tool retrieval timestamp not recorded; access date only.",
+      "printed_or_revision_date": null,
+      "received_date": null,
+      "effective_date": null,
+      "issue_date": null,
+      "event_date": "2018-11-22",
+      "locators": [
+        "Purpose; Documents; Task Progress; Related Permits"
+      ],
+      "access_and_inspection_status": "Direct HTTP 200 HTML parsed; web open unavailable. Six attachment links inspected; selected three downloaded.",
+      "sha256": null,
+      "byte_length": null,
+      "rights_retention_disposition": "Public inspection only; no redistribution/commercial or durable shared-retention grant established. Metadata and original summaries only in Git. See PM-RIGHTS.",
+      "supersession_or_linkage": "Groups DVP00216; reports 2018-11-22 approval but supplies no executed permit. Frozen tracker-DPV00081 left unchanged.",
+      "existing_frozen_source_id": "tracker-DPV00081"
+    },
+    {
+      "source_id": "PM-RELATED",
+      "primary_url": "https://tender.victoria.ca/webapps/ourcity/Prospero/Details.aspx?folderNumber=DVP00216",
+      "title": "DVP00216 tracker",
+      "type": "municipal_tracker",
+      "access_date_utc": "2026-09-25",
+      "retrieved_at": null,
+      "retrieval_time_basis": "Exact web-tool retrieval timestamp not recorded; access date only.",
+      "printed_or_revision_date": null,
+      "received_date": null,
+      "effective_date": null,
+      "issue_date": null,
+      "event_date": null,
+      "locators": [
+        "Purpose; application date; related DPV00081"
+      ],
+      "access_and_inspection_status": "Direct HTTP 200 HTML parsed; no document attachments shown.",
+      "sha256": null,
+      "byte_length": null,
+      "rights_retention_disposition": "Public inspection only; no redistribution/commercial or durable shared-retention grant established. Metadata and original summaries only in Git. See PM-RIGHTS.",
+      "supersession_or_linkage": "Explicit cross-reference to DPV00081; stale separation description. One dependency group.",
+      "existing_frozen_source_id": null
+    },
+    {
+      "source_id": "PM-COTW",
+      "primary_url": "https://pub-victoria.escribemeetings.com/filestream.ashx?DocumentId=25380",
+      "title": "September 27, 2018 committee material in Council packet",
+      "type": "indexed_municipal_record",
+      "access_date_utc": "2026-09-25",
+      "retrieved_at": null,
+      "retrieval_time_basis": "Exact web-tool retrieval timestamp not recorded; access date only.",
+      "printed_or_revision_date": null,
+      "received_date": null,
+      "effective_date": null,
+      "issue_date": null,
+      "event_date": "2018-09-27",
+      "locators": [
+        "Indexed printed p3/B.1 committee motion; Attachment C revised letter"
+      ],
+      "access_and_inspection_status": "Search-indexed primary text only; web open failed. PDF bytes and full pagination not obtained; not visually inspected.",
+      "sha256": null,
+      "byte_length": null,
+      "rights_retention_disposition": "Public inspection only; no redistribution/commercial or durable shared-retention grant established. Metadata and original summaries only in Git. See PM-RIGHTS.",
+      "supersession_or_linkage": "Recommendation references plans stamped August 7, 2018; not final authorization.",
+      "existing_frozen_source_id": null
+    },
+    {
+      "source_id": "PM-OCT",
+      "primary_url": "https://pub-victoria.escribemeetings.com/filestream.ashx?DocumentId=29289",
+      "title": "October 4, 2018 Council minutes",
+      "type": "indexed_municipal_minutes",
+      "access_date_utc": "2026-09-25",
+      "retrieved_at": null,
+      "retrieval_time_basis": "Exact web-tool retrieval timestamp not recorded; access date only.",
+      "printed_or_revision_date": null,
+      "received_date": null,
+      "effective_date": null,
+      "issue_date": null,
+      "event_date": "2018-10-04",
+      "locators": [
+        "Indexed printed pp14-15/J.1.a.a"
+      ],
+      "access_and_inspection_status": "Search-indexed primary text only; web open failed; ordinary direct HTTP 403. No PDF hash or full/visual inspection.",
+      "sha256": null,
+      "byte_length": null,
+      "rights_retention_disposition": "Public inspection only; no redistribution/commercial or durable shared-retention grant established. Metadata and original summaries only in Git. See PM-RIGHTS.",
+      "supersession_or_linkage": "Motion to give notice and consider later authorization; links August 7 plans. Not the November final motion.",
+      "existing_frozen_source_id": null
+    },
+    {
+      "source_id": "PM-NOV-AGENDA",
+      "primary_url": "https://pub-victoria.escribemeetings.com/Meeting.aspx?Id=641184f5-197c-4caa-bcf9-11530b78c349&lang=English",
+      "title": "November 22, 2018 revised Council agenda",
+      "type": "indexed_municipal_agenda",
+      "access_date_utc": "2026-09-25",
+      "retrieved_at": null,
+      "retrieval_time_basis": "Exact web-tool retrieval timestamp not recorded; access date only.",
+      "printed_or_revision_date": null,
+      "received_date": null,
+      "effective_date": null,
+      "issue_date": null,
+      "event_date": "2018-11-22",
+      "locators": [
+        "F.2 and F.2.a"
+      ],
+      "access_and_inspection_status": "Indexed primary agenda text; direct web open 403. PostMinutes view attempt also unavailable; no final minutes obtained.",
+      "sha256": null,
+      "byte_length": null,
+      "rights_retention_disposition": "Public inspection only; no redistribution/commercial or durable shared-retention grant established. Metadata and original summaries only in Git. See PM-RIGHTS.",
+      "supersession_or_linkage": "Schedules public comment and consideration; tracker reports approval. Agenda does not establish outcome.",
+      "existing_frozen_source_id": null
+    },
+    {
+      "source_id": "PM-M",
+      "primary_url": "https://www.victoria.ca/media/1081",
+      "title": "Schedule M - Garden Suites, current downloadable copy",
+      "type": "office_consolidation",
+      "access_date_utc": "2026-09-25",
+      "retrieved_at": "2026-09-25T03:00:17.372807+00:00",
+      "retrieval_time_basis": "Local inspection-file write completion (UTC); not issue/effective date.",
+      "printed_or_revision_date": null,
+      "received_date": null,
+      "effective_date": null,
+      "issue_date": null,
+      "event_date": null,
+      "locators": [
+        "p1 sections 1,2,3,4; p2 section 5 and adoption footer"
+      ],
+      "access_and_inspection_status": "HTTP 200 PDF; both pages parsed and visually inspected; selected separation/setback rows checked. Not authenticated as the 2018 text.",
+      "sha256": "e8850a9e48f203d9074963a0c42038c3de983a84ff2e76cc05842325901c0ac7",
+      "byte_length": 246617,
+      "rights_retention_disposition": "Public inspection only; no redistribution/commercial or durable shared-retention grant established. Metadata and original summaries only in Git. See PM-RIGHTS.",
+      "supersession_or_linkage": "Context only: footer lists Bylaw 17-001 adopted 2017-04-13 and 19-086 adopted 2019-08-08; 2019 changes postdate case. Definitions reference Schedule A.",
+      "existing_frozen_source_id": null,
+      "evidenced_adoption_dates": [
+        {
+          "instrument": "17-001",
+          "date": "2017-04-13",
+          "locator": "p2 footer"
+        },
+        {
+          "instrument": "19-086",
+          "date": "2019-08-08",
+          "locator": "p2 footer"
+        }
+      ]
+    },
+    {
+      "source_id": "PM-A",
+      "primary_url": "https://www.victoria.ca/media/1195",
+      "title": "Schedule A - Definitions, current downloadable copy",
+      "type": "office_consolidation",
+      "access_date_utc": "2026-09-25",
+      "retrieved_at": "2026-09-25T03:01:34.565233+00:00",
+      "retrieval_time_basis": "Local inspection-file write completion (UTC); not issue/effective date.",
+      "printed_or_revision_date": null,
+      "received_date": null,
+      "effective_date": null,
+      "issue_date": null,
+      "event_date": null,
+      "locators": [
+        "p2 Area; p16 Rear Lot Line and Rear Yard; p18 Setback and Single Family Dwelling; p20 Total Floor Area"
+      ],
+      "access_and_inspection_status": "HTTP 200 PDF; 22 pages parsed, selected pp2,16,18,20 visually inspected. Contains annotations through 2024; historical applicability unverified.",
+      "sha256": "2e8ff4dc88cc4eb0b52c449721e68bb54888353bec1534007cc55e7d2f0caaf8",
+      "byte_length": 4947222,
+      "rights_retention_disposition": "Public inspection only; no redistribution/commercial or durable shared-retention grant established. Metadata and original summaries only in Git. See PM-RIGHTS.",
+      "supersession_or_linkage": "Definition leads only; cannot silently substitute for 2018 definitions or infer a separation-endpoint rule.",
+      "existing_frozen_source_id": null
+    },
+    {
+      "source_id": "PM-GENERAL",
+      "primary_url": "https://www.victoria.ca/media/1194",
+      "title": "Introduction and General Regulations, current downloadable copy",
+      "type": "office_consolidation",
+      "access_date_utc": "2026-09-25",
+      "retrieved_at": "2026-09-25T03:00:18.300318+00:00",
+      "retrieval_time_basis": "Local inspection-file write completion (UTC); not issue/effective date.",
+      "printed_or_revision_date": null,
+      "received_date": null,
+      "effective_date": null,
+      "issue_date": null,
+      "event_date": null,
+      "locators": [
+        "p1 front matter; parsed references to Schedule M"
+      ],
+      "access_and_inspection_status": "HTTP 200 PDF; 11 pages text-parsed. Initially fetched while looking for definitions; identified correctly from contents. No visual substantive audit or rule used.",
+      "sha256": "eff1aa5578fa5d3416c3177c28538889567f6488b837dff0bd0ed8c97d1e6d8d",
+      "byte_length": 229569,
+      "rights_retention_disposition": "Public inspection only; no redistribution/commercial or durable shared-retention grant established. Metadata and original summaries only in Git. See PM-RIGHTS.",
+      "supersession_or_linkage": "Not Schedule A; not used as 2018 governing evidence.",
+      "existing_frozen_source_id": null
+    },
+    {
+      "source_id": "PM-RIGHTS",
+      "primary_url": "https://www.victoria.ca/legal-disclaimer",
+      "title": "City of Victoria Legal Disclaimer",
+      "type": "website_terms",
+      "access_date_utc": "2026-09-25",
+      "retrieved_at": null,
+      "retrieval_time_basis": "Exact web-tool retrieval timestamp not recorded; access date only.",
+      "printed_or_revision_date": null,
+      "received_date": null,
+      "effective_date": null,
+      "issue_date": null,
+      "event_date": null,
+      "locators": [
+        "Copyright; Electronic Documentation"
+      ],
+      "access_and_inspection_status": "Web-tool primary page opened and read.",
+      "sha256": null,
+      "byte_length": null,
+      "rights_retention_disposition": "Public inspection only; no redistribution/commercial or durable shared-retention grant established. Metadata and original summaries only in Git. See PM-RIGHTS.",
+      "supersession_or_linkage": "General/private informational-use statement and reuse restrictions; no plan-specific rights grant obtained.",
+      "existing_frozen_source_id": null
+    },
+    {
+      "source_id": "PM-PIP-ENTRY",
+      "primary_url": "https://www.victoria.ca/city-government/freedom-information",
+      "title": "City of Victoria: Freedom of Information",
+      "type": "municipal_access_guidance",
+      "access_date_utc": "2026-09-25",
+      "retrieved_at": null,
+      "retrieval_time_basis": "Exact retrieval timestamp not recorded; access date only.",
+      "printed_or_revision_date": null,
+      "received_date": null,
+      "effective_date": null,
+      "issue_date": null,
+      "event_date": null,
+      "locators": [
+        "Property Information Portal link; permits for a specific property"
+      ],
+      "access_and_inspection_status": "Primary public page opened; followed public portal link. No records request submitted.",
+      "sha256": null,
+      "byte_length": null,
+      "rights_retention_disposition": "Public inspection only; no redistribution/commercial or durable shared-retention grant established. Metadata and original summaries only in Git.",
+      "supersession_or_linkage": "Public route to PM-PIP, distinct from account/request-based plan acquisition.",
+      "existing_frozen_source_id": null
+    },
+    {
+      "source_id": "PM-PIP",
+      "primary_url": "https://tender.victoria.ca/WebApps/PIP/Pages/Search.aspx",
+      "title": "City of Victoria Property Information Portal: 27 Pilot Street, All Permits",
+      "type": "municipal_property_permit_report",
+      "access_date_utc": "2026-09-25",
+      "retrieved_at": null,
+      "retrieval_time_basis": "Exact retrieval timestamp not recorded; access date only.",
+      "printed_or_revision_date": null,
+      "received_date": null,
+      "effective_date": null,
+      "issue_date": null,
+      "event_date": null,
+      "locators": [
+        "Search 27 Pilot; select 27 PILOT ST; All Permits on Selected Properties",
+        "Folio 02127020; property 103616; PID 004-775-376; Lot 12 Block 2 Beckley Farm Plan VIP5130",
+        "BP055393; BP055452; BP055453; EP066850; PP055558; EP067522"
+      ],
+      "access_and_inspection_status": "Public browser report read without login. Application dates, current status and purposes inspected; no issued/occupancy instrument or incorporated drawings obtained. Session report URL omitted; stable entry and reproduction path retained.",
+      "sha256": null,
+      "byte_length": null,
+      "rights_retention_disposition": "Public inspection only; no redistribution/commercial or durable shared-retention grant established. Metadata and original summaries only in Git.",
+      "supersession_or_linkage": "Same-property permit history, with C 27 PILOT ST on suite-related rows. PM-PLAN legal plan 5230 conflicts with report 5130; exact continuity unresolved. Current GRD-1 display is not historical zoning.",
+      "existing_frozen_source_id": null,
+      "parcel": {
+        "pid": "004-775-376",
+        "folio": "02127020",
+        "property_number": "103616",
+        "plan": "VIP5130",
+        "lot": "12",
+        "block": "2"
+      },
+      "permit_observations": [
+        {
+          "permit_id": "BP055393",
+          "application_date": "2019-03-25",
+          "status_observed": "COMPLETED",
+          "status_observed_date": "2026-09-25",
+          "purpose_summary": "Convert accessory building to garden suite with one-storey addition.",
+          "issue_date": null,
+          "completion_date": null,
+          "occupancy_date": null
+        },
+        {
+          "permit_id": "BP055452",
+          "application_date": "2019-04-11",
+          "status_observed": "COMPLETED",
+          "status_observed_date": "2026-09-25",
+          "purpose_summary": "New single-family dwelling.",
+          "issue_date": null,
+          "completion_date": null,
+          "occupancy_date": null
+        },
+        {
+          "permit_id": "BP055453",
+          "application_date": "2019-04-11",
+          "status_observed": "COMPLETED",
+          "status_observed_date": "2026-09-25",
+          "purpose_summary": "Demolish existing single-family dwelling.",
+          "issue_date": null,
+          "completion_date": null,
+          "occupancy_date": null
+        },
+        {
+          "permit_id": "EP066850",
+          "application_date": "2019-07-15",
+          "status_observed": "COMPLETED",
+          "status_observed_date": "2026-09-25",
+          "purpose_summary": "Wire new garden suite.",
+          "issue_date": null,
+          "completion_date": null,
+          "occupancy_date": null
+        },
+        {
+          "permit_id": "PP055558",
+          "application_date": "2019-07-08",
+          "status_observed": "COMPLETED",
+          "status_observed_date": "2026-09-25",
+          "purpose_summary": "Garden-suite plumbing including laundry and bathroom fixtures.",
+          "issue_date": null,
+          "completion_date": null,
+          "occupancy_date": null
+        },
+        {
+          "permit_id": "EP067522",
+          "application_date": "2019-10-22",
+          "status_observed": "COMPLETED",
+          "status_observed_date": "2026-09-25",
+          "purpose_summary": "New-house electrical services; purpose describes separate house/suite services and an already completed garden suite.",
+          "issue_date": null,
+          "completion_date": null,
+          "occupancy_date": null
+        }
+      ]
+    },
+    {
+      "source_id": "PM-LISTING",
+      "primary_url": "https://www.greatervictoriapropertygroup.com/listings/view/550160/victoria/vi-james-bay/27-pilot-st",
+      "title": "27 Pilot St, MLS 944920 archived sale listing",
+      "type": "real_estate_listing",
+      "access_date_utc": "2026-09-25",
+      "retrieved_at": null,
+      "retrieval_time_basis": "Exact retrieval timestamp not recorded; access date only.",
+      "printed_or_revision_date": null,
+      "received_date": null,
+      "effective_date": null,
+      "issue_date": null,
+      "event_date": null,
+      "locators": [
+        "MLS 944920; sale date; Year Built; Floor Area; Lot Size; property description; gallery links"
+      ],
+      "access_and_inspection_status": "Web and browser page read. Direct HTTP returned 406; that error body is not source bytes. Page reports sale November 29, 2023, year built 2020, Zebra design, detached suite with laundry, floor area 2656 sq ft and lot 5150 sq ft.",
+      "sha256": null,
+      "byte_length": null,
+      "rights_retention_disposition": "Public inspection only; no redistribution/commercial or durable shared-retention grant established. Metadata and original summaries only in Git.",
+      "supersession_or_linkage": "Marketing assertions only. Address matches; no PID/legal description inspected. Area basis and photo capture dates unknown. Current page footer is not a construction/photo date.",
+      "existing_frozen_source_id": null,
+      "reported_sale_date": "2023-11-29",
+      "reported_year_built": 2020
+    },
+    {
+      "source_id": "PM-PHOTOS",
+      "primary_url": "https://www.greatervictoriapropertygroup.com/listings/view/550160/victoria/vi-james-bay/27-pilot-st",
+      "title": "27 Pilot St listing: selected gallery photographs",
+      "type": "listing_photographs",
+      "access_date_utc": "2026-09-25",
+      "retrieved_at": null,
+      "retrieval_time_basis": "Exact retrieval timestamp not recorded; access date only.",
+      "printed_or_revision_date": null,
+      "received_date": null,
+      "effective_date": null,
+      "issue_date": null,
+      "event_date": null,
+      "locators": [
+        "Gallery image indices 1, 38, 41, 44, 49; 49 linked images overall"
+      ],
+      "access_and_inspection_status": "Selected images visually inspected through ordinary browser. Main house, small gabled structure, bathroom and aerial context observed. No measurements derived and no designated floor-plan/tour link observed in listing links.",
+      "sha256": null,
+      "byte_length": null,
+      "rights_retention_disposition": "Public inspection only; no redistribution/commercial or durable shared-retention grant established. Metadata and original summaries only in Git.",
+      "supersession_or_linkage": "Appearance evidence for marketed property only; does not establish orientation, exact retained-studio identity, capture dates, approved/as-built plans or later separation.",
+      "existing_frozen_source_id": null,
+      "inspected_image_urls": [
+        "https://s.realtyninja.com/static/images/listings/hd/8422_25591713_1_ad099598.jpg",
+        "https://s.realtyninja.com/static/images/listings/hd/8422_25591713_38_418dd13a.jpg",
+        "https://s.realtyninja.com/static/images/listings/med/8422_25591713_41_ffe90ae3.jpg",
+        "https://s.realtyninja.com/static/images/listings/hd/8422_25591713_44_16c34dc8.jpg",
+        "https://s.realtyninja.com/static/images/listings/hd/8422_25591713_49_ca00620a.jpg"
+      ]
+    },
+    {
+      "source_id": "PM-ZEBRA",
+      "primary_url": "https://zebragroup.ca/portfolio",
+      "title": "Zebra Group public portfolio and recent collaborations",
+      "type": "designer_portfolio_lead",
+      "access_date_utc": "2026-09-25",
+      "retrieved_at": null,
+      "retrieval_time_basis": "Exact retrieval timestamp not recorded; access date only.",
+      "printed_or_revision_date": null,
+      "received_date": null,
+      "effective_date": null,
+      "issue_date": null,
+      "event_date": null,
+      "locators": [
+        "Portfolio project links",
+        "https://zebragroup.ca/recent-collaborations"
+      ],
+      "access_and_inspection_status": "Provider pages opened; no identified Pilot Street project or controlled plan found. Exact site/Pilot search yielded no usable case lead.",
+      "sha256": null,
+      "byte_length": null,
+      "rights_retention_disposition": "Public inspection only; no redistribution/commercial or durable shared-retention grant established. Metadata and original summaries only in Git.",
+      "supersession_or_linkage": "Listing-suggested designer lead only; no independent case attribution, drawing revision or manufacturer/model established.",
+      "existing_frozen_source_id": null
+    }
+  ]
+}
