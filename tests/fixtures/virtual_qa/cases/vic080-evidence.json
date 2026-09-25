@@ -1,0 +1,235 @@
+{
+  "schema_version": "virtual-qa/v1",
+  "record_type": "case",
+  "case_id": "vic080-evidence",
+  "revision": "1",
+  "category": "observation-unknowns",
+  "evidence_status": "observational",
+  "fixtures": [
+    {
+      "uri": "frontend/src/investigation/observed.test.json",
+      "revision": {
+        "value": "sha256:f28ce476e8e4d6d6b60d93021c18097a7ba368f62fbdca8c5fb11418a8bf0abf",
+        "unknown_reason": null
+      },
+      "locator": "/spatial/parcels/1"
+    }
+  ],
+  "sources": [
+    {
+      "uri": "frontend/src/investigation/observed.test.json",
+      "revision": {
+        "value": "sha256:f28ce476e8e4d6d6b60d93021c18097a7ba368f62fbdca8c5fb11418a8bf0abf",
+        "unknown_reason": null
+      },
+      "locator": "/sources/9"
+    },
+    {
+      "uri": "frontend/src/investigation/observed.test.json",
+      "revision": {
+        "value": "sha256:f28ce476e8e4d6d6b60d93021c18097a7ba368f62fbdca8c5fb11418a8bf0abf",
+        "unknown_reason": null
+      },
+      "locator": "/sources/10"
+    },
+    {
+      "uri": "frontend/src/investigation/observed.test.json",
+      "revision": {
+        "value": "sha256:f28ce476e8e4d6d6b60d93021c18097a7ba368f62fbdca8c5fb11418a8bf0abf",
+        "unknown_reason": null
+      },
+      "locator": "/sources/11"
+    }
+  ],
+  "unknowns": [
+    "Captured land-use attributes are unreviewed observations, not legal expectations.",
+    "No screening, controlled design, supplied placement or accepted release.",
+    "Principal building/use/count, frontage, legal boundaries/yards, grade and applicability require review.",
+    "Current source URLs may differ from retained captures."
+  ],
+  "supported_modes": [
+    "task_completion"
+  ],
+  "group": "vic080-observations",
+  "split": "baseline",
+  "participant_brief": "Prepare a preliminary colleague handoff for VIC-080 / site-80. Use Real observations to explain what you can establish, what information you would request next, and which visible evidence and identifiers let a colleague reproduce the investigation. Report any obstacle you encounter. Use only the local application browser UI.",
+  "facilitator": {
+    "revision": "1",
+    "expectations": [
+      {
+        "check_id": "identity",
+        "claim": "Identify site-80 parcel feature 0 and victoria-pilot-three-leads; preserve the exact selected observation revision (not an accepted release) and source-scoped feature locators.",
+        "kind": "observed_ui_fact",
+        "scored": true,
+        "basis": {
+          "kind": "browser_observation",
+          "description": "Identify site-80 parcel feature 0 and victoria-pilot-three-leads; preserve the exact selected observation revision (not an accepted release) and source-scoped feature locators.",
+          "evidence": [
+            {
+              "uri": "frontend/src/investigation/observed.test.json",
+              "revision": {
+                "value": "sha256:f28ce476e8e4d6d6b60d93021c18097a7ba368f62fbdca8c5fb11418a8bf0abf",
+                "unknown_reason": null
+              },
+              "locator": "/spatial/identity"
+            }
+          ]
+        },
+        "evidence": [
+          {
+            "uri": "frontend/src/investigation/observed.test.json",
+            "revision": {
+              "value": "sha256:f28ce476e8e4d6d6b60d93021c18097a7ba368f62fbdca8c5fb11418a8bf0abf",
+              "unknown_reason": null
+            },
+            "locator": "/spatial/identity"
+          }
+        ],
+        "review": {
+          "status": "reviewed",
+          "reviewer": {
+            "value": "Codex SR-28 fixture author",
+            "unknown_reason": null
+          },
+          "reviewed_at": {
+            "value": "2026-09-25T00:43:39Z",
+            "unknown_reason": null
+          },
+          "rationale": "Source/renderer review of authored software expectations; not independent legal review. Browser control verification is recorded separately in docs/usability/virtual-qa/browser-review.md.",
+          "disagreements": []
+        }
+      },
+      {
+        "check_id": "observations",
+        "claim": "Treat displayed parcel area about 577.33 m², ZB2018 / GRD-1 (PGA), zoning OBJECTID 3 and roofline 69970 Residential as unreviewed observations. Geometry is not regulatory lot area; rooflines are not wall footprints or principal buildings.",
+        "kind": "observed_ui_fact",
+        "scored": true,
+        "basis": {
+          "kind": "browser_observation",
+          "description": "Treat displayed parcel area about 577.33 m², ZB2018 / GRD-1 (PGA), zoning OBJECTID 3 and roofline 69970 Residential as unreviewed observations. Geometry is not regulatory lot area; rooflines are not wall footprints or principal buildings.",
+          "evidence": [
+            {
+              "uri": "frontend/src/investigation/observed.test.json",
+              "revision": {
+                "value": "sha256:f28ce476e8e4d6d6b60d93021c18097a7ba368f62fbdca8c5fb11418a8bf0abf",
+                "unknown_reason": null
+              },
+              "locator": "/spatial/observations"
+            }
+          ]
+        },
+        "evidence": [
+          {
+            "uri": "frontend/src/investigation/observed.test.json",
+            "revision": {
+              "value": "sha256:f28ce476e8e4d6d6b60d93021c18097a7ba368f62fbdca8c5fb11418a8bf0abf",
+              "unknown_reason": null
+            },
+            "locator": "/spatial/observations"
+          }
+        ],
+        "review": {
+          "status": "reviewed",
+          "reviewer": {
+            "value": "Codex SR-28 fixture author",
+            "unknown_reason": null
+          },
+          "reviewed_at": {
+            "value": "2026-09-25T00:43:39Z",
+            "unknown_reason": null
+          },
+          "rationale": "Source/renderer review of authored software expectations; not independent legal review. Browser control verification is recorded separately in docs/usability/virtual-qa/browser-review.md.",
+          "disagreements": []
+        }
+      },
+      {
+        "check_id": "limits-next-inputs",
+        "claim": "State no screening/fit/approval is established; request the visible missing reviewed boundaries/applicability, wall footprint, legal yards/lot lines, grade, controlled dimensions and supplied placement. Do not infer buildable area, exhaustive overlays or PGA permission.",
+        "kind": "observed_ui_fact",
+        "scored": true,
+        "basis": {
+          "kind": "browser_observation",
+          "description": "State no screening/fit/approval is established; request the visible missing reviewed boundaries/applicability, wall footprint, legal yards/lot lines, grade, controlled dimensions and supplied placement. Do not infer buildable area, exhaustive overlays or PGA permission.",
+          "evidence": [
+            {
+              "uri": "frontend/src/investigation/observed.test.json",
+              "revision": {
+                "value": "sha256:f28ce476e8e4d6d6b60d93021c18097a7ba368f62fbdca8c5fb11418a8bf0abf",
+                "unknown_reason": null
+              },
+              "locator": "/spatial/parcels/1"
+            }
+          ]
+        },
+        "evidence": [
+          {
+            "uri": "frontend/src/investigation/observed.test.json",
+            "revision": {
+              "value": "sha256:f28ce476e8e4d6d6b60d93021c18097a7ba368f62fbdca8c5fb11418a8bf0abf",
+              "unknown_reason": null
+            },
+            "locator": "/spatial/parcels/1"
+          }
+        ],
+        "review": {
+          "status": "reviewed",
+          "reviewer": {
+            "value": "Codex SR-28 fixture author",
+            "unknown_reason": null
+          },
+          "reviewed_at": {
+            "value": "2026-09-25T00:43:39Z",
+            "unknown_reason": null
+          },
+          "rationale": "Source/renderer review of authored software expectations; not independent legal review. Browser control verification is recorded separately in docs/usability/virtual-qa/browser-review.md.",
+          "disagreements": []
+        }
+      },
+      {
+        "check_id": "source-currency",
+        "claim": "Cite source capture/snapshot evidence; legal effective dates are unknown and current external services may differ from the capture.",
+        "kind": "observed_ui_fact",
+        "scored": true,
+        "basis": {
+          "kind": "browser_observation",
+          "description": "Cite source capture/snapshot evidence; legal effective dates are unknown and current external services may differ from the capture.",
+          "evidence": [
+            {
+              "uri": "frontend/src/investigation/observed.test.json",
+              "revision": {
+                "value": "sha256:f28ce476e8e4d6d6b60d93021c18097a7ba368f62fbdca8c5fb11418a8bf0abf",
+                "unknown_reason": null
+              },
+              "locator": "/sources"
+            }
+          ]
+        },
+        "evidence": [
+          {
+            "uri": "frontend/src/investigation/observed.test.json",
+            "revision": {
+              "value": "sha256:f28ce476e8e4d6d6b60d93021c18097a7ba368f62fbdca8c5fb11418a8bf0abf",
+              "unknown_reason": null
+            },
+            "locator": "/sources"
+          }
+        ],
+        "review": {
+          "status": "reviewed",
+          "reviewer": {
+            "value": "Codex SR-28 fixture author",
+            "unknown_reason": null
+          },
+          "reviewed_at": {
+            "value": "2026-09-25T00:43:39Z",
+            "unknown_reason": null
+          },
+          "rationale": "Source/renderer review of authored software expectations; not independent legal review. Browser control verification is recorded separately in docs/usability/virtual-qa/browser-review.md.",
+          "disagreements": []
+        }
+      }
+    ],
+    "disagreements": [],
+    "seeded_fault": null
+  }
+}
