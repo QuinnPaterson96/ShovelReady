@@ -149,3 +149,7 @@ now also cites the plan itself. This confirms transcription only, not the legal
 measurement basis or applicability. Kingsley remains a recommendation; Vancouver's
 2204 East 38th decision retains its conditions. The other seven case packets were
 reviewed as metadata, not independently re-audited against every source page.
+
+## Wave-five reconciliation
+
+Inventory revision `2026-09-24.integration-2` incorporates two corroborated Stannard source records (23 sources total), a revision-specific applicant prefab-to-custom assertion and the R2-65 pathway lead. It preserves the original C1 values and every provisional/unknown/benchmark gate. See [integration evidence](../../integration-wave-five.md) and the [separate historical packet](../stannard-reference/README.md) for unresolved legal, permit and measurement questions. The earlier 21-source verification above describes the original inventory, not this revision.
