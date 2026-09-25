@@ -113,6 +113,9 @@ unrelated destructive database cleanup.
 
 ## Product and architecture
 
+The prototype's [Civic Atlas visual rules](docs/visual-identity.md) define shared
+colour, border, status and map styling for current and future UI work.
+
 - Use LLMs primarily during document ingestion, with validation and review before publication.
 - Preserve detailed rules, conditions, calculations, dependencies, and source evidence.
 - Derive inexpensive scouting data from accepted rules, keeping compatible development alternatives together.

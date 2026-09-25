@@ -8,6 +8,7 @@ import PilotPreparation from './case_preparations/PilotPreparation'
 import { AssessmentForm, PreparationSummary } from './assessment/Assessment'
 import { draftReducer, errorsFor, initialDraft } from './assessment/model'
 import './assessment/assessment.css'
+import './case_preparations/pilot.css'
 
 export default function App() {
   const [page, setPage] = useState<'home' | 'inputs' | 'summary' | 'evidence' | 'pilot'>('home')
@@ -49,7 +50,10 @@ export default function App() {
 
   return (
     <main className="sr-shell">
-      <header><p className="eyebrow">Preliminary scouting</p><h1>ShovelReady</h1>
+      <header><div className="sr-brand-row">
+        <span className="sr-brand-mark" aria-hidden="true"><span /><span /><span /><span /></span>
+        <div><p className="eyebrow">Preliminary scouting</p><h1>ShovelReady</h1></div>
+      </div>
         <nav className="sr-nav" aria-label="Main navigation">
           <button aria-current={page === 'home' ? 'page' : undefined} onClick={() => setPage('home')}>Home</button>
           <button aria-current={page === 'inputs' ? 'page' : undefined} onClick={() => setPage('inputs')}>Assessment inputs</button>

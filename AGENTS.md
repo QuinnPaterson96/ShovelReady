@@ -36,4 +36,5 @@ Read README.md, docs/architecture.md, and docs/quality.md before consequential c
 - Run tests only against explicitly isolated disposable databases. The legacy tests contain unrelated models, destructive cleanup, and historical remote configuration; do not run them blindly.
 - Do not use Styx AWS credentials or production resources for ShovelReady. Cloud resources and identities must be project-specific and explicitly configured.
 - Document what was implemented, what was actually verified, and what remains a proposal. Update the relevant documentation when a decision changes.
+- For frontend visual changes, follow [Civic Atlas visual rules](docs/visual-identity.md). Use the shared CSS tokens and preserve explicit status, scope, uncertainty and source identity in the display.
 - Use the [PR handoff template](.github/pull_request_template.md), scaled to the change, and the [integration checklist](docs/quality.md#integration-handoff). Declare shared-file ownership before parallel work. Keep implemented, verified, proposed and blocked work distinct; software checks, source review, publication and user validation are separate evidence categories.

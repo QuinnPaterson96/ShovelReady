@@ -44,7 +44,7 @@ function Map({
   return (
     <div>
       <p>
-        Original EPSG:3157 XY · metres · north up. Blue: parcel; purple: rooflines; amber: zoning;
+        Original EPSG:3157 XY · metres · north up. Teal: parcel; purple: rooflines; copper: zoning;
         red dashed: intersections.
       </p>
       <div className="map-controls">
@@ -103,17 +103,17 @@ function Map({
                     fillRule="evenodd"
                     fill={
                       o.source_id.endsWith('-zones')
-                        ? '#e5ad2930'
+                        ? 'var(--map-zone-fill)'
                         : o.source_id.endsWith('-parcel')
-                          ? '#2774b530'
-                          : '#924cbc60'
+                          ? 'var(--map-parcel-fill)'
+                          : 'var(--map-roof-fill)'
                     }
                     stroke={
                       o.source_id.endsWith('-zones')
-                        ? '#956600'
+                        ? 'var(--map-zone-stroke)'
                         : o.source_id.endsWith('-parcel')
-                          ? '#155c9c'
-                          : '#7734a0'
+                          ? 'var(--map-parcel-stroke)'
+                          : 'var(--map-roof-stroke)'
                     }
                     strokeWidth="2"
                     vectorEffect="non-scaling-stroke"
@@ -130,7 +130,7 @@ function Map({
             key={i}
             d={geometryPath(item.geometry)}
             fill="none"
-            stroke="#b63121"
+            stroke="var(--map-intersection-stroke)"
             strokeDasharray="5 4"
             strokeWidth="2"
             vectorEffect="non-scaling-stroke"
