@@ -1,6 +1,6 @@
 {
   "schema_version": "public-cases.v1",
-  "inventory_revision": "2026-09-24.integration-2",
+  "inventory_revision": "2026-09-25.pilot-area-3",
   "access_date": "2026-09-24",
   "purpose": "Provisional discovery metadata; no accepted reference outcomes",
   "counts": {
@@ -628,11 +628,11 @@
       "application_date": "2018-06-07",
       "source_facts": [
         {
-          "summary": "Drawing area labels differ: site diagram 22.25 m2; floor-plan arithmetic 22.75 m2.",
+          "summary": "Parsed plan text includes 22.25 m2; later visual inspection confirmed the 4/A-1 floor-plan label 17.35 + 5.4 = 22.75 m2, corroborated by the letter. The parsed 22.25 was not visually confirmed in the lower site plan. No canonical regulatory area or measurement basis is resolved.",
           "evidence": [
             {
               "source_id": "DPV00081-5",
-              "locator": "PDF p1 A-1 proposed site and suite floor plans"
+              "locator": "PDF p1 A-1 parsed text versus visually inspected 4/A-1; see September 25 plan-measurements research packet, PM-PLAN and PM-LETTER"
             }
           ]
         }
@@ -649,7 +649,8 @@
         }
       ],
       "researcher_inferences": [
-        "Can test conflicting-value retention and distinction between a variance target and an unvaried rule."
+        "Can test conflicting-value retention and distinction between a variance target and an unvaried rule.",
+        "September 25 plan-measurements packet distinguishes parsed text from visible observations; it does not establish final authorization, issued dates, regulatory area or accepted measurements."
       ],
       "plan_version": {
         "summary": "A-1 dated 18/7/30, City received 2018-08-07; no final-approved stamp verified.",
@@ -712,13 +713,13 @@
           ]
         },
         {
-          "name": "Conflicting proposed suite area labels",
+          "name": "Unresolved parsed and visually observed suite areas",
           "original_value": [
             "22.25",
             "22.75"
           ],
           "original_unit": "m2",
-          "measurement_definition": "Two drawing labels, neither selected as canonical regulatory floor area.",
+          "measurement_definition": "22.25 m2 is parsed text, not visually confirmed at the lower site-plan label; 22.75 m2 is visually confirmed at 4/A-1 and repeated in the letter. Neither is selected as canonical regulatory floor area.",
           "normalized_value": null,
           "normalization_status": "not_performed",
           "review_status": "provisional",

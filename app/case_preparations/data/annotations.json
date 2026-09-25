@@ -1,0 +1,266 @@
+{
+  "schema_version": "pilot-preparation.v1",
+  "case_id": "VIC-PC-002",
+  "annotation_revision": "pilot-2018-manual-1",
+  "authored_at": "2026-09-25T17:13:41.154548+00:00",
+  "source_manifest_sha256": "7e7da7593977e68e980d181282380e2220f0aba6ffde2d7d665c8cb7474bde84",
+  "selected_period": "2018-proposal",
+  "design_date": "2018-07-30",
+  "received_date": "2018-08-07",
+  "historical_cutoff": "2018-11-22",
+  "source_periods": {
+    "PM-PLAN": "2018-proposal",
+    "PM-LETTER": "2018-proposal",
+    "PM-REVISIONS": "2018-proposal",
+    "PM-OCT": "2018-proposal",
+    "PM-NOV-AGENDA": "2018-proposal",
+    "PM-M": "current-context",
+    "PM-A": "current-context",
+    "PM-PIP": "later-property",
+    "PM-LISTING": "later-property"
+  },
+  "observations": [
+    {
+      "observation_id": "separation",
+      "kind": "separation",
+      "period": "2018-proposal",
+      "quantity": {
+        "original_text": "2.6 m",
+        "original_value": "2.6",
+        "original_unit": "m",
+        "dimension": "length",
+        "value": "2.6",
+        "unit": "m"
+      },
+      "summary": "Printed placement observation; metre unit corroborated by letter, endpoints/exclusions unreviewed.",
+      "links": [
+        {
+          "source_id": "PM-PLAN",
+          "locator": "p1/A-1 lower SITE PLAN - NEW, dimension 2.6"
+        },
+        {
+          "source_id": "PM-LETTER",
+          "locator": "p1 separation paragraph"
+        }
+      ]
+    },
+    {
+      "observation_id": "rear-southeast",
+      "kind": "rear_corner",
+      "period": "2018-proposal",
+      "quantity": {
+        "original_text": "0.20 m",
+        "original_value": "0.20",
+        "original_unit": "m",
+        "dimension": "length",
+        "value": "0.20",
+        "unit": "m"
+      },
+      "summary": "Separate southeast corner observation; not a reviewed minimum setback.",
+      "links": [
+        {
+          "source_id": "PM-PLAN",
+          "locator": "p1/A-1 studio southeast corner"
+        }
+      ]
+    },
+    {
+      "observation_id": "rear-northeast",
+      "kind": "rear_corner",
+      "period": "2018-proposal",
+      "quantity": {
+        "original_text": "0.22 m",
+        "original_value": "0.22",
+        "original_unit": "m",
+        "dimension": "length",
+        "value": "0.22",
+        "unit": "m"
+      },
+      "summary": "Separate northeast corner observation; do not merge with southeast corner.",
+      "links": [
+        {
+          "source_id": "PM-PLAN",
+          "locator": "p1/A-1 studio northeast corner"
+        }
+      ]
+    },
+    {
+      "observation_id": "area-parsed",
+      "kind": "area",
+      "period": "2018-proposal",
+      "quantity": {
+        "original_text": "22.25 m2",
+        "original_value": "22.25",
+        "original_unit": "m2",
+        "dimension": "area",
+        "value": "22.25",
+        "unit": "m2"
+      },
+      "summary": "Parsed possibly stale/hidden area text; not canonical regulatory area.",
+      "links": [
+        {
+          "source_id": "PM-PLAN",
+          "locator": "p1 extracted site label, not visually confirmed"
+        }
+      ]
+    },
+    {
+      "observation_id": "area-visible",
+      "kind": "area",
+      "period": "2018-proposal",
+      "quantity": {
+        "original_text": "22.75 m2",
+        "original_value": "22.75",
+        "original_unit": "m2",
+        "dimension": "area",
+        "value": "22.75",
+        "unit": "m2"
+      },
+      "summary": "Visible floor-plan sum 17.35 + 5.4, corroborated by letter; regulatory area basis unresolved.",
+      "links": [
+        {
+          "source_id": "PM-PLAN",
+          "locator": "p1 floor plan 4/A-1"
+        }
+      ]
+    },
+    {
+      "observation_id": "separation-minimum",
+      "kind": "threshold",
+      "period": "2018-proposal",
+      "quantity": {
+        "original_text": "2.4 m",
+        "original_value": "2.4",
+        "original_unit": "m",
+        "dimension": "length",
+        "value": "2.4",
+        "unit": "m"
+      },
+      "summary": "Applicant-stated minimum; historical law, applicability and measurement definition unverified.",
+      "links": [
+        {
+          "source_id": "PM-LETTER",
+          "locator": "p1 separation paragraph"
+        },
+        {
+          "source_id": "PM-M",
+          "locator": "section 2(d), current copy only"
+        }
+      ]
+    },
+    {
+      "observation_id": "rear-unvaried",
+      "kind": "threshold",
+      "period": "2018-proposal",
+      "quantity": {
+        "original_text": "0.6 m",
+        "original_value": "0.6",
+        "original_unit": "m",
+        "dimension": "length",
+        "value": "0.6",
+        "unit": "m"
+      },
+      "summary": "Unvaried rear minimum described by proposal; historical scope unreviewed.",
+      "links": [
+        {
+          "source_id": "PM-LETTER",
+          "locator": "p1 rear-setback paragraph"
+        }
+      ]
+    },
+    {
+      "observation_id": "rear-varied",
+      "kind": "threshold",
+      "period": "2018-proposal",
+      "quantity": {
+        "original_text": "0.2 m",
+        "original_value": "0.2",
+        "original_unit": "m",
+        "dimension": "length",
+        "value": "0.2",
+        "unit": "m"
+      },
+      "summary": "Requested varied target, not a verified issued variance.",
+      "links": [
+        {
+          "source_id": "PM-LETTER",
+          "locator": "p1 rear-setback paragraph"
+        },
+        {
+          "source_id": "PM-OCT",
+          "locator": "pp14-15 J.1.a.a proposed authorization"
+        }
+      ]
+    }
+  ],
+  "parcel_claims": [
+    {
+      "value": "5230",
+      "link": {
+        "source_id": "PM-PLAN",
+        "locator": "p1/A-1 legal description: Lot 12 Block 2 Beckley Farm"
+      }
+    },
+    {
+      "value": "5130",
+      "link": {
+        "source_id": "PM-PIP",
+        "locator": "Property 103616; PID 004-775-376; VIP5130"
+      }
+    }
+  ],
+  "rule_claims": [
+    {
+      "observation_id": "separation-minimum",
+      "conditions": [
+        "Other zoning requirements and historical conversion/use scope remain unreviewed."
+      ],
+      "references": [
+        {
+          "instrument": "Schedule M and Schedule A (2018)",
+          "locator": "separation measurement and scope",
+          "relationship": "depends_on",
+          "status": "unresolved",
+          "target": null
+        }
+      ]
+    },
+    {
+      "observation_id": "rear-unvaried",
+      "conditions": [
+        "Other zoning requirements and historical conversion/use scope remain unreviewed."
+      ],
+      "references": [
+        {
+          "instrument": "Schedule M and Schedule A (2018)",
+          "locator": "rear lot line and setback basis",
+          "relationship": "depends_on",
+          "status": "unresolved",
+          "target": null
+        }
+      ]
+    },
+    {
+      "observation_id": "rear-varied",
+      "conditions": [
+        "Other zoning requirements and historical conversion/use scope remain unreviewed."
+      ],
+      "references": [
+        {
+          "instrument": "Schedule M (2018)",
+          "locator": "unvaried rear setback",
+          "relationship": "overrides",
+          "status": "unresolved",
+          "target": null
+        },
+        {
+          "instrument": "DPV00081",
+          "locator": "final November 22 instrument, incorporated plans and lapse terms",
+          "relationship": "depends_on",
+          "status": "unresolved",
+          "target": null
+        }
+      ]
+    }
+  ]
+}
