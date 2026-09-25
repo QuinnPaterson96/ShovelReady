@@ -47,10 +47,22 @@ The first evaluator checks a supplied reviewed placement. Preserve manual site f
 | [SR-24](SR-24.md) / [issue #44](https://github.com/QuinnPaterson96/ShovelReady/issues/44) | Read-only investigation of provisional public case evidence | M1 preparation | Merged SR-23 inventory |
 | [SR-25](SR-25.md) / [issue #45](https://github.com/QuinnPaterson96/ShovelReady/issues/45) | Bounded historical Stannard reference packet | M1 preparation | Merged SR-23 inventory; acceptance remains SR-06 |
 | [SR-26](SR-26.md) / [issue #46](https://github.com/QuinnPaterson96/ShovelReady/issues/46) | Blinded virtual-user walkthrough of existing VIC-080 | M1 preparation | Merged demo/viewer; independent of SR-24/SR-25 |
+| [SR-27](SR-27.md) / [issue #51](https://github.com/QuinnPaterson96/ShovelReady/issues/51) | Versioned virtual-user case, run and finding records | M1 support | Review SR-26 evidence |
+| [SR-28](SR-28.md) / [issue #52](https://github.com/QuinnPaterson96/ShovelReady/issues/52) | Five scenarios and paired clean/defect controls | M1 support | SR-27 |
+| [SR-29](SR-29.md) / [issue #53](https://github.com/QuinnPaterson96/ShovelReady/issues/53) | Reproducible selection and isolated local run preparation | M1 support | SR-27; integrate with SR-28 |
+| [SR-30](SR-30.md) / [issue #54](https://github.com/QuinnPaterson96/ShovelReady/issues/54) | Report grading, adjudication and draft issues | M1 support | SR-27; calibrate with SR-28 |
+| [SR-31](SR-31.md) / [issue #55](https://github.com/QuinnPaterson96/ShovelReady/issues/55) | Bounded virtual-user pilot and value assessment | M1 support | SR-26 review; SR-28/SR-29/SR-30 integrated |
 
 ## Next parallel work
 
 [Wave-five scope and ownership](wave-five-prompts.md) are the current launch instructions. [Wave four](wave-four-prompts.md), [wave three](wave-three-prompts.md), [wave two](wave-two-prompts.md) and [wave one](next-wave-prompts.md) remain historical handoff context.
+
+The [virtual-user evaluation plan](virtual-qa-plan.md) adds SR-27 through SR-31 as
+follow-up specifications, not dispatched work. SR-27 establishes the file contract;
+SR-28/SR-29/SR-30 can then run in parallel, with SR-31 after integration. It keeps a
+fixed baseline plus seeded sampling, separate participant/grader assessment and
+adjudication before issue creation. No recurring automation or live-model CI is added.
+This supporting QA work does not replace the accepted-data or real-customer gates.
 
 - SR-02/SR-03/SR-04 are complete in their scaffold/provisional scopes. SR-08 persistence and SR-19 / issue #22 synthetic preview/rehearsal are now complete.
 - SR-01/SR-05/SR-06 remain partial: typed licensed inputs and a provisional corpus exist, but controlled design, reviewed site/placement facts, authorized durable private sources and independent acceptance are missing.

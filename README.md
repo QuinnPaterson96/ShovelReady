@@ -96,6 +96,7 @@ Results distinguish **candidate**, **needs investigation**, and **no match under
 | [Architecture](docs/architecture.md) | Minimal system boundaries, deployment direction, and implementation sequence |
 | [Quality agreement](docs/quality.md) | Data contracts, testing, publication, and definition of done |
 | [Synthetic preview and walkthrough](docs/usability/README.md) | Local scenarios, fixture checks and usability rehearsal limits |
+| [Virtual-user evaluation plan](docs/backlog/virtual-qa-plan.md) | Proposed case library, bounded runs and adjudicated findings; not yet implemented |
 | [Persistence interface](docs/persistence.md) | Immutable imports, draft metadata, migrations and disposable PostgreSQL checks |
 | [Spatial import](docs/spatial.md) | Licensed raw observations, explicit XY operations, migration and unresolved site facts |
 | [Extraction replay](docs/extraction.md) | Saved responses, conservative normalization and blocked real-benchmark gates |

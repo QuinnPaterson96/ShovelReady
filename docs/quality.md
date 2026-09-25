@@ -54,6 +54,20 @@ A user should be able to identify why a case was included/excluded, what was che
 
 Record errors by stage and retain run/release identifiers. Monitor ingestion failures and unresolved-case rates, not just HTTP uptime. Unexpected decision changes are investigated before promotion. Maintain a known-good application image and dataset release; test recovery with backward-compatible schemas and backups.
 
+## Planned virtual-user evaluation
+
+[SR-27 through SR-31](backlog/virtual-qa-plan.md) specify a bounded follow-up to the
+SR-26 rehearsal; the runner, reusable grading and pilot are not yet implemented.
+Freeze case/rubric/app/data identity, use fresh browser-only participants and assess
+app behavior, agent behavior and grader behavior separately. Keep ordinary task
+completion distinct from explicit bug detection, with paired clean/fault controls.
+Unknown source facts cannot become authoritative expected outcomes through model
+agreement. Reproduce and adjudicate findings before creating bug tickets; preserve
+omissions, data gaps, tool failures and usability hypotheses as distinct categories.
+Initially run on demand and keep live-model calls out of ordinary CI. Promote confirmed
+defects into suitable deterministic regressions. This supports software QA; it does
+not substitute for independent source review, accepted publication or real-user study.
+
 ## Integration handoff
 
 Use the [PR template](../.github/pull_request_template.md) to leave a short, reproducible
