@@ -13,6 +13,7 @@ RUN python -m pip install --no-cache-dir uv==0.12.17
 COPY pyproject.toml uv.lock ./
 RUN uv sync --locked --no-dev
 COPY app ./app
+COPY docs/research/public-cases/cases.json ./docs/research/public-cases/cases.json
 COPY alembic.ini ./
 COPY migrations ./migrations
 COPY --from=frontend /build/frontend/dist ./frontend/dist
