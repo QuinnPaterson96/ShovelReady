@@ -1,0 +1,465 @@
+{
+  "description": "Bounded research metadata only; not a production contract, import payload, source snapshot or evaluator request.",
+  "research_date_local": "2026-09-24",
+  "timezone": "America/Vancouver",
+  "status": "provisional",
+  "benchmark_eligible": false,
+  "split": "unassigned",
+  "dependency_group": "routine-garden-suite-warren-DDP00930",
+  "selected_case": {
+    "municipality": "City of Victoria, British Columbia, Canada",
+    "address": "1685 WARREN GDNS",
+    "display_address": "1685 Warren Gardens",
+    "application_ids": [
+      "DDP00930"
+    ],
+    "other_aliases": null,
+    "historical_cutoff": "2024-11-28",
+    "cutoff_basis": "End of tracker-reported issuance day; governing law remains unverified.",
+    "principal_building_use": null,
+    "proposed_building_role": "garden suite (tracker description)",
+    "design_revision": null,
+    "plan_revision": null,
+    "site_revision": null,
+    "supplied_placement": null,
+    "prefab_manufacturer": null,
+    "prefab_model": null,
+    "prefab_configuration": null,
+    "independent_reviewer": null,
+    "accepted": false,
+    "expected_legal_outcome": null
+  },
+  "sources": [
+    {
+      "source_id": "RG-warren",
+      "primary_url": "https://tender.victoria.ca/webapps/ourcity/Prospero/Details.aspx?folderNumber=DDP00930",
+      "title": "1685 Warren Gardens: DDP00930 public tracker",
+      "type": "application_tracker",
+      "retrieved_at": "2026-09-25T03:01:20.691410+00:00",
+      "retrieval_time_basis": "UTC timestamp of direct HTTP response; for blocked PDFs this timestamps the failed retrieval, not index capture",
+      "printed_date": null,
+      "revision_date": null,
+      "effective_date": null,
+      "adoption_date": null,
+      "issue_date": null,
+      "date_evidence": [
+        {
+          "date": "2024-11-28",
+          "kind": "tracker_reported_permit_issue",
+          "locator": "Development Permit Issued start and completed dates",
+          "qualification": "Executed permit not obtained; not an independently verified issuance."
+        }
+      ],
+      "locators": [
+        "Project Type; Folder Number; Application Date; Addresses; Purpose; Status",
+        "Task Progress: Staff Review Application, With Applicant, Staff Review of Revised Plans, Development Permit Issued"
+      ],
+      "http_status": 200,
+      "access_inspection_status": "HTML record read; no Documents section or FileDownload links; web tool failed, ordinary unauthenticated HTTP succeeded.",
+      "sha256": "61890c9ce0a50fc94001f818825ebc2ccaf4b4dc0bc01821909cf069c1906803",
+      "byte_length": 42087,
+      "hash_scope": "Exact HTTP response bytes obtained; HTML is dynamic and includes transport/form state. Hash is not legal authority.",
+      "rights_retention": {
+        "redistribution_authorized": false,
+        "disposition": "Citation metadata and original short factual summaries only in Git. Inspection copies outside Git; no authorized durable/shared source bundle.",
+        "rights_basis": "RG-rights; public access is not a reuse licence. Third-party drawing rights would require separate resolution.",
+        "local_retention": "Temporary task-owned inspection copies; retained outside Git for handoff; future retention/reuse unresolved."
+      },
+      "supersession_linkage": [],
+      "gaps": [
+        "No attached plans, executed permit, related-application links or case measurements in inspected HTML.",
+        "Principal building use, zone and absence of variance unverified."
+      ],
+      "version_date_note": "Null overall revision/effective dates mean unverified; dated marginal/footer annotations are retained separately in date_evidence and are not a certified consolidation date."
+    },
+    {
+      "source_id": "RG-richmond",
+      "primary_url": "https://tender.victoria.ca/webapps/ourcity/Prospero/Details.aspx?folderNumber=DDP00589",
+      "title": "DDP00589 retrieval failure",
+      "type": "application_tracker_error",
+      "retrieved_at": "2026-09-25T03:01:21.109965+00:00",
+      "retrieval_time_basis": "UTC timestamp of direct HTTP response; for blocked PDFs this timestamps the failed retrieval, not index capture",
+      "printed_date": null,
+      "revision_date": null,
+      "effective_date": null,
+      "adoption_date": null,
+      "issue_date": null,
+      "date_evidence": [],
+      "locators": [],
+      "http_status": 200,
+      "access_inspection_status": "HTTP 200 application-level error: folder could not be retrieved. No application content obtained.",
+      "sha256": null,
+      "byte_length": null,
+      "hash_scope": null,
+      "rights_retention": {
+        "redistribution_authorized": false,
+        "disposition": "Citation metadata and original short factual summaries only in Git. Inspection copies outside Git; no authorized durable/shared source bundle.",
+        "rights_basis": "RG-rights; public access is not a reuse licence. Third-party drawing rights would require separate resolution.",
+        "local_retention": "No substantive document bytes obtained; only failed-response scratch. No authorized durable/shared source bundle."
+      },
+      "supersession_linkage": [],
+      "gaps": [
+        "Substantive tracker record unavailable."
+      ],
+      "version_date_note": "Null overall revision/effective dates mean unverified; dated marginal/footer annotations are retained separately in date_evidence and are not a certified consolidation date."
+    },
+    {
+      "source_id": "RG-montrose-minutes",
+      "primary_url": "https://www.victoria.ca/media/file/bov-minutes-march-28-2019",
+      "title": "Board of Variance minutes, March 28, 2019",
+      "type": "municipal_minutes",
+      "retrieved_at": "2026-09-25T03:01:21.779753+00:00",
+      "retrieval_time_basis": "UTC timestamp of direct HTTP response; for blocked PDFs this timestamps the failed retrieval, not index capture",
+      "printed_date": "2019-03-28",
+      "revision_date": null,
+      "effective_date": null,
+      "adoption_date": null,
+      "issue_date": null,
+      "date_evidence": [
+        {
+          "date": "2019-03-28",
+          "kind": "board_variance_approval_recorded",
+          "locator": "PDF p2 appeal 00772 motion",
+          "qualification": "Not a development/building permit or as-built evidence."
+        }
+      ],
+      "locators": [
+        "PDF p1 appeal 00772: present zoning/use and requested rear setback relaxation",
+        "PDF p2 appeal 00772 motion and carried result"
+      ],
+      "http_status": 200,
+      "access_inspection_status": "PDF bytes obtained; pypdf text and visual inspection of pp1-2 only.",
+      "sha256": "a3ee3170964f7e5f07a7aa23b12d9bef6228dcbaf21ea3eb798b733e53b2a99a",
+      "byte_length": 108643,
+      "hash_scope": "Exact original PDF response bytes obtained. Hash identifies content, not legal authority.",
+      "rights_retention": {
+        "redistribution_authorized": false,
+        "disposition": "Citation metadata and original short factual summaries only in Git. Inspection copies outside Git; no authorized durable/shared source bundle.",
+        "rights_basis": "RG-rights; public access is not a reuse licence. Third-party drawing rights would require separate resolution.",
+        "local_retention": "Temporary task-owned inspection copies; retained outside Git for handoff; future retention/reuse unresolved."
+      },
+      "supersession_linkage": [],
+      "gaps": [],
+      "version_date_note": "Null overall revision/effective dates mean unverified; dated marginal/footer annotations are retained separately in date_evidence and are not a certified consolidation date."
+    },
+    {
+      "source_id": "RG-schedule-m",
+      "primary_url": "https://www.victoria.ca/media/file/schedule-mpdf",
+      "title": "Schedule M - Garden Suites",
+      "type": "office_consolidation",
+      "retrieved_at": "2026-09-25T03:01:22.619954+00:00",
+      "retrieval_time_basis": "UTC timestamp of direct HTTP response; for blocked PDFs this timestamps the failed retrieval, not index capture",
+      "printed_date": null,
+      "revision_date": null,
+      "effective_date": null,
+      "adoption_date": null,
+      "issue_date": null,
+      "date_evidence": [
+        {
+          "date": "2017-04-13",
+          "kind": "adoption_annotation",
+          "locator": "PDF p2 footer: 17-001",
+          "qualification": "Annotation in current download; no historical certified snapshot."
+        },
+        {
+          "date": "2019-08-08",
+          "kind": "adoption_amendment_annotation",
+          "locator": "PDF pp1-2: 19-086",
+          "qualification": "Annotation in current download; complete subsequent applicability unverified."
+        }
+      ],
+      "locators": [
+        "PDF p1 sections 1, 2(a)-(e), 3; footer definition reference",
+        "PDF p2 sections 5-6 and adoption annotations"
+      ],
+      "http_status": 200,
+      "access_inspection_status": "PDF bytes obtained; text and visual inspection of pp1-2.",
+      "sha256": "e8850a9e48f203d9074963a0c42038c3de983a84ff2e76cc05842325901c0ac7",
+      "byte_length": 246617,
+      "hash_scope": "Exact original PDF response bytes obtained. Hash identifies content, not legal authority.",
+      "rights_retention": {
+        "redistribution_authorized": false,
+        "disposition": "Citation metadata and original short factual summaries only in Git. Inspection copies outside Git; no authorized durable/shared source bundle.",
+        "rights_basis": "RG-rights; public access is not a reuse licence. Third-party drawing rights would require separate resolution.",
+        "local_retention": "Temporary task-owned inspection copies; retained outside Git for handoff; future retention/reuse unresolved."
+      },
+      "supersession_linkage": [
+        "Same bytes as frozen stannard-reference manifest schedule_m; distinct research capture, existing ID unchanged."
+      ],
+      "gaps": [
+        "No certified historical instrument or complete amendment chain."
+      ],
+      "version_date_note": "Null overall revision/effective dates mean unverified; dated marginal/footer annotations are retained separately in date_evidence and are not a certified consolidation date."
+    },
+    {
+      "source_id": "RG-general",
+      "primary_url": "https://www.victoria.ca/media/file/zoning-regulation-bylaw-general-regulations",
+      "title": "Zoning Regulation Bylaw 80-159: Introduction and General Regulations",
+      "type": "office_consolidation",
+      "retrieved_at": "2026-09-25T03:01:23.434453+00:00",
+      "retrieval_time_basis": "UTC timestamp of direct HTTP response; for blocked PDFs this timestamps the failed retrieval, not index capture",
+      "printed_date": null,
+      "revision_date": null,
+      "effective_date": null,
+      "adoption_date": null,
+      "issue_date": null,
+      "date_evidence": [
+        {
+          "date": "2024-06-30",
+          "kind": "amendment_annotation",
+          "locator": "PDF pp9-10: 24-035, section 52",
+          "qualification": "Not separately verified adopted instrument or effective-date clause."
+        },
+        {
+          "date": "2025-10-02",
+          "kind": "later_amendment_annotation",
+          "locator": "PDF p10: 25-051",
+          "qualification": "Confirms current download contains post-cutoff material."
+        }
+      ],
+      "locators": [
+        "PDF p9 section 52(1)(d), 52(2); surrounding 52(1)(a)-(f)",
+        "PDF p10 amendment list"
+      ],
+      "http_status": 200,
+      "access_inspection_status": "PDF bytes obtained; text inspected for section 52/context; visual inspection pp9-10.",
+      "sha256": "eff1aa5578fa5d3416c3177c28538889567f6488b837dff0bd0ed8c97d1e6d8d",
+      "byte_length": 229569,
+      "hash_scope": "Exact original PDF response bytes obtained. Hash identifies content, not legal authority.",
+      "rights_retention": {
+        "redistribution_authorized": false,
+        "disposition": "Citation metadata and original short factual summaries only in Git. Inspection copies outside Git; no authorized durable/shared source bundle.",
+        "rights_basis": "RG-rights; public access is not a reuse licence. Third-party drawing rights would require separate resolution.",
+        "local_retention": "Temporary task-owned inspection copies; retained outside Git for handoff; future retention/reuse unresolved."
+      },
+      "supersession_linkage": [
+        "Section 52 refers to Schedule M and Schedule P; applicable zone, historical definitions and exceptions unresolved.",
+        "Same bytes as frozen stannard-reference manifest general; original ID unchanged."
+      ],
+      "gaps": [
+        "No certified historical instrument or complete amendment chain."
+      ],
+      "version_date_note": "Null overall revision/effective dates mean unverified; dated marginal/footer annotations are retained separately in date_evidence and are not a certified consolidation date."
+    },
+    {
+      "source_id": "RG-definitions",
+      "primary_url": "https://www.victoria.ca/media/1195",
+      "title": "Schedule A - Definitions",
+      "type": "office_consolidation",
+      "retrieved_at": "2026-09-25T03:01:25.809526+00:00",
+      "retrieval_time_basis": "UTC timestamp of direct HTTP response; for blocked PDFs this timestamps the failed retrieval, not index capture",
+      "printed_date": null,
+      "revision_date": null,
+      "effective_date": null,
+      "adoption_date": null,
+      "issue_date": null,
+      "date_evidence": [
+        {
+          "date": "2026-05-28",
+          "kind": "adoption_amendment_annotation",
+          "locator": "PDF p17 and p22: 26-048, Restricted zone",
+          "qualification": "Post-cutoff definition; cannot be backdated to 2024."
+        },
+        {
+          "date": "2024-06-30",
+          "kind": "adoption_annotation",
+          "locator": "PDF p22: 24-035 adds Restricted zone",
+          "qualification": "Historical text not supplied by this later consolidation."
+        }
+      ],
+      "locators": [
+        "PDF p16 Rear Lot Line and Rear Yard, including diagrams",
+        "PDF p17 Restricted zone and amendment annotation",
+        "PDF p18 Setback or Line of Setback, including diagram; Single Family Dwelling",
+        "PDF p22 amendment table"
+      ],
+      "http_status": 200,
+      "access_inspection_status": "PDF bytes obtained; selected text and visual inspection pp16-18,22; not a full definitions audit.",
+      "sha256": "2e8ff4dc88cc4eb0b52c449721e68bb54888353bec1534007cc55e7d2f0caaf8",
+      "byte_length": 4947222,
+      "hash_scope": "Exact original PDF response bytes obtained. Hash identifies content, not legal authority.",
+      "rights_retention": {
+        "redistribution_authorized": false,
+        "disposition": "Citation metadata and original short factual summaries only in Git. Inspection copies outside Git; no authorized durable/shared source bundle.",
+        "rights_basis": "RG-rights; public access is not a reuse licence. Third-party drawing rights would require separate resolution.",
+        "local_retention": "Temporary task-owned inspection copies; retained outside Git for handoff; future retention/reuse unresolved."
+      },
+      "supersession_linkage": [
+        "Same bytes as frozen stannard-reference manifest defs; current URL /media/1195; existing ID unchanged."
+      ],
+      "gaps": [
+        "No certified historical instrument or complete amendment chain."
+      ],
+      "version_date_note": "Null overall revision/effective dates mean unverified; dated marginal/footer annotations are retained separately in date_evidence and are not a certified consolidation date."
+    },
+    {
+      "source_id": "RG-rights",
+      "primary_url": "https://www.victoria.ca/legal-disclaimer",
+      "title": "City of Victoria Legal Disclaimer",
+      "type": "website_terms",
+      "retrieved_at": "2026-09-25T03:01:26.516482+00:00",
+      "retrieval_time_basis": "UTC timestamp of direct HTTP response; for blocked PDFs this timestamps the failed retrieval, not index capture",
+      "printed_date": null,
+      "revision_date": null,
+      "effective_date": null,
+      "adoption_date": null,
+      "issue_date": null,
+      "date_evidence": [],
+      "locators": [
+        "Copyright",
+        "Electronic Documentation",
+        "Accuracy of Information"
+      ],
+      "http_status": 200,
+      "access_inspection_status": "HTML relevant sections read; no permission grant obtained.",
+      "sha256": "f13ceca8d10d80df18886f4e2a8eea9666f5e6ea2737e4b1862f6e482851fc47",
+      "byte_length": 138864,
+      "hash_scope": "Exact HTTP response bytes obtained; HTML is dynamic and includes transport/form state. Hash is not legal authority.",
+      "rights_retention": {
+        "redistribution_authorized": false,
+        "disposition": "Citation metadata and original short factual summaries only in Git. Inspection copies outside Git; no authorized durable/shared source bundle.",
+        "rights_basis": "RG-rights; public access is not a reuse licence. Third-party drawing rights would require separate resolution.",
+        "local_retention": "Temporary task-owned inspection copies; retained outside Git for handoff; future retention/reuse unresolved."
+      },
+      "supersession_linkage": [],
+      "gaps": [],
+      "version_date_note": "Null overall revision/effective dates mean unverified; dated marginal/footer annotations are retained separately in date_evidence and are not a certified consolidation date."
+    },
+    {
+      "source_id": "RG-entry-tracker",
+      "primary_url": "https://www.victoria.ca/building-business/permits-development-construction/development-tracker",
+      "title": "City of Victoria Development Tracker guidance",
+      "type": "discovery_entry",
+      "retrieved_at": "2026-09-25T03:03:04.351134+00:00",
+      "retrieval_time_basis": "UTC timestamp of direct HTTP response; for blocked PDFs this timestamps the failed retrieval, not index capture",
+      "printed_date": null,
+      "revision_date": null,
+      "effective_date": null,
+      "adoption_date": null,
+      "issue_date": null,
+      "date_evidence": [],
+      "locators": [
+        "Proceed as a guest; Using the Development Tracker"
+      ],
+      "http_status": 200,
+      "access_inspection_status": "Page read; guest search used without account creation.",
+      "sha256": "343da0f9b28860ce96f93f2b9e94ce18f16fad938e58361d0d59c7ed76f6e2a1",
+      "byte_length": 163123,
+      "hash_scope": "Exact HTTP response bytes obtained; HTML is dynamic and includes transport/form state. Hash is not legal authority.",
+      "rights_retention": {
+        "redistribution_authorized": false,
+        "disposition": "Citation metadata and original short factual summaries only in Git. Inspection copies outside Git; no authorized durable/shared source bundle.",
+        "rights_basis": "RG-rights; public access is not a reuse licence. Third-party drawing rights would require separate resolution.",
+        "local_retention": "Temporary task-owned inspection copies; retained outside Git for handoff; future retention/reuse unresolved."
+      },
+      "supersession_linkage": [
+        "Links to Prospero search.aspx; selected record RG-warren."
+      ],
+      "gaps": [],
+      "version_date_note": "Null overall revision/effective dates mean unverified; dated marginal/footer annotations are retained separately in date_evidence and are not a certified consolidation date."
+    },
+    {
+      "source_id": "RG-entry-zoning",
+      "primary_url": "https://www.victoria.ca/building-business/permits-development-construction/zoning/zoning-regulation-bylaw",
+      "title": "City of Victoria Zoning Regulation Bylaw directory",
+      "type": "discovery_entry",
+      "retrieved_at": "2026-09-25T03:03:04.957373+00:00",
+      "retrieval_time_basis": "UTC timestamp of direct HTTP response; for blocked PDFs this timestamps the failed retrieval, not index capture",
+      "printed_date": null,
+      "revision_date": null,
+      "effective_date": null,
+      "adoption_date": null,
+      "issue_date": null,
+      "date_evidence": [],
+      "locators": [
+        "Office-consolidation warning; bylaw sections"
+      ],
+      "http_status": 200,
+      "access_inspection_status": "Page read; describes electronic copies as office consolidations.",
+      "sha256": "55a862c037378953500c5bb5d9e2644cb197d6244d93ac581cc15c71931e4caf",
+      "byte_length": 436640,
+      "hash_scope": "Exact HTTP response bytes obtained; HTML is dynamic and includes transport/form state. Hash is not legal authority.",
+      "rights_retention": {
+        "redistribution_authorized": false,
+        "disposition": "Citation metadata and original short factual summaries only in Git. Inspection copies outside Git; no authorized durable/shared source bundle.",
+        "rights_basis": "RG-rights; public access is not a reuse licence. Third-party drawing rights would require separate resolution.",
+        "local_retention": "Temporary task-owned inspection copies; retained outside Git for handoff; future retention/reuse unresolved."
+      },
+      "supersession_linkage": [
+        "Schedule M, Schedule A and General Regulations are separate documents."
+      ],
+      "gaps": [],
+      "version_date_note": "Null overall revision/effective dates mean unverified; dated marginal/footer annotations are retained separately in date_evidence and are not a certified consolidation date."
+    },
+    {
+      "source_id": "RG-richmond-report",
+      "primary_url": "https://pub-victoria.escribemeetings.com/filestream.ashx?DocumentId=99782",
+      "title": "Attachment A: Housing target reporting, March 27, 2024",
+      "type": "indexed_primary_lead",
+      "retrieved_at": "2026-09-25T03:03:05.160673+00:00",
+      "retrieval_time_basis": "UTC timestamp of direct HTTP response; for blocked PDFs this timestamps the failed retrieval, not index capture",
+      "printed_date": "2024-03-27",
+      "revision_date": null,
+      "effective_date": null,
+      "adoption_date": null,
+      "issue_date": null,
+      "date_evidence": [],
+      "locators": [
+        "Indexed PDF p5 Section 6(B), item 1: DDP00589, 1048 Richmond Avenue"
+      ],
+      "http_status": 403,
+      "access_inspection_status": "Search-index excerpt only; direct PDF request returned HTTP 403. No full read or visual inspection.",
+      "sha256": null,
+      "byte_length": null,
+      "hash_scope": null,
+      "rights_retention": {
+        "redistribution_authorized": false,
+        "disposition": "Citation metadata and original short factual summaries only in Git. Inspection copies outside Git; no authorized durable/shared source bundle.",
+        "rights_basis": "RG-rights; public access is not a reuse licence. Third-party drawing rights would require separate resolution.",
+        "local_retention": "No substantive document bytes obtained; only failed-response scratch. No authorized durable/shared source bundle."
+      },
+      "supersession_linkage": [
+        "Discovery lead for DDP00589; indexed closure statement is not a refusal decision."
+      ],
+      "gaps": [
+        "Full PDF and visual verification unavailable."
+      ],
+      "version_date_note": "Null overall revision/effective dates mean unverified; dated marginal/footer annotations are retained separately in date_evidence and are not a certified consolidation date."
+    },
+    {
+      "source_id": "RG-montrose-monthly",
+      "primary_url": "https://pub-victoria.escribemeetings.com/filestream.ashx?DocumentId=64632",
+      "title": "Consolidated Monthly Reporting - October 2020, Development Services",
+      "type": "indexed_primary_lead",
+      "retrieved_at": "2026-09-25T03:03:05.344942+00:00",
+      "retrieval_time_basis": "UTC timestamp of direct HTTP response; for blocked PDFs this timestamps the failed retrieval, not index capture",
+      "printed_date": null,
+      "revision_date": null,
+      "effective_date": null,
+      "adoption_date": null,
+      "issue_date": null,
+      "date_evidence": [],
+      "locators": [
+        "Indexed PDF p1 Delegated Permits Completed, 1275 Montrose Avenue; Applications Received"
+      ],
+      "http_status": 403,
+      "access_inspection_status": "Search-index excerpt only; direct PDF request returned HTTP 403. No full read or visual inspection.",
+      "sha256": null,
+      "byte_length": null,
+      "hash_scope": null,
+      "rights_retention": {
+        "redistribution_authorized": false,
+        "disposition": "Citation metadata and original short factual summaries only in Git. Inspection copies outside Git; no authorized durable/shared source bundle.",
+        "rights_basis": "RG-rights; public access is not a reuse licence. Third-party drawing rights would require separate resolution.",
+        "local_retention": "No substantive document bytes obtained; only failed-response scratch. No authorized durable/shared source bundle."
+      },
+      "supersession_linkage": [
+        "Potential later revision lead for Montrose group; no alias or approved plan revision inferred."
+      ],
+      "gaps": [
+        "Full PDF and visual verification unavailable."
+      ],
+      "version_date_note": "Null overall revision/effective dates mean unverified; dated marginal/footer annotations are retained separately in date_evidence and are not a certified consolidation date."
+    }
+  ]
+}
