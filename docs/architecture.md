@@ -108,4 +108,11 @@ to obtain one reviewable real case before choosing further conditional semantics
 publication scope. File-based intake and release tooling can follow concrete supplied
 inputs; source acceptance and external input supply remain separate from code delivery.
 
+The [wave-eight experiment](backlog/wave-eight-prompts.md) now uses the provisional
+historical Pilot proposal for an offline mapping attempt. Current accepted-rule and
+source/input boundaries remain unchanged: preparation failure is distinct from an
+EvaluationReport and must not acquire invented reviews or source hashes. Specific
+approved-plan acquisition proceeds separately. This tests actual intake gaps before
+any shared-contract change; it does not add a production service or accepted release.
+
 Defer multi-agent ingestion, vector databases, knowledge graphs, microservices, elaborate cloud infrastructure, custom model training, and a commercial third-party API. Record any later adoption in a decision note with the observed need, simpler alternatives, and revisit criteria.

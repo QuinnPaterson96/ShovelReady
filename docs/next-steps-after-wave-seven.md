@@ -3,6 +3,12 @@
 September 24, 2026. This is a proposed sequence grounded in merged PRs #68/#69 and
 [their integration evidence](integration-wave-seven.md), not newly dispatched work.
 
+September 25 update: research PRs #71-#73 and the [case review](research/case-readiness/review-2026-09-25.md)
+now support [SR-34/SR-35](backlog/wave-eight-prompts.md): an offline historical Pilot
+intake attempt and specifically identified approved-plan acquisition. These tasks
+can proceed while independent acceptance remains outstanding. This advances the
+preparation part of assignment 1 below, not accepted publication or current-site fit.
+
 ## Immediate objective
 
 Make one actual design/site/placement case useful for investigation, with one or two

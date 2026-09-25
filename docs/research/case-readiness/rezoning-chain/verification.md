@@ -186,3 +186,19 @@ references and relative links, provisional/benchmark flags and null verified dat
 application/database tests are not relevant and were not run. Personal CLI account
 and effective author/committer were reverified with the commands above. Final-head
 CI remains a separate integration check; no merge authorized or performed.
+
+## Integrator observation and merge (September 25, 2026)
+
+PR #73 was refreshed against merged PRs #71/#72 and merged at head
+`50a4114161e8e59cb609c0d5baa11e72c9e6b43a` after all four required CI jobs and
+GitGuardian passed. Merge commit: `3161c12bda0239f28476d4bcfae8a79d3dffc843`.
+This is subsequent integration work; the task's original verification above is
+retained as history.
+
+The integrator independently read the free guest Property Information Portal
+report via address selection and All Permits on Selected Properties. Added
+`RC-PIP` with three permit observations, property identifiers and report aliases.
+No original source record changed. No report export, exact timestamp, hash,
+personal details, source bytes or session URL retained. No new PDF dimension
+inspection, legal review, acceptance, publication or request submission occurred.
+See [the review](../review-2026-09-25.md) for combined integration verification.
