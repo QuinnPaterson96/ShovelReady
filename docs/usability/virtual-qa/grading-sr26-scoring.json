@@ -1,0 +1,73 @@
+{
+  "schema_version": "virtual-qa-scoring/v1",
+  "revision": "sr26-retrospective-1",
+  "pin": {
+    "case_id": "sr26-report-vic080",
+    "revision": "report-example-1",
+    "rubric_revision": "report-subset-1",
+    "case_sha256": "5f2fae72d646cde0d5af16dcf85b9e6048559cb18989610f06c5c4a6e92cb165"
+  },
+  "rubric": {
+    "revision": "report-subset-1",
+    "expectations": [
+      {
+        "check_id": "next-information",
+        "claim": "Request explicit existing principal-building use/count and frontage verification; retrospective completeness expectation only, not a scored hidden-fact requirement.",
+        "kind": "authored_software_expectation",
+        "scored": false,
+        "basis": null,
+        "evidence": [
+          {
+            "uri": "https://github.com/QuinnPaterson96/ShovelReady/blob/eb9ba0212e170dd15ad85fa58176ca3010b03c05/docs/usability/wave-five/findings.md",
+            "revision": {
+              "value": "eb9ba0212e170dd15ad85fa58176ca3010b03c05",
+              "unknown_reason": null
+            },
+            "locator": "Assessment item 6 and findings ledger: Agent omission"
+          },
+          {
+            "uri": "https://github.com/QuinnPaterson96/ShovelReady/blob/eb9ba0212e170dd15ad85fa58176ca3010b03c05/docs/usability/wave-five/participant-note.md",
+            "revision": {
+              "value": "eb9ba0212e170dd15ad85fa58176ca3010b03c05",
+              "unknown_reason": null
+            },
+            "locator": "Participant final response: next-information paragraph"
+          },
+          {
+            "uri": "https://github.com/QuinnPaterson96/ShovelReady/blob/eb9ba0212e170dd15ad85fa58176ca3010b03c05/docs/usability/wave-five/withheld-rubric.md",
+            "revision": {
+              "value": "eb9ba0212e170dd15ad85fa58176ca3010b03c05",
+              "unknown_reason": null
+            },
+            "locator": "Item 6; hidden facts are not participant input"
+          }
+        ],
+        "review": {
+          "status": "unreviewed",
+          "reviewer": {
+            "value": null,
+            "unknown_reason": "No new independent review for this transcription."
+          },
+          "reviewed_at": {
+            "value": null,
+            "unknown_reason": "No new review performed."
+          },
+          "rationale": "Report-derived observation of the response, not accepted legal truth or a scored hidden-fact requirement.",
+          "disagreements": [
+            "The broad brief did not explicitly enumerate these facts; omission does not establish a UI defect or justify a retroactive penalty."
+          ]
+        }
+      }
+    ],
+    "disagreements": [],
+    "seeded_fault": null
+  },
+  "critical_checks": {
+    "value": null,
+    "unknown_reason": "Retrospective unscored subset; no prospective critical policy."
+  },
+  "frozen_at": {
+    "value": null,
+    "unknown_reason": "Retrospective example, never dispatched."
+  }
+}
