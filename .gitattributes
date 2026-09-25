@@ -1,0 +1,2 @@
+# Retained synthetic source bytes must hash identically across Windows and Linux.
+app/draft_evaluations/inputs/arithmetic.md text eol=lf

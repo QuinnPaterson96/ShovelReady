@@ -1,0 +1,843 @@
+{
+  "schema_version": "sr-10.v1",
+  "evaluator_version": "bounded-scalar.v1",
+  "evaluation_id": "draft-demo:synthetic-direct-pass:v1",
+  "draft": {
+    "logical_id": "synthetic-draft",
+    "revision_id": "synthetic-draft-r1"
+  },
+  "data_state": "draft_only",
+  "sources": [
+    {
+      "schema_version": "sr-04.v1-provisional",
+      "source_id": "synthetic-arithmetic",
+      "snapshot_id": "synthetic-arithmetic",
+      "category": "test_fixture",
+      "jurisdiction": "synthetic",
+      "instrument": "arithmetic oracle",
+      "source_url": "repo:app/draft_evaluations/inputs/arithmetic.md",
+      "artifact": {
+        "uri": "repo:app/draft_evaluations/inputs/arithmetic.md",
+        "sha256": "c31451ccc1ab21e8ca3f7d458ac1f3c9b39ebe57b20d21d8e43e88fff30da426"
+      },
+      "captured_at": "2026-09-24T12:00:00Z",
+      "printed_revision": null,
+      "effective_from": null,
+      "effective_to": null,
+      "effective_date_evidence": [],
+      "original_crs": null,
+      "original_units": [
+        "m"
+      ],
+      "reuse_constraints": "Synthetic tests only",
+      "review": {
+        "status": "accepted",
+        "reviewer": "synthetic-test-author",
+        "reviewed_at": "2026-09-24T12:00:00Z",
+        "scope": "synthetic arithmetic only",
+        "rationale": "Invented fixture, not professional review or legal evidence"
+      }
+    }
+  ],
+  "design": {
+    "schema_version": "sr-04.v1-provisional",
+    "identity": {
+      "logical_id": "design-demo",
+      "revision_id": "design-r1"
+    },
+    "configuration": "Synthetic fixed rectangle, not The Landing",
+    "adaptability": "fixed",
+    "intended_use": "garden suite",
+    "construction_method": "prefabricated",
+    "measurements": [
+      {
+        "name": "manufacturer_interior_area",
+        "domain": "physical",
+        "definition": "Synthetic explicit measurement basis",
+        "status": "known",
+        "quantity": {
+          "original_text": "40 m2",
+          "original_value": "40",
+          "original_unit": "m2",
+          "dimension": "area",
+          "value": "40",
+          "unit": "m2",
+          "basis": null
+        },
+        "reason": null,
+        "provenance": {
+          "method": "supplied",
+          "evidence": [
+            {
+              "snapshot_id": "synthetic-arithmetic",
+              "locator": "Independent expected arithmetic",
+              "page_index": null,
+              "printed_page": null,
+              "excerpt": "Invented width <= 10 metres; compare 10, absent, or 11 metres.",
+              "context": "Invented evaluator software test; no municipal source"
+            }
+          ],
+          "review": {
+            "status": "accepted",
+            "reviewer": "synthetic-test-author",
+            "reviewed_at": "2026-09-24T12:00:00Z",
+            "scope": "synthetic arithmetic only",
+            "rationale": "Invented fixture, not professional review or legal evidence"
+          },
+          "uncertainty": []
+        }
+      },
+      {
+        "name": "nominal_exterior_width",
+        "domain": "physical",
+        "definition": "Synthetic explicit measurement basis",
+        "status": "known",
+        "quantity": {
+          "original_text": "5 m",
+          "original_value": "5",
+          "original_unit": "m",
+          "dimension": "length",
+          "value": "5",
+          "unit": "m",
+          "basis": null
+        },
+        "reason": null,
+        "provenance": {
+          "method": "supplied",
+          "evidence": [
+            {
+              "snapshot_id": "synthetic-arithmetic",
+              "locator": "Independent expected arithmetic",
+              "page_index": null,
+              "printed_page": null,
+              "excerpt": "Invented width <= 10 metres; compare 10, absent, or 11 metres.",
+              "context": "Invented evaluator software test; no municipal source"
+            }
+          ],
+          "review": {
+            "status": "accepted",
+            "reviewer": "synthetic-test-author",
+            "reviewed_at": "2026-09-24T12:00:00Z",
+            "scope": "synthetic arithmetic only",
+            "rationale": "Invented fixture, not professional review or legal evidence"
+          },
+          "uncertainty": []
+        }
+      },
+      {
+        "name": "nominal_exterior_depth",
+        "domain": "physical",
+        "definition": "Synthetic explicit measurement basis",
+        "status": "known",
+        "quantity": {
+          "original_text": "9 m",
+          "original_value": "9",
+          "original_unit": "m",
+          "dimension": "length",
+          "value": "9",
+          "unit": "m",
+          "basis": null
+        },
+        "reason": null,
+        "provenance": {
+          "method": "supplied",
+          "evidence": [
+            {
+              "snapshot_id": "synthetic-arithmetic",
+              "locator": "Independent expected arithmetic",
+              "page_index": null,
+              "printed_page": null,
+              "excerpt": "Invented width <= 10 metres; compare 10, absent, or 11 metres.",
+              "context": "Invented evaluator software test; no municipal source"
+            }
+          ],
+          "review": {
+            "status": "accepted",
+            "reviewer": "synthetic-test-author",
+            "reviewed_at": "2026-09-24T12:00:00Z",
+            "scope": "synthetic arithmetic only",
+            "rationale": "Invented fixture, not professional review or legal evidence"
+          },
+          "uncertainty": []
+        }
+      },
+      {
+        "name": "occupancy_footprint",
+        "domain": "physical",
+        "definition": "Synthetic explicit measurement basis",
+        "status": "known",
+        "quantity": {
+          "original_text": "45 m2",
+          "original_value": "45",
+          "original_unit": "m2",
+          "dimension": "area",
+          "value": "45",
+          "unit": "m2",
+          "basis": null
+        },
+        "reason": null,
+        "provenance": {
+          "method": "supplied",
+          "evidence": [
+            {
+              "snapshot_id": "synthetic-arithmetic",
+              "locator": "Independent expected arithmetic",
+              "page_index": null,
+              "printed_page": null,
+              "excerpt": "Invented width <= 10 metres; compare 10, absent, or 11 metres.",
+              "context": "Invented evaluator software test; no municipal source"
+            }
+          ],
+          "review": {
+            "status": "accepted",
+            "reviewer": "synthetic-test-author",
+            "reviewed_at": "2026-09-24T12:00:00Z",
+            "scope": "synthetic arithmetic only",
+            "rationale": "Invented fixture, not professional review or legal evidence"
+          },
+          "uncertainty": []
+        }
+      },
+      {
+        "name": "ceiling_height",
+        "domain": "physical",
+        "definition": "Synthetic explicit measurement basis",
+        "status": "known",
+        "quantity": {
+          "original_text": "2.4 m",
+          "original_value": "2.4",
+          "original_unit": "m",
+          "dimension": "length",
+          "value": "2.4",
+          "unit": "m",
+          "basis": null
+        },
+        "reason": null,
+        "provenance": {
+          "method": "supplied",
+          "evidence": [
+            {
+              "snapshot_id": "synthetic-arithmetic",
+              "locator": "Independent expected arithmetic",
+              "page_index": null,
+              "printed_page": null,
+              "excerpt": "Invented width <= 10 metres; compare 10, absent, or 11 metres.",
+              "context": "Invented evaluator software test; no municipal source"
+            }
+          ],
+          "review": {
+            "status": "accepted",
+            "reviewer": "synthetic-test-author",
+            "reviewed_at": "2026-09-24T12:00:00Z",
+            "scope": "synthetic arithmetic only",
+            "rationale": "Invented fixture, not professional review or legal evidence"
+          },
+          "uncertainty": []
+        }
+      },
+      {
+        "name": "regulatory_floor_area",
+        "domain": "regulatory",
+        "definition": "Await applicable area accounting",
+        "status": "missing",
+        "quantity": null,
+        "reason": "No reviewed regulatory definition",
+        "provenance": {
+          "method": "supplied",
+          "evidence": [
+            {
+              "snapshot_id": "synthetic-arithmetic",
+              "locator": "Independent expected arithmetic",
+              "page_index": null,
+              "printed_page": null,
+              "excerpt": "Invented width <= 10 metres; compare 10, absent, or 11 metres.",
+              "context": "Invented evaluator software test; no municipal source"
+            }
+          ],
+          "review": {
+            "status": "accepted",
+            "reviewer": "synthetic-test-author",
+            "reviewed_at": "2026-09-24T12:00:00Z",
+            "scope": "synthetic arithmetic only",
+            "rationale": "Invented fixture, not professional review or legal evidence"
+          },
+          "uncertainty": []
+        }
+      },
+      {
+        "name": "roof_height",
+        "domain": "physical",
+        "definition": "Roof peak from foundation datum",
+        "status": "missing",
+        "quantity": null,
+        "reason": "Ceiling height is insufficient",
+        "provenance": {
+          "method": "supplied",
+          "evidence": [
+            {
+              "snapshot_id": "synthetic-arithmetic",
+              "locator": "Independent expected arithmetic",
+              "page_index": null,
+              "printed_page": null,
+              "excerpt": "Invented width <= 10 metres; compare 10, absent, or 11 metres.",
+              "context": "Invented evaluator software test; no municipal source"
+            }
+          ],
+          "review": {
+            "status": "accepted",
+            "reviewer": "synthetic-test-author",
+            "reviewed_at": "2026-09-24T12:00:00Z",
+            "scope": "synthetic arithmetic only",
+            "rationale": "Invented fixture, not professional review or legal evidence"
+          },
+          "uncertainty": []
+        }
+      }
+    ],
+    "provenance": {
+      "method": "supplied",
+      "evidence": [
+        {
+          "snapshot_id": "synthetic-arithmetic",
+          "locator": "Independent expected arithmetic",
+          "page_index": null,
+          "printed_page": null,
+          "excerpt": "Invented width <= 10 metres; compare 10, absent, or 11 metres.",
+          "context": "Invented evaluator software test; no municipal source"
+        }
+      ],
+      "review": {
+        "status": "accepted",
+        "reviewer": "synthetic-test-author",
+        "reviewed_at": "2026-09-24T12:00:00Z",
+        "scope": "synthetic arithmetic only",
+        "rationale": "Invented fixture, not professional review or legal evidence"
+      },
+      "uncertainty": []
+    }
+  },
+  "site": {
+    "schema_version": "sr-04.v1-provisional",
+    "identity": {
+      "logical_id": "site-demo",
+      "revision_id": "site-r1"
+    },
+    "jurisdiction": "synthetic",
+    "measurements": [],
+    "geometry_facts": [
+      {
+        "fact_id": "parcel",
+        "role": "parcel",
+        "status": "known",
+        "geometry": {
+          "kind": "polygon",
+          "coordinates": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "10",
+              "0"
+            ],
+            [
+              "10",
+              "10"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          "crs": {
+            "identifier": "local:synthetic-site",
+            "axis_order": "x_y",
+            "unit": "m",
+            "definition": "Synthetic local origin; no geographic position claimed"
+          }
+        },
+        "lot_line_classification": null,
+        "reason": null,
+        "provenance": {
+          "method": "supplied",
+          "evidence": [
+            {
+              "snapshot_id": "synthetic-arithmetic",
+              "locator": "Independent expected arithmetic",
+              "page_index": null,
+              "printed_page": null,
+              "excerpt": "Invented width <= 10 metres; compare 10, absent, or 11 metres.",
+              "context": "Invented evaluator software test; no municipal source"
+            }
+          ],
+          "review": {
+            "status": "accepted",
+            "reviewer": "synthetic-test-author",
+            "reviewed_at": "2026-09-24T12:00:00Z",
+            "scope": "synthetic arithmetic only",
+            "rationale": "Invented fixture, not professional review or legal evidence"
+          },
+          "uncertainty": []
+        }
+      },
+      {
+        "fact_id": "principal_building",
+        "role": "principal_building",
+        "status": "known",
+        "geometry": {
+          "kind": "polygon",
+          "coordinates": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "10",
+              "0"
+            ],
+            [
+              "10",
+              "10"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          "crs": {
+            "identifier": "local:synthetic-site",
+            "axis_order": "x_y",
+            "unit": "m",
+            "definition": "Synthetic local origin; no geographic position claimed"
+          }
+        },
+        "lot_line_classification": null,
+        "reason": null,
+        "provenance": {
+          "method": "supplied",
+          "evidence": [
+            {
+              "snapshot_id": "synthetic-arithmetic",
+              "locator": "Independent expected arithmetic",
+              "page_index": null,
+              "printed_page": null,
+              "excerpt": "Invented width <= 10 metres; compare 10, absent, or 11 metres.",
+              "context": "Invented evaluator software test; no municipal source"
+            }
+          ],
+          "review": {
+            "status": "accepted",
+            "reviewer": "synthetic-test-author",
+            "reviewed_at": "2026-09-24T12:00:00Z",
+            "scope": "synthetic arithmetic only",
+            "rationale": "Invented fixture, not professional review or legal evidence"
+          },
+          "uncertainty": []
+        }
+      },
+      {
+        "fact_id": "lot_line",
+        "role": "lot_line",
+        "status": "known",
+        "geometry": {
+          "kind": "line",
+          "coordinates": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "10",
+              "0"
+            ]
+          ],
+          "crs": {
+            "identifier": "local:synthetic-site",
+            "axis_order": "x_y",
+            "unit": "m",
+            "definition": "Synthetic local origin; no geographic position claimed"
+          }
+        },
+        "lot_line_classification": "rear",
+        "reason": null,
+        "provenance": {
+          "method": "supplied",
+          "evidence": [
+            {
+              "snapshot_id": "synthetic-arithmetic",
+              "locator": "Independent expected arithmetic",
+              "page_index": null,
+              "printed_page": null,
+              "excerpt": "Invented width <= 10 metres; compare 10, absent, or 11 metres.",
+              "context": "Invented evaluator software test; no municipal source"
+            }
+          ],
+          "review": {
+            "status": "accepted",
+            "reviewer": "synthetic-test-author",
+            "reviewed_at": "2026-09-24T12:00:00Z",
+            "scope": "synthetic arithmetic only",
+            "rationale": "Invented fixture, not professional review or legal evidence"
+          },
+          "uncertainty": []
+        }
+      },
+      {
+        "fact_id": "rear_yard",
+        "role": "rear_yard",
+        "status": "known",
+        "geometry": {
+          "kind": "polygon",
+          "coordinates": [
+            [
+              "0",
+              "0"
+            ],
+            [
+              "10",
+              "0"
+            ],
+            [
+              "10",
+              "10"
+            ],
+            [
+              "0",
+              "0"
+            ]
+          ],
+          "crs": {
+            "identifier": "local:synthetic-site",
+            "axis_order": "x_y",
+            "unit": "m",
+            "definition": "Synthetic local origin; no geographic position claimed"
+          }
+        },
+        "lot_line_classification": null,
+        "reason": null,
+        "provenance": {
+          "method": "supplied",
+          "evidence": [
+            {
+              "snapshot_id": "synthetic-arithmetic",
+              "locator": "Independent expected arithmetic",
+              "page_index": null,
+              "printed_page": null,
+              "excerpt": "Invented width <= 10 metres; compare 10, absent, or 11 metres.",
+              "context": "Invented evaluator software test; no municipal source"
+            }
+          ],
+          "review": {
+            "status": "accepted",
+            "reviewer": "synthetic-test-author",
+            "reviewed_at": "2026-09-24T12:00:00Z",
+            "scope": "synthetic arithmetic only",
+            "rationale": "Invented fixture, not professional review or legal evidence"
+          },
+          "uncertainty": []
+        }
+      }
+    ],
+    "conditions": [],
+    "provenance": {
+      "method": "supplied",
+      "evidence": [
+        {
+          "snapshot_id": "synthetic-arithmetic",
+          "locator": "Independent expected arithmetic",
+          "page_index": null,
+          "printed_page": null,
+          "excerpt": "Invented width <= 10 metres; compare 10, absent, or 11 metres.",
+          "context": "Invented evaluator software test; no municipal source"
+        }
+      ],
+      "review": {
+        "status": "accepted",
+        "reviewer": "synthetic-test-author",
+        "reviewed_at": "2026-09-24T12:00:00Z",
+        "scope": "synthetic arithmetic only",
+        "rationale": "Invented fixture, not professional review or legal evidence"
+      },
+      "uncertainty": []
+    }
+  },
+  "placement": {
+    "schema_version": "sr-04.v1-provisional",
+    "identity": {
+      "logical_id": "placement-demo",
+      "revision_id": "placement-r1"
+    },
+    "site": {
+      "logical_id": "site-demo",
+      "revision_id": "site-r1"
+    },
+    "design": {
+      "logical_id": "design-demo",
+      "revision_id": "design-r1"
+    },
+    "footprint": {
+      "fact_id": "proposed_placement",
+      "role": "proposed_placement",
+      "status": "known",
+      "geometry": {
+        "kind": "polygon",
+        "coordinates": [
+          [
+            "0",
+            "0"
+          ],
+          [
+            "10",
+            "0"
+          ],
+          [
+            "10",
+            "10"
+          ],
+          [
+            "0",
+            "0"
+          ]
+        ],
+        "crs": {
+          "identifier": "local:synthetic-site",
+          "axis_order": "x_y",
+          "unit": "m",
+          "definition": "Synthetic local origin; no geographic position claimed"
+        }
+      },
+      "lot_line_classification": null,
+      "reason": null,
+      "provenance": {
+        "method": "supplied",
+        "evidence": [
+          {
+            "snapshot_id": "synthetic-arithmetic",
+            "locator": "Independent expected arithmetic",
+            "page_index": null,
+            "printed_page": null,
+            "excerpt": "Invented width <= 10 metres; compare 10, absent, or 11 metres.",
+            "context": "Invented evaluator software test; no municipal source"
+          }
+        ],
+        "review": {
+          "status": "accepted",
+          "reviewer": "synthetic-test-author",
+          "reviewed_at": "2026-09-24T12:00:00Z",
+          "scope": "synthetic arithmetic only",
+          "rationale": "Invented fixture, not professional review or legal evidence"
+        },
+        "uncertainty": []
+      }
+    },
+    "scope": "supplied_placement_only"
+  },
+  "scope": {
+    "jurisdiction": "synthetic",
+    "use": "garden suite",
+    "building_role": "accessory",
+    "coverage": "within_coverage",
+    "description": "One invented direct width check",
+    "exclusions": [
+      "All legal use"
+    ],
+    "provenance": {
+      "method": "supplied",
+      "evidence": [
+        {
+          "snapshot_id": "synthetic-arithmetic",
+          "locator": "Independent expected arithmetic",
+          "page_index": null,
+          "printed_page": null,
+          "excerpt": "Invented width <= 10 metres; compare 10, absent, or 11 metres.",
+          "context": "Invented evaluator software test; no municipal source"
+        }
+      ],
+      "review": {
+        "status": "accepted",
+        "reviewer": "synthetic-test-author",
+        "reviewed_at": "2026-09-24T12:00:00Z",
+        "scope": "synthetic arithmetic only",
+        "rationale": "Invented fixture, not professional review or legal evidence"
+      },
+      "uncertainty": []
+    }
+  },
+  "alternatives": [
+    {
+      "pathway_id": "synthetic",
+      "alternative_id": "A",
+      "rules": [
+        {
+          "logical_id": "width-rule",
+          "revision_id": "width-rule-r1"
+        }
+      ]
+    }
+  ],
+  "rules": [
+    {
+      "schema_version": "sr-04.v1-provisional",
+      "identity": {
+        "logical_id": "width-rule",
+        "revision_id": "width-rule-r1"
+      },
+      "candidate_id": "synthetic-candidate",
+      "content": {
+        "pathway_id": "synthetic",
+        "alternative_id": "A",
+        "text": "Invented width <= 10",
+        "evidence": [
+          {
+            "snapshot_id": "synthetic-arithmetic",
+            "locator": "Independent expected arithmetic",
+            "page_index": null,
+            "printed_page": null,
+            "excerpt": "Invented width <= 10 metres; compare 10, absent, or 11 metres.",
+            "context": "Invented evaluator software test; no municipal source"
+          }
+        ],
+        "applicability": {
+          "jurisdiction": "synthetic",
+          "use": "garden suite",
+          "building_role": "accessory",
+          "conditions": [],
+          "exceptions": [],
+          "status": "reviewed_scope"
+        },
+        "approval": "as_of_right",
+        "semantics": {
+          "kind": "scalar_bound",
+          "subject": "width",
+          "measurement_definition": "synthetic measured width",
+          "operator": "<=",
+          "threshold": {
+            "original_text": "10 m",
+            "original_value": "10",
+            "original_unit": "m",
+            "dimension": "length",
+            "value": "10",
+            "unit": "m",
+            "basis": null
+          }
+        },
+        "runtime_support": "supported",
+        "references": []
+      },
+      "review": {
+        "status": "accepted",
+        "reviewer": "synthetic-test-author",
+        "reviewed_at": "2026-09-24T12:00:00Z",
+        "scope": "synthetic arithmetic only",
+        "rationale": "Invented fixture, not professional review or legal evidence"
+      },
+      "supersedes": [],
+      "identity_decision": "Invented initial revision"
+    }
+  ],
+  "facts": [
+    {
+      "identity": {
+        "logical_id": "width-fact",
+        "revision_id": "width-fact-r1"
+      },
+      "inputs": {
+        "design": {
+          "logical_id": "design-demo",
+          "revision_id": "design-r1"
+        },
+        "site": {
+          "logical_id": "site-demo",
+          "revision_id": "site-r1"
+        },
+        "placement": {
+          "logical_id": "placement-demo",
+          "revision_id": "placement-r1"
+        }
+      },
+      "definition": "synthetic measured width",
+      "status": "known",
+      "quantity": {
+        "original_text": "10 m",
+        "original_value": "10",
+        "original_unit": "m",
+        "dimension": "length",
+        "value": "10",
+        "unit": "m",
+        "basis": null
+      },
+      "reason": null,
+      "provenance": {
+        "method": "supplied",
+        "evidence": [
+          {
+            "snapshot_id": "synthetic-arithmetic",
+            "locator": "Independent expected arithmetic",
+            "page_index": null,
+            "printed_page": null,
+            "excerpt": "Invented width <= 10 metres; compare 10, absent, or 11 metres.",
+            "context": "Invented evaluator software test; no municipal source"
+          }
+        ],
+        "review": {
+          "status": "accepted",
+          "reviewer": "synthetic-test-author",
+          "reviewed_at": "2026-09-24T12:00:00Z",
+          "scope": "synthetic arithmetic only",
+          "rationale": "Invented fixture, not professional review or legal evidence"
+        },
+        "uncertainty": []
+      }
+    }
+  ],
+  "bindings": [
+    {
+      "rule": {
+        "logical_id": "width-rule",
+        "revision_id": "width-rule-r1"
+      },
+      "fact": {
+        "logical_id": "width-fact",
+        "revision_id": "width-fact-r1"
+      },
+      "inputs": {
+        "design": {
+          "logical_id": "design-demo",
+          "revision_id": "design-r1"
+        },
+        "site": {
+          "logical_id": "site-demo",
+          "revision_id": "site-r1"
+        },
+        "placement": {
+          "logical_id": "placement-demo",
+          "revision_id": "placement-r1"
+        }
+      },
+      "measurement_definition": "synthetic measured width",
+      "definition_support": "reviewed_direct_measurement",
+      "applicability": "applicable",
+      "provenance": {
+        "method": "supplied",
+        "evidence": [
+          {
+            "snapshot_id": "synthetic-arithmetic",
+            "locator": "Independent expected arithmetic",
+            "page_index": null,
+            "printed_page": null,
+            "excerpt": "Invented width <= 10 metres; compare 10, absent, or 11 metres.",
+            "context": "Invented evaluator software test; no municipal source"
+          }
+        ],
+        "review": {
+          "status": "accepted",
+          "reviewer": "synthetic-test-author",
+          "reviewed_at": "2026-09-24T12:00:00Z",
+          "scope": "synthetic arithmetic only",
+          "rationale": "Invented fixture, not professional review or legal evidence"
+        },
+        "uncertainty": []
+      }
+    }
+  ]
+}
