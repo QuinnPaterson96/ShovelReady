@@ -71,6 +71,13 @@ observations; selected Stannard research updates remain provisional. The contain
 smoke check probes this endpoint to verify metadata packaging. See
 [wave-five integration](integration-wave-five.md).
 
+On-demand virtual-user QA is separate file-based tooling: shared cases/runs/findings,
+owned disposable app builds, manual participant handoff and offline replay of attributed
+reviews. It adds no runtime agent, scheduler, database, model service or live-model CI.
+Frozen recipes retain their application baseline separately from the newer tooling
+commit and any derived fault-build identity. See [wave-six integration](integration-wave-six.md)
+for verification and the participant/calibration limits.
+
 Once SR-14 configures a protected demo environment, SR-15 will deploy the tested immutable image and smoke-test it. Identify images by commit. Serialize deployments to a given environment and avoid obsolete runs overwriting newer deployments. Preserve a known-good image for rollback. No deployment currently runs on merge.
 
 Apply database migrations as an explicit release step, not concurrent application startup table creation. Prefer backward-compatible changes; application rollback does not automatically roll back the database. Test backup restoration before customer reliance.

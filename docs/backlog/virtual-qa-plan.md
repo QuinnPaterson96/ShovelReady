@@ -1,8 +1,11 @@
 # Bounded virtual-user evaluation plan
 
-Status: implementation/preparation dispatched September 24, 2026. SR-27 is implementing
-records; SR-28/SR-29/SR-30 prepare behind that gate and SR-31 prepares its readiness
-checklist only. No participant pilot or recurring automation has been launched.
+Status: September 24, 2026 integration checkpoint. SR-27 records and SR-28/29/30
+offline tooling are implemented and reviewed. SR-31 can proceed with its manifest,
+readiness checks and bounded participant pilot after the integration handoff. SR-30's
+empirical paired-control calibration remains open and must be reported during SR-31;
+independent human calibration is not claimed. No recurring automation is configured.
+See [integration evidence](../integration-wave-six.md).
 
 ## Purpose and limits
 
