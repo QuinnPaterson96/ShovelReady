@@ -1,0 +1,1711 @@
+{
+  "$defs": {
+    "AcceptedRuleRevision": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "sr-04.v1-provisional",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "identity": {
+          "$ref": "#/$defs/RevisionRef"
+        },
+        "candidate_id": {
+          "minLength": 1,
+          "title": "Candidate Id",
+          "type": "string"
+        },
+        "content": {
+          "$ref": "#/$defs/RuleContent"
+        },
+        "review": {
+          "$ref": "#/$defs/Review"
+        },
+        "supersedes": {
+          "items": {
+            "$ref": "#/$defs/RevisionRef"
+          },
+          "title": "Supersedes",
+          "type": "array"
+        },
+        "identity_decision": {
+          "minLength": 1,
+          "title": "Identity Decision",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "identity",
+        "candidate_id",
+        "content",
+        "review",
+        "supersedes",
+        "identity_decision"
+      ],
+      "title": "AcceptedRuleRevision",
+      "type": "object"
+    },
+    "Alternative": {
+      "additionalProperties": false,
+      "properties": {
+        "pathway_id": {
+          "minLength": 1,
+          "title": "Pathway Id",
+          "type": "string"
+        },
+        "alternative_id": {
+          "minLength": 1,
+          "title": "Alternative Id",
+          "type": "string"
+        },
+        "rules": {
+          "items": {
+            "$ref": "#/$defs/RevisionRef"
+          },
+          "minItems": 1,
+          "title": "Rules",
+          "type": "array"
+        }
+      },
+      "required": [
+        "pathway_id",
+        "alternative_id",
+        "rules"
+      ],
+      "title": "Alternative",
+      "type": "object"
+    },
+    "AlternativeResult": {
+      "additionalProperties": false,
+      "properties": {
+        "pathway_id": {
+          "minLength": 1,
+          "title": "Pathway Id",
+          "type": "string"
+        },
+        "alternative_id": {
+          "minLength": 1,
+          "title": "Alternative Id",
+          "type": "string"
+        },
+        "outcome": {
+          "enum": [
+            "candidate",
+            "needs_investigation",
+            "no_match_under_evaluated_pathways"
+          ],
+          "title": "Outcome",
+          "type": "string"
+        },
+        "approval": {
+          "enum": [
+            "as_of_right",
+            "conditional",
+            "discretionary",
+            "unknown"
+          ],
+          "title": "Approval",
+          "type": "string"
+        },
+        "conditions": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Conditions",
+          "type": "array"
+        },
+        "checks": {
+          "items": {
+            "$ref": "#/$defs/CheckResult"
+          },
+          "minItems": 1,
+          "title": "Checks",
+          "type": "array"
+        }
+      },
+      "required": [
+        "pathway_id",
+        "alternative_id",
+        "outcome",
+        "approval",
+        "conditions",
+        "checks"
+      ],
+      "title": "AlternativeResult",
+      "type": "object"
+    },
+    "Applicability": {
+      "additionalProperties": false,
+      "properties": {
+        "jurisdiction": {
+          "minLength": 1,
+          "title": "Jurisdiction",
+          "type": "string"
+        },
+        "use": {
+          "minLength": 1,
+          "title": "Use",
+          "type": "string"
+        },
+        "building_role": {
+          "minLength": 1,
+          "title": "Building Role",
+          "type": "string"
+        },
+        "conditions": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Conditions",
+          "type": "array"
+        },
+        "exceptions": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Exceptions",
+          "type": "array"
+        },
+        "status": {
+          "enum": [
+            "reviewed_scope",
+            "unresolved"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "jurisdiction",
+        "use",
+        "building_role",
+        "conditions",
+        "exceptions",
+        "status"
+      ],
+      "title": "Applicability",
+      "type": "object"
+    },
+    "Artifact": {
+      "additionalProperties": false,
+      "properties": {
+        "uri": {
+          "minLength": 1,
+          "title": "Uri",
+          "type": "string"
+        },
+        "sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "uri",
+        "sha256"
+      ],
+      "title": "Artifact",
+      "type": "object"
+    },
+    "Binding": {
+      "additionalProperties": false,
+      "properties": {
+        "rule": {
+          "$ref": "#/$defs/RevisionRef"
+        },
+        "fact": {
+          "$ref": "#/$defs/RevisionRef"
+        },
+        "inputs": {
+          "$ref": "#/$defs/InputRefs"
+        },
+        "measurement_definition": {
+          "minLength": 1,
+          "title": "Measurement Definition",
+          "type": "string"
+        },
+        "definition_support": {
+          "enum": [
+            "reviewed_direct_measurement",
+            "unsupported"
+          ],
+          "title": "Definition Support",
+          "type": "string"
+        },
+        "applicability": {
+          "enum": [
+            "applicable",
+            "unresolved"
+          ],
+          "title": "Applicability",
+          "type": "string"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        }
+      },
+      "required": [
+        "rule",
+        "fact",
+        "inputs",
+        "measurement_definition",
+        "definition_support",
+        "applicability",
+        "provenance"
+      ],
+      "title": "Binding",
+      "type": "object"
+    },
+    "CheckResult": {
+      "additionalProperties": false,
+      "properties": {
+        "check_id": {
+          "minLength": 1,
+          "title": "Check Id",
+          "type": "string"
+        },
+        "rule": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RevisionRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "status": {
+          "enum": [
+            "pass",
+            "supported_failure",
+            "missing_fact",
+            "extraction_failure",
+            "outside_coverage",
+            "unsupported_semantics",
+            "unresolved_reference",
+            "not_applicable"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "explanation": {
+          "minLength": 1,
+          "title": "Explanation",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "missing_facts": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Missing Facts",
+          "type": "array"
+        }
+      },
+      "required": [
+        "check_id",
+        "rule",
+        "status",
+        "explanation",
+        "evidence",
+        "missing_facts"
+      ],
+      "title": "CheckResult",
+      "type": "object"
+    },
+    "CheckTrace": {
+      "additionalProperties": false,
+      "properties": {
+        "rule": {
+          "$ref": "#/$defs/RevisionRef"
+        },
+        "binding": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Binding"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "fact": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MeasuredFact"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "diagnostics": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Diagnostics",
+          "type": "array"
+        },
+        "result": {
+          "$ref": "#/$defs/CheckResult"
+        }
+      },
+      "required": [
+        "rule",
+        "binding",
+        "fact",
+        "diagnostics",
+        "result"
+      ],
+      "title": "CheckTrace",
+      "type": "object"
+    },
+    "CoordinateReference": {
+      "additionalProperties": false,
+      "properties": {
+        "identifier": {
+          "minLength": 1,
+          "title": "Identifier",
+          "type": "string"
+        },
+        "axis_order": {
+          "const": "x_y",
+          "title": "Axis Order",
+          "type": "string"
+        },
+        "unit": {
+          "enum": [
+            "m",
+            "ft",
+            "degree"
+          ],
+          "title": "Unit",
+          "type": "string"
+        },
+        "definition": {
+          "minLength": 1,
+          "title": "Definition",
+          "type": "string"
+        }
+      },
+      "required": [
+        "identifier",
+        "axis_order",
+        "unit",
+        "definition"
+      ],
+      "title": "CoordinateReference",
+      "type": "object"
+    },
+    "DesignRevision": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "sr-04.v1-provisional",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "identity": {
+          "$ref": "#/$defs/RevisionRef"
+        },
+        "configuration": {
+          "minLength": 1,
+          "title": "Configuration",
+          "type": "string"
+        },
+        "adaptability": {
+          "const": "fixed",
+          "title": "Adaptability",
+          "type": "string"
+        },
+        "intended_use": {
+          "minLength": 1,
+          "title": "Intended Use",
+          "type": "string"
+        },
+        "construction_method": {
+          "minLength": 1,
+          "title": "Construction Method",
+          "type": "string"
+        },
+        "measurements": {
+          "items": {
+            "$ref": "#/$defs/Measurement"
+          },
+          "minItems": 1,
+          "title": "Measurements",
+          "type": "array"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        }
+      },
+      "required": [
+        "schema_version",
+        "identity",
+        "configuration",
+        "adaptability",
+        "intended_use",
+        "construction_method",
+        "measurements",
+        "provenance"
+      ],
+      "title": "DesignRevision",
+      "type": "object"
+    },
+    "EvaluationRequest": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "sr-10.v1",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "evaluator_version": {
+          "const": "bounded-scalar.v1",
+          "title": "Evaluator Version",
+          "type": "string"
+        },
+        "evaluation_id": {
+          "minLength": 1,
+          "title": "Evaluation Id",
+          "type": "string"
+        },
+        "draft": {
+          "$ref": "#/$defs/RevisionRef"
+        },
+        "data_state": {
+          "const": "draft_only",
+          "title": "Data State",
+          "type": "string"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/SourceSnapshot"
+          },
+          "title": "Sources",
+          "type": "array"
+        },
+        "design": {
+          "$ref": "#/$defs/DesignRevision"
+        },
+        "site": {
+          "$ref": "#/$defs/SiteRevision"
+        },
+        "placement": {
+          "$ref": "#/$defs/PlacementRevision"
+        },
+        "scope": {
+          "$ref": "#/$defs/EvaluationScope"
+        },
+        "alternatives": {
+          "items": {
+            "$ref": "#/$defs/Alternative"
+          },
+          "minItems": 1,
+          "title": "Alternatives",
+          "type": "array"
+        },
+        "rules": {
+          "items": {
+            "$ref": "#/$defs/AcceptedRuleRevision"
+          },
+          "title": "Rules",
+          "type": "array"
+        },
+        "facts": {
+          "items": {
+            "$ref": "#/$defs/MeasuredFact"
+          },
+          "title": "Facts",
+          "type": "array"
+        },
+        "bindings": {
+          "items": {
+            "$ref": "#/$defs/Binding"
+          },
+          "title": "Bindings",
+          "type": "array"
+        }
+      },
+      "required": [
+        "schema_version",
+        "evaluator_version",
+        "evaluation_id",
+        "draft",
+        "data_state",
+        "sources",
+        "design",
+        "site",
+        "placement",
+        "scope",
+        "alternatives",
+        "rules",
+        "facts",
+        "bindings"
+      ],
+      "title": "EvaluationRequest",
+      "type": "object"
+    },
+    "EvaluationScope": {
+      "additionalProperties": false,
+      "properties": {
+        "jurisdiction": {
+          "minLength": 1,
+          "title": "Jurisdiction",
+          "type": "string"
+        },
+        "use": {
+          "minLength": 1,
+          "title": "Use",
+          "type": "string"
+        },
+        "building_role": {
+          "minLength": 1,
+          "title": "Building Role",
+          "type": "string"
+        },
+        "coverage": {
+          "enum": [
+            "within_coverage",
+            "outside_coverage",
+            "unresolved"
+          ],
+          "title": "Coverage",
+          "type": "string"
+        },
+        "description": {
+          "minLength": 1,
+          "title": "Description",
+          "type": "string"
+        },
+        "exclusions": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Exclusions",
+          "type": "array"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        }
+      },
+      "required": [
+        "jurisdiction",
+        "use",
+        "building_role",
+        "coverage",
+        "description",
+        "exclusions",
+        "provenance"
+      ],
+      "title": "EvaluationScope",
+      "type": "object"
+    },
+    "Evidence": {
+      "additionalProperties": false,
+      "properties": {
+        "snapshot_id": {
+          "minLength": 1,
+          "title": "Snapshot Id",
+          "type": "string"
+        },
+        "locator": {
+          "minLength": 1,
+          "title": "Locator",
+          "type": "string"
+        },
+        "page_index": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Page Index"
+        },
+        "printed_page": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Printed Page"
+        },
+        "excerpt": {
+          "minLength": 1,
+          "title": "Excerpt",
+          "type": "string"
+        },
+        "context": {
+          "minLength": 1,
+          "title": "Context",
+          "type": "string"
+        }
+      },
+      "required": [
+        "snapshot_id",
+        "locator",
+        "excerpt",
+        "context"
+      ],
+      "title": "Evidence",
+      "type": "object"
+    },
+    "Geometry": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "polygon",
+            "line"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "coordinates": {
+          "items": {
+            "maxItems": 2,
+            "minItems": 2,
+            "prefixItems": [
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              },
+              {
+                "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+                "type": "string"
+              }
+            ],
+            "type": "array"
+          },
+          "title": "Coordinates",
+          "type": "array"
+        },
+        "crs": {
+          "$ref": "#/$defs/CoordinateReference"
+        }
+      },
+      "required": [
+        "kind",
+        "coordinates",
+        "crs"
+      ],
+      "title": "Geometry",
+      "type": "object"
+    },
+    "GeometryFact": {
+      "additionalProperties": false,
+      "properties": {
+        "fact_id": {
+          "minLength": 1,
+          "title": "Fact Id",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "parcel",
+            "principal_building",
+            "lot_line",
+            "rear_yard",
+            "proposed_placement"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "known",
+            "missing",
+            "uncertain"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "geometry": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Geometry"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "lot_line_classification": {
+          "anyOf": [
+            {
+              "enum": [
+                "front",
+                "rear",
+                "interior_side",
+                "exterior_side",
+                "unknown"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Lot Line Classification"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        }
+      },
+      "required": [
+        "fact_id",
+        "role",
+        "status",
+        "geometry",
+        "provenance"
+      ],
+      "title": "GeometryFact",
+      "type": "object"
+    },
+    "InputRefs": {
+      "additionalProperties": false,
+      "properties": {
+        "design": {
+          "$ref": "#/$defs/RevisionRef"
+        },
+        "site": {
+          "$ref": "#/$defs/RevisionRef"
+        },
+        "placement": {
+          "$ref": "#/$defs/RevisionRef"
+        }
+      },
+      "required": [
+        "design",
+        "site",
+        "placement"
+      ],
+      "title": "InputRefs",
+      "type": "object"
+    },
+    "MeasuredFact": {
+      "additionalProperties": false,
+      "description": "A supplied measurement revision, never inferred from a name or GIS field.",
+      "properties": {
+        "identity": {
+          "$ref": "#/$defs/RevisionRef"
+        },
+        "inputs": {
+          "$ref": "#/$defs/InputRefs"
+        },
+        "definition": {
+          "minLength": 1,
+          "title": "Definition",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "known",
+            "missing",
+            "uncertain"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "quantity": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Quantity"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        }
+      },
+      "required": [
+        "identity",
+        "inputs",
+        "definition",
+        "status",
+        "quantity",
+        "provenance"
+      ],
+      "title": "MeasuredFact",
+      "type": "object"
+    },
+    "Measurement": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "enum": [
+            "manufacturer_interior_area",
+            "nominal_exterior_width",
+            "nominal_exterior_depth",
+            "ceiling_height",
+            "roof_height",
+            "occupancy_footprint",
+            "regulatory_floor_area",
+            "regulatory_height",
+            "lot_area",
+            "lot_width",
+            "lot_depth",
+            "storeys",
+            "dwelling_units"
+          ],
+          "title": "Name",
+          "type": "string"
+        },
+        "domain": {
+          "enum": [
+            "physical",
+            "regulatory"
+          ],
+          "title": "Domain",
+          "type": "string"
+        },
+        "definition": {
+          "minLength": 1,
+          "title": "Definition",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "known",
+            "missing",
+            "uncertain"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "quantity": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Quantity"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        }
+      },
+      "required": [
+        "name",
+        "domain",
+        "definition",
+        "status",
+        "quantity",
+        "provenance"
+      ],
+      "title": "Measurement",
+      "type": "object"
+    },
+    "PlacementRevision": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "sr-04.v1-provisional",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "identity": {
+          "$ref": "#/$defs/RevisionRef"
+        },
+        "site": {
+          "$ref": "#/$defs/RevisionRef"
+        },
+        "design": {
+          "$ref": "#/$defs/RevisionRef"
+        },
+        "footprint": {
+          "$ref": "#/$defs/GeometryFact"
+        },
+        "scope": {
+          "const": "supplied_placement_only",
+          "title": "Scope",
+          "type": "string"
+        }
+      },
+      "required": [
+        "schema_version",
+        "identity",
+        "site",
+        "design",
+        "footprint",
+        "scope"
+      ],
+      "title": "PlacementRevision",
+      "type": "object"
+    },
+    "Provenance": {
+      "additionalProperties": false,
+      "properties": {
+        "method": {
+          "enum": [
+            "source",
+            "supplied",
+            "manual",
+            "derived"
+          ],
+          "title": "Method",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        },
+        "review": {
+          "$ref": "#/$defs/Review"
+        },
+        "uncertainty": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Uncertainty",
+          "type": "array"
+        }
+      },
+      "required": [
+        "method",
+        "evidence",
+        "review",
+        "uncertainty"
+      ],
+      "title": "Provenance",
+      "type": "object"
+    },
+    "Quantity": {
+      "additionalProperties": false,
+      "properties": {
+        "original_text": {
+          "minLength": 1,
+          "title": "Original Text",
+          "type": "string"
+        },
+        "original_value": {
+          "ge": 0,
+          "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+          "title": "Original Value",
+          "type": "string"
+        },
+        "original_unit": {
+          "enum": [
+            "m",
+            "ft",
+            "m2",
+            "ft2",
+            "count",
+            "%",
+            "fraction",
+            "spaces/unit"
+          ],
+          "title": "Original Unit",
+          "type": "string"
+        },
+        "dimension": {
+          "enum": [
+            "length",
+            "area",
+            "count",
+            "ratio",
+            "rate"
+          ],
+          "title": "Dimension",
+          "type": "string"
+        },
+        "value": {
+          "ge": 0,
+          "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+          "title": "Value",
+          "type": "string"
+        },
+        "unit": {
+          "enum": [
+            "m",
+            "m2",
+            "count",
+            "fraction",
+            "spaces/unit"
+          ],
+          "title": "Unit",
+          "type": "string"
+        },
+        "basis": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RatioBasis"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "original_text",
+        "original_value",
+        "original_unit",
+        "dimension",
+        "value",
+        "unit"
+      ],
+      "title": "Quantity",
+      "type": "object"
+    },
+    "RatioBasis": {
+      "additionalProperties": false,
+      "properties": {
+        "numerator": {
+          "minLength": 1,
+          "title": "Numerator",
+          "type": "string"
+        },
+        "denominator": {
+          "minLength": 1,
+          "title": "Denominator",
+          "type": "string"
+        }
+      },
+      "required": [
+        "numerator",
+        "denominator"
+      ],
+      "title": "RatioBasis",
+      "type": "object"
+    },
+    "Review": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "unreviewed",
+            "accepted",
+            "rejected",
+            "needs_review"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "reviewer": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reviewer"
+        },
+        "reviewed_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reviewed At"
+        },
+        "scope": {
+          "minLength": 1,
+          "title": "Scope",
+          "type": "string"
+        },
+        "rationale": {
+          "minLength": 1,
+          "title": "Rationale",
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "scope",
+        "rationale"
+      ],
+      "title": "Review",
+      "type": "object"
+    },
+    "RevisionRef": {
+      "additionalProperties": false,
+      "properties": {
+        "logical_id": {
+          "minLength": 1,
+          "title": "Logical Id",
+          "type": "string"
+        },
+        "revision_id": {
+          "minLength": 1,
+          "title": "Revision Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "logical_id",
+        "revision_id"
+      ],
+      "title": "RevisionRef",
+      "type": "object"
+    },
+    "RuleContent": {
+      "additionalProperties": false,
+      "properties": {
+        "pathway_id": {
+          "minLength": 1,
+          "title": "Pathway Id",
+          "type": "string"
+        },
+        "alternative_id": {
+          "minLength": 1,
+          "title": "Alternative Id",
+          "type": "string"
+        },
+        "text": {
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        },
+        "applicability": {
+          "$ref": "#/$defs/Applicability"
+        },
+        "approval": {
+          "enum": [
+            "as_of_right",
+            "conditional",
+            "discretionary",
+            "unknown"
+          ],
+          "title": "Approval",
+          "type": "string"
+        },
+        "semantics": {
+          "discriminator": {
+            "mapping": {
+              "scalar_bound": "#/$defs/ScalarBound",
+              "unresolved": "#/$defs/UnresolvedSemantics"
+            },
+            "propertyName": "kind"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/ScalarBound"
+            },
+            {
+              "$ref": "#/$defs/UnresolvedSemantics"
+            }
+          ],
+          "title": "Semantics"
+        },
+        "runtime_support": {
+          "enum": [
+            "supported",
+            "unsupported",
+            "unresolved"
+          ],
+          "title": "Runtime Support",
+          "type": "string"
+        },
+        "references": {
+          "items": {
+            "$ref": "#/$defs/RuleReference"
+          },
+          "title": "References",
+          "type": "array"
+        }
+      },
+      "required": [
+        "pathway_id",
+        "alternative_id",
+        "text",
+        "evidence",
+        "applicability",
+        "approval",
+        "semantics",
+        "runtime_support",
+        "references"
+      ],
+      "title": "RuleContent",
+      "type": "object"
+    },
+    "RuleReference": {
+      "additionalProperties": false,
+      "properties": {
+        "instrument": {
+          "minLength": 1,
+          "title": "Instrument",
+          "type": "string"
+        },
+        "locator": {
+          "minLength": 1,
+          "title": "Locator",
+          "type": "string"
+        },
+        "relationship": {
+          "enum": [
+            "depends_on",
+            "exception",
+            "excludes",
+            "overrides",
+            "calculation"
+          ],
+          "title": "Relationship",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "unresolved",
+            "resolved"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "target": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RevisionRef"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "instrument",
+        "locator",
+        "relationship",
+        "status",
+        "target"
+      ],
+      "title": "RuleReference",
+      "type": "object"
+    },
+    "ScalarBound": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "scalar_bound",
+          "title": "Kind",
+          "type": "string"
+        },
+        "subject": {
+          "minLength": 1,
+          "title": "Subject",
+          "type": "string"
+        },
+        "measurement_definition": {
+          "minLength": 1,
+          "title": "Measurement Definition",
+          "type": "string"
+        },
+        "operator": {
+          "enum": [
+            "<",
+            "<=",
+            ">",
+            ">=",
+            "=="
+          ],
+          "title": "Operator",
+          "type": "string"
+        },
+        "threshold": {
+          "$ref": "#/$defs/Quantity"
+        }
+      },
+      "required": [
+        "kind",
+        "subject",
+        "measurement_definition",
+        "operator",
+        "threshold"
+      ],
+      "title": "ScalarBound",
+      "type": "object"
+    },
+    "SiteRevision": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "sr-04.v1-provisional",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "identity": {
+          "$ref": "#/$defs/RevisionRef"
+        },
+        "jurisdiction": {
+          "minLength": 1,
+          "title": "Jurisdiction",
+          "type": "string"
+        },
+        "measurements": {
+          "items": {
+            "$ref": "#/$defs/Measurement"
+          },
+          "title": "Measurements",
+          "type": "array"
+        },
+        "geometry_facts": {
+          "items": {
+            "$ref": "#/$defs/GeometryFact"
+          },
+          "minItems": 1,
+          "title": "Geometry Facts",
+          "type": "array"
+        },
+        "conditions": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Conditions",
+          "type": "array"
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        }
+      },
+      "required": [
+        "schema_version",
+        "identity",
+        "jurisdiction",
+        "measurements",
+        "geometry_facts",
+        "conditions",
+        "provenance"
+      ],
+      "title": "SiteRevision",
+      "type": "object"
+    },
+    "SourceSnapshot": {
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": {
+          "const": "sr-04.v1-provisional",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_id": {
+          "minLength": 1,
+          "title": "Source Id",
+          "type": "string"
+        },
+        "snapshot_id": {
+          "minLength": 1,
+          "title": "Snapshot Id",
+          "type": "string"
+        },
+        "category": {
+          "enum": [
+            "bylaw",
+            "guidance",
+            "design",
+            "spatial",
+            "manual_record",
+            "test_fixture"
+          ],
+          "title": "Category",
+          "type": "string"
+        },
+        "jurisdiction": {
+          "minLength": 1,
+          "title": "Jurisdiction",
+          "type": "string"
+        },
+        "instrument": {
+          "minLength": 1,
+          "title": "Instrument",
+          "type": "string"
+        },
+        "source_url": {
+          "minLength": 1,
+          "title": "Source Url",
+          "type": "string"
+        },
+        "artifact": {
+          "$ref": "#/$defs/Artifact"
+        },
+        "captured_at": {
+          "format": "date-time",
+          "title": "Captured At",
+          "type": "string"
+        },
+        "printed_revision": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Printed Revision"
+        },
+        "effective_from": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Effective From"
+        },
+        "effective_to": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Effective To"
+        },
+        "effective_date_evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "title": "Effective Date Evidence",
+          "type": "array"
+        },
+        "original_crs": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Original Crs"
+        },
+        "original_units": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Original Units",
+          "type": "array"
+        },
+        "reuse_constraints": {
+          "minLength": 1,
+          "title": "Reuse Constraints",
+          "type": "string"
+        },
+        "review": {
+          "$ref": "#/$defs/Review"
+        }
+      },
+      "required": [
+        "schema_version",
+        "source_id",
+        "snapshot_id",
+        "category",
+        "jurisdiction",
+        "instrument",
+        "source_url",
+        "artifact",
+        "captured_at",
+        "printed_revision",
+        "effective_from",
+        "effective_to",
+        "effective_date_evidence",
+        "original_crs",
+        "original_units",
+        "reuse_constraints",
+        "review"
+      ],
+      "title": "SourceSnapshot",
+      "type": "object"
+    },
+    "UnresolvedSemantics": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "unresolved",
+          "title": "Kind",
+          "type": "string"
+        },
+        "text": {
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "reason": {
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "text",
+        "reason"
+      ],
+      "title": "UnresolvedSemantics",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "sr-10.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "evaluator_version": {
+      "const": "bounded-scalar.v1",
+      "title": "Evaluator Version",
+      "type": "string"
+    },
+    "data_state": {
+      "const": "draft_only",
+      "title": "Data State",
+      "type": "string"
+    },
+    "scope": {
+      "const": "supplied_placement_only",
+      "title": "Scope",
+      "type": "string"
+    },
+    "request": {
+      "$ref": "#/$defs/EvaluationRequest"
+    },
+    "outcome": {
+      "enum": [
+        "candidate",
+        "needs_investigation",
+        "no_match_under_evaluated_pathways"
+      ],
+      "title": "Outcome",
+      "type": "string"
+    },
+    "alternatives": {
+      "items": {
+        "$ref": "#/$defs/AlternativeResult"
+      },
+      "title": "Alternatives",
+      "type": "array"
+    },
+    "traces": {
+      "items": {
+        "$ref": "#/$defs/CheckTrace"
+      },
+      "title": "Traces",
+      "type": "array"
+    },
+    "scope_exclusions": {
+      "items": {
+        "minLength": 1,
+        "type": "string"
+      },
+      "title": "Scope Exclusions",
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema_version",
+    "evaluator_version",
+    "data_state",
+    "scope",
+    "request",
+    "outcome",
+    "alternatives",
+    "traces",
+    "scope_exclusions"
+  ],
+  "title": "EvaluationReport",
+  "type": "object"
+}
