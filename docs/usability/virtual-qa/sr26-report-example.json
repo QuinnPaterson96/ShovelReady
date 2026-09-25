@@ -1,0 +1,308 @@
+{
+  "cases": [
+    {
+      "schema_version": "virtual-qa/v1",
+      "record_type": "case",
+      "case_id": "sr26-report-vic080",
+      "revision": "report-example-1",
+      "category": "investigation-handoff",
+      "evidence_status": "observational",
+      "fixtures": [
+        {
+          "uri": "https://github.com/QuinnPaterson96/ShovelReady/blob/eb9ba0212e170dd15ad85fa58176ca3010b03c05/docs/usability/wave-five/run-record.md",
+          "revision": {
+            "value": "eb9ba0212e170dd15ad85fa58176ca3010b03c05",
+            "unknown_reason": null
+          },
+          "locator": "Baseline and isolation: observation revision and collection"
+        }
+      ],
+      "sources": [
+        {
+          "uri": "https://github.com/QuinnPaterson96/ShovelReady/blob/eb9ba0212e170dd15ad85fa58176ca3010b03c05/docs/usability/wave-five/findings.md",
+          "revision": {
+            "value": "eb9ba0212e170dd15ad85fa58176ca3010b03c05",
+            "unknown_reason": null
+          },
+          "locator": "Assessment item 6 and findings ledger: Agent omission"
+        },
+        {
+          "uri": "https://github.com/QuinnPaterson96/ShovelReady/blob/eb9ba0212e170dd15ad85fa58176ca3010b03c05/docs/usability/wave-five/participant-note.md",
+          "revision": {
+            "value": "eb9ba0212e170dd15ad85fa58176ca3010b03c05",
+            "unknown_reason": null
+          },
+          "locator": "Participant final response: next-information paragraph"
+        },
+        {
+          "uri": "https://github.com/QuinnPaterson96/ShovelReady/blob/eb9ba0212e170dd15ad85fa58176ca3010b03c05/docs/usability/wave-five/withheld-rubric.md",
+          "revision": {
+            "value": "eb9ba0212e170dd15ad85fa58176ca3010b03c05",
+            "unknown_reason": null
+          },
+          "locator": "Item 6; hidden facts are not participant input"
+        }
+      ],
+      "unknowns": [
+        "No independently reviewed legal expectations.",
+        "No established application defect.",
+        "This retrospective subset is not the complete SR-26 rubric and cannot rescore the original run."
+      ],
+      "supported_modes": [
+        "task_completion"
+      ],
+      "group": "sr26-report-examples",
+      "split": "development",
+      "participant_brief": "Report-derived brief summary: investigate VIC-080 using only the browser, give a bounded preliminary note, additional information and visible evidence. The exact original prompt is linked by the run; this summary was never dispatched.",
+      "facilitator": {
+        "revision": "report-subset-1",
+        "expectations": [
+          {
+            "check_id": "next-information",
+            "claim": "Request explicit existing principal-building use/count and frontage verification; retrospective completeness expectation only, not a scored hidden-fact requirement.",
+            "kind": "authored_software_expectation",
+            "scored": false,
+            "basis": null,
+            "evidence": [
+              {
+                "uri": "https://github.com/QuinnPaterson96/ShovelReady/blob/eb9ba0212e170dd15ad85fa58176ca3010b03c05/docs/usability/wave-five/findings.md",
+                "revision": {
+                  "value": "eb9ba0212e170dd15ad85fa58176ca3010b03c05",
+                  "unknown_reason": null
+                },
+                "locator": "Assessment item 6 and findings ledger: Agent omission"
+              },
+              {
+                "uri": "https://github.com/QuinnPaterson96/ShovelReady/blob/eb9ba0212e170dd15ad85fa58176ca3010b03c05/docs/usability/wave-five/participant-note.md",
+                "revision": {
+                  "value": "eb9ba0212e170dd15ad85fa58176ca3010b03c05",
+                  "unknown_reason": null
+                },
+                "locator": "Participant final response: next-information paragraph"
+              },
+              {
+                "uri": "https://github.com/QuinnPaterson96/ShovelReady/blob/eb9ba0212e170dd15ad85fa58176ca3010b03c05/docs/usability/wave-five/withheld-rubric.md",
+                "revision": {
+                  "value": "eb9ba0212e170dd15ad85fa58176ca3010b03c05",
+                  "unknown_reason": null
+                },
+                "locator": "Item 6; hidden facts are not participant input"
+              }
+            ],
+            "review": {
+              "status": "unreviewed",
+              "reviewer": {
+                "value": null,
+                "unknown_reason": "No new independent review for this transcription."
+              },
+              "reviewed_at": {
+                "value": null,
+                "unknown_reason": "No new review performed."
+              },
+              "rationale": "Report-derived observation of the response, not accepted legal truth or a scored hidden-fact requirement.",
+              "disagreements": [
+                "The broad brief did not explicitly enumerate these facts; omission does not establish a UI defect or justify a retroactive penalty."
+              ]
+            }
+          }
+        ],
+        "disagreements": [],
+        "seeded_fault": null
+      }
+    }
+  ],
+  "runs": [
+    {
+      "schema_version": "virtual-qa/v1",
+      "record_type": "run",
+      "run_id": "sr26-report-example-attempt-1",
+      "provenance": "report_derived_example",
+      "source_report": {
+        "uri": "https://github.com/QuinnPaterson96/ShovelReady/blob/eb9ba0212e170dd15ad85fa58176ca3010b03c05/docs/usability/wave-five/findings.md",
+        "revision": {
+          "value": "eb9ba0212e170dd15ad85fa58176ca3010b03c05",
+          "unknown_reason": null
+        },
+        "locator": "Assessment item 6 and findings ledger: Agent omission"
+      },
+      "attempt": 1,
+      "retry_of": null,
+      "application_commit": {
+        "value": "24b6cc0d503d1b53a242e23339eb0fbc447a4195",
+        "unknown_reason": null
+      },
+      "frontend_commit": {
+        "value": "24b6cc0d503d1b53a242e23339eb0fbc447a4195",
+        "unknown_reason": null
+      },
+      "cases": [
+        {
+          "case_id": "sr26-report-vic080",
+          "revision": "report-example-1",
+          "rubric_revision": "report-subset-1",
+          "case_sha256": "5f2fae72d646cde0d5af16dcf85b9e6048559cb18989610f06c5c4a6e92cb165"
+        }
+      ],
+      "data": {
+        "kind": "observation",
+        "identity": {
+          "value": "victoria-pilot-three-leads",
+          "unknown_reason": null
+        },
+        "revision": {
+          "value": "spatial:sha256:db45fb736cd0fe2455d65b64105b038539bc7695e62666be6b2840474af8aee7",
+          "unknown_reason": null
+        }
+      },
+      "selection": "fixed",
+      "seed": {
+        "value": null,
+        "unknown_reason": "One fixed report case; no random draw."
+      },
+      "mode": "task_completion",
+      "participant_prompt": {
+        "uri": "https://github.com/QuinnPaterson96/ShovelReady/blob/eb9ba0212e170dd15ad85fa58176ca3010b03c05/docs/usability/wave-five/participant-brief.md",
+        "revision": {
+          "value": "eb9ba0212e170dd15ad85fa58176ca3010b03c05",
+          "unknown_reason": null
+        },
+        "locator": "Exact dispatched message, including browser constraints"
+      },
+      "model": {
+        "value": null,
+        "unknown_reason": "Inherited model; exact model identifier not recorded."
+      },
+      "model_settings": {
+        "value": null,
+        "unknown_reason": "No override; resolved settings not recorded."
+      },
+      "tool_settings": {
+        "value": "Actual in-app browser; visible subagent tab unsupported; recovered with background tab.",
+        "unknown_reason": null
+      },
+      "isolation": "Original report: fresh fork_turns=none participant, browser-only instruction, no coaching; no OS filesystem sandbox proof. This record is a retrospective example, not a new run.",
+      "rubric_frozen_at": {
+        "value": null,
+        "unknown_reason": "Original rubric held in facilitator memory before dispatch; exact time unavailable. This subset was authored after the report."
+      },
+      "started_at": {
+        "value": null,
+        "unknown_reason": "Report gives the date, not an exact timestamp for this event."
+      },
+      "ended_at": {
+        "value": null,
+        "unknown_reason": "Report gives the date, not an exact timestamp for this event."
+      },
+      "budget": {
+        "seconds": {
+          "value": null,
+          "unknown_reason": "Original cap not recorded."
+        },
+        "browser_actions": {
+          "value": null,
+          "unknown_reason": "Original cap not recorded."
+        },
+        "cost": {
+          "value": null,
+          "unknown_reason": "No cost metadata recorded."
+        }
+      },
+      "status": "completed",
+      "final_note": {
+        "value": {
+          "uri": "https://github.com/QuinnPaterson96/ShovelReady/blob/eb9ba0212e170dd15ad85fa58176ca3010b03c05/docs/usability/wave-five/participant-note.md",
+          "revision": {
+            "value": "eb9ba0212e170dd15ad85fa58176ca3010b03c05",
+            "unknown_reason": null
+          },
+          "locator": "Participant final response: next-information paragraph"
+        },
+        "unknown_reason": null
+      },
+      "evidence": [
+        {
+          "uri": "https://github.com/QuinnPaterson96/ShovelReady/blob/eb9ba0212e170dd15ad85fa58176ca3010b03c05/docs/usability/wave-five/findings.md",
+          "revision": {
+            "value": "eb9ba0212e170dd15ad85fa58176ca3010b03c05",
+            "unknown_reason": null
+          },
+          "locator": "Assessment item 6 and findings ledger: Agent omission"
+        },
+        {
+          "uri": "https://github.com/QuinnPaterson96/ShovelReady/blob/eb9ba0212e170dd15ad85fa58176ca3010b03c05/docs/usability/wave-five/run-record.md",
+          "revision": {
+            "value": "eb9ba0212e170dd15ad85fa58176ca3010b03c05",
+            "unknown_reason": null
+          },
+          "locator": "Actual participant sequence and evidence"
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "schema_version": "virtual-qa/v1",
+      "record_type": "finding",
+      "finding_id": "sr26-next-information-omission",
+      "revision": "1",
+      "supersedes": null,
+      "run_id": "sr26-report-example-attempt-1",
+      "case_id": "sr26-report-vic080",
+      "check_id": "next-information",
+      "category": "agent_omission",
+      "claim": "SR-26 reports missing explicit existing use/count and frontage requests. No application defect is established.",
+      "supporting_evidence": [
+        {
+          "uri": "https://github.com/QuinnPaterson96/ShovelReady/blob/eb9ba0212e170dd15ad85fa58176ca3010b03c05/docs/usability/wave-five/findings.md",
+          "revision": {
+            "value": "eb9ba0212e170dd15ad85fa58176ca3010b03c05",
+            "unknown_reason": null
+          },
+          "locator": "Assessment item 6 and findings ledger: Agent omission"
+        },
+        {
+          "uri": "https://github.com/QuinnPaterson96/ShovelReady/blob/eb9ba0212e170dd15ad85fa58176ca3010b03c05/docs/usability/wave-five/participant-note.md",
+          "revision": {
+            "value": "eb9ba0212e170dd15ad85fa58176ca3010b03c05",
+            "unknown_reason": null
+          },
+          "locator": "Participant final response: next-information paragraph"
+        }
+      ],
+      "contradicting_evidence": [
+        {
+          "uri": "https://github.com/QuinnPaterson96/ShovelReady/blob/eb9ba0212e170dd15ad85fa58176ca3010b03c05/docs/usability/wave-five/participant-brief.md",
+          "revision": {
+            "value": "eb9ba0212e170dd15ad85fa58176ca3010b03c05",
+            "unknown_reason": null
+          },
+          "locator": "Exact dispatched message, including browser constraints"
+        },
+        {
+          "uri": "https://github.com/QuinnPaterson96/ShovelReady/blob/eb9ba0212e170dd15ad85fa58176ca3010b03c05/docs/usability/wave-five/withheld-rubric.md",
+          "revision": {
+            "value": "eb9ba0212e170dd15ad85fa58176ca3010b03c05",
+            "unknown_reason": null
+          },
+          "locator": "Item 6; hidden facts are not participant input"
+        }
+      ],
+      "severity": "minor",
+      "reproduction": "not_attempted",
+      "reproduction_evidence": [],
+      "adjudication": {
+        "status": "unresolved",
+        "reviewer": {
+          "value": null,
+          "unknown_reason": "No new adjudication; this is a report transcription."
+        },
+        "reviewed_at": {
+          "value": null,
+          "unknown_reason": "No new adjudication performed."
+        },
+        "rationale": "Preserve the reported omission separately from app causation and scoring; report describes limited completeness, no numerical score."
+      },
+      "linked_issue": null
+    }
+  ]
+}
