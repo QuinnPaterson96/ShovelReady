@@ -1,0 +1,166 @@
+{
+  "inventory_revision": "2026-09-24.integration-2",
+  "case": {
+    "case_id": "VIC-PC-002",
+    "jurisdiction": {
+      "name": "City of Victoria",
+      "province": "BC",
+      "country": "CA"
+    },
+    "scope": "pilot_jurisdiction",
+    "public_site_label": "27 Pilot Street",
+    "official_identifiers": [
+      "DPV00081",
+      "DVP00216"
+    ],
+    "dependency_group": "VIC-PC-002",
+    "split": "unassigned",
+    "review_status": "provisional",
+    "benchmark_eligible": false,
+    "development": {
+      "summary": "Convert existing accessory building to garden suite",
+      "evidence": [
+        {
+          "source_id": "tracker-DPV00081",
+          "locator": "Purpose"
+        }
+      ]
+    },
+    "prefab": {
+      "status": "unknown",
+      "evidence": [],
+      "note": "No explicit manufacturing-method evidence verified. Construction materials or conversion status do not establish prefab status."
+    },
+    "application_date": "2018-06-07",
+    "source_facts": [
+      {
+        "summary": "Drawing area labels differ: site diagram 22.25 m2; floor-plan arithmetic 22.75 m2.",
+        "evidence": [
+          {
+            "source_id": "DPV00081-5",
+            "locator": "PDF p1 A-1 proposed site and suite floor plans"
+          }
+        ]
+      }
+    ],
+    "official_interpretations": [
+      {
+        "summary": "Tracker reports Council approval and rear-yard variance from 0.6 m to 0.2 m.",
+        "evidence": [
+          {
+            "source_id": "tracker-DPV00081",
+            "locator": "Purpose"
+          }
+        ]
+      }
+    ],
+    "researcher_inferences": [
+      "Can test conflicting-value retention and distinction between a variance target and an unvaried rule."
+    ],
+    "plan_version": {
+      "summary": "A-1 dated 18/7/30, City received 2018-08-07; no final-approved stamp verified.",
+      "evidence": [
+        {
+          "source_id": "DPV00081-5",
+          "locator": "PDF p1 title block and received stamp"
+        }
+      ]
+    },
+    "governing_rules": {
+      "summary": "A-1 project table names R-2; tracker states rear-yard variance. Applicable clause/version not verified.",
+      "effective_date": null,
+      "current_applicability": "unverified",
+      "evidence": [
+        {
+          "source_id": "DPV00081-5",
+          "locator": "PDF p1 project information table"
+        }
+      ]
+    },
+    "decision": {
+      "status": "council_approval_reported_by_tracker",
+      "date": "2018-11-22",
+      "evidence": [
+        {
+          "source_id": "tracker-DPV00081",
+          "locator": "Purpose"
+        }
+      ],
+      "conditions": [
+        {
+          "summary": "Rear-yard setback varied from 0.6 m to 0.2 m; full conditions unavailable. Related DVP describes separation, which requires reconciliation.",
+          "evidence": [
+            {
+              "source_id": "tracker-DPV00081",
+              "locator": "Purpose; Related Permits DVP00216"
+            }
+          ]
+        }
+      ],
+      "issued_development_permit": null,
+      "issued_building_permit": null,
+      "as_built_verified": null
+    },
+    "measurements": [
+      {
+        "name": "Rear-yard setback in tracker",
+        "original_value": "0.2",
+        "original_unit": "m",
+        "measurement_definition": "Variance target, not independently surveyed fact; original requirement 0.6 m.",
+        "normalized_value": null,
+        "normalization_status": "not_performed",
+        "review_status": "provisional",
+        "evidence": [
+          {
+            "source_id": "tracker-DPV00081",
+            "locator": "Purpose"
+          }
+        ]
+      },
+      {
+        "name": "Conflicting proposed suite area labels",
+        "original_value": [
+          "22.25",
+          "22.75"
+        ],
+        "original_unit": "m2",
+        "measurement_definition": "Two drawing labels, neither selected as canonical regulatory floor area.",
+        "normalized_value": null,
+        "normalization_status": "not_performed",
+        "review_status": "provisional",
+        "evidence": [
+          {
+            "source_id": "DPV00081-5",
+            "locator": "PDF p1 A-1 site/floor plans"
+          }
+        ]
+      }
+    ],
+    "test_uses": [
+      "document_extraction_fixture",
+      "historical_decision_condition_reference"
+    ],
+    "unsupported": [
+      "Current compliance",
+      "Fit for The Landing or any other prefab design",
+      "As-built condition",
+      "Complete regulatory coverage"
+    ],
+    "missing_inputs": [
+      "Independent source and interpretation review",
+      "Authorized durable evidence storage and reuse scope",
+      "Current governing instrument and amendment/transition chain",
+      "Verified design/site/placement revisions and legal measurement definitions",
+      "Area-label reconciliation",
+      "Final approved plan and executed permit",
+      "Resolve related DVP separation description"
+    ],
+    "local_artifacts": [],
+    "application_date_evidence": [
+      {
+        "source_id": "tracker-DPV00081",
+        "locator": "Application Date"
+      }
+    ]
+  }
+}
