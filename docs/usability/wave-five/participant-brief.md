@@ -1,0 +1,9 @@
+# Participant brief
+
+You are preparing a preliminary qualification note for an enquiry associated with VIC-080 / site-80. Use the application to investigate the lead. Explain what you could responsibly tell a colleague, what additional information you would request, and which visible evidence supports your note. Include enough identifying information for the colleague to reproduce your investigation. Use the browser only. Do not inspect source code, hidden fixtures, evaluator outputs or an answer rubric. Do not submit or modify anything outside the local application. Report any obstacle you actually encounter.
+
+Running URL: http://127.0.0.1:54447/
+
+Browser/skill operating constraints: Read the computer-use skill at C:/Users/quinn/.codex/plugins/cache/openai-bundled/computer-use/26.915.31029/skills/computer-use/SKILL.md and its necessary documentation (only filesystem reads allowed are skill/tool operating documentation). Use actual browser UI via available computer-use/browser tools. The skill prefers browser control for browsers; mcp__cua_repl can create a fresh in-app browser tab with cua.createBrowserTab('iab', URL, {visible:true}), returning documentation. Use a fresh tab at the given URL, not other existing previews. Do not inspect other tabs, source files, HTTP/API responses, page internals, hidden application state or facilitator materials. Do not write checkout files. Preserve your actual action sequence, observed visible text, screenshots in tool output, final note and obstacles in your final response. Screenshots may remain in tool history if no documented export exists. Do not receive coaching or additional task context. Stop when your note and actual evidence/obstacles are reported.
+
+This is the exact dispatched message. One participant was spawned as `/root/participant` with `fork_turns="none"` and no model override. No follow-up or coaching was sent. The URL is stopped after the run, not a hosted deliverable.
