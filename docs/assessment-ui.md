@@ -5,6 +5,8 @@ identifies this delivery. Home now leads to editable inputs and a preparation
 summary. All four previous investigation modes remain under Examples/evidence.
 Build identity and API health are in a secondary disclosure. No backend, database,
 contract, research inventory, publication or acceptance state changes.
+The container frontend stage copies the three synthetic request JSON build inputs;
+the existing backend image packaging is unchanged.
 
 ## Behavior and scope
 
