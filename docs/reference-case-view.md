@@ -80,9 +80,12 @@ git diff --check
 The full disposable run passed **252 tests + 28 contract subtests, no skips**, including
 native lifecycle tests. The runner created only its own scratch cluster under
 `C:/Temp/shovelready-postgres-kll4ryg3`, then imported the licensed observation packet for
-browser verification. Full-suite evidence precedes the final required-version schema
-hardening; the focused **32 backend tests** and **7 frontend tests**, typecheck/build and
-lint passed afterward. Acquisition 2, intake 10 and fictional fixture 3 checks passed.
+browser verification. The initial run preceded required-version schema
+hardening; a final run at implementation commit `b9fe7f1`, using the same command
+without `--demo --http-port 18744`, passed **252 tests + 28 subtests, zero skips** in
+16.04 seconds and exited 0. It used `C:/Temp/shovelready-postgres-6imkta9p` and stopped
+the cluster. The focused **32 backend tests** and **7 frontend tests**, typecheck/build
+and lint also passed for the delivered implementation. Acquisition 2, intake 10 and fictional fixture 3 checks passed.
 The existing Starlette/httpx deprecation warning remains. No live models, paid resources,
 Styx access, shared databases or default persistent previews were used.
 
@@ -93,7 +96,12 @@ Pilot's conflicting 22.25/22.75, Prior's empty measurements, Saanich recommendat
 status, Vancouver conditional appeal and source-access limitation, the real spatial
 viewer and fictional preview. Checked the rendered layout by screenshot. A new mode-label
 encoding defect was found and fixed; the rebuilt label was rechecked. This is developer
-verification, not a blinded participant or human usability study.
+verification, not a blinded participant or human usability study. Reload success returned to Stannard;
+after stopping the owned API, reload displayed a clear error and removed all stale
+case evidence. Both test API processes and the browser tab were closed. Stopping the
+owned demo API caused the enclosing demo command to exit nonzero after the tests had
+passed; its finally block confirmed the disposable database stopped. The separate
+final non-demo test command above exited 0.
 
 A database-free demo needs only the built frontend and the normal API:
 
@@ -110,7 +118,10 @@ Local `docker info --format '{{.ServerVersion}}'` failed: initially no Linux-eng
 pipe, then the existing desktop-linux context metadata was unavailable after starting
 the installed Docker Desktop. No Docker configuration was changed to work around it.
 Local container execution is therefore blocked; hosted container build/startup and
-final-head CI evidence are recorded in the PR handoff. Independent source
+final-head CI evidence are recorded in the PR handoff. All four required jobs passed
+for implementation commit `b9fe7f1`: [hosted run](https://github.com/QuinnPaterson96/ShovelReady/actions/runs/36075960045).
+The container job verifies image build and health/frontend startup; it does not
+separately probe the public-case endpoint inside the image. Independent source
 review, current rule applicability, authorized source retention, accepted publication,
 real design/site/placement inputs and user validation remain open; this does not complete
 parent SR-12 or the accepted source-to-screening path.
