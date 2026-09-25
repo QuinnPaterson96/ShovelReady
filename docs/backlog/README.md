@@ -52,8 +52,17 @@ The first evaluator checks a supplied reviewed placement. Preserve manual site f
 | [SR-29](SR-29.md) / [issue #53](https://github.com/QuinnPaterson96/ShovelReady/issues/53) | Reproducible selection and isolated local run preparation | M1 support | SR-27; integrate with SR-28 |
 | [SR-30](SR-30.md) / [issue #54](https://github.com/QuinnPaterson96/ShovelReady/issues/54) | Report grading, adjudication and draft issues | M1 support | SR-27; calibrate with SR-28 |
 | [SR-31](SR-31.md) / [issue #55](https://github.com/QuinnPaterson96/ShovelReady/issues/55) | Bounded virtual-user pilot and value assessment | M1 support | SR-26 review; SR-28/SR-29/SR-30 integrated |
+| [SR-32](SR-32.md) / [issue #65](https://github.com/QuinnPaterson96/ShovelReady/issues/65) | Persist and serve reproducible draft evaluator runs | M1 preparation | Existing SR-08/SR-10 interfaces |
+| [SR-33](SR-33.md) / [issue #66](https://github.com/QuinnPaterson96/ShovelReady/issues/66) | Inspect computed draft evaluations in the app | M1 preparation | Existing report; SR-32 for live integration |
 
 ## Next parallel work
+
+[Wave-seven assignments](wave-seven-prompts.md) connect the existing draft evaluator
+to immutable diagnostic storage and the app. SR-32 backend and SR-33 frontend can be
+implemented concurrently against the existing report; the combined live demonstration
+depends on SR-32. These are computed synthetic examples, not accepted real screening.
+The external source/design/site review actions remain open and are not replaced by
+this implementation round. Central documentation/status remains integration-owned.
 
 [Wave-five scope and ownership](wave-five-prompts.md), [wave four](wave-four-prompts.md), [wave three](wave-three-prompts.md), [wave two](wave-two-prompts.md) and [wave one](next-wave-prompts.md) remain historical handoff context.
 
