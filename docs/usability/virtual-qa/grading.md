@@ -174,7 +174,7 @@ python -m uv run --locked ruff check scripts/virtual_qa contract_tests/test_virt
 python -m uv run --locked pytest -q contract_tests/test_virtual_qa_contracts.py contract_tests/test_virtual_qa_grading.py
 ```
 
-79 focused tests passed; after merging SR-28, the combined `pytest -q contract_tests` run passed 98 tests
+79 focused tests passed; after merging SR-28/SR-29, the combined `pytest -q contract_tests` run passed 124 tests
 and 28 subtests. Lint passed for `scripts/virtual_qa contract_tests`. Neither run made
 database/network/browser/model calls. The CLI SR-26 example
 also produced the expected unscored ledger and zero drafts in a new temporary directory.
