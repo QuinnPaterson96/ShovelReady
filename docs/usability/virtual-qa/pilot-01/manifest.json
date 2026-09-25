@@ -1,0 +1,201 @@
+{
+  "pilot_id": "sr31-pilot-01",
+  "frozen_at": "2026-09-25T01:17:54.241587+00:00",
+  "tooling_commit": "73258528a6d1a3458b1b1b6ccf5706fe97dbf46c",
+  "reviewed_implementation_main": "787ab790c9b832fef8a049b96baea60b853284b1",
+  "application_recipe_baseline": "303b40aeb9e69f476878959148ed299cad2a5e9b",
+  "derived_builds": "Record actual derived commit/tree/build hashes per attempt; preserve exact reviewed recipe bytes.",
+  "output_root": "C:\\Temp\\sr31-pilot01-5b2047a68603",
+  "scratch_root": "C:\\Temp\\sr31-pilot01-5b2047a68603-scratch",
+  "plans": [
+    {
+      "owner": "shovelready-virtual-qa/v1",
+      "experiment_id": "99b11f0abc39493db40fc313d4fce506",
+      "output": "C:\\Temp\\sr31-pilot01-5b2047a68603\\detection",
+      "created_at": "2026-09-25T01:17:54.204299+00:00",
+      "mode": "defect_detection",
+      "selection": "fixed",
+      "seed": null,
+      "algorithm": "sorted-case-id-python-random-sample/v1",
+      "python_version": "3.12.3",
+      "categories": [],
+      "splits": [
+        "baseline",
+        "development"
+      ],
+      "entries": [
+        {
+          "pin": {
+            "case_id": "affirmative-label-clean",
+            "revision": "1",
+            "rubric_revision": "1",
+            "case_sha256": "2a057a4f3945e4bc543152e1bd8f552304fd1bff1685f04f7fd5c19c120a2212"
+          },
+          "recipe_sha256": "a7aa3413870065beb92475b3fef0681e7fc57a3d1a74613fa02055b3589660e8"
+        },
+        {
+          "pin": {
+            "case_id": "affirmative-label-fault",
+            "revision": "1",
+            "rubric_revision": "1",
+            "case_sha256": "f227aa2f9717dd14704d9af7f2aa91dcd6b16a4924701a54df979bb41407bdc0"
+          },
+          "recipe_sha256": "a93da6f3cdfa28ab0f043b860fce7e29b74fb5529647e02f3aa3166eba621dca"
+        },
+        {
+          "pin": {
+            "case_id": "evidence-access-clean",
+            "revision": "1",
+            "rubric_revision": "1",
+            "case_sha256": "4a9e0acd85014668742695eabf5a1ab6af8f5c2c38db12d8ed35237b51b6948c"
+          },
+          "recipe_sha256": "c8c758b1701e43ea57147c8a00cf94f6cc617316ee39fff90eddb643e86f7809"
+        },
+        {
+          "pin": {
+            "case_id": "evidence-access-fault",
+            "revision": "1",
+            "rubric_revision": "1",
+            "case_sha256": "475fbc3ac490fd9c7523aba4049ef3b761e5c46ba720e16886a7f51e569426c9"
+          },
+          "recipe_sha256": "0f64f8896b805efff0176b379622b13be36908337042615ef9478640d735c450"
+        },
+        {
+          "pin": {
+            "case_id": "unit-display-clean",
+            "revision": "1",
+            "rubric_revision": "1",
+            "case_sha256": "6371cce9a996c10a3f044c0fef3b1edc0cc67f60328f2ca8a693dc15ba4023dd"
+          },
+          "recipe_sha256": "16c681cb3f8bb667c232345497d1d678d6c9e91fda36f9c6c532cc4dcc3b914c"
+        },
+        {
+          "pin": {
+            "case_id": "unit-display-fault",
+            "revision": "1",
+            "rubric_revision": "1",
+            "case_sha256": "9b1d206806d5ed1178564ffb968e7ca30d6f119f0236343740be7c41b4f60359"
+          },
+          "recipe_sha256": "201613155e295bcfbd26113ae08a0d6ab999e925ec3b61c98f9b64cb8f43a69a"
+        }
+      ],
+      "maximum_sessions": 16,
+      "seconds": 600,
+      "browser_actions": 60
+    },
+    {
+      "owner": "shovelready-virtual-qa/v1",
+      "experiment_id": "77fe9744b0fe4decb1617636c87a9120",
+      "output": "C:\\Temp\\sr31-pilot01-5b2047a68603\\tasks",
+      "created_at": "2026-09-25T01:17:54.230083+00:00",
+      "mode": "task_completion",
+      "selection": "fixed",
+      "seed": null,
+      "algorithm": "sorted-case-id-python-random-sample/v1",
+      "python_version": "3.12.3",
+      "categories": [],
+      "splits": [
+        "baseline",
+        "development"
+      ],
+      "entries": [
+        {
+          "pin": {
+            "case_id": "synthetic-a-candidate",
+            "revision": "1",
+            "rubric_revision": "1",
+            "case_sha256": "aaa7c7b96db47f9fd8986bf8eadff47d27d542aa4b73bbe56d17cb35dc6b4879"
+          },
+          "recipe_sha256": "c1259bce49648bbf53fca700c7e794d406e830ca9d3527589e20b5ef19d228c0"
+        },
+        {
+          "pin": {
+            "case_id": "synthetic-c-negative",
+            "revision": "1",
+            "rubric_revision": "1",
+            "case_sha256": "627e55e4717893c2558a43a3ca930ea6255ac5655ea447030d683a49572b8c1f"
+          },
+          "recipe_sha256": "9a1a1110c860a3bb87dd8d3189c61131f5ffbc6398089e5c2c7e60d300da04c6"
+        },
+        {
+          "pin": {
+            "case_id": "synthetic-e-conditional",
+            "revision": "1",
+            "rubric_revision": "1",
+            "case_sha256": "10526f3b4267e14f72028cbff5d75648c8e1d73c52ddadef8c8b598ccbf19fd3"
+          },
+          "recipe_sha256": "421b929309f10faaa39824b30011a8a72e358cf055628ec91a6b7e48dacb5147"
+        },
+        {
+          "pin": {
+            "case_id": "synthetic-f-correction",
+            "revision": "1",
+            "rubric_revision": "1",
+            "case_sha256": "0bbd2b1f1c3869cfdf1a99bfda70aeaa776f857ee562760a80228ca44a16601b"
+          },
+          "recipe_sha256": "cd4036d1ec848f52ff1e2331740650e5add69f3d06a8ee8384bc3a152a4c9c72"
+        },
+        {
+          "pin": {
+            "case_id": "vic080-evidence",
+            "revision": "1",
+            "rubric_revision": "1",
+            "case_sha256": "37f077ef2acf62879bba5a2fbd2eb4b885a6392edc4c2712cc6027a6f8e2814e"
+          },
+          "recipe_sha256": "ec3ed94796d7d4382934a1b523c865e232f4aeb0d84a8ffed3647f02e58d81a3"
+        }
+      ],
+      "maximum_sessions": 16,
+      "seconds": 600,
+      "browser_actions": 60
+    }
+  ],
+  "dispatch_order": [
+    "unit-display-clean",
+    "unit-display-fault",
+    "evidence-access-clean",
+    "evidence-access-fault",
+    "affirmative-label-clean",
+    "affirmative-label-fault",
+    "vic080-evidence",
+    "vic080-evidence",
+    "synthetic-a-candidate",
+    "synthetic-a-candidate",
+    "synthetic-c-negative",
+    "synthetic-c-negative",
+    "synthetic-e-conditional",
+    "synthetic-e-conditional",
+    "synthetic-f-correction",
+    "synthetic-f-correction"
+  ],
+  "expansion_gate": "Review unit-display pair first. Expand sequentially only while environment, browser evidence and grading are usable; ceilings are not quotas.",
+  "budget": {
+    "all_experiment_directories_combined": 16,
+    "seconds_per_session": 600,
+    "individual_browser_operations_per_session": 60,
+    "concurrency": 1,
+    "failures_consume_slots": true,
+    "silent_retries": false
+  },
+  "participant_configuration": {
+    "adapter": "manual runner dispatch plus collaboration.spawn_agent",
+    "fork_turns": "none",
+    "model": "inherited host configuration; exact backend identifier/settings unavailable",
+    "tools": "mcp__cua_repl supported rendered browser UI; create background iab tab; individual operation ledger including reads/screenshots",
+    "context": "neutral brief/URL/browser constraints only; shared filesystem/tool availability is not OS isolation",
+    "paid_service": null
+  },
+  "critical_policy": "N/A; no reviewed atomic policy. Separate FrozenScoring files predate dispatch.",
+  "reserved_groups": {
+    "reserved-future": "no authored members; none selected"
+  },
+  "reviewer": {
+    "identity": "Codex SR-31 facilitator",
+    "role": "agent",
+    "independent_human_calibration": false,
+    "human_minutes": null
+  },
+  "evidence": "Retain original participant notes, operation ledgers, exact tool-history references, immutable typed case/run/assessment/finding history and cleanup receipts. No portable screenshot bundle unless supported export exists.",
+  "decision_policy": "Continue/narrow/stop based on reproducible usefulness and actual agent review effort; do not infer legal truth, publication, customer satisfaction or human review time.",
+  "gates": "Coordinator release after SR-26 review and SR-28/29/30 integration; empirical calibration remains open in SR-30 #54."
+}

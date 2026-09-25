@@ -1,0 +1,197 @@
+{
+  "schema_version": "virtual-qa-scoring/v1",
+  "revision": "1",
+  "pin": {
+    "case_id": "vic080-evidence",
+    "revision": "1",
+    "rubric_revision": "1",
+    "case_sha256": "989dc5312bd804294a750730ff728be78212ede66b3af40f29bdcf6fbaab7ed9"
+  },
+  "rubric": {
+    "revision": "1",
+    "expectations": [
+      {
+        "check_id": "identity",
+        "claim": "Identify site-80 parcel feature 0 and victoria-pilot-three-leads; preserve the exact selected observation revision (not an accepted release) and source-scoped feature locators.",
+        "kind": "observed_ui_fact",
+        "scored": true,
+        "basis": {
+          "kind": "browser_observation",
+          "description": "Identify site-80 parcel feature 0 and victoria-pilot-three-leads; preserve the exact selected observation revision (not an accepted release) and source-scoped feature locators.",
+          "evidence": [
+            {
+              "uri": "frontend/src/investigation/observed.test.json",
+              "revision": {
+                "value": "sha256:f28ce476e8e4d6d6b60d93021c18097a7ba368f62fbdca8c5fb11418a8bf0abf",
+                "unknown_reason": null
+              },
+              "locator": "/spatial/identity"
+            }
+          ]
+        },
+        "evidence": [
+          {
+            "uri": "frontend/src/investigation/observed.test.json",
+            "revision": {
+              "value": "sha256:f28ce476e8e4d6d6b60d93021c18097a7ba368f62fbdca8c5fb11418a8bf0abf",
+              "unknown_reason": null
+            },
+            "locator": "/spatial/identity"
+          }
+        ],
+        "review": {
+          "status": "reviewed",
+          "reviewer": {
+            "value": "Codex SR-28 fixture author",
+            "unknown_reason": null
+          },
+          "reviewed_at": {
+            "value": "2026-09-25T00:43:39Z",
+            "unknown_reason": null
+          },
+          "rationale": "Source/renderer review of authored software expectations; not independent legal review. Browser control verification is recorded separately in docs/usability/virtual-qa/browser-review.md.",
+          "disagreements": []
+        }
+      },
+      {
+        "check_id": "observations",
+        "claim": "Treat displayed parcel area about 577.33 mÂ², ZB2018 / GRD-1 (PGA), zoning OBJECTID 3 and roofline 69970 Residential as unreviewed observations. Geometry is not regulatory lot area; rooflines are not wall footprints or principal buildings.",
+        "kind": "observed_ui_fact",
+        "scored": true,
+        "basis": {
+          "kind": "browser_observation",
+          "description": "Treat displayed parcel area about 577.33 mÂ², ZB2018 / GRD-1 (PGA), zoning OBJECTID 3 and roofline 69970 Residential as unreviewed observations. Geometry is not regulatory lot area; rooflines are not wall footprints or principal buildings.",
+          "evidence": [
+            {
+              "uri": "frontend/src/investigation/observed.test.json",
+              "revision": {
+                "value": "sha256:f28ce476e8e4d6d6b60d93021c18097a7ba368f62fbdca8c5fb11418a8bf0abf",
+                "unknown_reason": null
+              },
+              "locator": "/spatial/observations"
+            }
+          ]
+        },
+        "evidence": [
+          {
+            "uri": "frontend/src/investigation/observed.test.json",
+            "revision": {
+              "value": "sha256:f28ce476e8e4d6d6b60d93021c18097a7ba368f62fbdca8c5fb11418a8bf0abf",
+              "unknown_reason": null
+            },
+            "locator": "/spatial/observations"
+          }
+        ],
+        "review": {
+          "status": "reviewed",
+          "reviewer": {
+            "value": "Codex SR-28 fixture author",
+            "unknown_reason": null
+          },
+          "reviewed_at": {
+            "value": "2026-09-25T00:43:39Z",
+            "unknown_reason": null
+          },
+          "rationale": "Source/renderer review of authored software expectations; not independent legal review. Browser control verification is recorded separately in docs/usability/virtual-qa/browser-review.md.",
+          "disagreements": []
+        }
+      },
+      {
+        "check_id": "limits-next-inputs",
+        "claim": "State no screening/fit/approval is established; request the visible missing reviewed boundaries/applicability, wall footprint, legal yards/lot lines, grade, controlled dimensions and supplied placement. Do not infer buildable area, exhaustive overlays or PGA permission.",
+        "kind": "observed_ui_fact",
+        "scored": true,
+        "basis": {
+          "kind": "browser_observation",
+          "description": "State no screening/fit/approval is established; request the visible missing reviewed boundaries/applicability, wall footprint, legal yards/lot lines, grade, controlled dimensions and supplied placement. Do not infer buildable area, exhaustive overlays or PGA permission.",
+          "evidence": [
+            {
+              "uri": "frontend/src/investigation/observed.test.json",
+              "revision": {
+                "value": "sha256:f28ce476e8e4d6d6b60d93021c18097a7ba368f62fbdca8c5fb11418a8bf0abf",
+                "unknown_reason": null
+              },
+              "locator": "/spatial/parcels/1"
+            }
+          ]
+        },
+        "evidence": [
+          {
+            "uri": "frontend/src/investigation/observed.test.json",
+            "revision": {
+              "value": "sha256:f28ce476e8e4d6d6b60d93021c18097a7ba368f62fbdca8c5fb11418a8bf0abf",
+              "unknown_reason": null
+            },
+            "locator": "/spatial/parcels/1"
+          }
+        ],
+        "review": {
+          "status": "reviewed",
+          "reviewer": {
+            "value": "Codex SR-28 fixture author",
+            "unknown_reason": null
+          },
+          "reviewed_at": {
+            "value": "2026-09-25T00:43:39Z",
+            "unknown_reason": null
+          },
+          "rationale": "Source/renderer review of authored software expectations; not independent legal review. Browser control verification is recorded separately in docs/usability/virtual-qa/browser-review.md.",
+          "disagreements": []
+        }
+      },
+      {
+        "check_id": "source-currency",
+        "claim": "Cite source capture/snapshot evidence; legal effective dates are unknown and current external services may differ from the capture.",
+        "kind": "observed_ui_fact",
+        "scored": true,
+        "basis": {
+          "kind": "browser_observation",
+          "description": "Cite source capture/snapshot evidence; legal effective dates are unknown and current external services may differ from the capture.",
+          "evidence": [
+            {
+              "uri": "frontend/src/investigation/observed.test.json",
+              "revision": {
+                "value": "sha256:f28ce476e8e4d6d6b60d93021c18097a7ba368f62fbdca8c5fb11418a8bf0abf",
+                "unknown_reason": null
+              },
+              "locator": "/sources"
+            }
+          ]
+        },
+        "evidence": [
+          {
+            "uri": "frontend/src/investigation/observed.test.json",
+            "revision": {
+              "value": "sha256:f28ce476e8e4d6d6b60d93021c18097a7ba368f62fbdca8c5fb11418a8bf0abf",
+              "unknown_reason": null
+            },
+            "locator": "/sources"
+          }
+        ],
+        "review": {
+          "status": "reviewed",
+          "reviewer": {
+            "value": "Codex SR-28 fixture author",
+            "unknown_reason": null
+          },
+          "reviewed_at": {
+            "value": "2026-09-25T00:43:39Z",
+            "unknown_reason": null
+          },
+          "rationale": "Source/renderer review of authored software expectations; not independent legal review. Browser control verification is recorded separately in docs/usability/virtual-qa/browser-review.md.",
+          "disagreements": []
+        }
+      }
+    ],
+    "disagreements": [],
+    "seeded_fault": null
+  },
+  "critical_checks": {
+    "value": null,
+    "unknown_reason": "No reviewed atomic critical policy for this pilot; report N/A."
+  },
+  "frozen_at": {
+    "value": null,
+    "unknown_reason": "No prospective critical policy; this file is retained before dispatch."
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "schema_version": "virtual-qa-scoring/v1",
+  "revision": "1",
+  "pin": {
+    "case_id": "synthetic-c-negative",
+    "revision": "1",
+    "rubric_revision": "1",
+    "case_sha256": "627e55e4717893c2558a43a3ca930ea6255ac5655ea447030d683a49572b8c1f"
+  },
+  "rubric": {
+    "revision": "1",
+    "expectations": [
+      {
+        "check_id": "bounded-failure",
+        "claim": "No match under evaluated pathways applies only to the supplied placement. No other placement was assessed; it does not exclude the whole site.",
+        "kind": "authored_software_expectation",
+        "scored": true,
+        "basis": {
+          "kind": "browser_observation",
+          "description": "No match under evaluated pathways applies only to the supplied placement. No other placement was assessed; it does not exclude the whole site.",
+          "evidence": [
+            {
+              "uri": "frontend/src/preview/fixtures.json",
+              "revision": {
+                "value": "sha256:549d97cefa0c2973e1d7e0aea79f1df4a85d95d6558297869923e297ab36fe0d",
+                "unknown_reason": null
+              },
+              "locator": "/scenarios/2"
+            }
+          ]
+        },
+        "evidence": [
+          {
+            "uri": "frontend/src/preview/fixtures.json",
+            "revision": {
+              "value": "sha256:549d97cefa0c2973e1d7e0aea79f1df4a85d95d6558297869923e297ab36fe0d",
+              "unknown_reason": null
+            },
+            "locator": "/scenarios/2"
+          }
+        ],
+        "review": {
+          "status": "reviewed",
+          "reviewer": {
+            "value": "Codex SR-28 fixture author",
+            "unknown_reason": null
+          },
+          "reviewed_at": {
+            "value": "2026-09-25T00:43:39Z",
+            "unknown_reason": null
+          },
+          "rationale": "Source/renderer review of authored software expectations; not independent legal review. Browser control verification is recorded separately in docs/usability/virtual-qa/browser-review.md.",
+          "disagreements": []
+        }
+      },
+      {
+        "check_id": "setback-evidence",
+        "claim": "Section C shows saved distance 1 m against >= 2 m minimum, rule synthetic-rule-C-r1 and synthetic-example-3-release-1; no real setback law is established.",
+        "kind": "authored_software_expectation",
+        "scored": true,
+        "basis": {
+          "kind": "browser_observation",
+          "description": "Section C shows saved distance 1 m against >= 2 m minimum, rule synthetic-rule-C-r1 and synthetic-example-3-release-1; no real setback law is established.",
+          "evidence": [
+            {
+              "uri": "frontend/src/preview/fixtures.json",
+              "revision": {
+                "value": "sha256:549d97cefa0c2973e1d7e0aea79f1df4a85d95d6558297869923e297ab36fe0d",
+                "unknown_reason": null
+              },
+              "locator": "/scenarios/2"
+            }
+          ]
+        },
+        "evidence": [
+          {
+            "uri": "frontend/src/preview/fixtures.json",
+            "revision": {
+              "value": "sha256:549d97cefa0c2973e1d7e0aea79f1df4a85d95d6558297869923e297ab36fe0d",
+              "unknown_reason": null
+            },
+            "locator": "/scenarios/2"
+          }
+        ],
+        "review": {
+          "status": "reviewed",
+          "reviewer": {
+            "value": "Codex SR-28 fixture author",
+            "unknown_reason": null
+          },
+          "reviewed_at": {
+            "value": "2026-09-25T00:43:39Z",
+            "unknown_reason": null
+          },
+          "rationale": "Source/renderer review of authored software expectations; not independent legal review. Browser control verification is recorded separately in docs/usability/virtual-qa/browser-review.md.",
+          "disagreements": []
+        }
+      }
+    ],
+    "disagreements": [],
+    "seeded_fault": null
+  },
+  "critical_checks": {
+    "value": null,
+    "unknown_reason": "No reviewed atomic critical policy for this pilot; report N/A."
+  },
+  "frozen_at": {
+    "value": null,
+    "unknown_reason": "No prospective critical policy; this file is retained before dispatch."
+  }
+}
