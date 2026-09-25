@@ -28,8 +28,11 @@ PRs #48-#50 deliver that bounded work: a database-free public-case mode, a histo
 Stannard reference packet and one virtual-user report. Selected corroborated research
 is reflected in provisional inventory revision `2026-09-24.integration-2`; no accepted
 zoning result is produced. See [wave-five integration](docs/integration-wave-five.md).
-SR-27 implementation and dependency-gated preparation for SR-28 through SR-31 have
-been dispatched in separate tasks.
+SR-27 through SR-30 now provide offline QA records, five task cases, three paired
+clean/fault controls, an isolated manual runner and evidence-gated grading. See
+[wave-six integration](docs/integration-wave-six.md) for verification and the scoring
+correction found during review. SR-31 owns the bounded participant pilot; independent
+human calibration and real-user validation remain outstanding.
 
 City of Victoria garden suites remain the leading technical prototype candidate, subject
 to verified design/site inputs and current rule applicability; Vancouver is the fallback.
@@ -103,7 +106,7 @@ Results distinguish **candidate**, **needs investigation**, and **no match under
 | [Architecture](docs/architecture.md) | Minimal system boundaries, deployment direction, and implementation sequence |
 | [Quality agreement](docs/quality.md) | Data contracts, testing, publication, and definition of done |
 | [Synthetic preview and walkthrough](docs/usability/README.md) | Local scenarios, fixture checks and usability rehearsal limits |
-| [Virtual-user evaluation plan](docs/backlog/virtual-qa-plan.md) | Proposed case library, bounded runs and adjudicated findings; not yet implemented |
+| [Virtual-user evaluation plan](docs/backlog/virtual-qa-plan.md) | Implemented offline tooling and limits for the bounded participant pilot |
 | [Persistence interface](docs/persistence.md) | Immutable imports, draft metadata, migrations and disposable PostgreSQL checks |
 | [Spatial import](docs/spatial.md) | Licensed raw observations, explicit XY operations, migration and unresolved site facts |
 | [Extraction replay](docs/extraction.md) | Saved responses, conservative normalization and blocked real-benchmark gates |
@@ -113,6 +116,7 @@ Results distinguish **candidate**, **needs investigation**, and **no match under
 | [Evaluator/spatial integration](docs/integration-review-2026-09-24.md) | PRs #31-#33, combined verification, remaining gates and process proposals |
 | [Wave-four integration](docs/integration-wave-four.md) | PRs #40-#43, launcher correction, required lifecycle CI and research limits |
 | [Wave-five integration](docs/integration-wave-five.md) | PRs #48-#50, provisional research reconciliation and bounded QA dispatch |
+| [Wave-six integration](docs/integration-wave-six.md) | PRs #59-#61, combined QA verification, review correction and pilot gates |
 | [Public case inventory](docs/research/public-cases/README.md) | Ten provisional historical cases and review shortlist; no accepted outcomes |
 | [MVP ticket backlog](docs/backlog/README.md) | Sequenced technical proof, CI/CD, customer pilot, and expansion experiments |
 | [Prototype input evidence](docs/pilot-inputs/README.md) | Captured Victoria sources, licensed GIS samples, provisional design/site specifications, and unresolved review inputs |

@@ -54,10 +54,14 @@ A user should be able to identify why a case was included/excluded, what was che
 
 Record errors by stage and retain run/release identifiers. Monitor ingestion failures and unresolved-case rates, not just HTTP uptime. Unexpected decision changes are investigated before promotion. Maintain a known-good application image and dataset release; test recovery with backward-compatible schemas and backups.
 
-## Planned virtual-user evaluation
+## Virtual-user evaluation
 
 [SR-27 through SR-31](backlog/virtual-qa-plan.md) specify a bounded follow-up to the
-SR-26 rehearsal; the runner, reusable grading and pilot are not yet implemented.
+SR-26 rehearsal. Records, cases, isolated manual execution and offline grading are
+implemented; participant calibration/value assessment remain SR-31 work. See
+[combined verification](integration-wave-six.md). A control's observability does not
+establish that the participant's response was reviewed: missing or unassessable outcome
+review cannot count as clean success or a seeded miss.
 Freeze case/rubric/app/data identity, use fresh browser-only participants and assess
 app behavior, agent behavior and grader behavior separately. Keep ordinary task
 completion distinct from explicit bug detection, with paired clean/fault controls.
