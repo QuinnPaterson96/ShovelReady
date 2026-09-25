@@ -586,4 +586,3 @@ def render_human(result):
     )
     lines.append("No EvaluationReport, acceptance, publication or legal outcome produced.")
     return "\n".join(lines)
-
