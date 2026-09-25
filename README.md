@@ -50,6 +50,11 @@ garden-suite building permit. Neither establishes reviewed dimensions or a prefa
 [Wave eight](docs/backlog/wave-eight-prompts.md) moves to an offline historical Pilot
 intake diagnostic and targeted approved-plan acquisition; accepted screening remains open.
 
+[Wave-eight results](docs/integration-wave-eight.md) now include the runnable Pilot
+diagnostic and specific unsent plan-acquisition requests. [Wave nine](docs/backlog/wave-nine-prompts.md)
+implements a home/input/status flow and a read-only Pilot preparation view. Those UI
+changes are assigned, not yet implemented; real-site screening remains unaccepted.
+
 City of Victoria garden suites remain the leading technical prototype candidate, subject
 to verified design/site inputs and current rule applicability; Vancouver is the fallback.
 
