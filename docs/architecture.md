@@ -115,4 +115,10 @@ EvaluationReport and must not acquire invented reviews or source hashes. Specifi
 approved-plan acquisition proceeds separately. This tests actual intake gaps before
 any shared-contract change; it does not add a production service or accepted release.
 
+[Wave nine](backlog/wave-nine-prompts.md) proposes a primary Home -> inputs -> summary
+flow and a separate read-only Pilot preparation endpoint/view. Input completion and
+example import confer no review or fit outcome. Preparation diagnostics remain distinct
+from EvaluationReport, and runtime packaging must not depend on checkout-only scripts
+or research files. These are assigned UI/API changes, not current implemented behavior.
+
 Defer multi-agent ingestion, vector databases, knowledge graphs, microservices, elaborate cloud infrastructure, custom model training, and a commercial third-party API. Record any later adoption in a decision note with the observed need, simpler alternatives, and revisit criteria.

@@ -56,8 +56,16 @@ The first evaluator checks a supplied reviewed placement. Preserve manual site f
 | [SR-33](SR-33.md) / [issue #66](https://github.com/QuinnPaterson96/ShovelReady/issues/66) | Inspect computed draft evaluations in the app | M1 preparation | Existing report; SR-32 for live integration |
 | [SR-34](SR-34.md) / [issue #74](https://github.com/QuinnPaterson96/ShovelReady/issues/74) | Reproducible historical Pilot intake diagnostic | M1 preparation | Merged Pilot packet; existing contracts/core |
 | [SR-35](SR-35.md) / [issue #75](https://github.com/QuinnPaterson96/ShovelReady/issues/75) | Specific approved plans or exact unsent record requests | M1 preparation | Merged case research/review; independent of SR-34 |
+| [SR-36](SR-36.md) / [issue #79](https://github.com/QuinnPaterson96/ShovelReady/issues/79) | Home, optional example import, parameter entry and status | M1 preparation | Existing main; SR-37 for final Pilot route wiring |
+| [SR-37](SR-37.md) / [issue #80](https://github.com/QuinnPaterson96/ShovelReady/issues/80) | Read-only real Pilot preparation view | M1 preparation | SR-34 / PR #78; SR-36 for final shell/banner wiring |
 
 ## Next parallel work
+
+[Wave nine](wave-nine-prompts.md) is the current UI assignment: SR-36 owns the
+home/input/status flow and SR-37 owns the read-only Pilot diagnostic/API and evidence
+wording correction. They develop independently, with final navigation/banner wiring
+at integration. See [wave-eight results](../integration-wave-eight.md) for merged
+work, actual app checks and the still-unaccepted real-data boundary.
 
 [Wave-seven assignments](wave-seven-prompts.md) are complete in their bounded scopes:
 PRs #68/#69 and [combined verification](../integration-wave-seven.md) connect computed
