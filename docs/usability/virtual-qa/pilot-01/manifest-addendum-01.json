@@ -1,0 +1,13 @@
+{
+  "recorded_at": "2026-09-25T01:19:19.330301+00:00",
+  "original_manifest": "manifest.json",
+  "reason": "Coordinator announced PR #62 merge after first participant dispatch; original manifest and run retained unchanged. Normal merge preserved preparation commits.",
+  "integrated_main": "c928e89a07e76b0fc21bca9be663277779928c32",
+  "tooling_checkout_after_merge": "8f1c1fd9d2cf311f3d5c97f0bfbea44acce30660",
+  "first_attempt": "5f715178bafb4c3c80cecdfd089d8bce",
+  "first_attempt_source_commit": "f3aa21e",
+  "subsequent_attempts": "Use merged checkout; per-attempt source SHA recorded in pilot ledger.",
+  "tooling_code_changes": false,
+  "application_baseline_case_recipe_scoring_changes": false,
+  "budget_changes": false
+}
