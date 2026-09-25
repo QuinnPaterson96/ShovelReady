@@ -3,6 +3,7 @@ import RealObservations from './investigation/RealObservations'
 import InvestigationPreview from './preview/InvestigationPreview'
 import PublicCases from './reference_cases/PublicCases'
 import IdentityPanel from './Identity'
+import DraftEvaluations from './draft_evaluations/DraftEvaluations'
 
 export default function App() {
   const [mode, setMode] = useState('real')
@@ -46,12 +47,13 @@ export default function App() {
         <option value="real">Real observations · unreviewed licensed captures</option>
         <option value="public">Public cases · provisional historical evidence</option>
         <option value="synthetic">Fictional preview · synthetic saved scenarios</option>
+        <option value="draft">Computed draft evaluations · synthetic examples</option>
       </select>
-      {mode === 'real' ? <RealObservations /> : mode === 'public' ? <PublicCases /> : <InvestigationPreview />}
+      {mode === 'real' ? <RealObservations /> : mode === 'public' ? <PublicCases /> : mode === 'draft' ? <DraftEvaluations /> : <InvestigationPreview />}
       <section aria-labelledby="status-heading">
         <h2 id="status-heading">Foundation status</h2>
         <p role="status">{health}</p>
-        <p>This scaffold does not yet ingest rules, evaluate sites, or establish design fit.</p>
+        <p>Computed draft examples exercise the scalar evaluator. Real-site screening and design fit are not established.</p>
         <p>No accepted dataset is published. A health response only confirms that the API is running.</p>
       </section>
     </main>
