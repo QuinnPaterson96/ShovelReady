@@ -11,7 +11,7 @@
     "typecheck": "tsc -b",
     "build": "tsc -b && vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "test": "tsx --tsconfig tsconfig.app.json --test src/investigation/*.test.tsx src/draft_evaluations/*.test.tsx",
+    "test": "node tools/run_tests.mjs",
     "check:draft-contract": "cd .. && python -m uv run --locked python frontend/tools/export_draft_evaluations.py --check"
   },
   "dependencies": {

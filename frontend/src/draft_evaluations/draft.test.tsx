@@ -12,6 +12,15 @@ const render = (value: unknown) => renderToStaticMarkup(createElement(ReportView
 const response = (value: unknown, status = 200) => new Response(JSON.stringify(value), { status })
 const tick = () => new Promise(resolve => setTimeout(resolve, 0))
 
+test('supported synthetic reports use scoped banners; outside coverage stays neutral', () => {
+  assert.match(render(reports['synthetic-direct-pass']), /sr-status-green/)
+  assert.match(render(reports['synthetic-missing-fact']), /sr-status-amber/)
+  assert.match(render(reports['synthetic-placement-failure']), /sr-status-red/)
+  const outside = Object.values(reports).find(r => r.request.scope.coverage === 'outside_coverage')!
+  assert.match(render(outside), /sr-status-neutral/)
+  assert.doesNotMatch(render(outside), /sr-status-red/)
+})
+
 test('all evaluator-produced fixtures validate, preserving decimal strings and missing records', () => {
   for (const r of Object.values(reports)) parseReport(r)
   assert.equal(parseReport(pass).traces[0].fact?.quantity?.value, '10')
