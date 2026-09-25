@@ -1,0 +1,549 @@
+{
+  "purpose": "Provisional historical research metadata only; not production contracts, import payload, accepted source bundle or evaluator request.",
+  "case_id": "VIC-PC-003",
+  "dependency_group": "VIC-PC-003",
+  "review_status": "provisional",
+  "benchmark_eligible": false,
+  "split": "unassigned",
+  "historical_cutoff": "2024-04-18",
+  "verified_adoption_date": null,
+  "reported_adoption_date": "2024-04-18",
+  "adoption_evidence_limit": "Indexed minutes corroborated by tracker/stamp; full minutes and adopted instrument not obtained.",
+  "verified_legal_effective_date": null,
+  "verified_permit_issue_date": null,
+  "reviewer": null,
+  "sources": [
+    {
+      "source_id": "RC-MODO",
+      "primary_url": "https://www.modo.coop/buildings/623-625-avalon-road-victoria",
+      "title": "623 & 625 Avalon Road, Victoria - Modo building partnership",
+      "type": "provider_offer",
+      "retrieved_at": null,
+      "retrieval_date": "2026-09-25",
+      "retrieval_time_basis": "Tool inspection date; exact retrieval and publication time not established",
+      "printed_or_revision_date": null,
+      "event_dates": {},
+      "verified_legal_effective_date": null,
+      "locators": ["Address heading, membership/credit offer and eligibility footnote"],
+      "access_inspection_status": "Full relevant public HTML text inspected through web tool. No dated agreement, three secured memberships or City acceptance supplied. No signup/redemption attempted.",
+      "sha256": null,
+      "byte_length": null,
+      "local_artifact": null,
+      "rights_retention": "Metadata and concise original factual summary only; no full text, images, invite code or personal details retained in Git. No reuse grant established.",
+      "supersession_linkage": ["Undated later observation; does not supersede RC-MIN-APR or establish historical condition satisfaction"]
+    },
+    {
+      "source_id": "RC-REVISIONS-JAN",
+      "primary_url": "https://tender.victoria.ca/webapps/ourcity/Prospero/FileDownload.aspx?fileId=5BD94FBF-6682-4C5E-AEB4-6A366174E163&folderId=12266C210406112350109800",
+      "title": "January 11, 2023 summary of revisions - Avalon",
+      "type": "applicant_correspondence",
+      "retrieved_at": null,
+      "retrieval_date": "2026-09-25",
+      "retrieval_time_basis": "Web tool inspection date; exact retrieval time not recorded",
+      "printed_or_revision_date": "2023-01-11",
+      "event_dates": {},
+      "verified_legal_effective_date": null,
+      "locators": ["PDF p1 Planning and Transportation questions/responses; p2 closing"],
+      "access_inspection_status": "Web tool returned two-page PDF text; relevant p1 and p2 closing inspected. Screenshot retrieval timed out; no visual audit or source-byte hash claimed.",
+      "sha256": null,
+      "byte_length": null,
+      "local_artifact": null,
+      "rights_retention": "Metadata and concise original factual summary only; no PDF, full text, contact names or signatures committed. No reuse grant established.",
+      "supersession_linkage": ["Linked from RC-TRACKER; pre-decision proposals/responses do not replace RC-MIN-APR conditions"]
+    },
+    {
+      "source_id": "RC-APR-ALT",
+      "primary_url": "https://pub-victoria.escribemeetings.com/Meeting.aspx?Id=480f4112-5a02-48e4-ad4e-2464984c460d&Agenda=PostMinutes&lang=English",
+      "title": "April 18, 2024 alternate HTML route - returns revised agenda",
+      "type": "agenda_access_check",
+      "retrieved_at": null,
+      "retrieval_date": "2026-09-25",
+      "retrieval_time_basis": "HTTP inspection date; exact retrieval time not recorded",
+      "printed_or_revision_date": "2024-04-18",
+      "event_dates": {},
+      "verified_legal_effective_date": null,
+      "locators": ["Returned REVISED AGENDA heading; item F.7; attachment DocumentId=96683"],
+      "access_inspection_status": "HTTP 200 via requests; heading and full F.7 text inspected using BeautifulSoup. Route name does not make response final minutes. Known denied PDF attachment not retried.",
+      "sha256": null,
+      "byte_length": null,
+      "local_artifact": null,
+      "rights_retention": "Metadata and concise original factual summary only; no full HTML/text committed.",
+      "supersession_linkage": ["Same meeting as RC-AGENDA-APR; no upgrade to RC-MIN-APR evidence strength"]
+    },
+    {
+      "source_id": "RC-PLAN",
+      "primary_url": "https://tender.victoria.ca/webapps/ourcity/Prospero/FileDownload.aspx?fileId=CB2E297F-7A39-4BEB-9349-8B6EDC6DF2E1&folderId=12266C210406112350109800",
+      "title": "January 11, 2023 plans - final approved",
+      "type": "architectural_and_landscape_plans",
+      "retrieved_at": "2026-09-25T02:58:21.606893+00:00",
+      "retrieval_date": "2026-09-25",
+      "retrieval_time_basis": "Local scratch write completion immediately after HTTP retrieval; not server publication time",
+      "printed_or_revision_date": "2023-01-11",
+      "event_dates": {
+        "received": "2023-01-11",
+        "plan_approval_stamp": "2024-04-18"
+      },
+      "verified_legal_effective_date": null,
+      "locators": [
+        "PDF p1 A-1.0 project information, zoning table, site plan, issue 7, plot/receipt/approval stamps",
+        "PDF p2 A-2.0 detail 9; selected rear/east dimensions and issue table"
+      ],
+      "access_inspection_status": "HTTP 200; pypdf extraction all 7 pages (pp1-6 largely raster); visual pp1-2. Page 7 parsed, not visually audited. Not all drawings inspected.",
+      "sha256": "7be944a18ecf7d99496bf57758e75d2f0d89bc422ff17f540ec70ac37a364690",
+      "byte_length": 8652449,
+      "local_artifact": null,
+      "rights_retention": "Metadata and short original factual summaries only in Git. No redistribution/durable retention grant established. Task scratch excluded from Git; cleanup disposition in verification.md.",
+      "supersession_linkage": [
+        "Recapture matches frozen REZ00774-17 hash and length; frozen record unchanged",
+        "Selected Jan 2023 submission, later Apr 2024 stamp; older submissions excluded"
+      ]
+    },
+    {
+      "source_id": "RC-DRAFT",
+      "primary_url": "https://tender.victoria.ca/webapps/ourcity/Prospero/FileDownload.aspx?fileId=64037C231005163329309209&folderId=12266C210406112350109800",
+      "title": "Posted Bylaw 23-086, Amendment No. 1319",
+      "type": "draft_map_amendment",
+      "retrieved_at": "2026-09-25T02:58:22.893140+00:00",
+      "retrieval_date": "2026-09-25",
+      "retrieval_time_basis": "Local scratch write completion immediately after HTTP retrieval; not server publication time",
+      "printed_or_revision_date": null,
+      "event_dates": {},
+      "verified_legal_effective_date": null,
+      "locators": [
+        "PDF p1 clauses 1-2 and blank readings/adoption fields",
+        "PDF p2 hatched parcel map caption Rezoning No. 00774"
+      ],
+      "access_inspection_status": "HTTP 200; both pages parsed and visually inspected. Not an executed adopted instrument.",
+      "sha256": "9796e11415b82d6717db1945acdcea12f06725606a1b597ed159e604ee1dd71b",
+      "byte_length": 1381505,
+      "local_artifact": null,
+      "rights_retention": "Metadata and short original factual summaries only in Git. No redistribution/durable retention grant established. Task scratch excluded from Git; cleanup disposition in verification.md.",
+      "supersession_linkage": [
+        "Recapture matches frozen REZ00774-18 hash and length",
+        "R-2 to R2-65 parcel amendment; see RC-ZONE; adoption-stage attachment RC-ADOPTION-COPY not obtained"
+      ]
+    },
+    {
+      "source_id": "RC-TRACKER",
+      "primary_url": "https://tender.victoria.ca/webapps/ourcity/Prospero/Details.aspx?folderNumber=REZ00774",
+      "title": "REZ00774 tracker",
+      "type": "municipal_tracker",
+      "retrieved_at": "2026-09-25T02:57:59.412575+00:00",
+      "retrieval_date": "2026-09-25",
+      "retrieval_time_basis": "Local scratch write completion immediately after HTTP retrieval; not server publication time",
+      "printed_or_revision_date": null,
+      "event_dates": {
+        "application": "2021-03-31",
+        "reported_council_approval": "2024-04-18"
+      },
+      "verified_legal_effective_date": null,
+      "locators": [
+        "Application Date; Purpose; Task Progress; Related Permits and Applications; Documents"
+      ],
+      "access_inspection_status": "HTTP 200; substantive record sections parsed and inspected.",
+      "sha256": "f8b7be53774fa776e0d264c89f202c1c16ff39fa0c320dd6b552a4ebdd011242",
+      "byte_length": 77553,
+      "local_artifact": null,
+      "rights_retention": "Metadata and short original factual summaries only in Git. No redistribution/durable retention grant established. Task scratch excluded from Git; cleanup disposition in verification.md.",
+      "supersession_linkage": [
+        "Related DPV00223; retired DP000598; CLC00320",
+        "Frozen tracker-REZ00774 remains unchanged"
+      ]
+    },
+    {
+      "source_id": "RC-DPV",
+      "primary_url": "https://tender.victoria.ca/webapps/ourcity/Prospero/Details.aspx?folderNumber=DPV00223",
+      "title": "DPV00223 tracker",
+      "type": "municipal_tracker",
+      "retrieved_at": "2026-09-25T03:05:18.444990+00:00",
+      "retrieval_date": "2026-09-25",
+      "retrieval_time_basis": "Local scratch write completion immediately after HTTP retrieval; not server publication time",
+      "printed_or_revision_date": null,
+      "event_dates": {
+        "application": "2022-12-09",
+        "reported_council_approval": "2024-04-18",
+        "permit_issue": null
+      },
+      "verified_legal_effective_date": null,
+      "locators": [
+        "Application Date; Purpose; Related Permits and Applications"
+      ],
+      "access_inspection_status": "HTTP 200; substantive sections parsed/inspected. No executed permit or issue date displayed in inspected record.",
+      "sha256": "677c36eb79d4ca25e1abb6784221b97d77ace2b396bdf036506a8ad842d58829",
+      "byte_length": 46897,
+      "local_artifact": null,
+      "rights_retention": "Metadata and short original factual summaries only in Git. No redistribution/durable retention grant established. Task scratch excluded from Git; cleanup disposition in verification.md.",
+      "supersession_linkage": [
+        "Explicit concurrent REZ00774 cross-reference; retired DP000598"
+      ]
+    },
+    {
+      "source_id": "RC-AGENDA-JUN",
+      "primary_url": "https://pub-victoria.escribemeetings.com/Meeting.aspx?Id=67633e66-9953-4d89-a166-d3a1bc81f401&Agenda=Merged&lang=English&Item=12&Tab=attachments",
+      "title": "Special Committee of the Whole revised agenda 2023-06-29",
+      "type": "agenda",
+      "retrieved_at": "2026-09-25T03:02:44.237712+00:00",
+      "retrieval_date": "2026-09-25",
+      "retrieval_time_basis": "Local scratch write completion immediately after HTTP retrieval; not server publication time",
+      "printed_or_revision_date": "2023-06-29",
+      "event_dates": {
+        "meeting_scheduled": "2023-06-29"
+      },
+      "verified_legal_effective_date": null,
+      "locators": [
+        "C.2; report 91308; Attachment C plans 91311"
+      ],
+      "access_inspection_status": "HTTP 200 HTML; relevant complete item and attachment links inspected. Agenda, not minutes.",
+      "sha256": "0985ff2cec3958873c7c1f5c8cbd26e8b120cb0a3bff8253e2d96583617d4466",
+      "byte_length": 195781,
+      "local_artifact": null,
+      "rights_retention": "Metadata and short original factual summaries only in Git. No redistribution/durable retention grant established. Task scratch excluded from Git; cleanup disposition in verification.md.",
+      "supersession_linkage": [
+        "Same Avalon address, DPV00223 and Council alias 00744; map uses 00774"
+      ]
+    },
+    {
+      "source_id": "RC-AGENDA-OCT",
+      "primary_url": "https://pub-victoria.escribemeetings.com/Meeting.aspx?Agenda=Merged&Id=1090a04a-68da-4499-973d-c250dd7a8179&Item=26&Tab=attachments&lang=English",
+      "title": "Council to follow COTW revised agenda 2023-10-19",
+      "type": "agenda",
+      "retrieved_at": "2026-09-25T02:59:42.071081+00:00",
+      "retrieval_date": "2026-09-25",
+      "retrieval_time_basis": "Local scratch write completion immediately after HTTP retrieval; not server publication time",
+      "printed_or_revision_date": "2023-10-19",
+      "event_dates": {
+        "meeting_scheduled": "2023-10-19"
+      },
+      "verified_legal_effective_date": null,
+      "locators": [
+        "E.1; report 93521 and draft bylaw 93522"
+      ],
+      "access_inspection_status": "HTTP 200 HTML; relevant complete item and attachment links inspected. Agenda, not minutes.",
+      "sha256": "19a3183c994e0fe6bb7617acdee8e4ada0f1b61d780498abb65467379f5962df",
+      "byte_length": 154177,
+      "local_artifact": null,
+      "rights_retention": "Metadata and short original factual summaries only in Git. No redistribution/durable retention grant established. Task scratch excluded from Git; cleanup disposition in verification.md.",
+      "supersession_linkage": [
+        "Same Avalon address, DPV00223 and Council alias 00744; map uses 00774"
+      ]
+    },
+    {
+      "source_id": "RC-AGENDA-NOV",
+      "primary_url": "https://pub-victoria.escribemeetings.com/Meeting.aspx?Id=7642d8fd-8050-4264-8cfc-2c0ef918bdf7&Agenda=Merged&lang=English&Item=7&Tab=attachments",
+      "title": "Council revised agenda 2023-11-09",
+      "type": "agenda",
+      "retrieved_at": "2026-09-25T03:02:44.655609+00:00",
+      "retrieval_date": "2026-09-25",
+      "retrieval_time_basis": "Local scratch write completion immediately after HTTP retrieval; not server publication time",
+      "printed_or_revision_date": "2023-11-09",
+      "event_dates": {
+        "meeting_scheduled": "2023-11-09"
+      },
+      "verified_legal_effective_date": null,
+      "locators": [
+        "E.1 and E.1.a; explicit later adoption/approval; attachments 93879/93880/93885"
+      ],
+      "access_inspection_status": "HTTP 200 HTML; relevant complete item and attachment links inspected. Agenda, not minutes.",
+      "sha256": "e03b8e19d4c8f4edeeef49bace9d04cae4172b7d36fbd0d3d6648e5469e03e6e",
+      "byte_length": 129093,
+      "local_artifact": null,
+      "rights_retention": "Metadata and short original factual summaries only in Git. No redistribution/durable retention grant established. Task scratch excluded from Git; cleanup disposition in verification.md.",
+      "supersession_linkage": [
+        "Same Avalon address, DPV00223 and Council alias 00744; map uses 00774"
+      ]
+    },
+    {
+      "source_id": "RC-AGENDA-APR",
+      "primary_url": "https://pub-victoria.escribemeetings.com/Meeting.aspx?Id=480f4112-5a02-48e4-ad4e-2464984c460d&Agenda=Merged&lang=English",
+      "title": "Council to follow COTW revised agenda 2024-04-18",
+      "type": "agenda",
+      "retrieved_at": "2026-09-25T03:01:22.044161+00:00",
+      "retrieval_date": "2026-09-25",
+      "retrieval_time_basis": "Local scratch write completion immediately after HTTP retrieval; not server publication time",
+      "printed_or_revision_date": "2024-04-18",
+      "event_dates": {
+        "meeting_scheduled": "2024-04-18"
+      },
+      "verified_legal_effective_date": null,
+      "locators": [
+        "F.7; bylaw 96683; links to June and November meetings"
+      ],
+      "access_inspection_status": "HTTP 200 HTML; relevant complete item and attachment links inspected. Agenda, not minutes.",
+      "sha256": "80a584cad4003ed51a156c2241dc8c874c0f0d644037311798ce2fcae1011cdf",
+      "byte_length": 156455,
+      "local_artifact": null,
+      "rights_retention": "Metadata and short original factual summaries only in Git. No redistribution/durable retention grant established. Task scratch excluded from Git; cleanup disposition in verification.md.",
+      "supersession_linkage": [
+        "Same Avalon address, DPV00223 and Council alias 00744; map uses 00774"
+      ]
+    },
+    {
+      "source_id": "RC-MIN-APR",
+      "primary_url": "https://pub-victoria.escribemeetings.com/FileStream.ashx?DocumentId=97222",
+      "title": "Daytime Council minutes",
+      "type": "minutes",
+      "retrieved_at": null,
+      "retrieval_date": "2026-09-25",
+      "retrieval_time_basis": "Exact request time not retained; UTC session date only",
+      "printed_or_revision_date": "2024-04-18",
+      "event_dates": {},
+      "verified_legal_effective_date": null,
+      "locators": [
+        "F.7 printed pp6-7"
+      ],
+      "access_inspection_status": "Indexed adoption and conditional authorization; full direct HTTP 403 and web open failure; browser PDF blank; archive independently links this document as April 18 minutes. Hash intentionally null; denial HTML is not source bytes.",
+      "sha256": null,
+      "byte_length": null,
+      "local_artifact": null,
+      "rights_retention": "Metadata and short original factual summaries only in Git. No redistribution/durable retention grant established. Task scratch excluded from Git; cleanup disposition in verification.md.",
+      "supersession_linkage": [
+        "Linked case lead only; not inspected full-document proof"
+      ]
+    },
+    {
+      "source_id": "RC-MIN-NOV",
+      "primary_url": "https://pub-victoria.escribemeetings.com/FileStream.ashx?DocumentId=96250",
+      "title": "Council hearing minutes",
+      "type": "minutes",
+      "retrieved_at": null,
+      "retrieval_date": "2026-09-25",
+      "retrieval_time_basis": "Exact request time not retained; UTC session date only",
+      "printed_or_revision_date": "2023-11-09",
+      "event_dates": {},
+      "verified_legal_effective_date": null,
+      "locators": [
+        "E.1 and E.1.a printed pp2-3"
+      ],
+      "access_inspection_status": "Indexed hearing/third reading; full direct HTTP 403. Hash intentionally null; denial HTML is not source bytes.",
+      "sha256": null,
+      "byte_length": null,
+      "local_artifact": null,
+      "rights_retention": "Metadata and short original factual summaries only in Git. No redistribution/durable retention grant established. Task scratch excluded from Git; cleanup disposition in verification.md.",
+      "supersession_linkage": [
+        "Linked case lead only; not inspected full-document proof"
+      ]
+    },
+    {
+      "source_id": "RC-MIN-JUL",
+      "primary_url": "https://pub-victoria.escribemeetings.com/filestream.ashx?DocumentId=92240",
+      "title": "Daytime Council minutes",
+      "type": "minutes",
+      "retrieved_at": null,
+      "retrieval_date": "2026-09-25",
+      "retrieval_time_basis": "Exact request time not retained; UTC session date only",
+      "printed_or_revision_date": "2023-07-13",
+      "event_dates": {},
+      "verified_legal_effective_date": null,
+      "locators": [
+        "G.1.a.b printed pp3-4"
+      ],
+      "access_inspection_status": "Search-index lead only; full document not retrieved or inspected. Hash intentionally null; denial HTML is not source bytes.",
+      "sha256": null,
+      "byte_length": null,
+      "local_artifact": null,
+      "rights_retention": "Metadata and short original factual summaries only in Git. No redistribution/durable retention grant established. Task scratch excluded from Git; cleanup disposition in verification.md.",
+      "supersession_linkage": [
+        "Linked case lead only; not inspected full-document proof"
+      ]
+    },
+    {
+      "source_id": "RC-STAFF",
+      "primary_url": "https://pub-victoria.escribemeetings.com/filestream.ashx?DocumentId=91308",
+      "title": "Staff report for June 29 COTW",
+      "type": "staff_or_bylaw_attachment",
+      "retrieved_at": null,
+      "retrieval_date": "2026-09-25",
+      "retrieval_time_basis": "Exact request time not retained; UTC session date only",
+      "printed_or_revision_date": "2023-06-15",
+      "event_dates": {},
+      "verified_legal_effective_date": null,
+      "locators": [
+        "Indexed p2 executive summary; full report reportedly 12 pages"
+      ],
+      "access_inspection_status": "Full direct HTTP 403. Search-index excerpt only; no staff table treated as inspected. Hash intentionally null; denial HTML is not source bytes.",
+      "sha256": null,
+      "byte_length": null,
+      "local_artifact": null,
+      "rights_retention": "Metadata and short original factual summaries only in Git. No redistribution/durable retention grant established. Task scratch excluded from Git; cleanup disposition in verification.md.",
+      "supersession_linkage": [
+        "Linked case lead only; not inspected full-document proof"
+      ]
+    },
+    {
+      "source_id": "RC-CLERK-OCT",
+      "primary_url": "https://pub-victoria.escribemeetings.com/filestream.ashx?DocumentId=93521",
+      "title": "Clerk report for October 19 Council",
+      "type": "staff_or_bylaw_attachment",
+      "retrieved_at": null,
+      "retrieval_date": "2026-09-25",
+      "retrieval_time_basis": "Exact request time not retained; UTC session date only",
+      "printed_or_revision_date": "2023-10-10",
+      "event_dates": {},
+      "verified_legal_effective_date": null,
+      "locators": [
+        "Indexed p1 recommendation/background for October 19"
+      ],
+      "access_inspection_status": "Full direct HTTP 403; index reports July 13 direction/registration prerequisite. Hash intentionally null; denial HTML is not source bytes.",
+      "sha256": null,
+      "byte_length": null,
+      "local_artifact": null,
+      "rights_retention": "Metadata and short original factual summaries only in Git. No redistribution/durable retention grant established. Task scratch excluded from Git; cleanup disposition in verification.md.",
+      "supersession_linkage": [
+        "Linked case lead only; not inspected full-document proof"
+      ]
+    },
+    {
+      "source_id": "RC-ADOPTION-COPY",
+      "primary_url": "https://pub-victoria.escribemeetings.com/filestream.ashx?DocumentId=96683",
+      "title": "Bylaw 23-086 adoption-stage attachment",
+      "type": "staff_or_bylaw_attachment",
+      "retrieved_at": null,
+      "retrieval_date": "2026-09-25",
+      "retrieval_time_basis": "Exact request time not retained; UTC session date only",
+      "printed_or_revision_date": null,
+      "event_dates": {},
+      "verified_legal_effective_date": null,
+      "locators": [
+        "April 18 agenda F.7 attachment; page locators unknown"
+      ],
+      "access_inspection_status": "Full direct HTTP 403/web open failure; browser attachment click supplied no readable PDF. Content and enactment fields unknown. Hash intentionally null; denial HTML is not source bytes.",
+      "sha256": null,
+      "byte_length": null,
+      "local_artifact": null,
+      "rights_retention": "Metadata and short original factual summaries only in Git. No redistribution/durable retention grant established. Task scratch excluded from Git; cleanup disposition in verification.md.",
+      "supersession_linkage": [
+        "Linked case lead only; not inspected full-document proof"
+      ]
+    },
+    {
+      "source_id": "RC-ZONE",
+      "primary_url": "https://www.victoria.ca/media/file/2164",
+      "title": "Part 2.164 R2-65 Two Family Dwelling with Accessory Dwelling Unit District",
+      "type": "zone_consolidation",
+      "retrieved_at": "2026-09-25T03:00:22.780516+00:00",
+      "retrieval_date": "2026-09-25",
+      "retrieval_time_basis": "Local scratch write completion immediately after HTTP retrieval; not server publication time",
+      "printed_or_revision_date": null,
+      "event_dates": {
+        "footer_zone_creation_adoption": "2023-10-12"
+      },
+      "verified_legal_effective_date": null,
+      "locators": [
+        "pp1-2; sections 2.164.1(b), 2.164.2(a); p2 footer"
+      ],
+      "access_inspection_status": "HTTP 200; both pages visually inspected (font mapping unsuitable for plain extraction). Current download, historical completeness unverified.",
+      "sha256": "a6d3e5c16e2b6efc3ccdd9b2d1a2076c0c2b24bf47bdc2211d9bf23027143da3",
+      "byte_length": 89610,
+      "local_artifact": null,
+      "rights_retention": "Metadata and short original factual summaries only in Git. No redistribution/durable retention grant established. Task scratch excluded from Git; cleanup disposition in verification.md.",
+      "supersession_linkage": [
+        "23-086 proposes applying this existing zone to Avalon",
+        "Footer identifies 23-077; does not evidence Avalon enactment"
+      ]
+    },
+    {
+      "source_id": "RC-M",
+      "primary_url": "https://www.victoria.ca/media/1081",
+      "title": "Schedule M Garden Suites",
+      "type": "schedule_consolidation",
+      "retrieved_at": "2026-09-25T03:00:56.937330+00:00",
+      "retrieval_date": "2026-09-25",
+      "retrieval_time_basis": "Local scratch write completion immediately after HTTP retrieval; not server publication time",
+      "printed_or_revision_date": null,
+      "event_dates": {
+        "printed_amendment_annotation": "2019-08-08",
+        "printed_original_adoption_footer": "2017-04-13"
+      },
+      "verified_legal_effective_date": null,
+      "locators": [
+        "p1 sections 1, 2(a), 2(e), 3(a)-(b); p2 footer"
+      ],
+      "access_inspection_status": "HTTP 200; all text parsed; p1 visually inspected for selected provisions. Current download; not certified April 2024 version.",
+      "sha256": "e8850a9e48f203d9074963a0c42038c3de983a84ff2e76cc05842325901c0ac7",
+      "byte_length": 246617,
+      "local_artifact": null,
+      "rights_retention": "Metadata and short original factual summaries only in Git. No redistribution/durable retention grant established. Task scratch excluded from Git; cleanup disposition in verification.md.",
+      "supersession_linkage": [
+        "Incorporated with role substitution by R2-65",
+        "Refers underlined terms to Schedule A and parking to Schedule C"
+      ]
+    },
+    {
+      "source_id": "RC-A",
+      "primary_url": "https://www.victoria.ca/media/1195",
+      "title": "Schedule A Definitions",
+      "type": "definitions_consolidation",
+      "retrieved_at": "2026-09-25T03:05:16.031986+00:00",
+      "retrieval_date": "2026-09-25",
+      "retrieval_time_basis": "Local scratch write completion immediately after HTTP retrieval; not server publication time",
+      "printed_or_revision_date": null,
+      "event_dates": {},
+      "verified_legal_effective_date": null,
+      "locators": [
+        "p16 Rear Lot Line and Rear Yard",
+        "p18 Setback or Line of Setback",
+        "p19 Site Coverage",
+        "p21 Yard",
+        "p22 amendment list (text only)"
+      ],
+      "access_inspection_status": "HTTP 200 after initially stalled request was cancelled; selected definitions parsed and pp16/18/19/21 visually inspected. p22 text includes amendments after cutoff, through 2026.",
+      "sha256": "2e8ff4dc88cc4eb0b52c449721e68bb54888353bec1534007cc55e7d2f0caaf8",
+      "byte_length": 4947222,
+      "local_artifact": null,
+      "rights_retention": "Metadata and short original factual summaries only in Git. No redistribution/durable retention grant established. Task scratch excluded from Git; cleanup disposition in verification.md.",
+      "supersession_linkage": [
+        "Current-download definitions are leads for historical review; do not backdate entire consolidation"
+      ]
+    },
+    {
+      "source_id": "RC-GENERAL",
+      "primary_url": "https://www.victoria.ca/media/1194",
+      "title": "Zoning Regulation Bylaw general provisions 80-159",
+      "type": "general_regulations",
+      "retrieved_at": "2026-09-25T03:05:17.221483+00:00",
+      "retrieval_date": "2026-09-25",
+      "retrieval_time_basis": "Local scratch write completion immediately after HTTP retrieval; not server publication time",
+      "printed_or_revision_date": null,
+      "event_dates": {},
+      "verified_legal_effective_date": null,
+      "locators": [
+        "p2 section 14",
+        "p5 section 27",
+        "p6 sections 37-41",
+        "p7 later amendment annotation"
+      ],
+      "access_inspection_status": "HTTP 200; selected text read; no quantitative table or drawing used. Not full historical-law review.",
+      "sha256": "eff1aa5578fa5d3416c3177c28538889567f6488b837dff0bd0ed8c97d1e6d8d",
+      "byte_length": 229569,
+      "local_artifact": null,
+      "rights_retention": "Metadata and short original factual summaries only in Git. No redistribution/durable retention grant established. Task scratch excluded from Git; cleanup disposition in verification.md.",
+      "supersession_linkage": [
+        "Zone/schedule applicability, interpretation and outdoor-feature dependencies; current text includes post-cutoff amendments"
+      ]
+    },
+    {
+      "source_id": "RC-RIGHTS",
+      "primary_url": "https://www.victoria.ca/legal-disclaimer",
+      "title": "City of Victoria Legal Disclaimer",
+      "type": "rights_notice",
+      "retrieved_at": null,
+      "retrieval_date": "2026-09-25",
+      "retrieval_time_basis": "Exact request time not retained; UTC session date only",
+      "printed_or_revision_date": null,
+      "event_dates": {},
+      "verified_legal_effective_date": null,
+      "locators": [
+        "Copyright",
+        "Electronic Documentation"
+      ],
+      "access_inspection_status": "Opened full web-tool primary page; no local byte capture/hash.",
+      "sha256": null,
+      "byte_length": null,
+      "local_artifact": null,
+      "rights_retention": "Metadata and short original factual summaries only in Git. No redistribution/durable retention grant established. Task scratch excluded from Git; cleanup disposition in verification.md.",
+      "supersession_linkage": [
+        "Separate architectural/landscape rights notices also visible/parsed in RC-PLAN"
+      ]
+    }
+  ]
+}
