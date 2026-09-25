@@ -183,3 +183,7 @@ This is the bounded public-discovery shortfall; further review and missing recor
 remain explicit rather than delaying the packet or inventing a numerical pass.
 
 See [verification](verification.md) for commands, evidence scope and skips.
+
+## Integration disposition
+
+Wave-five integration applied the independently corroborated R2-65 and later-plan annotations to provisional inventory revision `2026-09-24.integration-2`; the separate historical packet remains frozen. Indexed-only decisions, the tracker issuance event, permit execution and legal outcomes remain subject to the limitations above. See [integration evidence](../../integration-wave-five.md).

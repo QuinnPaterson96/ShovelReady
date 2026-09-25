@@ -17,7 +17,9 @@ spatial mode remains the default; fictional saved examples remain a separate mod
 inventory revision, access date and SHA-256 of the exact inventory bytes read. This is
 an inventory identity, not an accepted dataset release or spatial observation revision.
 Line-ending changes alter this byte identity; the recorded inventory revision remains
-available alongside it. The current inventory revision is `2026-09-24.integration-1`.
+available alongside it. The delivered inventory was `2026-09-24.integration-1`;
+wave-five integration updates selected Stannard annotations to
+`2026-09-24.integration-2` without accepting any legal outcome.
 
 The boundary rejects unsupported versions/fields, malformed structures, duplicate JSON
 keys/cases/source URLs/evidence entries, dangling source/rights references, inconsistent
