@@ -1,0 +1,734 @@
+{
+  "$defs": {
+    "Decision": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "council_approval_reported_by_tracker",
+            "approval_reported_date_conflict",
+            "unknown",
+            "application_record_only",
+            "staff_recommendation_only",
+            "board_relaxation_approved",
+            "refusal_overturned_with_conditions"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Date"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        },
+        "conditions": {
+          "items": {
+            "$ref": "#/$defs/Statement"
+          },
+          "title": "Conditions",
+          "type": "array"
+        },
+        "issued_development_permit": {
+          "title": "Issued Development Permit",
+          "type": "null"
+        },
+        "issued_building_permit": {
+          "title": "Issued Building Permit",
+          "type": "null"
+        },
+        "as_built_verified": {
+          "title": "As Built Verified",
+          "type": "null"
+        }
+      },
+      "required": [
+        "status",
+        "date",
+        "evidence",
+        "conditions",
+        "issued_development_permit",
+        "issued_building_permit",
+        "as_built_verified"
+      ],
+      "title": "Decision",
+      "type": "object"
+    },
+    "Evidence": {
+      "additionalProperties": false,
+      "properties": {
+        "source_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "locator": {
+          "maxLength": 8000,
+          "minLength": 1,
+          "title": "Locator",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_id",
+        "locator"
+      ],
+      "title": "Evidence",
+      "type": "object"
+    },
+    "Identity": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "const": "provisional_public_case_inventory",
+          "title": "Kind",
+          "type": "string"
+        },
+        "inventory_revision": {
+          "maxLength": 8000,
+          "minLength": 1,
+          "title": "Inventory Revision",
+          "type": "string"
+        },
+        "content_sha256": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Content Sha256",
+          "type": "string"
+        },
+        "source_schema_version": {
+          "const": "public-cases.v1",
+          "title": "Source Schema Version",
+          "type": "string"
+        },
+        "access_date": {
+          "format": "date",
+          "title": "Access Date",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "inventory_revision",
+        "content_sha256",
+        "source_schema_version",
+        "access_date"
+      ],
+      "title": "Identity",
+      "type": "object"
+    },
+    "Jurisdiction": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "enum": [
+            "City of Victoria",
+            "District of Saanich",
+            "City of Vancouver"
+          ],
+          "title": "Name",
+          "type": "string"
+        },
+        "province": {
+          "const": "BC",
+          "title": "Province",
+          "type": "string"
+        },
+        "country": {
+          "const": "CA",
+          "title": "Country",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "province",
+        "country"
+      ],
+      "title": "Jurisdiction",
+      "type": "object"
+    },
+    "Measurement": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "maxLength": 8000,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "original_value": {
+          "anyOf": [
+            {
+              "maxLength": 8000,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "items": {
+                "maxLength": 8000,
+                "minLength": 1,
+                "type": "string"
+              },
+              "minItems": 1,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Original Value"
+        },
+        "original_unit": {
+          "anyOf": [
+            {
+              "maxLength": 8000,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Original Unit"
+        },
+        "measurement_definition": {
+          "maxLength": 8000,
+          "minLength": 1,
+          "title": "Measurement Definition",
+          "type": "string"
+        },
+        "normalized_value": {
+          "title": "Normalized Value",
+          "type": "null"
+        },
+        "normalization_status": {
+          "const": "not_performed",
+          "title": "Normalization Status",
+          "type": "string"
+        },
+        "review_status": {
+          "const": "provisional",
+          "title": "Review Status",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "minItems": 1,
+          "title": "Evidence",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name",
+        "original_value",
+        "original_unit",
+        "measurement_definition",
+        "normalized_value",
+        "normalization_status",
+        "review_status",
+        "evidence"
+      ],
+      "title": "Measurement",
+      "type": "object"
+    },
+    "Prefab": {
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "const": "unknown",
+          "title": "Status",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "note": {
+          "maxLength": 8000,
+          "minLength": 1,
+          "title": "Note",
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "evidence",
+        "note"
+      ],
+      "title": "Prefab",
+      "type": "object"
+    },
+    "PublicCase": {
+      "additionalProperties": false,
+      "properties": {
+        "case_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$",
+          "title": "Case Id",
+          "type": "string"
+        },
+        "jurisdiction": {
+          "$ref": "#/$defs/Jurisdiction"
+        },
+        "scope": {
+          "enum": [
+            "pilot_jurisdiction",
+            "transfer_only"
+          ],
+          "title": "Scope",
+          "type": "string"
+        },
+        "public_site_label": {
+          "maxLength": 8000,
+          "minLength": 1,
+          "title": "Public Site Label",
+          "type": "string"
+        },
+        "official_identifiers": {
+          "items": {
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Official Identifiers",
+          "type": "array"
+        },
+        "dependency_group": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$",
+          "title": "Dependency Group",
+          "type": "string"
+        },
+        "split": {
+          "const": "unassigned",
+          "title": "Split",
+          "type": "string"
+        },
+        "review_status": {
+          "const": "provisional",
+          "title": "Review Status",
+          "type": "string"
+        },
+        "benchmark_eligible": {
+          "const": false,
+          "title": "Benchmark Eligible",
+          "type": "boolean"
+        },
+        "development": {
+          "$ref": "#/$defs/Statement"
+        },
+        "prefab": {
+          "$ref": "#/$defs/Prefab"
+        },
+        "application_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Application Date"
+        },
+        "application_date_evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "title": "Application Date Evidence",
+          "type": "array"
+        },
+        "source_facts": {
+          "items": {
+            "$ref": "#/$defs/Statement"
+          },
+          "title": "Source Facts",
+          "type": "array"
+        },
+        "official_interpretations": {
+          "items": {
+            "$ref": "#/$defs/Statement"
+          },
+          "title": "Official Interpretations",
+          "type": "array"
+        },
+        "researcher_inferences": {
+          "items": {
+            "maxLength": 8000,
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Researcher Inferences",
+          "type": "array"
+        },
+        "plan_version": {
+          "$ref": "#/$defs/Statement"
+        },
+        "governing_rules": {
+          "$ref": "#/$defs/Rules"
+        },
+        "decision": {
+          "$ref": "#/$defs/Decision"
+        },
+        "measurements": {
+          "items": {
+            "$ref": "#/$defs/Measurement"
+          },
+          "title": "Measurements",
+          "type": "array"
+        },
+        "test_uses": {
+          "items": {
+            "maxLength": 8000,
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Test Uses",
+          "type": "array"
+        },
+        "unsupported": {
+          "items": {
+            "maxLength": 8000,
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Unsupported",
+          "type": "array"
+        },
+        "missing_inputs": {
+          "items": {
+            "maxLength": 8000,
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "Missing Inputs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "case_id",
+        "jurisdiction",
+        "scope",
+        "public_site_label",
+        "official_identifiers",
+        "dependency_group",
+        "split",
+        "review_status",
+        "benchmark_eligible",
+        "development",
+        "prefab",
+        "application_date",
+        "application_date_evidence",
+        "source_facts",
+        "official_interpretations",
+        "researcher_inferences",
+        "plan_version",
+        "governing_rules",
+        "decision",
+        "measurements",
+        "test_uses",
+        "unsupported",
+        "missing_inputs"
+      ],
+      "title": "PublicCase",
+      "type": "object"
+    },
+    "Rights": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_url": {
+          "maxLength": 8000,
+          "minLength": 1,
+          "title": "Evidence Url",
+          "type": "string"
+        },
+        "locator": {
+          "maxLength": 8000,
+          "minLength": 1,
+          "title": "Locator",
+          "type": "string"
+        },
+        "access_date": {
+          "format": "date",
+          "title": "Access Date",
+          "type": "string"
+        },
+        "summary": {
+          "maxLength": 8000,
+          "minLength": 1,
+          "title": "Summary",
+          "type": "string"
+        },
+        "handling": {
+          "maxLength": 8000,
+          "minLength": 1,
+          "title": "Handling",
+          "type": "string"
+        }
+      },
+      "required": [
+        "evidence_url",
+        "locator",
+        "access_date",
+        "summary",
+        "handling"
+      ],
+      "title": "Rights",
+      "type": "object"
+    },
+    "Rules": {
+      "additionalProperties": false,
+      "properties": {
+        "summary": {
+          "maxLength": 8000,
+          "minLength": 1,
+          "title": "Summary",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "title": "Evidence",
+          "type": "array"
+        },
+        "effective_date": {
+          "title": "Effective Date",
+          "type": "null"
+        },
+        "current_applicability": {
+          "const": "unverified",
+          "title": "Current Applicability",
+          "type": "string"
+        }
+      },
+      "required": [
+        "summary",
+        "evidence",
+        "effective_date",
+        "current_applicability"
+      ],
+      "title": "Rules",
+      "type": "object"
+    },
+    "Source": {
+      "additionalProperties": false,
+      "properties": {
+        "url": {
+          "maxLength": 8000,
+          "minLength": 1,
+          "title": "Url",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 8000,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "kind": {
+          "maxLength": 8000,
+          "minLength": 1,
+          "title": "Kind",
+          "type": "string"
+        },
+        "access_date": {
+          "format": "date",
+          "title": "Access Date",
+          "type": "string"
+        },
+        "access_method": {
+          "maxLength": 8000,
+          "minLength": 1,
+          "title": "Access Method",
+          "type": "string"
+        },
+        "document_date": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Document Date"
+        },
+        "date_basis": {
+          "maxLength": 8000,
+          "minLength": 1,
+          "title": "Date Basis",
+          "type": "string"
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "pattern": "^[a-f0-9]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Sha256"
+        },
+        "byte_length": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Byte Length"
+        },
+        "page_count": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Page Count"
+        },
+        "inspection": {
+          "maxLength": 8000,
+          "minLength": 1,
+          "title": "Inspection",
+          "type": "string"
+        },
+        "rights_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$",
+          "title": "Rights Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "url",
+        "title",
+        "kind",
+        "access_date",
+        "access_method",
+        "document_date",
+        "date_basis",
+        "sha256",
+        "byte_length",
+        "page_count",
+        "inspection",
+        "rights_id"
+      ],
+      "title": "Source",
+      "type": "object"
+    },
+    "Statement": {
+      "additionalProperties": false,
+      "properties": {
+        "summary": {
+          "maxLength": 8000,
+          "minLength": 1,
+          "title": "Summary",
+          "type": "string"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/Evidence"
+          },
+          "title": "Evidence",
+          "type": "array"
+        }
+      },
+      "required": [
+        "summary",
+        "evidence"
+      ],
+      "title": "Statement",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "public-case-view.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "identity": {
+      "$ref": "#/$defs/Identity"
+    },
+    "purpose": {
+      "maxLength": 8000,
+      "minLength": 1,
+      "title": "Purpose",
+      "type": "string"
+    },
+    "first_case_id": {
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$",
+      "title": "First Case Id",
+      "type": "string"
+    },
+    "cases": {
+      "items": {
+        "$ref": "#/$defs/PublicCase"
+      },
+      "maxItems": 10,
+      "minItems": 10,
+      "title": "Cases",
+      "type": "array"
+    },
+    "sources": {
+      "patternProperties": {
+        "^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$": {
+          "$ref": "#/$defs/Source"
+        }
+      },
+      "title": "Sources",
+      "type": "object"
+    },
+    "rights": {
+      "patternProperties": {
+        "^[A-Za-z0-9][A-Za-z0-9._-]{0,99}$": {
+          "$ref": "#/$defs/Rights"
+        }
+      },
+      "title": "Rights",
+      "type": "object"
+    }
+  },
+  "required": [
+    "schema_version",
+    "identity",
+    "purpose",
+    "first_case_id",
+    "cases",
+    "sources",
+    "rights"
+  ],
+  "title": "CaseInventory",
+  "type": "object"
+}

@@ -24,6 +24,13 @@ concise PR handoffs and ten provisional public case packets. See the
 [next parallel work](docs/backlog/wave-five-prompts.md) covers a public-case evidence
 view, focused historical Stannard research and a blinded virtual-user walkthrough.
 
+PRs #48-#50 deliver that bounded work: a database-free public-case mode, a historical
+Stannard reference packet and one virtual-user report. Selected corroborated research
+is reflected in provisional inventory revision `2026-09-24.integration-2`; no accepted
+zoning result is produced. See [wave-five integration](docs/integration-wave-five.md).
+SR-27 implementation and dependency-gated preparation for SR-28 through SR-31 have
+been dispatched in separate tasks.
+
 City of Victoria garden suites remain the leading technical prototype candidate, subject
 to verified design/site inputs and current rule applicability; Vancouver is the fallback.
 
@@ -105,6 +112,7 @@ Results distinguish **candidate**, **needs investigation**, and **no match under
 | [Local development database](docs/local-development.md) | Persistent owned PostgreSQL, explicit migrations, seeding and launch commands |
 | [Evaluator/spatial integration](docs/integration-review-2026-09-24.md) | PRs #31-#33, combined verification, remaining gates and process proposals |
 | [Wave-four integration](docs/integration-wave-four.md) | PRs #40-#43, launcher correction, required lifecycle CI and research limits |
+| [Wave-five integration](docs/integration-wave-five.md) | PRs #48-#50, provisional research reconciliation and bounded QA dispatch |
 | [Public case inventory](docs/research/public-cases/README.md) | Ten provisional historical cases and review shortlist; no accepted outcomes |
 | [MVP ticket backlog](docs/backlog/README.md) | Sequenced technical proof, CI/CD, customer pilot, and expansion experiments |
 | [Prototype input evidence](docs/pilot-inputs/README.md) | Captured Victoria sources, licensed GIS samples, provisional design/site specifications, and unresolved review inputs |

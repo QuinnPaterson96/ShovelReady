@@ -35,9 +35,13 @@ jobs:
           uv run --locked ruff check app tests contract_tests migrations scripts
           docs/pilot-inputs/intake.py docs/pilot-inputs/test_intake.py
           docs/usability/check_fixtures.py
+          docs/research/public-cases/verify_inventory.py
+          docs/research/stannard-reference/verify_packet.py
       - run: uv run --locked python docs/pilot-inputs/test_acquire.py
       - run: uv run --locked python docs/pilot-inputs/test_intake.py
       - run: uv run --locked python docs/usability/check_fixtures.py
+      - run: uv run --locked python docs/research/public-cases/verify_inventory.py
+      - run: uv run --locked python docs/research/stannard-reference/verify_packet.py
       - run: uv run --locked pytest -q
         env:
           SHOVELREADY_ENV: test
@@ -111,7 +115,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - run: docker build -t shovelready:ci .
-      - name: Verify container serves health and frontend
+      - name: Verify container serves health, frontend and public-case metadata
         run: |
           docker run --rm -d --name shovelready-ci -p 127.0.0.1:18080:8000 shovelready:ci
           trap 'docker stop shovelready-ci' EXIT
@@ -121,3 +125,14 @@ jobs:
           done
           python3 -c 'import json; assert json.load(open("/tmp/shovelready-health.json")) == {"status": "ok"}'
           curl --fail --silent http://127.0.0.1:18080/ | grep -q ShovelReady
+          curl --fail --silent http://127.0.0.1:18080/api/reference-cases > /tmp/shovelready-public-cases.json
+          python3 - <<'PY'
+          import json
+          with open('/tmp/shovelready-public-cases.json') as source:
+              data = json.load(source)
+          assert data['schema_version'] == 'public-case-view.v1'
+          assert data['identity']['kind'] == 'provisional_public_case_inventory'
+          assert len(data['cases']) == 10
+          assert data['first_case_id'] in {case['case_id'] for case in data['cases']}
+          assert all(case['review_status'] == 'provisional' and case['benchmark_eligible'] is False for case in data['cases'])
+          PY

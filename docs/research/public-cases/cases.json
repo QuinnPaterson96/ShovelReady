@@ -1,6 +1,6 @@
 {
   "schema_version": "public-cases.v1",
-  "inventory_revision": "2026-09-24.integration-1",
+  "inventory_revision": "2026-09-24.integration-2",
   "access_date": "2026-09-24",
   "purpose": "Provisional discovery metadata; no accepted reference outcomes",
   "counts": {
@@ -352,6 +352,36 @@
       "local_artifact": null,
       "inspection": "PDF pp5-7, 2204 East 38th Avenue; primary PDF web text opened; visual verification not completed",
       "rights_id": "vancouver"
+    },
+    "stannard-r2-65": {
+      "url": "https://www.victoria.ca/media/file/2164",
+      "title": "R2-65 current zone sheet",
+      "kind": "current_instrument_copy",
+      "access_date": "2026-09-24",
+      "access_method": "HTTP 200 direct download",
+      "document_date": null,
+      "date_basis": "Current download; adoption footer is not a certified historical consolidation.",
+      "sha256": "a6d3e5c16e2b6efc3ccdd9b2d1a2076c0c2b24bf47bdc2211d9bf23027143da3",
+      "byte_length": 89610,
+      "page_count": 2,
+      "local_artifact": null,
+      "inspection": "pypdf encoding unusable; visual both pages; integration matched bytes and visually corroborated R2-65 p1 / later A0.0-A0.1 as applicable.",
+      "rights_id": "victoria"
+    },
+    "DDP01047-approved": {
+      "url": "https://tender.victoria.ca/webapps/ourcity/Prospero/FileDownload.aspx?fileId=DD169D59-38DA-4AB3-9F4E-EEA1C9467CCA&folderId=47732C250527102909750354",
+      "title": "DDP01047 final-approved revised plans",
+      "kind": "later_plan",
+      "access_date": "2026-09-24",
+      "access_method": "HTTP 200 direct download",
+      "document_date": "2025-06-25",
+      "date_basis": "Drawing issue June 25; received June 27; approval stamp July 7, 2025. Stamp is not proof of issued permit or construction.",
+      "sha256": "68c64f1cf7a43ecb73b5ddc557deccbd8e7ba9aba4e5dfb29571932b5d0c4199",
+      "byte_length": 36261112,
+      "page_count": 10,
+      "local_artifact": null,
+      "inspection": "pypdf text fragmented; pdftotext -layout; visual A0.0 p1 and A0.1 p2; integration matched bytes and visually corroborated R2-65 p1 / later A0.0-A0.1 as applicable.",
+      "rights_id": "victoria"
     }
   },
   "cases": [
@@ -386,8 +416,13 @@
       },
       "prefab": {
         "status": "unknown",
-        "evidence": [],
-        "note": "No explicit manufacturing-method evidence verified. Construction materials or conversion status do not establish prefab status."
+        "evidence": [
+          {
+            "source_id": "DDP01047-approved",
+            "locator": "PDF p1 A0.0 and p2 A0.1 DDP project brief"
+          }
+        ],
+        "note": "The later applicant brief reports that a prefab kit was discontinued and a custom design substituted. This is a revision-specific source claim; original manufacturer/configuration, actual fabrication and as-built status remain unverified."
       },
       "application_date": "2021-06-08",
       "source_facts": [
@@ -401,6 +436,15 @@
             {
               "source_id": "REZ00787-9",
               "locator": "PDF p1 C1 received and final-approved stamps"
+            }
+          ]
+        },
+        {
+          "summary": "DDP01047 revised plans are dated June 25, 2025, received June 27, and stamped approved July 7. The applicant reports a discontinued prefab kit and custom redesign while asserting unchanged footprint, siting and setbacks; those assertions are not verified outcomes.",
+          "evidence": [
+            {
+              "source_id": "DDP01047-approved",
+              "locator": "PDF p1 A0.0 and p2 A0.1 DDP project brief"
             }
           ]
         }
@@ -418,25 +462,34 @@
       ],
       "researcher_inferences": [
         "Best first historical scalar candidate: preserve the plan separation pair 28.50/2.40 m and its building roles, then obtain reviewed definitions and placement before comparison.",
-        "Do not treat the 2023 packet as the latest design: DDP01047 must stay grouped."
+        "Do not treat the 2023 packet as the latest design: DDP01047 must stay grouped.",
+        "The later unchanged-siting narrative needs reconciliation with differing plan tables: A0.1 lists 980 m2 lot area but uses 1947 in its FSR denominator. Preserve each revision and do not silently repair or combine the values."
       ],
       "plan_version": {
-        "summary": "C1 issued/received 2022-12-02; approved stamp 2023-10-12. Later amendment is not reconciled.",
+        "summary": "C1 issued/received December 2, 2022 and stamped approved October 12, 2023 remains the historical reference. DDP01047 has a separate June 25, 2025 drawing revision and July 7 approval stamp; its values must not overwrite C1. Executed permit linkage and discrepancies remain unresolved.",
         "evidence": [
           {
             "source_id": "REZ00787-9",
             "locator": "PDF p1 C1 title block and stamps"
+          },
+          {
+            "source_id": "DDP01047-approved",
+            "locator": "PDF p1 A0.0 and p2 A0.1 DDP project brief"
           }
         ]
       },
       "governing_rules": {
-        "summary": "C1 identifies existing R1-B and separate duplex/garden-suite permitted columns; this is plan evidence, not a verified governing enactment.",
+        "summary": "C1 labels the existing zone R1-B. The separately inspected current R2-65 sheet applies Schedule M to an accessory dwelling as if it were a garden suite and the duplex a single-family dwelling. This is a historical pathway lead; the governing 2023 amendment/definition chain and current per-site applicability remain unverified.",
         "effective_date": null,
         "current_applicability": "unverified",
         "evidence": [
           {
             "source_id": "REZ00787-9",
             "locator": "PDF p1 C1 top tables"
+          },
+          {
+            "source_id": "stannard-r2-65",
+            "locator": "PDF p1 sections 2.164.1(b) and 2.164.2(a)"
           }
         ]
       },
@@ -531,7 +584,7 @@
         "Authorized durable evidence storage and reuse scope",
         "Current governing instrument and amendment/transition chain",
         "Verified design/site/placement revisions and legal measurement definitions",
-        "Executed variance conditions and 2025 amendment outcome"
+        "Executed 2023/2025 permits, identity crosswalk and condition discharge; reconciliation of the later design narrative and table differences"
       ],
       "local_artifacts": [],
       "application_date_evidence": [
