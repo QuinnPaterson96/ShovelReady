@@ -103,8 +103,15 @@ def main():
             )
             print(imported.stdout, flush=True)
             demo_env["SHOVELREADY_SPATIAL_REVISION"] = imported.stdout.split(": ", 1)[0]
+            subprocess.run(
+                [sys.executable, "-m", "app.draft_evaluations", "--demo"],
+                env=demo_env,
+                check=True,
+            )
+            demo_env["SHOVELREADY_DRAFT_EVALUATIONS_ENABLED"] = "true"
             print(
-                f"Real observations: http://127.0.0.1:{args.http_port}; Ctrl+C stops demo/DB",
+                f"Observations and synthetic drafts: http://127.0.0.1:{args.http_port}; "
+                "Ctrl+C stops demo/DB",
                 flush=True,
             )
             try:

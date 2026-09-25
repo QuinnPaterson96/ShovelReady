@@ -7,6 +7,7 @@ from fastapi import FastAPI
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
+from app.draft_evaluations.api import router as draft_evaluations_router
 from app.identity import AppIdentity, capture_identity
 from app.investigation import router
 from app.reference_cases import router as reference_cases_router
@@ -23,6 +24,7 @@ def create_app(*, frontend_dist: Path = FRONTEND_DIST) -> FastAPI:
     application = FastAPI(title="ShovelReady", version="0.1.0")
 
     application.include_router(router)
+    application.include_router(draft_evaluations_router)
     application.include_router(reference_cases_router)
     identity = capture_identity()
 
