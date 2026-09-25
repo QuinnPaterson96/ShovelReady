@@ -40,6 +40,13 @@ error details.
 | `evaluation` | `EvaluationResult` | evaluation / evaluation |
 | `review` | `app.persistence.payloads.ReviewEvent` | event / event |
 | `spatial` | `app.spatial.payloads.SpatialImport` (`sr-09.v1`) | collection revision / collection |
+| `draft_evaluation` | `app.evaluation.EvaluationReport` (`sr-10.v1`) | request evaluation ID / same ID |
+
+The `draft_evaluation` kind is a self-contained diagnostic snapshot with its complete
+request. Import revalidates and recomputes it, preserving deliberately absent declared
+rules/facts as diagnostics rather than manufacturing relational membership. This kind
+adds no reference edges and is distinct from the SR-04 release-shaped `evaluation`.
+See [the draft bridge](draft-evaluations.md) for CLI, restricted API and compatibility.
 
 Candidates automatically retain their trace as an immutable run. Multiple
 candidates from one run must agree on that trace. Standalone `ExtractionRun`
@@ -106,6 +113,9 @@ the new kind, but can continue reading their earlier kinds. Empty-to-head and
 repeat-to-head are also covered. Migrations run
 transactionally and must be serialized by their operator, never raced at startup.
 
+Migration `0004` adds the diagnostic kind only; populated
+`0003` records survive the upgrade, as verified in [wave seven](integration-wave-seven.md).
+Application rollback may retain this additive schema while disabling the draft API.
 Destructive downgrade is refused. Before shared persistence, take a backup and
 establish restoration. Recovery is a forward fix or backup restoration to a
 separate database. Backup restoration and production deployment have not been

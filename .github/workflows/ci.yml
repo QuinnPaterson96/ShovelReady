@@ -37,6 +37,9 @@ jobs:
           docs/usability/check_fixtures.py
           docs/research/public-cases/verify_inventory.py
           docs/research/stannard-reference/verify_packet.py
+          frontend/tools/export_draft_evaluations.py
+      - name: Verify evaluator report schema, types and fixture drift
+        run: uv run --locked python frontend/tools/export_draft_evaluations.py --check
       - run: uv run --locked python docs/pilot-inputs/test_acquire.py
       - run: uv run --locked python docs/pilot-inputs/test_intake.py
       - run: uv run --locked python docs/usability/check_fixtures.py

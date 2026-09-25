@@ -95,7 +95,14 @@ No database, live-model, source-review, publication or real-user checks ran.
    502 using SR-32's isolated setup, plus a stopped API/network failure. Check loading,
    retry, keyboard use and narrow-window layout. Recheck existing modes.
 
-The combined disposable-PostgreSQL → HTTP → browser walkthrough remains pending
-SR-32 integration. This bridge supplies no accepted real-site screening, independent
+At the original PR handoff the combined PostgreSQL → HTTP → browser walkthrough was
+pending SR-32 integration; see the completed follow-up below. This bridge supplies no accepted real-site screening, independent
 human/source review, published release, permit approval or real-user validation.
 Do not close parent SR-12/SR-13 or infer publication from a code merge.
+
+## Integration follow-up
+
+The pending combined walkthrough above was completed in [wave seven](integration-wave-seven.md)
+against the actual pinned backend cases, including their distinct stored evaluation
+IDs. The schema/type/fixture drift and exporter lint checks now run in backend CI.
+See that record for exact checks, error-state coverage and remaining limitations.
