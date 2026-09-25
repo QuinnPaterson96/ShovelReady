@@ -31,8 +31,11 @@ zoning result is produced. See [wave-five integration](docs/integration-wave-fiv
 SR-27 through SR-30 now provide offline QA records, five task cases, three paired
 clean/fault controls, an isolated manual runner and evidence-gated grading. See
 [wave-six integration](docs/integration-wave-six.md) for verification and the scoring
-correction found during review. SR-31 owns the bounded participant pilot; independent
-human calibration and real-user validation remain outstanding.
+correction found during review. The [reviewed SR-31 pilot](docs/integration-pilot-01.md)
+completed six detection sessions: three authored faults detected, no confirmed new
+baseline defect, and two usability hypotheses retained. Keep this QA workflow on demand;
+ordinary-task reliability, independent human calibration and real-user validation remain
+unmeasured. The pilot ended without using the remaining ten session slots.
 
 City of Victoria garden suites remain the leading technical prototype candidate, subject
 to verified design/site inputs and current rule applicability; Vancouver is the fallback.
@@ -117,6 +120,7 @@ Results distinguish **candidate**, **needs investigation**, and **no match under
 | [Wave-four integration](docs/integration-wave-four.md) | PRs #40-#43, launcher correction, required lifecycle CI and research limits |
 | [Wave-five integration](docs/integration-wave-five.md) | PRs #48-#50, provisional research reconciliation and bounded QA dispatch |
 | [Wave-six integration](docs/integration-wave-six.md) | PRs #59-#61, combined QA verification, review correction and pilot gates |
+| [Pilot results integration](docs/integration-pilot-01.md) | Reviewed six-session calibration, remaining human review and MVP implications |
 | [Public case inventory](docs/research/public-cases/README.md) | Ten provisional historical cases and review shortlist; no accepted outcomes |
 | [MVP ticket backlog](docs/backlog/README.md) | Sequenced technical proof, CI/CD, customer pilot, and expansion experiments |
 | [Prototype input evidence](docs/pilot-inputs/README.md) | Captured Victoria sources, licensed GIS samples, provisional design/site specifications, and unresolved review inputs |

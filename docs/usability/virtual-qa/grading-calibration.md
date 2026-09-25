@@ -59,7 +59,7 @@ references and lifecycle receipts, with retry ancestors in sibling attempt direc
 No integrated SR-29 final output was available for replay here. A reviewer must register
 and inspect the lifecycle/evidence references, not infer success from a parsed run.
 
-## Remaining gates
+## Gates at the original tooling handoff
 
 Combined calibration still needs the integrated SR-28 final bytes and SR-29 saved runs,
 reviewed participant responses for the paired controls, disagreement/adjudication records
@@ -67,3 +67,19 @@ and measured review effort. Freeze SR-30's optional critical policy before the S
 dispatch; absent policy means N/A. Independent human review remains unavailable and
 explicitly unclaimed. None of these limits prevents offline tooling use, closes SR-13/
 SR-16, or authorizes live grading models or issue publication.
+
+## Update after reviewed SR-31 evidence
+
+[PR #63](https://github.com/QuinnPaterson96/ShovelReady/pull/63) now supplies six actual
+paired-control reports with attributed agent assessments, seven finding records,
+pre-dispatch scoring policies and recorded agent review effort. The coordinator's
+[integration review](../../integration-pilot-01.md) verified retained artifact hashes
+and exact replay of all six grades. All three seeds were detected; zero clean-control
+false alarms depends on treating accurate source-opening limitations as hypotheses,
+not rejected defect allegations. This judgment remains subject to human calibration.
+
+The actual file handoff and agent-reviewed paired-control calibration gaps above are
+resolved. Independent human review of the six authored answers and actual judgments,
+including the limitation-versus-bug distinction, remains SR-30 / #54 work. Ordinary-task
+performance was not measured; critical policy and human minutes remain unknown. No
+new baseline defect or automatic issue publication follows from these seeded controls.

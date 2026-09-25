@@ -60,11 +60,19 @@ The first evaluator checks a supplied reviewed placement. Preserve manual site f
 The [virtual-user evaluation plan](virtual-qa-plan.md) adds SR-27 through SR-31.
 SR-27 through SR-30 tooling is implemented and reviewed; [wave-six integration](../integration-wave-six.md)
 records combined verification and a corrected control-grading gap. SR-27/28/29 are
-complete in their bounded scopes. SR-30 remains open for actual paired-control
-calibration during SR-31, whose existing task receives the pilot handoff. It keeps a
+complete in their bounded scopes. [SR-31 results](../integration-pilot-01.md) are now
+reviewed: six detection sessions, no new baseline defect, and an accepted narrowing
+decision. SR-31 is complete as a bounded experiment; SR-30 remains open for independent
+human calibration of the retained judgments. Ordinary-task performance is unmeasured.
+The workflow keeps a
 fixed baseline plus seeded sampling, separate participant/grader assessment and
 adjudication before issue creation. No recurring automation or live-model CI is added.
 This supporting QA work does not replace the accepted-data or real-customer gates.
+
+Next development priority remains the reviewed design/site/rule subset and accepted
+source-to-result path (SR-05/06 and SR-10 through SR-13). Carry the source-opening and
+missing-facts wording hypotheses into SR-12's evidence workflow review; do not create
+baseline bug tickets or expand the QA infrastructure from these synthetic controls.
 
 SR-24/SR-25/SR-26 are complete in their bounded scopes through PRs #49/#50/#48.
 The evidence viewer, provisional historical review packet and single-agent rehearsal

@@ -77,6 +77,10 @@ reviews. It adds no runtime agent, scheduler, database, model service or live-mo
 Frozen recipes retain their application baseline separately from the newer tooling
 commit and any derived fault-build identity. See [wave-six integration](integration-wave-six.md)
 for verification and the participant/calibration limits.
+The [first reviewed pilot](integration-pilot-01.md) supports retaining this bounded,
+on-demand workflow. It supplies no evidence for scheduling, automatic ticket creation
+or a separate QA data service. Accepted source-to-result implementation remains the
+development priority; this synthetic calibration does not verify that path.
 
 Once SR-14 configures a protected demo environment, SR-15 will deploy the tested immutable image and smoke-test it. Identify images by commit. Serialize deployments to a given environment and avoid obsolete runs overwriting newer deployments. Preserve a known-good image for rollback. No deployment currently runs on merge.
 
