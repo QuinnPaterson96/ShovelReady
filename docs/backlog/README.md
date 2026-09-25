@@ -55,12 +55,13 @@ The first evaluator checks a supplied reviewed placement. Preserve manual site f
 
 ## Next parallel work
 
-[Wave-five scope and ownership](wave-five-prompts.md) are the current launch instructions. [Wave four](wave-four-prompts.md), [wave three](wave-three-prompts.md), [wave two](wave-two-prompts.md) and [wave one](next-wave-prompts.md) remain historical handoff context.
+[Wave-five scope and ownership](wave-five-prompts.md), [wave four](wave-four-prompts.md), [wave three](wave-three-prompts.md), [wave two](wave-two-prompts.md) and [wave one](next-wave-prompts.md) remain historical handoff context.
 
 The [virtual-user evaluation plan](virtual-qa-plan.md) adds SR-27 through SR-31.
-SR-27 implementation is dispatched; the other four tasks have bounded preparation
-only until their prerequisites are integrated. SR-27 establishes the file contract;
-SR-28/SR-29/SR-30 can then run in parallel, with SR-31 after integration. It keeps a
+SR-27 through SR-30 tooling is implemented and reviewed; [wave-six integration](../integration-wave-six.md)
+records combined verification and a corrected control-grading gap. SR-27/28/29 are
+complete in their bounded scopes. SR-30 remains open for actual paired-control
+calibration during SR-31, whose existing task receives the pilot handoff. It keeps a
 fixed baseline plus seeded sampling, separate participant/grader assessment and
 adjudication before issue creation. No recurring automation or live-model CI is added.
 This supporting QA work does not replace the accepted-data or real-customer gates.
