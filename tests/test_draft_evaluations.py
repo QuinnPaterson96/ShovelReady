@@ -162,7 +162,9 @@ def test_configuration_and_safe_database_errors(configured, monkeypatch):
     assert response.json() == {"detail": "Draft evaluation database unavailable"}
 
 
-@pytest.mark.parametrize("mutation", ["version", "identity", "private", "outcome", "trace"])
+@pytest.mark.parametrize(
+    "mutation", ["version", "identity", "private", "outcome", "trace", "decimal"]
+)
 def test_invalid_or_unpinned_raw_storage_never_exposed(repo, configured, monkeypatch, mutation):
     monkeypatch.setattr(api, "connect", lambda _: repo.engine)
     original = evaluate(request_for(CASES[0]))
@@ -175,6 +177,8 @@ def test_invalid_or_unpinned_raw_storage_never_exposed(repo, configured, monkeyp
         value["request"]["sources"][0]["artifact"]["uri"] = "file:///PRIVATE"
     elif mutation == "outcome":
         value["outcome"] = "needs_investigation"
+    elif mutation == "decimal":
+        value["request"]["facts"][0]["quantity"]["original_value"] = "10.0"
     else:
         value["traces"][0]["diagnostics"] = ["PRIVATE diagnostic"]
     # Deliberately bypass the importer, testing the read boundary against corrupt storage.

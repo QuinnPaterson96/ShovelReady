@@ -37,7 +37,10 @@ def draft_evaluation(case_id: str) -> EvaluationReport:
         except ValueError:
             raise HTTPException(404, "Synthetic case has not been imported") from None
         report = EvaluationReport.model_validate(stored.model_dump(mode="json"))
-        if report.request != expected or report != evaluate(expected):
+        if (
+            report.request.model_dump(mode="json") != expected.model_dump(mode="json")
+            or report.model_dump(mode="json") != evaluate(expected).model_dump(mode="json")
+        ):
             raise ValueError("Pinned request or computed report mismatch")
         return report
     except (ValueError, OSError):

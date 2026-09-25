@@ -138,7 +138,9 @@ class Repository:
         for value in values:
             kind, _, _ = identify(value)
             value = MODELS[kind].model_validate(value.model_dump(mode="json"))
-            if kind == "draft_evaluation" and value != evaluate(value.request):
+            if kind == "draft_evaluation" and value.model_dump(mode="json") != evaluate(
+                value.request
+            ).model_dump(mode="json"):
                 raise ValueError("Draft report differs from deterministic evaluation")
             validated.append(value)
             if isinstance(value, RuleCandidate):
