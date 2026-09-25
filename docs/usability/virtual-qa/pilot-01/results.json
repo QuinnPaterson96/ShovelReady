@@ -1,0 +1,831 @@
+{
+  "pilot_id": "sr31-pilot-01",
+  "actual_sessions": 6,
+  "total_ceiling": 16,
+  "ordinary_task_sessions": 0,
+  "remaining_slots_not_used": 10,
+  "note": "Dispatch-to-stop duration includes facilitator corroboration and cleanup handoff; not precise participant active time. Review time is agent wall time including record work.",
+  "rows": [
+    {
+      "participant": 1,
+      "run_id": "5f715178bafb4c3c80cecdfd089d8bce",
+      "case_id": "unit-display-clean",
+      "case_sha256": "6371cce9a996c10a3f044c0fef3b1edc0cc67f60328f2ca8a693dc15ba4023dd",
+      "source_checkout_commit": "f3aa21e39d89e472b4bfba589ac3830764a27ef7",
+      "application_commit": "303b40aeb9e69f476878959148ed299cad2a5e9b",
+      "derived_tree": "c2bcf02db918fe4fd7eb07367da2f48cedeef867",
+      "build_sha256": {
+        "assets/index-BtJj0ly_.js": "59411195f27d40c80b13aca690a04bdc996d71db108d1646928b414326508442",
+        "assets/index-Cd0v6rzu.css": "a1a57ec9b4afc4d0a6ab4c271bab56963f734f26d460e56c2c50c2c85af15983",
+        "index.html": "c7c498cf819c5a2150f7bd43e1825f2ad8f626e78b4a974d1c51decfc20dcd21"
+      },
+      "status": "completed",
+      "started_at": "2026-09-25T01:18:19.519561+00:00",
+      "ended_at": "2026-09-25T01:20:24.304638+00:00",
+      "dispatch_to_owner_stop_seconds": 124.785077,
+      "participant_reported_browser_operations": 12,
+      "agent_review_minutes_including_record_work": 2.3679426666666665,
+      "human_review_minutes": null,
+      "cleanup_ok": true,
+      "scratch_removed": true,
+      "control_variant": "clean",
+      "participant_note": "participant-01.md",
+      "facilitator_review": "review-01.md"
+    },
+    {
+      "participant": 2,
+      "run_id": "92c7d85e58bf4b39adada2fd9d6d07d7",
+      "case_id": "unit-display-fault",
+      "case_sha256": "9b1d206806d5ed1178564ffb968e7ca30d6f119f0236343740be7c41b4f60359",
+      "source_checkout_commit": "058540809f2eaa3d1385ccc1cd7db121b2e5e235",
+      "application_commit": "59646d4bf230cc7b02a12d049bc315a7733dfcd3",
+      "derived_tree": "74299c1893e607dcbbb98523b75e7705b20cf70a",
+      "build_sha256": {
+        "assets/index-Cd0v6rzu.css": "a1a57ec9b4afc4d0a6ab4c271bab56963f734f26d460e56c2c50c2c85af15983",
+        "assets/index-CWd08G6B.js": "b77fee79b82ac1902d1d82bbf9c547ffcda36e04fe28d656e0dd8252a2a08990",
+        "index.html": "d97016d5c2a44ce99e32430d4e4439d24f721c94fffdf35d6e33745d6d9f4130"
+      },
+      "status": "completed",
+      "started_at": "2026-09-25T01:22:30.992672+00:00",
+      "ended_at": "2026-09-25T01:24:14.821488+00:00",
+      "dispatch_to_owner_stop_seconds": 103.828816,
+      "participant_reported_browser_operations": 9,
+      "agent_review_minutes_including_record_work": 1.8763730333333333,
+      "human_review_minutes": null,
+      "cleanup_ok": true,
+      "scratch_removed": true,
+      "control_variant": "fault",
+      "participant_note": "participant-02.md",
+      "facilitator_review": "review-02.md"
+    },
+    {
+      "participant": 3,
+      "run_id": "c7fc17fab7b947edb1f5204c4effe1d4",
+      "case_id": "evidence-access-clean",
+      "case_sha256": "4a9e0acd85014668742695eabf5a1ab6af8f5c2c38db12d8ed35237b51b6948c",
+      "source_checkout_commit": "1e5f3e0e2f1fa4226319953eaf1017cc9b0c7ee0",
+      "application_commit": "303b40aeb9e69f476878959148ed299cad2a5e9b",
+      "derived_tree": "c2bcf02db918fe4fd7eb07367da2f48cedeef867",
+      "build_sha256": {
+        "assets/index-BtJj0ly_.js": "59411195f27d40c80b13aca690a04bdc996d71db108d1646928b414326508442",
+        "assets/index-Cd0v6rzu.css": "a1a57ec9b4afc4d0a6ab4c271bab56963f734f26d460e56c2c50c2c85af15983",
+        "index.html": "c7c498cf819c5a2150f7bd43e1825f2ad8f626e78b4a974d1c51decfc20dcd21"
+      },
+      "status": "completed",
+      "started_at": "2026-09-25T01:26:22.608017+00:00",
+      "ended_at": "2026-09-25T01:28:16.735212+00:00",
+      "dispatch_to_owner_stop_seconds": 114.127195,
+      "participant_reported_browser_operations": 10,
+      "agent_review_minutes_including_record_work": 1.7286926833333331,
+      "human_review_minutes": null,
+      "cleanup_ok": true,
+      "scratch_removed": true,
+      "control_variant": "clean",
+      "participant_note": "participant-03.md",
+      "facilitator_review": "review-03.md"
+    },
+    {
+      "participant": 4,
+      "run_id": "c149a9c8080149b6a673f8b7afd8a613",
+      "case_id": "evidence-access-fault",
+      "case_sha256": "475fbc3ac490fd9c7523aba4049ef3b761e5c46ba720e16886a7f51e569426c9",
+      "source_checkout_commit": "a4b7c51465680ef570fd1d3fe6ca2f17f7245407",
+      "application_commit": "7300c6011e0144b2d3d6fa2cc202a0afb20120c9",
+      "derived_tree": "873ffd0fa8464ee1b999e1dd9ecf234ce78ab0bc",
+      "build_sha256": {
+        "assets/index-Cd0v6rzu.css": "a1a57ec9b4afc4d0a6ab4c271bab56963f734f26d460e56c2c50c2c85af15983",
+        "assets/index-MZ1WeEtY.js": "274c3d75475be4c62c35101c264886062fd7755aaf453571858b867e6212fe96",
+        "index.html": "f682876ebe22864444504a676feabb349edaec37513ba7e5be9d6a11fe9b7c4c"
+      },
+      "status": "completed",
+      "started_at": "2026-09-25T01:30:08.821685+00:00",
+      "ended_at": "2026-09-25T01:32:25.532361+00:00",
+      "dispatch_to_owner_stop_seconds": 136.710676,
+      "participant_reported_browser_operations": 13,
+      "agent_review_minutes_including_record_work": 1.4965106000000001,
+      "human_review_minutes": null,
+      "cleanup_ok": true,
+      "scratch_removed": true,
+      "control_variant": "fault",
+      "participant_note": "participant-04.md",
+      "facilitator_review": "review-04.md"
+    },
+    {
+      "participant": 5,
+      "run_id": "59962fa17ca04b0eb6b9731299546881",
+      "case_id": "affirmative-label-clean",
+      "case_sha256": "2a057a4f3945e4bc543152e1bd8f552304fd1bff1685f04f7fd5c19c120a2212",
+      "source_checkout_commit": "9d91670ea33a23262d21ae92f17a08b920f0b05f",
+      "application_commit": "303b40aeb9e69f476878959148ed299cad2a5e9b",
+      "derived_tree": "c2bcf02db918fe4fd7eb07367da2f48cedeef867",
+      "build_sha256": {
+        "assets/index-BtJj0ly_.js": "59411195f27d40c80b13aca690a04bdc996d71db108d1646928b414326508442",
+        "assets/index-Cd0v6rzu.css": "a1a57ec9b4afc4d0a6ab4c271bab56963f734f26d460e56c2c50c2c85af15983",
+        "index.html": "c7c498cf819c5a2150f7bd43e1825f2ad8f626e78b4a974d1c51decfc20dcd21"
+      },
+      "status": "completed",
+      "started_at": "2026-09-25T01:34:08.273083+00:00",
+      "ended_at": "2026-09-25T01:36:04.084885+00:00",
+      "dispatch_to_owner_stop_seconds": 115.811802,
+      "participant_reported_browser_operations": 12,
+      "agent_review_minutes_including_record_work": 1.7163534833333334,
+      "human_review_minutes": null,
+      "cleanup_ok": true,
+      "scratch_removed": true,
+      "control_variant": "clean",
+      "participant_note": "participant-05.md",
+      "facilitator_review": "review-05.md"
+    },
+    {
+      "participant": 6,
+      "run_id": "5ac01e70e35b4f76a2c0eb8ad63d1c00",
+      "case_id": "affirmative-label-fault",
+      "case_sha256": "f227aa2f9717dd14704d9af7f2aa91dcd6b16a4924701a54df979bb41407bdc0",
+      "source_checkout_commit": "2aad9f29030ee78441effe66794b6690a0056161",
+      "application_commit": "dc29a73c578e667beb756a1646b0eab0562d0eb4",
+      "derived_tree": "2603f292cf08d1bdb839512cd2d7a749cacf4a8e",
+      "build_sha256": {
+        "assets/index-Cd0v6rzu.css": "a1a57ec9b4afc4d0a6ab4c271bab56963f734f26d460e56c2c50c2c85af15983",
+        "assets/index-CEZ-6-Bm.js": "32f89fa61dadee5f88323e203989efee90becb45a60b251d4587874bc7d0c770",
+        "index.html": "f88f14ee59a8790414d51e1ce655f09d1791f4a8eceb17f90deec6513df2bc14"
+      },
+      "status": "completed",
+      "started_at": "2026-09-25T01:37:47.963623+00:00",
+      "ended_at": "2026-09-25T01:39:29.756038+00:00",
+      "dispatch_to_owner_stop_seconds": 101.792415,
+      "participant_reported_browser_operations": 9,
+      "agent_review_minutes_including_record_work": 1.5487285,
+      "human_review_minutes": null,
+      "cleanup_ok": true,
+      "scratch_removed": true,
+      "control_variant": "fault",
+      "participant_note": "participant-06.md",
+      "facilitator_review": "review-06.md"
+    }
+  ],
+  "metrics_by_case": [
+    {
+      "run_id": "5f715178bafb4c3c80cecdfd089d8bce",
+      "case_pin": {
+        "case_id": "unit-display-clean",
+        "revision": "1",
+        "rubric_revision": "1",
+        "case_sha256": "6371cce9a996c10a3f044c0fef3b1edc0cc67f60328f2ca8a693dc15ba4023dd"
+      },
+      "mode": "defect_detection",
+      "category": "control-unit-display",
+      "provenance": "participant_run",
+      "run_status": "completed",
+      "started": true,
+      "scoring_sha256": "c15f996ca79411bb3a1bc877ea6779e65fdf76aed3d5107463503cf7a3dec5d3",
+      "checks": [
+        {
+          "check_id": "control-observation",
+          "status": "supported",
+          "rationale": "Correctly reports matching 2 m units and no numeric inconsistency.",
+          "severity": "unknown"
+        }
+      ],
+      "unscored_checks": [],
+      "checklist_outcomes": {
+        "supported": {
+          "numerator": 1,
+          "denominator": 1,
+          "value": 1.0,
+          "na_reason": null
+        },
+        "partial": {
+          "numerator": 0,
+          "denominator": 1,
+          "value": 0.0,
+          "na_reason": null
+        },
+        "unsupported": {
+          "numerator": 0,
+          "denominator": 1,
+          "value": 0.0,
+          "na_reason": null
+        },
+        "not_attempted": {
+          "numerator": 0,
+          "denominator": 1,
+          "value": 0.0,
+          "na_reason": null
+        },
+        "unassessable": {
+          "numerator": 0,
+          "denominator": 1,
+          "value": 0.0,
+          "na_reason": null
+        }
+      },
+      "supported_checks": {
+        "numerator": 1,
+        "denominator": 1,
+        "value": 1.0,
+        "na_reason": null
+      },
+      "critical_omissions": {
+        "numerator": 0,
+        "denominator": null,
+        "value": null,
+        "na_reason": "Critical policy unknown or no assessable critical checks"
+      },
+      "unsupported_conclusions": {
+        "numerator": 0,
+        "denominator": 3,
+        "value": 0.0,
+        "na_reason": null
+      },
+      "unassessable_claims": 0,
+      "confirmed_finding_precision": {
+        "numerator": 0,
+        "denominator": 0,
+        "value": null,
+        "na_reason": "No eligible observations"
+      },
+      "pending_allegations": 0,
+      "precision_by_severity": {},
+      "seeded_fault_detection": {
+        "numerator": 0,
+        "denominator": 0,
+        "value": null,
+        "na_reason": "No eligible observations"
+      },
+      "clean_control_false_alarms": {
+        "numerator": 0,
+        "denominator": 1,
+        "value": 0.0,
+        "na_reason": null
+      },
+      "control_unassessable": false,
+      "control_outcome_reviewed": true,
+      "blocked_or_unassessable": false,
+      "unknown_defect_recall": {
+        "numerator": 0,
+        "denominator": null,
+        "value": null,
+        "na_reason": "Unknown defects have no measurable total"
+      }
+    },
+    {
+      "run_id": "92c7d85e58bf4b39adada2fd9d6d07d7",
+      "case_pin": {
+        "case_id": "unit-display-fault",
+        "revision": "1",
+        "rubric_revision": "1",
+        "case_sha256": "9b1d206806d5ed1178564ffb968e7ca30d6f119f0236343740be7c41b4f60359"
+      },
+      "mode": "defect_detection",
+      "category": "control-unit-display",
+      "provenance": "participant_run",
+      "run_status": "completed",
+      "started": true,
+      "scoring_sha256": "f52028a2195acbf110bda70a7c0ddcfc348a384796e661fe3ccbebd82912bf78",
+      "checks": [
+        {
+          "check_id": "control-observation",
+          "status": "supported",
+          "rationale": "Participant identifies 2 ft versus 2 m with correct result identity and browser evidence.",
+          "severity": "unknown"
+        }
+      ],
+      "unscored_checks": [],
+      "checklist_outcomes": {
+        "supported": {
+          "numerator": 1,
+          "denominator": 1,
+          "value": 1.0,
+          "na_reason": null
+        },
+        "partial": {
+          "numerator": 0,
+          "denominator": 1,
+          "value": 0.0,
+          "na_reason": null
+        },
+        "unsupported": {
+          "numerator": 0,
+          "denominator": 1,
+          "value": 0.0,
+          "na_reason": null
+        },
+        "not_attempted": {
+          "numerator": 0,
+          "denominator": 1,
+          "value": 0.0,
+          "na_reason": null
+        },
+        "unassessable": {
+          "numerator": 0,
+          "denominator": 1,
+          "value": 0.0,
+          "na_reason": null
+        }
+      },
+      "supported_checks": {
+        "numerator": 1,
+        "denominator": 1,
+        "value": 1.0,
+        "na_reason": null
+      },
+      "critical_omissions": {
+        "numerator": 0,
+        "denominator": null,
+        "value": null,
+        "na_reason": "Critical policy unknown or no assessable critical checks"
+      },
+      "unsupported_conclusions": {
+        "numerator": 0,
+        "denominator": 3,
+        "value": 0.0,
+        "na_reason": null
+      },
+      "unassessable_claims": 0,
+      "confirmed_finding_precision": {
+        "numerator": 1,
+        "denominator": 1,
+        "value": 1.0,
+        "na_reason": null
+      },
+      "pending_allegations": 0,
+      "precision_by_severity": {
+        "informational": {
+          "precision": {
+            "numerator": 1,
+            "denominator": 1,
+            "value": 1.0,
+            "na_reason": null
+          },
+          "pending": 0
+        }
+      },
+      "seeded_fault_detection": {
+        "numerator": 1,
+        "denominator": 1,
+        "value": 1.0,
+        "na_reason": null
+      },
+      "clean_control_false_alarms": {
+        "numerator": 0,
+        "denominator": 0,
+        "value": null,
+        "na_reason": "No eligible observations"
+      },
+      "control_unassessable": false,
+      "control_outcome_reviewed": true,
+      "blocked_or_unassessable": false,
+      "unknown_defect_recall": {
+        "numerator": 0,
+        "denominator": null,
+        "value": null,
+        "na_reason": "Unknown defects have no measurable total"
+      }
+    },
+    {
+      "run_id": "c7fc17fab7b947edb1f5204c4effe1d4",
+      "case_pin": {
+        "case_id": "evidence-access-clean",
+        "revision": "1",
+        "rubric_revision": "1",
+        "case_sha256": "4a9e0acd85014668742695eabf5a1ab6af8f5c2c38db12d8ed35237b51b6948c"
+      },
+      "mode": "defect_detection",
+      "category": "control-evidence-access",
+      "provenance": "participant_run",
+      "run_status": "completed",
+      "started": true,
+      "scoring_sha256": "d8ec4426787830d1fd73007bf9098971d6c703d256c6d7726bd1973775f39ebb",
+      "checks": [
+        {
+          "check_id": "control-observation",
+          "status": "supported",
+          "rationale": "Participant accessed inline disclosure and reports consistent 0.40/0.45 and 45%; source-opening limitation is distinct.",
+          "severity": "unknown"
+        }
+      ],
+      "unscored_checks": [],
+      "checklist_outcomes": {
+        "supported": {
+          "numerator": 1,
+          "denominator": 1,
+          "value": 1.0,
+          "na_reason": null
+        },
+        "partial": {
+          "numerator": 0,
+          "denominator": 1,
+          "value": 0.0,
+          "na_reason": null
+        },
+        "unsupported": {
+          "numerator": 0,
+          "denominator": 1,
+          "value": 0.0,
+          "na_reason": null
+        },
+        "not_attempted": {
+          "numerator": 0,
+          "denominator": 1,
+          "value": 0.0,
+          "na_reason": null
+        },
+        "unassessable": {
+          "numerator": 0,
+          "denominator": 1,
+          "value": 0.0,
+          "na_reason": null
+        }
+      },
+      "supported_checks": {
+        "numerator": 1,
+        "denominator": 1,
+        "value": 1.0,
+        "na_reason": null
+      },
+      "critical_omissions": {
+        "numerator": 0,
+        "denominator": null,
+        "value": null,
+        "na_reason": "Critical policy unknown or no assessable critical checks"
+      },
+      "unsupported_conclusions": {
+        "numerator": 0,
+        "denominator": 3,
+        "value": 0.0,
+        "na_reason": null
+      },
+      "unassessable_claims": 0,
+      "confirmed_finding_precision": {
+        "numerator": 0,
+        "denominator": 0,
+        "value": null,
+        "na_reason": "No eligible observations"
+      },
+      "pending_allegations": 0,
+      "precision_by_severity": {},
+      "seeded_fault_detection": {
+        "numerator": 0,
+        "denominator": 0,
+        "value": null,
+        "na_reason": "No eligible observations"
+      },
+      "clean_control_false_alarms": {
+        "numerator": 0,
+        "denominator": 1,
+        "value": 0.0,
+        "na_reason": null
+      },
+      "control_unassessable": false,
+      "control_outcome_reviewed": true,
+      "blocked_or_unassessable": false,
+      "unknown_defect_recall": {
+        "numerator": 0,
+        "denominator": null,
+        "value": null,
+        "na_reason": "Unknown defects have no measurable total"
+      }
+    },
+    {
+      "run_id": "c149a9c8080149b6a673f8b7afd8a613",
+      "case_pin": {
+        "case_id": "evidence-access-fault",
+        "revision": "1",
+        "rubric_revision": "1",
+        "case_sha256": "475fbc3ac490fd9c7523aba4049ef3b761e5c46ba720e16886a7f51e569426c9"
+      },
+      "mode": "defect_detection",
+      "category": "control-evidence-access",
+      "provenance": "participant_run",
+      "run_status": "completed",
+      "started": true,
+      "scoring_sha256": "4c8a6e3cb9b56e786f68f23b5ed6c9178b4e2d9cd19c39ba6fe6743fb985094f",
+      "checks": [
+        {
+          "check_id": "control-observation",
+          "status": "supported",
+          "rationale": "Participant identifies inability to inspect supporting evidence at A result; exact seed matched.",
+          "severity": "unknown"
+        }
+      ],
+      "unscored_checks": [],
+      "checklist_outcomes": {
+        "supported": {
+          "numerator": 1,
+          "denominator": 1,
+          "value": 1.0,
+          "na_reason": null
+        },
+        "partial": {
+          "numerator": 0,
+          "denominator": 1,
+          "value": 0.0,
+          "na_reason": null
+        },
+        "unsupported": {
+          "numerator": 0,
+          "denominator": 1,
+          "value": 0.0,
+          "na_reason": null
+        },
+        "not_attempted": {
+          "numerator": 0,
+          "denominator": 1,
+          "value": 0.0,
+          "na_reason": null
+        },
+        "unassessable": {
+          "numerator": 0,
+          "denominator": 1,
+          "value": 0.0,
+          "na_reason": null
+        }
+      },
+      "supported_checks": {
+        "numerator": 1,
+        "denominator": 1,
+        "value": 1.0,
+        "na_reason": null
+      },
+      "critical_omissions": {
+        "numerator": 0,
+        "denominator": null,
+        "value": null,
+        "na_reason": "Critical policy unknown or no assessable critical checks"
+      },
+      "unsupported_conclusions": {
+        "numerator": 0,
+        "denominator": 3,
+        "value": 0.0,
+        "na_reason": null
+      },
+      "unassessable_claims": 0,
+      "confirmed_finding_precision": {
+        "numerator": 1,
+        "denominator": 1,
+        "value": 1.0,
+        "na_reason": null
+      },
+      "pending_allegations": 0,
+      "precision_by_severity": {
+        "informational": {
+          "precision": {
+            "numerator": 1,
+            "denominator": 1,
+            "value": 1.0,
+            "na_reason": null
+          },
+          "pending": 0
+        }
+      },
+      "seeded_fault_detection": {
+        "numerator": 1,
+        "denominator": 1,
+        "value": 1.0,
+        "na_reason": null
+      },
+      "clean_control_false_alarms": {
+        "numerator": 0,
+        "denominator": 0,
+        "value": null,
+        "na_reason": "No eligible observations"
+      },
+      "control_unassessable": false,
+      "control_outcome_reviewed": true,
+      "blocked_or_unassessable": false,
+      "unknown_defect_recall": {
+        "numerator": 0,
+        "denominator": null,
+        "value": null,
+        "na_reason": "Unknown defects have no measurable total"
+      }
+    },
+    {
+      "run_id": "59962fa17ca04b0eb6b9731299546881",
+      "case_pin": {
+        "case_id": "affirmative-label-clean",
+        "revision": "1",
+        "rubric_revision": "1",
+        "case_sha256": "2a057a4f3945e4bc543152e1bd8f552304fd1bff1685f04f7fd5c19c120a2212"
+      },
+      "mode": "defect_detection",
+      "category": "control-affirmative-label",
+      "provenance": "participant_run",
+      "run_status": "completed",
+      "started": true,
+      "scoring_sha256": "7a02949c1eb1ad475e4c35416eac6b5e969992bcf429462de7bd60594092b70f",
+      "checks": [
+        {
+          "check_id": "control-observation",
+          "status": "supported",
+          "rationale": "Participant reports consistent Needs investigation and unresolved Schedule X; no affirmative headline error.",
+          "severity": "unknown"
+        }
+      ],
+      "unscored_checks": [],
+      "checklist_outcomes": {
+        "supported": {
+          "numerator": 1,
+          "denominator": 1,
+          "value": 1.0,
+          "na_reason": null
+        },
+        "partial": {
+          "numerator": 0,
+          "denominator": 1,
+          "value": 0.0,
+          "na_reason": null
+        },
+        "unsupported": {
+          "numerator": 0,
+          "denominator": 1,
+          "value": 0.0,
+          "na_reason": null
+        },
+        "not_attempted": {
+          "numerator": 0,
+          "denominator": 1,
+          "value": 0.0,
+          "na_reason": null
+        },
+        "unassessable": {
+          "numerator": 0,
+          "denominator": 1,
+          "value": 0.0,
+          "na_reason": null
+        }
+      },
+      "supported_checks": {
+        "numerator": 1,
+        "denominator": 1,
+        "value": 1.0,
+        "na_reason": null
+      },
+      "critical_omissions": {
+        "numerator": 0,
+        "denominator": null,
+        "value": null,
+        "na_reason": "Critical policy unknown or no assessable critical checks"
+      },
+      "unsupported_conclusions": {
+        "numerator": 0,
+        "denominator": 4,
+        "value": 0.0,
+        "na_reason": null
+      },
+      "unassessable_claims": 0,
+      "confirmed_finding_precision": {
+        "numerator": 0,
+        "denominator": 0,
+        "value": null,
+        "na_reason": "No eligible observations"
+      },
+      "pending_allegations": 0,
+      "precision_by_severity": {},
+      "seeded_fault_detection": {
+        "numerator": 0,
+        "denominator": 0,
+        "value": null,
+        "na_reason": "No eligible observations"
+      },
+      "clean_control_false_alarms": {
+        "numerator": 0,
+        "denominator": 1,
+        "value": 0.0,
+        "na_reason": null
+      },
+      "control_unassessable": false,
+      "control_outcome_reviewed": true,
+      "blocked_or_unassessable": false,
+      "unknown_defect_recall": {
+        "numerator": 0,
+        "denominator": null,
+        "value": null,
+        "na_reason": "Unknown defects have no measurable total"
+      }
+    },
+    {
+      "run_id": "5ac01e70e35b4f76a2c0eb8ad63d1c00",
+      "case_pin": {
+        "case_id": "affirmative-label-fault",
+        "revision": "1",
+        "rubric_revision": "1",
+        "case_sha256": "f227aa2f9717dd14704d9af7f2aa91dcd6b16a4924701a54df979bb41407bdc0"
+      },
+      "mode": "defect_detection",
+      "category": "control-affirmative-label",
+      "provenance": "participant_run",
+      "run_status": "completed",
+      "started": true,
+      "scoring_sha256": "c21f037214b390249b74e6da1a7a6b1f68d3a900651884aab2b96f8bf73e9339",
+      "checks": [
+        {
+          "check_id": "control-observation",
+          "status": "supported",
+          "rationale": "Participant identifies stronger Candidate headline versus unresolved alternative and source; exact seed matched.",
+          "severity": "unknown"
+        }
+      ],
+      "unscored_checks": [],
+      "checklist_outcomes": {
+        "supported": {
+          "numerator": 1,
+          "denominator": 1,
+          "value": 1.0,
+          "na_reason": null
+        },
+        "partial": {
+          "numerator": 0,
+          "denominator": 1,
+          "value": 0.0,
+          "na_reason": null
+        },
+        "unsupported": {
+          "numerator": 0,
+          "denominator": 1,
+          "value": 0.0,
+          "na_reason": null
+        },
+        "not_attempted": {
+          "numerator": 0,
+          "denominator": 1,
+          "value": 0.0,
+          "na_reason": null
+        },
+        "unassessable": {
+          "numerator": 0,
+          "denominator": 1,
+          "value": 0.0,
+          "na_reason": null
+        }
+      },
+      "supported_checks": {
+        "numerator": 1,
+        "denominator": 1,
+        "value": 1.0,
+        "na_reason": null
+      },
+      "critical_omissions": {
+        "numerator": 0,
+        "denominator": null,
+        "value": null,
+        "na_reason": "Critical policy unknown or no assessable critical checks"
+      },
+      "unsupported_conclusions": {
+        "numerator": 0,
+        "denominator": 3,
+        "value": 0.0,
+        "na_reason": null
+      },
+      "unassessable_claims": 0,
+      "confirmed_finding_precision": {
+        "numerator": 1,
+        "denominator": 1,
+        "value": 1.0,
+        "na_reason": null
+      },
+      "pending_allegations": 0,
+      "precision_by_severity": {
+        "informational": {
+          "precision": {
+            "numerator": 1,
+            "denominator": 1,
+            "value": 1.0,
+            "na_reason": null
+          },
+          "pending": 0
+        }
+      },
+      "seeded_fault_detection": {
+        "numerator": 1,
+        "denominator": 1,
+        "value": 1.0,
+        "na_reason": null
+      },
+      "clean_control_false_alarms": {
+        "numerator": 0,
+        "denominator": 0,
+        "value": null,
+        "na_reason": "No eligible observations"
+      },
+      "control_unassessable": false,
+      "control_outcome_reviewed": true,
+      "blocked_or_unassessable": false,
+      "unknown_defect_recall": {
+        "numerator": 0,
+        "denominator": null,
+        "value": null,
+        "na_reason": "Unknown defects have no measurable total"
+      }
+    }
+  ],
+  "baseline_app_defects": 0,
+  "local_issue_drafts": 0,
+  "verification": {
+    "typed_records_and_links": "passed",
+    "local_run_reference_hashes_checked": 34,
+    "owned_scratch_removals": 6,
+    "all_finalized": true
+  },
+  "decision": "narrow"
+}
