@@ -203,3 +203,29 @@ The next useful records remain the adopted text/map, complete April minutes,
 executed permit and schedules, final agreement/acceptance evidence and relevant
 subsequent permit-state records. The packet remains provisional, benchmark-ineligible
 and unsuitable for an accepted evaluator result or current permission claim.
+
+## Integration observation: later municipal permits (September 25, 2026)
+
+The integrator subsequently inspected the City's separate Property Information
+Portal (`RC-PIP`), advancing the bounded search result above. Search **623 Avalon**,
+select property **104965**, then **All Permits on Selected Properties**. Folio
+**02163004**, PID **009-283-978**, Lot 5 Plan 185 identify the property. The report
+groups 623, 625 and C 625 Avalon on BP059152; these are aliases, not new cases.
+
+| Permit | Application date | Status observed September 25, 2026 | Purpose summary |
+|---|---|---|---|
+| BP059152 | 2024-09-12 | COMPLETED | Existing garage conversion to a garden suite; description refers to 2024 BCBC |
+| PP059811 | 2025-03-26 | COMPLETED | New plumbing fixtures; linkage to the suite needs the incorporated documents |
+| EP081868 | 2025-06-10 | COMPLETED | Electrical renovation to the detached garage area |
+
+These are application dates and status observations, not issue, completion,
+occupancy or work-start dates. BP059152 supplies a specific approved-plan lead,
+but does not prove executed DPV00223 terms, condition discharge, commencement
+within a lapse period or unchanged January 2023 geometry. All verified legal/issue
+dates above remain null. The portal displays GRD-1 even on historical rows; retain
+it as a retrieval-time observation without replacing the historical R-2/R2-65 context.
+
+No source bytes were captured, so `RC-PIP` has no hash or exact capture timestamp.
+The [integration review](../review-2026-09-25.md) records the source route and
+limits. [SR-35](../../../backlog/SR-35.md) pursues the incorporated approved/revised
+site plan, or prepares a concrete unsent request if public access is insufficient.

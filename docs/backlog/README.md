@@ -54,6 +54,8 @@ The first evaluator checks a supplied reviewed placement. Preserve manual site f
 | [SR-31](SR-31.md) / [issue #55](https://github.com/QuinnPaterson96/ShovelReady/issues/55) | Bounded virtual-user pilot and value assessment | M1 support | SR-26 review; SR-28/SR-29/SR-30 integrated |
 | [SR-32](SR-32.md) / [issue #65](https://github.com/QuinnPaterson96/ShovelReady/issues/65) | Persist and serve reproducible draft evaluator runs | M1 preparation | Existing SR-08/SR-10 interfaces |
 | [SR-33](SR-33.md) / [issue #66](https://github.com/QuinnPaterson96/ShovelReady/issues/66) | Inspect computed draft evaluations in the app | M1 preparation | Existing report; SR-32 for live integration |
+| [SR-34](SR-34.md) / [issue #74](https://github.com/QuinnPaterson96/ShovelReady/issues/74) | Reproducible historical Pilot intake diagnostic | M1 preparation | Merged Pilot packet; existing contracts/core |
+| [SR-35](SR-35.md) / [issue #75](https://github.com/QuinnPaterson96/ShovelReady/issues/75) | Specific approved plans or exact unsent record requests | M1 preparation | Merged case research/review; independent of SR-34 |
 
 ## Next parallel work
 
@@ -62,12 +64,14 @@ PRs #68/#69 and [combined verification](../integration-wave-seven.md) connect co
 synthetic reports to storage/API/UI. SR-32 / #65 and SR-33 / #66 are complete. Parent
 SR-10/12/13 remain partial, and SR-11 has no accepted release or activation pointer.
 
-The [next-step plan](../next-steps-after-wave-seven.md) prioritizes one real reviewed
-source/design/site case, then bounded intake/evaluation, publication and a first
-accepted source-to-result regression. Source/rule and design/site evidence work can
-proceed in parallel; software integration follows the usable subset. No new worktrees
-or further QA pilot are dispatched by this integration. Existing owner/reviewer actions
-remain the external input dependency; central status is integration-owned.
+Research PRs #71-#73 supply provisional Pilot/Avalon packets and the Warren Gardens
+acquisition gap. [Wave eight](wave-eight-prompts.md) assigns SR-34's offline historical
+Pilot mapping experiment and SR-35's specific approved-plan acquisition in parallel.
+The [review note](../research/case-readiness/review-2026-09-25.md) adds the independently
+observed Avalon BP059152 trail. Neither task waits for the other's deliverable.
+Acceptance, supported evaluation and publication remain gates in the
+[next-step plan](../next-steps-after-wave-seven.md); no parent objective is closed by
+research or preparation diagnostics. Existing owner/reviewer actions remain distinct.
 
 [Wave-five scope and ownership](wave-five-prompts.md), [wave four](wave-four-prompts.md), [wave three](wave-three-prompts.md), [wave two](wave-two-prompts.md) and [wave one](next-wave-prompts.md) remain historical handoff context.
 

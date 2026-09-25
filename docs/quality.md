@@ -22,6 +22,13 @@ Use typed, versioned models at extraction, ingestion, normalization, persistence
 
 Schema validation cannot prove source support. A valid citation locator can still point to the wrong clause; that requires reference examples and review. Keep raw failed input and issue classifications in restricted diagnostic storage, without leaking secrets into logs.
 
+For Victoria property-history research, check both the Development Tracker and public Property
+Information Portal before declaring permit records unavailable. Preserve application,
+issue, reported status, completion and occupancy as distinct events. Current portal
+zoning labels on historical rows are not evidence of historical law; a completed
+permit record does not itself discharge each condition or fix a plan revision.
+Listings and provider offers may identify later changes but remain attributed claims.
+
 Separate not found in reviewed scope, not applicable under stated facts, extraction failure, unsupported semantics, and missing parcel facts. Model confidence is not a substitute for review or measured accuracy. Quarantine malformed data; preserve useful unresolved rules with explicit status.
 
 ## Reference corpus and tests

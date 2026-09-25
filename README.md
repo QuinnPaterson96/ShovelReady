@@ -43,6 +43,13 @@ run through PostgreSQL, HTTP and the browser with full diagnostic traces. Review
 real inputs and accepted publication remain outstanding. The [next-step plan](docs/next-steps-after-wave-seven.md)
 starts with one real source/design/site case and a small reviewed check subset.
 
+Research PRs #71-#73 add provisional Pilot, Avalon and Warren Gardens packets.
+The [September 25 review](docs/research/case-readiness/review-2026-09-25.md)
+corroborates Pilot's later house replacement and adds Avalon's reported completed
+garden-suite building permit. Neither establishes reviewed dimensions or a prefab fit.
+[Wave eight](docs/backlog/wave-eight-prompts.md) moves to an offline historical Pilot
+intake diagnostic and targeted approved-plan acquisition; accepted screening remains open.
+
 City of Victoria garden suites remain the leading technical prototype candidate, subject
 to verified design/site inputs and current rule applicability; Vancouver is the fallback.
 

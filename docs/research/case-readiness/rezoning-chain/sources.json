@@ -14,6 +14,73 @@
   "reviewer": null,
   "sources": [
     {
+      "source_id": "RC-PIP",
+      "primary_url": "https://tender.victoria.ca/WebApps/PIP/Pages/Search.aspx",
+      "title": "Property Information Portal: all permits for the selected Avalon property",
+      "type": "municipal_permit_report_observation",
+      "retrieved_at": null,
+      "retrieval_date": "2026-09-25",
+      "retrieval_time_basis": "Integrator browser inspection date; exact capture time was not recorded",
+      "printed_or_revision_date": null,
+      "event_dates": {},
+      "verified_legal_effective_date": null,
+      "locators": [
+        "Address search: 623 Avalon; select matching property; All Permits on Selected Properties",
+        "Property 104965; folio 02163004; PID 009-283-978; Lot 5 Plan 185 Section BF Victoria",
+        "BP059152, PP059811 and EP081868 permit rows"
+      ],
+      "access_inspection_status": "Integrator independently inspected the free guest report in the browser. No export or source-byte capture; no account, submission or outreach. Session URLs and personal owner/contractor details omitted.",
+      "sha256": null,
+      "byte_length": null,
+      "local_artifact": null,
+      "rights_retention": "Citation metadata and short original factual summaries only. Public access does not establish a licence for redistribution or durable retention of the report or drawings.",
+      "supersession_linkage": [
+        "Later administrative observations do not replace the January 2023 plan / April 2024 decision snapshot",
+        "BP059152 is a lead for approved site-plan revisions and their relationship to DPV00223, not proof of unchanged geometry or condition discharge"
+      ],
+      "property_observation": {
+        "property_id": "104965",
+        "folio": "02163004",
+        "pid": "009-283-978",
+        "legal_description": "Lot 5 Plan 185 Section BF Victoria",
+        "address_aliases_on_bp059152": ["623 Avalon", "625 Avalon", "C 625 Avalon"],
+        "displayed_zone": "GRD-1",
+        "zone_observation_limit": "Portal display at retrieval, including historical rows; not historical zoning or an independently verified current legal determination"
+      },
+      "permit_observations": [
+        {
+          "permit_id": "BP059152",
+          "application_date": "2024-09-12",
+          "status_observed": "COMPLETED",
+          "status_observation_date": "2026-09-25",
+          "purpose_summary": "Conversion of the existing garage to a garden suite; description refers to 2024 BCBC",
+          "issue_date": null,
+          "completion_date": null,
+          "occupancy_date": null
+        },
+        {
+          "permit_id": "PP059811",
+          "application_date": "2025-03-26",
+          "status_observed": "COMPLETED",
+          "status_observation_date": "2026-09-25",
+          "purpose_summary": "New plumbing fixtures, including washing and bathroom fixtures; suite linkage requires incorporated permit documents",
+          "issue_date": null,
+          "completion_date": null,
+          "occupancy_date": null
+        },
+        {
+          "permit_id": "EP081868",
+          "application_date": "2025-06-10",
+          "status_observed": "COMPLETED",
+          "status_observation_date": "2026-09-25",
+          "purpose_summary": "Electrical renovation to the detached garage area",
+          "issue_date": null,
+          "completion_date": null,
+          "occupancy_date": null
+        }
+      ]
+    },
+    {
       "source_id": "RC-MODO",
       "primary_url": "https://www.modo.coop/buildings/623-625-avalon-road-victoria",
       "title": "623 & 625 Avalon Road, Victoria - Modo building partnership",
