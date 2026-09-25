@@ -1,0 +1,111 @@
+{
+  "schema_version": "virtual-qa-scoring/v1",
+  "revision": "1",
+  "pin": {
+    "case_id": "synthetic-a-candidate",
+    "revision": "1",
+    "rubric_revision": "1",
+    "case_sha256": "aaa7c7b96db47f9fd8986bf8eadff47d27d542aa4b73bbe56d17cb35dc6b4879"
+  },
+  "rubric": {
+    "revision": "1",
+    "expectations": [
+      {
+        "check_id": "bounded-candidate",
+        "claim": "Candidate is a hand-authored assertion for one synthetic-garden-suite / ordinary alternative and supplied placement, not real fit or permit entitlement.",
+        "kind": "authored_software_expectation",
+        "scored": true,
+        "basis": {
+          "kind": "browser_observation",
+          "description": "Candidate is a hand-authored assertion for one synthetic-garden-suite / ordinary alternative and supplied placement, not real fit or permit entitlement.",
+          "evidence": [
+            {
+              "uri": "frontend/src/preview/fixtures.json",
+              "revision": {
+                "value": "sha256:549d97cefa0c2973e1d7e0aea79f1df4a85d95d6558297869923e297ab36fe0d",
+                "unknown_reason": null
+              },
+              "locator": "/scenarios/0"
+            }
+          ]
+        },
+        "evidence": [
+          {
+            "uri": "frontend/src/preview/fixtures.json",
+            "revision": {
+              "value": "sha256:549d97cefa0c2973e1d7e0aea79f1df4a85d95d6558297869923e297ab36fe0d",
+              "unknown_reason": null
+            },
+            "locator": "/scenarios/0"
+          }
+        ],
+        "review": {
+          "status": "reviewed",
+          "reviewer": {
+            "value": "Codex SR-28 fixture author",
+            "unknown_reason": null
+          },
+          "reviewed_at": {
+            "value": "2026-09-25T00:43:39Z",
+            "unknown_reason": null
+          },
+          "rationale": "Source/renderer review of authored software expectations; not independent legal review. Browser control verification is recorded separately in docs/usability/virtual-qa/browser-review.md.",
+          "disagreements": []
+        }
+      },
+      {
+        "check_id": "ratio-evidence",
+        "claim": "The evidence shows 0.40 <= 0.45 fraction, original 45%, with occupied_site_area / lot_area basis and synthetic-rule-A-r1 in synthetic-example-1-release-1; exclusions remain visible.",
+        "kind": "authored_software_expectation",
+        "scored": true,
+        "basis": {
+          "kind": "browser_observation",
+          "description": "The evidence shows 0.40 <= 0.45 fraction, original 45%, with occupied_site_area / lot_area basis and synthetic-rule-A-r1 in synthetic-example-1-release-1; exclusions remain visible.",
+          "evidence": [
+            {
+              "uri": "frontend/src/preview/fixtures.json",
+              "revision": {
+                "value": "sha256:549d97cefa0c2973e1d7e0aea79f1df4a85d95d6558297869923e297ab36fe0d",
+                "unknown_reason": null
+              },
+              "locator": "/scenarios/0"
+            }
+          ]
+        },
+        "evidence": [
+          {
+            "uri": "frontend/src/preview/fixtures.json",
+            "revision": {
+              "value": "sha256:549d97cefa0c2973e1d7e0aea79f1df4a85d95d6558297869923e297ab36fe0d",
+              "unknown_reason": null
+            },
+            "locator": "/scenarios/0"
+          }
+        ],
+        "review": {
+          "status": "reviewed",
+          "reviewer": {
+            "value": "Codex SR-28 fixture author",
+            "unknown_reason": null
+          },
+          "reviewed_at": {
+            "value": "2026-09-25T00:43:39Z",
+            "unknown_reason": null
+          },
+          "rationale": "Source/renderer review of authored software expectations; not independent legal review. Browser control verification is recorded separately in docs/usability/virtual-qa/browser-review.md.",
+          "disagreements": []
+        }
+      }
+    ],
+    "disagreements": [],
+    "seeded_fault": null
+  },
+  "critical_checks": {
+    "value": null,
+    "unknown_reason": "No reviewed atomic critical policy for this pilot; report N/A."
+  },
+  "frozen_at": {
+    "value": null,
+    "unknown_reason": "No prospective critical policy; this file is retained before dispatch."
+  }
+}
