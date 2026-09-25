@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import RealObservations from './investigation/RealObservations'
 import InvestigationPreview from './preview/InvestigationPreview'
+import PublicCases from './reference_cases/PublicCases'
 import IdentityPanel from './Identity'
 
 export default function App() {
@@ -43,9 +44,10 @@ export default function App() {
       <label htmlFor="mode">Investigation mode</label>
       <select id="mode" value={mode} onChange={e => setMode(e.target.value)}>
         <option value="real">Real observations · unreviewed licensed captures</option>
+        <option value="public">Public cases · provisional historical evidence</option>
         <option value="synthetic">Fictional preview · synthetic saved scenarios</option>
       </select>
-      {mode === 'real' ? <RealObservations /> : <InvestigationPreview />}
+      {mode === 'real' ? <RealObservations /> : mode === 'public' ? <PublicCases /> : <InvestigationPreview />}
       <section aria-labelledby="status-heading">
         <h2 id="status-heading">Foundation status</h2>
         <p role="status">{health}</p>
