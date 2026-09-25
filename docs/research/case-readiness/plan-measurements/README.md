@@ -13,6 +13,13 @@ October Council minutes tie the proposed authorization to plans received August 
 2018. **The final November resolution and incorporated/issued permit remain missing.**
 This is useful historical design evidence even without proving project approval.
 
+**Later-property follow-up (September 25, 2026):** the public City property report
+lists completed permits applied for in 2019 for suite conversion/addition, demolition
+of the existing house and a new house. This supports a changed principal-building
+configuration independently of the 2023 listing. It does not supply later dimensions,
+occupancy dates or incorporated drawings. A legal-plan-number discrepancy also remains;
+see the separate chronology below. The historical check candidates remain provisional.
+
 ## Selected configuration and scope
 
 | Field | Selected scope |
@@ -107,3 +114,72 @@ Only metadata and original factual summaries are committed. Inspection copies ar
 outside Git; public access is not a reuse licence. Durable/shared retention and
 commercial reuse remain unresolved (PM-RIGHTS). This packet closes none of
 SR-01/05/06/09/10/13.
+
+## Follow-up: what changed after the 2018 proposal?
+
+The strongest supported change is **replacement of the principal house**, alongside
+a permitted suite conversion/addition. PM-PIP supplies municipal administrative
+evidence; PM-LISTING describes the later marketed property. Neither establishes that
+the later suite exactly follows the July 2018 drawing or preserves its separation.
+
+| Period | Evidence | Supported conclusion and boundary |
+|---|---|---|
+| 2018 proposal | PM-PLAN A-1/A-2; PM-REVISIONS; PM-LETTER | Existing principal house retained; accessory studio converted with south addition. The printed 2.6 m belongs to this specific placement. Final November decision/issued permit still missing |
+| Intervening municipal records | PM-PIP: BP055393 application March 25, 2019; BP055452 and BP055453 applications April 11, 2019 | Report now marks all three COMPLETED: garden-suite conversion/addition, new single-family dwelling, and demolition of existing dwelling respectively. These are application dates, not issue, construction, completion or occupancy dates |
+| 2023 marketed property | PM-LISTING, MLS 944920, reports sale November 29, 2023 and year built 2020 | Describes a Zebra-designed house with detached self-contained garden suite and laundry. Year built and design attribution are listing claims. PM-PHOTOS shows the marketed house and a small gabled structure; photographs supply no controlled dimensions or capture dates |
+| Present condition | No present-day inspection, survey or occupancy instrument obtained | A currently accessible archived listing and currently displayed permit statuses do not establish present physical conditions or permission |
+
+PM-PIP also lists completed garden-suite electrical permit EP066850 (application
+July 15, 2019) and plumbing permit PP055558 (July 8, 2019). The purpose of completed
+EP067522 (October 22, 2019 application) describes a new house with separate services
+for house and an already completed garden suite. This is useful sequence evidence
+within a permit description, not an inspected occupancy certificate or a dated final
+inspection. No revised site plan, completion date or occupancy instrument was exposed
+in the report inspected. Current GRD-1 zoning displayed on historical rows must not
+be read as the zoning applicable in 2018 or 2019.
+
+### Address, parcel and configuration correspondence
+
+The City search result and report link **27 PILOT ST**, folio **02127020**, PID
+**004-775-376**, property number **103616**, Lot 12, Block 2, Beckley Farm,
+Plan **VIP5130**. Suite-related rows also use **C 27 PILOT ST** under the same
+folio/PID. This supports grouping these permits at the City's identified property.
+
+However, PM-PLAN A-1 visibly prints **Plan 5230**, with the same Lot 12, Block 2 and
+Beckley Farm. The mismatch with the City's **5130** is unresolved; a drafting error
+is possible but not established. PM-LISTING matches the civic address but supplies
+no PID or legal description in the inspected page. Its 5,150 sq ft lot claim is not
+parcel-identity proof. Exact legal parcel continuity across all three sources is
+therefore **not fully verified**. No subdivision or title-history conclusion follows.
+
+The listing's 2,656 sq ft floor-area figure has no established correspondence to
+the 2018 suite-area basis. It must not resolve the 22.25/22.75 m2 conflict or become
+a principal-house or combined-building measurement. Likewise, listing photos cannot
+establish the retained studio's identity, addition orientation, rear setback, or
+house-to-suite distance. With municipal evidence of house replacement, the 2018
+house endpoint is especially unsafe to reuse for a later placement.
+
+### Designer and drawing leads; resulting readiness
+
+The listing attributes design to Zebra. The provider's public portfolio and recent
+collaborations pages (PM-ZEBRA) were inspected, but no identified Pilot Street project
+or revision-controlled drawing was found. Attribution remains a listing claim;
+Bourque's 2018 drawing and a later Zebra attribution are not interchangeable design
+revisions. The listing exposes 49 gallery images; selected photos were inspected
+(PM-PHOTOS), and no designated floor-plan PDF or tour link was observed among its
+page links. This is a bounded search result, not proof no plan exists elsewhere.
+
+The historical proposal remains useful without proving construction. The later
+records add a concrete reason to require version-specific building/placement identity;
+they do not upgrade either dimensional candidate to an executable or accepted check.
+These permit applications belong to this property's history, not independent benchmark
+cases. No manufacturer/model was identified and no readiness issue is closed.
+
+The next useful records are BP055452's approved/revised site plans and final inspection
+or occupancy record; BP055453's demolition completion record; and BP055393's incorporated
+plans, revisions and final inspection/occupancy record, with its relationship to
+DPV00081. Reconcile Plan 5130 versus 5230 using authoritative parcel/survey records.
+The final November 2018 instrument, historical definitions and area disagreement remain
+separate open items. These are finite acquisition leads, not requests sent. New public
+searches found no accessible alternative final decision; previously denied endpoints
+were not retried. No later geometry, approval condition or completion date is invented.

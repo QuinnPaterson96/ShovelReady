@@ -304,6 +304,203 @@
       "rights_retention_disposition": "Public inspection only; no redistribution/commercial or durable shared-retention grant established. Metadata and original summaries only in Git. See PM-RIGHTS.",
       "supersession_or_linkage": "General/private informational-use statement and reuse restrictions; no plan-specific rights grant obtained.",
       "existing_frozen_source_id": null
+    },
+    {
+      "source_id": "PM-PIP-ENTRY",
+      "primary_url": "https://www.victoria.ca/city-government/freedom-information",
+      "title": "City of Victoria: Freedom of Information",
+      "type": "municipal_access_guidance",
+      "access_date_utc": "2026-09-25",
+      "retrieved_at": null,
+      "retrieval_time_basis": "Exact retrieval timestamp not recorded; access date only.",
+      "printed_or_revision_date": null,
+      "received_date": null,
+      "effective_date": null,
+      "issue_date": null,
+      "event_date": null,
+      "locators": [
+        "Property Information Portal link; permits for a specific property"
+      ],
+      "access_and_inspection_status": "Primary public page opened; followed public portal link. No records request submitted.",
+      "sha256": null,
+      "byte_length": null,
+      "rights_retention_disposition": "Public inspection only; no redistribution/commercial or durable shared-retention grant established. Metadata and original summaries only in Git.",
+      "supersession_or_linkage": "Public route to PM-PIP, distinct from account/request-based plan acquisition.",
+      "existing_frozen_source_id": null
+    },
+    {
+      "source_id": "PM-PIP",
+      "primary_url": "https://tender.victoria.ca/WebApps/PIP/Pages/Search.aspx",
+      "title": "City of Victoria Property Information Portal: 27 Pilot Street, All Permits",
+      "type": "municipal_property_permit_report",
+      "access_date_utc": "2026-09-25",
+      "retrieved_at": null,
+      "retrieval_time_basis": "Exact retrieval timestamp not recorded; access date only.",
+      "printed_or_revision_date": null,
+      "received_date": null,
+      "effective_date": null,
+      "issue_date": null,
+      "event_date": null,
+      "locators": [
+        "Search 27 Pilot; select 27 PILOT ST; All Permits on Selected Properties",
+        "Folio 02127020; property 103616; PID 004-775-376; Lot 12 Block 2 Beckley Farm Plan VIP5130",
+        "BP055393; BP055452; BP055453; EP066850; PP055558; EP067522"
+      ],
+      "access_and_inspection_status": "Public browser report read without login. Application dates, current status and purposes inspected; no issued/occupancy instrument or incorporated drawings obtained. Session report URL omitted; stable entry and reproduction path retained.",
+      "sha256": null,
+      "byte_length": null,
+      "rights_retention_disposition": "Public inspection only; no redistribution/commercial or durable shared-retention grant established. Metadata and original summaries only in Git.",
+      "supersession_or_linkage": "Same-property permit history, with C 27 PILOT ST on suite-related rows. PM-PLAN legal plan 5230 conflicts with report 5130; exact continuity unresolved. Current GRD-1 display is not historical zoning.",
+      "existing_frozen_source_id": null,
+      "parcel": {
+        "pid": "004-775-376",
+        "folio": "02127020",
+        "property_number": "103616",
+        "plan": "VIP5130",
+        "lot": "12",
+        "block": "2"
+      },
+      "permit_observations": [
+        {
+          "permit_id": "BP055393",
+          "application_date": "2019-03-25",
+          "status_observed": "COMPLETED",
+          "status_observed_date": "2026-09-25",
+          "purpose_summary": "Convert accessory building to garden suite with one-storey addition.",
+          "issue_date": null,
+          "completion_date": null,
+          "occupancy_date": null
+        },
+        {
+          "permit_id": "BP055452",
+          "application_date": "2019-04-11",
+          "status_observed": "COMPLETED",
+          "status_observed_date": "2026-09-25",
+          "purpose_summary": "New single-family dwelling.",
+          "issue_date": null,
+          "completion_date": null,
+          "occupancy_date": null
+        },
+        {
+          "permit_id": "BP055453",
+          "application_date": "2019-04-11",
+          "status_observed": "COMPLETED",
+          "status_observed_date": "2026-09-25",
+          "purpose_summary": "Demolish existing single-family dwelling.",
+          "issue_date": null,
+          "completion_date": null,
+          "occupancy_date": null
+        },
+        {
+          "permit_id": "EP066850",
+          "application_date": "2019-07-15",
+          "status_observed": "COMPLETED",
+          "status_observed_date": "2026-09-25",
+          "purpose_summary": "Wire new garden suite.",
+          "issue_date": null,
+          "completion_date": null,
+          "occupancy_date": null
+        },
+        {
+          "permit_id": "PP055558",
+          "application_date": "2019-07-08",
+          "status_observed": "COMPLETED",
+          "status_observed_date": "2026-09-25",
+          "purpose_summary": "Garden-suite plumbing including laundry and bathroom fixtures.",
+          "issue_date": null,
+          "completion_date": null,
+          "occupancy_date": null
+        },
+        {
+          "permit_id": "EP067522",
+          "application_date": "2019-10-22",
+          "status_observed": "COMPLETED",
+          "status_observed_date": "2026-09-25",
+          "purpose_summary": "New-house electrical services; purpose describes separate house/suite services and an already completed garden suite.",
+          "issue_date": null,
+          "completion_date": null,
+          "occupancy_date": null
+        }
+      ]
+    },
+    {
+      "source_id": "PM-LISTING",
+      "primary_url": "https://www.greatervictoriapropertygroup.com/listings/view/550160/victoria/vi-james-bay/27-pilot-st",
+      "title": "27 Pilot St, MLS 944920 archived sale listing",
+      "type": "real_estate_listing",
+      "access_date_utc": "2026-09-25",
+      "retrieved_at": null,
+      "retrieval_time_basis": "Exact retrieval timestamp not recorded; access date only.",
+      "printed_or_revision_date": null,
+      "received_date": null,
+      "effective_date": null,
+      "issue_date": null,
+      "event_date": null,
+      "locators": [
+        "MLS 944920; sale date; Year Built; Floor Area; Lot Size; property description; gallery links"
+      ],
+      "access_and_inspection_status": "Web and browser page read. Direct HTTP returned 406; that error body is not source bytes. Page reports sale November 29, 2023, year built 2020, Zebra design, detached suite with laundry, floor area 2656 sq ft and lot 5150 sq ft.",
+      "sha256": null,
+      "byte_length": null,
+      "rights_retention_disposition": "Public inspection only; no redistribution/commercial or durable shared-retention grant established. Metadata and original summaries only in Git.",
+      "supersession_or_linkage": "Marketing assertions only. Address matches; no PID/legal description inspected. Area basis and photo capture dates unknown. Current page footer is not a construction/photo date.",
+      "existing_frozen_source_id": null,
+      "reported_sale_date": "2023-11-29",
+      "reported_year_built": 2020
+    },
+    {
+      "source_id": "PM-PHOTOS",
+      "primary_url": "https://www.greatervictoriapropertygroup.com/listings/view/550160/victoria/vi-james-bay/27-pilot-st",
+      "title": "27 Pilot St listing: selected gallery photographs",
+      "type": "listing_photographs",
+      "access_date_utc": "2026-09-25",
+      "retrieved_at": null,
+      "retrieval_time_basis": "Exact retrieval timestamp not recorded; access date only.",
+      "printed_or_revision_date": null,
+      "received_date": null,
+      "effective_date": null,
+      "issue_date": null,
+      "event_date": null,
+      "locators": [
+        "Gallery image indices 1, 38, 41, 44, 49; 49 linked images overall"
+      ],
+      "access_and_inspection_status": "Selected images visually inspected through ordinary browser. Main house, small gabled structure, bathroom and aerial context observed. No measurements derived and no designated floor-plan/tour link observed in listing links.",
+      "sha256": null,
+      "byte_length": null,
+      "rights_retention_disposition": "Public inspection only; no redistribution/commercial or durable shared-retention grant established. Metadata and original summaries only in Git.",
+      "supersession_or_linkage": "Appearance evidence for marketed property only; does not establish orientation, exact retained-studio identity, capture dates, approved/as-built plans or later separation.",
+      "existing_frozen_source_id": null,
+      "inspected_image_urls": [
+        "https://s.realtyninja.com/static/images/listings/hd/8422_25591713_1_ad099598.jpg",
+        "https://s.realtyninja.com/static/images/listings/hd/8422_25591713_38_418dd13a.jpg",
+        "https://s.realtyninja.com/static/images/listings/med/8422_25591713_41_ffe90ae3.jpg",
+        "https://s.realtyninja.com/static/images/listings/hd/8422_25591713_44_16c34dc8.jpg",
+        "https://s.realtyninja.com/static/images/listings/hd/8422_25591713_49_ca00620a.jpg"
+      ]
+    },
+    {
+      "source_id": "PM-ZEBRA",
+      "primary_url": "https://zebragroup.ca/portfolio",
+      "title": "Zebra Group public portfolio and recent collaborations",
+      "type": "designer_portfolio_lead",
+      "access_date_utc": "2026-09-25",
+      "retrieved_at": null,
+      "retrieval_time_basis": "Exact retrieval timestamp not recorded; access date only.",
+      "printed_or_revision_date": null,
+      "received_date": null,
+      "effective_date": null,
+      "issue_date": null,
+      "event_date": null,
+      "locators": [
+        "Portfolio project links",
+        "https://zebragroup.ca/recent-collaborations"
+      ],
+      "access_and_inspection_status": "Provider pages opened; no identified Pilot Street project or controlled plan found. Exact site/Pilot search yielded no usable case lead.",
+      "sha256": null,
+      "byte_length": null,
+      "rights_retention_disposition": "Public inspection only; no redistribution/commercial or durable shared-retention grant established. Metadata and original summaries only in Git.",
+      "supersession_or_linkage": "Listing-suggested designer lead only; no independent case attribution, drawing revision or manufacturer/model established.",
+      "existing_frozen_source_id": null
     }
   ]
 }

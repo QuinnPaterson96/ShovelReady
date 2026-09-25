@@ -91,3 +91,38 @@ review with rights/retention uncertainty. Hashes identify inspected bytes, not a
 authorized shared source bundle. No independent source review, acceptance,
 publication or user validation occurred. Active human review time and total effort
 were not measured; tool timestamps are not a labour estimate.
+
+## September 25 follow-up: later property and identity
+
+Follow-up started clean at PR #71 head
+`d5404e08bc386d8d926a947130f2cd04422a3a1d` on the same branch. Personal GitHub
+authentication, origin and effective author/committer were checked before publication.
+Ownership remains the same three packet files. Earlier observations above are retained.
+
+| Search/access path | Actual result and limitation |
+|---|---|
+| Exact address with permit, demolition, 2019, legal and MLS 944920/floor-plan terms | Located the listing and the City's public Property Information Portal via its Freedom of Information page. Other jurisdictions' permit-number matches discarded |
+| PM-PIP-ENTRY -> PM-PIP; search 27 Pilot -> property -> All Permits on Selected Properties | Free public browser access, no login. Read property identifiers and permit rows. Stable entry URL and reproduction path recorded instead of transient report URL. Status is observed now; application date is the only dated event field used |
+| BP055393/BP055452/BP055453 and related services | New house, demolition and suite conversion/addition records marked COMPLETED. No incorporated drawings or occupancy instrument inspected. No inference from absence of newer rows |
+| PM-PLAN A-1 legal label enlarged from existing downloaded bytes | Visually verified Plan 5230, Lot 12, Block 2, Beckley Farm. City report says VIP5130/5130. Conflict retained without selecting a correction |
+| PM-LISTING ordinary HTTP, web and browser | Direct request returned 406; web and normal browser page accessible. Error-body bytes not hashed as source. Read sale/year/area/design claims and gallery links; no designated floor-plan or tour link observed |
+| PM-PHOTOS gallery | Visually inspected images 1, 38, 41, 44 and 49: main-house views, small gabled structure, bathroom and aerial context. No pixel measurements, parcel identification from aerial, image capture dates or certified as-built correspondence inferred; other gallery images not exhaustively inspected |
+| Exact Zebra/Pilot search; provider portfolio and recent collaborations | No identified Pilot project or controlled plans obtained. General design services do not corroborate case attribution |
+| Current municipal open-data permit service directory | Layers advertise last-year/last-60-days coverage; not used to infer absence of 2018-2023 records |
+| Fresh exact-address November 2018 decision search; public development tracker | Known agenda/related application leads only, no accessible final instrument. No retries of previously denied agenda/minutes endpoints |
+
+No Warren or other case was investigated. No outreach, FOI submission, accounts,
+purchases, private lookup, AWS access, code changes or evaluator execution occurred.
+No new historical-definition audit was performed; original definition gaps remain.
+Only original factual summaries and source metadata are added. Public listing photos
+and provider content have no obtained reuse grant; no images, full page exports or
+property owner/contact details are committed. Browser-only source hashes and exact
+retrieval times remain null rather than being invented.
+
+Follow-up validation: JSON parsing, unique source IDs and Markdown source references;
+ISO dates; equality of the original 12 source records against the starting commit;
+local Markdown links; and `git diff --check` with staged scope/diff review. No new
+dimensional arithmetic is used. Application/database tests are inapplicable to this
+metadata-only change. Software checks do not supply independent source review,
+accepted publication or user validation. Final-head CI is reported separately in the
+PR handoff and must be checked before integration.
