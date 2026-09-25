@@ -229,6 +229,17 @@ def validate(data):
         counts["total"] += 1
         counts[case["scope"]] += 1
         check_evidence(case, sources)
+    pilot = next(c for c in data["cases"] if c["case_id"] == "VIC-PC-002")
+    area = pilot["measurements"][1]
+    require(area["original_value"] == ["22.25", "22.75"], "Pilot area observations lost")
+    require("parsed text" in area["measurement_definition"], "Pilot parsed basis lost")
+    require(
+        "visually confirmed at 4/A-1" in area["measurement_definition"], "Pilot visual basis lost"
+    )
+    require(
+        "Neither is selected as canonical" in area["measurement_definition"],
+        "Pilot area uncertainty lost",
+    )
     require(counts == data["counts"], "Counts mismatch")
     require(3 <= len(data["shortlist"]) <= 5, "Shortlist size")
     require(len(set(data["shortlist"])) == len(data["shortlist"]), "Duplicate shortlist entry")

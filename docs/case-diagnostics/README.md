@@ -19,7 +19,7 @@ the preparation diagnostic completed, including expected boundary rejection; it
 does not mean evaluation succeeded. Malformed annotations or manifest drift exit 2.
 `--annotations PATH` supports deliberate local experiments; it does not confer
 acceptance. No source download, extraction/model call, artifact import or publication
-occurs. No demo app or existing API is changed.
+occurs. SR-37 now exposes the same preparation through the fixed read-only API below.
 
 ## Inputs and actual mapping
 
@@ -34,10 +34,9 @@ must never substitute for an original-source hash. Logged original hashes/times 
 carried through only where already present in the manifest, without claiming a new
 byte verification. Later application dates remain distinct from completion dates.
 
-The [adapter](../../scripts/diagnose_pilot_case.py) uses existing `Quantity`,
+The [shared core](../../app/case_preparations/core.py) uses existing `Quantity`,
 `RevisionRef`, `MeasuredFact`, `DesignRevision`, `SiteRevision`, `PlacementRevision`,
-`RuleReference` and `RuleContent` types. Its small local annotation models are not a
-new application interface. It maps five **uncertain** fact fragments, retains three
+`RuleReference` and `RuleContent` types. Its small local annotation models remain separate from accepted evaluation inputs. It maps five **uncertain** fact fragments, retains three
 threshold claims separately, leaves every required geometry role missing and does
 not select a regulatory floor area. The two corner observations keep separate IDs.
 The selected design is fixed only as a historical proposal; construction method and
@@ -111,8 +110,8 @@ later/current source substitution and relabelling, missing original hash/capture
 retained conditions/override references, explicit missing geometry, forbidden acceptance
 fields, manifest drift, duplicate/nonfinite JSON, cross-platform newline reproducibility
 and invocation outside the repository directory. The existing offline evaluator and
-contract suites run alongside them. No database, HTTP/UI, source reinspection or live
-model test is warranted by this change. Final-head CI and exact test counts are in the
+contract suites run alongside them. The original SR-34 run did not include database, HTTP/UI, source reinspection or live
+model checks; SR-37 evidence is recorded below. Final-head CI and exact test counts are in the
 PR handoff; software checks do not establish source accuracy or independent acceptance.
 
 The smallest next step is to acquire and review the retained historical source and
@@ -124,3 +123,60 @@ experiment uses truthful `RuleContent` fragments without inventing a model run. 
 is a proposal, not an implemented schema change. Conditional override execution remains
 separate work justified only after source review; later approved-plan acquisition is
 independent SR-35 work. SR-05/06/10/13, accepted publication and user validation remain open.
+
+
+## SR-37 read-only investigation and runtime boundary
+
+`GET /api/case-preparations/pilot` returns the typed `pilot-preparation.v1`
+diagnostic with `Cache-Control: no-store`. It is the actual shared-core result,
+JSON-equivalent to the offline CLI, not an EvaluationReport. Unknown cases return
+404, writes return 405, and query parameters (including input paths) return 400.
+Invalid/missing packaged inputs or unexpected acceptance produce a generic 503;
+private paths and raw exceptions are not returned. No database configuration is needed.
+
+The reusable code now lives in `app/case_preparations/core.py`; the CLI is a thin
+wrapper with the existing offline arguments and behavior. Research annotations and
+manifest remain canonical in their documentation directories. Runtime copies in
+`app/case_preparations/data/` are an explicit packaging boundary: the focused test
+compares normalized text hashes against both canonical files and fails on drift.
+Update reviewed canonical inputs first, then copy them verbatim and regenerate the
+consumer schema/fixture. There is only one maintained diagnostic implementation.
+The existing Dockerfile recursively copies `app/`, so this API does not depend on
+`docs/` or `scripts/` in a container. An isolated subprocess smoke test copies only
+`app/` and exercises the registered HTTP endpoint without repository PYTHONPATH.
+
+`frontend/src/case_preparations/PilotPreparation.tsx` exports a standalone default
+component with no props. It fetches the bounded endpoint, validates the producer's
+serialization schema, and owns loading/error/empty/reload handling. Reload immediately
+clears prior evidence and cancels/suppresses stale success and failure responses.
+Summary and next artifacts precede expandable observations, source links, dates,
+revision hashes, missing fields, conditions and raw diagnostic JSON. Only explicitly
+allowed HTTPS evidence hosts become links; arbitrary artifact URIs are inert text.
+Scoped inline styles avoid changes to global styles or the shared banner.
+
+Integration now wires this component into the main navigation and input flow,
+adopts the shared amber status banner, and includes its tests in recursive frontend
+test discovery. See [wave-nine integration](../integration-wave-nine.md) for the
+combined API/database/browser verification. Original branch checks follow.
+
+Focused verification commands (repository root; Python 3.12, locked dependencies):
+
+```powershell
+python -m uv run --locked pytest -q tests/test_pilot_diagnostic.py tests/test_case_preparations.py tests/test_evaluation.py contract_tests/test_contracts.py tests/test_reference_cases.py
+python -m uv run --locked ruff check app/case_preparations app/main.py scripts/diagnose_pilot_case.py tests/test_case_preparations.py docs/research/public-cases/verify_inventory.py
+python -m uv run --locked python docs/research/public-cases/verify_inventory.py
+npx --prefix frontend tsx --tsconfig frontend/tsconfig.app.json --test frontend/src/case_preparations/pilot.test.tsx
+npm test --prefix frontend
+npm run typecheck --prefix frontend
+npm run build --prefix frontend
+```
+
+The API test also detects generated JSON schema/real producer fixture drift. Regenerate
+those files with `PilotPreparation.model_json_schema(mode="serialization")` and
+`prepare_pilot().model_dump_json(indent=2, exclude_unset=True)` from
+`app.case_preparations.api`. The copies are verification artifacts, never runtime
+summaries. SR-34's behavioral tests remain unchanged and continue testing altered
+inputs, temporal incompatibility, conflicts and acceptance refusal through the CLI's
+shared-core imports. No shared database, source fetch, live model, acceptance or
+publication is part of these checks. Source review and legal interpretation remain
+unverified; exact run results and container availability are in the PR handoff.

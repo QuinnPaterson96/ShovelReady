@@ -153,3 +153,14 @@ reviewed as metadata, not independently re-audited against every source page.
 ## Wave-five reconciliation
 
 Inventory revision `2026-09-24.integration-2` incorporates two corroborated Stannard source records (23 sources total), a revision-specific applicant prefab-to-custom assertion and the R2-65 pathway lead. It preserves the original C1 values and every provisional/unknown/benchmark gate. See [integration evidence](../../integration-wave-five.md) and the [separate historical packet](../stannard-reference/README.md) for unresolved legal, permit and measurement questions. The earlier 21-source verification above describes the original inventory, not this revision.
+
+## Pilot wording correction, September 25
+
+Inventory revision `2026-09-25.pilot-area-3` corrects Pilot's former "two drawing
+labels" statement using the [later measurement packet](../case-readiness/plan-measurements/README.md#two-check-candidates-and-the-retained-area-conflict).
+22.25 m2 is parsed text, not visually confirmed in the lower site plan; 22.75 m2
+is visually confirmed at 4/A-1 and corroborated by PM-LETTER. Neither resolves the
+canonical regulatory area. The [previous Pilot entry](history/pilot-2026-09-24.integration-2.json)
+is retained verbatim with its inventory revision for history, not current guidance.
+Original source identifiers, access dates, values and provisional gates are retained.
+This revision records no new source acquisition, issuance date, acceptance or publication.

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { caseIds, refKey, startLoad } from './adapter'
 import type { CaseId, LoadState } from './adapter'
 import type { CheckTrace, EvaluationReport, Quantity, RevisionRef, Review } from './types'
+import StatusBanner from '../StatusBanner'
 
 const labels: Record<EvaluationReport['outcome'], string> = {
   candidate: 'Passing arithmetic example within the declared scope',
@@ -72,6 +73,13 @@ function Trace({ trace, report }: { trace: CheckTrace; report: EvaluationReport 
 export function ReportView({ report }: { report: EvaluationReport }) {
   const r = report.request
   return <article className="draft-report">
+    <StatusBanner
+      status={r.scope.coverage === 'outside_coverage' ? 'outside_coverage' : report.outcome === 'candidate' ? 'candidate' : report.outcome === 'no_match_under_evaluated_pathways' ? 'failed_placement' : 'needs_investigation'}
+      synthetic reason={labels[report.outcome]}
+      coverage={`${r.scope.description} · ${r.scope.coverage.replace(/_/g, ' ')} · ${report.traces.length} computed checks · supplied placement only.`}
+      unresolved={[...report.scope_exclusions, ...report.traces.flatMap(t => t.diagnostics)]}
+      nextAction="Inspect the check evidence and unresolved items below. Obtain reviewed real inputs and applicable sources before any real-site evaluation."
+    />
     <h3>{labels[report.outcome]}</h3>
     <p className="notice">Synthetic draft computation only. No published zoning release, actual buildable site or legal approval is established.
       A failed supplied placement does not establish that no placement on the parcel can work.</p>
