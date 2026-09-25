@@ -140,6 +140,16 @@ Unknown-defect recall is always N/A. A small authored corpus is not a population
 accuracy estimate. Independent legal accuracy, human usability and publication are
 separate evidence categories.
 
+Both control metrics additionally require an explicit, assessable report-outcome
+decision for every scored check in the control case, with at least one such check.
+This is recorded as `control_outcome_reviewed`. A readable note and observable control
+alone do not establish reviewed silence or a reviewed miss. Missing/unassessable
+decisions (including unavailable decision evidence) keep both control denominators
+at zero/N/A and mark the control unassessable. Explicit supported, partial, unsupported
+or not-attempted decisions remain eligible; a reviewed omission can therefore count
+as a seeded miss. This gate does not alter independently evidenced allegation precision
+or actionable finding drafts, and unsolicited findings still cannot supply checklist checks.
+
 ## Draft gates and deduplication
 
 Only confirmed, reproduced app defects with verified supporting, contradicting (when
@@ -164,7 +174,7 @@ python -m uv run --locked ruff check scripts/virtual_qa contract_tests/test_virt
 python -m uv run --locked pytest -q contract_tests/test_virtual_qa_contracts.py contract_tests/test_virtual_qa_grading.py
 ```
 
-67 focused tests passed; the combined `pytest -q contract_tests` run passed 81 tests
+79 focused tests passed; the combined `pytest -q contract_tests` run passed 93 tests
 and 28 subtests. Lint passed for `scripts/virtual_qa contract_tests`. Neither run made
 database/network/browser/model calls. The CLI SR-26 example
 also produced the expected unscored ledger and zero drafts in a new temporary directory.

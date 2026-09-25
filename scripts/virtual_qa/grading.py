@@ -440,6 +440,12 @@ def grade(cases, runs, findings, scoring, assessments):
                 severity_counts = precision_by_severity.setdefault(severity_name, Counter())
                 severity_counts[items[0] if len(set(items)) == 1 else "pending"] += 1
             control = case.facilitator.seeded_fault
+            # Observability is not a review of the participant's outcome. Require
+            # explicit assessable decisions for every scored control-case check;
+            # reviewed not_attempted/unsupported outcomes remain eligible misses.
+            control_outcome_reviewed = bool(check_results) and all(
+                c["status"] != "unassessable" for c in check_results
+            )
             observable = bool(
                 ready
                 and note_ok
@@ -457,6 +463,7 @@ def grade(cases, runs, findings, scoring, assessments):
                     control
                     and control.variant == "fault"
                     and observable
+                    and control_outcome_reviewed
                     and run.mode == "defect_detection"
                 )
             )
@@ -465,6 +472,7 @@ def grade(cases, runs, findings, scoring, assessments):
                     control
                     and control.variant == "clean"
                     and observable
+                    and control_outcome_reviewed
                     and run.mode == "defect_detection"
                     and not finding_counts["pending"]
                     and run.status == "completed"
@@ -532,6 +540,7 @@ def grade(cases, runs, findings, scoring, assessments):
                     int(bool(clean_den and finding_counts["rejected"])), clean_den
                 ),
                 "control_unassessable": bool(control and not (fault_den or clean_den)),
+                "control_outcome_reviewed": control_outcome_reviewed if control else None,
                 "blocked_or_unassessable": run.status == "blocked"
                 or not ready
                 or bool(counts["unassessable"]),

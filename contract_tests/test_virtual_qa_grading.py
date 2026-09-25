@@ -382,6 +382,64 @@ def test_clean_silence_pending_and_seed_miss(bundle):
     assert replay(bundle)["attempts"][0]["seeded_fault_detection"]["value"] == 0
 
 
+@pytest.mark.parametrize("variant", ["clean", "fault"])
+@pytest.mark.parametrize("review", ["absent", "unassessable", "missing_evidence"])
+def test_control_without_assessable_outcome_is_not_success_or_miss(bundle, variant, review):
+    control(bundle, variant)
+    assessment = bundle["assessments"][0]
+    if review == "absent":
+        assessment["checks"] = []
+    elif review == "unassessable":
+        assessment["checks"][0]["status"] = "unassessable"
+    else:
+        assessment["checks"][0]["evidence"] = []
+    row = replay(bundle)["attempts"][0]
+    metric = "clean_control_false_alarms" if variant == "clean" else "seeded_fault_detection"
+    assert row["checks"][0]["status"] == "unassessable"
+    assert row[metric]["denominator"] == 0
+    assert row[metric]["value"] is None
+    assert row["control_unassessable"]
+    assert not row["control_outcome_reviewed"]
+
+
+@pytest.mark.parametrize("variant,status", [("clean", "supported"), ("fault", "not_attempted")])
+def test_explicitly_reviewed_silence_and_misses_remain_eligible(bundle, variant, status):
+    control(bundle, variant)
+    bundle["assessments"][0]["checks"][0]["status"] = status
+    row = replay(bundle)["attempts"][0]
+    metric = "clean_control_false_alarms" if variant == "clean" else "seeded_fault_detection"
+    assert row[metric]["numerator"] == 0
+    assert row[metric]["denominator"] == 1
+    assert row["control_outcome_reviewed"]
+    assert not row["control_unassessable"]
+
+
+@pytest.mark.parametrize("variant", ["clean", "fault"])
+def test_control_gate_does_not_discard_independent_allegation_review(bundle, variant):
+    control(bundle, variant)
+    add_finding(bundle, category="false_alarm" if variant == "clean" else "app_defect")
+    bundle["assessments"][0]["checks"] = []
+    result = replay(bundle)
+    row = result["attempts"][0]
+    assert row["confirmed_finding_precision"]["denominator"] == 1
+    assert row["confirmed_finding_precision"]["numerator"] == int(variant == "fault")
+    assert len(result["issue_drafts"]) == int(variant == "fault")
+    assert row["control_unassessable"]
+
+
+@pytest.mark.parametrize("variant", ["clean", "fault"])
+def test_control_with_no_scored_outcome_cannot_pass_vacuously(bundle, variant):
+    control(bundle, variant)
+    bundle["cases"][0]["facilitator"]["expectations"][0]["scored"] = False
+    bundle["assessments"][0]["checks"] = []
+    bundle["scoring"][0]["critical_checks"] = unknown()
+    repin(bundle)
+    row = replay(bundle)["attempts"][0]
+    assert row["checks"] == []
+    assert row["control_unassessable"]
+    assert not row["control_outcome_reviewed"]
+
+
 def test_missing_denominators_and_timing_are_na(bundle):
     bundle["scoring"][0]["critical_checks"] = unknown()
     result = replay(bundle)
