@@ -173,8 +173,12 @@ def test_new_runs_require_real_freeze_and_timing(records):
     parse(records)
 
 
-def test_confirmed_bug_needs_reproduction_and_adjudicator(records):
+@pytest.mark.parametrize("origin", ["rubric_check", "unsolicited"])
+def test_confirmed_bug_needs_reproduction_and_adjudicator(records, origin):
     finding = records["findings"][0]
+    finding["origin"] = origin
+    if origin == "unsolicited":
+        finding["check_id"] = None
     finding["category"] = "app_defect"
     finding["adjudication"]["status"] = "confirmed"
     with pytest.raises(ValidationError, match="reviewer and date"):
@@ -190,6 +194,59 @@ def test_confirmed_bug_needs_reproduction_and_adjudicator(records):
         parse(records)
     finding["reproduction_evidence"] = finding["supporting_evidence"]
     parse(records)  # Doesn't verify that the supplied evidence actually supports this claim.
+
+
+@pytest.mark.parametrize("category", ["app_defect", "environment_tool_failure"])
+def test_unsolicited_observation_preserves_frozen_rubric(records, category):
+    """Synthetic observation tests recording only; not a new claim about SR-26."""
+    original_cases, original_runs, _ = parse(records)
+    observation = records["findings"][0]
+    observation.update(
+        origin="unsolicited",
+        check_id=None,
+        category=category,
+        claim="Synthetic unexpected observation: selecting a lead showed a blank screen.",
+        supporting_evidence=[
+            {
+                "uri": "synthetic-test://unexpected-blank-screen",
+                "revision": {"value": "1", "unknown_reason": None},
+                "locator": "Saved test observation, not an SR-26 screenshot",
+            }
+        ],
+        contradicting_evidence=[],
+    )
+    cases, runs, findings = parse(records)
+    validate_links(cases, runs, findings)
+    assert cases == original_cases
+    assert runs == original_runs
+    assert findings[0].origin == "unsolicited"
+    assert (
+        findings[0].check_id is None
+    )  # Cannot identify a checklist item or enlarge its denominator.
+    assert findings[0].adjudication.status == "unresolved"
+    records["findings"][0]["case_id"] = "not-selected"
+    with pytest.raises(ValueError, match="case was not selected"):
+        validate_links(*parse(records))
+
+
+@pytest.mark.parametrize(
+    "origin,check_id",
+    [
+        ("rubric_check", None),
+        ("unsolicited", "next-information"),
+        ("unsolicited", "missing"),
+    ],
+)
+def test_finding_origin_requires_explicit_scope(records, origin, check_id):
+    records["findings"][0].update(origin=origin, check_id=check_id)
+    with pytest.raises(ValidationError, match="unsolicited findings require null"):
+        parse(records)
+
+
+def test_named_finding_cannot_reference_unknown_check(records):
+    records["findings"][0].update(origin="rubric_check", check_id="unexpected-new-check")
+    with pytest.raises(ValueError, match="finding references missing check"):
+        validate_links(*parse(records))
 
 
 def test_text_is_data_and_models_are_frozen(records):

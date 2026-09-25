@@ -18,7 +18,8 @@ Import from `scripts.virtual_qa.contracts`:
   completion status, note and evidence. Selected case IDs are the ordered pin list;
   fixture identities are in the content-pinned case, not a second mutable list.
 - `Finding`: same version, `record_type="finding"`; immutable ID/revision, optional
-  superseded revision, affected run/case/check, category, claim, both evidence directions,
+  superseded revision, affected run/case, explicit origin and nullable check, category,
+  claim, both evidence directions,
   severity, reproduction evidence, adjudication and optional issue link.
 - `Metadata[T]`: **both** `value` and `unknown_reason` required. Unknown is
   `{"value": null, "unknown_reason": "Not recorded in the source report."}`.
@@ -112,6 +113,19 @@ contradicting references, reproduction outcome and adjudicator/date/rationale. C
 app defects require reproduction evidence; all confirmed/rejected adjudications require
 an identified reviewer and date. Those fields are auditable assertions, not proof that
 the review happened. The linked issue field is traceability, not permission to create one.
+
+Use `origin="rubric_check"` with a non-null `check_id` for a prewritten rubric finding;
+the named check must exist in the frozen case. Use `origin="unsolicited"` with an explicit
+null `check_id` for an unexpected observed bug or environment obstacle outside the rubric.
+These combinations are enforced; neither origin relaxes run/case links, evidence,
+reproduction or adjudication requirements. Never edit a frozen rubric to accommodate a
+new observation. Unsolicited findings stay outside checklist numerators and denominators,
+even when confirmed as defects. Any later checklist assessment requires a separately
+reviewed new case/rubric revision, new pinned assessment record and separate adjudication;
+retain the original run/finding and grade unchanged. Graders derive checklist denominators
+only from eligible scored expectations in that assessment's pinned rubric, not the number
+of findings. Unsolicited observations can still be reported and escalated after reproduction
+and review, separately from checklist metrics.
 
 Before escalating an app defect: independently reproduce at pinned app/data identity,
 check expected behavior against its visible/instruction basis, retain contrary evidence,

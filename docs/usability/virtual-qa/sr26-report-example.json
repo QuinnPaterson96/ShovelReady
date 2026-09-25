@@ -249,6 +249,7 @@
       "run_id": "sr26-report-example-attempt-1",
       "case_id": "sr26-report-vic080",
       "check_id": "next-information",
+      "origin": "rubric_check",
       "category": "agent_omission",
       "claim": "SR-26 reports missing explicit existing use/count and frontage requests. No application defect is established.",
       "supporting_evidence": [

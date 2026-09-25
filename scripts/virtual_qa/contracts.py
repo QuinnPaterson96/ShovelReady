@@ -242,7 +242,8 @@ class Finding(Record):
     supersedes: Text | None
     run_id: Text
     case_id: Text
-    check_id: Text
+    origin: Literal["rubric_check", "unsolicited"]
+    check_id: Text | None
     category: Literal[
         "app_defect",
         "agent_omission",
@@ -263,6 +264,10 @@ class Finding(Record):
 
     @model_validator(mode="after")
     def confirmed_defect(self):
+        if (self.origin == "unsolicited") != (self.check_id is None):
+            raise ValueError(
+                "unsolicited findings require null check_id; rubric findings name a check"
+            )
         if self.reproduction == "reproduced" and not self.reproduction_evidence:
             raise ValueError("reproduced findings need reproduction evidence")
         if self.category == "app_defect" and self.adjudication.status == "confirmed":
@@ -306,5 +311,7 @@ def validate_links(
         if pin is None:
             raise ValueError("finding case was not selected")
         case = case_map[(pin.case_id, pin.revision)]
-        if finding.check_id not in {item.check_id for item in case.facilitator.expectations}:
+        if finding.check_id is not None and finding.check_id not in {
+            item.check_id for item in case.facilitator.expectations
+        }:
             raise ValueError("finding references missing check")
