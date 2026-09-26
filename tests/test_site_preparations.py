@@ -96,9 +96,76 @@ def test_captured_address_join_and_alias(retained):
         assert candidate.address.evidence.origin == "source"
         assert candidate.address.evidence.snapshot_id.startswith("address-")
         assert candidate.address.evidence.source_url.endswith("outSR=3157")
+        assert "case/whitespace FullAddress match" in candidate.address.evidence.method
         assert candidate.selected is False
         assert result.screening_status == "not_performed"
     assert lookup(retained, "address", "1253 QUEENS AVE UNIT B").status == "no_match"
+
+
+def test_documented_suffix_spelling_retains_source_identity(retained):
+    direct = lookup(retained, "address", "1170 MAY ST")
+    expanded = lookup(retained, "address", "1170 May Street")
+    assert direct.status == expanded.status == "one_match"
+    original = direct.candidates[0]
+    candidate = expanded.candidates[0]
+    assert candidate.candidate_id == original.candidate_id
+    assert candidate.pid == original.pid
+    assert candidate.address.value == original.address.value == "1170 MAY ST"
+    assert candidate.address.basis == original.address.basis
+    assert candidate.address.evidence.snapshot_id == original.address.evidence.snapshot_id
+    assert candidate.address.evidence.feature_index == original.address.evidence.feature_index
+    assert candidate.address.evidence.source_url == original.address.evidence.source_url
+    assert "suffix-normalized" in candidate.address.evidence.method
+    assert "GISLINK" in candidate.address.evidence.method
+    assert candidate.selected is False
+    assert expanded.screening_status == "not_performed"
+    assert lookup(retained, "address", "1253 Queens Avenue").status == "one_match"
+    alias = lookup(retained, "address", "B-1156 May Street")
+    assert alias.status == "one_match"
+    assert alias.candidates[0].address.value == "B-1156 MAY ST"
+
+
+@pytest.mark.parametrize(
+    "query",
+    (
+        "1171 May Street",
+        "1170 May Street West",
+        "1170 W May Street",
+        "UNIT B 1170 May Street",
+        "B-1170 May Street",
+        "1170 May St.",
+        "1170 Main Street",
+        "1170 May Road",
+    ),
+)
+def test_unsupported_address_strings_do_not_match(retained, query):
+    result = lookup(retained, "address", query)
+    assert result.status == "no_match"
+    assert not result.candidates
+
+
+def test_suffix_collision_returns_all_retained_candidates(retained, monkeypatch):
+    import app.site_preparations.service as service
+
+    parcel_snapshots, address_revision, rows = read_packet()
+    monkeypatch.setattr(
+        service,
+        "read_packet",
+        lambda: (
+            parcel_snapshots,
+            address_revision,
+            rows + ((rows[0][0], 0, rows[0][2], "1170 MAY STREET", "ALIAS", rows[0][5]),),
+        ),
+    )
+    result = lookup(retained, "address", "1170 MAY ST")
+    assert result.status == "ambiguous"
+    assert {item.pid.value for item in result.candidates} == {"008-140-723", "028-279-638"}
+    assert {item.address.value for item in result.candidates} == {"1170 MAY ST", "1170 MAY STREET"}
+    assert {item.address.evidence.method.split(";")[0] for item in result.candidates} == {
+        "case/whitespace FullAddress match",
+        "retained ST/STREET or AVE/AVENUE suffix-normalized FullAddress match",
+    }
+    assert all(not item.selected for item in result.candidates)
 
 
 def test_address_requires_explicit_revision(retained, monkeypatch):
@@ -257,6 +324,15 @@ def test_router_retained_response_and_failed_source(monkeypatch, retained):
     assert address_payload["status"] == "one_match"
     assert address_payload["candidates"][0]["pid"]["value"] == "028-279-638"
     assert "Legal_Type=ALIAS" in address_payload["candidates"][0]["address"]["basis"]
+    normalized_response = client.get(
+        "/api/site-preparations/lookup?kind=address&q=1170%20May%20Street"
+    )
+    assert normalized_response.status_code == 200
+    normalized_payload = normalized_response.json()
+    assert normalized_payload["status"] == "one_match"
+    assert normalized_payload["candidates"][0]["address"]["value"] == "1170 MAY ST"
+    normalized_address = normalized_payload["candidates"][0]["address"]
+    assert "suffix-normalized" in normalized_address["evidence"]["method"]
     assert client.get("/api/site-preparations/lookup?kind=address&q=Example").json()[
         "status"
     ] == "no_match"
