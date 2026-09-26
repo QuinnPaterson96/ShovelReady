@@ -1,0 +1,152 @@
+{
+  "schema_version": "sr-40.catalogue.v1",
+  "snapshot_id": "sr-55.2026-09-25.aux-300.candidate.v1",
+  "captured_at": "2026-09-25",
+  "provenance": "manual_transcription_of_public_provider_specs",
+  "review_status": "unreviewed",
+  "models": [
+    {
+      "model_id": "aux-300",
+      "provider": "aux box",
+      "name": "Model 300",
+      "provider_url": "https://www.auxbox.ca/model-300",
+      "source_revision": null,
+      "configuration": "Public Model 300 offer with upgrades not fixed; linked illustration revision unknown",
+      "construction_method": "Factory-built structure, per provider",
+      "intended_use_note": "Provider calls it long-term accommodation; Victoria garden-suite use unreviewed",
+      "service_area_status": "provider_claim",
+      "service_area_note": "Provider says delivered anywhere in North America; Victoria project service and site feasibility unconfirmed.",
+      "installation_note": "Provider says crane placement; permitting, foundation, site services, shipping and installation are separate site work/costs.",
+      "footprint_note": "Provider labels 300 ft² a footprint, but roof overhangs and other projection treatment are undefined.",
+      "height_note": "Provider exterior height 10 ft 6 in has no stated datum or roof-point definition; cannot populate regulatory building height.",
+      "missing_facts": [
+        "Controlled drawing revision and selected options",
+        "Roof high point and vertical datum",
+        "Overhang/projection envelope",
+        "Foundation and installed-grade relationship",
+        "Legal floor area and occupancy footprint definition",
+        "Victoria site delivery and installation confirmation"
+      ],
+      "sources": [
+        {
+          "source_id": "aux-300-page",
+          "url": "https://www.auxbox.ca/model-300",
+          "locator": "Introduction (living space, footprint); The Layout & Specs > Dimensions; Site Prep, Delivery + Installation",
+          "captured_at": "2026-09-25",
+          "sha256": "722369c4af220b4d29984b989d940d3b96c40d98515182c2c4bbc28893184dca",
+          "artifact_status": "private_capture",
+          "upstream_revision": null
+        },
+        {
+          "source_id": "aux-300-plan",
+          "url": "https://images.squarespace-cdn.com/content/v1/5fac3c101547270b1b7fda04/81ddc22e-a73e-4a7d-820f-a6d348c10c49/Model%2B300%2Bfloor%2Bplan%2B%28furnished%29.png",
+          "locator": "Plan perimeter dimension lines and room labels",
+          "captured_at": "2026-09-25",
+          "sha256": "00cfb0343161f7d596091ffe121f39b6c734d63daea786f7fa99c7115d24b24c",
+          "artifact_status": "private_capture",
+          "upstream_revision": null
+        },
+        {
+          "source_id": "aux-300-elev",
+          "url": "https://images.squarespace-cdn.com/content/v1/5fac3c101547270b1b7fda04/5214a7ca-afaf-416b-8236-9f46f2c8518d/Model%2B300%2BRender%2BElevations.jpg",
+          "locator": "Four elevation renders; 10 ft 6 in vertical callout",
+          "captured_at": "2026-09-25",
+          "sha256": "767e13cb6a98489d3cdcedb97ff649c9a236a01aaa4999d08c6dd9537dd9de3d",
+          "artifact_status": "private_capture",
+          "upstream_revision": null
+        }
+      ],
+      "measurements": [
+        {
+          "name": "nominal_exterior_width",
+          "status": "known",
+          "definition": "Provider exterior width; overhang inclusion unknown",
+          "quantity": {
+            "original_text": "10 ft",
+            "original_value": "10",
+            "original_unit": "ft",
+            "dimension": "length",
+            "value": "3.0480",
+            "unit": "m",
+            "basis": null
+          },
+          "source_id": "aux-300-page",
+          "reason": null
+        },
+        {
+          "name": "nominal_exterior_depth",
+          "status": "known",
+          "definition": "Provider exterior length; overhang inclusion unknown",
+          "quantity": {
+            "original_text": "30 ft",
+            "original_value": "30",
+            "original_unit": "ft",
+            "dimension": "length",
+            "value": "9.1440",
+            "unit": "m",
+            "basis": null
+          },
+          "source_id": "aux-300-page",
+          "reason": null
+        },
+        {
+          "name": "manufacturer_interior_area",
+          "status": "known",
+          "definition": "Provider living space, not regulatory floor area",
+          "quantity": {
+            "original_text": "226 sq ft total living space",
+            "original_value": "226",
+            "original_unit": "ft2",
+            "dimension": "area",
+            "value": "20.99608704",
+            "unit": "m2",
+            "basis": null
+          },
+          "source_id": "aux-300-page",
+          "reason": null
+        },
+        {
+          "name": "manufacturer_footprint",
+          "status": "known",
+          "definition": "Provider footprint; projections/deck basis unknown",
+          "quantity": {
+            "original_text": "300 sq ft footprint",
+            "original_value": "300",
+            "original_unit": "ft2",
+            "dimension": "area",
+            "value": "27.87091200",
+            "unit": "m2",
+            "basis": null
+          },
+          "source_id": "aux-300-page",
+          "reason": null
+        },
+        {
+          "name": "advertised_overall_height",
+          "status": "known",
+          "definition": "Provider exterior height; datum/roof point unspecified",
+          "quantity": {
+            "original_text": "10 ft 6 in",
+            "original_value": "10.5",
+            "original_unit": "ft",
+            "dimension": "length",
+            "value": "3.20040",
+            "unit": "m",
+            "basis": null
+          },
+          "source_id": "aux-300-page",
+          "reason": null
+        },
+        {
+          "name": "roof_height",
+          "status": "missing",
+          "definition": "Roof high point measured from stated foundation datum",
+          "quantity": null,
+          "source_id": null,
+          "reason": "Exterior height has no stated datum or roof-point definition"
+        }
+      ],
+      "review_status": "unreviewed"
+    }
+  ]
+}
