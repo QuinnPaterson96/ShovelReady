@@ -156,3 +156,11 @@ follow-ups. Software integration does not close controlled input, source accepta
 publication or real-user gates. Saanich source topology and Langford municipal
 reuse permission remain expansion blockers. Broad public research is deferred in
 favour of the specific unsent requests and controlled site/provider artifacts.
+
+
+Combined wave-eleven checks and browser rehearsal are recorded at application commit
+`ac8eb38`: mounted preparation and bounded address lookup are verified, including
+manual fallback during API failure. The single agent rehearsal identified a scope
+wording defect, fixed before integration. SR-38/#86 and SR-41/#89 are complete in
+that bounded preparation scope. SR-46–48/#102–104 retain the explicit external
+geometry, rights and accepted-input follow-ups, not additional broad research.

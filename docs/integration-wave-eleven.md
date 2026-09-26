@@ -96,3 +96,41 @@ manual edits for explicit reconfirmation; changing the search clears them. Confi
 and summary still invalidate on edits. The additional regressions bring frontend
 tests to 44. The initial participant's visible-tab request was unsupported; background
 browser creation worked. No failed request is counted as app behavior.
+
+
+## Corrected-build browser verification
+
+On clean application commit `ac8eb389d2e003a788d99793b63379713ee15974`, the
+integration browser verified City of Victoria / Garden suite / Accessory building
+now produces Needs investigation. Exact 1255 QUEENS AVE lookup visibly retains
+Legal_Type=ALIAS, GISLINK, source hash, feature 1 and capture date. Manual address
+correction and 450 m² remain separate from the source. Returning to inputs retains
+the address/query/area/note; amending a note invalidates the summary and confirmation
+while leaving the retained candidate available to reconfirm without a new search.
+An uncaptured `123 Example St` returns no match among five rows, with manual fallback.
+Manual preparation and summary completed successfully.
+
+A separate local test server at 18099 used the same owned scratch database without
+an address revision: the browser displayed unavailable distinctly from no match.
+After explicitly stopping only that test server, another lookup displayed Failed to
+fetch; manual facts and summary remained usable, including the entered API-failure
+note. The test tab was closed. No existing service/database was stopped. The main
+18098 demo is retained for inspection with the captured alias/model case.
+
+All five hosted checks passed at `ac8eb38`: backend, frontend, container startup,
+native Windows database lifecycle and GitGuardian. This later documentation-only
+record does not replace the application revision above. Final PR-head CI must also
+pass before merge. No phone/narrow-viewport screenshot assessment was performed;
+normal browser interaction used the available approximately 727 px-wide panel.
+
+## Immediate next steps
+
+SR-38/#86 and SR-41/#89 have the bounded address and mounted preparation workflow,
+including failure fallback and one independent agent rehearsal. Further expansion
+is not required to demonstrate that workflow. SR-46/#102 and SR-47/#103 deliver
+their bounded diagnostics/replay but retain upstream geometry/rights actions.
+SR-48/#104 delivers a precise public-evidence gap matrix; controlled external
+artifacts and independent source review remain outstanding. Keep those gaps tracked.
+Next useful product work is a human walkthrough of this bounded demo and acquisition
+of the specific controlled site/model/rule artifacts, before accepted evaluation or
+citywide/multi-municipality expansion. No additional agents or services are needed.
