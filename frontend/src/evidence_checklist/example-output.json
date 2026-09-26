@@ -1,0 +1,355 @@
+{
+  "schema_version": "sr-50.evidence-checklist.v1",
+  "screening_status": "not_performed",
+  "scope": {
+    "municipality": "Victoria",
+    "use": "garden suite",
+    "role": "accessory building",
+    "site_mode": null,
+    "model_id": "click-landing",
+    "synthetic": false
+  },
+  "items": [
+    {
+      "id": "site-identity",
+      "title": "Legal site identity",
+      "state": "missing",
+      "available_evidence": [
+        {
+          "origin": "user",
+          "description": "Unconfirmed address entry",
+          "value": "Example address (unconfirmed)",
+          "unit": null,
+          "basis": null,
+          "source_id": null,
+          "url": null,
+          "locator": null,
+          "snapshot_id": null,
+          "revision_id": null,
+          "captured_at": null,
+          "review_status": "unreviewed"
+        }
+      ],
+      "missing_input": "Confirm legal lot, title/PID and whether the retained GIS lead identifies it.",
+      "impact": "A captured parcel lead or typed address does not establish the legal site for applicable rules.",
+      "suggested_supplier": "Owner or land surveyor",
+      "next_action": "Obtain title/legal parcel evidence and reconcile it with the retained lead."
+    },
+    {
+      "id": "site-geometry-placement",
+      "title": "Survey, existing buildings and placement",
+      "state": "missing",
+      "available_evidence": [],
+      "missing_input": "Surveyed legal boundaries, front/rear lines, existing buildings, constraints and a proposed suite placement.",
+      "impact": "Approximate parcel area cannot establish rear-yard area, occupied area, separation or available placement.",
+      "suggested_supplier": "Owner, land surveyor and site designer",
+      "next_action": "Supply a current survey and placement drawing with measurement bases."
+    },
+    {
+      "id": "model-revision-footprint",
+      "title": "Controlled model and occupied footprint",
+      "state": "unreviewed",
+      "available_evidence": [
+        {
+          "origin": "source",
+          "description": "width provider baseline: Provider nominal dimension; wall-face/projection basis unverified; original 14 ft [private_capture]",
+          "value": "4.2672",
+          "unit": "m",
+          "basis": null,
+          "source_id": "landing-page",
+          "url": "https://www.clickmodular.com/the-landing",
+          "locator": "The Landing > Compact & Cost Conscious; This model includes > Dimensions",
+          "snapshot_id": "sr-40.2026-09-25.provider-pages.v1",
+          "revision_id": null,
+          "captured_at": "2026-09-25",
+          "review_status": "unreviewed"
+        },
+        {
+          "origin": "source",
+          "description": "depth provider baseline: Provider nominal dimension; wall-face/projection basis unverified; original 41 ft [private_capture]",
+          "value": "12.4968",
+          "unit": "m",
+          "basis": null,
+          "source_id": "landing-page",
+          "url": "https://www.clickmodular.com/the-landing",
+          "locator": "The Landing > Compact & Cost Conscious; This model includes > Dimensions",
+          "snapshot_id": "sr-40.2026-09-25.provider-pages.v1",
+          "revision_id": null,
+          "captured_at": "2026-09-25",
+          "review_status": "unreviewed"
+        }
+      ],
+      "missing_input": "Controlled configuration/revision and dimensioned wall faces, projections and installed occupied footprint.",
+      "impact": "Nominal product dimensions cannot define placement or rear-yard occupancy.",
+      "suggested_supplier": "Model provider and site designer",
+      "next_action": "Request a controlled model drawing and site-specific footprint."
+    },
+    {
+      "id": "model-roof-datum",
+      "title": "Installed roof height and datum",
+      "state": "missing",
+      "available_evidence": [
+        {
+          "origin": "source",
+          "description": "9 ft is interior ceiling height only. Installed roof/building height and datum are unknown. [private_capture]",
+          "value": null,
+          "unit": null,
+          "basis": null,
+          "source_id": "landing-page",
+          "url": "https://www.clickmodular.com/the-landing",
+          "locator": "The Landing > Compact & Cost Conscious; This model includes > Dimensions",
+          "snapshot_id": "sr-40.2026-09-25.provider-pages.v1",
+          "revision_id": null,
+          "captured_at": "2026-09-25",
+          "review_status": "unreviewed"
+        }
+      ],
+      "missing_input": "Installed roof high point and its grade/foundation datum; current height reference is unknown.",
+      "impact": "Interior ceiling or unspecified exterior height cannot be treated as regulatory building height.",
+      "suggested_supplier": "Model provider and site designer",
+      "next_action": "Obtain a section/elevation identifying roof point and datum."
+    },
+    {
+      "id": "model-regulatory-area",
+      "title": "Regulatory Floor Area",
+      "state": "missing",
+      "available_evidence": [
+        {
+          "origin": "source",
+          "description": "area provider baseline: Provider-labelled interior area, not regulatory floor area; original 520 sf (interior) [private_capture]",
+          "value": "48.30958080",
+          "unit": "m2",
+          "basis": null,
+          "source_id": "landing-page",
+          "url": "https://www.clickmodular.com/the-landing",
+          "locator": "The Landing > Compact & Cost Conscious; This model includes > Dimensions",
+          "snapshot_id": "sr-40.2026-09-25.provider-pages.v1",
+          "revision_id": null,
+          "captured_at": "2026-09-25",
+          "review_status": "unreviewed"
+        }
+      ],
+      "missing_input": "Controlled Floor Area calculation using independently reviewed bylaw inclusions and exclusions.",
+      "impact": "Provider interior or headline area has a different basis from the provisional Floor Area clause.",
+      "suggested_supplier": "Model provider, designer and rule reviewer",
+      "next_action": "Reconcile dimensioned plans to the reviewed Floor Area definition."
+    },
+    {
+      "id": "model-service",
+      "title": "Victoria delivery and installation service",
+      "state": "conflicting",
+      "available_evidence": [
+        {
+          "origin": "source",
+          "description": "Provider service statement (excluded_by_provider): Provider homepage says near-term projects only on the Sunshine Coast; Victoria service not established. [capture_gap]",
+          "value": null,
+          "unit": null,
+          "basis": null,
+          "source_id": "click-home",
+          "url": "https://www.clickmodular.com/home",
+          "locator": "Why Should I Buy A Modular Home? > What's Not Included; Serving BC's Sunshine Coast",
+          "snapshot_id": "sr-40.2026-09-25.provider-pages.v1",
+          "revision_id": null,
+          "captured_at": "2026-09-25",
+          "review_status": "unreviewed"
+        }
+      ],
+      "missing_input": "Provider confirmation of any Victoria exception or an alternative supplier; captured service statement excludes Victoria from near-term area.",
+      "impact": "Product dimensions alone do not establish project availability or installed specification.",
+      "suggested_supplier": "Model provider",
+      "next_action": "Ask provider to confirm Victoria service and the installed scope."
+    },
+    {
+      "id": "rule-currentness-applicability",
+      "title": "Current applicable Victoria rules",
+      "state": "provisional",
+      "available_evidence": [
+        {
+          "origin": "source",
+          "description": "Zoning Bylaw 2018, No. 18-072; provisional garden_suite_count_on_lot: one (Garden Suites on one legal Lot); printed revision: PDF amendment list through No. 26-060 (July 30, 2026); front matter still says consolidation through No. 22-048",
+          "value": "1",
+          "unit": "count",
+          "basis": "Garden Suites on one legal Lot",
+          "source_id": "zoning-2018",
+          "url": "https://www.victoria.ca/media/file/zoning-bylaw-2018",
+          "locator": "Part 3.1(28)(b), PDF p27, printed p22",
+          "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+          "revision_id": "victoria-zb2018-garden-suite-suite-count@source-6c9e35a8de4e-agent-1",
+          "captured_at": "2026-09-24T18:18:37.482495+00:00",
+          "review_status": "unreviewed"
+        },
+        {
+          "origin": "source",
+          "description": "Zoning Bylaw 2018, No. 18-072; provisional garden_suite_floor_area: 56m2 (Floor Area under Part 2.1, not advertised interior or footprint area); printed revision: PDF amendment list through No. 26-060 (July 30, 2026); front matter still says consolidation through No. 22-048",
+          "value": "56",
+          "unit": "m2",
+          "basis": "Floor Area under Part 2.1, not advertised interior or footprint area",
+          "source_id": "zoning-2018",
+          "url": "https://www.victoria.ca/media/file/zoning-bylaw-2018",
+          "locator": "Part 3.1(28)(d), PDF p27, printed p22",
+          "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+          "revision_id": "victoria-zb2018-garden-suite-floor-area@source-6c9e35a8de4e-agent-1",
+          "captured_at": "2026-09-24T18:18:37.482495+00:00",
+          "review_status": "unreviewed"
+        },
+        {
+          "origin": "source",
+          "description": "Zoning Bylaw 2018, No. 18-072; provisional garden_suite_principal_building_separation: 2.4m (Separation space between Garden Suite and principal Building); printed revision: PDF amendment list through No. 26-060 (July 30, 2026); front matter still says consolidation through No. 22-048",
+          "value": "2.4",
+          "unit": "m",
+          "basis": "Separation space between Garden Suite and principal Building",
+          "source_id": "zoning-2018",
+          "url": "https://www.victoria.ca/media/file/zoning-bylaw-2018",
+          "locator": "Part 3.1(28)(h), PDF p28, printed p23",
+          "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+          "revision_id": "victoria-zb2018-garden-suite-building-separation@source-6c9e35a8de4e-agent-1",
+          "captured_at": "2026-09-24T18:18:37.482495+00:00",
+          "review_status": "unreviewed"
+        },
+        {
+          "origin": "source",
+          "description": "Zoning Bylaw 2018, No. 18-072; provisional garden_suite_rear_yard_occupancy: 25% (Garden Suite occupied area divided by legally defined rear-yard area); printed revision: PDF amendment list through No. 26-060 (July 30, 2026); front matter still says consolidation through No. 22-048",
+          "value": "0.25",
+          "unit": "fraction",
+          "basis": "{\"numerator\":\"Garden Suite occupied rear-yard area\",\"denominator\":\"legally defined rear-yard area\"}",
+          "source_id": "zoning-2018",
+          "url": "https://www.victoria.ca/media/file/zoning-bylaw-2018",
+          "locator": "Part 3.1(28)(i), PDF p28, printed p23",
+          "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+          "revision_id": "victoria-zb2018-garden-suite-rear-yard-occupancy@source-6c9e35a8de4e-agent-1",
+          "captured_at": "2026-09-24T18:18:37.482495+00:00",
+          "review_status": "unreviewed"
+        }
+      ],
+      "missing_input": "Independently reviewed current consolidation, adoption/effective-date chain, legal site designation, definitions and site-specific provisions.",
+      "impact": "The captured four clauses are provisional candidates; current applicability and other requirements are unresolved.",
+      "suggested_supplier": "Municipal source custodian and independent rule reviewer",
+      "next_action": "Obtain the current authoritative instrument and review its applicability to the confirmed legal lot."
+    },
+    {
+      "id": "rule-victoria-zb2018-garden-suite-suite-count",
+      "title": "garden suite count on lot",
+      "state": "provisional",
+      "available_evidence": [
+        {
+          "origin": "source",
+          "description": "Zoning Bylaw 2018, No. 18-072; provisional garden_suite_count_on_lot: one (Garden Suites on one legal Lot); printed revision: PDF amendment list through No. 26-060 (July 30, 2026); front matter still says consolidation through No. 22-048",
+          "value": "1",
+          "unit": "count",
+          "basis": "Garden Suites on one legal Lot",
+          "source_id": "zoning-2018",
+          "url": "https://www.victoria.ca/media/file/zoning-bylaw-2018",
+          "locator": "Part 3.1(28)(b), PDF p27, printed p22",
+          "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+          "revision_id": "victoria-zb2018-garden-suite-suite-count@source-6c9e35a8de4e-agent-1",
+          "captured_at": "2026-09-24T18:18:37.482495+00:00",
+          "review_status": "unreviewed"
+        }
+      ],
+      "missing_input": "Verified existing garden-suite count on the legal lot.",
+      "impact": "Suite count cannot be assessed.",
+      "suggested_supplier": "Owner and municipal records reviewer",
+      "next_action": "Confirm rule applicability and obtain the stated input before any evaluation."
+    },
+    {
+      "id": "rule-victoria-zb2018-garden-suite-floor-area",
+      "title": "garden suite floor area",
+      "state": "provisional",
+      "available_evidence": [
+        {
+          "origin": "source",
+          "description": "Zoning Bylaw 2018, No. 18-072; provisional garden_suite_floor_area: 56m2 (Floor Area under Part 2.1, not advertised interior or footprint area); printed revision: PDF amendment list through No. 26-060 (July 30, 2026); front matter still says consolidation through No. 22-048",
+          "value": "56",
+          "unit": "m2",
+          "basis": "Floor Area under Part 2.1, not advertised interior or footprint area",
+          "source_id": "zoning-2018",
+          "url": "https://www.victoria.ca/media/file/zoning-bylaw-2018",
+          "locator": "Part 3.1(28)(d), PDF p27, printed p22",
+          "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+          "revision_id": "victoria-zb2018-garden-suite-floor-area@source-6c9e35a8de4e-agent-1",
+          "captured_at": "2026-09-24T18:18:37.482495+00:00",
+          "review_status": "unreviewed"
+        }
+      ],
+      "missing_input": "Reviewed regulatory Floor Area calculation for the selected configuration.",
+      "impact": "Marketing interior area cannot be compared to this candidate threshold.",
+      "suggested_supplier": "Designer and rule reviewer",
+      "next_action": "Confirm rule applicability and obtain the stated input before any evaluation."
+    },
+    {
+      "id": "rule-victoria-zb2018-garden-suite-building-separation",
+      "title": "garden suite principal building separation",
+      "state": "provisional",
+      "available_evidence": [
+        {
+          "origin": "source",
+          "description": "Zoning Bylaw 2018, No. 18-072; provisional garden_suite_principal_building_separation: 2.4m (Separation space between Garden Suite and principal Building); printed revision: PDF amendment list through No. 26-060 (July 30, 2026); front matter still says consolidation through No. 22-048",
+          "value": "2.4",
+          "unit": "m",
+          "basis": "Separation space between Garden Suite and principal Building",
+          "source_id": "zoning-2018",
+          "url": "https://www.victoria.ca/media/file/zoning-bylaw-2018",
+          "locator": "Part 3.1(28)(h), PDF p28, printed p23",
+          "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+          "revision_id": "victoria-zb2018-garden-suite-building-separation@source-6c9e35a8de4e-agent-1",
+          "captured_at": "2026-09-24T18:18:37.482495+00:00",
+          "review_status": "unreviewed"
+        }
+      ],
+      "missing_input": "Surveyed principal-building faces and proposed suite placement with measurement method.",
+      "impact": "Separation cannot be measured.",
+      "suggested_supplier": "Land surveyor and site designer",
+      "next_action": "Confirm rule applicability and obtain the stated input before any evaluation."
+    },
+    {
+      "id": "rule-victoria-zb2018-garden-suite-rear-yard-occupancy",
+      "title": "garden suite rear yard occupancy",
+      "state": "provisional",
+      "available_evidence": [
+        {
+          "origin": "source",
+          "description": "Zoning Bylaw 2018, No. 18-072; provisional garden_suite_rear_yard_occupancy: 25% (Garden Suite occupied area divided by legally defined rear-yard area); printed revision: PDF amendment list through No. 26-060 (July 30, 2026); front matter still says consolidation through No. 22-048",
+          "value": "0.25",
+          "unit": "fraction",
+          "basis": "{\"numerator\":\"Garden Suite occupied rear-yard area\",\"denominator\":\"legally defined rear-yard area\"}",
+          "source_id": "zoning-2018",
+          "url": "https://www.victoria.ca/media/file/zoning-bylaw-2018",
+          "locator": "Part 3.1(28)(i), PDF p28, printed p23",
+          "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+          "revision_id": "victoria-zb2018-garden-suite-rear-yard-occupancy@source-6c9e35a8de4e-agent-1",
+          "captured_at": "2026-09-24T18:18:37.482495+00:00",
+          "review_status": "unreviewed"
+        }
+      ],
+      "missing_input": "Legal rear-yard polygon and proposed occupied suite area including relevant projections.",
+      "impact": "Parcel area is not the rear-yard ratio denominator.",
+      "suggested_supplier": "Land surveyor, site designer and rule reviewer",
+      "next_action": "Confirm rule applicability and obtain the stated input before any evaluation."
+    },
+    {
+      "id": "user-notes",
+      "title": "User notes for review",
+      "state": "unreviewed",
+      "available_evidence": [
+        {
+          "origin": "user",
+          "description": "Unconfirmed notes entry",
+          "value": "Survey still needed",
+          "unit": null,
+          "basis": null,
+          "source_id": null,
+          "url": null,
+          "locator": null,
+          "snapshot_id": null,
+          "revision_id": null,
+          "captured_at": null,
+          "review_status": "unreviewed"
+        }
+      ],
+      "missing_input": "Verify each factual statement in the notes against a named source or controlled artifact.",
+      "impact": "Notes are attributed user statements and do not establish measured or legal facts.",
+      "suggested_supplier": "Note author and relevant source custodian",
+      "next_action": "Identify supporting evidence for any note used in later evaluation."
+    }
+  ]
+}

@@ -7,9 +7,9 @@ import type { Candidate, ManualFacts } from './types'
 
 test('standalone selector keeps manual fallback and unreviewed scope visible', () => {
   const html = renderToStaticMarkup(createElement(SitePreparation, { onConfirm: () => {} }))
-  for (const phrase of ['three retained Victoria', 'Manual site facts', 'leave unknown fields empty',
+  for (const phrase of ['three parcel leads', 'five captured address rows', 'Manual site facts', 'leave unknown fields empty',
     'An address alone does not verify']) assert.ok(html.includes(phrase), phrase)
-  assert.ok(html.includes('Continue with unmatched manual facts'))
+  assert.ok(html.includes('Use manual facts without a parcel match'))
   assert.ok(!html.includes('buildable'))
 })
 
