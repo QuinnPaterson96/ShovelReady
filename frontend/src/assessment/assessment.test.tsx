@@ -168,7 +168,8 @@ test('manual model review stays readable while technical export retains exact so
   const technical = technicalReviewText(selected)
   assert.match(technical, /"snapshotId": null/)
   assert.match(technical, /"model_catalogue": null/)
-  assert.match(technical, /"provisional_rule_source"/)
+  assert.match(technical, /"provisional_rule_packet"/)
+  assert.ok(JSON.parse(technical).provisional_rule_packet.candidates.every((rule: { logical_rule_id: string; proposed_revision_id: string }) => rule.logical_rule_id && rule.proposed_revision_id))
 })
 
 

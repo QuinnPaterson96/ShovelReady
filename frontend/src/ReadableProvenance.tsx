@@ -34,3 +34,10 @@ export function publicSourceUrl(url: string | null | undefined) {
       parsed.protocol === 'https:' && parsed.hostname === 'maps.victoria.ca' ? `${parsed.origin}${parsed.pathname.replace(/\/query$/, '')}` : null
   } catch { return null }
 }
+
+export function observationSourceLabel(sourceId: string) {
+  const kind = /(?:^|-)(?:parcel|parcels)(?:-|$)/.test(sourceId) ? 'parcel'
+    : /(?:^|-)(?:zones|zoning)(?:-|$)/.test(sourceId) ? 'zoning'
+    : /(?:^|-)rooflines(?:-|$)/.test(sourceId) ? 'roofline' : 'unclassified';
+  return `${kind}${sourceId.endsWith('-metadata') ? ' layer metadata' : sourceId.endsWith('-catalogue') ? ' catalogue metadata' : ''}`
+}

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { geometryPath, parseInvestigation, ringsPath, safeUrl } from './adapter'
 import type { Investigation, Observation } from './adapter'
-import { readableDate, TechnicalDetails } from '../ReadableProvenance'
+import { observationSourceLabel, readableDate, TechnicalDetails } from '../ReadableProvenance'
 
 export function InertJson({ value }: { value: unknown }) {
   return <pre>{JSON.stringify(value, null, 2)}</pre>
@@ -280,14 +280,14 @@ export default function RealObservations() {
               >
                 {choices.map((c) => (
                   <option key={c.id} value={c.id}>
-                    City of Victoria {c.o.source_id.endsWith('-parcel') ? 'parcel' : c.o.source_id.endsWith('-zones') ? 'zoning' : 'roofline'} / feature {c.i}
+                    City of Victoria {observationSourceLabel(c.o.source_id)} / feature {c.i}
                   </option>
                 ))}
               </select>
               {chosen && (
                 <article>
                   <p>
-                    City of Victoria {chosen.o.source_id.endsWith('-parcel') ? 'parcel' : chosen.o.source_id.endsWith('-zones') ? 'zoning' : 'roofline'} feature {chosen.i} · unreviewed. OBJECTID is retained below; it is not a permanent site identity.
+                    City of Victoria {observationSourceLabel(chosen.o.source_id)} feature {chosen.i} · unreviewed. OBJECTID is retained below; it is not a permanent site identity.
                   </p>
                   <p>Geometric area: {assessment?.geometric_area_m2 ?? 'unknown'} m².</p>
                   <ul>
@@ -318,7 +318,7 @@ export default function RealObservations() {
           {data.sources.map((s) => (
             <details key={s.snapshot_id}>
               <summary>
-                City of Victoria {s.source_id.endsWith('-parcel') ? 'parcel' : s.source_id.endsWith('-zones') ? 'zoning' : 'roofline'} source · captured {readableDate(s.captured_at)} · review status unknown
+                City of Victoria {observationSourceLabel(s.source_id)} source · captured {readableDate(s.captured_at)} · review status unknown
               </summary>
               <TechnicalDetails><p>Snapshot: <code>{s.snapshot_id}</code></p><p>SHA-256: <code>{s.sha256}</code></p></TechnicalDetails>
               <p>

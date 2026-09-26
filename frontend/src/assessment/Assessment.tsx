@@ -34,7 +34,7 @@ function VictoriaEvidence() {
     <ul>{victoriaPacket.candidates.map(rule => <li key={rule.logical_rule_id}>
       <strong>{rule.content.semantics.subject.replace(/_/g, ' ')}</strong> · {rule.locator} · {rule.excerpt} · threshold {rule.content.semantics.threshold.original_text} ({rule.content.semantics.threshold.unit}; {rule.content.semantics.measurement_definition}). Applicability unresolved.
     </li>)}</ul>
-    <TechnicalDetails><pre>{JSON.stringify(victoriaPacket.source, null, 2)}</pre></TechnicalDetails>
+    <TechnicalDetails><pre>{JSON.stringify(victoriaPacket, null, 2)}</pre></TechnicalDetails>
     </details>
   </section>
 }
@@ -61,7 +61,7 @@ export function providerReviewText(draft: Draft) {
 export function technicalReviewText(draft: Draft) {
   return JSON.stringify({ provider_review: providerReviewText(draft), site: draft.site, model: draft.model,
     model_catalogue: bundledCatalogue.models.find(item => item.model_id === draft.model.modelId) ?? null,
-    provisional_rule_source: victoriaPacket.source, imported_example: draft.imported?.request ?? null }, null, 2)
+    provisional_rule_packet: victoriaPacket, imported_example: draft.imported?.request ?? null }, null, 2)
 }
 
 export function Provenance({ draft }: { draft: Draft }) {
