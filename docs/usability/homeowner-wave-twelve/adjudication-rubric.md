@@ -1,0 +1,18 @@
+# Withheld adjudication rubric
+
+Use after the task. Record **observed / partial / not observed / not assessable** for each row, with the participant action or quote and screen reference. “Not assessable” includes a blocked setup, missing observation or intervening tool failure. Do not turn these into a numerical accuracy, completion-time saving or legal correctness score. The brief does not require the participant to know hidden parcel IDs or source clauses.
+
+| Dimension | Evidence to look for | Interpretation limit |
+|---|---|---|
+| Task path | Select Model 300; find 1170 MAY ST by the bounded address lookup or transparently use manual fallback; explicitly confirm any retained lead; prepare provider text; add note; inspect summary; return, amend and inspect again. | Record each step and assistance. A partial path is not full completion. A correct manual fallback is not a lookup success. |
+| Comprehension of checks | Says no site/model checks were run, no accepted dataset or fit/permit conclusion exists, and the summary is preparation only. | Ask what screen led to a contrary belief. Do not score legal knowledge. |
+| Provenance and unknowns | Distinguishes retained GIS address/approximate geometry and provider marketing snapshot from manual notes; keeps unsurveyed lot, placement and independently measured height unresolved. | Source observations are unreviewed. Exterior height on a product page is not regulatory building height. Unknown is neither pass nor prohibition. |
+| Next evidence | Names concrete follow-up: controlled model drawing and height datum/roof point, Victoria installation/service scope; survey or reviewed lot/yard/building geometry and a proposed placement; current applicable rules and reviewer assessment. | Accept equivalent language. Do not require an exhaustive hidden checklist or imply the app evaluated these items. |
+| Assistance | Exact help given, when and whether it unlocked progress. | Assisted completion stays distinct from independent completion. |
+| Time | Human task start/end, pauses and interview time, only when observed. | Blank if not measured; agent wall time cannot fill this field. No savings without a comparison baseline. |
+| App defect candidate | Specific visible behavior conflicts with a documented requirement on the pinned build/data; reproduce independently, preserve contrary evidence, reviewer/date/rationale. | A participant misunderstanding alone or optional feature request is not a confirmed defect. No ticket before adjudication. |
+| Data/source gap | Missing survey, controlled design, placement, accepted rules/release, or address beyond five rows. | Record practical effect; do not attribute a known coverage limit to an app failure. |
+| Tool/environment failure | Browser automation, service, network, tab or local setup issue, with actual error and recovery. | Keep separate from app behavior unless independently reproduced as such. |
+| Preference/usability hypothesis | Participant's requested wording, control or workflow change and the behavior that prompted it. | Attribute to the speaker; seek further human evidence before product priority or defect classification. |
+
+For every material finding, preserve the initial observation, category, supporting and contrary evidence, build/data identities, reproduction outcome, adjudicator/date and final status. If a later build changes behavior, create a separate retest record and link it to the baseline; do not overwrite the first judgment. An agent rehearsal is attributed agent evidence only. Human findings do not establish zoning accuracy, demand, willingness to pay or SR-16 completion. Actual customer-pilot denominators and net verification effort require authorized recruitment and a usable prototype.
