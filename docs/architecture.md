@@ -148,3 +148,14 @@ joins five pinned City Address Points rows to three retained parcel leads using
 GISLINK. It preserves aliases, raw source evidence and exact packet selection.
 No citywide runtime geocoder, new database schema or accepted data release is added.
 See [integration evidence and gaps](integration-wave-eleven.md).
+
+
+## Wave-twelve checkpoint
+
+A deterministic frontend checklist derives source-attributed evidence requests from
+the current draft and existing packets. It is mounted in the preparation summary;
+it does not evaluate rules or store an independent truth. Victoria clause requests
+are withheld outside complete supported scope. Manual model identity is preserved.
+The source record remains available through progressive disclosures, and copyable
+review text is prominent. No backend contract, database migration or accepted release
+changed. See [integration evidence](integration-wave-twelve.md).

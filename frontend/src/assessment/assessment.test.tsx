@@ -188,3 +188,15 @@ test('retained lookup survives a manual note edit for explicit reconfirmation, n
   const newSearch = draftReducer(edited, { type: 'site-input', value: { ...edited.siteInput, query: 'new address', lookup: null }, areaInvalid: false })
   assert.equal(newSearch.siteInput.lookup, null)
 })
+
+
+test('summary mounts a freshly derived checklist and promotes the copyable record', () => {
+  const html = renderToStaticMarkup(createElement(PreparationSummary, { draft: initialDraft, onEdit() {} }))
+  assert.ok(html.includes('Evidence to prepare'))
+  assert.ok(html.includes('Suggested supplier:'))
+  assert.ok(html.indexOf('provider-review-text') < html.indexOf('evidence-checklist-title'))
+  const edited = draftReducer(initialDraft, { type: 'site-input', value: { ...initialDraft.siteInput, notes: 'Obtain survey before placing suite' }, areaInvalid: false })
+  const changed = renderToStaticMarkup(createElement(PreparationSummary, { draft: edited, onEdit() {} }))
+  assert.ok(changed.includes('Obtain survey before placing suite'))
+  assert.ok(changed.includes('Unconfirmed notes entry'))
+})

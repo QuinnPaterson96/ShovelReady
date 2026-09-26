@@ -25,7 +25,7 @@ function retained(pid = '123', area = 450): SitePreparationSelection {
   return { schema_version: 'sr-38.site-selection.v1', mode: 'retained_candidate', candidate,
     spatial_revision: 'spatial-r1', manual: manualFacts(), review_status: 'unreviewed', screening_status: 'not_performed' }
 }
-function draft(modelId: string | null = 'auxbox-240', site: SitePreparationSelection | null = retained()): Draft {
+function draft(modelId: string | null = 'aux-240', site: SitePreparationSelection | null = retained()): Draft {
   const model = selectModel(initialDraft.model, bundledCatalogue, modelId)
   return { ...initialDraft, values: { ...initialDraft.values, ...scope }, model, site }
 }
@@ -66,9 +66,9 @@ test('manual and unconfirmed site entries remain unreviewed, with no source parc
 
 test('conflicts require reconciliation; matching retained values still require legal evidence', () => {
   const selected = retained('999', 430)
-  assert.equal(item(draft('auxbox-240', selected), 'site-identity').state, 'conflicting')
-  assert.equal(item(draft('auxbox-240', selected), 'site-geometry-placement').state, 'conflicting')
-  assert.match(item(draft('auxbox-240', selected), 'site-identity').missing_input, /Resolve manual PID/)
+  assert.equal(item(draft('aux-240', selected), 'site-identity').state, 'conflicting')
+  assert.equal(item(draft('aux-240', selected), 'site-geometry-placement').state, 'conflicting')
+  assert.match(item(draft('aux-240', selected), 'site-identity').missing_input, /Resolve manual PID/)
   assert.equal(item(draft(), 'site-identity').state, 'unreviewed')
   assert.match(item(draft(), 'site-identity').missing_input, /legal lot/)
 })
@@ -97,4 +97,25 @@ test('versioned example output matches the deterministic builder', () => {
   const prepared = { ...draft('click-landing', null), siteInput: { ...initialDraft.siteInput,
     address: 'Example address (unconfirmed)', notes: 'Survey still needed' } }
   assert.deepEqual(buildEvidenceChecklist(prepared), exampleOutput)
+})
+
+
+test('real catalogue selection preserves provider evidence and manual identity survives copying', () => {
+  const selected = draft()
+  assert.equal(selected.model.modelId, 'aux-240')
+  assert.ok(item(selected, 'model-revision-footprint').available_evidence.some(e => e.origin === 'source' && e.url))
+  const custom = draft(null)
+  custom.model = { ...custom.model, provider: 'Example provider', modelName: 'Custom garden model' }
+  const text = evidenceChecklistText(buildEvidenceChecklist(custom))
+  assert.match(text, /Example provider/)
+  assert.match(text, /Custom garden model/)
+})
+
+test('outside and incomplete scope do not produce Victoria-specific rule requests', () => {
+  for (const municipality of ['Saanich', '', 'Synthetic']) {
+    const value = { ...draft(), values: { ...draft().values, municipality } }
+    const result = buildEvidenceChecklist(value)
+    assert.equal(result.items.filter(i => i.id.startsWith('rule-victoria-')).length, 0)
+    assert.equal(result.items.find(i => i.id === 'rule-currentness-applicability')!.available_evidence.length, 0)
+  }
 })

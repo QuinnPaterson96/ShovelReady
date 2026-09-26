@@ -96,7 +96,7 @@ export function buildEvidenceChecklist(draft: Draft): EvidenceChecklist {
     return result
   }
   add({ id: 'model-revision-footprint', title: 'Controlled model and occupied footprint', state: model || draft.model.fields.width.value || draft.model.fields.depth.value ? 'unreviewed' : 'missing',
-    available_evidence: [...fieldEvidence('width'), ...fieldEvidence('depth')],
+    available_evidence: [...fieldEvidence('width'), ...fieldEvidence('depth'), ...present((!model || draft.model.provider !== model.provider) && manual('Entered provider name (unreviewed)', draft.model.provider), (!model || draft.model.modelName !== model.name) && manual('Entered model name (unreviewed)', draft.model.modelName))],
     missing_input: 'Controlled configuration/revision and dimensioned wall faces, projections and installed occupied footprint.',
     impact: 'Nominal product dimensions cannot define placement or rear-yard occupancy.', suggested_supplier: 'Model provider and site designer',
     next_action: 'Request a controlled model drawing and site-specific footprint.' })
@@ -127,8 +127,8 @@ export function buildEvidenceChecklist(draft: Draft): EvidenceChecklist {
     snapshot_id: packet.source.snapshot_id, revision_id: `${rule.logical_rule_id}@${rule.proposed_revision_id}`,
     captured_at: packet.source.captured_at, review_status: 'unreviewed' as const,
   } }))
-  add({ id: 'rule-currentness-applicability', title: 'Current applicable Victoria rules', state: 'provisional',
-    available_evidence: ruleRefs.map(item => item.evidence),
+  add({ id: 'rule-currentness-applicability', title: victoriaScope ? 'Current applicable Victoria rules' : 'Confirm scope before rule investigation', state: 'provisional',
+    available_evidence: victoriaScope ? ruleRefs.map(item => item.evidence) : [],
     missing_input: `${victoriaScope ? '' : 'Selected scope is outside or incomplete for this Victoria packet; no applicability is inferred. '}Independently reviewed current consolidation, adoption/effective-date chain, legal site designation, definitions and site-specific provisions.`,
     impact: 'The captured four clauses are provisional candidates; current applicability and other requirements are unresolved.',
     suggested_supplier: 'Municipal source custodian and independent rule reviewer',
@@ -139,7 +139,7 @@ export function buildEvidenceChecklist(draft: Draft): EvidenceChecklist {
     garden_suite_principal_building_separation: ['Surveyed principal-building faces and proposed suite placement with measurement method.', 'Separation cannot be measured.', 'Land surveyor and site designer'],
     garden_suite_rear_yard_occupancy: ['Legal rear-yard polygon and proposed occupied suite area including relevant projections.', 'Parcel area is not the rear-yard ratio denominator.', 'Land surveyor, site designer and rule reviewer'],
   }
-  for (const { rule, evidence } of ruleRefs) {
+  for (const { rule, evidence } of (victoriaScope ? ruleRefs : [])) {
     const [missing_input, impact, suggested_supplier] = ruleNeeds[rule.content.semantics.subject] ?? ['Reviewed rule-specific inputs.', 'The provisional clause cannot be assessed.', 'Rule reviewer']
     add({ id: `rule-${rule.logical_rule_id}`, title: rule.content.semantics.subject.replace(/_/g, ' '), state: 'provisional',
       available_evidence: [evidence], missing_input, impact, suggested_supplier,

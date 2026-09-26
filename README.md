@@ -63,6 +63,11 @@ mounts site/model inputs and adds five captured address rows across those three
 parcel leads. Lookup remains bounded, exact-match and unreviewed; it is not citywide.
 See the integration record for composed verification and remaining evidence gates. No municipal expansion or accepted release is implied.
 
+[Wave-twelve integration](docs/integration-wave-twelve.md) adds explicit scope choices,
+progressive source disclosure, a mounted evidence checklist and a human walkthrough
+kit with an attributed agent baseline. These prepare evidence requests; no fit checks
+or accepted publication are added.
+
 City of Victoria garden suites remain the leading technical prototype candidate, subject
 to verified design/site inputs and current rule applicability; Vancouver is the fallback.
 

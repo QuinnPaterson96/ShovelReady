@@ -6,6 +6,8 @@ import type { Action, Draft, ExampleId, Field } from './model'
 import { ModelInputs } from '../model_catalogue/ModelInputs'
 import { bundledCatalogue } from '../model_catalogue/model'
 import { SitePreparation, addressEvidenceText } from '../site_preparations/SitePreparation'
+import { buildEvidenceChecklist, evidenceChecklistText } from '../evidence_checklist/model'
+import { EvidenceChecklistView } from '../evidence_checklist/EvidenceChecklistView'
 import victoriaPacket from '../../../docs/rule-packets/victoria-garden-suite/packet.json'
 
 const scopeFields = ['municipality', 'use', 'role'] as const
@@ -132,6 +134,10 @@ export function PreparationSummary({ draft, onEdit }: { draft: Draft; onEdit: ()
     <h2 id="summary-title">Preparation summary</h2>
     <StatusBanner {...preparationStatus(draft)} />
     <p>This record separates your choices, source observations and manual corrections. Review unknown facts with a provider or qualified local reviewer before any real evaluation.</p>
+    <details open><summary>Copyable provider-review summary · no sending</summary>
+      <label htmlFor="provider-review-text">Select and copy this unreviewed preparation record</label>
+      <textarea id="provider-review-text" readOnly value={providerReviewText(draft)} rows={8} />
+    </details>
     <dl className="sr-values">{(Object.keys(fields) as Field[]).map(key => <div key={key}><dt>{fields[key]}</dt>
       <dd>{draft.values[key].trim() || 'Unknown'} · {draft.imported && !draft.edited.includes(key) ? 'Imported synthetic input' : key in draft.model.fields
         ? draft.model.fields[key as keyof typeof draft.model.fields].origin === 'source' && draft.values[key].trim()
@@ -139,6 +145,11 @@ export function PreparationSummary({ draft, onEdit }: { draft: Draft; onEdit: ()
         : 'Your choice · unreviewed'}</dd></div>)}</dl>
     <h3>Chosen site and model · provider review draft</h3>
     <p>Site: {draft.site?.candidate ? `retained PID ${draft.site.candidate.pid.value ?? 'unknown'}` : draft.site ? 'manual unmatched facts' : 'not selected'}; model: {draft.model.modelName || 'not selected'}. No checks were run.</p>
+    <EvidenceChecklistView checklist={buildEvidenceChecklist(draft)} />
+    <details><summary>Copyable evidence requests � no sending</summary>
+      <label htmlFor="evidence-request-text">Evidence needed and suggested suppliers</label>
+      <textarea id="evidence-request-text" readOnly value={evidenceChecklistText(buildEvidenceChecklist(draft))} rows={8} />
+    </details>
     {draft.site && <details open><summary>Site source and manual facts</summary>
       {draft.site.candidate && <p>Retained PID {draft.site.candidate.pid.value ?? 'unknown'} · approximate GIS area {draft.site.candidate.approximate_area_m2.value ?? 'unknown'} m² · {sourceLink(draft.site.candidate.pid.evidence.source_url) ? <a href={sourceLink(draft.site.candidate.pid.evidence.source_url)!}>source observation</a> : 'source link unavailable'}. Unreviewed geometry, not a legal survey.</p>}
       {draft.site.candidate && <><p>Source address: {draft.site.candidate.address.value ?? 'unknown'} · captured address observation, unreviewed.</p>
@@ -154,10 +165,6 @@ export function PreparationSummary({ draft, onEdit }: { draft: Draft; onEdit: ()
       <details><summary>Complete model selection and source baselines</summary><pre>{JSON.stringify(draft.model, null, 2)}</pre></details>
     </details>
     <VictoriaEvidence />
-    <details><summary>Copyable provider-review summary · no sending</summary>
-      <label htmlFor="provider-review-text">Select and copy this unreviewed preparation record</label>
-      <textarea id="provider-review-text" readOnly value={providerReviewText(draft)} rows={16} />
-    </details>
     <Provenance draft={draft} />
     <button className="sr-primary" onClick={onEdit}>Edit inputs</button>
   </section>
