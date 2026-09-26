@@ -59,7 +59,16 @@ The first evaluator checks a supplied reviewed placement. Preserve manual site f
 | [SR-36](SR-36.md) / [issue #79](https://github.com/QuinnPaterson96/ShovelReady/issues/79) | Home, optional example import, parameter entry and status | M1 preparation | Existing main; SR-37 for final Pilot route wiring |
 | [SR-37](SR-37.md) / [issue #80](https://github.com/QuinnPaterson96/ShovelReady/issues/80) | Read-only real Pilot preparation view | M1 preparation | SR-34 / PR #78; SR-36 for final shell/banner wiring |
 
-## Next parallel work
+## Wave-ten checkpoint and next work
+
+[Integration evidence](../integration-wave-ten.md) covers PRs #94-#100 and integration
+corrections. [Next-step plan](../next-steps-after-wave-ten.md) prioritizes SR-41/#89
+assessment wiring. SR-38/#86 remains partial because address acquisition/join is
+unimplemented. SR-39/#87 and SR-40/#88 deliver bounded provisional rule/catalogue
+components. SR-42-45/#90-#93 deliver bounded municipal experiments; SR-17 remains open.
+None delivers accepted legal/site data, publication or launched municipal coverage.
+
+## Earlier parallel work
 
 [Wave nine](../integration-wave-nine.md) completes SR-36 and SR-37 in their bounded
 scopes: home/input/status flow, read-only Pilot diagnostic/API, evidence wording,

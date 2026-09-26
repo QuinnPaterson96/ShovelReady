@@ -1,0 +1,80 @@
+{
+  "schema_version": "sr42.saanich.spatial.manifest.v1",
+  "captured_on": "2026-09-25",
+  "catalogue_url": "https://www.saanich.ca/EN/main/local-government/data-catalogue-1.html",
+  "licence_url": "https://www.saanich.ca/assets/Local~Government/Documents/SaanichDataCatalogueLicence.pdf",
+  "attribution": "Contains information licenced under the Open Government Licence – District of Saanich.",
+  "capture_file": "capture.json",
+  "capture_sha256": "d7939050cdc2394338c173d0fda7ec54049dd1136c5bb338582f06bb9255a2d4",
+  "capture_bytes": 404886,
+  "archives": {
+    "AddressCSV.zip": {
+      "url": "https://map.saanich.ca/gisdata/Address/AddressCSV.zip",
+      "sha256": "c497c8eb7f35b5022f343ee295618aecee222136694f30eeeda401cc683e0181",
+      "bytes": 1459061,
+      "members": {
+        "AddressMetadata.pdf": "8b053b8763e0873da76ff1f9a6691ddf8f860b116db3a77f3ae9235a7c018215",
+        "CivicAddress.csv": "cb0736078b5c69ee1739b68969282ebebb8ade61c1159aa17bdb1cccee9fe4b9",
+        "SaanichDataCatalogueLicence.pdf": "40365bab6f651087633d1f6847fc7ff839fb45c4df580589da235bf1a6797554",
+        "SubAddress.csv": "9134b44b6eeb5d057fd0d655966ee7f68803b47208e106f28513e844a7f7dde7"
+      }
+    },
+    "BuildingsSHP.zip": {
+      "url": "https://map.saanich.ca/gisdata/Buildings/BuildingsSHP.zip",
+      "sha256": "0785fef5c52a136d3ad31cd9c7c6f1cf16555df62c6929afd9ef9c3a281cb708",
+      "bytes": 9672260,
+      "members": {
+        "Buildings.cpg": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824",
+        "Buildings.dbf": "4bc6348d81166b8d17fe3d451973e2298e349561e9966399c9232ba6eeac7560",
+        "Buildings.prj": "a6fdc93570e11a2994a9e3bb30007ef3911dea3170621c55d23d6c6f450fd1be",
+        "Buildings.shp": "b6c0efd1462c246c27c6defa8643728c0e96463a077851dcb0fd14acb4579179",
+        "Buildings.shx": "782b882cbc064662734d1493fb9ab1572479898e8a66075be10af336343cc8ac",
+        "SaanichDataCatalogueLicence.pdf": "40365bab6f651087633d1f6847fc7ff839fb45c4df580589da235bf1a6797554",
+        "BuildingsMetadata.pdf": "c25893474010ec117579fda93c98557b6ceb0ecf8f30a276e668878fe6a83960"
+      }
+    },
+    "ParcelsSHP.zip": {
+      "url": "https://map.saanich.ca/gisdata/Parcels/ParcelsSHP.zip",
+      "sha256": "068f605f054126c07c88cbfb73661f8a3604e2327a5385a2437c75592e2bc107",
+      "bytes": 11972560,
+      "members": {
+        "Parcels.cpg": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824",
+        "Parcels.dbf": "f87f6d22d7860b5a4a2f8c0e08c2ca99152df02143ef8b168796ac3d461afc00",
+        "Parcels.prj": "a6fdc93570e11a2994a9e3bb30007ef3911dea3170621c55d23d6c6f450fd1be",
+        "Parcels.shp": "d49a9c3f5780d6c09f35d9de880fd57826d2c8e627724f24c6ead834dff01566",
+        "Parcels.shx": "285f59e74ebcd1c4170120de2c2b75843265b63c1852d97d0818a689183f8558",
+        "ParcelsMetadata.pdf": "4a0101917b59abadb2097543def87179165477f17b767336abf728297ee26a4f",
+        "SaanichDataCatalogueLicence.pdf": "40365bab6f651087633d1f6847fc7ff839fb45c4df580589da235bf1a6797554"
+      }
+    },
+    "WatercourseSHP.zip": {
+      "url": "https://map.saanich.ca/gisdata/Watercourse/WatercourseSHP.zip",
+      "sha256": "c9eeaec2e009eaf19fe7a6107b4b93b67879d302aa32c916971ea6e7d1e70df4",
+      "bytes": 1406517,
+      "members": {
+        "SaanichDataCatalogueLicence.pdf": "40365bab6f651087633d1f6847fc7ff839fb45c4df580589da235bf1a6797554",
+        "Watercourse.cpg": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824",
+        "Watercourse.dbf": "223f3499b2bc317f58e32df7dec0bff2cb94386ae390f093b6905f159ef8d4b7",
+        "Watercourse.prj": "a6fdc93570e11a2994a9e3bb30007ef3911dea3170621c55d23d6c6f450fd1be",
+        "Watercourse.shp": "b2cf7543cb941e5ba76e4779e29690d61d15791bc96b78262b744da0045043f6",
+        "Watercourse.shx": "a62f84e374a9f92cb26a07455c353b50db5f3f5fc8ddc66abc72f9fd2d8b958f",
+        "WatercourseMetadata.pdf": "43c59cf1413ce9b33f373c8f496773df803691a2ef3f83a46b58e1f73f9527a8"
+      }
+    },
+    "ZoningSHP.zip": {
+      "url": "https://map.saanich.ca/gisdata/Zoning/ZoningSHP.zip",
+      "sha256": "57fac42fd00803e8cd04ac7e00db6a40090b998d0ae28d2353fe9546fd64ce73",
+      "bytes": 1423960,
+      "members": {
+        "SaanichDataCatalogueLicence.pdf": "40365bab6f651087633d1f6847fc7ff839fb45c4df580589da235bf1a6797554",
+        "Zoning.cpg": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824",
+        "Zoning.dbf": "be4725b56f8dc63f2251f3a1cc7625426fc5f94ef72fbc3359baac38390d39c3",
+        "Zoning.prj": "a6fdc93570e11a2994a9e3bb30007ef3911dea3170621c55d23d6c6f450fd1be",
+        "Zoning.shp": "6a7d51271f518eb770c2e7b70d0824d80b6f7ca0f25cc35a5bf49f24ed1c82c2",
+        "Zoning.shx": "cfafa5f456ecf930762db67490b467e7c71329b14099dbd7cf3265ce4161f142",
+        "ZoningMetadata.pdf": "ff8ad11d43a550a5136a5b8a3051ca025782fb8a290a50dc3a0c0ebcb4f66e09"
+      }
+    }
+  },
+  "selection": "Exact address CSV rows and source-indexed SHP records; source ZIPs retained only in local temporary directory, not committed. Geometry serialized via pyshp GeoJSON interface without coordinate transformation."
+}
