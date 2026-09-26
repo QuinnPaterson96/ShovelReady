@@ -172,3 +172,10 @@ and ORCA Jay. SR-55/#124 technical artifacts and SR-56/#125 supply responsibilit
 research can run in parallel with SR-53/#121 intake tooling. Candidate integration
 depends on reviewed evidence and the intake result. Existing controlled-site, rule
 acceptance, publication and human-validation gates remain open.
+
+## Wave-thirteen integration
+
+SR-52/#120, SR-53/#121 and SR-54/#122 complete their bounded software/rehearsal
+scopes. SR-55/#124 and SR-56/#125 deliver public research packets but retain
+external artifact/service confirmation gates. SR-57/#131 is the active UI worker.
+See [verification, next sequence and gaps](../integration-wave-thirteen.md).

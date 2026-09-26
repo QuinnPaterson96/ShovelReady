@@ -159,3 +159,11 @@ are withheld outside complete supported scope. Manual model identity is preserve
 The source record remains available through progressive disclosures, and copyable
 review text is prominent. No backend contract, database migration or accepted release
 changed. See [integration evidence](integration-wave-twelve.md).
+
+## Wave-thirteen checkpoint
+
+Offline research intake now stages explicit candidate JSON and gap reports without
+mutating active snapshots. Model 300 and Jay research packets replay through it,
+remaining unreviewed. Retained address lookup normalizes only supported terminal
+street suffix pairs and preserves comparison provenance and ambiguity. No schema,
+migration or frontend change. See [integration and next steps](integration-wave-thirteen.md).
