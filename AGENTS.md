@@ -40,3 +40,5 @@ Read README.md, docs/architecture.md, and docs/quality.md before consequential c
 - For frontend visual changes, follow [Civic Atlas visual rules](docs/visual-identity.md). Use the shared CSS tokens and preserve explicit status, scope, uncertainty and source identity in the display.
 - Use the [PR handoff template](.github/pull_request_template.md), scaled to the change, and the [integration checklist](docs/quality.md#integration-handoff). Declare shared-file ownership before parallel work. Keep implemented, verified, proposed and blocked work distinct; software checks, source review, publication and user validation are separate evidence categories.
 - At every integration handoff, explicitly list remaining gaps in the user-facing summary: what is missing, its practical impact, and the next action/owner or ticket. Distinguish demo usability gaps from blockers to accepted real evaluation; do not hide them behind a generic caveat or document link.
+
+- Follow behavior-focused test selection in docs/quality.md: prioritize connected workflows, retain independently grounded calculation tests, and avoid tests that mirror private implementation details.

@@ -179,3 +179,6 @@ SR-52/#120, SR-53/#121 and SR-54/#122 complete their bounded software/rehearsal
 scopes. SR-55/#124 and SR-56/#125 deliver public research packets but retain
 external artifact/service confirmation gates. SR-57/#131 is the active UI worker.
 See [verification, next sequence and gaps](../integration-wave-thirteen.md).
+
+
+Occupied-lot wave: #136/#137/#138 delivered in PRs #142/#141/#140. #139 is next for runtime adapter and placement UI; see ../integration-occupied-lots.md. Source acceptance and real-user validation remain separate.

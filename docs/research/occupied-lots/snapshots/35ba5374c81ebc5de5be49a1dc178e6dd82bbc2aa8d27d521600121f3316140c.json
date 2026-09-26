@@ -1,0 +1,98 @@
+{
+ "displayFieldName": "Name",
+ "fieldAliases": {
+  "OBJECTID": "OBJECTID",
+  "VicPID": "VicPID",
+  "PID": "PID",
+  "ParcelStatus": "ParcelStatus",
+  "ParcelType": "ParcelType",
+  "PrimarySurveyParcel": "PrimarySurveyParcel",
+  "Shape_Area": "Shape_Area"
+ },
+ "geometryType": "esriGeometryPolygon",
+ "spatialReference": {
+  "wkid": 3157,
+  "latestWkid": 3157
+ },
+ "fields": [
+  {
+   "name": "OBJECTID",
+   "type": "esriFieldTypeOID",
+   "alias": "OBJECTID"
+  },
+  {
+   "name": "VicPID",
+   "type": "esriFieldTypeString",
+   "alias": "VicPID",
+   "length": 50
+  },
+  {
+   "name": "PID",
+   "type": "esriFieldTypeString",
+   "alias": "PID",
+   "length": 50
+  },
+  {
+   "name": "ParcelStatus",
+   "type": "esriFieldTypeString",
+   "alias": "ParcelStatus",
+   "length": 20
+  },
+  {
+   "name": "ParcelType",
+   "type": "esriFieldTypeString",
+   "alias": "ParcelType",
+   "length": 30
+  },
+  {
+   "name": "PrimarySurveyParcel",
+   "type": "esriFieldTypeString",
+   "alias": "PrimarySurveyParcel",
+   "length": 50
+  },
+  {
+   "name": "Shape_Area",
+   "type": "esriFieldTypeDouble",
+   "alias": "Shape_Area"
+  }
+ ],
+ "features": [
+  {
+   "attributes": {
+    "OBJECTID": 98,
+    "VicPID": "V02291001",
+    "PID": "008-141-240",
+    "ParcelStatus": "ACTIVE",
+    "ParcelType": "LA",
+    "PrimarySurveyParcel": null,
+    "Shape_Area": 629.79376333445475
+   },
+   "geometry": {
+    "rings": [
+     [
+      [
+       473618.66050000023,
+       5362267.1198999994
+      ],
+      [
+       473615.81749999989,
+       5362250.1945999991
+      ],
+      [
+       473578.42009999976,
+       5362256.4761999995
+      ],
+      [
+       473583.67960000038,
+       5362272.9956
+      ],
+      [
+       473618.66050000023,
+       5362267.1198999994
+      ]
+     ]
+    ]
+   }
+  }
+ ]
+}

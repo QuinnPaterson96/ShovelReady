@@ -1,0 +1,111 @@
+{
+ "displayFieldName": "FullAddress",
+ "fieldAliases": {
+  "OBJECTID": "OBJECTID",
+  "FullAddress": "FullAddress",
+  "GISLINK": "GISLINK"
+ },
+ "geometryType": "esriGeometryPoint",
+ "spatialReference": {
+  "wkid": 3157,
+  "latestWkid": 3157
+ },
+ "fields": [
+  {
+   "name": "OBJECTID",
+   "type": "esriFieldTypeOID",
+   "alias": "OBJECTID"
+  },
+  {
+   "name": "FullAddress",
+   "type": "esriFieldTypeString",
+   "alias": "FullAddress",
+   "length": 200
+  },
+  {
+   "name": "GISLINK",
+   "type": "esriFieldTypeString",
+   "alias": "GISLINK",
+   "length": 16
+  }
+ ],
+ "features": [
+  {
+   "attributes": {
+    "OBJECTID": 9209,
+    "FullAddress": "217 COOK ST",
+    "GISLINK": "03229040"
+   },
+   "geometry": {
+    "x": 473595.12750000041,
+    "y": 5362244.8728
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 44200,
+    "FullAddress": "1-217 COOK ST",
+    "GISLINK": "03229040"
+   },
+   "geometry": {
+    "x": 473595.12750000041,
+    "y": 5362244.8728
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 44201,
+    "FullAddress": "2-217 COOK ST",
+    "GISLINK": "03229040"
+   },
+   "geometry": {
+    "x": 473595.12750000041,
+    "y": 5362244.8728
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 44202,
+    "FullAddress": "3-217 COOK ST",
+    "GISLINK": "03229040"
+   },
+   "geometry": {
+    "x": 473595.12750000041,
+    "y": 5362244.8728
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 44203,
+    "FullAddress": "4-217 COOK ST",
+    "GISLINK": "03229040"
+   },
+   "geometry": {
+    "x": 473595.12750000041,
+    "y": 5362244.8728
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 44204,
+    "FullAddress": "5-217 COOK ST",
+    "GISLINK": "03229040"
+   },
+   "geometry": {
+    "x": 473595.12750000041,
+    "y": 5362244.8728
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 44205,
+    "FullAddress": "6-217 COOK ST",
+    "GISLINK": "03229040"
+   },
+   "geometry": {
+    "x": 473595.12750000041,
+    "y": 5362244.8728
+   }
+  }
+ ]
+}

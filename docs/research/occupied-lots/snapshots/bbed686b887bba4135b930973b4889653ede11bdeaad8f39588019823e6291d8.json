@@ -1,0 +1,166 @@
+{
+ "displayFieldName": "FullAddress",
+ "fieldAliases": {
+  "OBJECTID": "OBJECTID",
+  "FullAddress": "FullAddress",
+  "GISLINK": "GISLINK"
+ },
+ "geometryType": "esriGeometryPoint",
+ "spatialReference": {
+  "wkid": 3157,
+  "latestWkid": 3157
+ },
+ "fields": [
+  {
+   "name": "OBJECTID",
+   "type": "esriFieldTypeOID",
+   "alias": "OBJECTID"
+  },
+  {
+   "name": "FullAddress",
+   "type": "esriFieldTypeString",
+   "alias": "FullAddress",
+   "length": 200
+  },
+  {
+   "name": "GISLINK",
+   "type": "esriFieldTypeString",
+   "alias": "GISLINK",
+   "length": 16
+  }
+ ],
+ "features": [
+  {
+   "attributes": {
+    "OBJECTID": 9164,
+    "FullAddress": "241 COOK ST",
+    "GISLINK": "03228035"
+   },
+   "geometry": {
+    "x": 473618.47740000021,
+    "y": 5362322.2764999997
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 44220,
+    "FullAddress": "10-241 COOK ST",
+    "GISLINK": "03228035"
+   },
+   "geometry": {
+    "x": 473618.47740000021,
+    "y": 5362322.2764999997
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 44221,
+    "FullAddress": "11-241 COOK ST",
+    "GISLINK": "03228035"
+   },
+   "geometry": {
+    "x": 473618.47740000021,
+    "y": 5362322.2764999997
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 44222,
+    "FullAddress": "12-241 COOK ST",
+    "GISLINK": "03228035"
+   },
+   "geometry": {
+    "x": 473618.47740000021,
+    "y": 5362322.2764999997
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 44223,
+    "FullAddress": "101-241 COOK ST",
+    "GISLINK": "03228035"
+   },
+   "geometry": {
+    "x": 473618.47740000021,
+    "y": 5362322.2764999997
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 44224,
+    "FullAddress": "102-241 COOK ST",
+    "GISLINK": "03228035"
+   },
+   "geometry": {
+    "x": 473618.47740000021,
+    "y": 5362322.2764999997
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 44225,
+    "FullAddress": "103-241 COOK ST",
+    "GISLINK": "03228035"
+   },
+   "geometry": {
+    "x": 473618.47740000021,
+    "y": 5362322.2764999997
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 44226,
+    "FullAddress": "104-241 COOK ST",
+    "GISLINK": "03228035"
+   },
+   "geometry": {
+    "x": 473618.47740000021,
+    "y": 5362322.2764999997
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 44227,
+    "FullAddress": "201-241 COOK ST",
+    "GISLINK": "03228035"
+   },
+   "geometry": {
+    "x": 473618.47740000021,
+    "y": 5362322.2764999997
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 44228,
+    "FullAddress": "202-241 COOK ST",
+    "GISLINK": "03228035"
+   },
+   "geometry": {
+    "x": 473618.47740000021,
+    "y": 5362322.2764999997
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 44229,
+    "FullAddress": "203-241 COOK ST",
+    "GISLINK": "03228035"
+   },
+   "geometry": {
+    "x": 473618.47740000021,
+    "y": 5362322.2764999997
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 44230,
+    "FullAddress": "204-241 COOK ST",
+    "GISLINK": "03228035"
+   },
+   "geometry": {
+    "x": 473618.47740000021,
+    "y": 5362322.2764999997
+   }
+  }
+ ]
+}

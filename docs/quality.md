@@ -163,3 +163,36 @@ A consequential change is done when:
 - Documentation states what was actually tested and any remaining limitations.
 
 Keep short decision notes for consequential choices: context, decision, alternatives considered, evidence, consequences, and reconsideration trigger. Update this agreement when real failures teach us something new.
+
+
+## Behavior-focused test selection
+
+Prefer integration coverage for consequential workflows; do not impose a unit-test
+quota or a coverage percentage target. Choose the smallest test boundary that can
+reproduce a meaningful failure independently of the implementation.
+
+- Keep focused calculation tests for geometry, unit/ratio normalization, threshold
+  boundaries and uncertainty propagation. Expected numbers must come from an
+  independently explained example, reviewed source, or mathematical property;
+  never copy the current function output into a golden fixture as proof of correctness.
+- Prioritize real module connections: retained source bytes -> conversion -> typed
+  request -> measurements -> serialization; use disposable PostgreSQL and real HTTP
+  when persistence/API behavior is affected. Mock external network/model services at
+  their boundary, not the internal pipeline under test.
+- Keep a small repeatable browser suite for the core user journey: enter/select a
+  site and model, supply placement, inspect partial results and citations, edit inputs
+  and observe stale-result invalidation, recover from unavailable data, and inspect
+  readable/copyable evidence on narrow screens and with a keyboard. These are
+  acceptance targets; existing browser walkthroughs are not yet this automated suite.
+- Avoid tests of private helper calls, component implementation structure, broad UI
+  snapshots and duplicate assertions at every layer. A refactor preserving public
+  behavior should normally preserve tests. Add regressions for reproduced defects.
+- Distinguish software behavior, source/interpretation accuracy and user usefulness.
+  A replay proves reproducibility, not correctness of its source. A browser journey
+  cannot prove distance arithmetic or legal applicability. Agent walkthroughs remain
+  exploratory supplements; human validation measures comprehension and time saved.
+
+For each consequential PR, name the behavior protected, where the expected answer
+comes from, and what the test does not establish. Do not delete useful existing tests
+merely to change the test mix. Move effort toward uncovered failure modes. For small
+reversible documentation/presentation edits, proportionate inspection can suffice.

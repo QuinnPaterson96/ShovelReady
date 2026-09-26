@@ -1,0 +1,111 @@
+{
+ "displayFieldName": "FullAddress",
+ "fieldAliases": {
+  "OBJECTID": "OBJECTID",
+  "FullAddress": "FullAddress",
+  "GISLINK": "GISLINK"
+ },
+ "geometryType": "esriGeometryPoint",
+ "spatialReference": {
+  "wkid": 3157,
+  "latestWkid": 3157
+ },
+ "fields": [
+  {
+   "name": "OBJECTID",
+   "type": "esriFieldTypeOID",
+   "alias": "OBJECTID"
+  },
+  {
+   "name": "FullAddress",
+   "type": "esriFieldTypeString",
+   "alias": "FullAddress",
+   "length": 200
+  },
+  {
+   "name": "GISLINK",
+   "type": "esriFieldTypeString",
+   "alias": "GISLINK",
+   "length": 16
+  }
+ ],
+ "features": [
+  {
+   "attributes": {
+    "OBJECTID": 9166,
+    "FullAddress": "1111 CHAPMAN ST",
+    "GISLINK": "03229001"
+   },
+   "geometry": {
+    "x": 473598.89120000042,
+    "y": 5362261.5951000005
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 42881,
+    "FullAddress": "1-1111 CHAPMAN ST",
+    "GISLINK": "03229001"
+   },
+   "geometry": {
+    "x": 473598.89120000042,
+    "y": 5362261.5951000005
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 42882,
+    "FullAddress": "2-1111 CHAPMAN ST",
+    "GISLINK": "03229001"
+   },
+   "geometry": {
+    "x": 473598.89120000042,
+    "y": 5362261.5951000005
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 42883,
+    "FullAddress": "3-1111 CHAPMAN ST",
+    "GISLINK": "03229001"
+   },
+   "geometry": {
+    "x": 473598.89120000042,
+    "y": 5362261.5951000005
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 42884,
+    "FullAddress": "4-1111 CHAPMAN ST",
+    "GISLINK": "03229001"
+   },
+   "geometry": {
+    "x": 473598.89120000042,
+    "y": 5362261.5951000005
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 42885,
+    "FullAddress": "5-1111 CHAPMAN ST",
+    "GISLINK": "03229001"
+   },
+   "geometry": {
+    "x": 473598.89120000042,
+    "y": 5362261.5951000005
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 42886,
+    "FullAddress": "6-1111 CHAPMAN ST",
+    "GISLINK": "03229001"
+   },
+   "geometry": {
+    "x": 473598.89120000042,
+    "y": 5362261.5951000005
+   }
+  }
+ ]
+}
