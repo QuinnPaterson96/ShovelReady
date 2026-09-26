@@ -157,12 +157,23 @@ export function buildEvidenceChecklist(draft: Draft): EvidenceChecklist {
 }
 
 export function evidenceChecklistText(checklist: EvidenceChecklist): string {
-  const lines = [`Evidence checklist ${checklist.schema_version} — preparation only; screening ${checklist.screening_status}`,
-    `Scope: ${checklist.scope.municipality ?? 'unknown'} / ${checklist.scope.use ?? 'unknown'} / ${checklist.scope.role ?? 'unknown'}; site ${checklist.scope.site_mode ?? 'unconfirmed'}; model ${checklist.scope.model_id ?? 'manual/unknown'}; synthetic ${checklist.scope.synthetic}`]
+  const lines = ['Evidence requests — preparation only; no screening performed',
+    `Scope: ${checklist.scope.municipality ?? 'unknown'} / ${checklist.scope.use ?? 'unknown'} / ${checklist.scope.role ?? 'unknown'}; site ${checklist.scope.site_mode ?? 'unconfirmed'}; ${checklist.scope.synthetic ? 'synthetic example' : 'unreviewed inputs'}`]
   for (const item of checklist.items) {
-    lines.push(`\n${item.title} [${item.id}; ${item.state}]`, `Missing: ${item.missing_input}`, `Impact: ${item.impact}`,
+    lines.push(`\n${item.title} [${item.state}]`, `Missing: ${item.missing_input}`, `Impact: ${item.impact}`,
       `Supplier: ${item.suggested_supplier}`, `Next: ${item.next_action}`)
-    for (const e of item.available_evidence) lines.push(`Evidence (${e.origin}; ${e.review_status}): ${e.description}; value ${e.value ?? 'unstated'} ${e.unit ?? ''}; basis ${e.basis ?? 'unknown'}; source ${e.source_id ?? 'none'}; URL ${e.url ?? 'none'}; locator ${e.locator ?? 'none'}; snapshot ${e.snapshot_id ?? 'none'}; revision ${e.revision_id ?? 'none'}; captured ${e.captured_at ?? 'unknown'}`)
+    for (const e of item.available_evidence) lines.push(`Available (${e.origin}; ${e.review_status}): ${e.description}; value ${e.value ?? 'unstated'} ${e.unit ?? ''}; basis ${e.basis ?? 'unknown'}; ${e.locator ?? 'record label unknown'}; captured ${e.captured_at?.slice(0, 10) ?? 'date unknown'}; source ${e.url ? readableEvidenceUrl(e.url) : 'link unavailable'}`)
   }
   return lines.join('\n')
+}
+
+function readableEvidenceUrl(url: string) {
+  try {
+    const parsed = new URL(url)
+    return parsed.pathname.endsWith('/query') ? `${parsed.origin}${parsed.pathname.slice(0, -6)}` : url
+  } catch { return 'link unavailable' }
+}
+
+export function technicalChecklistText(checklist: EvidenceChecklist): string {
+  return JSON.stringify(checklist, null, 2)
 }

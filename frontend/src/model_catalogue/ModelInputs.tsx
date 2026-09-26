@@ -1,5 +1,6 @@
 import { bundledCatalogue, editField, editHeightReference, editIdentity, fieldError, selectModel } from './model'
 import type { Catalogue, Field, Selection } from './model'
+import { readableDate, TechnicalDetails } from '../ReadableProvenance'
 
 const labels: Record<Field, string> = { width: 'Nominal exterior width (m)', depth: 'Nominal exterior depth (m)',
   height: 'Building height (m)', area: 'Manufacturer interior area (m²)' }
@@ -35,6 +36,7 @@ export function ModelInputs({ value, onChange, catalogue = bundledCatalogue }: {
       <p>Height: {selected.height_note}</p>
       <p>Use: {selected.intended_use_note}</p>
       <a href={selected.provider_url} target="_blank" rel="noreferrer">Provider model page</a>
+      <p>Provider sources captured {readableDate(selected.sources[0]?.captured_at)} · unreviewed.</p>
     </div>}
     <div className="sr-model-grid">{fields.map(field => {
       const input = value.fields[field]
@@ -52,7 +54,8 @@ export function ModelInputs({ value, onChange, catalogue = bundledCatalogue }: {
         {error && <p id={`sr-model-error-${field}`} className="sr-model-error" role="alert">{error}</p>}
         {input.baseline && <details><summary>Source baseline and basis</summary>
           <p>{input.baseline.quantity?.original_text ?? 'Unknown'} · {input.baseline.definition}</p>
-          <p>Source: {input.baseline.source_id ?? 'missing'} · {input.baseline.reason ?? 'Source transcription'}</p>
+          <p>{input.baseline.reason ?? 'Source transcription'} · unreviewed provider observation.</p>
+          <TechnicalDetails><p>Source ID: <code>{input.baseline.source_id ?? 'unknown'}</code></p></TechnicalDetails>
           {input.origin === 'user' && <p>Current entry overrides this baseline and remains unreviewed.</p>}
         </details>}
       </div>
@@ -65,10 +68,11 @@ export function ModelInputs({ value, onChange, catalogue = bundledCatalogue }: {
     </select>
     <p className="sr-model-hint">A height with unknown reference is retained in this draft but excluded from the assessment mapping. Regulatory height from grade requires separate site and rule evidence.</p>
     {selected && <details><summary>All source measurements and capture identity</summary>
-      <p>Catalogue captured {catalogue?.captured_at ?? 'unknown'} · snapshot <code>{value.snapshotId}</code>.</p>
+      <p>{selected.provider} · {selected.name} · catalogue captured {readableDate(catalogue?.captured_at)} · unreviewed.</p>
       <ul>{selected.measurements.map(measure => <li key={measure.name}>{measure.name}: {measure.quantity?.original_text ?? 'unknown'} · {measure.definition}
         {measure.reason && ` · ${measure.reason}`}</li>)}</ul>
-      <ul>{selected.sources.map(source => <li key={source.source_id}><a href={source.url} target="_blank" rel="noreferrer">{source.source_id}</a> · {source.locator} · captured {source.captured_at} · SHA-256 {source.sha256 ?? 'capture gap'}</li>)}</ul>
+      <ul>{selected.sources.map(source => <li key={source.source_id}><a href={source.url} target="_blank" rel="noreferrer">Provider source</a> · {source.locator} · captured {readableDate(source.captured_at)} · {source.artifact_status}</li>)}</ul>
+      <TechnicalDetails><pre>{JSON.stringify({ catalogue_schema: catalogue?.schema_version, catalogue_snapshot: value.snapshotId, sources: selected.sources }, null, 2)}</pre></TechnicalDetails>
     </details>}
     <p className="sr-model-notice">Every edit or model change invalidates the prior preparation summary. Catalogue data, user edits and manual entries remain unreviewed.</p>
   </section>

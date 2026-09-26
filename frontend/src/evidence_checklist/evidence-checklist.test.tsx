@@ -4,7 +4,7 @@ import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { initialDraft, draftReducer, type Draft } from '../assessment/model'
 import { bundledCatalogue, selectModel, editField } from '../model_catalogue/model'
-import { buildEvidenceChecklist, evidenceChecklistText } from './model'
+import { buildEvidenceChecklist, evidenceChecklistText, technicalChecklistText } from './model'
 import { EvidenceChecklistView } from './EvidenceChecklistView'
 import exampleOutput from './example-output.json'
 import type { Candidate, Fact, ManualFacts, SitePreparationSelection } from '../site_preparations/types'
@@ -52,7 +52,9 @@ test('retained source, manual notes, provisional rule identity and accessible vi
   assert.match(html, /Status: provisional/)
   assert.match(html, /Available attributed evidence/)
   assert.match(html, /Source page/)
-  assert.match(evidenceChecklistText(checklist), /feature 1; snapshot parcel-snapshot/)
+  assert.match(evidenceChecklistText(checklist), /feature 1; captured 2026-09-25/)
+  assert.doesNotMatch(evidenceChecklistText(checklist), /parcel-snapshot/)
+  assert.match(technicalChecklistText(checklist), /parcel-snapshot/)
 })
 
 test('manual and unconfirmed site entries remain unreviewed, with no source parcel', () => {
@@ -90,7 +92,7 @@ test('synthetic example remains labeled and Victoria packet is outside its scope
   assert.equal(checklist.screening_status, 'not_performed')
   assert.match(item(synthetic, 'rule-currentness-applicability').missing_input, /outside or incomplete/)
   assert.equal(item(synthetic, 'model-revision-footprint').available_evidence[0].origin, 'synthetic')
-  assert.match(evidenceChecklistText(checklist), /synthetic true/)
+  assert.match(evidenceChecklistText(checklist), /synthetic example/)
 })
 
 test('versioned example output matches the deterministic builder', () => {
