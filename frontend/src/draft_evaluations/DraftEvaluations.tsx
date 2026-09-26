@@ -3,6 +3,7 @@ import { caseIds, refKey, startLoad } from './adapter'
 import type { CaseId, LoadState } from './adapter'
 import type { CheckTrace, EvaluationReport, Quantity, RevisionRef, Review } from './types'
 import StatusBanner from '../StatusBanner'
+import { readableDate, TechnicalDetails } from '../ReadableProvenance'
 
 const labels: Record<EvaluationReport['outcome'], string> = {
   candidate: 'Passing arithmetic example within the declared scope',
@@ -41,12 +42,12 @@ function Trace({ trace, report }: { trace: CheckTrace; report: EvaluationReport 
     <h5>Diagnostics · all reported reasons</h5>
     {trace.diagnostics.length ? <ul>{trace.diagnostics.map((d, i) => <li key={i}>{d}</li>)}</ul> : <p>No blocking diagnostics reported for this check.</p>}
     {!!trace.result.missing_facts.length && <><h5>Missing facts</h5><ul>{trace.result.missing_facts.map((f, i) => <li key={i}>{f}</li>)}</ul></>}
-    <p>Exact rule: <Ref value={trace.rule} /></p>
+    <TechnicalDetails title="Exact rule identity"><p><Ref value={trace.rule} /></p></TechnicalDetails>
     <p>{rule?.content.text ?? 'Declared exact rule revision is absent; no replacement inferred.'}</p>
     <p>Measurement definition: {trace.binding?.measurement_definition ?? 'Binding not supplied'}</p>
     <p>Fact definition: {trace.fact?.definition ?? 'Exact fact not supplied'}</p>
-    {trace.binding && <p>Bound fact: <Ref value={trace.binding.fact} /> · {trace.binding.definition_support} · {trace.binding.applicability}</p>}
-    {trace.fact && <p>Supplied fact: <Ref value={trace.fact.identity} /> · {trace.fact.status} · {trace.fact.reason}</p>}
+    {trace.binding && <p>Bound fact: {trace.binding.definition_support} · {trace.binding.applicability}</p>}
+    {trace.fact && <p>Supplied fact: {trace.fact.status} · {trace.fact.reason}</p>}
     <QuantityDetail label="Supplied fact quantity" quantity={trace.fact?.quantity ?? null} />
     {rule?.content.semantics.kind === 'scalar_bound' && <>
       <p>Rule definition: {rule.content.semantics.measurement_definition} · operator <code>{rule.content.semantics.operator}</code></p>
@@ -60,10 +61,10 @@ function Trace({ trace, report }: { trace: CheckTrace; report: EvaluationReport 
     {!trace.result.evidence.length && <p>No evidence supplied for this check.</p>}
     {trace.result.evidence.map((e, i) => {
       const source = report.request.sources.find(s => s.snapshot_id === e.snapshot_id)!
-      return <article className="evidence" key={i}><p><strong>{e.locator}</strong> · snapshot <code>{e.snapshot_id}</code></p>
+      return <article className="evidence" key={i}><p><strong>{source.instrument} · {e.locator}</strong> · {source.review.status} source</p>
         <blockquote>{e.excerpt}</blockquote><p>Context: {e.context}</p>
         <p>Printed page: {e.printed_page ?? 'Not supplied'} · page index: {e.page_index ?? 'Not supplied'}</p>
-        <p>Captured: {source.captured_at} · effective from: {source.effective_from ?? 'Unknown'} · effective to: {source.effective_to ?? 'Unknown'}</p>
+        <p>Captured: {readableDate(source.captured_at)} · effective from: {source.effective_from ?? 'Unknown'} · effective to: {source.effective_to ?? 'Unknown'}</p>
         <JsonDetail label="Source identity, hash, availability and review" value={source} />
       </article>
     })}

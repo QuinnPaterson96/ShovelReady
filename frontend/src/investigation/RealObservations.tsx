@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { geometryPath, parseInvestigation, ringsPath, safeUrl } from './adapter'
 import type { Investigation, Observation } from './adapter'
+import { readableDate, TechnicalDetails } from '../ReadableProvenance'
 
 export function InertJson({ value }: { value: unknown }) {
   return <pre>{JSON.stringify(value, null, 2)}</pre>
@@ -195,6 +196,7 @@ export default function RealObservations() {
     `${p.parcel_snapshot_id}/${p.parcel_feature_index ?? 'missing'}`
   const parcel = spatial?.parcels.find((p) => key(p) === selected) ?? spatial?.parcels[0]
   const source = spatial?.observations.find((o) => o.snapshot_id === parcel?.parcel_snapshot_id)
+  const sourceMeta = data?.sources.find((s) => s.snapshot_id === source?.snapshot_id)
   const lead = source?.source_id.replace(/-parcel$/, '')
   const observations = spatial?.observations.filter((o) => o.source_id.startsWith(`${lead}-`)) ?? []
   const choices = observations.flatMap((o) =>
@@ -216,16 +218,13 @@ export default function RealObservations() {
       <button onClick={() => setAttempt((a) => a + 1)}>Reload observations</button>
       {data && spatial && (
         <>
-          <p className="metadata">
-            Collection: {spatial.identity.logical_id}
-            <br />
-            Selected observation revision (not a release):{' '}
-            <code>{spatial.identity.revision_id}</code>
-          </p>
+          <p className="metadata">City of Victoria licensed observations · unreviewed · selected observation set, not an accepted release.</p>
+          <TechnicalDetails title="Collection and exact observation revision"><pre>{JSON.stringify(spatial.identity, null, 2)}</pre></TechnicalDetails>
           {!parcel ? (
             <p>No parcel observations in this revision.</p>
           ) : (
             <>
+              <p className="metadata">City of Victoria parcel observation · captured {readableDate(sourceMeta?.captured_at)} · review status unknown · {source && <Link url={source.layer_url}>source layer</Link>}. This is a retained lead, not a legal survey.</p>
               <label htmlFor="lead">Captured parcel lead / source-scoped feature</label>
               <select
                 id="lead"
@@ -235,9 +234,9 @@ export default function RealObservations() {
                   setFeature('')
                 }}
               >
-                {spatial.parcels.map((p) => (
+                {spatial.parcels.map((p, index) => (
                   <option key={key(p)} value={key(p)}>
-                    {p.parcel_snapshot_id.split(':')[0]} / feature{' '}
+                    City of Victoria parcel lead {index + 1} / feature{' '}
                     {p.parcel_feature_index ?? 'missing'} · needs investigation
                   </option>
                 ))}
@@ -256,9 +255,8 @@ export default function RealObservations() {
                 {parcel.intersections.map((i, n) => (
                   <li key={n}>
                     {i.classification} · {i.area_m2} m² ·{' '}
-                    <code>
-                      {i.zoning_snapshot_id} / feature {i.zoning_feature_index}
-                    </code>
+                    City of Victoria zoning feature {i.zoning_feature_index} · unreviewed
+                    <TechnicalDetails title="Exact zoning observation identity"><code>{i.zoning_snapshot_id}</code></TechnicalDetails>
                   </li>
                 ))}
               </ul>
@@ -282,15 +280,14 @@ export default function RealObservations() {
               >
                 {choices.map((c) => (
                   <option key={c.id} value={c.id}>
-                    {c.o.source_id} / feature {c.i}
+                    City of Victoria {c.o.source_id.endsWith('-parcel') ? 'parcel' : c.o.source_id.endsWith('-zones') ? 'zoning' : 'roofline'} / feature {c.i}
                   </option>
                 ))}
               </select>
               {chosen && (
                 <article>
                   <p>
-                    Original locator: <code>{chosen.id}</code>. OBJECTID is retained below; it is
-                    not a permanent site identity.
+                    City of Victoria {chosen.o.source_id.endsWith('-parcel') ? 'parcel' : chosen.o.source_id.endsWith('-zones') ? 'zoning' : 'roofline'} feature {chosen.i} · unreviewed. OBJECTID is retained below; it is not a permanent site identity.
                   </p>
                   <p>Geometric area: {assessment?.geometric_area_m2 ?? 'unknown'} m².</p>
                   <ul>
@@ -303,13 +300,8 @@ export default function RealObservations() {
                     <Link url={chosen.o.request_url}>Original query URL</Link> (external service may
                     have changed since capture)
                   </p>
-                  <p>
-                    Metadata snapshot: <code>{chosen.o.metadata_snapshot_id}</code>
-                    <br />
-                    Catalogue snapshot: <code>{chosen.o.catalogue_snapshot_id}</code>
-                  </p>
-                  <h4>Captured attributes (unreviewed)</h4>
-                  <InertJson value={chosen.f.attributes} />
+                  <TechnicalDetails title="Exact feature, metadata and catalogue identities"><pre>{JSON.stringify({ feature: chosen.id, metadata_snapshot: chosen.o.metadata_snapshot_id, catalogue_snapshot: chosen.o.catalogue_snapshot_id }, null, 2)}</pre></TechnicalDetails>
+                  <details><summary>Captured attributes (unreviewed technical JSON)</summary><InertJson value={chosen.f.attributes} /></details>
                   <details>
                     <summary>Original captured XYZ rings</summary>
                     <InertJson value={chosen.f.geometry} />
@@ -326,14 +318,9 @@ export default function RealObservations() {
           {data.sources.map((s) => (
             <details key={s.snapshot_id}>
               <summary>
-                {s.source_id} · captured {s.captured_at}
+                City of Victoria {s.source_id.endsWith('-parcel') ? 'parcel' : s.source_id.endsWith('-zones') ? 'zoning' : 'roofline'} source · captured {readableDate(s.captured_at)} · review status unknown
               </summary>
-              <p>
-                <code>{s.snapshot_id}</code>
-              </p>
-              <p>
-                SHA-256: <code>{s.sha256}</code>
-              </p>
+              <TechnicalDetails><p>Snapshot: <code>{s.snapshot_id}</code></p><p>SHA-256: <code>{s.sha256}</code></p></TechnicalDetails>
               <p>
                 Source date: capture {s.captured_at}; printed revision{' '}
                 {s.printed_revision ?? 'unknown'}; legal effective dates unknown.

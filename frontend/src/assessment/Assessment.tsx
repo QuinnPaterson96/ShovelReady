@@ -6,8 +6,9 @@ import type { Action, Draft, ExampleId, Field } from './model'
 import { ModelInputs } from '../model_catalogue/ModelInputs'
 import { bundledCatalogue } from '../model_catalogue/model'
 import { SitePreparation, addressEvidenceText } from '../site_preparations/SitePreparation'
-import { buildEvidenceChecklist, evidenceChecklistText } from '../evidence_checklist/model'
+import { buildEvidenceChecklist, evidenceChecklistText, technicalChecklistText } from '../evidence_checklist/model'
 import { EvidenceChecklistView } from '../evidence_checklist/EvidenceChecklistView'
+import { CopyableRecord, publicSourceUrl, readableDate, TechnicalDetails } from '../ReadableProvenance'
 import victoriaPacket from '../../../docs/rule-packets/victoria-garden-suite/packet.json'
 
 const scopeFields = ['municipality', 'use', 'role'] as const
@@ -29,10 +30,11 @@ function VictoriaEvidence() {
     <h3 id="victoria-rules-title">Victoria rule evidence · provisional</h3>
     <p>Four unreviewed clauses may guide later research. Current applicability and bylaw consolidation are unresolved. No clause has been checked against this site or model.</p>
     <details><summary>Read rule clauses and source record</summary>
-    <p>Source: <a href={victoriaPacket.source.source_url} target="_blank" rel="noreferrer">City of Victoria bylaw page</a>. {victoriaPacket.source.instrument}; {victoriaPacket.source.printed_revision}. Captured {victoriaPacket.source.captured_at}; snapshot <code>{victoriaPacket.source.snapshot_id}</code>.</p>
+    <p>Source: <a href={victoriaPacket.source.source_url} target="_blank" rel="noreferrer">City of Victoria bylaw page</a>. {victoriaPacket.source.instrument}; printed revision {victoriaPacket.source.printed_revision ?? 'unknown'}. Captured {readableDate(victoriaPacket.source.captured_at)}; unreviewed.</p>
     <ul>{victoriaPacket.candidates.map(rule => <li key={rule.logical_rule_id}>
-      <strong>{rule.content.semantics.subject}</strong> · {rule.locator} · {rule.excerpt} · threshold {rule.content.semantics.threshold.original_text} ({rule.content.semantics.threshold.unit}; {rule.content.semantics.measurement_definition}). Rule {rule.logical_rule_id}, proposed revision {rule.proposed_revision_id}; applicability unresolved.
+      <strong>{rule.content.semantics.subject.replace(/_/g, ' ')}</strong> · {rule.locator} · {rule.excerpt} · threshold {rule.content.semantics.threshold.original_text} ({rule.content.semantics.threshold.unit}; {rule.content.semantics.measurement_definition}). Applicability unresolved.
     </li>)}</ul>
+    <TechnicalDetails><pre>{JSON.stringify(victoriaPacket.source, null, 2)}</pre></TechnicalDetails>
     </details>
   </section>
 }
@@ -43,17 +45,23 @@ export function providerReviewText(draft: Draft) {
   return [
     'ShovelReady provider review draft — preparation only; no site fit or permit finding',
     `Scope: ${draft.values.municipality || 'unknown'} / ${draft.values.use || 'unknown'} / ${draft.values.role || 'unknown'}`,
-    `Site: ${candidate ? `retained GIS lead PID ${candidate.pid.value ?? 'unknown'}` : draft.site ? 'unmatched manual site' : 'not selected'}; spatial revision ${draft.site?.spatial_revision ?? 'unknown'}; captured ${candidate?.pid.evidence.captured_at ?? 'unknown'}`,
-    `Site source: ${candidate?.pid.evidence.source_url ?? 'none'}; snapshot ${candidate?.pid.evidence.snapshot_id ?? 'none'}`,
+    `Site: ${candidate ? `retained City of Victoria GIS lead PID ${candidate.pid.value ?? 'unknown'}` : draft.site ? 'unmatched manual site' : 'not selected'}; captured ${readableDate(candidate?.pid.evidence.captured_at)}; unreviewed`,
+    `Site source: ${publicSourceUrl(candidate?.pid.evidence.source_url) ?? 'link unavailable'}`,
     `Source address: ${candidate?.address.value ?? 'unknown'}; ${candidate ? addressEvidenceText(candidate.address) : 'no captured address evidence'}`,
     `Manual site: address ${draft.site?.manual.address.value ?? 'unknown'}; PID ${draft.site?.manual.pid.value ?? 'unknown'}; area ${draft.site?.manual.lot_area_m2.value ?? 'unknown'} m²; notes ${draft.site?.manual.notes.value ?? 'none'}`,
-    `Model: ${draft.model.provider || 'unknown'} / ${draft.model.modelName || 'unknown'}; revision ${draft.model.modelRevision ?? 'unknown'}; snapshot ${draft.model.snapshotId ?? 'none'}; height reference ${draft.model.heightReference}`,
+    `Model: ${draft.model.provider || 'provider unknown'} / ${draft.model.modelName || 'model unknown'}; manufacturer revision ${draft.model.modelRevision ?? 'not supplied'}; captured ${readableDate(model?.sources[0]?.captured_at)}; unreviewed; height reference ${draft.model.heightReference}`,
     ...(['width', 'depth', 'height', 'area'] as const).map(key => `${fields[key]}: ${draft.model.fields[key].value || 'unknown'} (${draft.model.fields[key].origin}; source baseline ${draft.model.fields[key].baseline?.quantity?.original_text ?? 'none'})`),
-    `Model sources: ${model?.sources.map(source => `${source.url} [${source.locator}, captured ${source.captured_at}]`).join('; ') ?? 'none'}`,
-    `Provisional rule source: ${victoriaPacket.source.source_url}; snapshot ${victoriaPacket.source.snapshot_id}; captured ${victoriaPacket.source.captured_at}; unreviewed`,
+    `Model sources: ${model?.sources.map(source => `${source.locator}; captured ${readableDate(source.captured_at)}; ${publicSourceUrl(source.url) ?? 'link unavailable'}`).join('; ') ?? 'none'}`,
+    `Provisional rule source: City of Victoria ${victoriaPacket.source.instrument}; printed revision ${victoriaPacket.source.printed_revision ?? 'unknown'}; captured ${readableDate(victoriaPacket.source.captured_at)}; unreviewed; ${victoriaPacket.source.source_url}`,
     'Checks performed: none. Provisional rule candidates are not accepted or evaluated.',
     ...preparationStatus(draft).unresolved.map(item => `Unresolved: ${item}`),
   ].join('\n')
+}
+
+export function technicalReviewText(draft: Draft) {
+  return JSON.stringify({ provider_review: providerReviewText(draft), site: draft.site, model: draft.model,
+    model_catalogue: bundledCatalogue.models.find(item => item.model_id === draft.model.modelId) ?? null,
+    provisional_rule_source: victoriaPacket.source, imported_example: draft.imported?.request ?? null }, null, 2)
 }
 
 export function Provenance({ draft }: { draft: Draft }) {
@@ -135,8 +143,7 @@ export function PreparationSummary({ draft, onEdit }: { draft: Draft; onEdit: ()
     <StatusBanner {...preparationStatus(draft)} />
     <p>This record separates your choices, source observations and manual corrections. Review unknown facts with a provider or qualified local reviewer before any real evaluation.</p>
     <details open><summary>Copyable provider-review summary · no sending</summary>
-      <label htmlFor="provider-review-text">Select and copy this unreviewed preparation record</label>
-      <textarea id="provider-review-text" readOnly value={providerReviewText(draft)} rows={8} />
+      <CopyableRecord id="provider-review-text" label="Unreviewed provider review text" value={providerReviewText(draft)} />
     </details>
     <dl className="sr-values">{(Object.keys(fields) as Field[]).map(key => <div key={key}><dt>{fields[key]}</dt>
       <dd>{draft.values[key].trim() || 'Unknown'} · {draft.imported && !draft.edited.includes(key) ? 'Imported synthetic input' : key in draft.model.fields
@@ -147,9 +154,12 @@ export function PreparationSummary({ draft, onEdit }: { draft: Draft; onEdit: ()
     <p>Site: {draft.site?.candidate ? `retained PID ${draft.site.candidate.pid.value ?? 'unknown'}` : draft.site ? 'manual unmatched facts' : 'not selected'}; model: {draft.model.modelName || 'not selected'}. No checks were run.</p>
     <EvidenceChecklistView checklist={buildEvidenceChecklist(draft)} />
     <details><summary>Copyable evidence requests · no sending</summary>
-      <label htmlFor="evidence-request-text">Evidence needed and suggested suppliers</label>
-      <textarea id="evidence-request-text" readOnly value={evidenceChecklistText(buildEvidenceChecklist(draft))} rows={8} />
+      <CopyableRecord id="evidence-request-text" label="Evidence needed and suggested suppliers" value={evidenceChecklistText(buildEvidenceChecklist(draft))} />
     </details>
+    <TechnicalDetails title="Full technical evidence record and exact identifiers · copyable">
+      <CopyableRecord id="technical-review-text" label="Complete site, model and rule source record" value={technicalReviewText(draft)} />
+      <CopyableRecord id="technical-checklist-text" label="Complete checklist evidence and associations" value={technicalChecklistText(buildEvidenceChecklist(draft))} />
+    </TechnicalDetails>
     {draft.site && <details open><summary>Site source and manual facts</summary>
       {draft.site.candidate && <p>Retained PID {draft.site.candidate.pid.value ?? 'unknown'} · approximate GIS area {draft.site.candidate.approximate_area_m2.value ?? 'unknown'} m² · {sourceLink(draft.site.candidate.pid.evidence.source_url) ? <a href={sourceLink(draft.site.candidate.pid.evidence.source_url)!}>source observation</a> : 'source link unavailable'}. Unreviewed geometry, not a legal survey.</p>}
       {draft.site.candidate && <><p>Source address: {draft.site.candidate.address.value ?? 'unknown'} · captured address observation, unreviewed.</p>
@@ -160,7 +170,7 @@ export function PreparationSummary({ draft, onEdit }: { draft: Draft; onEdit: ()
     </details>}
     <details open><summary>Model source and edits</summary><p>{draft.model.provider || 'Provider unknown'} · {draft.model.modelName || 'model unknown'} · unreviewed. Height reference: {draft.model.heightReference}.</p>
       <ul>{(['width', 'depth', 'height', 'area'] as const).map(key => <li key={key}>{fields[key]}: {draft.model.fields[key].value || 'unknown'} · {draft.model.fields[key].origin} · baseline {draft.model.fields[key].baseline?.quantity?.original_text ?? 'none'}</li>)}</ul>
-      {bundledCatalogue.models.find(model => model.model_id === draft.model.modelId)?.sources.map(source => <p key={source.source_id}><a href={source.url}>{source.source_id}</a> · {source.locator} · captured {source.captured_at}</p>)}
+      {bundledCatalogue.models.find(model => model.model_id === draft.model.modelId)?.sources.map(source => <p key={source.source_id}><a href={source.url}>Provider source</a> · {source.locator} · captured {readableDate(source.captured_at)} · unreviewed</p>)}
       <details><summary>Model capture and revision identifiers</summary><p>Snapshot {draft.model.snapshotId ?? 'none'} · revision {draft.model.modelRevision ?? 'unknown'} · review {draft.model.reviewStatus}.</p></details>
       <details><summary>Complete model selection and source baselines</summary><pre>{JSON.stringify(draft.model, null, 2)}</pre></details>
     </details>

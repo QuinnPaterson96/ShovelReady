@@ -1,17 +1,16 @@
 import type { EvidenceChecklist, EvidenceReference } from './model'
+import { publicSourceUrl, readableDate, TechnicalDetails } from '../ReadableProvenance'
 
 function Source({ evidence }: { evidence: EvidenceReference }) {
-  const url = evidence.url && /^https:\/\//.test(evidence.url) ? evidence.url : null
+  const url = publicSourceUrl(evidence.url)
   return <li>
     <strong>{evidence.description}</strong> · {evidence.origin}, {evidence.review_status}
     {evidence.value !== null && <> · {evidence.value} {evidence.unit ?? ''}</>}
     {evidence.basis && <> · basis: {evidence.basis}</>}
-    {evidence.source_id && <> · source: {evidence.source_id}</>}
     {evidence.locator && <> · {evidence.locator}</>}
-    {evidence.captured_at && <> · captured {evidence.captured_at}</>}
-    {evidence.snapshot_id && <> · snapshot <code>{evidence.snapshot_id}</code></>}
-    {evidence.revision_id && <> · revision <code>{evidence.revision_id}</code></>}
+    <> · captured {readableDate(evidence.captured_at)}</>
     {url && <> · <a href={url} target="_blank" rel="noreferrer">Source page</a></>}
+    <TechnicalDetails><pre>{JSON.stringify(evidence, null, 2)}</pre></TechnicalDetails>
   </li>
 }
 
@@ -19,7 +18,7 @@ export function EvidenceChecklistView({ checklist }: { checklist: EvidenceCheckl
   return <section className="sr-checklist" aria-labelledby="evidence-checklist-title">
     <h2 id="evidence-checklist-title">Evidence to prepare</h2>
     <p className="sr-checklist-status"><strong>Preparation only · screening not performed.</strong> This list records available evidence and what still needs review. It does not establish site fit or permit eligibility.</p>
-    <p className="metadata">Scope: {checklist.scope.municipality ?? 'unknown'} / {checklist.scope.use ?? 'unknown'} / {checklist.scope.role ?? 'unknown'} · site {checklist.scope.site_mode ?? 'unconfirmed'} · model {checklist.scope.model_id ?? 'manual or unknown'}{checklist.scope.synthetic ? ' · synthetic example' : ''} · {checklist.schema_version}</p>
+    <p className="metadata">Scope: {checklist.scope.municipality ?? 'unknown'} / {checklist.scope.use ?? 'unknown'} / {checklist.scope.role ?? 'unknown'} · site {checklist.scope.site_mode ?? 'unconfirmed'}{checklist.scope.synthetic ? ' · synthetic example' : ''}</p>
     <ol>{checklist.items.map(item => <li className="sr-checklist-item" key={item.id}>
       <h3>{item.title}</h3>
       <p><strong>Status: {item.state}.</strong> {item.missing_input}</p>

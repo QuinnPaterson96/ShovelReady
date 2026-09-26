@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { officialUrl, parseInventory } from './adapter'
 import type { Evidence, Inventory, PublicCase, Statement } from './adapter'
+import { TechnicalDetails } from '../ReadableProvenance'
 
 function Link({ url, children }: { url: string; children: React.ReactNode }) {
   const safe = officialUrl(url)
@@ -8,7 +9,7 @@ function Link({ url, children }: { url: string; children: React.ReactNode }) {
 }
 function Citations({ evidence, data }: { evidence: Evidence[]; data: Inventory }) {
   return evidence.length ? <ul className="metadata">{evidence.map((e, i) => <li key={i}>
-    <Link url={data.sources[e.source_id].url}>{data.sources[e.source_id].title}</Link> · {e.locator} · source {e.source_id}
+    <Link url={data.sources[e.source_id].url}>{data.sources[e.source_id].title}</Link> · {e.locator} · accessed {data.sources[e.source_id].access_date} · provisional research source<TechnicalDetails><code>{e.source_id}</code></TechnicalDetails>
   </li>)}</ul> : <p className="metadata">No evidence locator recorded.</p>
 }
 function Statements({ values, data }: { values: Statement[]; data: Inventory }) {
@@ -60,12 +61,12 @@ export function CaseDetail({ item, data }: { item: PublicCase; data: Inventory }
     <h4>Source revisions and access limitations</h4>
     <p>Official links open externally. Availability today is not checked; this application does not fetch or republish source PDFs.</p>
     {[...refs].map(id => { const s = data.sources[id]; const rights = data.rights[s.rights_id]; return <details key={id}>
-      <summary>{s.title} · {id}</summary>
+      <summary>{s.title} · accessed {s.access_date} · provisional research source</summary>
       <p><Link url={s.url}>Open official source</Link> · {s.kind}</p>
       <p>Access date: {s.access_date}. Recorded access: {s.access_method}</p>
       <p>Document date: {s.document_date ?? 'unknown'}. Date basis: {s.date_basis}</p>
       <p>Inspection: {s.inspection}</p>
-      <p className="metadata">Inspection SHA-256: {s.sha256 ?? 'unknown'}; byte length: {s.byte_length ?? 'unknown'}; pages: {s.page_count ?? 'unknown'}.</p>
+      <TechnicalDetails><p>Source ID: <code>{id}</code>; inspection SHA-256: <code>{s.sha256 ?? 'unknown'}</code>; byte length: {s.byte_length ?? 'unknown'}; pages: {s.page_count ?? 'unknown'}.</p></TechnicalDetails>
       <p>{rights.summary} {rights.handling}</p><p><Link url={rights.evidence_url}>Rights evidence</Link> · {rights.locator} · accessed {rights.access_date}</p>
     </details> })}
   </article>
