@@ -1,0 +1,38 @@
+{
+  "packet_schema": "sr-45.langford.manual.v1",
+  "status": "unreviewed_manual_candidate_only",
+  "captured_on": "2026-09-25",
+  "pathway_id": "langford-r2-one-family-detached-ground-floor-garden-suite",
+  "alternative_id": "r2-existing-one-family",
+  "scope": "Existing one-family dwelling on a verified R2 parcel; proposed detached ground-floor garden suite. No parcel, building, or placement has been verified.",
+  "source_method": "attributed_manual_read_of_official_consolidated_pdfs",
+  "source_bytes_retained": false,
+  "source_sha256": null,
+  "sources": [
+    {"id": "langford-300-part-3-2026-07-20", "url": "https://langford.ca/wp-content/uploads/2023/04/Part-3-General-Regulations.pdf", "instrument": "Zoning Bylaw No. 300, Part 3", "printed_revision": "20 Jul 26", "effective_from": null, "effective_date_status": "consolidated page date is not an effective date"},
+    {"id": "langford-300-r2-2026-06-29", "url": "https://langford.ca/wp-content/uploads/2023/04/2_One-and-Two-Family-Residential-Zones.pdf", "instrument": "Zoning Bylaw No. 300, Part 6, R2", "printed_revision": "29 Jun 26", "effective_from": null, "effective_date_status": "consolidated page date is not an effective date"},
+    {"id": "langford-300-definitions-2026-07-20", "url": "https://langford.ca/wp-content/uploads/2022/10/zoning-blyaw-part-1-interpretation.pdf", "instrument": "Zoning Bylaw No. 300, Part 1", "printed_revision": "20 Jul 26", "effective_from": null, "effective_date_status": "consolidated page date is not an effective date"},
+    {"id": "langford-300-amendments-2026-08-17", "url": "https://langford.ca/wp-content/uploads/2023/04/List-of-Amendments-1.pdf", "instrument": "Zoning Bylaw No. 300, list of amendments", "printed_revision": "17 Aug 26", "effective_from": null, "effective_date_status": "register records adoption of Nos. 2213 (20 May 2025), 2274 (29 Jun 2026), 2268 (20 Jul 2026); commencement and consolidation completeness require review"}
+  ],
+  "definitions": [
+    {"term": "Garden Suite", "source_id": "langford-300-definitions-2026-07-20", "locator": "1.01.01, printed page 1-8, PDF page index 7", "short_quote": "accessory dwelling unit located on the ground floor of a detached accessory building"},
+    {"term": "Suite", "source_id": "langford-300-definitions-2026-07-20", "locator": "1.01.01, printed page 1-17, PDF page index 16", "short_quote": "a dwelling unit that is accessory to a one-family dwelling"},
+    {"term": "gross floor area", "source_id": "langford-300-definitions-2026-07-20", "locator": "1.01.01; exact cross-reference pending", "short_quote": null, "status": "unresolved_measurement_definition"},
+    {"term": "height", "source_id": "langford-300-definitions-2026-07-20", "locator": "1.01.01; exact cross-reference pending", "short_quote": null, "status": "unresolved_measurement_definition"}
+  ],
+  "global_dependencies": [
+    "Verify current parcel R2 zoning and special site-specific amendments; an R2 label alone is not parcel proof.",
+    "Part 3 section 3.08.03(1) excludes the OCP City Centre designation; map/version overlay is unresolved.",
+    "Part 3 sections 3.08.01 and 3.08.03 add suite count, occupancy, parking, servicing, driveway, placement, and other conditions; these five checks are not complete permission.",
+    "Part 6 section 6.22.04 has alternative dwelling forms and lot-area bands; keep this one-family garden-suite pathway coherent.",
+    "Part 3 section 3.08.04(1) has an express Part 6 exception; whether an R2 override applies requires independent review.",
+    "Official consolidated text is for convenience only; amendment commencement and full currentness remain independently unverified."
+  ],
+  "candidates": [
+    {"logical_id": "langford-r2-garden-lot-area", "candidate_revision_id": "manual-2026-09-25-1", "source_id": "langford-300-part-3-2026-07-20", "locator": "3.08.04(1), printed page 3-7, PDF page index 6", "short_quote": "Permitted only on lots over 400 m2", "context": "unless otherwise noted in Part 6 of this Bylaw", "subject": "lot_area", "measurement_definition": "area of the lot, not subdivision minimum", "operator": ">", "value": "400", "unit": "m2", "dimension": "area", "dependency": "Part 6 override must be checked; R2 parcel and existing one-family use unverified", "mapping": "scalar_shape_only"},
+    {"logical_id": "langford-r2-garden-lot-width", "candidate_revision_id": "manual-2026-09-25-1", "source_id": "langford-300-part-3-2026-07-20", "locator": "3.08.03(5), printed page 3-7, PDF page index 6", "short_quote": "width greater than or equal to 11 m", "context": "garden suite or carriage suite; same clause also requires lot depth", "subject": "lot_width", "measurement_definition": "lot width under Bylaw No. 300; geometry method pending review", "operator": ">=", "value": "11", "unit": "m", "dimension": "length", "dependency": "lot-width definition, parcel geometry, and zone/suite applicability unverified", "mapping": "scalar_shape_only"},
+    {"logical_id": "langford-r2-garden-lot-depth", "candidate_revision_id": "manual-2026-09-25-1", "source_id": "langford-300-part-3-2026-07-20", "locator": "3.08.03(5), printed page 3-7, PDF page index 6", "short_quote": "depth greater than or equal to 29 m", "context": "garden suite or carriage suite; same clause also requires lot width", "subject": "lot_depth", "measurement_definition": "lot depth under Bylaw No. 300; geometry method pending review", "operator": ">=", "value": "29", "unit": "m", "dimension": "length", "dependency": "lot-depth definition, parcel geometry, and zone/suite applicability unverified", "mapping": "scalar_shape_only"},
+    {"logical_id": "langford-r2-garden-gfa", "candidate_revision_id": "manual-2026-09-25-1", "source_id": "langford-300-part-3-2026-07-20", "locator": "3.08.04(3), printed page 3-7, PDF page index 6", "short_quote": "gross floor area of more than 65 m2", "context": "garden suite-specific limit; accessory buildings' total floor area also has section 3.05.02(4) limits", "subject": "garden_suite_gross_floor_area", "measurement_definition": "bylaw gross floor area of the suite; manufacturer floor area cannot substitute", "operator": "<=", "value": "65", "unit": "m2", "dimension": "area", "dependency": "gross-floor-area definition and total accessory-building floor-area interaction unresolved", "mapping": "unresolved_measurement"},
+    {"logical_id": "langford-r2-garden-height", "candidate_revision_id": "manual-2026-09-25-1", "source_id": "langford-300-part-3-2026-07-20", "locator": "3.08.04(4), printed page 3-8, PDF page index 7", "short_quote": "Height maximum of 4.5 m", "context": "garden suite-specific; compare 3.05.02(3) and Part 6", "subject": "garden_suite_height", "measurement_definition": "bylaw height of garden suite; datum and roof method pending review", "operator": "<=", "value": "4.5", "unit": "m", "dimension": "length", "dependency": "height definition, building measurement, and section 3.05.02(3) interaction unresolved", "mapping": "unresolved_measurement"}
+  ]
+}
