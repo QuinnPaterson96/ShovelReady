@@ -69,9 +69,22 @@ def test_invalid_request_is_bounded_and_next_request_recovers():
     client = TestClient(create_app())
     site = client.get("/api/scouting-sites").json()["cases"][0]["site"]
     payload = {
-        "schema_version": "scouting-geometry.v1", **site,
+        "schema_version": "scouting-geometry.v1",
+        **site,
         "placement": {"id": "test", "centre_xy": [0, 0], "width_m": 2, "depth_m": 3},
     }
+    invalid_requirement = {
+        **payload,
+        "requirements": [
+            {"id": "bad", "target": "building", "minimum_m": 1, "status": "user_assumption"}
+        ],
+    }
+    assert client.post("/api/scouting-geometry/assess", json=invalid_requirement).status_code == 422
+    nonfinite = {**payload, "placement": {**payload["placement"], "width_m": float("inf")}}
+    assert (
+        client.post("/api/scouting-geometry/assess", content=json.dumps(nonfinite)).status_code
+        == 422
+    )
     invalid = {**payload, "placement": {**payload["placement"], "width_m": "2"}}
     assert client.post("/api/scouting-geometry/assess", json=invalid).status_code == 422
     assert client.post("/api/scouting-geometry/assess", content=b"{" * 200_001).status_code == 413

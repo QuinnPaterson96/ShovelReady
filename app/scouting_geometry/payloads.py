@@ -5,7 +5,7 @@ from typing import Annotated, Literal
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 Name = Annotated[str, Field(strict=True, min_length=1)]
-Number = Annotated[float, Field(strict=True)]
+Number = Annotated[float, Field(strict=True, allow_inf_nan=False)]
 
 
 class StrictModel(BaseModel):

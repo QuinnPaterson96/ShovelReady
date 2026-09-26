@@ -1,6 +1,7 @@
 """Bounded stateless supplied-placement measurements."""
 
 import json
+import math
 
 from fastapi import APIRouter, HTTPException
 from pydantic import ValidationError
@@ -29,6 +30,8 @@ def _complexity(value):
         elif isinstance(item, list):
             stack.extend(item)
         elif isinstance(item, (int, float)) and not isinstance(item, bool):
+            if isinstance(item, float) and not math.isfinite(item):
+                raise HTTPException(422, "Numbers must be finite")
             numbers += 1
             if numbers > MAX_GEOMETRY_NUMBERS:
                 raise HTTPException(413, "Request geometry is too complex")
@@ -45,13 +48,13 @@ async def assess_placement(http_request: HttpRequest) -> Assessment:
         chunks.append(chunk)
     try:
         data = json.loads(b"".join(chunks))
-    except (ValueError, UnicodeDecodeError):
+    except (ValueError, UnicodeDecodeError, RecursionError):
         raise HTTPException(422, "Malformed JSON") from None
     _complexity(data)
     try:
         payload = Request.model_validate(data)
     except ValidationError as exc:
-        raise HTTPException(422, exc.errors(include_input=False)) from None
+        raise HTTPException(422, exc.errors(include_input=False, include_context=False)) from None
     if any(
         len(items) > 50
         for items in (payload.buildings, payload.named_boundaries, payload.requirements)

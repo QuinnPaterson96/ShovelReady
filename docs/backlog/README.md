@@ -182,3 +182,6 @@ See [verification, next sequence and gaps](../integration-wave-thirteen.md).
 
 
 Occupied-lot wave: #136/#137/#138 delivered in PRs #142/#141/#140. #139 is next for runtime adapter and placement UI; see ../integration-occupied-lots.md. Source acceptance and real-user validation remain separate.
+
+
+Placement wave #148/#149/#150: combined API/UI integration recorded in ../integration-placement-ui.md. #145 delivered; #146 partial (missing manual-site fallback); #139/#147 remain open for remaining interaction/validation criteria.

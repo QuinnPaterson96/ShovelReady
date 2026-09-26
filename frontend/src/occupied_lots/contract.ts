@@ -40,7 +40,10 @@ export function parseSites(value: unknown): Case[] {
 export function parseResult(value: unknown): Result {
   if (!obj(value) || value.schema_version !== 'scouting-geometry.v1' || value.conclusion !== 'tested_placement_observations_only' ||
       !Array.isArray(value.checks) || !value.checks.every(c => obj(c) && str(c.id) && str(c.kind) && str(c.status) &&
-        (c.distance_m === null || finite(c.distance_m)) && (c.area_m2 === null || finite(c.area_m2)) && Array.isArray(c.source_feature_ids)) ||
+        (c.distance_m === null || finite(c.distance_m)) && (c.area_m2 === null || finite(c.area_m2)) && (c.margin_m === null || finite(c.margin_m)) &&
+        (c.comparison === null || c.comparison === "meets" || c.comparison === "shortfall") &&
+        (c.reason === null || typeof c.reason === "string") && (c.relation === null || typeof c.relation === "string") &&
+        Array.isArray(c.source_feature_ids) && c.source_feature_ids.every(v => typeof v === "string")) ||
       !Array.isArray(value.limitations) || !value.limitations.every(v => typeof v === 'string') || !obj(value.input) || !feature(value.input.parcel) ||
       !str(value.input.projected_metre_crs) || !obj(value.input.placement) || !point(value.input.placement.centre_xy) ||
       !finite(value.input.placement.width_m) || !finite(value.input.placement.depth_m) || !finite(value.input.placement.angle_degrees))

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { bundledCatalogue } from '../model_catalogue/model'
-import { readableDate, TechnicalDetails } from '../ReadableProvenance'
+import { CopyableRecord, publicSourceUrl, readableDate, TechnicalDetails } from '../ReadableProvenance'
 import { parseResult, parseSites, path, points } from './contract'
 import type { Case, Check, Result } from './contract'
 import './occupied-lots.css'
@@ -13,13 +13,13 @@ const checkText = (check: Check, selected?: Case) => {
   const roofLabel = index >= 0 ? ` ${selected!.site.buildings[index].basis} ${index + 1}` : ''
   if (check.status !== 'observed' && check.kind !== 'requirement') return `${check.kind.replace(/_/g, ' ')}: ${check.status}${check.reason ? ` · ${check.reason}` : ''}`
   switch (check.kind) {
-    case 'containment': return `Parcel containment: ${check.relation ?? 'unknown'}${check.area_m2 ? ` · ${Number(check.area_m2.toFixed(2))} m² outside` : ''}`
-    case 'building_overlap': return `Captured${roofLabel} outline overlap: ${check.relation ?? 'unknown'}${check.area_m2 ? ` · ${Number(check.area_m2.toFixed(2))} m²` : ''}`
+    case 'containment': return `Parcel containment: ${check.relation?.replace(/_/g, ' ') ?? 'unknown'}${check.area_m2 ? ` · ${Number(check.area_m2.toFixed(2))} m² outside` : ''}`
+    case 'building_overlap': return `Captured${roofLabel} outline overlap: ${check.relation?.replace(/_/g, ' ') ?? 'unknown'}${check.area_m2 ? ` · ${Number(check.area_m2.toFixed(2))} m²` : ''}`
     case 'parcel_boundary_distance': return `Distance to parcel boundary: ${show(check.distance_m)}`
     case 'nearest_building_distance': return `Distance to nearest captured building outline: ${show(check.distance_m)}`
     case 'building_distance': return `Distance to captured${roofLabel} outline: ${show(check.distance_m)}`
     case 'named_boundary_distance': return `Distance to named boundary: ${show(check.distance_m)}`
-    case 'requirement': return `Your assumed minimum: ${check.comparison === 'meets' ? 'measured distance meets' : check.comparison === 'shortfall' ? 'measured distance falls short of' : check.status} the entered value${check.margin_m !== null ? ` by ${show(Math.abs(check.margin_m))}` : ''}. This is not a legal threshold.`
+    case 'requirement': return `Your assumed minimum ${check.id.includes('parcel') ? 'to the parcel boundary' : 'to the nearest captured outline'}: ${check.comparison === 'meets' ? 'measured distance meets' : check.comparison === 'shortfall' ? 'measured distance falls short of' : check.status} the entered value${check.margin_m !== null ? ` by ${show(Math.abs(check.margin_m))}` : ''}. This is not a legal threshold.`
     default: return `${check.kind.replace(/_/g, ' ')}: ${check.relation ?? check.status}`
   }
 }
@@ -163,6 +163,7 @@ export default function OccupiedLots() {
       <label htmlFor="occupied-site">Retained site</label><select id="occupied-site" value={caseId} onChange={e => chooseCase(e.target.value)}>
         {cases.map(c => <option key={c.case_id} value={c.case_id}>{c.label}</option>)}</select>
       <p className="metadata">{source?.provider} · {source?.record_label} · captured {readableDate(source?.capture_date)} · {source?.review_status}. Capture: {selected.site.capture.scope}; {selected.site.capture.completeness.replace(/_/g, ' ')}.</p>
+      {publicSourceUrl(source?.reference) && <p><a href={publicSourceUrl(source?.reference)!} target="_blank" rel="noreferrer">City of Victoria parcel source</a></p>}
       <Map selected={selected} placement={placement} onMove={(x, y) => changePlacement({ x: String(x), y: String(y) })} />
       <button onClick={placeAtCentre}>Start rectangle at parcel bounding-box centre</button>
       <p className="metadata">This is a sketch starting point only. It does not search for a suitable placement or establish open space.</p>
@@ -189,8 +190,7 @@ export default function OccupiedLots() {
         <ul>{result.checks.map(c => <li key={c.id}>{checkText(c, selected)}</li>)}</ul>
         <h4>Next steps and limits</h4><p>Confirm legal parcel boundaries, principal building role and wall footprint, yard classification, current rules and controlled provider drawings before relying on a siting comparison.</p>
         <ul>{result.limitations.map((v, i) => <li key={i}>{v}</li>)}</ul>
-        <label htmlFor="occupied-summary">Copyable plain-language summary</label><textarea id="occupied-summary" readOnly value={summary} rows={10} />
-        <button onClick={() => void navigator.clipboard?.writeText(summary)}>Copy summary</button>
+        <CopyableRecord id="occupied-summary" label="Copyable plain-language summary" value={summary} />
         <TechnicalDetails title="Exact sources, IDs, placement and assessment · copyable"><textarea readOnly aria-label="Complete geometry evidence record" value={JSON.stringify({ site: selected, model, assessment: result }, null, 2)} rows={14} /></TechnicalDetails>
       </section>}
       <TechnicalDetails title="Captured site source and exact identifiers"><pre>{JSON.stringify(selected, null, 2)}</pre></TechnicalDetails>
