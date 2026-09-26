@@ -1,0 +1,24 @@
+ShovelReady provider review draft — preparation only; no site fit or permit finding
+Scope: City of Victoria / Garden suite / Accessory building
+Site: retained GIS lead PID 008-140-723; spatial revision spatial:sha256:db45fb736cd0fe2455d65b64105b038539bc7695e62666be6b2840474af8aee7; captured 2026-09-24T18:18:42.684481+00:00
+Site source: https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=80&outFields=%2A&returnGeometry=true&outSR=3157; snapshot site-80-parcel:sha256:ed59084b6d130989d8bd3110487e6834a1c0d4e2896e7da282763e5dab7c3844
+Source address: 1170 MAY ST; Address evidence: City Address Points Legal_Type=LAND; GISLINK=03229026; exact FullAddress; captured GISLINK to retained parcel GISLINK; source https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&where=GISLINK%3D%2703229026%27&outFields=%2A&returnGeometry=true&outSR=3157; snapshot address-80:sha256:bc36d4937f37fd33b79fab27325e303c993f401a546cf48b68fc74984b356020; feature 0; captured 2026-09-26T00:38:57.380711+00:00; unreviewed.
+Manual site: address unknown; PID unknown; area unknown m²; notes No survey, approved placement, or independently measured roof height is available. Ask aux box for a controlled Model 300 plan, roof high-point/datum, projection footprint and written Victoria delivery/installation scope. Ask a surveyor/site designer for legal boundaries, principal building and a proposed placement; have current Victoria rules reviewed for that legal lot.
+Model: aux box / Model 300; revision unknown; snapshot sr-40.2026-09-25.provider-pages.v1; height reference unknown
+Nominal exterior width (m): 3.048 (source; source baseline 10 ft)
+Nominal exterior depth (m): 9.144 (source; source baseline 30 ft)
+Roof height from foundation datum (m): unknown (user; source baseline none)
+Manufacturer interior floor area (m²): 20.99608704 (source; source baseline 226 sq ft total living space)
+Model sources: https://www.auxbox.ca/model-300 [The Specs > Dimensions; Site Prep, Delivery + Installation, captured 2026-09-25]
+Provisional rule source: https://www.victoria.ca/media/file/zoning-bylaw-2018; snapshot zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33; captured 2026-09-24T18:18:37.482495+00:00; unreviewed
+Checks performed: none. Provisional rule candidates are not accepted or evaluated.
+Unresolved: Roof height from foundation datum (m) is unknown.
+Unresolved: Confirmed GIS parcel lead is unreviewed; legal lot, survey and zoning applicability remain unresolved.
+Unresolved: Provider model specification and Victoria installation service remain unreviewed.
+Unresolved: Building height reference is unknown; roof height cannot be mapped to a check.
+Unresolved: Suite count check: legal lot and existing garden-suite count are unverified.
+Unresolved: Floor-area check: manufacturer interior area is not the bylaw Floor Area definition.
+Unresolved: Principal-building separation check: both building footprints and a proposed placement are missing.
+Unresolved: Rear-yard occupancy check: legal rear-yard geometry and proposed suite occupied area are missing.
+Unresolved: Supplied placement, principal-building geometry and site constraints are unknown.
+Unresolved: Current applicable rules are provisional and unaccepted; no real-site evaluation has run.
