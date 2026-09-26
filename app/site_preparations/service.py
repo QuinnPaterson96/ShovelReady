@@ -1,10 +1,13 @@
 """Project retained observations into unreviewed parcel leads, never legal sites."""
 
+import os
 import re
 from typing import Literal
 
 from app.contracts.common import Contract, Text
 from app.investigation import Investigation
+
+from .address_packet import AddressPacketError, read_packet
 
 
 class Evidence(Contract):
@@ -206,17 +209,72 @@ def lookup(investigation: Investigation, kind: Literal["pid", "address"], query:
     if not query or len(query) > 200:
         raise ValueError("Query must contain 1 to 200 characters")
     if kind == "address":
+        try:
+            revision, address_revision, rows = read_packet()
+        except (OSError, KeyError, TypeError, ValueError) as error:
+            raise AddressPacketError("Retained address packet is invalid") from error
+        selected_address_revision = os.environ.get("SHOVELREADY_ADDRESS_REVISION")
+        if (
+            revision != investigation.spatial.identity.revision_id
+            or selected_address_revision != address_revision
+        ):
+            return Lookup(
+                spatial_revision=investigation.spatial.identity.revision_id,
+                collection=investigation.spatial.identity.logical_id,
+                query_kind=kind,
+                query=query,
+                status="unavailable",
+                candidates=(),
+                reason=(
+                    "No address capture is selected for this spatial revision; "
+                    "set SHOVELREADY_ADDRESS_REVISION or use a PID/manual facts."
+                ),
+            )
+        parcels = candidates(investigation)
+        observations = {o.snapshot_id: o for o in investigation.spatial.observations}
+        linked = {}
+        for parcel in parcels:
+            snapshot_id, index = parcel.candidate_id.rsplit("/", 1)
+            gislink = observations[snapshot_id].response["features"][int(index)]["attributes"].get(
+                "GISLINK"
+            )
+            if not isinstance(gislink, str) or not gislink:
+                raise AddressPacketError("Retained parcel GISLINK missing")
+            linked.setdefault(gislink, []).append(parcel)
+        matches = []
+
+        def normalized(value: str) -> str:
+            return " ".join(value.split()).casefold()
+
+        for source_id, index, key, address, legal_type, receipt in rows:
+            if key not in linked:
+                raise AddressPacketError("Captured address has no retained parcel join")
+            if normalized(address) != normalized(query):
+                continue
+            for parcel in linked[key]:
+                fact = Fact(
+                    value=address,
+                    basis=f"City Address Points Legal_Type={legal_type}; GISLINK={key}",
+                    evidence=Evidence(
+                        origin="source",
+                        snapshot_id=f"{source_id}:sha256:{receipt['sha256']}",
+                        feature_index=index,
+                        source_url=receipt["requested_url"],
+                        captured_at=receipt["captured_at_utc"],
+                        method="exact FullAddress; captured GISLINK to retained parcel GISLINK",
+                    ),
+                )
+                matches.append(parcel.model_copy(update={"address": fact}))
         return Lookup(
             spatial_revision=investigation.spatial.identity.revision_id,
             collection=investigation.spatial.identity.logical_id,
             query_kind=kind,
             query=query,
-            status="unavailable",
-            candidates=(),
-            reason=(
-                "No licensed address-to-parcel join is retained in this collection; "
-                "enter a PID or use manual facts."
-            ),
+            status="no_match" if not matches else "one_match" if len(matches) == 1 else "ambiguous",
+            candidates=tuple(matches),
+            reason="No exact match among five retained address rows; use a PID or manual facts."
+            if not matches
+            else None,
         )
     key = normalized_pid(query)
     matches = tuple(

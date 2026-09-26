@@ -1,0 +1,100 @@
+{
+ "displayFieldName": "FullAddress",
+ "fieldAliases": {
+  "OBJECTID": "OBJECTID",
+  "FullAddress": "FullAddress",
+  "UNIT": "UNIT",
+  "HOUSE": "HOUSE",
+  "STREET": "STREET",
+  "Municipality": "Municipality",
+  "Legal_Type": "Legal_Type",
+  "GISLINK": "GISLINK"
+ },
+ "geometryType": "esriGeometryPoint",
+ "spatialReference": {
+  "wkid": 3157,
+  "latestWkid": 3157
+ },
+ "fields": [
+  {
+   "name": "OBJECTID",
+   "type": "esriFieldTypeOID",
+   "alias": "OBJECTID"
+  },
+  {
+   "name": "FullAddress",
+   "type": "esriFieldTypeString",
+   "alias": "FullAddress",
+   "length": 200
+  },
+  {
+   "name": "UNIT",
+   "type": "esriFieldTypeString",
+   "alias": "UNIT",
+   "length": 10
+  },
+  {
+   "name": "HOUSE",
+   "type": "esriFieldTypeDouble",
+   "alias": "HOUSE"
+  },
+  {
+   "name": "STREET",
+   "type": "esriFieldTypeString",
+   "alias": "STREET",
+   "length": 30
+  },
+  {
+   "name": "Municipality",
+   "type": "esriFieldTypeString",
+   "alias": "Municipality",
+   "length": 200
+  },
+  {
+   "name": "Legal_Type",
+   "type": "esriFieldTypeString",
+   "alias": "Legal_Type",
+   "length": 200
+  },
+  {
+   "name": "GISLINK",
+   "type": "esriFieldTypeString",
+   "alias": "GISLINK",
+   "length": 16
+  }
+ ],
+ "features": [
+  {
+   "attributes": {
+    "OBJECTID": 9198,
+    "FullAddress": "1156 MAY ST",
+    "UNIT": null,
+    "HOUSE": 1156,
+    "STREET": "MAY ST",
+    "Municipality": null,
+    "Legal_Type": "LAND",
+    "GISLINK": "03229031"
+   },
+   "geometry": {
+    "x": 473708.81549999956,
+    "y": 5362185.1995999999
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 25209,
+    "FullAddress": "B-1156 MAY ST",
+    "UNIT": "B",
+    "HOUSE": 1156,
+    "STREET": "MAY ST",
+    "Municipality": null,
+    "Legal_Type": "ALIAS",
+    "GISLINK": "03229031"
+   },
+   "geometry": {
+    "x": 473708.81549999956,
+    "y": 5362185.1995999999
+   }
+  }
+ ]
+}

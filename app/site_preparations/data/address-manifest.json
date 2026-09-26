@@ -1,0 +1,84 @@
+{
+  "schema_version": "sr-38.address-packet.v1",
+  "spatial_revision": "spatial:sha256:db45fb736cd0fe2455d65b64105b038539bc7695e62666be6b2840474af8aee7",
+  "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+  "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+  "sources": [
+    {
+      "source_id": "address-metadata",
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0?f=pjson",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0?f=pjson",
+      "captured_at_utc": "2026-09-26T00:38:56.576867+00:00",
+      "sha256": "55939b07d7354420c3bc5c9dedc43b9af7a4d59fc01990a2e8ec17aa9f463b73",
+      "byte_count": 5115,
+      "object": "55939b07d7354420c3bc5c9dedc43b9af7a4d59fc01990a2e8ec17aa9f463b73.json",
+      "http_metadata": {
+        "content-type": "text/plain; charset=UTF-8",
+        "last-modified": null,
+        "etag": "\"21f05f01\"",
+        "date": "Sat, 26 Sep 2026 00:38:56 GMT"
+      }
+    },
+    {
+      "source_id": "address-catalogue",
+      "requested_url": "https://www.arcgis.com/sharing/rest/content/items/d638de50c2bb46e3a4c15fefe3756e78?f=pjson",
+      "resolved_url": "https://www.arcgis.com/sharing/rest/content/items/d638de50c2bb46e3a4c15fefe3756e78?f=pjson",
+      "captured_at_utc": "2026-09-26T00:38:56.822465+00:00",
+      "sha256": "6258cc67be9d9097bcd62e488410638547d5caf97f85b56980ad2af91fe9da77",
+      "byte_count": 2966,
+      "object": "6258cc67be9d9097bcd62e488410638547d5caf97f85b56980ad2af91fe9da77.json",
+      "http_metadata": {
+        "content-type": "text/plain;charset=utf-8",
+        "last-modified": null,
+        "etag": null,
+        "date": "Sat, 26 Sep 2026 00:38:56 GMT"
+      }
+    },
+    {
+      "source_id": "address-59",
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&where=GISLINK%3D%27V04661019%27&outFields=%2A&returnGeometry=true&outSR=3157",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&where=GISLINK%3D%27V04661019%27&outFields=%2A&returnGeometry=true&outSR=3157",
+      "captured_at_utc": "2026-09-26T00:38:57.090126+00:00",
+      "sha256": "0649b1b8acdf9956c456d03264fcf065280484f474485529ec2593283f185967",
+      "byte_count": 1851,
+      "object": "0649b1b8acdf9956c456d03264fcf065280484f474485529ec2593283f185967.json",
+      "http_metadata": {
+        "content-type": "text/plain; charset=UTF-8",
+        "last-modified": null,
+        "etag": "\"1790307914\"",
+        "date": "Sat, 26 Sep 2026 00:38:56 GMT"
+      }
+    },
+    {
+      "source_id": "address-80",
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&where=GISLINK%3D%2703229026%27&outFields=%2A&returnGeometry=true&outSR=3157",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&where=GISLINK%3D%2703229026%27&outFields=%2A&returnGeometry=true&outSR=3157",
+      "captured_at_utc": "2026-09-26T00:38:57.380711+00:00",
+      "sha256": "bc36d4937f37fd33b79fab27325e303c993f401a546cf48b68fc74984b356020",
+      "byte_count": 1522,
+      "object": "bc36d4937f37fd33b79fab27325e303c993f401a546cf48b68fc74984b356020.json",
+      "http_metadata": {
+        "content-type": "text/plain; charset=UTF-8",
+        "last-modified": null,
+        "etag": "\"1790307914\"",
+        "date": "Sat, 26 Sep 2026 00:38:56 GMT"
+      }
+    },
+    {
+      "source_id": "address-86",
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&where=GISLINK%3D%2703229031%27&outFields=%2A&returnGeometry=true&outSR=3157",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&where=GISLINK%3D%2703229031%27&outFields=%2A&returnGeometry=true&outSR=3157",
+      "captured_at_utc": "2026-09-26T00:38:57.653409+00:00",
+      "sha256": "40fa6a7f3619b04ec4597e8a90ec8e5ebc78ff9b76c8b420309b07749a6a4425",
+      "byte_count": 1833,
+      "object": "40fa6a7f3619b04ec4597e8a90ec8e5ebc78ff9b76c8b420309b07749a6a4425.json",
+      "http_metadata": {
+        "content-type": "text/plain; charset=UTF-8",
+        "last-modified": null,
+        "etag": "\"1790307914\"",
+        "date": "Sat, 26 Sep 2026 00:38:57 GMT"
+      }
+    }
+  ],
+  "revision_id": "address:sha256:508d24972e474727ebc8d5026781cf17b9c6a04306dfd0986347cfa2a516fa1c"
+}
