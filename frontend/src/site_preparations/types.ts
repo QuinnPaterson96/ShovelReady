@@ -57,3 +57,14 @@ export type SitePreparationSelection = {
   review_status: 'unreviewed'
   screening_status: 'not_performed'
 }
+
+/** Editable session state, separate from confirmed/unreviewed source selection. */
+export type SiteInputDraft = {
+  kind: 'pid' | 'address'
+  query: string
+  address: string
+  pid: string
+  area: string
+  notes: string
+}
+export const emptySiteInput: SiteInputDraft = { kind: 'pid', query: '', address: '', pid: '', area: '', notes: '' }

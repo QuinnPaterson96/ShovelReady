@@ -137,3 +137,14 @@ in CI. Municipal transfer commands remain offline experiments, not production ad
 See [combined evidence](integration-wave-ten.md) and [next steps](next-steps-after-wave-ten.md).
 Source citations, independent interpretation review and release publication remain
 separate gates. All new rule candidates are non-executable/unaccepted.
+
+
+## Wave-eleven checkpoint
+
+Site/model preparation components are mounted in the assessment flow. Editable
+site inputs survive page navigation separately from confirmed source selections;
+edits invalidate confirmation and the prepared summary. Address lookup optionally
+joins five pinned City Address Points rows to three retained parcel leads using
+GISLINK. It preserves aliases, raw source evidence and exact packet selection.
+No citywide runtime geocoder, new database schema or accepted data release is added.
+See [integration evidence and gaps](integration-wave-eleven.md).

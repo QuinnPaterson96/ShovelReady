@@ -3,7 +3,9 @@ import assert from 'node:assert/strict'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { draftReducer, emptyValues, errorsFor, example, exampleIds, initialDraft, preparationStatus } from './model'
-import { AssessmentForm, PreparationSummary } from './Assessment'
+import { AssessmentForm, PreparationSummary, providerReviewText } from './Assessment'
+import { buildSelection } from '../site_preparations/SitePreparation'
+import type { Candidate, Fact, ManualFacts } from '../site_preparations/types'
 import StatusBanner from '../StatusBanner'
 import type { AssessmentStatus } from '../StatusBanner'
 
@@ -119,4 +121,37 @@ test('banner status mapping has text, scope, reasons and action alongside every 
     const html = renderToStaticMarkup(createElement(StatusBanner, { status, reason: 'Reason', coverage: 'One supported synthetic check', unresolved: ['Current law unknown'], nextAction: 'Review evidence', synthetic: true }))
     for (const text of [`sr-status-${colour}`, label, 'Reason', 'One supported synthetic check', 'Current law unknown', 'Review evidence', 'Synthetic example', 'Approval is separate', 'role="status"']) assert.ok(html.includes(text), text)
   }
+})
+
+
+test('site edits retain all editable values across remount and invalidate confirmation', () => {
+  let draft = draftReducer(initialDraft, { type: 'site-input', value: {
+    kind: 'address', query: '1255 QUEENS AVE', address: 'user address', pid: '123', area: '450', notes: 'needs survey',
+  }, areaInvalid: false })
+  draft = draftReducer(draft, { type: 'submit' })
+  const html = renderToStaticMarkup(createElement(AssessmentForm, { draft, dispatch() {}, onSummary() {}, onEvidence() {} }))
+  for (const text of ['1255 QUEENS AVE', 'user address', '123', '450', 'needs survey']) assert.ok(html.includes(text), text)
+  const edited = draftReducer(draft, { type: 'site-input', value: { ...draft.siteInput, area: '-1' }, areaInvalid: true })
+  assert.equal(edited.site, null)
+  assert.equal(edited.submitted, false)
+  assert.equal(edited.siteInput.address, 'user address')
+  assert.equal(edited.siteInput.notes, 'needs survey')
+  assert.equal(draftReducer(edited, { type: 'submit' }).submitted, false)
+  const replaced = draftReducer(draftReducer(edited, { type: 'load', id: exampleIds[0] }), { type: 'confirm' })
+  assert.equal(replaced.siteInput.address, '')
+})
+
+test('review output keeps source address, alias join evidence and manual correction distinct', () => {
+  const fact = (value: string | number | null): Fact => ({ value, unit: null, basis: null, unresolved_reason: null,
+    evidence: { origin: 'source', snapshot_id: 'captured-snapshot', feature_index: 1,
+      source_url: 'https://maps.victoria.ca/example', captured_at: '2026-09-26T00:00:00Z',
+      method: 'GISLINK exact join; Legal_Type=ALIAS', review_status: 'unreviewed' } })
+  const candidate = { pid: fact('028-279-638'), address: fact('1255 QUEENS AVE'), approximate_area_m2: fact(450) } as Candidate
+  const manual: ManualFacts = { address: fact('manual correction'), pid: fact(null), lot_area_m2: fact(null), notes: fact(null) }
+  const draft = draftReducer(initialDraft, { type: 'site', value: buildSelection(candidate, 'spatial:pinned', manual) })
+  const text = providerReviewText(draft)
+  for (const value of ['1255 QUEENS AVE', 'Legal_Type=ALIAS', 'GISLINK', 'captured-snapshot', 'feature 1', 'manual correction', 'Checks performed: none']) assert.ok(text.includes(value), value)
+  const html = renderToStaticMarkup(createElement(PreparationSummary, { draft, onEdit() {} }))
+  assert.ok(html.includes('1255 QUEENS AVE'))
+  assert.ok(html.includes('Legal_Type=ALIAS'))
 })

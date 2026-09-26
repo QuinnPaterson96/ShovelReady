@@ -58,10 +58,10 @@ See [wave-nine integration](docs/integration-wave-nine.md) for combined verifica
 
 [Wave-ten integration](docs/integration-wave-ten.md) adds a bounded parcel-lookup API,
 standalone site/model input components, three sourced prefab candidates, and provisional
-Victoria/Saanich/Langford rule packets and municipal replay experiments. Address search
-in Victoria is still unavailable; lookup covers three retained PID leads. The new
-components are not yet mounted in the assessment. See the [next-step plan](docs/next-steps-after-wave-ten.md)
-for SR-41 wiring and evidence gates. No municipal expansion or accepted release is implied.
+Victoria/Saanich/Langford rule packets and municipal replay experiments. The subsequent [wave-eleven integration](docs/integration-wave-eleven.md)
+mounts site/model inputs and adds five captured address rows across those three
+parcel leads. Lookup remains bounded, exact-match and unreviewed; it is not citywide.
+See the integration record for composed verification and remaining evidence gates. No municipal expansion or accepted release is implied.
 
 City of Victoria garden suites remain the leading technical prototype candidate, subject
 to verified design/site inputs and current rule applicability; Vancouver is the fallback.

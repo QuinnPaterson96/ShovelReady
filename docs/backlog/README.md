@@ -146,3 +146,13 @@ Primary acquisition entry points (verify selected records and rights during SR-0
 ## Deferred scope
 
 Citywide arbitrary address resolution, automated design placement, full BIM exchange, parcel assembly, additional building types, commercial third-party API, and broader geography need observed customer requirements. Investigation states remain useful first-class outcomes; they must not disguise a product that saves no net work.
+
+
+## Wave-eleven integration checkpoint
+
+See [wave-eleven evidence](../integration-wave-eleven.md) for SR-38/#86 address
+lookup, SR-41/#89 mounted preparation, and SR-46–48/#102–104 municipal/evidence
+follow-ups. Software integration does not close controlled input, source acceptance,
+publication or real-user gates. Saanich source topology and Langford municipal
+reuse permission remain expansion blockers. Broad public research is deferred in
+favour of the specific unsent requests and controlled site/provider artifacts.

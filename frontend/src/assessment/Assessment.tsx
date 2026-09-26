@@ -5,7 +5,7 @@ import { exampleIds, fields, preparationStatus } from './model'
 import type { Action, Draft, ExampleId, Field } from './model'
 import { ModelInputs } from '../model_catalogue/ModelInputs'
 import { bundledCatalogue } from '../model_catalogue/model'
-import { SitePreparation } from '../site_preparations/SitePreparation'
+import { SitePreparation, addressEvidenceText } from '../site_preparations/SitePreparation'
 import victoriaPacket from '../../../docs/rule-packets/victoria-garden-suite/packet.json'
 
 const scopeFields: Field[] = ['municipality', 'use', 'role']
@@ -13,7 +13,7 @@ function sourceLink(url: string | null) {
   if (!url) return null
   try {
     const parsed = new URL(url)
-    return parsed.protocol === 'https:' && ['opendata.victoria.ca', 'www.victoria.ca'].includes(parsed.hostname) ? parsed.href : null
+    return parsed.protocol === 'https:' && ['opendata.victoria.ca', 'www.victoria.ca', 'maps.victoria.ca'].includes(parsed.hostname) ? parsed.href : null
   } catch { return null }
 }
 
@@ -28,7 +28,7 @@ function VictoriaEvidence() {
   </section>
 }
 
-function providerReviewText(draft: Draft) {
+export function providerReviewText(draft: Draft) {
   const candidate = draft.site?.candidate
   const model = bundledCatalogue.models.find(item => item.model_id === draft.model.modelId)
   return [
@@ -36,6 +36,7 @@ function providerReviewText(draft: Draft) {
     `Scope: ${draft.values.municipality || 'unknown'} / ${draft.values.use || 'unknown'} / ${draft.values.role || 'unknown'}`,
     `Site: ${candidate ? `retained GIS lead PID ${candidate.pid.value ?? 'unknown'}` : draft.site ? 'unmatched manual site' : 'not selected'}; spatial revision ${draft.site?.spatial_revision ?? 'unknown'}; captured ${candidate?.pid.evidence.captured_at ?? 'unknown'}`,
     `Site source: ${candidate?.pid.evidence.source_url ?? 'none'}; snapshot ${candidate?.pid.evidence.snapshot_id ?? 'none'}`,
+    `Source address: ${candidate?.address.value ?? 'unknown'}; ${candidate ? addressEvidenceText(candidate.address) : 'no captured address evidence'}`,
     `Manual site: address ${draft.site?.manual.address.value ?? 'unknown'}; PID ${draft.site?.manual.pid.value ?? 'unknown'}; area ${draft.site?.manual.lot_area_m2.value ?? 'unknown'} m²; notes ${draft.site?.manual.notes.value ?? 'none'}`,
     `Model: ${draft.model.provider || 'unknown'} / ${draft.model.modelName || 'unknown'}; revision ${draft.model.modelRevision ?? 'unknown'}; snapshot ${draft.model.snapshotId ?? 'none'}; height reference ${draft.model.heightReference}`,
     ...(['width', 'depth', 'height', 'area'] as const).map(key => `${fields[key]}: ${draft.model.fields[key].value || 'unknown'} (${draft.model.fields[key].origin}; source baseline ${draft.model.fields[key].baseline?.quantity?.original_text ?? 'none'})`),
@@ -47,7 +48,7 @@ function providerReviewText(draft: Draft) {
 }
 
 export function Provenance({ draft }: { draft: Draft }) {
-  if (!draft.imported) return <p>Entered values are user supplied and unreviewed. Blank values mean unknown.</p>
+  if (!draft.imported) return <p>Manual entries are user supplied; selected source observations retain their own provenance. Both remain unreviewed. Blank values mean unknown.</p>
   const imported = draft.imported
   return <details className="sr-provenance"><summary>Original example and provenance · {imported.id}</summary>
     <p>Synthetic inputs only. Fixture review and computed outcomes do not apply to this editable draft.</p>
@@ -69,15 +70,15 @@ export function AssessmentForm({ draft, dispatch, onSummary, onEvidence }: {
   const [selected, setSelected] = useState<ExampleId | ''>('')
   const cancel = useRef<HTMLButtonElement>(null)
   const load = useRef<HTMLButtonElement>(null)
-  const form = useRef<HTMLFormElement>(null)
+  const form = useRef<HTMLElement>(null)
   useEffect(() => { if (draft.pending) cancel.current?.focus() }, [draft.pending])
   useEffect(() => { if (Object.keys(draft.errors).length) form.current?.querySelector<HTMLInputElement>('[aria-invalid="true"]')?.focus() }, [draft.errors])
-  return <section className="sr-assessment" aria-labelledby="inputs-title">
+  return <section ref={form} className="sr-assessment" aria-labelledby="inputs-title">
     <h2 id="inputs-title">Assessment inputs</h2>
     <StatusBanner {...preparationStatus(draft)} />
     <p>Start with what you know. Dimensions are optional; leave unknown facts blank. Your draft stays in this session while you move between pages.</p>
     <p>Proposed research scope: City of Victoria · garden suite · accessory building. No accepted dataset is published.</p>
-    <form ref={form} noValidate onSubmit={event => { event.preventDefault(); dispatch({ type: 'submit' }); onSummary() }}>
+    <form noValidate onSubmit={event => { event.preventDefault(); dispatch({ type: 'submit' }); onSummary() }}>
       <div className="sr-fields">{scopeFields.map(key => <div key={key}>
         <label htmlFor={`input-${key}`}>{fields[key]}</label>
         <input id={`input-${key}`} type="text" inputMode={['width', 'depth', 'height', 'area'].includes(key) ? 'decimal' : 'text'}
@@ -92,7 +93,7 @@ export function AssessmentForm({ draft, dispatch, onSummary, onEvidence }: {
       </div>)}</div>
     </form>
       <ModelInputs value={draft.model} onChange={value => dispatch({ type: 'model', value })} />
-      <SitePreparation selection={draft.site} onEdit={areaInvalid => dispatch({ type: 'site', value: null, areaInvalid })} onConfirm={value => dispatch({ type: 'site', value })} />
+      <SitePreparation draft={draft.siteInput} onDraftChange={(value, areaInvalid) => dispatch({ type: 'site-input', value, areaInvalid })} selection={draft.site} onEdit={areaInvalid => dispatch({ type: 'site', value: null, areaInvalid })} onConfirm={value => dispatch({ type: 'site', value })} />
       <p>Placement, principal building and constraints remain unverified. The model and site facts above are preparation evidence, not a fit result.</p>
       <button className="sr-primary" type="button" onClick={() => { dispatch({ type: 'submit' }); onSummary() }}>Prepare summary</button>
     <VictoriaEvidence />
@@ -127,6 +128,7 @@ export function PreparationSummary({ draft, onEdit }: { draft: Draft; onEdit: ()
     {draft.site && <details open><summary>Site source and manual facts</summary>
       <p>Spatial revision {draft.site.spatial_revision ?? 'unknown'} · schema {draft.site.schema_version} · review {draft.site.review_status}</p>
       {draft.site.candidate && <p>Retained PID {draft.site.candidate.pid.value ?? 'unknown'} · area {draft.site.candidate.approximate_area_m2.value ?? 'unknown'} m² · captured {draft.site.candidate.pid.evidence.captured_at ?? 'unknown'} · {sourceLink(draft.site.candidate.pid.evidence.source_url) ? <a href={sourceLink(draft.site.candidate.pid.evidence.source_url)!}>source observation</a> : 'source link unavailable'} · snapshot {draft.site.candidate.pid.evidence.snapshot_id ?? 'unknown'}. Approximate GIS geometry only.</p>}
+      {draft.site.candidate && <p>Source address: {draft.site.candidate.address.value ?? 'unknown'}. {addressEvidenceText(draft.site.candidate.address)}</p>}
       {draft.site.candidate && <details><summary>Complete retained parcel candidate and evidence</summary><pre>{JSON.stringify(draft.site.candidate, null, 2)}</pre></details>}
       <p>Manual address {draft.site.manual.address.value ?? 'unknown'}; PID {draft.site.manual.pid.value ?? 'unknown'}; lot area {draft.site.manual.lot_area_m2.value ?? 'unknown'} m²; notes {draft.site.manual.notes.value ?? 'none'}. Manual values remain unreviewed and separate from source values.</p>
     </details>}

@@ -4,7 +4,7 @@ import failed from '../../../app/draft_evaluations/inputs/synthetic-placement-fa
 import type { StatusContent } from '../StatusBanner'
 import { assessmentValues, emptySelection, fieldError } from '../model_catalogue/model'
 import type { Selection } from '../model_catalogue/model'
-import type { SitePreparationSelection } from '../site_preparations/types'
+import { emptySiteInput, type SiteInputDraft, type SitePreparationSelection } from '../site_preparations/types'
 
 export const fields = {
   municipality: 'Municipality', use: 'Intended use', role: 'Building role',
@@ -50,6 +50,7 @@ export interface Draft {
   pending?: ExampleId
   model: Selection
   site: SitePreparationSelection | null
+  siteInput: SiteInputDraft
   siteAreaInvalid: boolean
 }
 export function submissionErrors(draft: Draft): Partial<Record<Field, string>> {
@@ -61,8 +62,8 @@ export function submissionErrors(draft: Draft): Partial<Record<Field, string>> {
   if (draft.siteAreaInvalid) errors.area = 'Manual lot area must be positive in m², or blank.'
   return errors
 }
-export const initialDraft: Draft = { values: emptyValues, edited: [], dirty: false, submitted: false, errors: {}, model: emptySelection(), site: null, siteAreaInvalid: false }
-export type Action = { type: 'edit'; field: Field; value: string } | { type: 'model'; value: Selection } |
+export const initialDraft: Draft = { values: emptyValues, edited: [], dirty: false, submitted: false, errors: {}, model: emptySelection(), site: null, siteInput: emptySiteInput, siteAreaInvalid: false }
+export type Action = { type: 'site-input'; value: SiteInputDraft; areaInvalid: boolean } | { type: 'edit'; field: Field; value: string } | { type: 'model'; value: Selection } |
   { type: 'site'; value: SitePreparationSelection | null; areaInvalid?: boolean } | { type: 'load'; id: ExampleId } | { type: 'confirm' } | { type: 'cancel' } | { type: 'submit' }
 function importedDraft(id: ExampleId): Draft {
   const imported = example(id)
@@ -77,6 +78,7 @@ export function draftReducer(state: Draft, action: Action): Draft {
     case 'model': return { ...state, model: action.value, values: { ...state.values, ...assessmentValues(action.value) },
       edited: [...new Set([...state.edited, 'width', 'depth', 'height', 'area'] as Field[])], dirty: true,
       submitted: false, errors: {}, pending: undefined }
+    case 'site-input': return { ...state, siteInput: action.value, site: null, siteAreaInvalid: action.areaInvalid, dirty: true, submitted: false, errors: {}, pending: undefined }
     case 'site': return { ...state, site: action.value, siteAreaInvalid: action.areaInvalid ?? false, dirty: true, submitted: false, errors: {}, pending: undefined }
     case 'load': return state.dirty ? { ...state, pending: action.id } : importedDraft(action.id)
     case 'confirm': return state.pending ? importedDraft(state.pending) : state
