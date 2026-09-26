@@ -197,3 +197,9 @@ git config --local credential.https://github.com.useHttpPath true
 ```
 
 Commit identity and authentication are separate. Confirm the account backing push credentials before pushing. `gh` may use a different account from Git Credential Manager; verify it before GitHub CLI operations. Never fall back to work credentials or change global identity to fix this repository.
+
+## Prefab research review
+
+[Reports 15-17 review](docs/research/prefab-report-review/README.md) corrects manufacturer
+claims and prioritizes Model 300 and ORCA Jay for bounded evidence acquisition.
+The live catalogue and accepted-data status are unchanged.

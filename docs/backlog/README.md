@@ -164,3 +164,11 @@ manual fallback during API failure. The single agent rehearsal identified a scop
 wording defect, fixed before integration. SR-38/#86 and SR-41/#89 are complete in
 that bounded preparation scope. SR-46–48/#102–104 retain the explicit external
 geometry, rights and accepted-input follow-ups, not additional broad research.
+
+## Prefab research follow-up
+
+[The report audit](../research/prefab-report-review/README.md) prioritizes Model 300
+and ORCA Jay. SR-55/#124 technical artifacts and SR-56/#125 supply responsibility
+research can run in parallel with SR-53/#121 intake tooling. Candidate integration
+depends on reviewed evidence and the intake result. Existing controlled-site, rule
+acceptance, publication and human-validation gates remain open.
