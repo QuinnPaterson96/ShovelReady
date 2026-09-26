@@ -1,0 +1,7 @@
+.sr-checklist-status { border-left: 5px solid var(--neutral-edge); background: var(--neutral-soft); color: var(--neutral-ink); padding: .85rem 1rem; }
+.sr-checklist > ol { padding-left: 1.5rem; }
+.sr-checklist-item { padding: .75rem 0 1rem .5rem; border-bottom: 1px solid var(--border); }
+.sr-checklist-item:last-child { border-bottom: 0; }
+.sr-checklist-item h3 { font-size: 1.1rem; margin: .2rem 0 .6rem; }
+.sr-checklist-item p { margin: .4rem 0; }
+.sr-checklist-item details li { overflow-wrap: anywhere; }
