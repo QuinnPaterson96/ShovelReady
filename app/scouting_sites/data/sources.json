@@ -1,0 +1,50 @@
+{
+  "new-87-parcel": {
+    "sha256": "12cc25147740316dfdfdabee700ef262f129b4242dfd0b1066f2f6aab9b542af",
+    "byte_count": 1761,
+    "captured_at_utc": "2026-09-26T22:51:34.382196+00:00",
+    "reference": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=87&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+    "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+    "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+  },
+  "new-87-buildings": {
+    "sha256": "665d31731932c4720fae463e4496e8270599a76c7e8f810bb552f2394c596945",
+    "byte_count": 2118,
+    "captured_at_utc": "2026-09-26T22:51:34.632779+00:00",
+    "reference": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473704.5708999997%2C5362207.274800001%5D%2C%5B473697.6003999999%2C5362165.7161%5D%2C%5B473682.57519999985%2C5362168.232999999%5D%2C%5B473689.5469000004%2C5362209.7984%5D%2C%5B473704.5708999997%2C5362207.274800001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+    "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+    "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+  },
+  "new-90-parcel": {
+    "sha256": "12c12ed2960b4c774aff7f8be00b9345abdf631012d4b9bed7239038004a9c53",
+    "byte_count": 1762,
+    "captured_at_utc": "2026-09-26T22:51:35.663817+00:00",
+    "reference": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=90&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+    "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+    "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+  },
+  "new-90-buildings": {
+    "sha256": "81df9ab1da41a3f9e03f3e284c22a945965ccdff92d5d9d5fab226a5338fbf2a",
+    "byte_count": 2969,
+    "captured_at_utc": "2026-09-26T22:51:35.907166+00:00",
+    "reference": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473677.5275999997%2C5362211.817299999%5D%2C%5B473670.55510000046%2C5362170.2465%5D%2C%5B473658.5349000003%2C5362172.26%5D%2C%5B473665.5083999997%2C5362213.836100001%5D%2C%5B473677.5275999997%2C5362211.817299999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+    "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+    "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+  },
+  "new-93-parcel": {
+    "sha256": "e26fe68e32ea475bbab57bc1966e42297263c726f2244c8a752122c19d20d38e",
+    "byte_count": 1897,
+    "captured_at_utc": "2026-09-26T22:51:39.835104+00:00",
+    "reference": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=93&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+    "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+    "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+  },
+  "new-93-buildings": {
+    "sha256": "0e27b5b511b40caf5268a50d015ca6e0fc018c32a73f0776639db3c2b7c724cf",
+    "byte_count": 2307,
+    "captured_at_utc": "2026-09-26T22:51:40.085818+00:00",
+    "reference": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473629.36039999966%2C5362219.9078%5D%2C%5B473622.38430000003%2C5362178.3155000005%5D%2C%5B473604.26389999967%2C5362181.3509%5D%2C%5B473607.2940999996%2C5362199.4177%5D%2C%5B473610.1331000002%2C5362216.343699999%5D%2C%5B473611.2413999997%2C5362222.951199999%5D%2C%5B473629.36039999966%2C5362219.9078%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+    "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+    "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+  }
+}
