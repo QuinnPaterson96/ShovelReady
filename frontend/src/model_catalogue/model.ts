@@ -1,4 +1,4 @@
-import snapshot from '../../../app/model_catalogue/catalogue.json'
+import snapshot from './catalogue.json'
 
 export type Field = 'width' | 'depth' | 'height' | 'area'
 export type SourceMeasure = {

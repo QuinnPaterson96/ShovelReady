@@ -11,7 +11,11 @@ from pathlib import Path
 
 from app.model_catalogue.catalogue import Catalogue
 
-OUTPUT = Path(__file__).with_name("catalogue.json")
+ROOT = Path(__file__).resolve().parents[2]
+OUTPUTS = (
+    Path(__file__).with_name("catalogue.json"),
+    ROOT / "frontend/src/model_catalogue/catalogue.json",
+)
 DATE = "2026-09-25"
 
 
@@ -313,13 +317,13 @@ def main():
     args = parser.parse_args()
     payload = Catalogue.model_validate(build())
     content = json.dumps(payload.model_dump(mode="json"), indent=2) + "\n"
-    if args.check:
-        if not OUTPUT.exists() or OUTPUT.read_text(encoding="utf-8") != content:
-            raise SystemExit("catalogue snapshot drift")
-        print("catalogue snapshot verified")
-    else:
-        OUTPUT.write_text(content, encoding="utf-8", newline="\n")
-        print(f"wrote {OUTPUT}")
+    for output in OUTPUTS:
+        if args.check:
+            if not output.exists() or output.read_text(encoding="utf-8") != content:
+                raise SystemExit(f"catalogue snapshot drift: {output.relative_to(ROOT)}")
+        else:
+            output.write_text(content, encoding="utf-8", newline="\n")
+    print("catalogue snapshots verified" if args.check else "catalogue snapshots exported")
 
 
 if __name__ == "__main__":
