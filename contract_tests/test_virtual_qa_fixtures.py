@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PACK = ROOT / "tests/fixtures/virtual_qa"
 RENDERER = "frontend/src/preview/InvestigationPreview.tsx"
 BASE = "303b40aeb9e69f476878959148ed299cad2a5e9b"
+FROZEN_RENDERER = PACK / "assets/baseline.tsx"
 
 
 def digest(data):
@@ -22,6 +23,12 @@ def git_text_bytes(path):
     # These tracked inputs have no binary CR/LF data. Compare canonical LF bytes,
     # including the historical cp1252 observational envelope, without rewriting them.
     return path.read_bytes().replace(b"\r\n", b"\n")
+
+
+def pinned_source_bytes(uri):
+    # Renderer references in these historical cases identify BASE, which the
+    # materialization runner checks out. The working frontend can evolve.
+    return git_text_bytes(FROZEN_RENDERER if uri == RENDERER else ROOT / uri)
 
 
 def read_json(path):
@@ -53,7 +60,8 @@ def verify_reference(reference):
     path = (ROOT / reference["uri"]).resolve()
     assert path.is_relative_to(ROOT)
     assert path.is_file(), reference["uri"]
-    assert reference["revision"]["value"] == "sha256:" + digest(git_text_bytes(path))
+    expected = "sha256:" + digest(pinned_source_bytes(reference["uri"]))
+    assert reference["revision"]["value"] == expected
     locator = reference["locator"]
     if path.suffix == ".json":
         assert locator.startswith("/")
@@ -99,8 +107,8 @@ def test_references_reject_changed_bytes_and_missing_locator():
 def test_original_bytes_and_single_control_differences():
     pins = read_json(PACK / "baseline-hashes.json")
     for name, expected in pins.items():
-        assert digest(git_text_bytes(ROOT / name)) == expected, name
-    baseline = git_text_bytes(ROOT / RENDERER).decode()
+        assert digest(pinned_source_bytes(name)) == expected, name
+    baseline = git_text_bytes(FROZEN_RENDERER).decode()
     # Reverse just the reviewed display change. Any second mutation fails equality.
     reversals = {
         "evidence-access": [
@@ -169,7 +177,7 @@ def test_recipes_bind_cases_and_exact_assets():
             assert replacement["path"] == RENDERER
             asset = (PACK / replacement["asset"]).resolve()
             assert asset.is_relative_to(PACK / "assets")
-            assert replacement["before_sha256"] == digest(git_text_bytes(ROOT / RENDERER))
+            assert replacement["before_sha256"] == digest(git_text_bytes(FROZEN_RENDERER))
             assert replacement["after_sha256"] == digest(asset.read_bytes())
             assert replacement["after_sha256"] != replacement["before_sha256"]
         if fault:

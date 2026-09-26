@@ -5,6 +5,7 @@ import { useEffect, useRef, useState, type FormEvent } from 'react'
 import type { Candidate, Fact, Lookup, ManualFacts, SitePreparationSelection, SiteInputDraft } from './types'
 
 import { emptySiteInput } from './types'
+import { publicSourceUrl, readableDate, TechnicalDetails } from '../ReadableProvenance'
 
 export type SitePreparationProps = {
   onConfirm: (selection: SitePreparationSelection) => void
@@ -28,7 +29,7 @@ function userFact(value: string | number | null, reason: string, unit: string | 
 
 export function addressEvidenceText(fact: Fact): string {
   const e = fact.evidence
-  return `Address evidence: ${fact.basis ?? 'basis unknown'}; ${e.method ?? 'method unknown'}; source ${e.source_url ?? 'unknown'}; snapshot ${e.snapshot_id ?? 'unknown'}; feature ${e.feature_index ?? 'unknown'}; captured ${e.captured_at ?? 'unknown'}; ${e.review_status}.`
+  return `Address evidence: ${fact.basis ?? 'basis unknown'}; ${e.method ?? 'method unknown'}; City of Victoria address observation; captured ${readableDate(e.captured_at)}; ${e.review_status}; source ${publicSourceUrl(e.source_url) ?? 'link unavailable'}.`
 }
 
 export function buildSelection(
@@ -150,7 +151,8 @@ export function SitePreparation({ onConfirm, onEdit, selection, draft, onDraftCh
       <p>VicPID {candidate.vic_pid.value ?? 'unknown'} · {candidate.parcel_type.value ?? 'type unknown'} · {candidate.parcel_status.value ?? 'status unknown'}</p>
       <p>Approximate GIS area: {candidate.approximate_area_m2.value ?? 'unknown'} m² ({candidate.boundary_crs} XY). Boundary is an unreviewed GIS polygon.</p>
       <p>Zoning contacts: {candidate.zones.length ? candidate.zones.map((zone) => `${zone.zone.value ?? 'unknown'} (${zone.classification})`).join(', ') : 'none captured; coverage unresolved'}.</p>
-      <details><summary>Parcel source and capture record</summary><p className="metadata">Captured {candidate.pid.evidence.captured_at ?? 'date unknown'} · Source {candidate.pid.evidence.source_url ?? 'unknown'} · Snapshot {candidate.pid.evidence.snapshot_id ?? 'unknown'}</p></details>
+      <p className="metadata">City of Victoria parcel observation · captured {readableDate(candidate.pid.evidence.captured_at)} · unreviewed · {publicSourceUrl(candidate.pid.evidence.source_url) ? <a href={publicSourceUrl(candidate.pid.evidence.source_url)!} target="_blank" rel="noreferrer">source layer</a> : 'source link unavailable'}.</p>
+      <TechnicalDetails title="Parcel technical capture record"><pre>{JSON.stringify(candidate, null, 2)}</pre></TechnicalDetails>
       <p>Constraints not queried. Title, survey, principal building and placement remain unknown.</p>
       <button type="button" onClick={() => confirm(candidate)}>Use this parcel lead for my summary</button>
     </article>)}

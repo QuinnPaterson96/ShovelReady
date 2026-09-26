@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { draftReducer, emptyValues, errorsFor, example, exampleIds, initialDraft, preparationStatus } from './model'
-import { AssessmentForm, PreparationSummary, providerReviewText } from './Assessment'
+import { AssessmentForm, PreparationSummary, providerReviewText, technicalReviewText } from './Assessment'
 import { buildSelection } from '../site_preparations/SitePreparation'
 import type { Candidate, Fact, ManualFacts, Lookup } from '../site_preparations/types'
 import StatusBanner from '../StatusBanner'
@@ -150,10 +150,26 @@ test('review output keeps source address, alias join evidence and manual correct
   const manual: ManualFacts = { address: fact('manual correction'), pid: fact(null), lot_area_m2: fact(null), notes: fact(null) }
   const draft = draftReducer(initialDraft, { type: 'site', value: buildSelection(candidate, 'spatial:pinned', manual) })
   const text = providerReviewText(draft)
-  for (const value of ['1255 QUEENS AVE', 'Legal_Type=ALIAS', 'GISLINK', 'captured-snapshot', 'feature 1', 'manual correction', 'Checks performed: none']) assert.ok(text.includes(value), value)
+  for (const value of ['1255 QUEENS AVE', 'Legal_Type=ALIAS', 'GISLINK', 'manual correction', 'Checks performed: none']) assert.ok(text.includes(value), value)
+  assert.doesNotMatch(text, /captured-snapshot|spatial:pinned|\/query\?/)
+  assert.match(technicalReviewText(draft), /captured-snapshot/)
   const html = renderToStaticMarkup(createElement(PreparationSummary, { draft, onEdit() {} }))
   assert.ok(html.includes('1255 QUEENS AVE'))
   assert.ok(html.includes('Legal_Type=ALIAS'))
+})
+
+test('manual model review stays readable while technical export retains exact source associations', () => {
+  const selected = draftReducer(initialDraft, { type: 'model', value: {
+    ...initialDraft.model, provider: 'Local builder', modelName: 'Custom plan', modelId: null,
+  } })
+  const human = providerReviewText(selected)
+  assert.match(human, /Local builder \/ Custom plan; manufacturer revision not supplied/)
+  assert.doesNotMatch(human, /sha256:|snapshot|\/query\?/)
+  const technical = technicalReviewText(selected)
+  assert.match(technical, /"snapshotId": null/)
+  assert.match(technical, /"model_catalogue": null/)
+  assert.match(technical, /"provisional_rule_packet"/)
+  assert.ok(JSON.parse(technical).provisional_rule_packet.candidates.every((rule: { logical_rule_id: string; proposed_revision_id: string }) => rule.logical_rule_id && rule.proposed_revision_id))
 })
 
 

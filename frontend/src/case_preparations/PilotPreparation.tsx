@@ -2,11 +2,12 @@ import { useEffect, useRef, useState } from 'react'
 import { evidenceUrl, startLoad } from './adapter'
 import type { Citation, LoadState, Preparation } from './adapter'
 import StatusBanner from '../StatusBanner'
+import { TechnicalDetails } from '../ReadableProvenance'
 
 function Sources({ sources }: { sources: Citation[] }) {
   return <ul>{sources.map((s, i) => <li key={i}>{evidenceUrl(s.url)
-    ? <a href={evidenceUrl(s.url)!} target="_blank" rel="noopener noreferrer">{s.source_id}</a>
-    : <span>{s.source_id} (link unavailable)</span>}: {s.locator}</li>)}</ul>
+    ? <a href={evidenceUrl(s.url)!} target="_blank" rel="noopener noreferrer">Source record</a>
+    : <span>Source link unavailable</span>}: {s.locator} · capture date unknown · review status unknown<TechnicalDetails><code>{s.source_id}</code></TechnicalDetails></li>)}</ul>
 }
 function Raw({ value }: { value: unknown }) {
   return <pre>{JSON.stringify(value, (_key, item) => item === null ? 'Missing / unknown' : item, 2)}</pre>
