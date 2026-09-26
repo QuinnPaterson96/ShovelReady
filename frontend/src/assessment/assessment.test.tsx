@@ -3,7 +3,9 @@ import assert from 'node:assert/strict'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { draftReducer, emptyValues, errorsFor, example, exampleIds, initialDraft, preparationStatus } from './model'
-import { AssessmentForm, PreparationSummary } from './Assessment'
+import { AssessmentForm, PreparationSummary, providerReviewText } from './Assessment'
+import { buildSelection } from '../site_preparations/SitePreparation'
+import type { Candidate, Fact, ManualFacts, Lookup } from '../site_preparations/types'
 import StatusBanner from '../StatusBanner'
 import type { AssessmentStatus } from '../StatusBanner'
 
@@ -63,6 +65,8 @@ test('editing invalidates preparation and retains original values and full prove
   assert.match(html, /User supplied \/ edited/)
   assert.match(html, /synthetic-arithmetic/)
   assert.match(html, /No regulatory checks/)
+  assert.match(html, /Copyable provider-review summary/)
+  assert.match(html, /Checks performed: none/)
 })
 
 test('complete arbitrary inputs and imported fixtures never produce regulatory pass/failure', () => {
@@ -81,11 +85,30 @@ test('form exposes units, connected labels/errors, and explicit optional example
   const html = renderToStaticMarkup(createElement(AssessmentForm, { draft, dispatch() {}, onSummary() {}, onEvidence() {} }))
   assert.match(html, /width \(m\)/)
   assert.match(html, /area \(m²\)/)
-  assert.match(html, /for="input-height"/)
-  assert.match(html, /aria-describedby="hint-height error-height"/)
-  assert.match(html, /aria-invalid="true"/)
+  assert.match(html, /for="sr-model-height"/)
+  assert.match(html, /for="sr-model-height-reference"/)
+  assert.match(html, /for="manual-area"/)
+  assert.match(html, /Roof height from foundation datum \(m\) is invalid/)
   assert.match(html, /option value="" selected=""/)
   assert.match(html, /Load selected example/)
+})
+
+test('model and site selections preserve source objects and invalidate prepared state', () => {
+  const model = { ...initialDraft.model, modelId: 'lead', snapshotId: 'source-snapshot', changeSequence: 1 }
+  const withModel = draftReducer(draftReducer(initialDraft, { type: 'submit' }), { type: 'model', value: model })
+  assert.equal(withModel.submitted, false)
+  assert.equal(withModel.model, model)
+  const withSite = draftReducer(withModel, { type: 'site', value: null })
+  assert.equal(withSite.submitted, false)
+  assert.ok(preparationStatus(withSite).unresolved.some(item => item.includes('Parcel lead')))
+  const invalid = draftReducer(withSite, { type: 'model', value: {
+    ...model, fields: { ...model.fields, width: { ...model.fields.width, value: '-1' } },
+  } })
+  assert.equal(draftReducer(invalid, { type: 'submit' }).submitted, false)
+  assert.ok(preparationStatus(invalid).unresolved.some(item => item.includes('width') && item.includes('invalid')))
+  const invalidArea = draftReducer(withSite, { type: 'site', value: null, areaInvalid: true })
+  assert.equal(draftReducer(invalidArea, { type: 'submit' }).submitted, false)
+  assert.ok(preparationStatus(invalidArea).unresolved.some(item => item.includes('Manual lot area is invalid')))
 })
 
 test('banner status mapping has text, scope, reasons and action alongside every colour', () => {
@@ -98,4 +121,55 @@ test('banner status mapping has text, scope, reasons and action alongside every 
     const html = renderToStaticMarkup(createElement(StatusBanner, { status, reason: 'Reason', coverage: 'One supported synthetic check', unresolved: ['Current law unknown'], nextAction: 'Review evidence', synthetic: true }))
     for (const text of [`sr-status-${colour}`, label, 'Reason', 'One supported synthetic check', 'Current law unknown', 'Review evidence', 'Synthetic example', 'Approval is separate', 'role="status"']) assert.ok(html.includes(text), text)
   }
+})
+
+
+test('site edits retain all editable values across remount and invalidate confirmation', () => {
+  let draft = draftReducer(initialDraft, { type: 'site-input', value: {
+    kind: 'address', query: '1255 QUEENS AVE', address: 'user address', pid: '123', area: '450', notes: 'needs survey',
+  }, areaInvalid: false })
+  draft = draftReducer(draft, { type: 'submit' })
+  const html = renderToStaticMarkup(createElement(AssessmentForm, { draft, dispatch() {}, onSummary() {}, onEvidence() {} }))
+  for (const text of ['1255 QUEENS AVE', 'user address', '123', '450', 'needs survey']) assert.ok(html.includes(text), text)
+  const edited = draftReducer(draft, { type: 'site-input', value: { ...draft.siteInput, area: '-1' }, areaInvalid: true })
+  assert.equal(edited.site, null)
+  assert.equal(edited.submitted, false)
+  assert.equal(edited.siteInput.address, 'user address')
+  assert.equal(edited.siteInput.notes, 'needs survey')
+  assert.equal(draftReducer(edited, { type: 'submit' }).submitted, false)
+  const replaced = draftReducer(draftReducer(edited, { type: 'load', id: exampleIds[0] }), { type: 'confirm' })
+  assert.equal(replaced.siteInput.address, '')
+})
+
+test('review output keeps source address, alias join evidence and manual correction distinct', () => {
+  const fact = (value: string | number | null): Fact => ({ value, unit: null, basis: 'City Address Points Legal_Type=ALIAS; GISLINK=V04661019', unresolved_reason: null,
+    evidence: { origin: 'source', snapshot_id: 'captured-snapshot', feature_index: 1,
+      source_url: 'https://maps.victoria.ca/example', captured_at: '2026-09-26T00:00:00Z',
+      method: 'exact FullAddress; captured GISLINK to retained parcel GISLINK', review_status: 'unreviewed' } })
+  const candidate = { pid: fact('028-279-638'), address: fact('1255 QUEENS AVE'), approximate_area_m2: fact(450) } as Candidate
+  const manual: ManualFacts = { address: fact('manual correction'), pid: fact(null), lot_area_m2: fact(null), notes: fact(null) }
+  const draft = draftReducer(initialDraft, { type: 'site', value: buildSelection(candidate, 'spatial:pinned', manual) })
+  const text = providerReviewText(draft)
+  for (const value of ['1255 QUEENS AVE', 'Legal_Type=ALIAS', 'GISLINK', 'captured-snapshot', 'feature 1', 'manual correction', 'Checks performed: none']) assert.ok(text.includes(value), value)
+  const html = renderToStaticMarkup(createElement(PreparationSummary, { draft, onEdit() {} }))
+  assert.ok(html.includes('1255 QUEENS AVE'))
+  assert.ok(html.includes('Legal_Type=ALIAS'))
+})
+
+
+test('visible accessory-building wording is within preparation scope; other roles stay outside', () => {
+  const draft = { ...initialDraft, submitted: true, values: { ...initialDraft.values,
+    municipality: 'City of Victoria', use: 'Garden suite', role: 'Accessory building' } }
+  assert.equal(preparationStatus(draft).status, 'needs_investigation')
+  assert.equal(preparationStatus({ ...draft, values: { ...draft.values, role: 'Principal building' } }).status, 'outside_coverage')
+})
+
+test('retained lookup survives a manual note edit for explicit reconfirmation, not automatic selection', () => {
+  const lookup = { candidates: [], status: 'no_match' } as unknown as Lookup
+  const withLookup = draftReducer(initialDraft, { type: 'site-lookup', value: lookup })
+  const edited = draftReducer(withLookup, { type: 'site-input', value: { ...withLookup.siteInput, notes: 'survey needed' }, areaInvalid: false })
+  assert.equal(edited.site, null)
+  assert.equal(edited.siteInput.lookup, lookup)
+  const newSearch = draftReducer(edited, { type: 'site-input', value: { ...edited.siteInput, query: 'new address', lookup: null }, areaInvalid: false })
+  assert.equal(newSearch.siteInput.lookup, null)
 })

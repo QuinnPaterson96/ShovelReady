@@ -61,3 +61,13 @@ The earlier Lone Oak spatial result and Jenkins/Glen Lake no-match observations
 therefore describe only the first returned point, not resolved address lookups.
 Tests retain that spatial calculation using a clearly simulated explicit selection;
 it does not verify an address/PID join. The capture bytes are unchanged.
+
+## SR-47 follow-up
+
+[Candidate selection, coverage and dataset-specific rights](rights-and-selection.md)
+documents the new explicit `--select CASE=LOCATOR` offline replay, the per-candidate
+coverage results, the City's published reuse restriction and an [unsent permission
+request](permission-request-unsent.md). This follow-up supersedes the simulated
+selection description above: the original geocoder capture now remains intact during
+selection and the chosen locator, capture SHA-256 and replay revision are recorded.
+All three cases still default to ambiguity. No municipal feature was captured.

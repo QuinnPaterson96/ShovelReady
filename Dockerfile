@@ -5,6 +5,7 @@ RUN npm ci
 COPY frontend/index.html frontend/tsconfig*.json frontend/vite.config.ts ./
 COPY frontend/src ./src
 COPY app/draft_evaluations/inputs/synthetic-*.json /build/app/draft_evaluations/inputs/
+COPY docs/rule-packets/victoria-garden-suite/packet.json /build/docs/rule-packets/victoria-garden-suite/packet.json
 RUN npm run build
 
 FROM python:3.12-slim-bookworm

@@ -5,3 +5,5 @@ app/draft_evaluations/inputs/arithmetic.md text eol=lf
 docs/municipality-transfer/saanich/spatial/capture.json -text
 docs/municipality-transfer/langford/spatial/*-geocoder.json -text
 docs/municipality-transfer/langford/spatial/*-pmbc.json -text
+app/site_preparations/data/*.json -text
+app/site_preparations/data/address-manifest.json text eol=lf

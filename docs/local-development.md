@@ -240,3 +240,22 @@ current location differs from its process working directory. The wrapper now use
 PowerShell's path resolver. A regression runs the actual wrapper from another directory
 with a stubbed Python dispatch, checking the selected path and restored caller location;
 it does not start a database or claim to replace the full launch check.
+
+
+### Wave-eleven bounded address demo
+
+Select the captured address packet explicitly before invoking the existing launcher:
+
+```powershell
+$env:SHOVELREADY_ADDRESS_REVISION = 'address:sha256:4830a1985952b3150bf01bc276575a08238c5bbb71bf4fc489675231be534e5f'
+# Use your owned local.json and the exact spatial revision printed by seed:
+./scripts/demo.ps1 -Config <owned-local.json> -Revision <seeded-spatial-revision> -Port 18098
+```
+
+The launcher inherits this selection; startup does not acquire or publish data.
+Try address `1253 QUEENS AVE` or its captured alias `1255 QUEENS AVE`. Both lead
+ to PID `028-279-638`; explicit confirmation is still required. Coverage is five
+address rows across three parcels, exact after case/whitespace normalization.
+An uncaptured address is not a zoning exclusion. Without an explicit matching
+address revision the API returns unavailable and manual/PID preparation remains.
+See [address packet provenance and import](site-preparations/address-join.md).

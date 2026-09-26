@@ -6,8 +6,10 @@ import IdentityPanel from './Identity'
 import DraftEvaluations from './draft_evaluations/DraftEvaluations'
 import PilotPreparation from './case_preparations/PilotPreparation'
 import { AssessmentForm, PreparationSummary } from './assessment/Assessment'
-import { draftReducer, errorsFor, initialDraft } from './assessment/model'
+import { draftReducer, initialDraft, submissionErrors } from './assessment/model'
 import './assessment/assessment.css'
+import './model_catalogue/model-inputs.css'
+import './site_preparations/site-preparation.css'
 import './case_preparations/pilot.css'
 
 export default function App() {
@@ -73,7 +75,7 @@ export default function App() {
         <p>Begin with your own inputs, or explicitly load a labelled synthetic example. Unknown facts can stay unknown.</p>
       </section>}
       {page === 'inputs' && <AssessmentForm draft={draft} dispatch={dispatch}
-        onSummary={() => { if (!Object.keys(errorsFor(draft.values)).length) setPage('summary') }}
+        onSummary={() => { if (!Object.keys(submissionErrors(draft)).length) setPage('summary') }}
         onEvidence={() => setPage('pilot')} />}
       {page === 'summary' && <PreparationSummary draft={draft} onEdit={() => setPage('inputs')} />}
       {page === 'pilot' && <PilotPreparation />}

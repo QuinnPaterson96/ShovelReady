@@ -1,11 +1,18 @@
 import Ajv2020 from 'ajv/dist/2020'
 import addFormats from 'ajv-formats'
 import schema from './schema.json'
-import { useRef, useState, type FormEvent } from 'react'
-import type { Candidate, Fact, Lookup, ManualFacts, SitePreparationSelection } from './types'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
+import type { Candidate, Fact, Lookup, ManualFacts, SitePreparationSelection, SiteInputDraft } from './types'
+
+import { emptySiteInput } from './types'
 
 export type SitePreparationProps = {
   onConfirm: (selection: SitePreparationSelection) => void
+  draft?: SiteInputDraft
+  onDraftChange?: (draft: SiteInputDraft, areaInvalid: boolean) => void
+  onLookup?: (lookup: Lookup | null) => void
+  onEdit?: (areaInvalid: boolean) => void
+  selection?: SitePreparationSelection | null
   endpoint?: string
 }
 
@@ -17,6 +24,11 @@ function userFact(value: string | number | null, reason: string, unit: string | 
       captured_at: new Date().toISOString(), method: 'manual entry; unverified', review_status: 'unreviewed',
     },
   }
+}
+
+export function addressEvidenceText(fact: Fact): string {
+  const e = fact.evidence
+  return `Address evidence: ${fact.basis ?? 'basis unknown'}; ${e.method ?? 'method unknown'}; source ${e.source_url ?? 'unknown'}; snapshot ${e.snapshot_id ?? 'unknown'}; feature ${e.feature_index ?? 'unknown'}; captured ${e.captured_at ?? 'unknown'}; ${e.review_status}.`
 }
 
 export function buildSelection(
@@ -46,34 +58,51 @@ export function validLookup(value: unknown): value is Lookup {
     (['no_match', 'unavailable'].includes(data.status) && data.candidates.length === 0)
 }
 
-export function SitePreparation({ onConfirm, endpoint = '/api/site-preparations/lookup' }: SitePreparationProps) {
-  const [kind, setKind] = useState<'pid' | 'address'>('pid')
-  const [query, setQuery] = useState('')
-  const [lookup, setLookup] = useState<Lookup | null>(null)
+export function SitePreparation({ onConfirm, onEdit, selection, draft, onDraftChange, onLookup, endpoint = '/api/site-preparations/lookup' }: SitePreparationProps) {
+  const [localDraft, setLocalDraft] = useState<SiteInputDraft>(emptySiteInput)
+  const input = draft ?? localDraft
+  const { kind, query, address, pid, area, notes } = input
+  const [localLookup, setLocalLookup] = useState<Lookup | null>(null)
+  const lookup = draft ? draft.lookup ?? null : localLookup
+  function setLookup(value: Lookup | null) { setLocalLookup(value); onLookup?.(value) }
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
-  const [address, setAddress] = useState('')
-  const [pid, setPid] = useState('')
-  const [area, setArea] = useState('')
-  const [notes, setNotes] = useState('')
   const requestId = useRef(0)
+  const controller = useRef<AbortController | null>(null)
+  useEffect(() => () => { ++requestId.current; controller.current?.abort() }, [])
+  function invalidArea(value: string) { return !!value.trim() && (!Number.isFinite(Number(value)) || Number(value) <= 0) }
+  function changed(nextArea = area) { onEdit?.(invalidArea(nextArea)) }
+  function edit(patch: Partial<SiteInputDraft>) {
+    const next = { ...input, ...patch }
+    setLocalDraft(next)
+    onDraftChange?.(next, invalidArea(next.area))
+    changed(next.area)
+  }
+  function cancelRequest() { ++requestId.current; controller.current?.abort(); controller.current = null; setLoading(false); setLookup(null) }
 
   async function search(event: FormEvent) {
     event.preventDefault()
+    changed()
+    cancelRequest()
     const currentRequest = ++requestId.current
+    const pending = new AbortController()
+    controller.current = pending
+    const timer = setTimeout(() => pending.abort(), 8000)
     setLookup(null)
     setError(null)
     setLoading(true)
     try {
-      const response = await fetch(`${endpoint}?kind=${kind}&q=${encodeURIComponent(query.trim())}`)
+      const response = await fetch(`${endpoint}?kind=${kind}&q=${encodeURIComponent(query.trim())}`, { signal: pending.signal })
       if (!response.ok) throw new Error(`Lookup unavailable (HTTP ${response.status})`)
       const payload: unknown = await response.json()
       if (!validLookup(payload)) throw new Error('Lookup returned an unsupported response')
       if (currentRequest === requestId.current) setLookup(payload)
     } catch (reason) {
       if (currentRequest === requestId.current)
-        setError(reason instanceof Error ? reason.message : 'Lookup failed')
+        setError(pending.signal.aborted ? 'Lookup timed out or was cancelled' : reason instanceof Error ? reason.message : 'Lookup failed')
     } finally {
+      clearTimeout(timer)
+      if (controller.current === pending) controller.current = null
       if (currentRequest === requestId.current) setLoading(false)
     }
   }
@@ -90,21 +119,23 @@ export function SitePreparation({ onConfirm, endpoint = '/api/site-preparations/
   }
 
   function confirm(candidate: Candidate | null) {
+    if (invalidArea(area)) return
     onConfirm(buildSelection(candidate, lookup?.spatial_revision ?? null, manualFacts()))
   }
 
   return <section className="site-preparation" aria-labelledby="site-preparation-title">
     <p className="eyebrow">Site preparation · unreviewed</p>
     <h2 id="site-preparation-title">Find a parcel lead</h2>
-    <p>Search three retained Victoria GIS parcel observations. A match is a lead for confirmation, not a surveyed lot or zoning result.</p>
+    <p>Search three retained Victoria GIS parcel observations. Address lookup covers five captured address rows, including aliases, with exact matching after case and whitespace normalization; it is not citywide search. A match is a lead for confirmation, not a surveyed lot or zoning result.</p>
     <form onSubmit={search}>
       <label htmlFor="site-search-kind">Search by</label>
-      <select id="site-search-kind" value={kind} onChange={(event) => { ++requestId.current; setKind(event.target.value as 'pid' | 'address'); setLookup(null); setLoading(false) }}>
+      <select id="site-search-kind" value={kind} onChange={(event) => { cancelRequest(); edit({ lookup: null, kind: event.target.value as 'pid' | 'address' }) }}>
         <option value="pid">Parcel identifier (PID)</option><option value="address">Address</option>
       </select>
       <label htmlFor="site-search-value">{kind === 'pid' ? 'PID' : 'Address'}</label>
-      <input id="site-search-value" type="text" value={query} maxLength={200} required onChange={(event) => { ++requestId.current; setQuery(event.target.value); setLookup(null); setLoading(false) }} />
+      <input id="site-search-value" type="text" value={query} maxLength={200} required onChange={(event) => { cancelRequest(); edit({ lookup: null, query: event.target.value }) }} />
       <button disabled={loading} type="submit">{loading ? 'Searching…' : 'Search retained observations'}</button>
+      {loading && <button type="button" onClick={() => { cancelRequest(); setError('Lookup cancelled') }}>Cancel search</button>}
     </form>
     {error && <p role="alert" className="site-preparation-status">{error}. You can enter manual facts below.</p>}
     {lookup && <div className="site-preparation-status" role="status">
@@ -113,6 +144,8 @@ export function SitePreparation({ onConfirm, endpoint = '/api/site-preparations/
     </div>}
     {lookup?.candidates.map((candidate) => <article className="site-preparation-candidate" key={candidate.candidate_id}>
       <h3>PID {candidate.pid.value ?? 'unknown'}</h3>
+      <p>Source address: {candidate.address.value ?? 'unknown (PID search may have multiple address rows)'}</p>
+      {candidate.address.value !== null && <p className="metadata">{addressEvidenceText(candidate.address)}</p>}
       <p>VicPID {candidate.vic_pid.value ?? 'unknown'} · {candidate.parcel_type.value ?? 'type unknown'} · {candidate.parcel_status.value ?? 'status unknown'}</p>
       <p>Approximate GIS area: {candidate.approximate_area_m2.value ?? 'unknown'} m² ({candidate.boundary_crs} XY). Boundary is an unreviewed GIS polygon.</p>
       <p>Zoning contacts: {candidate.zones.length ? candidate.zones.map((zone) => `${zone.zone.value ?? 'unknown'} (${zone.classification})`).join(', ') : 'none captured; coverage unresolved'}.</p>
@@ -123,11 +156,13 @@ export function SitePreparation({ onConfirm, endpoint = '/api/site-preparations/
     <div className="site-preparation-manual">
       <h3>Manual site facts · unreviewed</h3>
       <p>Enter what you know; leave unknown fields empty. These values remain separate from any source observation. An address alone does not verify a parcel match.</p>
-      <label htmlFor="manual-address">Address, if known</label><input id="manual-address" type="text" value={address} onChange={(event) => setAddress(event.target.value)} />
-      <label htmlFor="manual-pid">PID, if known</label><input id="manual-pid" type="text" value={pid} onChange={(event) => setPid(event.target.value)} />
-      <label htmlFor="manual-area">Approximate lot area (m²), if known</label><input id="manual-area" type="number" min="0" step="any" value={area} onChange={(event) => setArea(event.target.value)} />
-      <label htmlFor="manual-notes">Source or uncertainty notes</label><input id="manual-notes" type="text" value={notes} onChange={(event) => setNotes(event.target.value)} />
-      <button type="button" onClick={() => confirm(null)}>Continue with unmatched manual facts</button>
+      <label htmlFor="manual-address">Address, if known</label><input id="manual-address" type="text" value={address} onChange={(event) => { edit({ address: event.target.value }) }} />
+      <label htmlFor="manual-pid">PID, if known</label><input id="manual-pid" type="text" value={pid} onChange={(event) => { edit({ pid: event.target.value }) }} />
+      <label htmlFor="manual-area">Approximate lot area (m²), if known</label><input id="manual-area" type="number" min="0" step="any" value={area} aria-invalid={invalidArea(area)} onChange={(event) => { edit({ area: event.target.value }) }} />
+      {invalidArea(area) && <p role="alert" className="sr-error">Enter a positive lot area in m², or leave it blank.</p>}
+      <label htmlFor="manual-notes">Source or uncertainty notes</label><input id="manual-notes" type="text" value={notes} onChange={(event) => { edit({ notes: event.target.value }) }} />
+      <button type="button" disabled={invalidArea(area)} onClick={() => confirm(null)}>Continue with unmatched manual facts</button>
     </div>
+    {selection && <p className="site-preparation-status" role="status">{selection.mode === 'retained_candidate' ? `Confirmed parcel lead PID ${selection.candidate?.pid.value ?? 'unknown'}` : 'Manual unmatched site facts saved'} · unreviewed. Editing any site field clears this confirmation.</p>}
   </section>
 }

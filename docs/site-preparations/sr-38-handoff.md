@@ -1,5 +1,9 @@
 # SR-38 retained Victoria parcel preparation
 
+> Historical wave-ten handoff. The subsequent bounded address join is documented
+> in [address-join.md](address-join.md); its five captured address rows supersede
+> the address-unavailable statements below when the exact address revision is selected.
+
 Issue: https://github.com/QuinnPaterson96/ShovelReady/issues/86. Starting base:
 `6c14d9f4f4dc43c297b341a212dd8174585d1880` (main with PR #85).
 
