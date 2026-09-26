@@ -118,6 +118,16 @@ ownership; it adds no reviewer, approval, bot or branch-protection requirement.
   limitations and dependencies. Keep software verification, independent source review,
   accepted data publication and real-user validation distinct; code merge is not publication.
 
+## Explicit integration gaps
+
+At every integration, include the actual remaining gaps in the user-facing summary,
+not only in a linked report. For each material gap record what is missing, observed
+evidence, practical impact, next action and owner/ticket. Distinguish blockers to
+usable demonstrations from source review, controlled inputs, accepted publication,
+real evaluation and user-validation gates. If a gap cannot be resolved by software,
+say which external artifact or decision is needed. Passing tests or merging a partial
+slice must not erase its remaining acceptance criteria.
+
 ## Definition of done
 
 A consequential change is done when:
