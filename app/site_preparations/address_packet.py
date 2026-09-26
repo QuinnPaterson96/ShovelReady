@@ -34,8 +34,12 @@ def read_packet(root: Path = ROOT):
         or manifest.get("licence_url") != LICENCE
         or manifest.get("attribution")
         != "Contains information licensed under the Open Government Licence - City of Victoria."
-        or not isinstance(manifest.get("spatial_revision"), str)
-        or not re.fullmatch(r"spatial:sha256:[0-9a-f]{64}", manifest["spatial_revision"])
+        or not isinstance(manifest.get("parcel_snapshots"), dict)
+        or set(manifest["parcel_snapshots"]) != {"address-59", "address-80", "address-86"}
+        or any(
+            not re.fullmatch(r"site-(59|80|86)-parcel:sha256:[0-9a-f]{64}", value)
+            for value in manifest["parcel_snapshots"].values()
+        )
         or manifest.get("revision_id") != revision_id(manifest)
         or not isinstance(manifest.get("sources"), list)
         or len(manifest["sources"]) != len(requests)
@@ -127,4 +131,4 @@ def read_packet(root: Path = ROOT):
             rows.append(
                 (source_id, index, key, attrs["FullAddress"], attrs["Legal_Type"], receipt)
             )
-    return manifest["spatial_revision"], manifest["revision_id"], tuple(rows)
+    return manifest["parcel_snapshots"], manifest["revision_id"], tuple(rows)

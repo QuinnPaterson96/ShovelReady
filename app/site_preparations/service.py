@@ -210,12 +210,13 @@ def lookup(investigation: Investigation, kind: Literal["pid", "address"], query:
         raise ValueError("Query must contain 1 to 200 characters")
     if kind == "address":
         try:
-            revision, address_revision, rows = read_packet()
+            parcel_snapshots, address_revision, rows = read_packet()
         except (OSError, KeyError, TypeError, ValueError) as error:
             raise AddressPacketError("Retained address packet is invalid") from error
         selected_address_revision = os.environ.get("SHOVELREADY_ADDRESS_REVISION")
+        actual_parcels = {parcel.parcel_snapshot_id for parcel in investigation.spatial.parcels}
         if (
-            revision != investigation.spatial.identity.revision_id
+            set(parcel_snapshots.values()) != actual_parcels
             or selected_address_revision != address_revision
         ):
             return Lookup(

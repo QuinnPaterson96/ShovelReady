@@ -20,7 +20,13 @@ def import_capture(capture: Path, target: Path = ROOT) -> None:
     if len(lines) != 5:
         raise ValueError("expected exactly five address capture receipts")
     receipts = [strict_json(line) for line in lines]
-    revision = prepare()[1].identity.revision_id
+    sources, _ = prepare()
+    parcel_snapshots = {
+        f"address-{lead}": next(
+            source.snapshot_id for source in sources if source.source_id == f"site-{lead}-parcel"
+        )
+        for lead in ("59", "80", "86")
+    }
     target.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(dir=target) as temporary:
         staged = Path(temporary)
@@ -35,7 +41,7 @@ def import_capture(capture: Path, target: Path = ROOT) -> None:
             receipt["object"] = object_name
         manifest = {
             "schema_version": "sr-38.address-packet.v1",
-            "spatial_revision": revision,
+            "parcel_snapshots": parcel_snapshots,
             "licence_url": LICENCE,
             "attribution": ATTRIBUTION,
             "sources": receipts,
@@ -66,10 +72,12 @@ def main() -> None:
         parser.error("choose exactly one of --check or --import-capture")
     if args.import_capture:
         import_capture(args.import_capture)
-    revision, address_revision, rows = read_packet()
-    if revision != prepare()[1].identity.revision_id:
-        raise SystemExit("address capture does not match current spatial packet")
-    print(f"{revision}; {address_revision}: {len(rows)} retained address rows; unreviewed")
+    parcel_snapshots, address_revision, rows = read_packet()
+    sources, _ = prepare()
+    current = {source.snapshot_id for source in sources if source.source_id.endswith("-parcel")}
+    if set(parcel_snapshots.values()) != current:
+        raise SystemExit("address capture does not match current parcel source snapshots")
+    print(f"{address_revision}: {len(rows)} retained address rows; unreviewed")
 
 
 if __name__ == "__main__":

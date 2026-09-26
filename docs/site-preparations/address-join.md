@@ -64,19 +64,19 @@ address manifest. A failed import leaves the selected manifest intact. Review
 the resulting Git diff and commit the new content-addressed objects and
 manifest as an explicit data change. Re-capture does not select a new runtime
 revision automatically. The current address revision is
-`address:sha256:508d24972e474727ebc8d5026781cf17b9c6a04306dfd0986347cfa2a516fa1c`.
-The importer binds it to spatial revision
-`spatial:sha256:db45fb736cd0fe2455d65b64105b038539bc7695e62666be6b2840474af8aee7`.
-Different parcel spatial captures require a reviewed join and new address
-capture; the old address packet returns `unavailable` for another spatial
-revision.
+`address:sha256:4830a1985952b3150bf01bc276575a08238c5bbb71bf4fc489675231be534e5f`.
+The importer binds it to the three exact parcel source snapshot IDs in the
+manifest. Derived spatial revision hashes can vary with the geometry runtime,
+while these content-addressed source snapshots remain identical. Different
+parcel source snapshots require a reviewed join and new address capture; the
+old address packet returns `unavailable` for those sources.
 
 Import the existing spatial packet into an explicitly project-owned database
 using [the investigation instructions](../investigation-api.md) and configure
 its exact `SHOVELREADY_SPATIAL_COLLECTION` and `SHOVELREADY_SPATIAL_REVISION`.
 Select the address packet separately with
-`SHOVELREADY_ADDRESS_REVISION=address:sha256:508d24972e474727ebc8d5026781cf17b9c6a04306dfd0986347cfa2a516fa1c`.
-Without that exact value, address lookup returns `unavailable` and PID/manual
+`SHOVELREADY_ADDRESS_REVISION=address:sha256:4830a1985952b3150bf01bc276575a08238c5bbb71bf4fc489675231be534e5f`.
+Without that exact value, or with mismatched parcel source snapshots, address lookup returns `unavailable` and PID/manual
 preparation remains available. No migration is needed. These captures are
 unreviewed and are not accepted data publication.
 
@@ -87,7 +87,7 @@ The existing `GET /api/site-preparations/lookup?kind=address&q=...` and
 unselected candidate with PID `028-279-638` and a source-backed address fact.
 `123 Example St` yields `no_match` within the five rows. Malformed capture
 or a broken join yields HTTP 502, never a blank successful match. A missing
-address revision or mismatched spatial revision yields `unavailable`. The
+address revision or mismatched parcel source snapshots yields `unavailable`. The
 manual fallback remains appropriate for uncaptured addresses and corrections;
 manual facts retain user origin and do not overwrite source evidence.
 

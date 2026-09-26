@@ -108,14 +108,28 @@ def test_address_requires_explicit_revision(retained, monkeypatch):
     assert not result.candidates
 
 
+def test_address_join_uses_pinned_parcel_sources_across_geometry_runtimes(retained):
+    other_revision = "spatial:sha256:" + "a" * 64
+    spatial = retained.spatial.model_copy(
+        update={
+            "identity": retained.spatial.identity.model_copy(
+                update={"revision_id": other_revision}
+            )
+        }
+    )
+    result = lookup(retained.model_copy(update={"spatial": spatial}), "address", "1170 MAY ST")
+    assert result.spatial_revision == other_revision
+    assert result.status == "one_match"
+
+
 def test_address_capture_revision_and_ambiguous_join(retained, monkeypatch):
     import app.site_preparations.service as service
 
-    revision, address_revision, rows = read_packet()
+    parcel_snapshots, address_revision, rows = read_packet()
     monkeypatch.setattr(
         service,
         "read_packet",
-        lambda: ("spatial:sha256:" + "0" * 64, address_revision, rows),
+        lambda: ({**parcel_snapshots, "address-59": "missing"}, address_revision, rows),
     )
     assert lookup(retained, "address", "1253 QUEENS AVE").status == "unavailable"
 
@@ -123,7 +137,7 @@ def test_address_capture_revision_and_ambiguous_join(retained, monkeypatch):
         service,
         "read_packet",
         lambda: (
-            revision,
+            parcel_snapshots,
             address_revision,
             rows + (("address-80", 0, "03229026", "1253 QUEENS AVE", "LAND", rows[2][5]),),
         ),
@@ -194,7 +208,7 @@ def test_explicit_capture_import_is_atomic(tmp_path):
     )
     target = tmp_path / "target"
     import_capture(capture, target)
-    assert read_packet(target)[0] == manifest["spatial_revision"]
+    assert read_packet(target)[0] == manifest["parcel_snapshots"]
     original = (target / "address-manifest.json").read_bytes()
     (capture / "objects" / receipts[2]["object"].split("/")[1]).write_text("{}")
     with pytest.raises(ValueError, match="integrity mismatch"):

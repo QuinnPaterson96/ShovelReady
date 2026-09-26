@@ -1,6 +1,10 @@
 {
   "schema_version": "sr-38.address-packet.v1",
-  "spatial_revision": "spatial:sha256:db45fb736cd0fe2455d65b64105b038539bc7695e62666be6b2840474af8aee7",
+  "parcel_snapshots": {
+    "address-59": "site-59-parcel:sha256:8d666d1dffaaa039101ee84f407e7bb84d80ed7c933f70fde0e8e8b87d7a7f92",
+    "address-80": "site-80-parcel:sha256:ed59084b6d130989d8bd3110487e6834a1c0d4e2896e7da282763e5dab7c3844",
+    "address-86": "site-86-parcel:sha256:d824f4fead8ca0d6924fe31f918f399c276c20026d5fc2ea37b0f218be56a03f"
+  },
   "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
   "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
   "sources": [
@@ -80,5 +84,5 @@
       }
     }
   ],
-  "revision_id": "address:sha256:508d24972e474727ebc8d5026781cf17b9c6a04306dfd0986347cfa2a516fa1c"
+  "revision_id": "address:sha256:4830a1985952b3150bf01bc276575a08238c5bbb71bf4fc489675231be534e5f"
 }
