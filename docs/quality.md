@@ -62,6 +62,28 @@ record a combined API/UI check when connecting those layers for the first time.
 
 ## Explain and recover
 
+### Readable provenance
+
+Default product views and human-facing copy/export text lead with a meaningful
+source or provider label, capture date, source link and explicit review status.
+Raw hashes, internal snapshot/release IDs, schema versions and diagnostic payloads
+belong in labelled expandable technical details or a separate technical evidence
+export. Preserve complete identifiers in underlying data and make exact values
+recoverable and copyable; merely truncating a hash is not a readable source label.
+Meaningful public identifiers such as a PID, address or bylaw section may remain
+visible when they help the user identify the record.
+
+Do not invent a source name/date when missing, hide uncertainty, or represent a
+snapshot hash as a manufacturer design revision or a legally effective revision.
+For example, show "Manufacturer revision not supplied" separately from technical
+capture identity. These are presentation rules, not weakened provenance contracts.
+
+For affected UI changes, check default and expanded views, human-facing copied
+text, and the full technical record. Verify readable labels without raw hash noise,
+preserved source association/full IDs, honest missing metadata, keyboard access and
+long-value wrapping at narrow width. Test meaningful output behavior rather than
+adding blanket string bans that would break technical exports.
+
 A user should be able to identify why a case was included/excluded, what was checked, what remains unknown, and the source date. Test this understanding on real users. A disclaimer does not repair an affirmative label unsupported by the data.
 
 Record errors by stage and retain run/release identifiers. Monitor ingestion failures and unresolved-case rates, not just HTTP uptime. Unexpected decision changes are investigated before promotion. Maintain a known-good application image and dataset release; test recovery with backward-compatible schemas and backups.
