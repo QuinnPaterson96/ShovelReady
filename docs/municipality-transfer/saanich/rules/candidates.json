@@ -1,0 +1,85 @@
+{
+  "schema_version": "sr-43.saanich-candidates.v1",
+  "pathway_id": "saanich-garden-suite-existing-single-family-v1",
+  "source": {
+    "snapshot_id": "saanich-8200-captured-2026-09-25",
+    "url": "https://www.saanich.ca/assets/Local~Government/Documents/Planning/zone8200.pdf",
+    "landing_url": "https://www.saanich.ca/EN/main/local-government/bylaws.html",
+    "captured_on": "2026-09-25",
+    "instrument": "Saanich Zoning Bylaw 8200, unofficial consolidated PDF",
+    "printed_revision": "includes marginal amendment references through B. 10299 2026",
+    "effective_from": null,
+    "transient_download_sha256": "855fc03f07b22bebde8228a3762fb55a69ce6de250d294ce66bf67503a9316bb",
+    "retained_pdf": false,
+    "extraction_method": "manual selection from official PDF text, pdftotext -layout",
+    "reuse_status": "Official bylaw linked for public reading; permission to redistribute full PDF not established. Only short attributed excerpts retained."
+  },
+  "pathway_conditions": [
+    "Section 5.35(b)(i): parcel zone expressly permits Garden Suite; zone schedule must be verified for the specific lot",
+    "Section 5.35(b)(ii): lot lies in Sewer Service Area OR Urban Containment Boundary; both boundary observations and their releases unresolved",
+    "Section 5.35(b)(iii-v): lot area at least 400 m2, bylaw Lot Width at least 12 m, principal building is a single family dwelling",
+    "Section 5.35(c),(g): at most one garden suite; same fee simple parcel or same strata plan as single family dwelling",
+    "Schedule H and applicable zone/sections 5 and 7, servicing, covenants, permits and overlays require separate review"
+  ],
+  "checks": [
+    {
+      "identity": {"logical_id": "saanich-gs-min-lot-area", "revision_id": "candidate-2026-09-25-8200-5.35biii"},
+      "review_status": "unreviewed", "mapping": "scalar_candidate",
+      "locator": "Zoning Bylaw 8200 §5.35(b)(iii)", "page_index": 43, "printed_page": "5-14",
+      "excerpt": "The lot must have a minimum area of 400 m2",
+      "context": "One of five cumulative garden-suite eligibility conditions in §5.35(b).",
+      "interpretation": "Candidate minimum lot area; no permission follows from this scalar alone.",
+      "subject": "lot", "measurement_definition": "area of the lot under Saanich Zoning Bylaw definitions; parcel/strata geometry requires review", "operator": ">=",
+      "quantity": {"original_text":"400 m2", "original_value":"400", "original_unit":"m2", "dimension":"area", "value":"400", "unit":"m2", "basis":null},
+      "field_origins": {"threshold":"bylaw §5.35(b)(iii)", "operator":"manual interpretation of minimum", "measurement_definition":"manual, subject to definition review"},
+      "dependencies": [{"instrument":"Zoning Bylaw 8200", "locator":"§2 Lot; §5.35(b) remainder", "relationship":"depends_on"}]
+    },
+    {
+      "identity": {"logical_id": "saanich-gs-min-lot-width", "revision_id": "candidate-2026-09-25-8200-5.35biv"},
+      "review_status": "unreviewed", "mapping": "scalar_candidate",
+      "locator": "Zoning Bylaw 8200 §5.35(b)(iv)", "page_index": 44, "printed_page": "5-15",
+      "excerpt": "The lot must be a minimum of 12 m wide",
+      "context": "The bylaw definition of Lot Width uses a perpendicular line to the line joining front/rear midpoints; a GIS envelope width is not equivalent.",
+      "interpretation": "Candidate minimum defined lot width; measurement algorithm not implemented.",
+      "subject": "lot", "measurement_definition": "Lot Width as defined in Zoning Bylaw 8200 §2, not bounding-box width", "operator": ">=",
+      "quantity": {"original_text":"12 m", "original_value":"12", "original_unit":"m", "dimension":"length", "value":"12", "unit":"m", "basis":null},
+      "field_origins": {"threshold":"bylaw §5.35(b)(iv)", "operator":"manual interpretation of minimum", "measurement_definition":"bylaw §2 and manual cross-reference"},
+      "dependencies": [{"instrument":"Zoning Bylaw 8200", "locator":"§2 Lot Width; §5.35(b) remainder", "relationship":"depends_on"}]
+    },
+    {
+      "identity": {"logical_id": "saanich-gs-max-gfa-r", "revision_id": "candidate-2026-09-25-8200-H1a"},
+      "review_status": "unreviewed", "mapping": "scalar_candidate",
+      "locator": "Zoning Bylaw 8200 Schedule H §1(a)", "page_index": 402, "printed_page": "2000-35",
+      "excerpt": "A garden suite shall have a maximum Gross Floor Area (R) of 93 m2",
+      "context": "Gross Floor Area (R) is defined in §2 with inclusions and exclusions; manufacturer floor area is not this value.",
+      "interpretation": "Candidate garden-suite Gross Floor Area (R) ceiling.",
+      "subject": "garden suite", "measurement_definition": "Gross Floor Area (R) per Zoning Bylaw 8200 §2, measured to exterior wall faces with stated exclusions", "operator": "<=",
+      "quantity": {"original_text":"93 m2", "original_value":"93", "original_unit":"m2", "dimension":"area", "value":"93", "unit":"m2", "basis":null},
+      "field_origins": {"threshold":"bylaw Schedule H §1(a)", "operator":"manual interpretation of maximum", "measurement_definition":"bylaw §2 and manual cross-reference"},
+      "dependencies": [{"instrument":"Zoning Bylaw 8200", "locator":"§2 Gross Floor Area (R)", "relationship":"depends_on"}]
+    },
+    {
+      "identity": {"logical_id": "saanich-gs-min-open-site-space", "revision_id": "candidate-2026-09-25-8200-H2a"},
+      "review_status": "unreviewed", "mapping": "scalar_candidate",
+      "locator": "Zoning Bylaw 8200 Schedule H §2(a)", "page_index": 402, "printed_page": "2000-35",
+      "excerpt": "A minimum Open Site Space Requirement (GS) of 45% of the area of the lot.",
+      "context": "§2 excludes buildings, structures, driveways and impervious surfaces from the landscaped numerator, with an above-ground projection exception.",
+      "interpretation": "Candidate minimum landscaped open-site fraction on a lot with a garden suite; site-surface inputs absent.",
+      "subject": "lot with garden suite", "measurement_definition": "Open Site Space Requirement (GS) landscaped area divided by total lot area under §2", "operator": ">=",
+      "quantity": {"original_text":"45% of the area of the lot", "original_value":"45", "original_unit":"%", "dimension":"ratio", "value":"0.45", "unit":"fraction", "basis":{"numerator":"Open Site Space Requirement (GS) landscaped area", "denominator":"area of the lot"}},
+      "field_origins": {"threshold":"bylaw Schedule H §2(a)", "operator":"manual interpretation of minimum", "basis":"bylaw Schedule H §2(a) and §2 definition"},
+      "dependencies": [{"instrument":"Zoning Bylaw 8200", "locator":"§2 Open Site Space Requirement (GS)", "relationship":"depends_on"}]
+    },
+    {
+      "identity": {"logical_id": "saanich-gs-height-roof-branch", "revision_id": "candidate-2026-09-25-8200-H3c"},
+      "review_status": "unreviewed", "mapping": "unresolved",
+      "locator": "Zoning Bylaw 8200 Schedule H §3(c)", "page_index": 402, "printed_page": "2000-35",
+      "excerpt": "A garden suite shall not exceed a height of: 6.5 m",
+      "context": "The same clause sets 5.5 m for flat roofs or pitch less than 3:12; §3(a-b) also changes setbacks at 4.2 m height.",
+      "interpretation": "Height ceiling branches by roof form and is coupled to setback branches; retain as unresolved conditional rule.",
+      "blocker": "ScalarBound alone cannot encode roof-form alternatives and linked setback pathways without reviewed facts and coherent alternative IDs.",
+      "field_origins": {"values":"bylaw Schedule H §3(c)", "branch":"manual cross-clause interpretation"},
+      "dependencies": [{"instrument":"Zoning Bylaw 8200", "locator":"§2 Height and Grade; §5.18; Schedule H §3(a-b)", "relationship":"depends_on"}]
+    }
+  ]
+}
