@@ -63,6 +63,8 @@ test('editing invalidates preparation and retains original values and full prove
   assert.match(html, /User supplied \/ edited/)
   assert.match(html, /synthetic-arithmetic/)
   assert.match(html, /No regulatory checks/)
+  assert.match(html, /Copyable provider-review summary/)
+  assert.match(html, /Checks performed: none/)
 })
 
 test('complete arbitrary inputs and imported fixtures never produce regulatory pass/failure', () => {
@@ -81,11 +83,30 @@ test('form exposes units, connected labels/errors, and explicit optional example
   const html = renderToStaticMarkup(createElement(AssessmentForm, { draft, dispatch() {}, onSummary() {}, onEvidence() {} }))
   assert.match(html, /width \(m\)/)
   assert.match(html, /area \(m²\)/)
-  assert.match(html, /for="input-height"/)
-  assert.match(html, /aria-describedby="hint-height error-height"/)
-  assert.match(html, /aria-invalid="true"/)
+  assert.match(html, /for="sr-model-height"/)
+  assert.match(html, /for="sr-model-height-reference"/)
+  assert.match(html, /for="manual-area"/)
+  assert.match(html, /Roof height from foundation datum \(m\) is invalid/)
   assert.match(html, /option value="" selected=""/)
   assert.match(html, /Load selected example/)
+})
+
+test('model and site selections preserve source objects and invalidate prepared state', () => {
+  const model = { ...initialDraft.model, modelId: 'lead', snapshotId: 'source-snapshot', changeSequence: 1 }
+  const withModel = draftReducer(draftReducer(initialDraft, { type: 'submit' }), { type: 'model', value: model })
+  assert.equal(withModel.submitted, false)
+  assert.equal(withModel.model, model)
+  const withSite = draftReducer(withModel, { type: 'site', value: null })
+  assert.equal(withSite.submitted, false)
+  assert.ok(preparationStatus(withSite).unresolved.some(item => item.includes('Parcel lead')))
+  const invalid = draftReducer(withSite, { type: 'model', value: {
+    ...model, fields: { ...model.fields, width: { ...model.fields.width, value: '-1' } },
+  } })
+  assert.equal(draftReducer(invalid, { type: 'submit' }).submitted, false)
+  assert.ok(preparationStatus(invalid).unresolved.some(item => item.includes('width') && item.includes('invalid')))
+  const invalidArea = draftReducer(withSite, { type: 'site', value: null, areaInvalid: true })
+  assert.equal(draftReducer(invalidArea, { type: 'submit' }).submitted, false)
+  assert.ok(preparationStatus(invalidArea).unresolved.some(item => item.includes('Manual lot area is invalid')))
 })
 
 test('banner status mapping has text, scope, reasons and action alongside every colour', () => {
