@@ -1,0 +1,14 @@
+.sr-model-inputs { border: 1px solid var(--border); border-left: 3px solid var(--primary); border-radius: var(--radius-card); background: var(--surface); padding: 1.25rem; }
+.sr-model-inputs h2 { margin-top: 0; }
+.sr-model-inputs label { display: block; margin-top: 1rem; font-weight: 650; }
+.sr-model-inputs input, .sr-model-inputs select { width: 100%; min-height: 44px; margin-top: .4rem; padding: .65rem; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--surface); color: var(--ink); }
+.sr-model-inputs input:focus-visible, .sr-model-inputs select:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.sr-model-inputs input[aria-invalid="true"] { border-color: var(--danger); }
+.sr-model-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 1rem; }
+.sr-model-grid > div { min-width: 0; }
+.sr-model-hint { color: var(--ink-muted); font-size: .92rem; }
+.sr-model-error { color: var(--danger-ink); font-weight: 650; }
+.sr-model-notice { border-left: 5px solid var(--neutral-edge); background: var(--neutral-soft); color: var(--neutral-ink); padding: .8rem; }
+.sr-model-source { border-left: 3px solid var(--primary); padding-left: 1rem; margin-top: 1rem; overflow-wrap: anywhere; }
+.sr-model-inputs details { margin: .4rem 0 .7rem; overflow-wrap: anywhere; }
+@media (max-width: 540px) { .sr-model-grid { grid-template-columns: 1fr; } }
