@@ -1,0 +1,2435 @@
+{
+  "schema_version": "occupied-lots.v1",
+  "capture_status": "complete",
+  "horizontal_crs": "EPSG:3157",
+  "horizontal_unit": "metre",
+  "vertical_unit": null,
+  "selection": {
+    "where": "ParcelType='LA' AND ParcelStatus='ACTIVE' AND Shape_Area > 500 AND Shape_Area < 900 AND OBJECTID > 86 AND OBJECTID <= 150",
+    "candidate_window": [
+      87,
+      150
+    ],
+    "target_new_cases": 13,
+    "discovered_ids": [
+      87,
+      90,
+      91,
+      92,
+      93,
+      94,
+      95,
+      96,
+      97,
+      98,
+      100,
+      102,
+      103,
+      104,
+      107,
+      108,
+      109,
+      110,
+      111,
+      112,
+      117,
+      118,
+      119,
+      120,
+      121,
+      122,
+      123,
+      124,
+      125,
+      126,
+      127,
+      128,
+      129,
+      131,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142,
+      143,
+      145,
+      146,
+      148,
+      149
+    ],
+    "rule": "ascending OBJECTID; retain first 13 with intersecting Residential-labelled building polygon and GRD-1 zoning intersection; 3 prior leads added by reference"
+  },
+  "sources": {
+    "parcel-metadata": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11?f=pjson",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11?f=pjson",
+      "captured_at_utc": "2026-09-26T22:51:32.371169+00:00",
+      "sha256": "fdbc0f690262835c2536dd556bb1cc8a08523e52e54548dd997615fb599f7e90",
+      "byte_count": 8484,
+      "repository_path": "docs/research/occupied-lots/snapshots/fdbc0f690262835c2536dd556bb1cc8a08523e52e54548dd997615fb599f7e90.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"21f05f01\"",
+        "Date": "Sat, 26 Sep 2026 22:51:31 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "building-metadata": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1?f=pjson",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1?f=pjson",
+      "captured_at_utc": "2026-09-26T22:51:32.621903+00:00",
+      "sha256": "7b97a02649ffbd3037cd65497f1a10a79bd3ae21c334f625e643014d5bd92e44",
+      "byte_count": 4682,
+      "repository_path": "docs/research/occupied-lots/snapshots/7b97a02649ffbd3037cd65497f1a10a79bd3ae21c334f625e643014d5bd92e44.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"21f05f01\"",
+        "Date": "Sat, 26 Sep 2026 22:51:31 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "address-metadata": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0?f=pjson",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0?f=pjson",
+      "captured_at_utc": "2026-09-26T22:51:32.858759+00:00",
+      "sha256": "55939b07d7354420c3bc5c9dedc43b9af7a4d59fc01990a2e8ec17aa9f463b73",
+      "byte_count": 5115,
+      "repository_path": "docs/research/occupied-lots/snapshots/55939b07d7354420c3bc5c9dedc43b9af7a4d59fc01990a2e8ec17aa9f463b73.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"21f05f01\"",
+        "Date": "Sat, 26 Sep 2026 22:51:31 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "zoning-metadata": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12?f=pjson",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12?f=pjson",
+      "captured_at_utc": "2026-09-26T22:51:33.099037+00:00",
+      "sha256": "ff7ee0b0b99008d72aad56ff5a83b50522655be98399d649e4150e4c6d7b9a58",
+      "byte_count": 5040,
+      "repository_path": "docs/research/occupied-lots/snapshots/ff7ee0b0b99008d72aad56ff5a83b50522655be98399d649e4150e4c6d7b9a58.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"a5822626\"",
+        "Date": "Sat, 26 Sep 2026 22:51:32 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "parcel-catalogue": {
+      "requested_url": "https://www.arcgis.com/sharing/rest/content/items/901cb49452d14dd2855fa701311f0545?f=pjson",
+      "resolved_url": "https://www.arcgis.com/sharing/rest/content/items/901cb49452d14dd2855fa701311f0545?f=pjson",
+      "captured_at_utc": "2026-09-26T22:51:33.464611+00:00",
+      "sha256": "8d1361136982c3209944db7bfd901cf69b3d672dff5c7f14fa3d2ecda3a456cf",
+      "byte_count": 3353,
+      "repository_path": "docs/research/occupied-lots/snapshots/8d1361136982c3209944db7bfd901cf69b3d672dff5c7f14fa3d2ecda3a456cf.json",
+      "http_metadata": {
+        "Content-Type": "text/plain;charset=utf-8",
+        "Last-Modified": null,
+        "ETag": null,
+        "Date": "Sat, 26 Sep 2026 22:51:32 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "building-catalogue": {
+      "requested_url": "https://www.arcgis.com/sharing/rest/content/items/dc37de452a614b599dd9c9ff473739d3?f=pjson",
+      "resolved_url": "https://www.arcgis.com/sharing/rest/content/items/dc37de452a614b599dd9c9ff473739d3?f=pjson",
+      "captured_at_utc": "2026-09-26T22:51:33.663790+00:00",
+      "sha256": "e874760c2347f91d6cbbe95e5e78455606ef3561657e39b1d09a1e27b2bea264",
+      "byte_count": 3121,
+      "repository_path": "docs/research/occupied-lots/snapshots/e874760c2347f91d6cbbe95e5e78455606ef3561657e39b1d09a1e27b2bea264.json",
+      "http_metadata": {
+        "Content-Type": "text/plain;charset=utf-8",
+        "Last-Modified": null,
+        "ETag": null,
+        "Date": "Sat, 26 Sep 2026 22:51:32 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "zoning-catalogue": {
+      "requested_url": "https://www.arcgis.com/sharing/rest/content/items/84dde8f57dd7428f8a34d67f13c55051?f=pjson",
+      "resolved_url": "https://www.arcgis.com/sharing/rest/content/items/84dde8f57dd7428f8a34d67f13c55051?f=pjson",
+      "captured_at_utc": "2026-09-26T22:51:33.866996+00:00",
+      "sha256": "e50aea13ef11c6a9a0fc21f3ef9f6a9e40815599ee33b4e96e02f14b34bb3629",
+      "byte_count": 3412,
+      "repository_path": "docs/research/occupied-lots/snapshots/e50aea13ef11c6a9a0fc21f3ef9f6a9e40815599ee33b4e96e02f14b34bb3629.json",
+      "http_metadata": {
+        "Content-Type": "text/plain;charset=utf-8",
+        "Last-Modified": null,
+        "ETag": null,
+        "Date": "Sat, 26 Sep 2026 22:51:32 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "bounded-discovery": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&where=ParcelType%3D%27LA%27+AND+ParcelStatus%3D%27ACTIVE%27+AND+Shape_Area+%3E+500+AND+Shape_Area+%3C+900+AND+OBJECTID+%3E+86+AND+OBJECTID+%3C%3D+150&returnIdsOnly=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&where=ParcelType%3D%27LA%27+AND+ParcelStatus%3D%27ACTIVE%27+AND+Shape_Area+%3E+500+AND+Shape_Area+%3C+900+AND+OBJECTID+%3E+86+AND+OBJECTID+%3C%3D+150&returnIdsOnly=true",
+      "captured_at_utc": "2026-09-26T22:51:34.126275+00:00",
+      "sha256": "8424bd1dc9438a692c7eee3336d3f87e5005995ff9abaa8cf32b1b39b5928cdd",
+      "byte_count": 360,
+      "repository_path": "docs/research/occupied-lots/snapshots/8424bd1dc9438a692c7eee3336d3f87e5005995ff9abaa8cf32b1b39b5928cdd.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790318547\"",
+        "Date": "Sat, 26 Sep 2026 22:51:33 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-87-parcel": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=87&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=87&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+      "captured_at_utc": "2026-09-26T22:51:34.382196+00:00",
+      "sha256": "12cc25147740316dfdfdabee700ef262f129b4242dfd0b1066f2f6aab9b542af",
+      "byte_count": 1761,
+      "repository_path": "docs/research/occupied-lots/snapshots/12cc25147740316dfdfdabee700ef262f129b4242dfd0b1066f2f6aab9b542af.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790318547\"",
+        "Date": "Sat, 26 Sep 2026 22:51:33 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-87-buildings": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473704.5708999997%2C5362207.274800001%5D%2C%5B473697.6003999999%2C5362165.7161%5D%2C%5B473682.57519999985%2C5362168.232999999%5D%2C%5B473689.5469000004%2C5362209.7984%5D%2C%5B473704.5708999997%2C5362207.274800001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473704.5708999997%2C5362207.274800001%5D%2C%5B473697.6003999999%2C5362165.7161%5D%2C%5B473682.57519999985%2C5362168.232999999%5D%2C%5B473689.5469000004%2C5362209.7984%5D%2C%5B473704.5708999997%2C5362207.274800001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:34.632779+00:00",
+      "sha256": "665d31731932c4720fae463e4496e8270599a76c7e8f810bb552f2394c596945",
+      "byte_count": 2118,
+      "repository_path": "docs/research/occupied-lots/snapshots/665d31731932c4720fae463e4496e8270599a76c7e8f810bb552f2394c596945.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1770398264\"",
+        "Date": "Sat, 26 Sep 2026 22:51:33 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-87-zoning": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473704.5708999997%2C5362207.274800001%5D%2C%5B473697.6003999999%2C5362165.7161%5D%2C%5B473682.57519999985%2C5362168.232999999%5D%2C%5B473689.5469000004%2C5362209.7984%5D%2C%5B473704.5708999997%2C5362207.274800001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473704.5708999997%2C5362207.274800001%5D%2C%5B473697.6003999999%2C5362165.7161%5D%2C%5B473682.57519999985%2C5362168.232999999%5D%2C%5B473689.5469000004%2C5362209.7984%5D%2C%5B473704.5708999997%2C5362207.274800001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:35.151056+00:00",
+      "sha256": "0ccff549fa234e9a93c113a5e71ed9692b5959dd8ddcffc6216b5d74288272a9",
+      "byte_count": 225420,
+      "repository_path": "docs/research/occupied-lots/snapshots/0ccff549fa234e9a93c113a5e71ed9692b5959dd8ddcffc6216b5d74288272a9.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790312011\"",
+        "Date": "Sat, 26 Sep 2026 22:51:33 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-87-addresses": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473704.5708999997%2C5362207.274800001%5D%2C%5B473697.6003999999%2C5362165.7161%5D%2C%5B473682.57519999985%2C5362168.232999999%5D%2C%5B473689.5469000004%2C5362209.7984%5D%2C%5B473704.5708999997%2C5362207.274800001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CFullAddress%2CGISLINK&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473704.5708999997%2C5362207.274800001%5D%2C%5B473697.6003999999%2C5362165.7161%5D%2C%5B473682.57519999985%2C5362168.232999999%5D%2C%5B473689.5469000004%2C5362209.7984%5D%2C%5B473704.5708999997%2C5362207.274800001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CFullAddress%2CGISLINK&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:35.411552+00:00",
+      "sha256": "a85b0597dbed6b8fb2e1e1cfad13cef53894b07a61cb6fc41e7fe835b49ea88f",
+      "byte_count": 776,
+      "repository_path": "docs/research/occupied-lots/snapshots/a85b0597dbed6b8fb2e1e1cfad13cef53894b07a61cb6fc41e7fe835b49ea88f.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790307914\"",
+        "Date": "Sat, 26 Sep 2026 22:51:34 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-90-parcel": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=90&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=90&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+      "captured_at_utc": "2026-09-26T22:51:35.663817+00:00",
+      "sha256": "12c12ed2960b4c774aff7f8be00b9345abdf631012d4b9bed7239038004a9c53",
+      "byte_count": 1762,
+      "repository_path": "docs/research/occupied-lots/snapshots/12c12ed2960b4c774aff7f8be00b9345abdf631012d4b9bed7239038004a9c53.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790318547\"",
+        "Date": "Sat, 26 Sep 2026 22:51:34 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-90-buildings": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473677.5275999997%2C5362211.817299999%5D%2C%5B473670.55510000046%2C5362170.2465%5D%2C%5B473658.5349000003%2C5362172.26%5D%2C%5B473665.5083999997%2C5362213.836100001%5D%2C%5B473677.5275999997%2C5362211.817299999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473677.5275999997%2C5362211.817299999%5D%2C%5B473670.55510000046%2C5362170.2465%5D%2C%5B473658.5349000003%2C5362172.26%5D%2C%5B473665.5083999997%2C5362213.836100001%5D%2C%5B473677.5275999997%2C5362211.817299999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:35.907166+00:00",
+      "sha256": "81df9ab1da41a3f9e03f3e284c22a945965ccdff92d5d9d5fab226a5338fbf2a",
+      "byte_count": 2969,
+      "repository_path": "docs/research/occupied-lots/snapshots/81df9ab1da41a3f9e03f3e284c22a945965ccdff92d5d9d5fab226a5338fbf2a.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1770398264\"",
+        "Date": "Sat, 26 Sep 2026 22:51:34 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-90-zoning": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473677.5275999997%2C5362211.817299999%5D%2C%5B473670.55510000046%2C5362170.2465%5D%2C%5B473658.5349000003%2C5362172.26%5D%2C%5B473665.5083999997%2C5362213.836100001%5D%2C%5B473677.5275999997%2C5362211.817299999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473677.5275999997%2C5362211.817299999%5D%2C%5B473670.55510000046%2C5362170.2465%5D%2C%5B473658.5349000003%2C5362172.26%5D%2C%5B473665.5083999997%2C5362213.836100001%5D%2C%5B473677.5275999997%2C5362211.817299999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:36.701471+00:00",
+      "sha256": "0ccff549fa234e9a93c113a5e71ed9692b5959dd8ddcffc6216b5d74288272a9",
+      "byte_count": 225420,
+      "repository_path": "docs/research/occupied-lots/snapshots/0ccff549fa234e9a93c113a5e71ed9692b5959dd8ddcffc6216b5d74288272a9.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790312011\"",
+        "Date": "Sat, 26 Sep 2026 22:51:35 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-90-addresses": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473677.5275999997%2C5362211.817299999%5D%2C%5B473670.55510000046%2C5362170.2465%5D%2C%5B473658.5349000003%2C5362172.26%5D%2C%5B473665.5083999997%2C5362213.836100001%5D%2C%5B473677.5275999997%2C5362211.817299999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CFullAddress%2CGISLINK&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473677.5275999997%2C5362211.817299999%5D%2C%5B473670.55510000046%2C5362170.2465%5D%2C%5B473658.5349000003%2C5362172.26%5D%2C%5B473665.5083999997%2C5362213.836100001%5D%2C%5B473677.5275999997%2C5362211.817299999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CFullAddress%2CGISLINK&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:36.942424+00:00",
+      "sha256": "037cc68decb1ce6593c326c91972229c05d0b2f885becd48a2180bbcb18aec40",
+      "byte_count": 776,
+      "repository_path": "docs/research/occupied-lots/snapshots/037cc68decb1ce6593c326c91972229c05d0b2f885becd48a2180bbcb18aec40.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790307914\"",
+        "Date": "Sat, 26 Sep 2026 22:51:35 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-91-parcel": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=91&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=91&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+      "captured_at_utc": "2026-09-26T22:51:37.194391+00:00",
+      "sha256": "12dc8feb2c839209eb46aa6e793a191aef71b56be3e832425f4d663e5867660c",
+      "byte_count": 1759,
+      "repository_path": "docs/research/occupied-lots/snapshots/12dc8feb2c839209eb46aa6e793a191aef71b56be3e832425f4d663e5867660c.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790318547\"",
+        "Date": "Sat, 26 Sep 2026 22:51:36 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-91-buildings": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473665.5083999997%2C5362213.836100001%5D%2C%5B473658.5349000003%2C5362172.26%5D%2C%5B473640.5047000004%2C5362175.280200001%5D%2C%5B473647.4793999996%2C5362216.864399999%5D%2C%5B473665.5083999997%2C5362213.836100001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473665.5083999997%2C5362213.836100001%5D%2C%5B473658.5349000003%2C5362172.26%5D%2C%5B473640.5047000004%2C5362175.280200001%5D%2C%5B473647.4793999996%2C5362216.864399999%5D%2C%5B473665.5083999997%2C5362213.836100001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:37.438196+00:00",
+      "sha256": "e3d643a04132e400fa81356797020559f12312e78f3e7474869a8c8d47a1fa61",
+      "byte_count": 2777,
+      "repository_path": "docs/research/occupied-lots/snapshots/e3d643a04132e400fa81356797020559f12312e78f3e7474869a8c8d47a1fa61.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1770398264\"",
+        "Date": "Sat, 26 Sep 2026 22:51:36 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-91-zoning": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473665.5083999997%2C5362213.836100001%5D%2C%5B473658.5349000003%2C5362172.26%5D%2C%5B473640.5047000004%2C5362175.280200001%5D%2C%5B473647.4793999996%2C5362216.864399999%5D%2C%5B473665.5083999997%2C5362213.836100001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473665.5083999997%2C5362213.836100001%5D%2C%5B473658.5349000003%2C5362172.26%5D%2C%5B473640.5047000004%2C5362175.280200001%5D%2C%5B473647.4793999996%2C5362216.864399999%5D%2C%5B473665.5083999997%2C5362213.836100001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:37.938032+00:00",
+      "sha256": "0ccff549fa234e9a93c113a5e71ed9692b5959dd8ddcffc6216b5d74288272a9",
+      "byte_count": 225420,
+      "repository_path": "docs/research/occupied-lots/snapshots/0ccff549fa234e9a93c113a5e71ed9692b5959dd8ddcffc6216b5d74288272a9.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790312011\"",
+        "Date": "Sat, 26 Sep 2026 22:51:36 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-91-addresses": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473665.5083999997%2C5362213.836100001%5D%2C%5B473658.5349000003%2C5362172.26%5D%2C%5B473640.5047000004%2C5362175.280200001%5D%2C%5B473647.4793999996%2C5362216.864399999%5D%2C%5B473665.5083999997%2C5362213.836100001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CFullAddress%2CGISLINK&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473665.5083999997%2C5362213.836100001%5D%2C%5B473658.5349000003%2C5362172.26%5D%2C%5B473640.5047000004%2C5362175.280200001%5D%2C%5B473647.4793999996%2C5362216.864399999%5D%2C%5B473665.5083999997%2C5362213.836100001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CFullAddress%2CGISLINK&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:38.185901+00:00",
+      "sha256": "9a2531b85a7d903d1b118307162d2b57eb55a2099c2489ccb53aab79b2fdffbe",
+      "byte_count": 1171,
+      "repository_path": "docs/research/occupied-lots/snapshots/9a2531b85a7d903d1b118307162d2b57eb55a2099c2489ccb53aab79b2fdffbe.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790307914\"",
+        "Date": "Sat, 26 Sep 2026 22:51:37 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-92-parcel": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=92&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=92&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+      "captured_at_utc": "2026-09-26T22:51:38.504376+00:00",
+      "sha256": "e1e543da68ae96647ac542e57288244da54df8874c4a1bd47347f74588bdd509",
+      "byte_count": 1760,
+      "repository_path": "docs/research/occupied-lots/snapshots/e1e543da68ae96647ac542e57288244da54df8874c4a1bd47347f74588bdd509.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790318547\"",
+        "Date": "Sat, 26 Sep 2026 22:51:37 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-92-buildings": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473647.4793999996%2C5362216.864399999%5D%2C%5B473640.5047000004%2C5362175.280200001%5D%2C%5B473622.38430000003%2C5362178.3155000005%5D%2C%5B473629.36039999966%2C5362219.9078%5D%2C%5B473647.4793999996%2C5362216.864399999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473647.4793999996%2C5362216.864399999%5D%2C%5B473640.5047000004%2C5362175.280200001%5D%2C%5B473622.38430000003%2C5362178.3155000005%5D%2C%5B473629.36039999966%2C5362219.9078%5D%2C%5B473647.4793999996%2C5362216.864399999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:38.762924+00:00",
+      "sha256": "a3b5d3d4b9d44a774a71c182fc35f9b9719ea0ac876a47832852159f01d14230",
+      "byte_count": 2875,
+      "repository_path": "docs/research/occupied-lots/snapshots/a3b5d3d4b9d44a774a71c182fc35f9b9719ea0ac876a47832852159f01d14230.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1770398264\"",
+        "Date": "Sat, 26 Sep 2026 22:51:37 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-92-zoning": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473647.4793999996%2C5362216.864399999%5D%2C%5B473640.5047000004%2C5362175.280200001%5D%2C%5B473622.38430000003%2C5362178.3155000005%5D%2C%5B473629.36039999966%2C5362219.9078%5D%2C%5B473647.4793999996%2C5362216.864399999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473647.4793999996%2C5362216.864399999%5D%2C%5B473640.5047000004%2C5362175.280200001%5D%2C%5B473622.38430000003%2C5362178.3155000005%5D%2C%5B473629.36039999966%2C5362219.9078%5D%2C%5B473647.4793999996%2C5362216.864399999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:39.312169+00:00",
+      "sha256": "0ccff549fa234e9a93c113a5e71ed9692b5959dd8ddcffc6216b5d74288272a9",
+      "byte_count": 225420,
+      "repository_path": "docs/research/occupied-lots/snapshots/0ccff549fa234e9a93c113a5e71ed9692b5959dd8ddcffc6216b5d74288272a9.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790312011\"",
+        "Date": "Sat, 26 Sep 2026 22:51:37 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-92-addresses": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473647.4793999996%2C5362216.864399999%5D%2C%5B473640.5047000004%2C5362175.280200001%5D%2C%5B473622.38430000003%2C5362178.3155000005%5D%2C%5B473629.36039999966%2C5362219.9078%5D%2C%5B473647.4793999996%2C5362216.864399999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CFullAddress%2CGISLINK&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473647.4793999996%2C5362216.864399999%5D%2C%5B473640.5047000004%2C5362175.280200001%5D%2C%5B473622.38430000003%2C5362178.3155000005%5D%2C%5B473629.36039999966%2C5362219.9078%5D%2C%5B473647.4793999996%2C5362216.864399999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CFullAddress%2CGISLINK&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:39.574226+00:00",
+      "sha256": "943cbda69820de8555ac9bf4405c661a31683f97db44bac74b033ab4a74d273f",
+      "byte_count": 2757,
+      "repository_path": "docs/research/occupied-lots/snapshots/943cbda69820de8555ac9bf4405c661a31683f97db44bac74b033ab4a74d273f.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790307914\"",
+        "Date": "Sat, 26 Sep 2026 22:51:38 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-93-parcel": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=93&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=93&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+      "captured_at_utc": "2026-09-26T22:51:39.835104+00:00",
+      "sha256": "e26fe68e32ea475bbab57bc1966e42297263c726f2244c8a752122c19d20d38e",
+      "byte_count": 1897,
+      "repository_path": "docs/research/occupied-lots/snapshots/e26fe68e32ea475bbab57bc1966e42297263c726f2244c8a752122c19d20d38e.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790318547\"",
+        "Date": "Sat, 26 Sep 2026 22:51:38 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-93-buildings": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473629.36039999966%2C5362219.9078%5D%2C%5B473622.38430000003%2C5362178.3155000005%5D%2C%5B473604.26389999967%2C5362181.3509%5D%2C%5B473607.2940999996%2C5362199.4177%5D%2C%5B473610.1331000002%2C5362216.343699999%5D%2C%5B473611.2413999997%2C5362222.951199999%5D%2C%5B473629.36039999966%2C5362219.9078%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473629.36039999966%2C5362219.9078%5D%2C%5B473622.38430000003%2C5362178.3155000005%5D%2C%5B473604.26389999967%2C5362181.3509%5D%2C%5B473607.2940999996%2C5362199.4177%5D%2C%5B473610.1331000002%2C5362216.343699999%5D%2C%5B473611.2413999997%2C5362222.951199999%5D%2C%5B473629.36039999966%2C5362219.9078%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:40.085818+00:00",
+      "sha256": "0e27b5b511b40caf5268a50d015ca6e0fc018c32a73f0776639db3c2b7c724cf",
+      "byte_count": 2307,
+      "repository_path": "docs/research/occupied-lots/snapshots/0e27b5b511b40caf5268a50d015ca6e0fc018c32a73f0776639db3c2b7c724cf.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1770398264\"",
+        "Date": "Sat, 26 Sep 2026 22:51:39 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-93-zoning": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473629.36039999966%2C5362219.9078%5D%2C%5B473622.38430000003%2C5362178.3155000005%5D%2C%5B473604.26389999967%2C5362181.3509%5D%2C%5B473607.2940999996%2C5362199.4177%5D%2C%5B473610.1331000002%2C5362216.343699999%5D%2C%5B473611.2413999997%2C5362222.951199999%5D%2C%5B473629.36039999966%2C5362219.9078%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473629.36039999966%2C5362219.9078%5D%2C%5B473622.38430000003%2C5362178.3155000005%5D%2C%5B473604.26389999967%2C5362181.3509%5D%2C%5B473607.2940999996%2C5362199.4177%5D%2C%5B473610.1331000002%2C5362216.343699999%5D%2C%5B473611.2413999997%2C5362222.951199999%5D%2C%5B473629.36039999966%2C5362219.9078%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:40.578101+00:00",
+      "sha256": "97abaa06587d1451ad2ace5725ec275e76d84e634d4826df1b1daa48970aae7b",
+      "byte_count": 233260,
+      "repository_path": "docs/research/occupied-lots/snapshots/97abaa06587d1451ad2ace5725ec275e76d84e634d4826df1b1daa48970aae7b.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790312011\"",
+        "Date": "Sat, 26 Sep 2026 22:51:39 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-93-addresses": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473629.36039999966%2C5362219.9078%5D%2C%5B473622.38430000003%2C5362178.3155000005%5D%2C%5B473604.26389999967%2C5362181.3509%5D%2C%5B473607.2940999996%2C5362199.4177%5D%2C%5B473610.1331000002%2C5362216.343699999%5D%2C%5B473611.2413999997%2C5362222.951199999%5D%2C%5B473629.36039999966%2C5362219.9078%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CFullAddress%2CGISLINK&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473629.36039999966%2C5362219.9078%5D%2C%5B473622.38430000003%2C5362178.3155000005%5D%2C%5B473604.26389999967%2C5362181.3509%5D%2C%5B473607.2940999996%2C5362199.4177%5D%2C%5B473610.1331000002%2C5362216.343699999%5D%2C%5B473611.2413999997%2C5362222.951199999%5D%2C%5B473629.36039999966%2C5362219.9078%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CFullAddress%2CGISLINK&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:40.826617+00:00",
+      "sha256": "039d6f5d84ae5b6ccae1be4d5d5ee6488652be4b35b74a091639e05b8496c06d",
+      "byte_count": 972,
+      "repository_path": "docs/research/occupied-lots/snapshots/039d6f5d84ae5b6ccae1be4d5d5ee6488652be4b35b74a091639e05b8496c06d.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790307914\"",
+        "Date": "Sat, 26 Sep 2026 22:51:39 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-94-parcel": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=94&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=94&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+      "captured_at_utc": "2026-09-26T22:51:41.088310+00:00",
+      "sha256": "a0f7a729f508f190b12c02631ee63f58c86f07a5915e1893855cceb4e5a6211a",
+      "byte_count": 1757,
+      "repository_path": "docs/research/occupied-lots/snapshots/a0f7a729f508f190b12c02631ee63f58c86f07a5915e1893855cceb4e5a6211a.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790318547\"",
+        "Date": "Sat, 26 Sep 2026 22:51:40 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-94-buildings": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473607.2940999996%2C5362199.4177%5D%2C%5B473604.26389999967%2C5362181.3509%5D%2C%5B473570.48670000024%2C5362187.0089%5D%2C%5B473572.0215999996%2C5362205.3423%5D%2C%5B473607.2940999996%2C5362199.4177%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473607.2940999996%2C5362199.4177%5D%2C%5B473604.26389999967%2C5362181.3509%5D%2C%5B473570.48670000024%2C5362187.0089%5D%2C%5B473572.0215999996%2C5362205.3423%5D%2C%5B473607.2940999996%2C5362199.4177%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:41.345027+00:00",
+      "sha256": "97b0d481fa0af5ff9be0aea5512bd1b7d8101c170265ca9967d29d78a4db1f9a",
+      "byte_count": 2401,
+      "repository_path": "docs/research/occupied-lots/snapshots/97b0d481fa0af5ff9be0aea5512bd1b7d8101c170265ca9967d29d78a4db1f9a.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1770398264\"",
+        "Date": "Sat, 26 Sep 2026 22:51:40 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-94-zoning": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473607.2940999996%2C5362199.4177%5D%2C%5B473604.26389999967%2C5362181.3509%5D%2C%5B473570.48670000024%2C5362187.0089%5D%2C%5B473572.0215999996%2C5362205.3423%5D%2C%5B473607.2940999996%2C5362199.4177%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473607.2940999996%2C5362199.4177%5D%2C%5B473604.26389999967%2C5362181.3509%5D%2C%5B473570.48670000024%2C5362187.0089%5D%2C%5B473572.0215999996%2C5362205.3423%5D%2C%5B473607.2940999996%2C5362199.4177%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:41.828967+00:00",
+      "sha256": "97abaa06587d1451ad2ace5725ec275e76d84e634d4826df1b1daa48970aae7b",
+      "byte_count": 233260,
+      "repository_path": "docs/research/occupied-lots/snapshots/97abaa06587d1451ad2ace5725ec275e76d84e634d4826df1b1daa48970aae7b.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790312011\"",
+        "Date": "Sat, 26 Sep 2026 22:51:40 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-94-addresses": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473607.2940999996%2C5362199.4177%5D%2C%5B473604.26389999967%2C5362181.3509%5D%2C%5B473570.48670000024%2C5362187.0089%5D%2C%5B473572.0215999996%2C5362205.3423%5D%2C%5B473607.2940999996%2C5362199.4177%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CFullAddress%2CGISLINK&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473607.2940999996%2C5362199.4177%5D%2C%5B473604.26389999967%2C5362181.3509%5D%2C%5B473570.48670000024%2C5362187.0089%5D%2C%5B473572.0215999996%2C5362205.3423%5D%2C%5B473607.2940999996%2C5362199.4177%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CFullAddress%2CGISLINK&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:42.071097+00:00",
+      "sha256": "f5805711424b2646024b8b1ed6998872e335674c18f24e9516f9abfd470c7895",
+      "byte_count": 971,
+      "repository_path": "docs/research/occupied-lots/snapshots/f5805711424b2646024b8b1ed6998872e335674c18f24e9516f9abfd470c7895.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790307914\"",
+        "Date": "Sat, 26 Sep 2026 22:51:41 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-95-parcel": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=95&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=95&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+      "captured_at_utc": "2026-09-26T22:51:42.322790+00:00",
+      "sha256": "a1f605591cc578c99b531944ec892f155973be80a6662f7b8df5067677c161e7",
+      "byte_count": 1763,
+      "repository_path": "docs/research/occupied-lots/snapshots/a1f605591cc578c99b531944ec892f155973be80a6662f7b8df5067677c161e7.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790318547\"",
+        "Date": "Sat, 26 Sep 2026 22:51:41 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-95-buildings": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473610.1331000002%2C5362216.343699999%5D%2C%5B473607.2940999996%2C5362199.4177%5D%2C%5B473572.0215999996%2C5362205.3423%5D%2C%5B473573.4584999997%2C5362222.503900001%5D%2C%5B473610.1331000002%2C5362216.343699999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473610.1331000002%2C5362216.343699999%5D%2C%5B473607.2940999996%2C5362199.4177%5D%2C%5B473572.0215999996%2C5362205.3423%5D%2C%5B473573.4584999997%2C5362222.503900001%5D%2C%5B473610.1331000002%2C5362216.343699999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:42.589655+00:00",
+      "sha256": "0c851a4284f36af1a0638358eebbca128e7c0ad05e56ac5b06b43e37accf9cd5",
+      "byte_count": 4901,
+      "repository_path": "docs/research/occupied-lots/snapshots/0c851a4284f36af1a0638358eebbca128e7c0ad05e56ac5b06b43e37accf9cd5.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1770398264\"",
+        "Date": "Sat, 26 Sep 2026 22:51:41 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-95-zoning": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473610.1331000002%2C5362216.343699999%5D%2C%5B473607.2940999996%2C5362199.4177%5D%2C%5B473572.0215999996%2C5362205.3423%5D%2C%5B473573.4584999997%2C5362222.503900001%5D%2C%5B473610.1331000002%2C5362216.343699999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473610.1331000002%2C5362216.343699999%5D%2C%5B473607.2940999996%2C5362199.4177%5D%2C%5B473572.0215999996%2C5362205.3423%5D%2C%5B473573.4584999997%2C5362222.503900001%5D%2C%5B473610.1331000002%2C5362216.343699999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:43.074376+00:00",
+      "sha256": "97abaa06587d1451ad2ace5725ec275e76d84e634d4826df1b1daa48970aae7b",
+      "byte_count": 233260,
+      "repository_path": "docs/research/occupied-lots/snapshots/97abaa06587d1451ad2ace5725ec275e76d84e634d4826df1b1daa48970aae7b.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790312011\"",
+        "Date": "Sat, 26 Sep 2026 22:51:41 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-95-addresses": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473610.1331000002%2C5362216.343699999%5D%2C%5B473607.2940999996%2C5362199.4177%5D%2C%5B473572.0215999996%2C5362205.3423%5D%2C%5B473573.4584999997%2C5362222.503900001%5D%2C%5B473610.1331000002%2C5362216.343699999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CFullAddress%2CGISLINK&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473610.1331000002%2C5362216.343699999%5D%2C%5B473607.2940999996%2C5362199.4177%5D%2C%5B473572.0215999996%2C5362205.3423%5D%2C%5B473573.4584999997%2C5362222.503900001%5D%2C%5B473610.1331000002%2C5362216.343699999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CFullAddress%2CGISLINK&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:43.338445+00:00",
+      "sha256": "73967d9542e357f41eb78d35deb7f4263a1d48d33a5e34fc2ef57ac6807caa56",
+      "byte_count": 1766,
+      "repository_path": "docs/research/occupied-lots/snapshots/73967d9542e357f41eb78d35deb7f4263a1d48d33a5e34fc2ef57ac6807caa56.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790307914\"",
+        "Date": "Sat, 26 Sep 2026 22:51:42 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-96-parcel": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=96&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=96&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+      "captured_at_utc": "2026-09-26T22:51:43.606006+00:00",
+      "sha256": "9bf253f7d795a37e40dbffe627eaabcc071bbb58f161a4ecb0d837c907576678",
+      "byte_count": 1832,
+      "repository_path": "docs/research/occupied-lots/snapshots/9bf253f7d795a37e40dbffe627eaabcc071bbb58f161a4ecb0d837c907576678.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790318547\"",
+        "Date": "Sat, 26 Sep 2026 22:51:42 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-96-buildings": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473612.97449999955%2C5362233.269300001%5D%2C%5B473611.2413999997%2C5362222.951199999%5D%2C%5B473610.1331000002%2C5362216.343699999%5D%2C%5B473573.4584999997%2C5362222.503900001%5D%2C%5B473574.8953999998%2C5362239.6654%5D%2C%5B473612.97449999955%2C5362233.269300001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473612.97449999955%2C5362233.269300001%5D%2C%5B473611.2413999997%2C5362222.951199999%5D%2C%5B473610.1331000002%2C5362216.343699999%5D%2C%5B473573.4584999997%2C5362222.503900001%5D%2C%5B473574.8953999998%2C5362239.6654%5D%2C%5B473612.97449999955%2C5362233.269300001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:43.851363+00:00",
+      "sha256": "cabde8e0bf3d263beb7fc81b73d27c0605f9d81c17a8f6fdf0129facb3ef76d6",
+      "byte_count": 2687,
+      "repository_path": "docs/research/occupied-lots/snapshots/cabde8e0bf3d263beb7fc81b73d27c0605f9d81c17a8f6fdf0129facb3ef76d6.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1770398264\"",
+        "Date": "Sat, 26 Sep 2026 22:51:42 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-96-zoning": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473612.97449999955%2C5362233.269300001%5D%2C%5B473611.2413999997%2C5362222.951199999%5D%2C%5B473610.1331000002%2C5362216.343699999%5D%2C%5B473573.4584999997%2C5362222.503900001%5D%2C%5B473574.8953999998%2C5362239.6654%5D%2C%5B473612.97449999955%2C5362233.269300001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473612.97449999955%2C5362233.269300001%5D%2C%5B473611.2413999997%2C5362222.951199999%5D%2C%5B473610.1331000002%2C5362216.343699999%5D%2C%5B473573.4584999997%2C5362222.503900001%5D%2C%5B473574.8953999998%2C5362239.6654%5D%2C%5B473612.97449999955%2C5362233.269300001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:44.348431+00:00",
+      "sha256": "97abaa06587d1451ad2ace5725ec275e76d84e634d4826df1b1daa48970aae7b",
+      "byte_count": 233260,
+      "repository_path": "docs/research/occupied-lots/snapshots/97abaa06587d1451ad2ace5725ec275e76d84e634d4826df1b1daa48970aae7b.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790312011\"",
+        "Date": "Sat, 26 Sep 2026 22:51:43 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-96-addresses": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473612.97449999955%2C5362233.269300001%5D%2C%5B473611.2413999997%2C5362222.951199999%5D%2C%5B473610.1331000002%2C5362216.343699999%5D%2C%5B473573.4584999997%2C5362222.503900001%5D%2C%5B473574.8953999998%2C5362239.6654%5D%2C%5B473612.97449999955%2C5362233.269300001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CFullAddress%2CGISLINK&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473612.97449999955%2C5362233.269300001%5D%2C%5B473611.2413999997%2C5362222.951199999%5D%2C%5B473610.1331000002%2C5362216.343699999%5D%2C%5B473573.4584999997%2C5362222.503900001%5D%2C%5B473574.8953999998%2C5362239.6654%5D%2C%5B473612.97449999955%2C5362233.269300001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CFullAddress%2CGISLINK&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:44.585944+00:00",
+      "sha256": "7cd7e086acbbbafaf20d3172b3c7daeffc4f85214f071d6c4803a4be4f1e635e",
+      "byte_count": 1964,
+      "repository_path": "docs/research/occupied-lots/snapshots/7cd7e086acbbbafaf20d3172b3c7daeffc4f85214f071d6c4803a4be4f1e635e.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790307914\"",
+        "Date": "Sat, 26 Sep 2026 22:51:43 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-97-parcel": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=97&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=97&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+      "captured_at_utc": "2026-09-26T22:51:44.837989+00:00",
+      "sha256": "0679fa5b7dac5876608311c4f6cc4eeef5b58dadf3672b7312d6925b6e4339bb",
+      "byte_count": 1832,
+      "repository_path": "docs/research/occupied-lots/snapshots/0679fa5b7dac5876608311c4f6cc4eeef5b58dadf3672b7312d6925b6e4339bb.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790318547\"",
+        "Date": "Sat, 26 Sep 2026 22:51:43 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-97-buildings": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473615.8174999999%2C5362250.194599999%5D%2C%5B473612.97449999955%2C5362233.269300001%5D%2C%5B473574.8953999998%2C5362239.6654%5D%2C%5B473575.54760000017%2C5362247.4539%5D%2C%5B473578.42009999976%2C5362256.476199999%5D%2C%5B473615.8174999999%2C5362250.194599999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473615.8174999999%2C5362250.194599999%5D%2C%5B473612.97449999955%2C5362233.269300001%5D%2C%5B473574.8953999998%2C5362239.6654%5D%2C%5B473575.54760000017%2C5362247.4539%5D%2C%5B473578.42009999976%2C5362256.476199999%5D%2C%5B473615.8174999999%2C5362250.194599999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:45.088627+00:00",
+      "sha256": "e16484c8fdf50c1cfe346938087e428f3e8b9aa5cf5c7ff976fdfc107275a71e",
+      "byte_count": 2023,
+      "repository_path": "docs/research/occupied-lots/snapshots/e16484c8fdf50c1cfe346938087e428f3e8b9aa5cf5c7ff976fdfc107275a71e.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1770398264\"",
+        "Date": "Sat, 26 Sep 2026 22:51:44 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-97-zoning": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473615.8174999999%2C5362250.194599999%5D%2C%5B473612.97449999955%2C5362233.269300001%5D%2C%5B473574.8953999998%2C5362239.6654%5D%2C%5B473575.54760000017%2C5362247.4539%5D%2C%5B473578.42009999976%2C5362256.476199999%5D%2C%5B473615.8174999999%2C5362250.194599999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473615.8174999999%2C5362250.194599999%5D%2C%5B473612.97449999955%2C5362233.269300001%5D%2C%5B473574.8953999998%2C5362239.6654%5D%2C%5B473575.54760000017%2C5362247.4539%5D%2C%5B473578.42009999976%2C5362256.476199999%5D%2C%5B473615.8174999999%2C5362250.194599999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:45.343106+00:00",
+      "sha256": "e19135361e73e57878497b47c20363f31e91c1cac418f3ac724d2b636d8305ad",
+      "byte_count": 8539,
+      "repository_path": "docs/research/occupied-lots/snapshots/e19135361e73e57878497b47c20363f31e91c1cac418f3ac724d2b636d8305ad.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790312011\"",
+        "Date": "Sat, 26 Sep 2026 22:51:44 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-97-addresses": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473615.8174999999%2C5362250.194599999%5D%2C%5B473612.97449999955%2C5362233.269300001%5D%2C%5B473574.8953999998%2C5362239.6654%5D%2C%5B473575.54760000017%2C5362247.4539%5D%2C%5B473578.42009999976%2C5362256.476199999%5D%2C%5B473615.8174999999%2C5362250.194599999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CFullAddress%2CGISLINK&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473615.8174999999%2C5362250.194599999%5D%2C%5B473612.97449999955%2C5362233.269300001%5D%2C%5B473574.8953999998%2C5362239.6654%5D%2C%5B473575.54760000017%2C5362247.4539%5D%2C%5B473578.42009999976%2C5362256.476199999%5D%2C%5B473615.8174999999%2C5362250.194599999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CFullAddress%2CGISLINK&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:45.584675+00:00",
+      "sha256": "849e34150406120ec26d21e8951cc719aa830fcbcbc274cf67a87857d657a503",
+      "byte_count": 1922,
+      "repository_path": "docs/research/occupied-lots/snapshots/849e34150406120ec26d21e8951cc719aa830fcbcbc274cf67a87857d657a503.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790307914\"",
+        "Date": "Sat, 26 Sep 2026 22:51:44 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-98-parcel": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=98&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=98&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+      "captured_at_utc": "2026-09-26T22:51:45.857821+00:00",
+      "sha256": "35ba5374c81ebc5de5be49a1dc178e6dd82bbc2aa8d27d521600121f3316140c",
+      "byte_count": 1757,
+      "repository_path": "docs/research/occupied-lots/snapshots/35ba5374c81ebc5de5be49a1dc178e6dd82bbc2aa8d27d521600121f3316140c.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790318547\"",
+        "Date": "Sat, 26 Sep 2026 22:51:44 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-98-buildings": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473618.66050000023%2C5362267.119899999%5D%2C%5B473615.8174999999%2C5362250.194599999%5D%2C%5B473578.42009999976%2C5362256.476199999%5D%2C%5B473583.6796000004%2C5362272.9956%5D%2C%5B473618.66050000023%2C5362267.119899999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473618.66050000023%2C5362267.119899999%5D%2C%5B473615.8174999999%2C5362250.194599999%5D%2C%5B473578.42009999976%2C5362256.476199999%5D%2C%5B473583.6796000004%2C5362272.9956%5D%2C%5B473618.66050000023%2C5362267.119899999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:46.103719+00:00",
+      "sha256": "e013124e4cebdf7cd5d00d0a0f2357129ec65ce2cb3f2ecc215c68b77d63dbe9",
+      "byte_count": 1434,
+      "repository_path": "docs/research/occupied-lots/snapshots/e013124e4cebdf7cd5d00d0a0f2357129ec65ce2cb3f2ecc215c68b77d63dbe9.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1770398264\"",
+        "Date": "Sat, 26 Sep 2026 22:51:45 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-98-zoning": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473618.66050000023%2C5362267.119899999%5D%2C%5B473615.8174999999%2C5362250.194599999%5D%2C%5B473578.42009999976%2C5362256.476199999%5D%2C%5B473583.6796000004%2C5362272.9956%5D%2C%5B473618.66050000023%2C5362267.119899999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473618.66050000023%2C5362267.119899999%5D%2C%5B473615.8174999999%2C5362250.194599999%5D%2C%5B473578.42009999976%2C5362256.476199999%5D%2C%5B473583.6796000004%2C5362272.9956%5D%2C%5B473618.66050000023%2C5362267.119899999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:46.370325+00:00",
+      "sha256": "e19135361e73e57878497b47c20363f31e91c1cac418f3ac724d2b636d8305ad",
+      "byte_count": 8539,
+      "repository_path": "docs/research/occupied-lots/snapshots/e19135361e73e57878497b47c20363f31e91c1cac418f3ac724d2b636d8305ad.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790312011\"",
+        "Date": "Sat, 26 Sep 2026 22:51:45 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-98-addresses": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473618.66050000023%2C5362267.119899999%5D%2C%5B473615.8174999999%2C5362250.194599999%5D%2C%5B473578.42009999976%2C5362256.476199999%5D%2C%5B473583.6796000004%2C5362272.9956%5D%2C%5B473618.66050000023%2C5362267.119899999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CFullAddress%2CGISLINK&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473618.66050000023%2C5362267.119899999%5D%2C%5B473615.8174999999%2C5362250.194599999%5D%2C%5B473578.42009999976%2C5362256.476199999%5D%2C%5B473583.6796000004%2C5362272.9956%5D%2C%5B473618.66050000023%2C5362267.119899999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CFullAddress%2CGISLINK&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:46.614408+00:00",
+      "sha256": "fc061a8f3757297763896c54bb01e341c274e17e7e3fe10b356fbe0574c9c1c5",
+      "byte_count": 1992,
+      "repository_path": "docs/research/occupied-lots/snapshots/fc061a8f3757297763896c54bb01e341c274e17e7e3fe10b356fbe0574c9c1c5.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790307914\"",
+        "Date": "Sat, 26 Sep 2026 22:51:45 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-100-parcel": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=100&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=100&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+      "captured_at_utc": "2026-09-26T22:51:46.865058+00:00",
+      "sha256": "cd3569a980e6fdbee71a0b4c28587dabf28ad920792c834df994717dd407c778",
+      "byte_count": 1764,
+      "repository_path": "docs/research/occupied-lots/snapshots/cd3569a980e6fdbee71a0b4c28587dabf28ad920792c834df994717dd407c778.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790318547\"",
+        "Date": "Sat, 26 Sep 2026 22:51:45 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-100-buildings": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473639.0086000003%2C5362330.7508000005%5D%2C%5B473635.17179999966%2C5362307.911599999%5D%2C%5B473596.84609999973%2C5362314.3499%5D%2C%5B473603.9433000004%2C5362336.6414%5D%2C%5B473639.0086000003%2C5362330.7508000005%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473639.0086000003%2C5362330.7508000005%5D%2C%5B473635.17179999966%2C5362307.911599999%5D%2C%5B473596.84609999973%2C5362314.3499%5D%2C%5B473603.9433000004%2C5362336.6414%5D%2C%5B473639.0086000003%2C5362330.7508000005%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:47.121904+00:00",
+      "sha256": "606d1499ed4579406376e3550d21cadd53692b7964b21257b0dae0410b90ec7d",
+      "byte_count": 6767,
+      "repository_path": "docs/research/occupied-lots/snapshots/606d1499ed4579406376e3550d21cadd53692b7964b21257b0dae0410b90ec7d.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1770398264\"",
+        "Date": "Sat, 26 Sep 2026 22:51:46 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-100-zoning": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473639.0086000003%2C5362330.7508000005%5D%2C%5B473635.17179999966%2C5362307.911599999%5D%2C%5B473596.84609999973%2C5362314.3499%5D%2C%5B473603.9433000004%2C5362336.6414%5D%2C%5B473639.0086000003%2C5362330.7508000005%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473639.0086000003%2C5362330.7508000005%5D%2C%5B473635.17179999966%2C5362307.911599999%5D%2C%5B473596.84609999973%2C5362314.3499%5D%2C%5B473603.9433000004%2C5362336.6414%5D%2C%5B473639.0086000003%2C5362330.7508000005%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:47.388039+00:00",
+      "sha256": "e19135361e73e57878497b47c20363f31e91c1cac418f3ac724d2b636d8305ad",
+      "byte_count": 8539,
+      "repository_path": "docs/research/occupied-lots/snapshots/e19135361e73e57878497b47c20363f31e91c1cac418f3ac724d2b636d8305ad.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790312011\"",
+        "Date": "Sat, 26 Sep 2026 22:51:46 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-100-addresses": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473639.0086000003%2C5362330.7508000005%5D%2C%5B473635.17179999966%2C5362307.911599999%5D%2C%5B473596.84609999973%2C5362314.3499%5D%2C%5B473603.9433000004%2C5362336.6414%5D%2C%5B473639.0086000003%2C5362330.7508000005%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CFullAddress%2CGISLINK&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473639.0086000003%2C5362330.7508000005%5D%2C%5B473635.17179999966%2C5362307.911599999%5D%2C%5B473596.84609999973%2C5362314.3499%5D%2C%5B473603.9433000004%2C5362336.6414%5D%2C%5B473639.0086000003%2C5362330.7508000005%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CFullAddress%2CGISLINK&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:47.625959+00:00",
+      "sha256": "bbed686b887bba4135b930973b4889653ede11bdeaad8f39588019823e6291d8",
+      "byte_count": 2973,
+      "repository_path": "docs/research/occupied-lots/snapshots/bbed686b887bba4135b930973b4889653ede11bdeaad8f39588019823e6291d8.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790307914\"",
+        "Date": "Sat, 26 Sep 2026 22:51:46 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-102-parcel": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=102&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=102&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+      "captured_at_utc": "2026-09-26T22:51:47.899969+00:00",
+      "sha256": "87b3d600408e1521e070840734280790c7669453aa4c3cc6a28d276267da8a97",
+      "byte_count": 1764,
+      "repository_path": "docs/research/occupied-lots/snapshots/87b3d600408e1521e070840734280790c7669453aa4c3cc6a28d276267da8a97.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790318547\"",
+        "Date": "Sat, 26 Sep 2026 22:51:46 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-102-buildings": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473707.5488999998%2C5362359.7117%5D%2C%5B473700.9391000001%2C5362320.347100001%5D%2C%5B473686.358%2C5362322.796599999%5D%2C%5B473692.96860000025%2C5362362.1611%5D%2C%5B473707.5488999998%2C5362359.7117%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473707.5488999998%2C5362359.7117%5D%2C%5B473700.9391000001%2C5362320.347100001%5D%2C%5B473686.358%2C5362322.796599999%5D%2C%5B473692.96860000025%2C5362362.1611%5D%2C%5B473707.5488999998%2C5362359.7117%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:48.151753+00:00",
+      "sha256": "d4c0a39d0ff259599f67290f332b31cf0653c6b1574662cd4c1267dbcf29f2ea",
+      "byte_count": 1816,
+      "repository_path": "docs/research/occupied-lots/snapshots/d4c0a39d0ff259599f67290f332b31cf0653c6b1574662cd4c1267dbcf29f2ea.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1770398264\"",
+        "Date": "Sat, 26 Sep 2026 22:51:47 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-102-zoning": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473707.5488999998%2C5362359.7117%5D%2C%5B473700.9391000001%2C5362320.347100001%5D%2C%5B473686.358%2C5362322.796599999%5D%2C%5B473692.96860000025%2C5362362.1611%5D%2C%5B473707.5488999998%2C5362359.7117%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473707.5488999998%2C5362359.7117%5D%2C%5B473700.9391000001%2C5362320.347100001%5D%2C%5B473686.358%2C5362322.796599999%5D%2C%5B473692.96860000025%2C5362362.1611%5D%2C%5B473707.5488999998%2C5362359.7117%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:52.407786+00:00",
+      "sha256": "97abaa06587d1451ad2ace5725ec275e76d84e634d4826df1b1daa48970aae7b",
+      "byte_count": 233260,
+      "repository_path": "docs/research/occupied-lots/snapshots/97abaa06587d1451ad2ace5725ec275e76d84e634d4826df1b1daa48970aae7b.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790312011\"",
+        "Date": "Sat, 26 Sep 2026 22:51:51 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-102-addresses": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473707.5488999998%2C5362359.7117%5D%2C%5B473700.9391000001%2C5362320.347100001%5D%2C%5B473686.358%2C5362322.796599999%5D%2C%5B473692.96860000025%2C5362362.1611%5D%2C%5B473707.5488999998%2C5362359.7117%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CFullAddress%2CGISLINK&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473707.5488999998%2C5362359.7117%5D%2C%5B473700.9391000001%2C5362320.347100001%5D%2C%5B473686.358%2C5362322.796599999%5D%2C%5B473692.96860000025%2C5362362.1611%5D%2C%5B473707.5488999998%2C5362359.7117%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CFullAddress%2CGISLINK&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:52.655939+00:00",
+      "sha256": "ef23f1005b54c092905cbf61ad4a4a177504c4c30dc7f44b81fc0c0f40ae3156",
+      "byte_count": 779,
+      "repository_path": "docs/research/occupied-lots/snapshots/ef23f1005b54c092905cbf61ad4a4a177504c4c30dc7f44b81fc0c0f40ae3156.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790307914\"",
+        "Date": "Sat, 26 Sep 2026 22:51:51 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-103-parcel": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=103&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=103&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+      "captured_at_utc": "2026-09-26T22:51:52.909965+00:00",
+      "sha256": "4ad76023dcb440949febdd8a0f84a07e8ae54b26296c668340555958cc3ee841",
+      "byte_count": 1764,
+      "repository_path": "docs/research/occupied-lots/snapshots/4ad76023dcb440949febdd8a0f84a07e8ae54b26296c668340555958cc3ee841.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790318547\"",
+        "Date": "Sat, 26 Sep 2026 22:51:51 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-103-buildings": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473722.12930000015%2C5362357.2623%5D%2C%5B473715.5203%2C5362317.897600001%5D%2C%5B473700.9391000001%2C5362320.347100001%5D%2C%5B473707.5488999998%2C5362359.7117%5D%2C%5B473722.12930000015%2C5362357.2623%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473722.12930000015%2C5362357.2623%5D%2C%5B473715.5203%2C5362317.897600001%5D%2C%5B473700.9391000001%2C5362320.347100001%5D%2C%5B473707.5488999998%2C5362359.7117%5D%2C%5B473722.12930000015%2C5362357.2623%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:53.152170+00:00",
+      "sha256": "8806d02351f1f0eaa261b7cd5ccd57355b9d2fcf0ffb28d009b7debc61852c37",
+      "byte_count": 2019,
+      "repository_path": "docs/research/occupied-lots/snapshots/8806d02351f1f0eaa261b7cd5ccd57355b9d2fcf0ffb28d009b7debc61852c37.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1770398264\"",
+        "Date": "Sat, 26 Sep 2026 22:51:52 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-103-zoning": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473722.12930000015%2C5362357.2623%5D%2C%5B473715.5203%2C5362317.897600001%5D%2C%5B473700.9391000001%2C5362320.347100001%5D%2C%5B473707.5488999998%2C5362359.7117%5D%2C%5B473722.12930000015%2C5362357.2623%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473722.12930000015%2C5362357.2623%5D%2C%5B473715.5203%2C5362317.897600001%5D%2C%5B473700.9391000001%2C5362320.347100001%5D%2C%5B473707.5488999998%2C5362359.7117%5D%2C%5B473722.12930000015%2C5362357.2623%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:53.814996+00:00",
+      "sha256": "0ccff549fa234e9a93c113a5e71ed9692b5959dd8ddcffc6216b5d74288272a9",
+      "byte_count": 225420,
+      "repository_path": "docs/research/occupied-lots/snapshots/0ccff549fa234e9a93c113a5e71ed9692b5959dd8ddcffc6216b5d74288272a9.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790312011\"",
+        "Date": "Sat, 26 Sep 2026 22:51:52 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-103-addresses": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473722.12930000015%2C5362357.2623%5D%2C%5B473715.5203%2C5362317.897600001%5D%2C%5B473700.9391000001%2C5362320.347100001%5D%2C%5B473707.5488999998%2C5362359.7117%5D%2C%5B473722.12930000015%2C5362357.2623%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CFullAddress%2CGISLINK&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473722.12930000015%2C5362357.2623%5D%2C%5B473715.5203%2C5362317.897600001%5D%2C%5B473700.9391000001%2C5362320.347100001%5D%2C%5B473707.5488999998%2C5362359.7117%5D%2C%5B473722.12930000015%2C5362357.2623%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CFullAddress%2CGISLINK&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:54.063184+00:00",
+      "sha256": "fe36960bf0f69fa20ae30cc69df1ebc4527fee0c07760a012bb90b975e73da61",
+      "byte_count": 779,
+      "repository_path": "docs/research/occupied-lots/snapshots/fe36960bf0f69fa20ae30cc69df1ebc4527fee0c07760a012bb90b975e73da61.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790307914\"",
+        "Date": "Sat, 26 Sep 2026 22:51:53 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-104-parcel": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=104&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=104&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+      "captured_at_utc": "2026-09-26T22:51:54.320301+00:00",
+      "sha256": "ee2f4fe465b487af00dee6515b3117aa9852d531f2da92a05e3070be1878203c",
+      "byte_count": 1764,
+      "repository_path": "docs/research/occupied-lots/snapshots/ee2f4fe465b487af00dee6515b3117aa9852d531f2da92a05e3070be1878203c.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790318547\"",
+        "Date": "Sat, 26 Sep 2026 22:51:53 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-104-buildings": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473736.7095999997%2C5362354.812899999%5D%2C%5B473730.10140000004%2C5362315.448100001%5D%2C%5B473715.5203%2C5362317.897600001%5D%2C%5B473722.12930000015%2C5362357.2623%5D%2C%5B473736.7095999997%2C5362354.812899999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473736.7095999997%2C5362354.812899999%5D%2C%5B473730.10140000004%2C5362315.448100001%5D%2C%5B473715.5203%2C5362317.897600001%5D%2C%5B473722.12930000015%2C5362357.2623%5D%2C%5B473736.7095999997%2C5362354.812899999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:54.572535+00:00",
+      "sha256": "715def565ec84b2117044db35520201bf201d89a0d70f34c03674c10f71304a9",
+      "byte_count": 2128,
+      "repository_path": "docs/research/occupied-lots/snapshots/715def565ec84b2117044db35520201bf201d89a0d70f34c03674c10f71304a9.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1770398264\"",
+        "Date": "Sat, 26 Sep 2026 22:51:53 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-104-zoning": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473736.7095999997%2C5362354.812899999%5D%2C%5B473730.10140000004%2C5362315.448100001%5D%2C%5B473715.5203%2C5362317.897600001%5D%2C%5B473722.12930000015%2C5362357.2623%5D%2C%5B473736.7095999997%2C5362354.812899999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473736.7095999997%2C5362354.812899999%5D%2C%5B473730.10140000004%2C5362315.448100001%5D%2C%5B473715.5203%2C5362317.897600001%5D%2C%5B473722.12930000015%2C5362357.2623%5D%2C%5B473736.7095999997%2C5362354.812899999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:55.538397+00:00",
+      "sha256": "0ccff549fa234e9a93c113a5e71ed9692b5959dd8ddcffc6216b5d74288272a9",
+      "byte_count": 225420,
+      "repository_path": "docs/research/occupied-lots/snapshots/0ccff549fa234e9a93c113a5e71ed9692b5959dd8ddcffc6216b5d74288272a9.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790312011\"",
+        "Date": "Sat, 26 Sep 2026 22:51:53 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-104-addresses": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473736.7095999997%2C5362354.812899999%5D%2C%5B473730.10140000004%2C5362315.448100001%5D%2C%5B473715.5203%2C5362317.897600001%5D%2C%5B473722.12930000015%2C5362357.2623%5D%2C%5B473736.7095999997%2C5362354.812899999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CFullAddress%2CGISLINK&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473736.7095999997%2C5362354.812899999%5D%2C%5B473730.10140000004%2C5362315.448100001%5D%2C%5B473715.5203%2C5362317.897600001%5D%2C%5B473722.12930000015%2C5362357.2623%5D%2C%5B473736.7095999997%2C5362354.812899999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CFullAddress%2CGISLINK&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:55.790025+00:00",
+      "sha256": "aa617336efb8d5b8dd629989be3fed1bc7497ef9e20b0c789a8a61dc6babbc42",
+      "byte_count": 779,
+      "repository_path": "docs/research/occupied-lots/snapshots/aa617336efb8d5b8dd629989be3fed1bc7497ef9e20b0c789a8a61dc6babbc42.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790307914\"",
+        "Date": "Sat, 26 Sep 2026 22:51:54 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-107-parcel": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=107&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=107&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+      "captured_at_utc": "2026-09-26T22:51:56.040110+00:00",
+      "sha256": "3ee87dde8b71ffa35f90a4dd27c69ed0ee59024ae35d40658ac1e1639b3a15b5",
+      "byte_count": 1762,
+      "repository_path": "docs/research/occupied-lots/snapshots/3ee87dde8b71ffa35f90a4dd27c69ed0ee59024ae35d40658ac1e1639b3a15b5.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790318547\"",
+        "Date": "Sat, 26 Sep 2026 22:51:55 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-107-buildings": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473765.8702999996%2C5362349.914100001%5D%2C%5B473759.2636000002%2C5362310.549000001%5D%2C%5B473744.6825000001%2C5362312.9986000005%5D%2C%5B473751.29000000004%2C5362352.363500001%5D%2C%5B473765.8702999996%2C5362349.914100001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473765.8702999996%2C5362349.914100001%5D%2C%5B473759.2636000002%2C5362310.549000001%5D%2C%5B473744.6825000001%2C5362312.9986000005%5D%2C%5B473751.29000000004%2C5362352.363500001%5D%2C%5B473765.8702999996%2C5362349.914100001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:56.284097+00:00",
+      "sha256": "91ebba0b314980709cb690865b1e84c1990fde1e8c492dfd3aedf00ad6f33615",
+      "byte_count": 2877,
+      "repository_path": "docs/research/occupied-lots/snapshots/91ebba0b314980709cb690865b1e84c1990fde1e8c492dfd3aedf00ad6f33615.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1770398264\"",
+        "Date": "Sat, 26 Sep 2026 22:51:55 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-107-zoning": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473765.8702999996%2C5362349.914100001%5D%2C%5B473759.2636000002%2C5362310.549000001%5D%2C%5B473744.6825000001%2C5362312.9986000005%5D%2C%5B473751.29000000004%2C5362352.363500001%5D%2C%5B473765.8702999996%2C5362349.914100001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473765.8702999996%2C5362349.914100001%5D%2C%5B473759.2636000002%2C5362310.549000001%5D%2C%5B473744.6825000001%2C5362312.9986000005%5D%2C%5B473751.29000000004%2C5362352.363500001%5D%2C%5B473765.8702999996%2C5362349.914100001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:56.784493+00:00",
+      "sha256": "0ccff549fa234e9a93c113a5e71ed9692b5959dd8ddcffc6216b5d74288272a9",
+      "byte_count": 225420,
+      "repository_path": "docs/research/occupied-lots/snapshots/0ccff549fa234e9a93c113a5e71ed9692b5959dd8ddcffc6216b5d74288272a9.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790312011\"",
+        "Date": "Sat, 26 Sep 2026 22:51:55 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-107-addresses": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473765.8702999996%2C5362349.914100001%5D%2C%5B473759.2636000002%2C5362310.549000001%5D%2C%5B473744.6825000001%2C5362312.9986000005%5D%2C%5B473751.29000000004%2C5362352.363500001%5D%2C%5B473765.8702999996%2C5362349.914100001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CFullAddress%2CGISLINK&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473765.8702999996%2C5362349.914100001%5D%2C%5B473759.2636000002%2C5362310.549000001%5D%2C%5B473744.6825000001%2C5362312.9986000005%5D%2C%5B473751.29000000004%2C5362352.363500001%5D%2C%5B473765.8702999996%2C5362349.914100001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CFullAddress%2CGISLINK&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:57.019814+00:00",
+      "sha256": "d645131f92ec52ef2f3f6bc897f01d548492ec803e9631cffca18787d2d6a434",
+      "byte_count": 779,
+      "repository_path": "docs/research/occupied-lots/snapshots/d645131f92ec52ef2f3f6bc897f01d548492ec803e9631cffca18787d2d6a434.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790307914\"",
+        "Date": "Sat, 26 Sep 2026 22:51:55 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-108-parcel": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=108&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=108&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+      "captured_at_utc": "2026-09-26T22:51:57.272843+00:00",
+      "sha256": "edaa4251e948c5d4d407224a1887ddf169ffe5bc8071afd93d63933576e9259a",
+      "byte_count": 1763,
+      "repository_path": "docs/research/occupied-lots/snapshots/edaa4251e948c5d4d407224a1887ddf169ffe5bc8071afd93d63933576e9259a.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790318547\"",
+        "Date": "Sat, 26 Sep 2026 22:51:56 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-108-buildings": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473780.4506999999%2C5362347.4647%5D%2C%5B473773.84470000025%2C5362308.0995000005%5D%2C%5B473759.2636000002%2C5362310.549000001%5D%2C%5B473765.8702999996%2C5362349.914100001%5D%2C%5B473780.4506999999%2C5362347.4647%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473780.4506999999%2C5362347.4647%5D%2C%5B473773.84470000025%2C5362308.0995000005%5D%2C%5B473759.2636000002%2C5362310.549000001%5D%2C%5B473765.8702999996%2C5362349.914100001%5D%2C%5B473780.4506999999%2C5362347.4647%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:57.516984+00:00",
+      "sha256": "840c1e027a21bda90caca0a296c4b718fd85ded88ac42ba1c8707354f1549e14",
+      "byte_count": 2308,
+      "repository_path": "docs/research/occupied-lots/snapshots/840c1e027a21bda90caca0a296c4b718fd85ded88ac42ba1c8707354f1549e14.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1770398264\"",
+        "Date": "Sat, 26 Sep 2026 22:51:56 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-108-zoning": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473780.4506999999%2C5362347.4647%5D%2C%5B473773.84470000025%2C5362308.0995000005%5D%2C%5B473759.2636000002%2C5362310.549000001%5D%2C%5B473765.8702999996%2C5362349.914100001%5D%2C%5B473780.4506999999%2C5362347.4647%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473780.4506999999%2C5362347.4647%5D%2C%5B473773.84470000025%2C5362308.0995000005%5D%2C%5B473759.2636000002%2C5362310.549000001%5D%2C%5B473765.8702999996%2C5362349.914100001%5D%2C%5B473780.4506999999%2C5362347.4647%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:58.020580+00:00",
+      "sha256": "0ccff549fa234e9a93c113a5e71ed9692b5959dd8ddcffc6216b5d74288272a9",
+      "byte_count": 225420,
+      "repository_path": "docs/research/occupied-lots/snapshots/0ccff549fa234e9a93c113a5e71ed9692b5959dd8ddcffc6216b5d74288272a9.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790312011\"",
+        "Date": "Sat, 26 Sep 2026 22:51:56 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-108-addresses": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473780.4506999999%2C5362347.4647%5D%2C%5B473773.84470000025%2C5362308.0995000005%5D%2C%5B473759.2636000002%2C5362310.549000001%5D%2C%5B473765.8702999996%2C5362349.914100001%5D%2C%5B473780.4506999999%2C5362347.4647%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CFullAddress%2CGISLINK&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473780.4506999999%2C5362347.4647%5D%2C%5B473773.84470000025%2C5362308.0995000005%5D%2C%5B473759.2636000002%2C5362310.549000001%5D%2C%5B473765.8702999996%2C5362349.914100001%5D%2C%5B473780.4506999999%2C5362347.4647%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CFullAddress%2CGISLINK&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:58.268025+00:00",
+      "sha256": "9f544ede1d7a9e60497975edfb4e3a7da06a8abf83055ea5e9ab621f2560aa73",
+      "byte_count": 779,
+      "repository_path": "docs/research/occupied-lots/snapshots/9f544ede1d7a9e60497975edfb4e3a7da06a8abf83055ea5e9ab621f2560aa73.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790307914\"",
+        "Date": "Sat, 26 Sep 2026 22:51:57 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-109-parcel": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=109&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=109&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157",
+      "captured_at_utc": "2026-09-26T22:51:58.512252+00:00",
+      "sha256": "18fe52a5a40b5b02907c690fa05c36b5059de2ca7b8ea5f88cd5b0c9df286b86",
+      "byte_count": 1764,
+      "repository_path": "docs/research/occupied-lots/snapshots/18fe52a5a40b5b02907c690fa05c36b5059de2ca7b8ea5f88cd5b0c9df286b86.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790318547\"",
+        "Date": "Sat, 26 Sep 2026 22:51:57 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-109-buildings": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473795.0310000004%2C5362345.0153%5D%2C%5B473788.42590000015%2C5362305.65%5D%2C%5B473773.84470000025%2C5362308.0995000005%5D%2C%5B473780.4506999999%2C5362347.4647%5D%2C%5B473795.0310000004%2C5362345.0153%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473795.0310000004%2C5362345.0153%5D%2C%5B473788.42590000015%2C5362305.65%5D%2C%5B473773.84470000025%2C5362308.0995000005%5D%2C%5B473780.4506999999%2C5362347.4647%5D%2C%5B473795.0310000004%2C5362345.0153%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:58.752071+00:00",
+      "sha256": "e80096cba4a0efa3a2250ad8d118af690876eb036d3de8d3856beec708286457",
+      "byte_count": 2993,
+      "repository_path": "docs/research/occupied-lots/snapshots/e80096cba4a0efa3a2250ad8d118af690876eb036d3de8d3856beec708286457.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1770398264\"",
+        "Date": "Sat, 26 Sep 2026 22:51:57 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-109-zoning": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473795.0310000004%2C5362345.0153%5D%2C%5B473788.42590000015%2C5362305.65%5D%2C%5B473773.84470000025%2C5362308.0995000005%5D%2C%5B473780.4506999999%2C5362347.4647%5D%2C%5B473795.0310000004%2C5362345.0153%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473795.0310000004%2C5362345.0153%5D%2C%5B473788.42590000015%2C5362305.65%5D%2C%5B473773.84470000025%2C5362308.0995000005%5D%2C%5B473780.4506999999%2C5362347.4647%5D%2C%5B473795.0310000004%2C5362345.0153%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:59.260963+00:00",
+      "sha256": "0ccff549fa234e9a93c113a5e71ed9692b5959dd8ddcffc6216b5d74288272a9",
+      "byte_count": 225420,
+      "repository_path": "docs/research/occupied-lots/snapshots/0ccff549fa234e9a93c113a5e71ed9692b5959dd8ddcffc6216b5d74288272a9.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790312011\"",
+        "Date": "Sat, 26 Sep 2026 22:51:58 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    },
+    "new-109-addresses": {
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473795.0310000004%2C5362345.0153%5D%2C%5B473788.42590000015%2C5362305.65%5D%2C%5B473773.84470000025%2C5362308.0995000005%5D%2C%5B473780.4506999999%2C5362347.4647%5D%2C%5B473795.0310000004%2C5362345.0153%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CFullAddress%2CGISLINK&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473795.0310000004%2C5362345.0153%5D%2C%5B473788.42590000015%2C5362305.65%5D%2C%5B473773.84470000025%2C5362308.0995000005%5D%2C%5B473780.4506999999%2C5362347.4647%5D%2C%5B473795.0310000004%2C5362345.0153%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CFullAddress%2CGISLINK&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-26T22:51:59.507989+00:00",
+      "sha256": "94e70d16674700aa32ce440456dba84d21f8744888b41ef5a358ba73663b8ccc",
+      "byte_count": 779,
+      "repository_path": "docs/research/occupied-lots/snapshots/94e70d16674700aa32ce440456dba84d21f8744888b41ef5a358ba73663b8ccc.json",
+      "http_metadata": {
+        "Content-Type": "text/plain; charset=UTF-8",
+        "Last-Modified": null,
+        "ETag": "\"1790307914\"",
+        "Date": "Sat, 26 Sep 2026 22:51:58 GMT"
+      },
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence"
+    }
+  },
+  "pilot_source_references": {
+    "site-86-parcel": {
+      "source_id": "site-86-parcel",
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=86&outFields=%2A&returnGeometry=true&outSR=3157",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=86&outFields=%2A&returnGeometry=true&outSR=3157",
+      "captured_at_utc": "2026-09-24T18:18:43.757889+00:00",
+      "sha256": "d824f4fead8ca0d6924fe31f918f399c276c20026d5fc2ea37b0f218be56a03f",
+      "byte_count": 3402,
+      "object": "objects/d824f4fead8ca0d6924fe31f918f399c276c20026d5fc2ea37b0f218be56a03f.json",
+      "http_metadata": {
+        "content-type": "text/plain; charset=UTF-8",
+        "last-modified": null,
+        "etag": "\"1790232144\"",
+        "date": "Thu, 24 Sep 2026 18:18:43 GMT"
+      },
+      "redistribution": "victoria-open-data-v1",
+      "repository_path": "snapshots/d824f4fead8ca0d6924fe31f918f399c276c20026d5fc2ea37b0f218be56a03f.json",
+      "original_crs": {
+        "wkid": 3157,
+        "latestWkid": 3157
+      },
+      "original_units": {
+        "horizontal": "metres; service metadata esriMeters",
+        "area": "coordinate-derived square metres, not verified regulatory area",
+        "vertical": "unknown; Z present only in roofline responses; datum and accuracy unverified"
+      },
+      "version_evidence": null,
+      "effective_date": null,
+      "technical_review": "agent-inspected; not independently or professionally reviewed",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+      "same_bytes_as_2026_09_18": true
+    },
+    "site-86-zones": {
+      "source_id": "site-86-zones",
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473720.0307%2C5362204.677999999%5D%2C%5B473713.0613000002%2C5362163.1262%5D%2C%5B473697.6003999999%2C5362165.7161%5D%2C%5B473704.5708999997%2C5362207.274800001%5D%2C%5B473720.0307%2C5362204.677999999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473720.0307%2C5362204.677999999%5D%2C%5B473713.0613000002%2C5362163.1262%5D%2C%5B473697.6003999999%2C5362165.7161%5D%2C%5B473704.5708999997%2C5362207.274800001%5D%2C%5B473720.0307%2C5362204.677999999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-24T18:18:45.271904+00:00",
+      "sha256": "eef0512aa4b0fed857923e51a733f4ac56091d44157a4e8ece843d24fd0941af",
+      "byte_count": 225941,
+      "object": "objects/eef0512aa4b0fed857923e51a733f4ac56091d44157a4e8ece843d24fd0941af.json",
+      "http_metadata": {
+        "content-type": "text/plain; charset=UTF-8",
+        "last-modified": null,
+        "etag": "\"1790225371\"",
+        "date": "Thu, 24 Sep 2026 18:18:43 GMT"
+      },
+      "redistribution": "victoria-open-data-v1",
+      "repository_path": "snapshots/eef0512aa4b0fed857923e51a733f4ac56091d44157a4e8ece843d24fd0941af.json",
+      "original_crs": {
+        "wkid": 3157,
+        "latestWkid": 3157
+      },
+      "original_units": {
+        "horizontal": "metres; service metadata esriMeters",
+        "area": "coordinate-derived square metres, not verified regulatory area",
+        "vertical": "unknown; Z present only in roofline responses; datum and accuracy unverified"
+      },
+      "version_evidence": null,
+      "effective_date": null,
+      "technical_review": "agent-inspected; not independently or professionally reviewed",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+      "same_bytes_as_2026_09_18": true
+    },
+    "site-86-rooflines": {
+      "source_id": "site-86-rooflines",
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473720.0307%2C5362204.677999999%5D%2C%5B473713.0613000002%2C5362163.1262%5D%2C%5B473697.6003999999%2C5362165.7161%5D%2C%5B473704.5708999997%2C5362207.274800001%5D%2C%5B473720.0307%2C5362204.677999999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473720.0307%2C5362204.677999999%5D%2C%5B473713.0613000002%2C5362163.1262%5D%2C%5B473697.6003999999%2C5362165.7161%5D%2C%5B473704.5708999997%2C5362207.274800001%5D%2C%5B473720.0307%2C5362204.677999999%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-24T18:18:45.572918+00:00",
+      "sha256": "02202bdce96a4544663b0c252dda8ffa580116069da8e8475bd5fb2688139cbd",
+      "byte_count": 1889,
+      "object": "objects/02202bdce96a4544663b0c252dda8ffa580116069da8e8475bd5fb2688139cbd.json",
+      "http_metadata": {
+        "content-type": "text/plain; charset=UTF-8",
+        "last-modified": null,
+        "etag": "\"1770398264\"",
+        "date": "Thu, 24 Sep 2026 18:18:45 GMT"
+      },
+      "redistribution": "victoria-open-data-v1",
+      "repository_path": "snapshots/02202bdce96a4544663b0c252dda8ffa580116069da8e8475bd5fb2688139cbd.json",
+      "original_crs": {
+        "wkid": 3157,
+        "latestWkid": 3157
+      },
+      "original_units": {
+        "horizontal": "metres; service metadata esriMeters",
+        "area": "coordinate-derived square metres, not verified regulatory area",
+        "vertical": "unknown; Z present only in roofline responses; datum and accuracy unverified"
+      },
+      "version_evidence": null,
+      "effective_date": null,
+      "technical_review": "agent-inspected; not independently or professionally reviewed",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+      "same_bytes_as_2026_09_18": true
+    },
+    "site-80-parcel": {
+      "source_id": "site-80-parcel",
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=80&outFields=%2A&returnGeometry=true&outSR=3157",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=80&outFields=%2A&returnGeometry=true&outSR=3157",
+      "captured_at_utc": "2026-09-24T18:18:42.684481+00:00",
+      "sha256": "ed59084b6d130989d8bd3110487e6834a1c0d4e2896e7da282763e5dab7c3844",
+      "byte_count": 3421,
+      "object": "objects/ed59084b6d130989d8bd3110487e6834a1c0d4e2896e7da282763e5dab7c3844.json",
+      "http_metadata": {
+        "content-type": "text/plain; charset=UTF-8",
+        "last-modified": null,
+        "etag": "\"1790232144\"",
+        "date": "Thu, 24 Sep 2026 18:18:42 GMT"
+      },
+      "redistribution": "victoria-open-data-v1",
+      "repository_path": "snapshots/ed59084b6d130989d8bd3110487e6834a1c0d4e2896e7da282763e5dab7c3844.json",
+      "original_crs": {
+        "wkid": 3157,
+        "latestWkid": 3157
+      },
+      "original_units": {
+        "horizontal": "metres; service metadata esriMeters",
+        "area": "coordinate-derived square metres, not verified regulatory area",
+        "vertical": "unknown; Z present only in roofline responses; datum and accuracy unverified"
+      },
+      "version_evidence": null,
+      "effective_date": null,
+      "technical_review": "agent-inspected; not independently or professionally reviewed",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+      "same_bytes_as_2026_09_18": true
+    },
+    "site-80-zones": {
+      "source_id": "site-80-zones",
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473783.48649999965%2C5362194.019200001%5D%2C%5B473776.5218000002%2C5362152.4957%5D%2C%5B473762.99909999967%2C5362154.761%5D%2C%5B473769.9648000002%2C5362196.2905%5D%2C%5B473783.48649999965%2C5362194.019200001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473783.48649999965%2C5362194.019200001%5D%2C%5B473776.5218000002%2C5362152.4957%5D%2C%5B473762.99909999967%2C5362154.761%5D%2C%5B473769.9648000002%2C5362196.2905%5D%2C%5B473783.48649999965%2C5362194.019200001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-24T18:18:43.209318+00:00",
+      "sha256": "eef0512aa4b0fed857923e51a733f4ac56091d44157a4e8ece843d24fd0941af",
+      "byte_count": 225941,
+      "object": "objects/eef0512aa4b0fed857923e51a733f4ac56091d44157a4e8ece843d24fd0941af.json",
+      "http_metadata": {
+        "content-type": "text/plain; charset=UTF-8",
+        "last-modified": null,
+        "etag": "\"1790225371\"",
+        "date": "Thu, 24 Sep 2026 18:18:42 GMT"
+      },
+      "redistribution": "victoria-open-data-v1",
+      "repository_path": "snapshots/eef0512aa4b0fed857923e51a733f4ac56091d44157a4e8ece843d24fd0941af.json",
+      "original_crs": {
+        "wkid": 3157,
+        "latestWkid": 3157
+      },
+      "original_units": {
+        "horizontal": "metres; service metadata esriMeters",
+        "area": "coordinate-derived square metres, not verified regulatory area",
+        "vertical": "unknown; Z present only in roofline responses; datum and accuracy unverified"
+      },
+      "version_evidence": null,
+      "effective_date": null,
+      "technical_review": "agent-inspected; not independently or professionally reviewed",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+      "same_bytes_as_2026_09_18": true
+    },
+    "site-80-rooflines": {
+      "source_id": "site-80-rooflines",
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473783.48649999965%2C5362194.019200001%5D%2C%5B473776.5218000002%2C5362152.4957%5D%2C%5B473762.99909999967%2C5362154.761%5D%2C%5B473769.9648000002%2C5362196.2905%5D%2C%5B473783.48649999965%2C5362194.019200001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473783.48649999965%2C5362194.019200001%5D%2C%5B473776.5218000002%2C5362152.4957%5D%2C%5B473762.99909999967%2C5362154.761%5D%2C%5B473769.9648000002%2C5362196.2905%5D%2C%5B473783.48649999965%2C5362194.019200001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-24T18:18:43.499428+00:00",
+      "sha256": "34c16b1a71ce9b723c19b8312e66ac44b1aebcccae6fd28eefadf81bb695b5f8",
+      "byte_count": 1992,
+      "object": "objects/34c16b1a71ce9b723c19b8312e66ac44b1aebcccae6fd28eefadf81bb695b5f8.json",
+      "http_metadata": {
+        "content-type": "text/plain; charset=UTF-8",
+        "last-modified": null,
+        "etag": "\"1770398264\"",
+        "date": "Thu, 24 Sep 2026 18:18:43 GMT"
+      },
+      "redistribution": "victoria-open-data-v1",
+      "repository_path": "snapshots/34c16b1a71ce9b723c19b8312e66ac44b1aebcccae6fd28eefadf81bb695b5f8.json",
+      "original_crs": {
+        "wkid": 3157,
+        "latestWkid": 3157
+      },
+      "original_units": {
+        "horizontal": "metres; service metadata esriMeters",
+        "area": "coordinate-derived square metres, not verified regulatory area",
+        "vertical": "unknown; Z present only in roofline responses; datum and accuracy unverified"
+      },
+      "version_evidence": null,
+      "effective_date": null,
+      "technical_review": "agent-inspected; not independently or professionally reviewed",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+      "same_bytes_as_2026_09_18": true
+    },
+    "site-59-parcel": {
+      "source_id": "site-59-parcel",
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=59&outFields=%2A&returnGeometry=true&outSR=3157",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=59&outFields=%2A&returnGeometry=true&outSR=3157",
+      "captured_at_utc": "2026-09-24T18:18:41.710816+00:00",
+      "sha256": "8d666d1dffaaa039101ee84f407e7bb84d80ed7c933f70fde0e8e8b87d7a7f92",
+      "byte_count": 3419,
+      "object": "objects/8d666d1dffaaa039101ee84f407e7bb84d80ed7c933f70fde0e8e8b87d7a7f92.json",
+      "http_metadata": {
+        "content-type": "text/plain; charset=UTF-8",
+        "last-modified": null,
+        "etag": "\"1790232144\"",
+        "date": "Thu, 24 Sep 2026 18:18:41 GMT"
+      },
+      "redistribution": "victoria-open-data-v1",
+      "repository_path": "snapshots/8d666d1dffaaa039101ee84f407e7bb84d80ed7c933f70fde0e8e8b87d7a7f92.json",
+      "original_crs": {
+        "wkid": 3157,
+        "latestWkid": 3157
+      },
+      "original_units": {
+        "horizontal": "metres; service metadata esriMeters",
+        "area": "coordinate-derived square metres, not verified regulatory area",
+        "vertical": "unknown; Z present only in roofline responses; datum and accuracy unverified"
+      },
+      "version_evidence": null,
+      "effective_date": null,
+      "technical_review": "agent-inspected; not independently or professionally reviewed",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+      "same_bytes_as_2026_09_18": true
+    },
+    "site-59-zones": {
+      "source_id": "site-59-zones",
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B474296.0544999996%2C5364508.7839%5D%2C%5B474295.09669999965%2C5364485.246300001%5D%2C%5B474270.6321999999%2C5364487.5458%5D%2C%5B474272.8002000004%2C5364510.9716%5D%2C%5B474296.0544999996%2C5364508.7839%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B474296.0544999996%2C5364508.7839%5D%2C%5B474295.09669999965%2C5364485.246300001%5D%2C%5B474270.6321999999%2C5364487.5458%5D%2C%5B474272.8002000004%2C5364510.9716%5D%2C%5B474296.0544999996%2C5364508.7839%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-24T18:18:42.052006+00:00",
+      "sha256": "4899f071d466017ef6068119cd66b2ce13b34d144de51500e53aa361835ae75a",
+      "byte_count": 21733,
+      "object": "objects/4899f071d466017ef6068119cd66b2ce13b34d144de51500e53aa361835ae75a.json",
+      "http_metadata": {
+        "content-type": "text/plain; charset=UTF-8",
+        "last-modified": null,
+        "etag": "\"1790225371\"",
+        "date": "Thu, 24 Sep 2026 18:18:41 GMT"
+      },
+      "redistribution": "victoria-open-data-v1",
+      "repository_path": "snapshots/4899f071d466017ef6068119cd66b2ce13b34d144de51500e53aa361835ae75a.json",
+      "original_crs": {
+        "wkid": 3157,
+        "latestWkid": 3157
+      },
+      "original_units": {
+        "horizontal": "metres; service metadata esriMeters",
+        "area": "coordinate-derived square metres, not verified regulatory area",
+        "vertical": "unknown; Z present only in roofline responses; datum and accuracy unverified"
+      },
+      "version_evidence": null,
+      "effective_date": null,
+      "technical_review": "agent-inspected; not independently or professionally reviewed",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+      "same_bytes_as_2026_09_18": true
+    },
+    "site-59-rooflines": {
+      "source_id": "site-59-rooflines",
+      "requested_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B474296.0544999996%2C5364508.7839%5D%2C%5B474295.09669999965%2C5364485.246300001%5D%2C%5B474270.6321999999%2C5364487.5458%5D%2C%5B474272.8002000004%2C5364510.9716%5D%2C%5B474296.0544999996%2C5364508.7839%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+      "resolved_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B474296.0544999996%2C5364508.7839%5D%2C%5B474295.09669999965%2C5364485.246300001%5D%2C%5B474270.6321999999%2C5364487.5458%5D%2C%5B474272.8002000004%2C5364510.9716%5D%2C%5B474296.0544999996%2C5364508.7839%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=%2A&returnGeometry=true&returnZ=true",
+      "captured_at_utc": "2026-09-24T18:18:42.428843+00:00",
+      "sha256": "1b8397d008bf2717568d831e38dbe159508883dba47021887ddd7fe40ef0f992",
+      "byte_count": 2914,
+      "object": "objects/1b8397d008bf2717568d831e38dbe159508883dba47021887ddd7fe40ef0f992.json",
+      "http_metadata": {
+        "content-type": "text/plain; charset=UTF-8",
+        "last-modified": null,
+        "etag": "\"1770398264\"",
+        "date": "Thu, 24 Sep 2026 18:18:42 GMT"
+      },
+      "redistribution": "victoria-open-data-v1",
+      "repository_path": "snapshots/1b8397d008bf2717568d831e38dbe159508883dba47021887ddd7fe40ef0f992.json",
+      "original_crs": {
+        "wkid": 3157,
+        "latestWkid": 3157
+      },
+      "original_units": {
+        "horizontal": "metres; service metadata esriMeters",
+        "area": "coordinate-derived square metres, not verified regulatory area",
+        "vertical": "unknown; Z present only in roofline responses; datum and accuracy unverified"
+      },
+      "version_evidence": null,
+      "effective_date": null,
+      "technical_review": "agent-inspected; not independently or professionally reviewed",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+      "same_bytes_as_2026_09_18": true
+    }
+  },
+  "cases": [
+    {
+      "case_id": "VIC-086",
+      "origin": "pilot-packet-reference",
+      "parcel_object_id": 86,
+      "source_ids": [
+        "site-86-parcel",
+        "site-86-zones",
+        "site-86-rooflines"
+      ],
+      "status": "apparently_occupied_geometry_only",
+      "unresolved": [
+        "actual occupancy",
+        "dwelling count",
+        "principal building role",
+        "roofline versus wall footprint",
+        "legal lot lines",
+        "current zoning applicability",
+        "address-to-parcel identity"
+      ]
+    },
+    {
+      "case_id": "VIC-080",
+      "origin": "pilot-packet-reference",
+      "parcel_object_id": 80,
+      "source_ids": [
+        "site-80-parcel",
+        "site-80-zones",
+        "site-80-rooflines"
+      ],
+      "status": "apparently_occupied_geometry_only",
+      "unresolved": [
+        "actual occupancy",
+        "dwelling count",
+        "principal building role",
+        "roofline versus wall footprint",
+        "legal lot lines",
+        "current zoning applicability",
+        "address-to-parcel identity"
+      ]
+    },
+    {
+      "case_id": "VIC-059",
+      "origin": "pilot-packet-reference",
+      "parcel_object_id": 59,
+      "source_ids": [
+        "site-59-parcel",
+        "site-59-zones",
+        "site-59-rooflines"
+      ],
+      "status": "apparently_occupied_geometry_only",
+      "unresolved": [
+        "actual occupancy",
+        "dwelling count",
+        "principal building role",
+        "roofline versus wall footprint",
+        "legal lot lines",
+        "current zoning applicability",
+        "address-to-parcel identity"
+      ]
+    },
+    {
+      "case_id": "VIC-087",
+      "origin": "new-capture",
+      "parcel_object_id": 87,
+      "source_ids": [
+        "new-87-parcel",
+        "new-87-buildings",
+        "new-87-zoning",
+        "new-87-addresses"
+      ],
+      "parcel_attributes": {
+        "OBJECTID": 87,
+        "VicPID": "V02291051",
+        "PID": "001-328-107",
+        "ParcelStatus": "ACTIVE",
+        "ParcelType": "LA",
+        "PrimarySurveyParcel": null,
+        "Shape_Area": 642.0220911965724
+      },
+      "intersecting_building_object_ids": [
+        69542
+      ],
+      "zoning_labels": [
+        "GRD-1 (PGA)"
+      ],
+      "address_points": [
+        {
+          "object_id": 9210,
+          "full_address": "1144 MAY ST",
+          "gislink": "03229041"
+        }
+      ],
+      "status": "apparently_occupied_geometry_only",
+      "unresolved": [
+        "actual occupancy",
+        "dwelling count",
+        "principal building role",
+        "roofline versus wall footprint",
+        "legal lot lines",
+        "current zoning applicability",
+        "address-to-parcel identity"
+      ]
+    },
+    {
+      "case_id": "VIC-090",
+      "origin": "new-capture",
+      "parcel_object_id": 90,
+      "source_ids": [
+        "new-90-parcel",
+        "new-90-buildings",
+        "new-90-zoning",
+        "new-90-addresses"
+      ],
+      "parcel_attributes": {
+        "OBJECTID": 90,
+        "VicPID": "V02291043",
+        "PID": "008-141-126",
+        "ParcelStatus": "ACTIVE",
+        "ParcelType": "LA",
+        "PrimarySurveyParcel": null,
+        "Shape_Area": 513.7590109200167
+      },
+      "intersecting_building_object_ids": [
+        69540,
+        69805,
+        69806
+      ],
+      "zoning_labels": [
+        "GRD-1 (PGA)"
+      ],
+      "address_points": [
+        {
+          "object_id": 9202,
+          "full_address": "1130 MAY ST",
+          "gislink": "03229033"
+        }
+      ],
+      "status": "apparently_occupied_geometry_only",
+      "unresolved": [
+        "actual occupancy",
+        "dwelling count",
+        "principal building role",
+        "roofline versus wall footprint",
+        "legal lot lines",
+        "current zoning applicability",
+        "address-to-parcel identity"
+      ]
+    },
+    {
+      "case_id": "VIC-091",
+      "origin": "new-capture",
+      "parcel_object_id": 91,
+      "source_ids": [
+        "new-91-parcel",
+        "new-91-buildings",
+        "new-91-zoning",
+        "new-91-addresses"
+      ],
+      "parcel_attributes": {
+        "OBJECTID": 91,
+        "VicPID": "V02291044",
+        "PID": "003-670-732",
+        "ParcelStatus": "ACTIVE",
+        "ParcelType": "LA",
+        "PrimarySurveyParcel": null,
+        "Shape_Area": 770.764894358478
+      },
+      "intersecting_building_object_ids": [
+        69539
+      ],
+      "zoning_labels": [
+        "GRD-1 (PGA)"
+      ],
+      "address_points": [
+        {
+          "object_id": 2756,
+          "full_address": "1-1124 MAY ST",
+          "gislink": "03229034"
+        },
+        {
+          "object_id": 9203,
+          "full_address": "1124 MAY ST",
+          "gislink": "03229034"
+        },
+        {
+          "object_id": 33311,
+          "full_address": "2-1124 MAY ST",
+          "gislink": "03229034"
+        }
+      ],
+      "status": "apparently_occupied_geometry_only",
+      "unresolved": [
+        "actual occupancy",
+        "dwelling count",
+        "principal building role",
+        "roofline versus wall footprint",
+        "legal lot lines",
+        "current zoning applicability",
+        "address-to-parcel identity"
+      ]
+    },
+    {
+      "case_id": "VIC-092",
+      "origin": "new-capture",
+      "parcel_object_id": 92,
+      "source_ids": [
+        "new-92-parcel",
+        "new-92-buildings",
+        "new-92-zoning",
+        "new-92-addresses"
+      ],
+      "parcel_attributes": {
+        "OBJECTID": 92,
+        "VicPID": "V02291045",
+        "PID": "004-124-065",
+        "ParcelStatus": "ACTIVE",
+        "ParcelType": "LA",
+        "PrimarySurveyParcel": null,
+        "Shape_Area": 774.7672955048242
+      },
+      "intersecting_building_object_ids": [
+        69538,
+        69634
+      ],
+      "zoning_labels": [
+        "GRD-1 (PGA)"
+      ],
+      "address_points": [
+        {
+          "object_id": 9204,
+          "full_address": "1120 MAY ST",
+          "gislink": "03229035"
+        },
+        {
+          "object_id": 33301,
+          "full_address": "1-1120 MAY ST",
+          "gislink": "03229035"
+        },
+        {
+          "object_id": 33302,
+          "full_address": "2-1120 MAY ST",
+          "gislink": "03229035"
+        },
+        {
+          "object_id": 33303,
+          "full_address": "3-1120 MAY ST",
+          "gislink": "03229035"
+        },
+        {
+          "object_id": 33304,
+          "full_address": "4-1120 MAY ST",
+          "gislink": "03229035"
+        },
+        {
+          "object_id": 33305,
+          "full_address": "5-1120 MAY ST",
+          "gislink": "03229035"
+        },
+        {
+          "object_id": 33306,
+          "full_address": "6-1120 MAY ST",
+          "gislink": "03229035"
+        },
+        {
+          "object_id": 33307,
+          "full_address": "7-1120 MAY ST",
+          "gislink": "03229035"
+        },
+        {
+          "object_id": 33308,
+          "full_address": "8-1120 MAY ST",
+          "gislink": "03229035"
+        },
+        {
+          "object_id": 33309,
+          "full_address": "9-1120 MAY ST",
+          "gislink": "03229035"
+        },
+        {
+          "object_id": 33310,
+          "full_address": "10-1120 MAY ST",
+          "gislink": "03229035"
+        }
+      ],
+      "status": "apparently_occupied_geometry_only",
+      "unresolved": [
+        "actual occupancy",
+        "dwelling count",
+        "principal building role",
+        "roofline versus wall footprint",
+        "legal lot lines",
+        "current zoning applicability",
+        "address-to-parcel identity"
+      ]
+    },
+    {
+      "case_id": "VIC-093",
+      "origin": "new-capture",
+      "parcel_object_id": 93,
+      "source_ids": [
+        "new-93-parcel",
+        "new-93-buildings",
+        "new-93-zoning",
+        "new-93-addresses"
+      ],
+      "parcel_attributes": {
+        "OBJECTID": 93,
+        "VicPID": "V02291046",
+        "PID": "003-744-710",
+        "ParcelStatus": "ACTIVE",
+        "ParcelType": "LA",
+        "PrimarySurveyParcel": null,
+        "Shape_Area": 774.9198936364548
+      },
+      "intersecting_building_object_ids": [
+        69489,
+        69836
+      ],
+      "zoning_labels": [
+        "GRD-1 (PGA)",
+        "CVD-1"
+      ],
+      "address_points": [
+        {
+          "object_id": 9205,
+          "full_address": "1110 MAY ST",
+          "gislink": "03229036"
+        },
+        {
+          "object_id": 49882,
+          "full_address": "1112 MAY ST",
+          "gislink": "03229036"
+        }
+      ],
+      "status": "apparently_occupied_geometry_only",
+      "unresolved": [
+        "actual occupancy",
+        "dwelling count",
+        "principal building role",
+        "roofline versus wall footprint",
+        "legal lot lines",
+        "current zoning applicability",
+        "address-to-parcel identity"
+      ]
+    },
+    {
+      "case_id": "VIC-095",
+      "origin": "new-capture",
+      "parcel_object_id": 95,
+      "source_ids": [
+        "new-95-parcel",
+        "new-95-buildings",
+        "new-95-zoning",
+        "new-95-addresses"
+      ],
+      "parcel_attributes": {
+        "OBJECTID": 95,
+        "VicPID": "V02291048",
+        "PID": "008-141-215",
+        "ParcelStatus": "ACTIVE",
+        "ParcelType": "LA",
+        "PrimarySurveyParcel": null,
+        "Shape_Area": 626.0443405809838
+      },
+      "intersecting_building_object_ids": [
+        64045,
+        69490,
+        69491
+      ],
+      "zoning_labels": [
+        "GRD-1 (PGA)",
+        "CVD-1"
+      ],
+      "address_points": [
+        {
+          "object_id": 9207,
+          "full_address": "209 COOK ST",
+          "gislink": "03229038"
+        },
+        {
+          "object_id": 44195,
+          "full_address": "1-209 COOK ST",
+          "gislink": "03229038"
+        },
+        {
+          "object_id": 44196,
+          "full_address": "2-209 COOK ST",
+          "gislink": "03229038"
+        },
+        {
+          "object_id": 44197,
+          "full_address": "3-209 COOK ST",
+          "gislink": "03229038"
+        },
+        {
+          "object_id": 44198,
+          "full_address": "4-209 COOK ST",
+          "gislink": "03229038"
+        },
+        {
+          "object_id": 44199,
+          "full_address": "5-209 COOK ST",
+          "gislink": "03229038"
+        }
+      ],
+      "status": "apparently_occupied_geometry_only",
+      "unresolved": [
+        "actual occupancy",
+        "dwelling count",
+        "principal building role",
+        "roofline versus wall footprint",
+        "legal lot lines",
+        "current zoning applicability",
+        "address-to-parcel identity"
+      ]
+    },
+    {
+      "case_id": "VIC-096",
+      "origin": "new-capture",
+      "parcel_object_id": 96,
+      "source_ids": [
+        "new-96-parcel",
+        "new-96-buildings",
+        "new-96-zoning",
+        "new-96-addresses"
+      ],
+      "parcel_attributes": {
+        "OBJECTID": 96,
+        "VicPID": "V02291049",
+        "PID": "004-028-864",
+        "ParcelStatus": "ACTIVE",
+        "ParcelType": "LA",
+        "PrimarySurveyParcel": null,
+        "Shape_Area": 650.4561624000797
+      },
+      "intersecting_building_object_ids": [
+        69491,
+        69492
+      ],
+      "zoning_labels": [
+        "GRD-1 (PGA)",
+        "CVD-1"
+      ],
+      "address_points": [
+        {
+          "object_id": 9208,
+          "full_address": "211 COOK ST",
+          "gislink": "03229039"
+        },
+        {
+          "object_id": 43716,
+          "full_address": "1-211 COOK ST",
+          "gislink": "03229039"
+        },
+        {
+          "object_id": 43717,
+          "full_address": "2-211 COOK ST",
+          "gislink": "03229039"
+        },
+        {
+          "object_id": 43718,
+          "full_address": "3-211 COOK ST",
+          "gislink": "03229039"
+        },
+        {
+          "object_id": 43719,
+          "full_address": "4-211 COOK ST",
+          "gislink": "03229039"
+        },
+        {
+          "object_id": 43720,
+          "full_address": "5-211 COOK ST",
+          "gislink": "03229039"
+        },
+        {
+          "object_id": 43721,
+          "full_address": "6-211 COOK ST",
+          "gislink": "03229039"
+        }
+      ],
+      "status": "apparently_occupied_geometry_only",
+      "unresolved": [
+        "actual occupancy",
+        "dwelling count",
+        "principal building role",
+        "roofline versus wall footprint",
+        "legal lot lines",
+        "current zoning applicability",
+        "address-to-parcel identity"
+      ]
+    },
+    {
+      "case_id": "VIC-102",
+      "origin": "new-capture",
+      "parcel_object_id": 102,
+      "source_ids": [
+        "new-102-parcel",
+        "new-102-buildings",
+        "new-102-zoning",
+        "new-102-addresses"
+      ],
+      "parcel_attributes": {
+        "OBJECTID": 102,
+        "VicPID": "V02281007",
+        "PID": "008-143-510",
+        "ParcelStatus": "ACTIVE",
+        "ParcelType": "LA",
+        "PrimarySurveyParcel": null,
+        "Shape_Area": 590.1540485636945
+      },
+      "intersecting_building_object_ids": [
+        69956
+      ],
+      "zoning_labels": [
+        "GRD-1 (PGA)",
+        "CVD-1"
+      ],
+      "address_points": [
+        {
+          "object_id": 9135,
+          "full_address": "1129 OXFORD ST",
+          "gislink": "03228006"
+        }
+      ],
+      "status": "apparently_occupied_geometry_only",
+      "unresolved": [
+        "actual occupancy",
+        "dwelling count",
+        "principal building role",
+        "roofline versus wall footprint",
+        "legal lot lines",
+        "current zoning applicability",
+        "address-to-parcel identity"
+      ]
+    },
+    {
+      "case_id": "VIC-103",
+      "origin": "new-capture",
+      "parcel_object_id": 103,
+      "source_ids": [
+        "new-103-parcel",
+        "new-103-buildings",
+        "new-103-zoning",
+        "new-103-addresses"
+      ],
+      "parcel_attributes": {
+        "OBJECTID": 103,
+        "VicPID": "V02281008",
+        "PID": "008-143-536",
+        "ParcelStatus": "ACTIVE",
+        "ParcelType": "LA",
+        "PrimarySurveyParcel": null,
+        "Shape_Area": 590.1574835403447
+      },
+      "intersecting_building_object_ids": [
+        69668
+      ],
+      "zoning_labels": [
+        "GRD-1 (PGA)"
+      ],
+      "address_points": [
+        {
+          "object_id": 9136,
+          "full_address": "1135 OXFORD ST",
+          "gislink": "03228007"
+        }
+      ],
+      "status": "apparently_occupied_geometry_only",
+      "unresolved": [
+        "actual occupancy",
+        "dwelling count",
+        "principal building role",
+        "roofline versus wall footprint",
+        "legal lot lines",
+        "current zoning applicability",
+        "address-to-parcel identity"
+      ]
+    },
+    {
+      "case_id": "VIC-104",
+      "origin": "new-capture",
+      "parcel_object_id": 104,
+      "source_ids": [
+        "new-104-parcel",
+        "new-104-buildings",
+        "new-104-zoning",
+        "new-104-addresses"
+      ],
+      "parcel_attributes": {
+        "OBJECTID": 104,
+        "VicPID": "V02281009",
+        "PID": "008-143-544",
+        "ParcelStatus": "ACTIVE",
+        "ParcelType": "LA",
+        "PrimarySurveyParcel": null,
+        "Shape_Area": 590.1530455711311
+      },
+      "intersecting_building_object_ids": [
+        72749,
+        83741
+      ],
+      "zoning_labels": [
+        "GRD-1 (PGA)"
+      ],
+      "address_points": [
+        {
+          "object_id": 9137,
+          "full_address": "1141 OXFORD ST",
+          "gislink": "03228008"
+        }
+      ],
+      "status": "apparently_occupied_geometry_only",
+      "unresolved": [
+        "actual occupancy",
+        "dwelling count",
+        "principal building role",
+        "roofline versus wall footprint",
+        "legal lot lines",
+        "current zoning applicability",
+        "address-to-parcel identity"
+      ]
+    },
+    {
+      "case_id": "VIC-107",
+      "origin": "new-capture",
+      "parcel_object_id": 107,
+      "source_ids": [
+        "new-107-parcel",
+        "new-107-buildings",
+        "new-107-zoning",
+        "new-107-addresses"
+      ],
+      "parcel_attributes": {
+        "OBJECTID": 107,
+        "VicPID": "V02281012",
+        "PID": "008-143-552",
+        "ParcelStatus": "ACTIVE",
+        "ParcelType": "LA",
+        "PrimarySurveyParcel": null,
+        "Shape_Area": 590.1533469459339
+      },
+      "intersecting_building_object_ids": [
+        69670,
+        69802
+      ],
+      "zoning_labels": [
+        "GRD-1 (PGA)"
+      ],
+      "address_points": [
+        {
+          "object_id": 9139,
+          "full_address": "1151 OXFORD ST",
+          "gislink": "03228010"
+        }
+      ],
+      "status": "apparently_occupied_geometry_only",
+      "unresolved": [
+        "actual occupancy",
+        "dwelling count",
+        "principal building role",
+        "roofline versus wall footprint",
+        "legal lot lines",
+        "current zoning applicability",
+        "address-to-parcel identity"
+      ]
+    },
+    {
+      "case_id": "VIC-108",
+      "origin": "new-capture",
+      "parcel_object_id": 108,
+      "source_ids": [
+        "new-108-parcel",
+        "new-108-buildings",
+        "new-108-zoning",
+        "new-108-addresses"
+      ],
+      "parcel_attributes": {
+        "OBJECTID": 108,
+        "VicPID": "V02281013",
+        "PID": "000-986-607",
+        "ParcelStatus": "ACTIVE",
+        "ParcelType": "LA",
+        "PrimarySurveyParcel": null,
+        "Shape_Area": 590.1553348774657
+      },
+      "intersecting_building_object_ids": [
+        69671,
+        69672
+      ],
+      "zoning_labels": [
+        "GRD-1 (PGA)"
+      ],
+      "address_points": [
+        {
+          "object_id": 9140,
+          "full_address": "1155 OXFORD ST",
+          "gislink": "03228011"
+        }
+      ],
+      "status": "apparently_occupied_geometry_only",
+      "unresolved": [
+        "actual occupancy",
+        "dwelling count",
+        "principal building role",
+        "roofline versus wall footprint",
+        "legal lot lines",
+        "current zoning applicability",
+        "address-to-parcel identity"
+      ]
+    },
+    {
+      "case_id": "VIC-109",
+      "origin": "new-capture",
+      "parcel_object_id": 109,
+      "source_ids": [
+        "new-109-parcel",
+        "new-109-buildings",
+        "new-109-zoning",
+        "new-109-addresses"
+      ],
+      "parcel_attributes": {
+        "OBJECTID": 109,
+        "VicPID": "V02281014",
+        "PID": "008-143-579",
+        "ParcelStatus": "ACTIVE",
+        "ParcelType": "LA",
+        "PrimarySurveyParcel": null,
+        "Shape_Area": 590.1548333910363
+      },
+      "intersecting_building_object_ids": [
+        69673,
+        69674
+      ],
+      "zoning_labels": [
+        "GRD-1 (PGA)"
+      ],
+      "address_points": [
+        {
+          "object_id": 9141,
+          "full_address": "1161 OXFORD ST",
+          "gislink": "03228012"
+        }
+      ],
+      "status": "apparently_occupied_geometry_only",
+      "unresolved": [
+        "actual occupancy",
+        "dwelling count",
+        "principal building role",
+        "roofline versus wall footprint",
+        "legal lot lines",
+        "current zoning applicability",
+        "address-to-parcel identity"
+      ]
+    }
+  ],
+  "candidate_audit": [
+    {
+      "object_id": 87,
+      "selection": "included",
+      "building_count": 1,
+      "zoning_count": 1,
+      "address_point_count": 1
+    },
+    {
+      "object_id": 90,
+      "selection": "included",
+      "building_count": 3,
+      "zoning_count": 1,
+      "address_point_count": 1
+    },
+    {
+      "object_id": 91,
+      "selection": "included",
+      "building_count": 1,
+      "zoning_count": 1,
+      "address_point_count": 3
+    },
+    {
+      "object_id": 92,
+      "selection": "included",
+      "building_count": 2,
+      "zoning_count": 1,
+      "address_point_count": 11
+    },
+    {
+      "object_id": 93,
+      "selection": "included",
+      "building_count": 2,
+      "zoning_count": 2,
+      "address_point_count": 2
+    },
+    {
+      "object_id": 94,
+      "selection": "excluded",
+      "reason": "no Residential-labelled building polygon"
+    },
+    {
+      "object_id": 95,
+      "selection": "included",
+      "building_count": 3,
+      "zoning_count": 2,
+      "address_point_count": 6
+    },
+    {
+      "object_id": 96,
+      "selection": "included",
+      "building_count": 2,
+      "zoning_count": 2,
+      "address_point_count": 7
+    },
+    {
+      "object_id": 97,
+      "selection": "excluded",
+      "reason": "no GRD-1 zoning intersection"
+    },
+    {
+      "object_id": 98,
+      "selection": "excluded",
+      "reason": "no GRD-1 zoning intersection"
+    },
+    {
+      "object_id": 100,
+      "selection": "excluded",
+      "reason": "no GRD-1 zoning intersection"
+    },
+    {
+      "object_id": 102,
+      "selection": "included",
+      "building_count": 1,
+      "zoning_count": 2,
+      "address_point_count": 1
+    },
+    {
+      "object_id": 103,
+      "selection": "included",
+      "building_count": 1,
+      "zoning_count": 1,
+      "address_point_count": 1
+    },
+    {
+      "object_id": 104,
+      "selection": "included",
+      "building_count": 2,
+      "zoning_count": 1,
+      "address_point_count": 1
+    },
+    {
+      "object_id": 107,
+      "selection": "included",
+      "building_count": 2,
+      "zoning_count": 1,
+      "address_point_count": 1
+    },
+    {
+      "object_id": 108,
+      "selection": "included",
+      "building_count": 2,
+      "zoning_count": 1,
+      "address_point_count": 1
+    },
+    {
+      "object_id": 109,
+      "selection": "included",
+      "building_count": 2,
+      "zoning_count": 1,
+      "address_point_count": 1
+    }
+  ],
+  "licence": {
+    "url": "https://opendata.victoria.ca/pages/open-data-licence",
+    "attribution": "Contains information licensed under the Open Government Licence - City of Victoria."
+  }
+}

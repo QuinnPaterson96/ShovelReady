@@ -1,0 +1,111 @@
+{
+ "displayFieldName": "FullAddress",
+ "fieldAliases": {
+  "OBJECTID": "OBJECTID",
+  "FullAddress": "FullAddress",
+  "GISLINK": "GISLINK"
+ },
+ "geometryType": "esriGeometryPoint",
+ "spatialReference": {
+  "wkid": 3157,
+  "latestWkid": 3157
+ },
+ "fields": [
+  {
+   "name": "OBJECTID",
+   "type": "esriFieldTypeOID",
+   "alias": "OBJECTID"
+  },
+  {
+   "name": "FullAddress",
+   "type": "esriFieldTypeString",
+   "alias": "FullAddress",
+   "length": 200
+  },
+  {
+   "name": "GISLINK",
+   "type": "esriFieldTypeString",
+   "alias": "GISLINK",
+   "length": 16
+  }
+ ],
+ "features": [
+  {
+   "attributes": {
+    "OBJECTID": 9208,
+    "FullAddress": "211 COOK ST",
+    "GISLINK": "03229039"
+   },
+   "geometry": {
+    "x": 473593.00459999964,
+    "y": 5362228.0045999996
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 43716,
+    "FullAddress": "1-211 COOK ST",
+    "GISLINK": "03229039"
+   },
+   "geometry": {
+    "x": 473593.00459999964,
+    "y": 5362228.0045999996
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 43717,
+    "FullAddress": "2-211 COOK ST",
+    "GISLINK": "03229039"
+   },
+   "geometry": {
+    "x": 473593.00459999964,
+    "y": 5362228.0045999996
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 43718,
+    "FullAddress": "3-211 COOK ST",
+    "GISLINK": "03229039"
+   },
+   "geometry": {
+    "x": 473593.00459999964,
+    "y": 5362228.0045999996
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 43719,
+    "FullAddress": "4-211 COOK ST",
+    "GISLINK": "03229039"
+   },
+   "geometry": {
+    "x": 473593.00459999964,
+    "y": 5362228.0045999996
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 43720,
+    "FullAddress": "5-211 COOK ST",
+    "GISLINK": "03229039"
+   },
+   "geometry": {
+    "x": 473593.00459999964,
+    "y": 5362228.0045999996
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 43721,
+    "FullAddress": "6-211 COOK ST",
+    "GISLINK": "03229039"
+   },
+   "geometry": {
+    "x": 473593.00459999964,
+    "y": 5362228.0045999996
+   }
+  }
+ ]
+}

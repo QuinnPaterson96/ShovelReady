@@ -1,0 +1,56 @@
+{
+ "displayFieldName": "FullAddress",
+ "fieldAliases": {
+  "OBJECTID": "OBJECTID",
+  "FullAddress": "FullAddress",
+  "GISLINK": "GISLINK"
+ },
+ "geometryType": "esriGeometryPoint",
+ "spatialReference": {
+  "wkid": 3157,
+  "latestWkid": 3157
+ },
+ "fields": [
+  {
+   "name": "OBJECTID",
+   "type": "esriFieldTypeOID",
+   "alias": "OBJECTID"
+  },
+  {
+   "name": "FullAddress",
+   "type": "esriFieldTypeString",
+   "alias": "FullAddress",
+   "length": 200
+  },
+  {
+   "name": "GISLINK",
+   "type": "esriFieldTypeString",
+   "alias": "GISLINK",
+   "length": 16
+  }
+ ],
+ "features": [
+  {
+   "attributes": {
+    "OBJECTID": 9206,
+    "FullAddress": "205 COOK ST",
+    "GISLINK": "03229037"
+   },
+   "geometry": {
+    "x": 473588.64659999963,
+    "y": 5362193.3465999998
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 9688,
+    "FullAddress": "1108 MAY ST",
+    "GISLINK": "03229037"
+   },
+   "geometry": {
+    "x": 473588.64659999963,
+    "y": 5362193.3465999998
+   }
+  }
+ ]
+}
