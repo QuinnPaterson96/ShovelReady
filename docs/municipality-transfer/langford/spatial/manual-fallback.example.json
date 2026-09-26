@@ -1,0 +1,41 @@
+{
+  "schema_version": "sr44-manual-example.v1",
+  "illustrative_only": true,
+  "lead": "lone-oak",
+  "address": {
+    "value": "350 Lone Oak Pl, Langford, BC",
+    "origin": "BC Address Geocoder saved response; manual address entry may repeat this string",
+    "crs": "EPSG:4326 for geocoder point",
+    "review_status": "unreviewed",
+    "verified_parcel_match": false
+  },
+  "source_baseline": {
+    "parcel_candidate_pid": "030498481",
+    "origin": "ParcelMap BC Parcel Polygons OGL WFS capture, spatial containment candidate",
+    "source_file": "lone-oak-pmbc.json",
+    "field": "FEATURE_AREA_SQM",
+    "original_value": 7318.5682,
+    "original_unit": "m2",
+    "basis": "provider parcel polygon feature area in EPSG:3005; not regulatory lot area",
+    "review_status": "unreviewed"
+  },
+  "simulated_manual_override": {
+    "field": "lot_area",
+    "value": 7300,
+    "unit": "m2",
+    "basis": "hypothetical user-entered plan area; plan not supplied",
+    "origin": "simulated manual entry for negative-control workflow only",
+    "review_status": "unreviewed",
+    "accepted": false,
+    "supersedes_source_baseline": false
+  },
+  "missing_site_facts": [
+    "reviewed legal parcel and lot area",
+    "principal building identity and wall footprint",
+    "classified lot lines and rear yard",
+    "grade and slope",
+    "supplied design and placement",
+    "applicable constraints and current legal zoning"
+  ],
+  "publication_eligible": false
+}
