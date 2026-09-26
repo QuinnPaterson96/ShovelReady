@@ -122,5 +122,8 @@ export function preparationStatus(draft: Draft): StatusContent {
     (values.use.trim() && values.use.trim().toLowerCase() !== 'garden suite') ||
     (values.role.trim() && !['accessory', 'accessory building'].includes(values.role.trim().toLowerCase()))
   if (outside) return { ...base, status: 'outside_coverage', reason: 'These inputs are outside the proposed City of Victoria garden-suite/accessory scope. This is not a zoning exclusion.' }
+  if (!values.municipality.trim() || !values.use.trim() || !values.role.trim()) return { ...base, status: 'needs_investigation',
+    reason: 'The intended scope is partly unknown. This preparation record does not establish whether the proposal is within the Victoria garden-suite research scope.',
+    nextAction: 'Confirm the municipality, intended use and building role, then obtain reviewed design, site, placement and applicable source evidence.' }
   return { ...base, status: 'needs_investigation', reason: 'Inputs have been summarized, but their evidence is incomplete or unreviewed. Form completion does not establish zoning fit.' }
 }

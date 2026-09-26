@@ -164,6 +164,21 @@ test('visible accessory-building wording is within preparation scope; other role
   assert.equal(preparationStatus({ ...draft, values: { ...draft.values, role: 'Principal building' } }).status, 'outside_coverage')
 })
 
+test('scope choices retain unknown and imported values without silently remapping them', () => {
+  const blank = renderToStaticMarkup(createElement(AssessmentForm, { draft: initialDraft, dispatch() {}, onSummary() {}, onEvidence() {} }))
+  for (const label of ['I do not know yet', 'City of Victoria', 'Garden suite', 'Accessory building', 'Another municipality / outside current scope']) {
+    assert.ok(blank.includes(label), label)
+  }
+  assert.ok(!blank.includes('id="input-municipality" type="text"'))
+  const loaded = draftReducer(initialDraft, { type: 'load', id: exampleIds[0] })
+  const imported = renderToStaticMarkup(createElement(AssessmentForm, { draft: loaded, dispatch() {}, onSummary() {}, onEvidence() {} }))
+  assert.ok(imported.includes('Imported synthetic value: synthetic'))
+  assert.equal(loaded.values.municipality, 'synthetic')
+  const outside = draftReducer(draftReducer(initialDraft, { type: 'edit', field: 'municipality', value: 'Outside current scope' }), { type: 'submit' })
+  assert.equal(preparationStatus(outside).status, 'outside_coverage')
+  assert.match(preparationStatus(draftReducer(initialDraft, { type: 'submit' })).reason, /partly unknown/)
+})
+
 test('retained lookup survives a manual note edit for explicit reconfirmation, not automatic selection', () => {
   const lookup = { candidates: [], status: 'no_match' } as unknown as Lookup
   const withLookup = draftReducer(initialDraft, { type: 'site-lookup', value: lookup })

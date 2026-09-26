@@ -12,7 +12,7 @@ export function ModelInputs({ value, onChange, catalogue = bundledCatalogue }: {
   const selected = model && value.snapshotId === catalogue?.snapshot_id ? model : null
   return <section className="sr-model-inputs" aria-labelledby="model-inputs-title">
     <h2 id="model-inputs-title">Prefab model inputs</h2>
-    <p>Public provider specifications, captured {catalogue?.captured_at ?? 'unknown'}. Unreviewed leads for input preparation only; no model or site fit has been assessed.</p>
+    <p>Choose a provider model or enter your own details. All measurements are optional. Provider specifications are unreviewed leads, and no model or site fit has been assessed.</p>
     {!catalogue && <p role="status" className="sr-model-notice">Catalogue unavailable. Enter a model manually; no values are inferred.</p>}
     {catalogue && <><label htmlFor="sr-model-select">Model</label>
       <select id="sr-model-select" value={selected?.model_id ?? ''}
@@ -27,7 +27,7 @@ export function ModelInputs({ value, onChange, catalogue = bundledCatalogue }: {
       </div>)}
     </div>}
     {selected && <div className="sr-model-source">
-      <p><strong>{selected.provider} · {selected.name}</strong> · unreviewed source snapshot <code>{value.snapshotId}</code></p>
+      <p><strong>{selected.provider} · {selected.name}</strong> · unreviewed provider observation</p>
       <p>Configuration: {selected.configuration}. Controlled model revision: {selected.source_revision ?? 'unknown'}.</p>
       <p>Service area: {selected.service_area_note}</p>
       <p>Installation: {selected.installation_note}</p>
@@ -65,6 +65,7 @@ export function ModelInputs({ value, onChange, catalogue = bundledCatalogue }: {
     </select>
     <p className="sr-model-hint">A height with unknown reference is retained in this draft but excluded from the assessment mapping. Regulatory height from grade requires separate site and rule evidence.</p>
     {selected && <details><summary>All source measurements and capture identity</summary>
+      <p>Catalogue captured {catalogue?.captured_at ?? 'unknown'} · snapshot <code>{value.snapshotId}</code>.</p>
       <ul>{selected.measurements.map(measure => <li key={measure.name}>{measure.name}: {measure.quantity?.original_text ?? 'unknown'} · {measure.definition}
         {measure.reason && ` · ${measure.reason}`}</li>)}</ul>
       <ul>{selected.sources.map(source => <li key={source.source_id}><a href={source.url} target="_blank" rel="noreferrer">{source.source_id}</a> · {source.locator} · captured {source.captured_at} · SHA-256 {source.sha256 ?? 'capture gap'}</li>)}</ul>
