@@ -60,6 +60,7 @@ export type SitePreparationSelection = {
 
 /** Editable session state, separate from confirmed/unreviewed source selection. */
 export type SiteInputDraft = {
+  lookup?: Lookup | null
   kind: 'pid' | 'address'
   query: string
   address: string

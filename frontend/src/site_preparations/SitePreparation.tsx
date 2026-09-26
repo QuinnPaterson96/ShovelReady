@@ -10,6 +10,7 @@ export type SitePreparationProps = {
   onConfirm: (selection: SitePreparationSelection) => void
   draft?: SiteInputDraft
   onDraftChange?: (draft: SiteInputDraft, areaInvalid: boolean) => void
+  onLookup?: (lookup: Lookup | null) => void
   onEdit?: (areaInvalid: boolean) => void
   selection?: SitePreparationSelection | null
   endpoint?: string
@@ -27,7 +28,7 @@ function userFact(value: string | number | null, reason: string, unit: string | 
 
 export function addressEvidenceText(fact: Fact): string {
   const e = fact.evidence
-  return `Address evidence: ${e.method ?? 'method unknown'}; source ${e.source_url ?? 'unknown'}; snapshot ${e.snapshot_id ?? 'unknown'}; feature ${e.feature_index ?? 'unknown'}; captured ${e.captured_at ?? 'unknown'}; ${e.review_status}.`
+  return `Address evidence: ${fact.basis ?? 'basis unknown'}; ${e.method ?? 'method unknown'}; source ${e.source_url ?? 'unknown'}; snapshot ${e.snapshot_id ?? 'unknown'}; feature ${e.feature_index ?? 'unknown'}; captured ${e.captured_at ?? 'unknown'}; ${e.review_status}.`
 }
 
 export function buildSelection(
@@ -57,11 +58,13 @@ export function validLookup(value: unknown): value is Lookup {
     (['no_match', 'unavailable'].includes(data.status) && data.candidates.length === 0)
 }
 
-export function SitePreparation({ onConfirm, onEdit, selection, draft, onDraftChange, endpoint = '/api/site-preparations/lookup' }: SitePreparationProps) {
+export function SitePreparation({ onConfirm, onEdit, selection, draft, onDraftChange, onLookup, endpoint = '/api/site-preparations/lookup' }: SitePreparationProps) {
   const [localDraft, setLocalDraft] = useState<SiteInputDraft>(emptySiteInput)
   const input = draft ?? localDraft
   const { kind, query, address, pid, area, notes } = input
-  const [lookup, setLookup] = useState<Lookup | null>(null)
+  const [localLookup, setLocalLookup] = useState<Lookup | null>(null)
+  const lookup = draft ? draft.lookup ?? null : localLookup
+  function setLookup(value: Lookup | null) { setLocalLookup(value); onLookup?.(value) }
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const requestId = useRef(0)
@@ -126,11 +129,11 @@ export function SitePreparation({ onConfirm, onEdit, selection, draft, onDraftCh
     <p>Search three retained Victoria GIS parcel observations. Address lookup covers five captured address rows, including aliases, with exact matching after case and whitespace normalization; it is not citywide search. A match is a lead for confirmation, not a surveyed lot or zoning result.</p>
     <form onSubmit={search}>
       <label htmlFor="site-search-kind">Search by</label>
-      <select id="site-search-kind" value={kind} onChange={(event) => { cancelRequest(); edit({ kind: event.target.value as 'pid' | 'address' }) }}>
+      <select id="site-search-kind" value={kind} onChange={(event) => { cancelRequest(); edit({ lookup: null, kind: event.target.value as 'pid' | 'address' }) }}>
         <option value="pid">Parcel identifier (PID)</option><option value="address">Address</option>
       </select>
       <label htmlFor="site-search-value">{kind === 'pid' ? 'PID' : 'Address'}</label>
-      <input id="site-search-value" type="text" value={query} maxLength={200} required onChange={(event) => { cancelRequest(); edit({ query: event.target.value }) }} />
+      <input id="site-search-value" type="text" value={query} maxLength={200} required onChange={(event) => { cancelRequest(); edit({ lookup: null, query: event.target.value }) }} />
       <button disabled={loading} type="submit">{loading ? 'Searching…' : 'Search retained observations'}</button>
       {loading && <button type="button" onClick={() => { cancelRequest(); setError('Lookup cancelled') }}>Cancel search</button>}
     </form>

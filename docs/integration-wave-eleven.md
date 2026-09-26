@@ -20,14 +20,34 @@ variable. No database migration, source acceptance or publication occurs.
 
 ## Verification
 
-Frontend: `npm --prefix frontend test` (42 pass), `npm --prefix frontend run typecheck`
+Frontend: `npm --prefix frontend test` (44 pass after rehearsal fixes), `npm --prefix frontend run typecheck`
 and `npm --prefix frontend run build` pass. The build reports a >500 kB chunk warning;
 no measured performance failure yet. Added regressions cover remounted site input
 values, edit invalidation, invalid lot area and alias evidence in review output.
 Ruff passes for app/tests/contracts/migrations/scripts/municipal tools. Generated
 site and evaluator boundary artifacts and the address packet check pass.
-Disposable PostgreSQL and browser results will be recorded after the composed run;
-these checks are not yet claimed complete in this checkpoint.
+At `9bd5ae46b285e3974e35819b71ea656897ce1372`,
+`python -m uv run --locked python scripts/test_postgres.py --postgres-bin
+"C:/Program Files/PostgreSQL/17/bin"` passed 444 tests and 28 subtests; one native
+lifecycle opt-in skipped locally. The runner stopped its disposable cluster.
+Hosted CI passed all five checks, including native Windows lifecycle and container
+startup, at that head. Final-head CI is required again before merge.
+
+An owned scratch database was separately initialized/migrated/seeded for the demo;
+port 55611 was refused by Windows (10013), so an available loopback port was selected.
+No existing cluster was adopted. The documented launcher served clean commit
+`9bd5ae4` on 18098 with spatial revision
+`spatial:sha256:db45fb736cd0fe2455d65b64105b038539bc7695e62666be6b2840474af8aee7`
+and address revision
+`address:sha256:4830a1985952b3150bf01bc276575a08238c5bbb71bf4fc489675231be534e5f`.
+The integration browser verified 1253 QUEENS AVE -> PID 028-279-638, source evidence,
+and invalid height/lot-area submission remaining on inputs with keyboard focus on
+the respective invalid field. Initial pointer automation did not change navigation;
+keyboard activation worked. This is recorded as a tool interaction limitation,
+not an adjudicated application defect.
+
+The browser also exposed that alias status lives in Fact.basis, not Evidence.method.
+The renderer and regression now preserve both, matching the actual producer shape.
 
 ## Frozen ordinary-task rehearsal
 
@@ -55,3 +75,24 @@ observations. This is one agent rehearsal, not human validation or legal review.
 
 No external requests were sent. Public-source findings, software verification,
 independent source review, accepted publication and user validation remain distinct.
+
+
+## Independent virtual-user outcome and adjudication
+
+One fresh Sol/medium participant used a separate browser tab on `9bd5ae4`, without
+source/API access or implementation findings. It completed the frozen ordinary task:
+aux box Model 240, 1255 QUEENS AVE, parcel confirmation, survey note, summary,
+return/edit/reconfirm, and a provider-facing explanation. It left building height
+and datum unknown and correctly stated that no fit or permit finding was established.
+It observed sourced dimensions and unresolved site/rule/service evidence. No external
+message was sent. This is a single agent result, not human validation or legal review.
+
+Confirmed defect: entering the displayed phrase "Accessory building" yielded
+Outside coverage because the scope comparison accepted only "accessory". Both
+labels now map to the same proposed scope, with a regression ensuring principal
+buildings remain outside. Participant difficulty: a note edit after returning to
+inputs required another lookup. Retained lookup results now survive navigation and
+manual edits for explicit reconfirmation; changing the search clears them. Confirmation
+and summary still invalidate on edits. The additional regressions bring frontend
+tests to 44. The initial participant's visible-tab request was unsupported; background
+browser creation worked. No failed request is counted as app behavior.

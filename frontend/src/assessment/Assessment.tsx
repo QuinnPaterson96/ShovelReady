@@ -93,7 +93,7 @@ export function AssessmentForm({ draft, dispatch, onSummary, onEvidence }: {
       </div>)}</div>
     </form>
       <ModelInputs value={draft.model} onChange={value => dispatch({ type: 'model', value })} />
-      <SitePreparation draft={draft.siteInput} onDraftChange={(value, areaInvalid) => dispatch({ type: 'site-input', value, areaInvalid })} selection={draft.site} onEdit={areaInvalid => dispatch({ type: 'site', value: null, areaInvalid })} onConfirm={value => dispatch({ type: 'site', value })} />
+      <SitePreparation onLookup={value => dispatch({ type: 'site-lookup', value })} draft={draft.siteInput} onDraftChange={(value, areaInvalid) => dispatch({ type: 'site-input', value, areaInvalid })} selection={draft.site} onEdit={areaInvalid => dispatch({ type: 'site', value: null, areaInvalid })} onConfirm={value => dispatch({ type: 'site', value })} />
       <p>Placement, principal building and constraints remain unverified. The model and site facts above are preparation evidence, not a fit result.</p>
       <button className="sr-primary" type="button" onClick={() => { dispatch({ type: 'submit' }); onSummary() }}>Prepare summary</button>
     <VictoriaEvidence />

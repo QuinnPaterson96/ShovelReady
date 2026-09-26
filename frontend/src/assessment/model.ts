@@ -4,7 +4,7 @@ import failed from '../../../app/draft_evaluations/inputs/synthetic-placement-fa
 import type { StatusContent } from '../StatusBanner'
 import { assessmentValues, emptySelection, fieldError } from '../model_catalogue/model'
 import type { Selection } from '../model_catalogue/model'
-import { emptySiteInput, type SiteInputDraft, type SitePreparationSelection } from '../site_preparations/types'
+import { emptySiteInput, type SiteInputDraft, type Lookup, type SitePreparationSelection } from '../site_preparations/types'
 
 export const fields = {
   municipality: 'Municipality', use: 'Intended use', role: 'Building role',
@@ -63,7 +63,7 @@ export function submissionErrors(draft: Draft): Partial<Record<Field, string>> {
   return errors
 }
 export const initialDraft: Draft = { values: emptyValues, edited: [], dirty: false, submitted: false, errors: {}, model: emptySelection(), site: null, siteInput: emptySiteInput, siteAreaInvalid: false }
-export type Action = { type: 'site-input'; value: SiteInputDraft; areaInvalid: boolean } | { type: 'edit'; field: Field; value: string } | { type: 'model'; value: Selection } |
+export type Action = { type: 'site-lookup'; value: Lookup | null } | { type: 'site-input'; value: SiteInputDraft; areaInvalid: boolean } | { type: 'edit'; field: Field; value: string } | { type: 'model'; value: Selection } |
   { type: 'site'; value: SitePreparationSelection | null; areaInvalid?: boolean } | { type: 'load'; id: ExampleId } | { type: 'confirm' } | { type: 'cancel' } | { type: 'submit' }
 function importedDraft(id: ExampleId): Draft {
   const imported = example(id)
@@ -78,6 +78,7 @@ export function draftReducer(state: Draft, action: Action): Draft {
     case 'model': return { ...state, model: action.value, values: { ...state.values, ...assessmentValues(action.value) },
       edited: [...new Set([...state.edited, 'width', 'depth', 'height', 'area'] as Field[])], dirty: true,
       submitted: false, errors: {}, pending: undefined }
+    case 'site-lookup': return { ...state, siteInput: { ...state.siteInput, lookup: action.value } }
     case 'site-input': return { ...state, siteInput: action.value, site: null, siteAreaInvalid: action.areaInvalid, dirty: true, submitted: false, errors: {}, pending: undefined }
     case 'site': return { ...state, site: action.value, siteAreaInvalid: action.areaInvalid ?? false, dirty: true, submitted: false, errors: {}, pending: undefined }
     case 'load': return state.dirty ? { ...state, pending: action.id } : importedDraft(action.id)
@@ -119,7 +120,7 @@ export function preparationStatus(draft: Draft): StatusContent {
   const synthetic = !!imported && municipality === 'synthetic'
   const outside = (municipality && !['victoria', 'city of victoria'].includes(municipality) && !synthetic) ||
     (values.use.trim() && values.use.trim().toLowerCase() !== 'garden suite') ||
-    (values.role.trim() && values.role.trim().toLowerCase() !== 'accessory')
+    (values.role.trim() && !['accessory', 'accessory building'].includes(values.role.trim().toLowerCase()))
   if (outside) return { ...base, status: 'outside_coverage', reason: 'These inputs are outside the proposed City of Victoria garden-suite/accessory scope. This is not a zoning exclusion.' }
   return { ...base, status: 'needs_investigation', reason: 'Inputs have been summarized, but their evidence is incomplete or unreviewed. Form completion does not establish zoning fit.' }
 }

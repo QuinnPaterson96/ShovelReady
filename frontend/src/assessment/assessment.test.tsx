@@ -5,7 +5,7 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { draftReducer, emptyValues, errorsFor, example, exampleIds, initialDraft, preparationStatus } from './model'
 import { AssessmentForm, PreparationSummary, providerReviewText } from './Assessment'
 import { buildSelection } from '../site_preparations/SitePreparation'
-import type { Candidate, Fact, ManualFacts } from '../site_preparations/types'
+import type { Candidate, Fact, ManualFacts, Lookup } from '../site_preparations/types'
 import StatusBanner from '../StatusBanner'
 import type { AssessmentStatus } from '../StatusBanner'
 
@@ -142,10 +142,10 @@ test('site edits retain all editable values across remount and invalidate confir
 })
 
 test('review output keeps source address, alias join evidence and manual correction distinct', () => {
-  const fact = (value: string | number | null): Fact => ({ value, unit: null, basis: null, unresolved_reason: null,
+  const fact = (value: string | number | null): Fact => ({ value, unit: null, basis: 'City Address Points Legal_Type=ALIAS; GISLINK=V04661019', unresolved_reason: null,
     evidence: { origin: 'source', snapshot_id: 'captured-snapshot', feature_index: 1,
       source_url: 'https://maps.victoria.ca/example', captured_at: '2026-09-26T00:00:00Z',
-      method: 'GISLINK exact join; Legal_Type=ALIAS', review_status: 'unreviewed' } })
+      method: 'exact FullAddress; captured GISLINK to retained parcel GISLINK', review_status: 'unreviewed' } })
   const candidate = { pid: fact('028-279-638'), address: fact('1255 QUEENS AVE'), approximate_area_m2: fact(450) } as Candidate
   const manual: ManualFacts = { address: fact('manual correction'), pid: fact(null), lot_area_m2: fact(null), notes: fact(null) }
   const draft = draftReducer(initialDraft, { type: 'site', value: buildSelection(candidate, 'spatial:pinned', manual) })
@@ -154,4 +154,22 @@ test('review output keeps source address, alias join evidence and manual correct
   const html = renderToStaticMarkup(createElement(PreparationSummary, { draft, onEdit() {} }))
   assert.ok(html.includes('1255 QUEENS AVE'))
   assert.ok(html.includes('Legal_Type=ALIAS'))
+})
+
+
+test('visible accessory-building wording is within preparation scope; other roles stay outside', () => {
+  const draft = { ...initialDraft, submitted: true, values: { ...initialDraft.values,
+    municipality: 'City of Victoria', use: 'Garden suite', role: 'Accessory building' } }
+  assert.equal(preparationStatus(draft).status, 'needs_investigation')
+  assert.equal(preparationStatus({ ...draft, values: { ...draft.values, role: 'Principal building' } }).status, 'outside_coverage')
+})
+
+test('retained lookup survives a manual note edit for explicit reconfirmation, not automatic selection', () => {
+  const lookup = { candidates: [], status: 'no_match' } as unknown as Lookup
+  const withLookup = draftReducer(initialDraft, { type: 'site-lookup', value: lookup })
+  const edited = draftReducer(withLookup, { type: 'site-input', value: { ...withLookup.siteInput, notes: 'survey needed' }, areaInvalid: false })
+  assert.equal(edited.site, null)
+  assert.equal(edited.siteInput.lookup, lookup)
+  const newSearch = draftReducer(edited, { type: 'site-input', value: { ...edited.siteInput, query: 'new address', lookup: null }, areaInvalid: false })
+  assert.equal(newSearch.siteInput.lookup, null)
 })
