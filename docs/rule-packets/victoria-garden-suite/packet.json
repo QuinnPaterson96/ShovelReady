@@ -1,0 +1,327 @@
+{
+  "schema_version": "sr-39.packet.v1",
+  "source": {
+    "schema_version": "sr-04.v1-provisional",
+    "source_id": "zoning-2018",
+    "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+    "category": "bylaw",
+    "jurisdiction": "City of Victoria, BC",
+    "instrument": "Zoning Bylaw 2018, No. 18-072",
+    "source_url": "https://www.victoria.ca/media/file/zoning-bylaw-2018",
+    "artifact": {
+      "uri": "private-capture:objects/6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33.pdf",
+      "sha256": "6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33"
+    },
+    "captured_at": "2026-09-24T18:18:37.482495+00:00",
+    "printed_revision": "PDF amendment list through No. 26-060 (July 30, 2026); front matter still says consolidation through No. 22-048",
+    "effective_from": null,
+    "effective_to": null,
+    "effective_date_evidence": [],
+    "original_crs": null,
+    "original_units": [
+      "m",
+      "m2",
+      "count",
+      "% of rear yard"
+    ],
+    "reuse_constraints": "City website terms; original PDF withheld from repository. See docs/pilot-inputs/acquisition-evidence.md.",
+    "review": {
+      "status": "unreviewed",
+      "reviewer": null,
+      "reviewed_at": null,
+      "scope": "Current garden-suite packet; no independent municipal/legal review",
+      "rationale": "Agent source inspection and technical validation only."
+    }
+  },
+  "scope": "Provisional GRD-1 ordinary new garden-suite pathway in City of Victoria Zoning Bylaw 2018 geography; Part 3.1(28) candidates only, no acceptance or publication.",
+  "candidates": [
+    {
+      "logical_rule_id": "victoria-zb2018-garden-suite-suite-count",
+      "proposed_revision_id": "source-6c9e35a8de4e-agent-1",
+      "locator": "Part 3.1(28)(b), PDF p27, printed p22",
+      "excerpt": "Only one Garden Suite",
+      "content": {
+        "pathway_id": "victoria-zb2018-grd1-garden-suite-provisional",
+        "alternative_id": "ordinary-new-garden-suite-unreviewed",
+        "text": "Provisional mapping for garden_suite_count_on_lot; no site or design has been evaluated.",
+        "evidence": [
+          {
+            "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+            "locator": "Part 3.1(28)(b), PDF p27, printed p22",
+            "page_index": 26,
+            "printed_page": "p22",
+            "excerpt": "Only one Garden Suite",
+            "context": "Clause appears in general garden-suite regulations of Part 3.1(28); definitions and site-specific provisions require separate review."
+          }
+        ],
+        "applicability": {
+          "jurisdiction": "City of Victoria, BC, Zoning Bylaw 2018 area",
+          "use": "garden suite",
+          "building_role": "detached garden suite associated with an eligible residential use",
+          "conditions": [
+            "Selected lot lies in confirmed Zoning Bylaw 2018 area and applicable GRD-1 designation.",
+            "Garden-suite use, definitions, Part 3 and Part 4 requirements and site-specific provisions are independently reviewed."
+          ],
+          "exceptions": [
+            "Historic Schedule M or Pilot-specific conditions are not imported.",
+            "Other applicable provisions may alter the result."
+          ],
+          "status": "unresolved"
+        },
+        "approval": "unknown",
+        "semantics": {
+          "kind": "scalar_bound",
+          "subject": "garden_suite_count_on_lot",
+          "measurement_definition": "Garden Suites on one legal Lot",
+          "operator": "<=",
+          "threshold": {
+            "original_text": "one",
+            "original_value": "1",
+            "original_unit": "count",
+            "dimension": "count",
+            "value": "1",
+            "unit": "count"
+          }
+        },
+        "runtime_support": "unresolved",
+        "references": [
+          {
+            "instrument": "Zoning Bylaw 2018, No. 18-072",
+            "locator": "Part 2.1 Lot",
+            "relationship": "depends_on",
+            "status": "unresolved",
+            "target": null
+          },
+          {
+            "instrument": "Zoning Bylaw 2018, No. 18-072",
+            "locator": "Part 1.1(2)-(6), Part 4.1 and site-specific regulations",
+            "relationship": "depends_on",
+            "status": "unresolved",
+            "target": null
+          }
+        ]
+      },
+      "blockers": [
+        "Verify legal Lot and existing garden-suite count.",
+        "Confirm instrument and zone applicability for selected site."
+      ]
+    },
+    {
+      "logical_rule_id": "victoria-zb2018-garden-suite-floor-area",
+      "proposed_revision_id": "source-6c9e35a8de4e-agent-1",
+      "locator": "Part 3.1(28)(d), PDF p27, printed p22",
+      "excerpt": "not exceed 56m2",
+      "content": {
+        "pathway_id": "victoria-zb2018-grd1-garden-suite-provisional",
+        "alternative_id": "ordinary-new-garden-suite-unreviewed",
+        "text": "Provisional mapping for garden_suite_floor_area; no site or design has been evaluated.",
+        "evidence": [
+          {
+            "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+            "locator": "Part 3.1(28)(d), PDF p27, printed p22",
+            "page_index": 26,
+            "printed_page": "p22",
+            "excerpt": "not exceed 56m2",
+            "context": "Clause appears in general garden-suite regulations of Part 3.1(28); definitions and site-specific provisions require separate review."
+          }
+        ],
+        "applicability": {
+          "jurisdiction": "City of Victoria, BC, Zoning Bylaw 2018 area",
+          "use": "garden suite",
+          "building_role": "detached garden suite associated with an eligible residential use",
+          "conditions": [
+            "Selected lot lies in confirmed Zoning Bylaw 2018 area and applicable GRD-1 designation.",
+            "Garden-suite use, definitions, Part 3 and Part 4 requirements and site-specific provisions are independently reviewed."
+          ],
+          "exceptions": [
+            "Historic Schedule M or Pilot-specific conditions are not imported.",
+            "Other applicable provisions may alter the result."
+          ],
+          "status": "unresolved"
+        },
+        "approval": "unknown",
+        "semantics": {
+          "kind": "scalar_bound",
+          "subject": "garden_suite_floor_area",
+          "measurement_definition": "Floor Area under Part 2.1, not advertised interior or footprint area",
+          "operator": "<=",
+          "threshold": {
+            "original_text": "56m2",
+            "original_value": "56",
+            "original_unit": "m2",
+            "dimension": "area",
+            "value": "56",
+            "unit": "m2"
+          }
+        },
+        "runtime_support": "unresolved",
+        "references": [
+          {
+            "instrument": "Zoning Bylaw 2018, No. 18-072",
+            "locator": "Part 2.1 Floor Area",
+            "relationship": "depends_on",
+            "status": "unresolved",
+            "target": null
+          },
+          {
+            "instrument": "Zoning Bylaw 2018, No. 18-072",
+            "locator": "Part 1.1(2)-(6), Part 4.1 and site-specific regulations",
+            "relationship": "depends_on",
+            "status": "unresolved",
+            "target": null
+          }
+        ]
+      },
+      "blockers": [
+        "Independently review Floor Area inclusions/exclusions and controlled drawing calculation.",
+        "Confirm instrument and zone applicability for selected site."
+      ]
+    },
+    {
+      "logical_rule_id": "victoria-zb2018-garden-suite-building-separation",
+      "proposed_revision_id": "source-6c9e35a8de4e-agent-1",
+      "locator": "Part 3.1(28)(h), PDF p28, printed p23",
+      "excerpt": "at least 2.4m",
+      "content": {
+        "pathway_id": "victoria-zb2018-grd1-garden-suite-provisional",
+        "alternative_id": "ordinary-new-garden-suite-unreviewed",
+        "text": "Provisional mapping for garden_suite_principal_building_separation; no site or design has been evaluated.",
+        "evidence": [
+          {
+            "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+            "locator": "Part 3.1(28)(h), PDF p28, printed p23",
+            "page_index": 27,
+            "printed_page": "p23",
+            "excerpt": "at least 2.4m",
+            "context": "Clause appears in general garden-suite regulations of Part 3.1(28); definitions and site-specific provisions require separate review."
+          }
+        ],
+        "applicability": {
+          "jurisdiction": "City of Victoria, BC, Zoning Bylaw 2018 area",
+          "use": "garden suite",
+          "building_role": "detached garden suite associated with an eligible residential use",
+          "conditions": [
+            "Selected lot lies in confirmed Zoning Bylaw 2018 area and applicable GRD-1 designation.",
+            "Garden-suite use, definitions, Part 3 and Part 4 requirements and site-specific provisions are independently reviewed."
+          ],
+          "exceptions": [
+            "Historic Schedule M or Pilot-specific conditions are not imported.",
+            "Other applicable provisions may alter the result."
+          ],
+          "status": "unresolved"
+        },
+        "approval": "unknown",
+        "semantics": {
+          "kind": "scalar_bound",
+          "subject": "garden_suite_principal_building_separation",
+          "measurement_definition": "Separation space between Garden Suite and principal Building",
+          "operator": ">=",
+          "threshold": {
+            "original_text": "2.4m",
+            "original_value": "2.4",
+            "original_unit": "m",
+            "dimension": "length",
+            "value": "2.4",
+            "unit": "m"
+          }
+        },
+        "runtime_support": "unresolved",
+        "references": [
+          {
+            "instrument": "Zoning Bylaw 2018, No. 18-072",
+            "locator": "Part 2.1 Building",
+            "relationship": "depends_on",
+            "status": "unresolved",
+            "target": null
+          },
+          {
+            "instrument": "Zoning Bylaw 2018, No. 18-072",
+            "locator": "Part 1.1(2)-(6), Part 4.1 and site-specific regulations",
+            "relationship": "depends_on",
+            "status": "unresolved",
+            "target": null
+          }
+        ]
+      },
+      "blockers": [
+        "Resolve measured faces and principal Building identity from reviewed survey/design.",
+        "Confirm waterfront and site-specific provisions."
+      ]
+    },
+    {
+      "logical_rule_id": "victoria-zb2018-garden-suite-rear-yard-occupancy",
+      "proposed_revision_id": "source-6c9e35a8de4e-agent-1",
+      "locator": "Part 3.1(28)(i), PDF p28, printed p23",
+      "excerpt": "25% of the rear yard",
+      "content": {
+        "pathway_id": "victoria-zb2018-grd1-garden-suite-provisional",
+        "alternative_id": "ordinary-new-garden-suite-unreviewed",
+        "text": "Provisional mapping for garden_suite_rear_yard_occupancy; no site or design has been evaluated.",
+        "evidence": [
+          {
+            "snapshot_id": "zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+            "locator": "Part 3.1(28)(i), PDF p28, printed p23",
+            "page_index": 27,
+            "printed_page": "p23",
+            "excerpt": "25% of the rear yard",
+            "context": "Clause appears in general garden-suite regulations of Part 3.1(28); definitions and site-specific provisions require separate review."
+          }
+        ],
+        "applicability": {
+          "jurisdiction": "City of Victoria, BC, Zoning Bylaw 2018 area",
+          "use": "garden suite",
+          "building_role": "detached garden suite associated with an eligible residential use",
+          "conditions": [
+            "Selected lot lies in confirmed Zoning Bylaw 2018 area and applicable GRD-1 designation.",
+            "Garden-suite use, definitions, Part 3 and Part 4 requirements and site-specific provisions are independently reviewed."
+          ],
+          "exceptions": [
+            "Historic Schedule M or Pilot-specific conditions are not imported.",
+            "Other applicable provisions may alter the result."
+          ],
+          "status": "unresolved"
+        },
+        "approval": "unknown",
+        "semantics": {
+          "kind": "scalar_bound",
+          "subject": "garden_suite_rear_yard_occupancy",
+          "measurement_definition": "Garden Suite occupied area divided by legally defined rear-yard area",
+          "operator": "<=",
+          "threshold": {
+            "original_text": "25%",
+            "original_value": "25",
+            "original_unit": "%",
+            "dimension": "ratio",
+            "value": "0.25",
+            "unit": "fraction",
+            "basis": {
+              "numerator": "Garden Suite occupied rear-yard area",
+              "denominator": "legally defined rear-yard area"
+            }
+          }
+        },
+        "runtime_support": "unresolved",
+        "references": [
+          {
+            "instrument": "Zoning Bylaw 2018, No. 18-072",
+            "locator": "Part 2.1 Rear Yard",
+            "relationship": "depends_on",
+            "status": "unresolved",
+            "target": null
+          },
+          {
+            "instrument": "Zoning Bylaw 2018, No. 18-072",
+            "locator": "Part 1.1(2)-(6), Part 4.1 and site-specific regulations",
+            "relationship": "depends_on",
+            "status": "unresolved",
+            "target": null
+          }
+        ]
+      },
+      "blockers": [
+        "Resolve front/rear line and Rear Yard polygon from legal/site evidence.",
+        "Define occupancy numerator and projections; parcel area is not the denominator."
+      ]
+    }
+  ]
+}
