@@ -73,6 +73,16 @@ def normalized_pid(value: str) -> str:
     return digits
 
 
+def _address_keys(value: str) -> tuple[str, str]:
+    """Keep all tokens except the two suffix pairs observed in the retained packet."""
+    tokens = value.casefold().split()
+    direct = " ".join(tokens)
+    suffixes = {"st": "street", "street": "street", "ave": "avenue", "avenue": "avenue"}
+    if tokens and tokens[-1] in suffixes:
+        tokens[-1] = suffixes[tokens[-1]]
+    return direct, " ".join(tokens)
+
+
 def _fact(value, source, index, *, unit=None, basis=None, unresolved=None):
     return Fact(
         value=value,
@@ -244,14 +254,19 @@ def lookup(investigation: Investigation, kind: Literal["pid", "address"], query:
             linked.setdefault(gislink, []).append(parcel)
         matches = []
 
-        def normalized(value: str) -> str:
-            return " ".join(value.split()).casefold()
-
+        query_direct, query_suffix = _address_keys(query)
         for source_id, index, key, address, legal_type, receipt in rows:
             if key not in linked:
                 raise AddressPacketError("Captured address has no retained parcel join")
-            if normalized(address) != normalized(query):
+            address_direct, address_suffix = _address_keys(address)
+            direct_match = address_direct == query_direct
+            if not direct_match and address_suffix != query_suffix:
                 continue
+            method = (
+                "case/whitespace FullAddress match"
+                if direct_match
+                else "retained ST/STREET or AVE/AVENUE suffix-normalized FullAddress match"
+            )
             for parcel in linked[key]:
                 fact = Fact(
                     value=address,
@@ -262,7 +277,7 @@ def lookup(investigation: Investigation, kind: Literal["pid", "address"], query:
                         feature_index=index,
                         source_url=receipt["requested_url"],
                         captured_at=receipt["captured_at_utc"],
-                        method="exact FullAddress; captured GISLINK to retained parcel GISLINK",
+                        method=f"{method}; captured GISLINK to retained parcel GISLINK",
                     ),
                 )
                 matches.append(parcel.model_copy(update={"address": fact}))
@@ -273,7 +288,10 @@ def lookup(investigation: Investigation, kind: Literal["pid", "address"], query:
             query=query,
             status="no_match" if not matches else "one_match" if len(matches) == 1 else "ambiguous",
             candidates=tuple(matches),
-            reason="No exact match among five retained address rows; use a PID or manual facts."
+            reason=(
+                "No match among five retained address rows or supported suffix variants; "
+                "use a PID or manual facts."
+            )
             if not matches
             else None,
         )

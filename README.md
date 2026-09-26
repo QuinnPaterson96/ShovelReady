@@ -203,3 +203,8 @@ Commit identity and authentication are separate. Confirm the account backing pus
 [Reports 15-17 review](docs/research/prefab-report-review/README.md) corrects manufacturer
 claims and prioritizes Model 300 and ORCA Jay for bounded evidence acquisition.
 The live catalogue and accepted-data status are unchanged.
+
+[Wave-thirteen integration](docs/integration-wave-thirteen.md) combines bounded address
+normalization, offline candidate intake and Model 300/Jay research. Both candidate
+files stage successfully as unreviewed; active catalogue and accepted publication
+remain unchanged. Readable-provenance UI work (#131) remains separate.

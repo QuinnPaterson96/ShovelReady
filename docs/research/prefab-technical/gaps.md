@@ -1,0 +1,19 @@
+# Unmapped claims, external dependency and unsent requests
+
+The search stopped at the official Model 300 page and its linked plan/elevation images, the current Jay page and linked PDF, the older Jay portfolio page/card, and the indexed 2023 ORCA brochure. Search queries were bounded to `site:auxbox.ca "Model 300" pdf/drawing/specifications` and `site:orcalgs.ca Jay floor plan/specifications/elevation PDF` variants. “Unavailable” below means **not established in that reviewed set**, not that the manufacturer lacks the artifact.
+
+| Missing evidence / contract gap | Practical impact | Next action / owner |
+|---|---|---|
+| Model 300 controlled plan/elevations, revision/options, roof high point and datum, foundation-to-grade relationship, eave/overhang and complete projection envelope | Advertised height and footprint cannot support a parcel height/setback test; current drawings are illustrations. | Request controlled drawing set and measurement definitions from aux box; external manufacturer dependency. |
+| Jay controlled plan/elevations for one selected roof and foundation, roof high/eave points and grade datum, overhang/deck envelope | No height or complete setback/placement geometry. Old card does not establish current dimensions beyond page claim. | Request option-specific drawings from ORCA; external manufacturer dependency. |
+| Jay 435 sq ft “total area” basis, deck inclusion and current-vs-older 375 sq ft explanation | Cannot map to `manufacturer_interior_area`, `manufacturer_footprint` or legal floor area. | Request area schedule and revision history from ORCA. |
+| Both models: wall-face basis, legal floor area and site-specific grade/placement | Cannot assert regulatory fit or accepted real evaluation. | Design/survey and jurisdiction review under the real-case tickets; manufacturer and site owner inputs required. |
+| `sr-40.catalogue.v1` lacks a neutral advertised-total-area field and explicit per-measure page/section locator | Jay's total-area claim stays in this packet, outside candidate numeric measures; JSON source IDs point to document-level locators. | If later needed, propose a contract change separately after source review; no shared contract change in #124. |
+
+## Draft requests — **not sent**
+
+**aux box:** “For the current Model 300 configuration represented by your public 30 × 10 ft plan and 10 ft 6 in elevation, could you provide the controlled drawing/specification revision and option list, with dimensioned plan, all elevations/sections, roof high/eave points, overhang and other projection extents, and the exact vertical reference for the 10 ft 6 in callout? Please identify wall-face and 300 sq ft footprint boundaries, the 226 sq ft living-area method, and foundation/finished-grade relationship. We are preparing a preliminary Victoria site investigation and will not treat marketing dimensions as permit drawings.”
+
+**ORCA:** “For one current Jay configuration, please identify the controlled plan/specification revision, selected roof (shed, flat or gable) and foundation. Could you provide dimensioned plan/elevations/section including deck and all roof projections, roof high/eave points and vertical datums relative to foundation and finished grade? Please define the current 435 sq ft total-area basis, enclosed/deck breakdown and 29 × 15 ft measurement boundary, and clarify how this relates to the older 375 sq ft brochure and 2025 Jay card. We need reviewable technical inputs for preliminary Victoria investigation, not a permit or quote.”
+
+No outreach, form submission, paid acquisition, publication or permit application occurred. Independent professional/source review, selected configuration, site survey and applicable rules remain blockers to accepted evaluation. These documents and schema checks make the research packet inspectable; they do not make the demo a real-site screening result.
