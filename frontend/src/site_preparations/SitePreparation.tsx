@@ -126,7 +126,7 @@ export function SitePreparation({ onConfirm, onEdit, selection, draft, onDraftCh
   return <section className="site-preparation" aria-labelledby="site-preparation-title">
     <p className="eyebrow">Site preparation · unreviewed</p>
     <h2 id="site-preparation-title">Find a parcel lead</h2>
-    <p>Search three retained Victoria GIS parcel observations. Address lookup covers five captured address rows, including aliases, with exact matching after case and whitespace normalization; it is not citywide search. A match is a lead for confirmation, not a surveyed lot or zoning result.</p>
+    <p>Search a small set of retained Victoria parcel observations, or enter what you know below. Address search covers only five captured address rows for three parcel leads, including aliases. An address outside those rows may return no match. A match is a lead to confirm, not a surveyed lot or zoning result.</p>
     <form onSubmit={search}>
       <label htmlFor="site-search-kind">Search by</label>
       <select id="site-search-kind" value={kind} onChange={(event) => { cancelRequest(); edit({ lookup: null, kind: event.target.value as 'pid' | 'address' }) }}>
@@ -140,18 +140,19 @@ export function SitePreparation({ onConfirm, onEdit, selection, draft, onDraftCh
     {error && <p role="alert" className="site-preparation-status">{error}. You can enter manual facts below.</p>}
     {lookup && <div className="site-preparation-status" role="status">
       <strong>{lookup.status.replace('_', ' ')}</strong> · {lookup.reason ?? `${lookup.candidates.length} retained candidate(s). Confirm one below.`}
-      <p className="metadata">Collection {lookup.collection}; spatial revision {lookup.spatial_revision}. Screening not performed.</p>
+      <p>Screening not performed.</p>
+      <details><summary>Lookup collection and revision</summary><p className="metadata">Collection {lookup.collection}; spatial revision {lookup.spatial_revision}.</p></details>
     </div>}
     {lookup?.candidates.map((candidate) => <article className="site-preparation-candidate" key={candidate.candidate_id}>
       <h3>PID {candidate.pid.value ?? 'unknown'}</h3>
       <p>Source address: {candidate.address.value ?? 'unknown (PID search may have multiple address rows)'}</p>
-      {candidate.address.value !== null && <p className="metadata">{addressEvidenceText(candidate.address)}</p>}
+      {candidate.address.value !== null && <details><summary>Address match method and capture</summary><p className="metadata">{addressEvidenceText(candidate.address)}</p></details>}
       <p>VicPID {candidate.vic_pid.value ?? 'unknown'} · {candidate.parcel_type.value ?? 'type unknown'} · {candidate.parcel_status.value ?? 'status unknown'}</p>
       <p>Approximate GIS area: {candidate.approximate_area_m2.value ?? 'unknown'} m² ({candidate.boundary_crs} XY). Boundary is an unreviewed GIS polygon.</p>
       <p>Zoning contacts: {candidate.zones.length ? candidate.zones.map((zone) => `${zone.zone.value ?? 'unknown'} (${zone.classification})`).join(', ') : 'none captured; coverage unresolved'}.</p>
-      <p className="metadata">Captured {candidate.pid.evidence.captured_at ?? 'date unknown'} · Source {candidate.pid.evidence.source_url ?? 'unknown'} · Snapshot {candidate.pid.evidence.snapshot_id ?? 'unknown'}</p>
+      <details><summary>Parcel source and capture record</summary><p className="metadata">Captured {candidate.pid.evidence.captured_at ?? 'date unknown'} · Source {candidate.pid.evidence.source_url ?? 'unknown'} · Snapshot {candidate.pid.evidence.snapshot_id ?? 'unknown'}</p></details>
       <p>Constraints not queried. Title, survey, principal building and placement remain unknown.</p>
-      <button type="button" onClick={() => confirm(candidate)}>Confirm this parcel lead</button>
+      <button type="button" onClick={() => confirm(candidate)}>Use this parcel lead for my summary</button>
     </article>)}
     <div className="site-preparation-manual">
       <h3>Manual site facts · unreviewed</h3>
@@ -161,7 +162,7 @@ export function SitePreparation({ onConfirm, onEdit, selection, draft, onDraftCh
       <label htmlFor="manual-area">Approximate lot area (m²), if known</label><input id="manual-area" type="number" min="0" step="any" value={area} aria-invalid={invalidArea(area)} onChange={(event) => { edit({ area: event.target.value }) }} />
       {invalidArea(area) && <p role="alert" className="sr-error">Enter a positive lot area in m², or leave it blank.</p>}
       <label htmlFor="manual-notes">Source or uncertainty notes</label><input id="manual-notes" type="text" value={notes} onChange={(event) => { edit({ notes: event.target.value }) }} />
-      <button type="button" disabled={invalidArea(area)} onClick={() => confirm(null)}>Continue with unmatched manual facts</button>
+      <button type="button" disabled={invalidArea(area)} onClick={() => confirm(null)}>Use manual facts without a parcel match</button>
     </div>
     {selection && <p className="site-preparation-status" role="status">{selection.mode === 'retained_candidate' ? `Confirmed parcel lead PID ${selection.candidate?.pid.value ?? 'unknown'}` : 'Manual unmatched site facts saved'} · unreviewed. Editing any site field clears this confirmation.</p>}
   </section>

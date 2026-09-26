@@ -22,6 +22,10 @@
 .sr-home p { max-width: 67ch; }
 .sr-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .2rem 1.5rem; }
 .sr-assessment input { width: 100%; margin-top: .5rem; padding: .7rem .85rem; }
+.sr-assessment select { width: 100%; min-height: 44px; margin-top: .5rem; padding: .7rem .85rem; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--surface); color: var(--ink); }
+.sr-assessment .sr-fields > div { min-width: 0; }
+.sr-assessment .sr-fields label { display: block; font-weight: 650; }
+.sr-assessment .sr-hint { color: var(--ink-muted); font-size: .92rem; }
 .sr-assessment input[aria-invalid="true"] { border: 2px solid var(--danger); }
 .sr-error { color: var(--danger-ink); font-weight: 650; }
 .sr-status { border-left-width: 5px; margin: 1.3rem 0; box-shadow: none; }

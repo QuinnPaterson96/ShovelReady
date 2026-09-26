@@ -11,7 +11,8 @@ test('component labels height, provenance and the unreviewed source boundary', (
   assert.match(markup, /datum\/roof point unspecified/)
   assert.match(markup, /Source baseline and basis/)
   assert.match(markup, /Provider model page/)
-  assert.match(markup, /unreviewed source snapshot/)
+  assert.match(markup, /unreviewed provider observation/)
+  assert.match(markup, /All source measurements and capture identity/)
   assert.match(markup, /Roof high point and measurement datum are required/)
 })
 
