@@ -35,6 +35,8 @@
 .sr-assessment dt { text-transform: none; }
 .sr-provenance dd, .sr-provenance code, .sr-values dd { overflow-wrap: anywhere; }
 .sr-provenance dt { margin-top: 1rem; }
+.sr-assessment textarea { width: 100%; padding: .7rem .85rem; color: var(--ink); background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); }
+.sr-assessment pre { white-space: pre-wrap; overflow-wrap: anywhere; }
 .sr-replace { border: 2px solid var(--copper); border-radius: var(--radius-sm); padding: 1rem; background: var(--copper-soft); }
 .sr-technical { margin-top: 2rem; }
 .sr-technical > summary { font-size: .875rem; }

@@ -1,0 +1,100 @@
+{
+ "displayFieldName": "FullAddress",
+ "fieldAliases": {
+  "OBJECTID": "OBJECTID",
+  "FullAddress": "FullAddress",
+  "UNIT": "UNIT",
+  "HOUSE": "HOUSE",
+  "STREET": "STREET",
+  "Municipality": "Municipality",
+  "Legal_Type": "Legal_Type",
+  "GISLINK": "GISLINK"
+ },
+ "geometryType": "esriGeometryPoint",
+ "spatialReference": {
+  "wkid": 3157,
+  "latestWkid": 3157
+ },
+ "fields": [
+  {
+   "name": "OBJECTID",
+   "type": "esriFieldTypeOID",
+   "alias": "OBJECTID"
+  },
+  {
+   "name": "FullAddress",
+   "type": "esriFieldTypeString",
+   "alias": "FullAddress",
+   "length": 200
+  },
+  {
+   "name": "UNIT",
+   "type": "esriFieldTypeString",
+   "alias": "UNIT",
+   "length": 10
+  },
+  {
+   "name": "HOUSE",
+   "type": "esriFieldTypeDouble",
+   "alias": "HOUSE"
+  },
+  {
+   "name": "STREET",
+   "type": "esriFieldTypeString",
+   "alias": "STREET",
+   "length": 30
+  },
+  {
+   "name": "Municipality",
+   "type": "esriFieldTypeString",
+   "alias": "Municipality",
+   "length": 200
+  },
+  {
+   "name": "Legal_Type",
+   "type": "esriFieldTypeString",
+   "alias": "Legal_Type",
+   "length": 200
+  },
+  {
+   "name": "GISLINK",
+   "type": "esriFieldTypeString",
+   "alias": "GISLINK",
+   "length": 16
+  }
+ ],
+ "features": [
+  {
+   "attributes": {
+    "OBJECTID": 55619,
+    "FullAddress": "1253 QUEENS AVE",
+    "UNIT": null,
+    "HOUSE": 1253,
+    "STREET": "QUEENS AVE",
+    "Municipality": null,
+    "Legal_Type": "LAND",
+    "GISLINK": "V04661019"
+   },
+   "geometry": {
+    "x": 474283.61500000022,
+    "y": 5364498.1089999992
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 55621,
+    "FullAddress": "1255 QUEENS AVE",
+    "UNIT": null,
+    "HOUSE": 1255,
+    "STREET": "QUEENS AVE",
+    "Municipality": null,
+    "Legal_Type": "ALIAS",
+    "GISLINK": "V04661019"
+   },
+   "geometry": {
+    "x": 474283.61500000022,
+    "y": 5364498.1089999992
+   }
+  }
+ ]
+}

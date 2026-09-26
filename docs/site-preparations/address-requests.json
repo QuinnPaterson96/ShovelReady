@@ -1,0 +1,27 @@
+[
+  {
+    "id": "address-metadata",
+    "url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0?f=pjson",
+    "format": "json"
+  },
+  {
+    "id": "address-catalogue",
+    "url": "https://www.arcgis.com/sharing/rest/content/items/d638de50c2bb46e3a4c15fefe3756e78?f=pjson",
+    "format": "json"
+  },
+  {
+    "id": "address-59",
+    "url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&where=GISLINK%3D%27V04661019%27&outFields=%2A&returnGeometry=true&outSR=3157",
+    "format": "json"
+  },
+  {
+    "id": "address-80",
+    "url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&where=GISLINK%3D%2703229026%27&outFields=%2A&returnGeometry=true&outSR=3157",
+    "format": "json"
+  },
+  {
+    "id": "address-86",
+    "url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&where=GISLINK%3D%2703229031%27&outFields=%2A&returnGeometry=true&outSR=3157",
+    "format": "json"
+  }
+]

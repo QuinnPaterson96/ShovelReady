@@ -1,0 +1,219 @@
+{
+ "currentVersion": 11.3,
+ "cimVersion": "3.3.0",
+ "id": 0,
+ "name": "Address Points",
+ "type": "Feature Layer",
+ "description": "",
+ "geometryType": "esriGeometryPoint",
+ "sourceSpatialReference": {
+  "wkid": 3157,
+  "latestWkid": 3157,
+  "xyTolerance": 0.001,
+  "zTolerance": 0.001,
+  "mTolerance": 0.001,
+  "falseX": -5120900,
+  "falseY": -9998100,
+  "xyUnits": 10000,
+  "falseZ": -100000,
+  "zUnits": 10000,
+  "falseM": -100000,
+  "mUnits": 10000
+ },
+ "copyrightText": "",
+ "parentLayer": null,
+ "subLayers": [],
+ "minScale": 100000,
+ "maxScale": 0,
+ "referenceScale": 0.0,
+ "drawingInfo": {
+  "renderer": {
+   "type": "simple",
+   "symbol": {
+    "type": "esriPMS",
+    "url": "7b4b17e4bc0467b1d94c04119e992f19",
+    "imageData": "iVBORw0KGgoAAAANSUhEUgAAAAYAAAAGCAYAAADgzO9IAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAANUlEQVQImWNhwAFY0PiMDAwM/1El1IoPMzAwiDDc4tVmYGj4h6zjOwMDww9Mo271uuGzAw4AcgQItQ7EfI0AAAAASUVORK5CYII=",
+    "contentType": "image/png",
+    "width": 4,
+    "height": 4,
+    "angle": 0,
+    "xoffset": 0,
+    "yoffset": 0
+   }
+  },
+  "scaleSymbols": true,
+  "transparency": 0,
+  "labelingInfo": null
+ },
+ "defaultVisibility": true,
+ "extent": {
+  "xmin": 470793.1255000001,
+  "ymin": 5361326.2184999995,
+  "xmax": 476125.7126000002,
+  "ymax": 5366407.502800001,
+  "spatialReference": {
+   "wkid": 3157,
+   "latestWkid": 3157,
+   "xyTolerance": 0.001,
+   "zTolerance": 0.001,
+   "mTolerance": 0.001,
+   "falseX": -5120900,
+   "falseY": -9998100,
+   "xyUnits": 4.504455473910538E8,
+   "falseZ": -100000,
+   "zUnits": 10000,
+   "falseM": -100000,
+   "mUnits": 10000
+  }
+ },
+ "hasAttachments": false,
+ "htmlPopupType": "esriServerHTMLPopupTypeAsHTMLText",
+ "displayField": "FullAddress",
+ "typeIdField": null,
+ "subtypeFieldName": null,
+ "subtypeField": null,
+ "defaultSubtypeCode": null,
+ "fields": [
+  {
+   "name": "OBJECTID",
+   "type": "esriFieldTypeOID",
+   "alias": "OBJECTID",
+   "domain": null
+  },
+  {
+   "name": "SHAPE",
+   "type": "esriFieldTypeGeometry",
+   "alias": "SHAPE",
+   "domain": null
+  },
+  {
+   "name": "FullAddress",
+   "type": "esriFieldTypeString",
+   "alias": "FullAddress",
+   "length": 200,
+   "domain": null
+  },
+  {
+   "name": "UNIT",
+   "type": "esriFieldTypeString",
+   "alias": "UNIT",
+   "length": 10,
+   "domain": null
+  },
+  {
+   "name": "HOUSE",
+   "type": "esriFieldTypeDouble",
+   "alias": "HOUSE",
+   "domain": null
+  },
+  {
+   "name": "STREET",
+   "type": "esriFieldTypeString",
+   "alias": "STREET",
+   "length": 30,
+   "domain": null
+  },
+  {
+   "name": "Municipality",
+   "type": "esriFieldTypeString",
+   "alias": "Municipality",
+   "length": 200,
+   "domain": null
+  },
+  {
+   "name": "Legal_Type",
+   "type": "esriFieldTypeString",
+   "alias": "Legal_Type",
+   "length": 200,
+   "domain": null
+  },
+  {
+   "name": "GISLINK",
+   "type": "esriFieldTypeString",
+   "alias": "GISLINK",
+   "length": 16,
+   "domain": null
+  }
+ ],
+ "geometryField": {
+  "name": "SHAPE",
+  "type": "esriFieldTypeGeometry",
+  "alias": "SHAPE"
+ },
+ "indexes": [
+  {
+   "name": "FDO_OBJECTID",
+   "fields": "OBJECTID",
+   "isAscending": true,
+   "isUnique": true,
+   "description": ""
+  },
+  {
+   "name": "FDO_SHAPE",
+   "fields": "SHAPE",
+   "isAscending": true,
+   "isUnique": false,
+   "description": ""
+  }
+ ],
+ "subtypes": [],
+ "relationships": [],
+ "canModifyLayer": true,
+ "canScaleSymbols": false,
+ "hasLabels": false,
+ "capabilities": "Map,Query,Data",
+ "maxRecordCount": 2000,
+ "supportsStatistics": true,
+ "supportsExceedsLimitStatistics": true,
+ "supportsAdvancedQueries": true,
+ "supportedQueryFormats": "JSON, geoJSON, PBF",
+ "isDataVersioned": false,
+ "ownershipBasedAccessControlForFeatures": {"allowOthersToQuery": true},
+ "useStandardizedQueries": true,
+ "supportedSpatialRelationships": [
+  "esriSpatialRelIntersects",
+  "esriSpatialRelContains",
+  "esriSpatialRelCrosses",
+  "esriSpatialRelEnvelopeIntersects",
+  "esriSpatialRelIndexIntersects",
+  "esriSpatialRelOverlaps",
+  "esriSpatialRelTouches",
+  "esriSpatialRelWithin",
+  "esriSpatialRelRelation"
+ ],
+ "advancedQueryCapabilities": {
+  "useStandardizedQueries": true,
+  "supportsStatistics": true,
+  "supportsPercentileStatistics": true,
+  "supportsHavingClause": true,
+  "supportsOrderBy": true,
+  "supportsDistinct": true,
+  "supportsCountDistinct": true,
+  "supportsAdvancedQueryRelated": true,
+  "supportsQueryRelatedPagination": true,
+  "supportsPagination": true,
+  "supportsLod": false,
+  "supportsQueryWithLodSR": false,
+  "supportsTrueCurve": true,
+  "supportsQueryWithDatumTransformation": true,
+  "supportsReturningQueryExtent": true,
+  "supportsQueryWithDistance": true,
+  "supportsSqlExpression": true,
+  "supportsTimeRelation": true,
+  "supportsSqlFormat": false,
+  "supportsQueryAnalytic": false,
+  "supportsCurrentUserQueries": true
+ },
+ "supportsDatumTransformation": true,
+ "dateFieldsTimeReference": null,
+ "preferredTimeReference": null,
+ "datesInUnknownTimezone": false,
+ "hasMetadata": true,
+ "isDataArchived": false,
+ "archivingInfo": {
+  "supportsQueryWithHistoricMoment": false,
+  "startArchivingMoment": -1
+ },
+ "supportsCoordinatesQuantization": true,
+ "supportsDynamicLegends": true
+}

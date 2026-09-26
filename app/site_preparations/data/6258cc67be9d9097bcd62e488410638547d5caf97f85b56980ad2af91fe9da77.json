@@ -1,0 +1,68 @@
+{
+  "id": "d638de50c2bb46e3a4c15fefe3756e78",
+  "owner": "CityOfVictoriaBC",
+  "ownerId": "8c73dcb31d5f7a9a4b68e463b1511df0",
+  "orgId": "EHSKalEvBxdO9ljW",
+  "created": 1545953740000,
+  "modified": 1730740281000,
+  "guid": null,
+  "name": null,
+  "title": "Address Points",
+  "type": "Feature Service",
+  "typeKeywords": [
+    "ArcGIS Server",
+    "Data",
+    "Feature Access",
+    "Feature Service",
+    "Service"
+  ],
+  "description": "<p>Address points for every legal address in the City of Victoria, located at parcel centroids.  Address data is drawn from our Tempest Land Records database and merged with the centroid points from our GIS parcels based on a matching ID to add a spatial location.  Data are copied to the Open Data Portal daily.<\/p><p>The &quot;Last Updated&quot; date shown on our Open Data Portal refers to the last time the data schema was modified in the portal, or any changes were made to this description.  We update our data through scripts which does not trigger the &quot;last updated&quot; date to change.<\/p><p><\/p><p>Note: Attributes represent each field in a dataset, and some fields will contain information such as ID numbers.  As a result some visualizations on the tabs on our Open Data page will not be relevant.<\/p>",
+  "tags": [
+    "GIS",
+    "land",
+    "address"
+  ],
+  "snippet": "Address points for every legal address in the City of Victoria, located at parcel centroids.  Address data is drawn from our Tempest Land Records database and merged with the centroid points from our GIS parcels based on a matching ID to add a spatial location.  Data are copied to the Open Data Portal daily.\n\nThe \"Last Updated\" date shown on our Open Data Portal refers to the last time the data schema was modified in the portal, or any changes were made to this description.  We update our data through scripts which does not trigger the \"last updated\" date to change.",
+  "thumbnail": "thumbnail/ago_downloaded.png",
+  "documentation": null,
+  "extent": [
+    [
+      -123.3946,
+      48.4003
+    ],
+    [
+      -123.3224,
+      48.4504
+    ]
+  ],
+  "categories": [],
+  "spatialReference": null,
+  "accessInformation": null,
+  "classification": null,
+  "licenseInfo": "<a href='http://opendata.victoria.ca/pages/open-data-licence' target='_blank'>Open Data Licence<\/a>",
+  "culture": "en-us",
+  "properties": null,
+  "advancedSettings": null,
+  "url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0",
+  "proxyFilter": null,
+  "access": "public",
+  "size": 81,
+  "subInfo": 0,
+  "appCategories": [],
+  "industries": [],
+  "languages": [],
+  "largeThumbnail": null,
+  "banner": null,
+  "screenshots": [],
+  "listed": false,
+  "commentsEnabled": false,
+  "numComments": 0,
+  "numRatings": 0,
+  "avgRating": 0,
+  "numViews": 8741,
+  "scoreCompleteness": 100,
+  "groupDesignations": null,
+  "apiToken1ExpirationDate": -1,
+  "apiToken2ExpirationDate": -1,
+  "lastViewed": 1790370000000
+}
