@@ -5,6 +5,7 @@ from typing import Annotated, Literal
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 Name = Annotated[str, Field(strict=True, min_length=1)]
+Number = Annotated[float, Field(strict=True)]
 
 
 class StrictModel(BaseModel):
@@ -42,17 +43,17 @@ class Boundary(Feature):
 
 class Placement(StrictModel):
     id: Name
-    centre_xy: tuple[float, float]
-    width_m: float
-    depth_m: float
-    angle_degrees: float = 0
+    centre_xy: tuple[Number, Number]
+    width_m: Number
+    depth_m: Number
+    angle_degrees: Number = 0
 
 
 class Requirement(StrictModel):
     id: Name
     target: Literal["parcel_boundary", "nearest_building", "building", "named_boundary"]
     target_id: Name | None = None
-    minimum_m: float
+    minimum_m: Number
     status: Literal["user_assumption", "source_unreviewed", "source_reviewed"]
     source: Source | None = None
 

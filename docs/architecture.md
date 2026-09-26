@@ -167,3 +167,14 @@ mutating active snapshots. Model 300 and Jay research packets replay through it,
 remaining unreviewed. Retained address lookup normalizes only supported terminal
 street suffix pairs and preserves comparison provenance and ambiguity. No schema,
 migration or frontend change. See [integration and next steps](integration-wave-thirteen.md).
+
+
+## Occupied-lot scouting checkpoint
+
+PRs #140-#142 supply 16 retained Victoria parcel cases (13 new, 3 prior), a pure
+supplied-placement geometry engine, and a proposed three-check rule subset.
+[Integration evidence](integration-occupied-lots.md) records compatibility checks,
+review corrections and gaps. #139 now owns the runtime adapter and placement UI.
+Approximate observations do not require a complete accepted regulatory release;
+legal comparisons remain separately gated and labelled. No new site-fit result or
+active dataset publication is implied by these merges.

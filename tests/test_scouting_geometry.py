@@ -202,3 +202,19 @@ def test_geographic_crs_is_invalid_for_planar_measurement():
     found = checks(assess(fixture(projected_metre_crs="EPSG:4326")))
     assert found["containment"].reason == "crs_must_be_projected_metres"
     assert found["nearest_building"].status == "invalid"
+
+
+@pytest.mark.parametrize("value", [True, "2"])
+@pytest.mark.parametrize("field", ["width_m", "depth_m", "angle_degrees", "minimum_m", "centre_xy"])
+def test_numeric_boundary_rejects_boolean_and_text(value, field):
+    from pydantic import ValidationError
+
+    raw = fixture().model_dump()
+    if field == "minimum_m":
+        raw["requirements"][0][field] = value
+    elif field == "centre_xy":
+        raw["placement"][field] = [value, 5]
+    else:
+        raw["placement"][field] = value
+    with pytest.raises(ValidationError):
+        Request.model_validate(raw)

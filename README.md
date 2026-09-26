@@ -208,3 +208,14 @@ The live catalogue and accepted-data status are unchanged.
 normalization, offline candidate intake and Model 300/Jay research. Both candidate
 files stage successfully as unreviewed; active catalogue and accepted publication
 remain unchanged. Readable-provenance UI work (#131) remains separate.
+
+
+## Occupied-lot scouting checkpoint
+
+PRs #140-#142 supply 16 retained Victoria parcel cases (13 new, 3 prior), a pure
+supplied-placement geometry engine, and a proposed three-check rule subset.
+[Integration evidence](docs/integration-occupied-lots.md) records compatibility checks,
+review corrections and gaps. #139 now owns the runtime adapter and placement UI.
+Approximate observations do not require a complete accepted regulatory release;
+legal comparisons remain separately gated and labelled. No new site-fit result or
+active dataset publication is implied by these merges.
