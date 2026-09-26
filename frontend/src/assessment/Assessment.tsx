@@ -146,7 +146,7 @@ export function PreparationSummary({ draft, onEdit }: { draft: Draft; onEdit: ()
     <h3>Chosen site and model · provider review draft</h3>
     <p>Site: {draft.site?.candidate ? `retained PID ${draft.site.candidate.pid.value ?? 'unknown'}` : draft.site ? 'manual unmatched facts' : 'not selected'}; model: {draft.model.modelName || 'not selected'}. No checks were run.</p>
     <EvidenceChecklistView checklist={buildEvidenceChecklist(draft)} />
-    <details><summary>Copyable evidence requests � no sending</summary>
+    <details><summary>Copyable evidence requests · no sending</summary>
       <label htmlFor="evidence-request-text">Evidence needed and suggested suppliers</label>
       <textarea id="evidence-request-text" readOnly value={evidenceChecklistText(buildEvidenceChecklist(draft))} rows={8} />
     </details>

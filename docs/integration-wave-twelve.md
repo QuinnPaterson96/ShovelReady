@@ -32,7 +32,7 @@ browser evidence will be appended after execution. No human study is claimed.
 | Only five address rows and three unreviewed parcel leads | Arbitrary homeowner lookup unsupported | Test bounded workflow before expansion; broader acquisition remains separate |
 | No controlled legal site/survey, existing building and placement inputs | No real siting/separation assessment | Obtain controlled artifacts; SR-05/06/10 |
 | Provider roof datum, regulatory area and installed Victoria service unresolved | No verified model fit/deliverability | Review forthcoming focused prefab research, then obtain missing artifacts; #104/SR-18 |
-| Rules remain provisional with currentness/review gaps; no accepted release | Checklist cannot establish compliance | Independent source review, accepted publication and evaluation; #104/SR-10–13 |
+| Rules remain provisional with currentness/review gaps; no accepted release | Checklist cannot establish compliance | Independent source review, accepted publication and evaluation; #104/SR-10â€“13 |
 | Saanich invalid source geometry and Langford reuse rights | Expansion blocked | Source correction #112 and permission #103; no outreach sent |
 | Human walkthrough not conducted | No demonstrated user time savings or demand | Use SR-51 kit with real participants; SR-16 |
 
