@@ -50,3 +50,14 @@ Observed live source access: both provincial endpoints returned 200 JSON and all
 Measured post-branch wall-clock landmarks (UTC): branch at 00:03:06; first permitted capture at 00:04:26; mapper/test files complete at 00:06:18; manual example at 00:07:19. Source discovery after branch to first capture: **1m20s** (earlier source search is unmetered). Adapter plus replay tests from first capture to test file: **1m52s**. Manual correction example construction from test file to example: **1m01s**; this is authoring time for a simulated correction, **not** measured user correction effort. These are lower bounds, not a product timing study.
 
 Integration recommendation: keep Langford expansion exploratory. Provincial geocoder/PMBC can supply a licensed candidate boundary and approximate geometric area; do not present a verified address–parcel result until an authoritative join or independent review resolves the point disagreement. Obtain explicit layer-specific Langford reuse terms and source currency/meaning before retaining its zoning/building/constraint responses. Then repeat three real sites with a reviewed parcel join and independent geometry/legal interpretation; require a distinct data release and source review before any screening. This experiment supports SR-17/#17 but does not close it, change Victoria #86-#89, or launch Langford coverage.
+
+
+## Integration correction
+
+Combined review found that all three captured geocoder responses contain multiple
+candidates. The original mapper silently chose the first. The corrected replay
+returns `ambiguous` for all three and preserves the candidates for explicit selection.
+The earlier Lone Oak spatial result and Jenkins/Glen Lake no-match observations
+therefore describe only the first returned point, not resolved address lookups.
+Tests retain that spatial calculation using a clearly simulated explicit selection;
+it does not verify an address/PID join. The capture bytes are unchanged.

@@ -112,3 +112,12 @@ def test_router_retained_response_and_failed_source(monkeypatch, retained):
     failed_response = client.get("/api/site-preparations/lookup?kind=pid&q=028-279-638")
     assert failed_response.status_code == 502
     assert "candidates" not in failed_response.json()
+
+
+def test_consumer_schema_matches_producer():
+    import json
+    from pathlib import Path
+
+    from app.site_preparations.service import Lookup
+    path = Path(__file__).resolve().parents[1] / "frontend/src/site_preparations/schema.json"
+    assert json.loads(path.read_text()) == Lookup.model_json_schema()

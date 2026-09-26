@@ -1,3 +1,6 @@
+import Ajv2020 from 'ajv/dist/2020'
+import addFormats from 'ajv-formats'
+import schema from './schema.json'
 import { useRef, useState, type FormEvent } from 'react'
 import type { Candidate, Fact, Lookup, ManualFacts, SitePreparationSelection } from './types'
 
@@ -29,23 +32,18 @@ export function buildSelection(
   }
 }
 
+const ajv = new Ajv2020({ strict: false, allErrors: true })
+addFormats(ajv)
+const validateLookup = ajv.compile(schema)
+
 export function validLookup(value: unknown): value is Lookup {
-  if (!value || typeof value !== 'object') return false
-  const data = value as Partial<Lookup>
-  return data.schema_version === 'sr-38.site-lookup.v1' &&
-    data.screening_status === 'not_performed' &&
-    typeof data.spatial_revision === 'string' &&
-    ['one_match', 'ambiguous', 'no_match', 'unavailable'].includes(data.status ?? '') &&
-    Array.isArray(data.candidates) &&
-    ((data.status === 'one_match' && data.candidates.length === 1) ||
-      (data.status === 'ambiguous' && data.candidates.length > 1) ||
-      (['no_match', 'unavailable'].includes(data.status ?? '') && data.candidates.length === 0)) &&
-    data.candidates.every((candidate) =>
-      typeof candidate.candidate_id === 'string' && candidate.boundary_crs === 'EPSG:3157' &&
-      candidate.pid?.evidence?.origin === 'source' &&
-      candidate.approximate_area_m2?.evidence?.origin === 'derived' &&
-      candidate.constraints_status === 'not_queried' && candidate.selected === false &&
-      Array.isArray(candidate.zones))
+  if (!validateLookup(value)) return false
+  const data = value as Lookup
+  if (!data.candidates.every(candidate => candidate.pid.evidence.origin === 'source' &&
+    candidate.approximate_area_m2.evidence.origin === 'derived')) return false
+  return (data.status === 'one_match' && data.candidates.length === 1) ||
+    (data.status === 'ambiguous' && data.candidates.length > 1) ||
+    (['no_match', 'unavailable'].includes(data.status) && data.candidates.length === 0)
 }
 
 export function SitePreparation({ onConfirm, endpoint = '/api/site-preparations/lookup' }: SitePreparationProps) {

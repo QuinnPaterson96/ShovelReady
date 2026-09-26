@@ -59,7 +59,19 @@ def read_packet(root=PACKET):
 def map_case(geocoder, parcels):
     """A unique containing polygon is a *candidate*, never an address/PID proof."""
     features = geocoder.get("features")
-    if not isinstance(features, list) or not features:
+    if not isinstance(features, list):
+        raise ValueError("invalid geocoder features")
+    if len(features) > 1:
+        return {
+            "status": "ambiguous",
+            "reason": "multiple geocoder candidates; confirmation required",
+            "candidates": [],
+            "geocoder_candidates": features,
+            "parcel_match_verified": False,
+            "publication_eligible": False,
+            "review_status": "unreviewed",
+        }
+    if not features:
         return {"status": "no_match", "reason": "no geocoder candidate", "candidates": []}
     first = features[0]
     coords = first.get("geometry", {}).get("coordinates")
@@ -76,8 +88,7 @@ def map_case(geocoder, parcels):
     if parcels is None:
         return {"status": "unavailable", "reason": "parcel source unavailable", "candidates": []}
     if (
-        parcels.get("crs", {}).get("properties", {}).get("name")
-        != "urn:ogc:def:crs:EPSG::3005"
+        parcels.get("crs", {}).get("properties", {}).get("name") != "urn:ogc:def:crs:EPSG::3005"
         or not isinstance(parcels.get("features"), list)
         or parcels.get("numberReturned") != len(parcels["features"])
         or parcels.get("numberMatched") != len(parcels["features"])
@@ -86,8 +97,10 @@ def map_case(geocoder, parcels):
     matched = []
     for feature in parcels["features"]:
         polygon = shape(feature["geometry"])
-        if not polygon.is_valid or polygon.is_empty or polygon.geom_type not in (
-            "Polygon", "MultiPolygon"
+        if (
+            not polygon.is_valid
+            or polygon.is_empty
+            or polygon.geom_type not in ("Polygon", "MultiPolygon")
         ):
             raise ValueError("unusable parcel geometry")
         if polygon.covers(point):

@@ -37,9 +37,14 @@ jobs:
           docs/usability/check_fixtures.py
           docs/research/public-cases/verify_inventory.py
           docs/research/stannard-reference/verify_packet.py
-          frontend/tools/export_draft_evaluations.py
+          frontend/tools/export_draft_evaluations.py frontend/tools/export_site_preparations.py
+          tools/municipality_transfer docs/rule-packets/victoria-garden-suite/validate.py
       - name: Verify evaluator report schema, types and fixture drift
         run: uv run --locked python frontend/tools/export_draft_evaluations.py --check
+      - name: Verify site lookup schema and catalogue snapshots
+        run: |
+          uv run --locked python frontend/tools/export_site_preparations.py --check
+          uv run --locked python -m app.model_catalogue.build_snapshot --check
       - run: uv run --locked python docs/pilot-inputs/test_acquire.py
       - run: uv run --locked python docs/pilot-inputs/test_intake.py
       - run: uv run --locked python docs/usability/check_fixtures.py

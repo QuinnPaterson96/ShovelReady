@@ -1,0 +1,356 @@
+{
+  "$defs": {
+    "Candidate": {
+      "additionalProperties": false,
+      "properties": {
+        "candidate_id": {
+          "minLength": 1,
+          "title": "Candidate Id",
+          "type": "string"
+        },
+        "pid": {
+          "$ref": "#/$defs/Fact"
+        },
+        "vic_pid": {
+          "$ref": "#/$defs/Fact"
+        },
+        "address": {
+          "$ref": "#/$defs/Fact"
+        },
+        "parcel_type": {
+          "$ref": "#/$defs/Fact"
+        },
+        "parcel_status": {
+          "$ref": "#/$defs/Fact"
+        },
+        "boundary": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Boundary"
+        },
+        "boundary_crs": {
+          "const": "EPSG:3157",
+          "default": "EPSG:3157",
+          "title": "Boundary Crs",
+          "type": "string"
+        },
+        "approximate_area_m2": {
+          "$ref": "#/$defs/Fact"
+        },
+        "zones": {
+          "items": {
+            "$ref": "#/$defs/ZoneContact"
+          },
+          "title": "Zones",
+          "type": "array"
+        },
+        "constraints_status": {
+          "const": "not_queried",
+          "default": "not_queried",
+          "title": "Constraints Status",
+          "type": "string"
+        },
+        "unresolved": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Unresolved",
+          "type": "array"
+        },
+        "selected": {
+          "const": false,
+          "default": false,
+          "title": "Selected",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "candidate_id",
+        "pid",
+        "vic_pid",
+        "address",
+        "parcel_type",
+        "parcel_status",
+        "boundary",
+        "approximate_area_m2",
+        "zones",
+        "unresolved"
+      ],
+      "title": "Candidate",
+      "type": "object"
+    },
+    "Evidence": {
+      "additionalProperties": false,
+      "properties": {
+        "origin": {
+          "enum": [
+            "source",
+            "derived",
+            "user"
+          ],
+          "title": "Origin",
+          "type": "string"
+        },
+        "snapshot_id": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Snapshot Id"
+        },
+        "feature_index": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Feature Index"
+        },
+        "source_url": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Url"
+        },
+        "captured_at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Captured At"
+        },
+        "method": {
+          "anyOf": [
+            {
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Method"
+        },
+        "review_status": {
+          "const": "unreviewed",
+          "default": "unreviewed",
+          "title": "Review Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "origin"
+      ],
+      "title": "Evidence",
+      "type": "object"
+    },
+    "Fact": {
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        },
+        "unit": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unit"
+        },
+        "basis": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Basis"
+        },
+        "unresolved_reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Unresolved Reason"
+        },
+        "evidence": {
+          "$ref": "#/$defs/Evidence"
+        }
+      },
+      "required": [
+        "value",
+        "evidence"
+      ],
+      "title": "Fact",
+      "type": "object"
+    },
+    "ZoneContact": {
+      "additionalProperties": false,
+      "properties": {
+        "zone": {
+          "$ref": "#/$defs/Fact"
+        },
+        "bylaw": {
+          "$ref": "#/$defs/Fact"
+        },
+        "contact_area_m2": {
+          "$ref": "#/$defs/Fact"
+        },
+        "classification": {
+          "enum": [
+            "material",
+            "sliver",
+            "boundary_touch"
+          ],
+          "title": "Classification",
+          "type": "string"
+        }
+      },
+      "required": [
+        "zone",
+        "bylaw",
+        "contact_area_m2",
+        "classification"
+      ],
+      "title": "ZoneContact",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "sr-38.site-lookup.v1",
+      "default": "sr-38.site-lookup.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "spatial_revision": {
+      "minLength": 1,
+      "title": "Spatial Revision",
+      "type": "string"
+    },
+    "collection": {
+      "minLength": 1,
+      "title": "Collection",
+      "type": "string"
+    },
+    "query_kind": {
+      "enum": [
+        "pid",
+        "address"
+      ],
+      "title": "Query Kind",
+      "type": "string"
+    },
+    "query": {
+      "minLength": 1,
+      "title": "Query",
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "one_match",
+        "ambiguous",
+        "no_match",
+        "unavailable"
+      ],
+      "title": "Status",
+      "type": "string"
+    },
+    "coverage": {
+      "const": "three_retained_victoria_parcel_leads",
+      "default": "three_retained_victoria_parcel_leads",
+      "title": "Coverage",
+      "type": "string"
+    },
+    "candidates": {
+      "items": {
+        "$ref": "#/$defs/Candidate"
+      },
+      "title": "Candidates",
+      "type": "array"
+    },
+    "reason": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Reason"
+    },
+    "screening_status": {
+      "const": "not_performed",
+      "default": "not_performed",
+      "title": "Screening Status",
+      "type": "string"
+    }
+  },
+  "required": [
+    "spatial_revision",
+    "collection",
+    "query_kind",
+    "query",
+    "status",
+    "candidates"
+  ],
+  "title": "Lookup",
+  "type": "object"
+}

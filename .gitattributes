@@ -1,2 +1,7 @@
 # Retained synthetic source bytes must hash identically across Windows and Linux.
 app/draft_evaluations/inputs/arithmetic.md text eol=lf
+
+# Preserve exact retained capture bytes across platforms.
+docs/municipality-transfer/saanich/spatial/capture.json -text
+docs/municipality-transfer/langford/spatial/*-geocoder.json -text
+docs/municipality-transfer/langford/spatial/*-pmbc.json -text

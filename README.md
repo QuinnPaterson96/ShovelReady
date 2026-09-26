@@ -56,6 +56,13 @@ implements a home/input/status flow and a read-only Pilot preparation view. Thos
 changes are implemented and connected; real-site screening remains unaccepted.
 See [wave-nine integration](docs/integration-wave-nine.md) for combined verification.
 
+[Wave-ten integration](docs/integration-wave-ten.md) adds a bounded parcel-lookup API,
+standalone site/model input components, three sourced prefab candidates, and provisional
+Victoria/Saanich/Langford rule packets and municipal replay experiments. Address search
+in Victoria is still unavailable; lookup covers three retained PID leads. The new
+components are not yet mounted in the assessment. See the [next-step plan](docs/next-steps-after-wave-ten.md)
+for SR-41 wiring and evidence gates. No municipal expansion or accepted release is implied.
+
 City of Victoria garden suites remain the leading technical prototype candidate, subject
 to verified design/site inputs and current rule applicability; Vancouver is the fallback.
 

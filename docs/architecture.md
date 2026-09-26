@@ -123,3 +123,17 @@ or research files. The Pilot page and input flow share a prominent status banner
 preparation remains amber and never implies evaluation.
 
 Defer multi-agent ingestion, vector databases, knowledge graphs, microservices, elaborate cloud infrastructure, custom model training, and a commercial third-party API. Record any later adoption in a decision note with the observed need, simpler alternatives, and revisit criteria.
+
+
+## Wave-ten checkpoint
+
+The site-preparation API projects the configured retained spatial revision; it does
+not fetch citywide data or resolve addresses. Candidate confirmation and manual values
+remain unreviewed. The standalone model catalogue uses a pinned manual provider
+snapshot with unknown roof-height references and explicit service-area limitations.
+Both components await SR-41 integration. Their generated artifacts are drift-checked
+in CI. Municipal transfer commands remain offline experiments, not production adapters.
+
+See [combined evidence](integration-wave-ten.md) and [next steps](next-steps-after-wave-ten.md).
+Source citations, independent interpretation review and release publication remain
+separate gates. All new rule candidates are non-executable/unaccepted.
