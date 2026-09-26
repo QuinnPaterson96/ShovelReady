@@ -1,0 +1,91 @@
+Evidence checklist sr-50.evidence-checklist.v1 — preparation only; screening not_performed
+Scope: City of Victoria / Garden suite / Accessory building; site retained_candidate; model aux-300; synthetic false
+
+Legal site identity [site-identity; unreviewed]
+Missing: Confirm legal lot, title/PID and whether the retained GIS lead identifies it.
+Impact: A captured parcel lead or typed address does not establish the legal site for applicable rules.
+Supplier: Owner or land surveyor
+Next: Obtain title/legal parcel evidence and reconcile it with the retained lead.
+Evidence (source; unreviewed): Retained parcel PID; value 008-140-723 ; basis unknown; source none; URL https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=80&outFields=%2A&returnGeometry=true&outSR=3157; locator feature 0; snapshot site-80-parcel:sha256:ed59084b6d130989d8bd3110487e6834a1c0d4e2896e7da282763e5dab7c3844; revision spatial:sha256:db45fb736cd0fe2455d65b64105b038539bc7695e62666be6b2840474af8aee7; captured 2026-09-24T18:18:42.684481+00:00
+Evidence (source; unreviewed): Captured address; value 1170 MAY ST ; basis City Address Points Legal_Type=LAND; GISLINK=03229026; source none; URL https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=pjson&where=GISLINK%3D%2703229026%27&outFields=%2A&returnGeometry=true&outSR=3157; locator feature 0; snapshot address-80:sha256:bc36d4937f37fd33b79fab27325e303c993f401a546cf48b68fc74984b356020; revision spatial:sha256:db45fb736cd0fe2455d65b64105b038539bc7695e62666be6b2840474af8aee7; captured 2026-09-26T00:38:57.380711+00:00
+
+Survey, existing buildings and placement [site-geometry-placement; missing]
+Missing: Surveyed legal boundaries, front/rear lines, existing buildings, constraints and a proposed suite placement.
+Impact: Approximate parcel area cannot establish rear-yard area, occupied area, separation or available placement.
+Supplier: Owner, land surveyor and site designer
+Next: Supply a current survey and placement drawing with measurement bases.
+Evidence (derived; unreviewed): Approximate GIS parcel area; value 577.3288014661284 m2; basis EPSG:3157 XY geometry area; approximate GIS value, not surveyed/regulatory lot area; source none; URL https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=80&outFields=%2A&returnGeometry=true&outSR=3157; locator feature 0; snapshot site-80-parcel:sha256:ed59084b6d130989d8bd3110487e6834a1c0d4e2896e7da282763e5dab7c3844; revision spatial:sha256:db45fb736cd0fe2455d65b64105b038539bc7695e62666be6b2840474af8aee7; captured 2026-09-24T18:18:42.684481+00:00
+
+Controlled model and occupied footprint [model-revision-footprint; unreviewed]
+Missing: Controlled configuration/revision and dimensioned wall faces, projections and installed occupied footprint.
+Impact: Nominal product dimensions cannot define placement or rear-yard occupancy.
+Supplier: Model provider and site designer
+Next: Request a controlled model drawing and site-specific footprint.
+Evidence (source; unreviewed): width provider baseline: Provider exterior width; overhang inclusion unknown; original 10 ft [capture_gap]; value 3.0480 m; basis unknown; source aux-300-page; URL https://www.auxbox.ca/model-300; locator The Specs > Dimensions; Site Prep, Delivery + Installation; snapshot sr-40.2026-09-25.provider-pages.v1; revision none; captured 2026-09-25
+Evidence (source; unreviewed): depth provider baseline: Provider exterior length; overhang inclusion unknown; original 30 ft [capture_gap]; value 9.1440 m; basis unknown; source aux-300-page; URL https://www.auxbox.ca/model-300; locator The Specs > Dimensions; Site Prep, Delivery + Installation; snapshot sr-40.2026-09-25.provider-pages.v1; revision none; captured 2026-09-25
+
+Installed roof height and datum [model-roof-datum; missing]
+Missing: Installed roof high point and its grade/foundation datum; current height reference is unknown.
+Impact: Interior ceiling or unspecified exterior height cannot be treated as regulatory building height.
+Supplier: Model provider and site designer
+Next: Obtain a section/elevation identifying roof point and datum.
+Evidence (source; unreviewed): Provider exterior height 10 ft 6 in has no stated datum or roof-point definition; cannot populate regulatory building height. [capture_gap]; value unstated ; basis unknown; source aux-300-page; URL https://www.auxbox.ca/model-300; locator The Specs > Dimensions; Site Prep, Delivery + Installation; snapshot sr-40.2026-09-25.provider-pages.v1; revision none; captured 2026-09-25
+
+Regulatory Floor Area [model-regulatory-area; missing]
+Missing: Controlled Floor Area calculation using independently reviewed bylaw inclusions and exclusions.
+Impact: Provider interior or headline area has a different basis from the provisional Floor Area clause.
+Supplier: Model provider, designer and rule reviewer
+Next: Reconcile dimensioned plans to the reviewed Floor Area definition.
+Evidence (source; unreviewed): area provider baseline: Provider living space, not regulatory floor area; original 226 sq ft total living space [capture_gap]; value 20.99608704 m2; basis unknown; source aux-300-page; URL https://www.auxbox.ca/model-300; locator The Specs > Dimensions; Site Prep, Delivery + Installation; snapshot sr-40.2026-09-25.provider-pages.v1; revision none; captured 2026-09-25
+
+Victoria delivery and installation service [model-service; unreviewed]
+Missing: Written Victoria project delivery, installation scope and site-specific availability confirmation.
+Impact: Product dimensions alone do not establish project availability or installed specification.
+Supplier: Model provider
+Next: Ask provider to confirm Victoria service and the installed scope.
+Evidence (source; unreviewed): Provider service statement (provider_claim): Provider says delivered anywhere in North America; Victoria project service and site feasibility unconfirmed. [capture_gap]; value unstated ; basis unknown; source aux-300-page; URL https://www.auxbox.ca/model-300; locator The Specs > Dimensions; Site Prep, Delivery + Installation; snapshot sr-40.2026-09-25.provider-pages.v1; revision none; captured 2026-09-25
+
+Current applicable Victoria rules [rule-currentness-applicability; provisional]
+Missing: Independently reviewed current consolidation, adoption/effective-date chain, legal site designation, definitions and site-specific provisions.
+Impact: The captured four clauses are provisional candidates; current applicability and other requirements are unresolved.
+Supplier: Municipal source custodian and independent rule reviewer
+Next: Obtain the current authoritative instrument and review its applicability to the confirmed legal lot.
+Evidence (source; unreviewed): Zoning Bylaw 2018, No. 18-072; provisional garden_suite_count_on_lot: one (Garden Suites on one legal Lot); printed revision: PDF amendment list through No. 26-060 (July 30, 2026); front matter still says consolidation through No. 22-048; value 1 count; basis Garden Suites on one legal Lot; source zoning-2018; URL https://www.victoria.ca/media/file/zoning-bylaw-2018; locator Part 3.1(28)(b), PDF p27, printed p22; snapshot zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33; revision victoria-zb2018-garden-suite-suite-count@source-6c9e35a8de4e-agent-1; captured 2026-09-24T18:18:37.482495+00:00
+Evidence (source; unreviewed): Zoning Bylaw 2018, No. 18-072; provisional garden_suite_floor_area: 56m2 (Floor Area under Part 2.1, not advertised interior or footprint area); printed revision: PDF amendment list through No. 26-060 (July 30, 2026); front matter still says consolidation through No. 22-048; value 56 m2; basis Floor Area under Part 2.1, not advertised interior or footprint area; source zoning-2018; URL https://www.victoria.ca/media/file/zoning-bylaw-2018; locator Part 3.1(28)(d), PDF p27, printed p22; snapshot zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33; revision victoria-zb2018-garden-suite-floor-area@source-6c9e35a8de4e-agent-1; captured 2026-09-24T18:18:37.482495+00:00
+Evidence (source; unreviewed): Zoning Bylaw 2018, No. 18-072; provisional garden_suite_principal_building_separation: 2.4m (Separation space between Garden Suite and principal Building); printed revision: PDF amendment list through No. 26-060 (July 30, 2026); front matter still says consolidation through No. 22-048; value 2.4 m; basis Separation space between Garden Suite and principal Building; source zoning-2018; URL https://www.victoria.ca/media/file/zoning-bylaw-2018; locator Part 3.1(28)(h), PDF p28, printed p23; snapshot zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33; revision victoria-zb2018-garden-suite-building-separation@source-6c9e35a8de4e-agent-1; captured 2026-09-24T18:18:37.482495+00:00
+Evidence (source; unreviewed): Zoning Bylaw 2018, No. 18-072; provisional garden_suite_rear_yard_occupancy: 25% (Garden Suite occupied area divided by legally defined rear-yard area); printed revision: PDF amendment list through No. 26-060 (July 30, 2026); front matter still says consolidation through No. 22-048; value 0.25 fraction; basis {"numerator":"Garden Suite occupied rear-yard area","denominator":"legally defined rear-yard area"}; source zoning-2018; URL https://www.victoria.ca/media/file/zoning-bylaw-2018; locator Part 3.1(28)(i), PDF p28, printed p23; snapshot zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33; revision victoria-zb2018-garden-suite-rear-yard-occupancy@source-6c9e35a8de4e-agent-1; captured 2026-09-24T18:18:37.482495+00:00
+
+garden suite count on lot [rule-victoria-zb2018-garden-suite-suite-count; provisional]
+Missing: Verified existing garden-suite count on the legal lot.
+Impact: Suite count cannot be assessed.
+Supplier: Owner and municipal records reviewer
+Next: Confirm rule applicability and obtain the stated input before any evaluation.
+Evidence (source; unreviewed): Zoning Bylaw 2018, No. 18-072; provisional garden_suite_count_on_lot: one (Garden Suites on one legal Lot); printed revision: PDF amendment list through No. 26-060 (July 30, 2026); front matter still says consolidation through No. 22-048; value 1 count; basis Garden Suites on one legal Lot; source zoning-2018; URL https://www.victoria.ca/media/file/zoning-bylaw-2018; locator Part 3.1(28)(b), PDF p27, printed p22; snapshot zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33; revision victoria-zb2018-garden-suite-suite-count@source-6c9e35a8de4e-agent-1; captured 2026-09-24T18:18:37.482495+00:00
+
+garden suite floor area [rule-victoria-zb2018-garden-suite-floor-area; provisional]
+Missing: Reviewed regulatory Floor Area calculation for the selected configuration.
+Impact: Marketing interior area cannot be compared to this candidate threshold.
+Supplier: Designer and rule reviewer
+Next: Confirm rule applicability and obtain the stated input before any evaluation.
+Evidence (source; unreviewed): Zoning Bylaw 2018, No. 18-072; provisional garden_suite_floor_area: 56m2 (Floor Area under Part 2.1, not advertised interior or footprint area); printed revision: PDF amendment list through No. 26-060 (July 30, 2026); front matter still says consolidation through No. 22-048; value 56 m2; basis Floor Area under Part 2.1, not advertised interior or footprint area; source zoning-2018; URL https://www.victoria.ca/media/file/zoning-bylaw-2018; locator Part 3.1(28)(d), PDF p27, printed p22; snapshot zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33; revision victoria-zb2018-garden-suite-floor-area@source-6c9e35a8de4e-agent-1; captured 2026-09-24T18:18:37.482495+00:00
+
+garden suite principal building separation [rule-victoria-zb2018-garden-suite-building-separation; provisional]
+Missing: Surveyed principal-building faces and proposed suite placement with measurement method.
+Impact: Separation cannot be measured.
+Supplier: Land surveyor and site designer
+Next: Confirm rule applicability and obtain the stated input before any evaluation.
+Evidence (source; unreviewed): Zoning Bylaw 2018, No. 18-072; provisional garden_suite_principal_building_separation: 2.4m (Separation space between Garden Suite and principal Building); printed revision: PDF amendment list through No. 26-060 (July 30, 2026); front matter still says consolidation through No. 22-048; value 2.4 m; basis Separation space between Garden Suite and principal Building; source zoning-2018; URL https://www.victoria.ca/media/file/zoning-bylaw-2018; locator Part 3.1(28)(h), PDF p28, printed p23; snapshot zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33; revision victoria-zb2018-garden-suite-building-separation@source-6c9e35a8de4e-agent-1; captured 2026-09-24T18:18:37.482495+00:00
+
+garden suite rear yard occupancy [rule-victoria-zb2018-garden-suite-rear-yard-occupancy; provisional]
+Missing: Legal rear-yard polygon and proposed occupied suite area including relevant projections.
+Impact: Parcel area is not the rear-yard ratio denominator.
+Supplier: Land surveyor, site designer and rule reviewer
+Next: Confirm rule applicability and obtain the stated input before any evaluation.
+Evidence (source; unreviewed): Zoning Bylaw 2018, No. 18-072; provisional garden_suite_rear_yard_occupancy: 25% (Garden Suite occupied area divided by legally defined rear-yard area); printed revision: PDF amendment list through No. 26-060 (July 30, 2026); front matter still says consolidation through No. 22-048; value 0.25 fraction; basis {"numerator":"Garden Suite occupied rear-yard area","denominator":"legally defined rear-yard area"}; source zoning-2018; URL https://www.victoria.ca/media/file/zoning-bylaw-2018; locator Part 3.1(28)(i), PDF p28, printed p23; snapshot zoning-2018:sha256:6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33; revision victoria-zb2018-garden-suite-rear-yard-occupancy@source-6c9e35a8de4e-agent-1; captured 2026-09-24T18:18:37.482495+00:00
+
+User notes for review [user-notes; unreviewed]
+Missing: Verify each factual statement in the notes against a named source or controlled artifact.
+Impact: Notes are attributed user statements and do not establish measured or legal facts.
+Supplier: Note author and relevant source custodian
+Next: Identify supporting evidence for any note used in later evaluation.
+Evidence (user; unreviewed): Manual notes; value No survey, approved placement, or independently measured roof height is available. Ask aux box for a controlled Model 300 plan, roof high-point/datum, projection footprint and written Victoria delivery/installation scope. Ask a surveyor/site designer for legal boundaries, principal building and a proposed placement; have current Victoria rules reviewed for that legal lot. ; basis unknown; source none; URL none; locator none; snapshot none; revision none; captured 2026-09-26T02:22:15.290Z

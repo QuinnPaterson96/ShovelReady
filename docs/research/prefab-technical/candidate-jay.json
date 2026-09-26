@@ -1,0 +1,128 @@
+{
+  "schema_version": "sr-40.catalogue.v1",
+  "snapshot_id": "sr-55.2026-09-25.orca-jay.candidate.v1",
+  "captured_at": "2026-09-25",
+  "provenance": "manual_transcription_of_public_provider_specs",
+  "review_status": "unreviewed",
+  "models": [
+    {
+      "model_id": "orca-jay",
+      "provider": "ORCA LGS",
+      "name": "Jay",
+      "provider_url": "https://www.orcalgs.ca/models/jay/",
+      "source_revision": null,
+      "configuration": "Current public Jay offer; shed, flat or gable roof and pre-production options not selected; 2025 card is separate historical evidence",
+      "construction_method": "Factory-built light-gauge steel structure, per provider",
+      "intended_use_note": "Provider markets one-bedroom garden suite; Victoria residential approval unreviewed",
+      "service_area_status": "provider_claim",
+      "service_area_note": "Provider markets BC-built garden suites; Victoria project/site commitment unconfirmed",
+      "installation_note": "Current page says delivery/install quoted separately but also lists factory build + delivery + crane day as included; scope unresolved. Site prep, foundation, utilities and permits excluded per page.",
+      "footprint_note": "Current page labels 29 x 15 ft as footprint/external dimensions; 435 sq ft total-area basis and projection/deck treatment unresolved. No manufacturer footprint area mapped.",
+      "height_note": "Current page offers shed, flat and gable roofs but gives no option-specific exterior or installed roof height.",
+      "missing_facts": [
+        "Controlled current drawing/specification revision and selected roof/options",
+        "Roof high/eave point and vertical datum",
+        "Overhang, deck and projection envelope",
+        "Foundation and installed-grade relationship",
+        "435 sq ft total-area basis and enclosed/deck breakdown",
+        "Legal floor area and wall-face measurement basis"
+      ],
+      "sources": [
+        {
+          "source_id": "jay-current-page",
+          "url": "https://www.orcalgs.ca/models/jay/",
+          "locator": "Hero; Dimensions & specs; What is included; Customize before you build",
+          "captured_at": "2026-09-25",
+          "sha256": null,
+          "artifact_status": "capture_gap",
+          "upstream_revision": null
+        },
+        {
+          "source_id": "jay-2026-general-spec",
+          "url": "https://www.orcalgs.ca/wp-content/uploads/2026/03/Product-specifications-brochure-2026.pdf",
+          "locator": "PDF pp. 3, 10-11 (1-based); general wall/utility/appliance specs, not Jay geometry",
+          "captured_at": "2026-09-25",
+          "sha256": "643ad5039c9b4439a7b8613ba7063d343fc29fe6a605bd81cae45b3bf3fdc56f",
+          "artifact_status": "private_capture",
+          "upstream_revision": null
+        },
+        {
+          "source_id": "jay-2025-card",
+          "url": "https://www.orcalgs.ca/wp-content/uploads/2025/01/JAY-downloadable-card-2025-.pdf",
+          "locator": "PDF p. 1 headline; p. 2 furnished floor plan; no title block",
+          "captured_at": "2026-09-25",
+          "sha256": "cd1b19159126c6ca8ccc171ebc43816bf825cac961124e4d238a2a5d635111fe",
+          "artifact_status": "private_capture",
+          "upstream_revision": null
+        }
+      ],
+      "measurements": [
+        {
+          "name": "nominal_exterior_width",
+          "status": "known",
+          "definition": "Current provider-labelled external width of 15 ft; wall face and projection inclusion unknown",
+          "quantity": {
+            "original_text": "15 ft",
+            "original_value": "15",
+            "original_unit": "ft",
+            "dimension": "length",
+            "value": "4.5720",
+            "unit": "m",
+            "basis": null
+          },
+          "source_id": "jay-current-page",
+          "reason": null
+        },
+        {
+          "name": "nominal_exterior_depth",
+          "status": "known",
+          "definition": "Current provider-labelled external length of 29 ft; wall face and projection inclusion unknown",
+          "quantity": {
+            "original_text": "29 ft",
+            "original_value": "29",
+            "original_unit": "ft",
+            "dimension": "length",
+            "value": "8.8392",
+            "unit": "m",
+            "basis": null
+          },
+          "source_id": "jay-current-page",
+          "reason": null
+        },
+        {
+          "name": "manufacturer_interior_area",
+          "status": "missing",
+          "definition": "Provider-labelled interior/enclosed living area",
+          "quantity": null,
+          "source_id": null,
+          "reason": "435 sq ft is labelled total area; enclosure and deck inclusion not defined"
+        },
+        {
+          "name": "manufacturer_footprint",
+          "status": "missing",
+          "definition": "Provider-labelled occupied plan area",
+          "quantity": null,
+          "source_id": null,
+          "reason": "29 x 15 ft is labelled footprint dimensions, but no defined area/projection boundary"
+        },
+        {
+          "name": "advertised_overall_height",
+          "status": "missing",
+          "definition": "Provider exterior height",
+          "quantity": null,
+          "source_id": null,
+          "reason": "No exterior height for selected roof found in reviewed official set"
+        },
+        {
+          "name": "roof_height",
+          "status": "missing",
+          "definition": "Roof high point measured from stated foundation datum",
+          "quantity": null,
+          "source_id": null,
+          "reason": "Roof option, roof point and foundation/grade datum unresolved"
+        }
+      ],
+      "review_status": "unreviewed"
+    }
+  ]
+}
