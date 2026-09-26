@@ -1,0 +1,6 @@
+.site-preparation input { display: block; width: 100%; max-width: 38rem; padding: .7rem .85rem; margin: .5rem 0 1rem; }
+.site-preparation form button { display: block; }
+.site-preparation-status { border-left: 5px solid var(--copper); background: var(--copper-soft); padding: 1rem; margin-top: 1.25rem; overflow-wrap: anywhere; }
+.site-preparation-candidate, .site-preparation-manual { border: 1px solid var(--border); border-radius: var(--radius-card); padding: 1rem; margin-top: 1rem; overflow-wrap: anywhere; }
+.site-preparation-candidate { border-left: 5px solid var(--copper); }
+.site-preparation .metadata { overflow-wrap: anywhere; }

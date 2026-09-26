@@ -12,6 +12,7 @@ from app.draft_evaluations.api import router as draft_evaluations_router
 from app.identity import AppIdentity, capture_identity
 from app.investigation import router
 from app.reference_cases import router as reference_cases_router
+from app.site_preparations.api import router as site_preparations_router
 
 FRONTEND_DIST = Path(__file__).resolve().parents[1] / "frontend" / "dist"
 
@@ -28,6 +29,7 @@ def create_app(*, frontend_dist: Path = FRONTEND_DIST) -> FastAPI:
     application.include_router(router)
     application.include_router(draft_evaluations_router)
     application.include_router(reference_cases_router)
+    application.include_router(site_preparations_router)
     identity = capture_identity()
 
     @application.get("/api/identity", response_model=AppIdentity)
