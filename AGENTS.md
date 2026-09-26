@@ -41,4 +41,10 @@ Read README.md, docs/architecture.md, and docs/quality.md before consequential c
 - Use the [PR handoff template](.github/pull_request_template.md), scaled to the change, and the [integration checklist](docs/quality.md#integration-handoff). Declare shared-file ownership before parallel work. Keep implemented, verified, proposed and blocked work distinct; software checks, source review, publication and user validation are separate evidence categories.
 - At every integration handoff, explicitly list remaining gaps in the user-facing summary: what is missing, its practical impact, and the next action/owner or ticket. Distinguish demo usability gaps from blockers to accepted real evaluation; do not hide them behind a generic caveat or document link.
 
-- Follow behavior-focused test selection in docs/quality.md: prioritize connected workflows, retain independently grounded calculation tests, and avoid tests that mirror private implementation details.
+## Testing restraint
+
+- Default new testing effort to meaningful integration coverage and a small set of end-to-end user journeys. Do not automatically add unit tests for each new function, component or code change.
+- Add a unit test only when it protects a concrete failure risk that broader tests cover poorly or inefficiently: independently calculable geometry, unit/ratio conversion, threshold behavior, uncertainty propagation, or a reproduced defect. Explain that risk and the independent basis for the expected result in the test or PR.
+- Avoid tests that mirror implementation, assert private helper calls, freeze incidental output values, or duplicate existing coverage. Do not add tests merely to increase counts or coverage percentages. Prefer extending an existing behavioral test when it covers the risk adequately.
+- Keep useful existing tests; do not remove them merely because they are unit tests. Fixed expected values are appropriate when justified by mathematics, a reviewed source or a stated requirement, rather than copied from the implementation.
+- For reversible, low-impact edits, proportionate inspection or existing checks may be sufficient. Run relevant required checks; passing software tests does not establish source accuracy or user usefulness. Follow docs/quality.md for the full behavior-focused standard.
