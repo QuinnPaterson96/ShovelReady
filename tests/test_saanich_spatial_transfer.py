@@ -2,9 +2,12 @@
 
 import copy
 import importlib.util
+import json
 from pathlib import Path
 
 import pytest
+from shapely.affinity import translate
+from shapely.geometry import MultiPolygon, Polygon, mapping, shape
 
 ROOT = Path(__file__).resolve().parents[1]
 SPEC = importlib.util.spec_from_file_location(
@@ -82,3 +85,83 @@ def test_tampered_capture_rejected(tmp_path):
     (tmp_path / "capture.json").write_bytes((source / "capture.json").read_bytes() + b" ")
     with pytest.raises(ValueError, match="integrity"):
         MODULE.load_capture(tmp_path)
+
+
+def test_source_topology_revision_keeps_invalid_features_quarantined(capture):
+    revision = json.loads((MODULE.DEFAULT_ROOT / MODULE.TOPOLOGY_REVISION).read_text())
+    manifest = json.loads((MODULE.DEFAULT_ROOT / "manifest.json").read_text())
+    assert revision["schema_version"] == "sr46.saanich.zoning_topology.v2"
+    assert revision["input_capture_sha256"] == manifest["capture_sha256"]
+    assert revision["input_archive_sha256"] == manifest["archives"]["ZoningSHP.zip"]["sha256"]
+    assert (
+        revision["input_shp_sha256"]
+        == manifest["archives"]["ZoningSHP.zip"]["members"]["Zoning.shp"]
+    )
+    assert all(record["source_parts_match_capture_exactly"] for record in revision["records"])
+    invalid_parts = {
+        record["source_record_index"]: [
+            ring["part_index"] for ring in record["source_ring_findings"] if not ring["valid"]
+        ]
+        for record in revision["records"]
+    }
+    assert invalid_parts == {1853: [67], 1475: [], 1659: [0], 1790: [0, 12, 14]}
+    assert all(
+        not record["captured_geometry_valid"]
+        for record in revision["records"]
+        if record["source_record_index"] != 1475
+    )
+    assert all(
+        shape(feature["geometry"]).is_valid == (feature["source_record_index"] == 1475)
+        for feature in capture["layers"]["zoning"]
+    )
+
+
+def test_holes_and_multipart_preserve_contact_area(capture):
+    fixture = copy.deepcopy(capture)
+    parcel = shape(fixture["layers"]["parcels"][0]["geometry"])
+    outer = parcel.envelope.buffer(20).exterior.coords
+    hole = parcel.envelope.buffer(1).exterior.coords
+    hole_zone = Polygon(outer, [hole])
+    multipart_zone = MultiPolygon([parcel, translate(parcel, xoff=100000)])
+    assert hole_zone.is_valid and multipart_zone.is_valid
+    fixture["layers"]["zoning"] = [
+        {
+            "source_record_index": 900001,
+            "attributes": {"TYPE": "HOLE"},
+            "geometry": mapping(hole_zone),
+        },
+        {
+            "source_record_index": 900002,
+            "attributes": {"TYPE": "MULTIPART"},
+            "geometry": mapping(multipart_zone),
+        },
+    ]
+    result = MODULE.map_address(fixture, "3325 KINGSLEY ST")
+    contacts = result["observations"]["zoning_contacts"]
+    assert [contact["source_record_index"] for contact in contacts] == [900002]
+    assert contacts[0]["classification"] == "material"
+    assert contacts[0]["contact_basis"] == "polygon_intersection"
+    assert contacts[0]["intersection_area_m2"] == pytest.approx(parcel.area)
+
+
+def test_invalid_source_geometry_remains_unknown(capture):
+    fixture = copy.deepcopy(capture)
+    parcel = shape(fixture["layers"]["parcels"][0]["geometry"])
+    x, y = parcel.centroid.coords[0]
+    bowtie = Polygon(
+        [(x - 100, y - 100), (x + 100, y + 100), (x - 100, y + 100), (x + 100, y - 100)]
+    )
+    assert not bowtie.is_valid
+    fixture["layers"]["zoning"] = [
+        {
+            "source_record_index": 900003,
+            "attributes": {"TYPE": "INVALID"},
+            "geometry": mapping(bowtie),
+        }
+    ]
+    result = MODULE.map_address(fixture, "3325 KINGSLEY ST")
+    contact = result["observations"]["zoning_contacts"][0]
+    assert contact["classification"] == "geometry_unusable"
+    assert contact["contact_basis"] == "envelope_overlap_only"
+    assert contact["intersection_area_m2"] is None
+    assert "zoning_geometry_unusable; no coverage_inference" in result["issues"]
