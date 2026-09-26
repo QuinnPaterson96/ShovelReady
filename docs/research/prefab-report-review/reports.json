@@ -1,0 +1,30 @@
+{
+  "review_date": "2026-09-25",
+  "timezone": "America/Vancouver",
+  "reports": [
+    {
+      "report_number": 15,
+      "original_filename": "deep-research-report (15).md",
+      "sha256": "5f501a52d8dec680251f81365920a6b2815c596aeefc77e837ab88d2377215fd",
+      "bytes": 8728,
+      "retention": "original user-local; not copied into repository",
+      "status": "secondary research; not accepted source data"
+    },
+    {
+      "report_number": 16,
+      "original_filename": "deep-research-report (16).md",
+      "sha256": "37bbdad1c5cd45df0ac88133be09ac16e16f6a15fad19cfb50acf43ea9bf2998",
+      "bytes": 8761,
+      "retention": "original user-local; not copied into repository",
+      "status": "secondary research; not accepted source data"
+    },
+    {
+      "report_number": 17,
+      "original_filename": "deep-research-report (17).md",
+      "sha256": "79d45676f872e109ace1fd7749601e15eb20d1d5aeb0619103ac8efa71a2ed43",
+      "bytes": 29567,
+      "retention": "original user-local; not copied into repository",
+      "status": "secondary research; not accepted source data"
+    }
+  ]
+}
