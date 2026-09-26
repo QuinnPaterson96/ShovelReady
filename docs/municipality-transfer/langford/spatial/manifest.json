@@ -1,0 +1,53 @@
+{
+  "schema_version": "sr44-capture.v1",
+  "artifacts": [
+    {
+      "file": "lone-oak-geocoder.json",
+      "url": "https://geocoder.api.gov.bc.ca/addresses.json?addressString=350+Lone+Oak+Pl%2C+Langford%2C+BC&maxResults=3&outputSRS=4326",
+      "captured_utc": "2026-09-26T00:04:26.096634+00:00",
+      "sha256": "710db3dc67dd4c6a4881ce9f799d127efebcd66a31e197f4926c6abee5bc2333",
+      "bytes": 3895,
+      "licence": "Open Government Licence - British Columbia; API response"
+    },
+    {
+      "file": "lone-oak-pmbc.json",
+      "url": "https://openmaps.gov.bc.ca/geo/pub/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=pub%3AWHSE_CADASTRE.PMBC_PARCEL_POLY_SV&count=20&outputFormat=application%2Fjson&bbox=-123.4893334%2C48.45897969999999%2C-123.4893134%2C48.4589997%2CEPSG%3A4326",
+      "captured_utc": "2026-09-26T00:04:26.329252+00:00",
+      "sha256": "c8bc94cce34031ef6daad653782529529aa84a908eacc4aa9f397925126fb939",
+      "bytes": 3649,
+      "licence": "Open Government Licence - British Columbia; ParcelMap BC Parcel Polygons"
+    },
+    {
+      "file": "jenkins-geocoder.json",
+      "url": "https://geocoder.api.gov.bc.ca/addresses.json?addressString=1100+Jenkins+Ave%2C+Langford%2C+BC&maxResults=3&outputSRS=4326",
+      "captured_utc": "2026-09-26T00:04:26.534035+00:00",
+      "sha256": "51b0a46109f717901087c0cde63e17458c011ba6d563951b95d5ac9142a3262b",
+      "bytes": 3414,
+      "licence": "Open Government Licence - British Columbia; API response"
+    },
+    {
+      "file": "jenkins-pmbc.json",
+      "url": "https://openmaps.gov.bc.ca/geo/pub/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=pub%3AWHSE_CADASTRE.PMBC_PARCEL_POLY_SV&count=20&outputFormat=application%2Fjson&bbox=-123.5227583%2C48.4419086%2C-123.5227383%2C48.441928600000004%2CEPSG%3A4326",
+      "captured_utc": "2026-09-26T00:04:26.764920+00:00",
+      "sha256": "4af8e3ec63eec44a95a539bc44ae33baf30a032d40f2543fc22be19b2683fa09",
+      "bytes": 5160,
+      "licence": "Open Government Licence - British Columbia; ParcelMap BC Parcel Polygons"
+    },
+    {
+      "file": "glen-lake-geocoder.json",
+      "url": "https://geocoder.api.gov.bc.ca/addresses.json?addressString=3016+Glen+Lake+Rd%2C+Langford%2C+BC&maxResults=3&outputSRS=4326",
+      "captured_utc": "2026-09-26T00:04:27.034588+00:00",
+      "sha256": "12d0ad2203e62eb2d0e132fda0c65a1aecd5285287361c0ffecf6c0419ebad87",
+      "bytes": 3691,
+      "licence": "Open Government Licence - British Columbia; API response"
+    },
+    {
+      "file": "glen-lake-pmbc.json",
+      "url": "https://openmaps.gov.bc.ca/geo/pub/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=pub%3AWHSE_CADASTRE.PMBC_PARCEL_POLY_SV&count=20&outputFormat=application%2Fjson&bbox=-123.523683%2C48.442038499999995%2C-123.523663%2C48.4420585%2CEPSG%3A4326",
+      "captured_utc": "2026-09-26T00:04:27.258093+00:00",
+      "sha256": "f844a6c5e46e6d5e780fea768c7386144d71eda3e1161a3de96da7c6a7c8060d",
+      "bytes": 8331,
+      "licence": "Open Government Licence - British Columbia; ParcelMap BC Parcel Polygons"
+    }
+  ]
+}
