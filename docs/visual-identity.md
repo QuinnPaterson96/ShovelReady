@@ -57,6 +57,14 @@ the site is buildable.
 
 ## Component use and review
 
+Use readable provenance in the default view: source/provider, record label, capture
+date, source link and review status. Put raw hashes and internal identifiers in
+labelled expandable technical details with complete copyable values. Provider
+enquiries use readable citations; full technical evidence is separately accessible.
+Preserve uncertainty and distinguish capture identity from source/design revision.
+See [quality checks](quality.md#readable-provenance); shortening a hash alone does
+not solve the readability problem.
+
 The home, input and summary pages use `assessment/assessment.css`. Investigation,
 evidence and draft views inherit `index.css`; the Pilot page uses its small scoped
 `pilot.css`. New pages should reuse these tokens and established controls before

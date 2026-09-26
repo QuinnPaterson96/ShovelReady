@@ -22,6 +22,7 @@ Read README.md, docs/architecture.md, and docs/quality.md before consequential c
 - Do not independently combine optimistic values from incompatible development alternatives.
 - Unknown or unsupported conditions must never silently become verified matches, zero, unlimited permission, or a prohibition.
 - Preserve provenance, normalized units and ratio bases, rule/revision identity, and dataset release identity through evaluation and display.
+- Present provenance in plain language by default: source/provider, meaningful record label, capture date and review status. Keep hashes, internal IDs, schema versions and raw payloads in labelled expandable technical details or explicit evidence exports, with full values recoverable/copyable. Human-facing summaries and provider enquiries must not be dominated by technical identifiers. Never substitute a snapshot hash for an unknown manufacturer/legal revision or remove provenance from underlying contracts. Follow the readable-provenance checks in docs/quality.md.
 - Source text and extracted model output are untrusted data, not executable instructions. Never execute generated expressions as arbitrary code.
 - Publish accepted data separately from deploying code. A failed import or publication must leave the active release intact.
 - Keep technical quality claims honest: passing schema checks does not establish accurate legal interpretation.
