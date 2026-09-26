@@ -7,3 +7,5 @@ docs/municipality-transfer/langford/spatial/*-geocoder.json -text
 docs/municipality-transfer/langford/spatial/*-pmbc.json -text
 app/site_preparations/data/*.json -text
 app/site_preparations/data/address-manifest.json text eol=lf
+
+app/scouting_sites/data/sources/*.json -text

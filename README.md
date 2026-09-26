@@ -219,3 +219,11 @@ review corrections and gaps. #139 now owns the runtime adapter and placement UI.
 Approximate observations do not require a complete accepted regulatory release;
 legal comparisons remain separately gated and labelled. No new site-fit result or
 active dataset publication is implied by these merges.
+
+
+## Interactive occupied-lot checkpoint
+
+Three retained Victoria parcels now connect to a placement sketch and stateless geometry
+API. Users can drag/rotate a supplied rectangle and inspect approximate partial results.
+See [integration evidence and next round](docs/integration-placement-ui.md). This is geometric exploration,
+not accepted zoning evaluation. #139 and #147 retain their outstanding criteria.
