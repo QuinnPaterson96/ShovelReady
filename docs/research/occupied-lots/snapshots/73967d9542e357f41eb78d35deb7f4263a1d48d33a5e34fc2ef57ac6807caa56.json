@@ -1,0 +1,100 @@
+{
+ "displayFieldName": "FullAddress",
+ "fieldAliases": {
+  "OBJECTID": "OBJECTID",
+  "FullAddress": "FullAddress",
+  "GISLINK": "GISLINK"
+ },
+ "geometryType": "esriGeometryPoint",
+ "spatialReference": {
+  "wkid": 3157,
+  "latestWkid": 3157
+ },
+ "fields": [
+  {
+   "name": "OBJECTID",
+   "type": "esriFieldTypeOID",
+   "alias": "OBJECTID"
+  },
+  {
+   "name": "FullAddress",
+   "type": "esriFieldTypeString",
+   "alias": "FullAddress",
+   "length": 200
+  },
+  {
+   "name": "GISLINK",
+   "type": "esriFieldTypeString",
+   "alias": "GISLINK",
+   "length": 16
+  }
+ ],
+ "features": [
+  {
+   "attributes": {
+    "OBJECTID": 9207,
+    "FullAddress": "209 COOK ST",
+    "GISLINK": "03229038"
+   },
+   "geometry": {
+    "x": 473590.86110000033,
+    "y": 5362210.9607999995
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 44195,
+    "FullAddress": "1-209 COOK ST",
+    "GISLINK": "03229038"
+   },
+   "geometry": {
+    "x": 473590.86110000033,
+    "y": 5362210.9607999995
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 44196,
+    "FullAddress": "2-209 COOK ST",
+    "GISLINK": "03229038"
+   },
+   "geometry": {
+    "x": 473590.86110000033,
+    "y": 5362210.9607999995
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 44197,
+    "FullAddress": "3-209 COOK ST",
+    "GISLINK": "03229038"
+   },
+   "geometry": {
+    "x": 473590.86110000033,
+    "y": 5362210.9607999995
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 44198,
+    "FullAddress": "4-209 COOK ST",
+    "GISLINK": "03229038"
+   },
+   "geometry": {
+    "x": 473590.86110000033,
+    "y": 5362210.9607999995
+   }
+  },
+  {
+   "attributes": {
+    "OBJECTID": 44199,
+    "FullAddress": "5-209 COOK ST",
+    "GISLINK": "03229038"
+   },
+   "geometry": {
+    "x": 473590.86110000033,
+    "y": 5362210.9607999995
+   }
+  }
+ ]
+}
