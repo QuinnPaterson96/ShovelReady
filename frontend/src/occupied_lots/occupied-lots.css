@@ -1,0 +1,6 @@
+.occupied-map { display: block; width: 100%; height: min(55vw, 460px); min-height: 290px; background: var(--map-canvas); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); touch-action: none; }
+.occupied-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: .5rem 1rem; }
+.occupied-fields input { width: 100%; min-height: 44px; padding: .5rem; color: var(--ink); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); }
+.occupied-lots textarea { display: block; width: 100%; max-width: 100%; padding: .7rem; color: var(--ink); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); overflow-wrap: anywhere; }
+.occupied-lots .technical-evidence textarea { font-family: ui-monospace, Consolas, monospace; }
+@media (max-width: 540px) { .occupied-map { height: 320px; } }
