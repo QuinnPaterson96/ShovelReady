@@ -13,6 +13,8 @@ status. The summary includes full retained source objects, baseline quantities,
 capture dates, revisions and source links. The four Victoria clauses are imported
 directly from the packet JSON to avoid a second hand-authored rule copy. They are
 shown as provisional evidence and never sent to the evaluator.
+The container frontend stage copies that packet JSON into the build context;
+the runtime image serves only the compiled assets and does not need the packet file.
 The summary offers a selectable, copyable provider-review text record with the
 scope, site/model selection, source identity, checked items and unresolved facts.
 It does not send anything to a provider.
