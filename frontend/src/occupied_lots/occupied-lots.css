@@ -1,6 +1,40 @@
-.occupied-map { display: block; width: 100%; height: min(55vw, 460px); min-height: 290px; background: var(--map-canvas); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); touch-action: none; }
-.occupied-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: .5rem 1rem; }
-.occupied-fields input { width: 100%; min-height: 44px; padding: .5rem; color: var(--ink); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); }
+.occupied-lots { max-width: none; }
+.occupied-intro { max-width: 65rem; font-size: 1.07rem; }
+.occupied-site-select { margin: 1.2rem 0; }
+.occupied-site-select label { margin-top: 0; }
+.occupied-site-select select { margin-bottom: 0; }
+.occupied-site-select .metadata { margin: .45rem 0; }
+.occupied-workspace { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(21rem, 1fr); gap: 1.25rem; align-items: start; }
+.occupied-workspace > *, .occupied-fields > * { min-width: 0; }
+.occupied-map-panel, .occupied-controls, .occupied-results { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-card); padding: 1rem; }
+.occupied-map-heading h3, .occupied-controls h3, .occupied-results h3 { margin: .2rem 0 .4rem; }
+.occupied-controls h3:not(:first-child) { margin-top: 1.5rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+.occupied-map { display: block; width: 100%; height: min(62vw, 650px); min-height: 370px; background: var(--map-canvas); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); touch-action: none; cursor: crosshair; }
+.occupied-roof-label { font-weight: 750; fill: var(--map-roof-stroke); stroke: var(--surface); stroke-width: .2px; paint-order: stroke; pointer-events: none; }
+.occupied-scale text { font-weight: 700; fill: var(--ink); stroke: var(--surface); stroke-width: .35px; paint-order: stroke; }
+.occupied-map-legend { display: flex; flex-wrap: wrap; gap: .35rem 1.25rem; font-size: .82rem; color: var(--ink-muted); }
+.occupied-map-actions { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .5rem; }
+.occupied-map-actions button { margin: 0; }
+.occupied-side { min-width: 0; }
+.occupied-controls label { margin-top: .8rem; }
+.occupied-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr)); gap: .5rem .85rem; }
+.occupied-fields input, .occupied-controls > input { width: 100%; min-height: 44px; padding: .5rem; color: var(--ink); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); }
+.occupied-fields small { display: block; color: var(--ink-muted); margin-top: .3rem; line-height: 1.35; }
+.occupied-controls select { margin: .35rem 0 .7rem; }
+.occupied-nudge > label { display: inline-block; margin: 0 .5rem 0 0; }
+.occupied-nudge > select { width: auto; min-width: 7rem; }
+.occupied-direction { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .25rem; }
+.occupied-direction button { margin: 0; padding: .45rem .2rem; }
+.occupied-direction button:first-child { grid-column: 2; }
+.occupied-direction button:nth-child(2) { grid-column: 1; }
+.occupied-direction button:nth-child(3) { grid-column: 3; }
+.occupied-direction button:last-child { grid-column: 2; }
+.occupied-controls details { margin-top: 1rem; }
+.occupied-results { margin-top: 1rem; border-left: 5px solid var(--copper); }
+.occupied-results h4 { margin-top: 1.15rem; }
+.occupied-results ul { padding-left: 1.35rem; }
 .occupied-lots textarea { display: block; width: 100%; max-width: 100%; padding: .7rem; color: var(--ink); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); overflow-wrap: anywhere; }
 .occupied-lots .technical-evidence textarea { font-family: ui-monospace, Consolas, monospace; }
-@media (max-width: 540px) { .occupied-map { height: 320px; } }
+.occupied-handoff-slot:empty { display: none; }
+@media (max-width: 850px) { .occupied-workspace { grid-template-columns: 1fr; } .occupied-map { height: 55vw; min-height: 320px; } }
+@media (max-width: 540px) { .occupied-map { height: 340px; } .occupied-map-panel, .occupied-controls, .occupied-results { padding: .75rem; } }
