@@ -1,0 +1,7 @@
+.scenario-handoff { border: 1px solid var(--border); border-radius: var(--radius-card); background: var(--surface); padding: 1rem; margin-block: 1rem; }
+.scenario-handoff h3, .scenario-handoff h4 { margin-block: .35rem .65rem; }
+.scenario-handoff button { min-height: 44px; padding: .5rem .8rem; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); color: var(--ink); background: var(--surface); cursor: pointer; }
+.scenario-handoff button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.scenario-handoff textarea { display: block; box-sizing: border-box; width: 100%; max-width: 100%; padding: .7rem; color: var(--ink); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); overflow-wrap: anywhere; }
+.scenario-handoff .technical-evidence textarea { font-family: ui-monospace, Consolas, monospace; }
+.scenario-handoff-notice { border-left: 5px solid var(--border-strong); background: var(--surface-subtle); padding: .75rem; }
