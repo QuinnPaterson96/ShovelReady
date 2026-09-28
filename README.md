@@ -15,6 +15,14 @@ journey is planned; the implementation history below records what is already ava
 
 ## Status
 
+The [builder-demo foundation integration](docs/integration-builder-demo-foundation.md)
+connects the map workspace to local scenario export and an unsent provider enquiry.
+A supplied nominal Model 300 placement on one retained Victoria parcel has been
+measured without captured overlap; this is approximate geometry, not accepted zoning
+compatibility. The [next wave](docs/backlog/builder-demo-wave.md) builds the company
+entry flow, manual site fallback and fresh-user validation. Older checkpoints below
+retain their dated implementation history.
+
 The FastAPI and React/TypeScript/Vite foundation, immutable PostgreSQL persistence,
 typed pilot intake, offline extraction replay, licensed spatial import, draft scalar
 evaluator and read-only spatial investigation API/UI are implemented. A persistent

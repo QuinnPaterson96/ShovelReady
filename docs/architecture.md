@@ -17,6 +17,11 @@ fallbacks retain distinct provenance. Useful approximate geometry can be shown b
 regulatory publication; it must not be presented as zoning compatibility. One company
 does not justify a tenant platform, a new service or a separate rules engine.
 
+The [foundation integration](integration-builder-demo-foundation.md) now connects map
+placement and local handoff. Company entry and explicit manual site geometry remain
+the [next implementation wave](backlog/builder-demo-wave.md); their integration must
+preserve the distinction between captured GIS coordinates and user-supplied local sketches.
+
 ## Boundaries
 
 ```text
