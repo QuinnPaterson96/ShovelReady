@@ -3,6 +3,7 @@
 import math
 
 from pyproj import CRS
+from pyproj.exceptions import CRSError
 from shapely import affinity
 from shapely.geometry import Polygon, mapping, shape
 from shapely.validation import explain_validity
@@ -53,9 +54,13 @@ def _placement(placement):
 
 
 def _crs_reason(crs_text):
+    # A measured user sketch has metre axes but no geographic location. Keep
+    # this one engineering frame distinct from all projected map coordinates.
+    if crs_text == "LOCAL:METRE":
+        return None
     try:
         crs = CRS.from_user_input(crs_text)
-    except (TypeError, ValueError):
+    except (TypeError, ValueError, CRSError):
         return "invalid_crs"
     if (
         not crs.is_projected
@@ -304,6 +309,11 @@ def assess(request: Request) -> Assessment:
         "Building distances use each supplied polygon basis; a roofline is not a wall.",
         "Unmapped obstructions and positional error are not measured.",
     ]
+    if request.projected_metre_crs == "LOCAL:METRE":
+        limitations.append(
+            "Local metre sketch has no geolocation, surveyed orientation or verified "
+            "parcel boundary."
+        )
     if request.capture.completeness != "complete_for_declared_scope":
         limitations.append(
             "Building capture is incomplete or unknown; no-overlap is not verified clear space."

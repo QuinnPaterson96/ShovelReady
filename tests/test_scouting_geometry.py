@@ -204,6 +204,69 @@ def test_geographic_crs_is_invalid_for_planar_measurement():
     assert found["nearest_building"].status == "invalid"
 
 
+def test_explicit_local_metre_frame_measures_without_geolocation():
+    """The 20×30 sketch and 2×4 placement have 9 m to the nearest edge."""
+    from fastapi.testclient import TestClient
+
+    from app.main import create_app
+
+    local = fixture(
+        projected_metre_crs="LOCAL:METRE",
+        parcel=feature(
+            "manual-parcel",
+            polygon([[0, 0], [20, 0], [20, 30], [0, 30], [0, 0]]),
+            crs="LOCAL:METRE",
+        ),
+        buildings=[],
+        capture={"completeness": "unknown", "scope": "user-entered structures only"},
+        placement={"id": "manual", "centre_xy": [10, 15], "width_m": 2, "depth_m": 4},
+        requirements=[],
+    )
+    response = TestClient(create_app()).post(
+        "/api/scouting-geometry/assess", json=local.model_dump(mode="json")
+    )
+    assert response.status_code == 200
+    result = response.json()
+    checks_by_id = {item["id"]: item for item in result["checks"]}
+    assert result["input"]["projected_metre_crs"] == "LOCAL:METRE"
+    assert checks_by_id["containment"]["relation"] == "contained"
+    assert checks_by_id["parcel_boundary"]["distance_m"] == pytest.approx(9)
+    assert checks_by_id["nearest_building"]["status"] == "missing"
+    assert any("not verified clear space" in text for text in result["limitations"])
+    assert any("no geolocation" in text for text in result["limitations"])
+
+    with_structure = local.model_dump(mode="json")
+    with_structure["buildings"] = [
+        feature(
+            "manual-house",
+            polygon([[15, 10], [17, 10], [17, 12], [15, 12], [15, 10]]),
+            crs="LOCAL:METRE",
+            basis="unknown",
+        )
+    ]
+    with_structure["capture"]["completeness"] = "partial"
+    measured = TestClient(create_app()).post(
+        "/api/scouting-geometry/assess", json=with_structure
+    ).json()
+    measured_checks = {item["id"]: item for item in measured["checks"]}
+    # Footprint x=9..11, y=13..17; structure x=15..17, y=10..12.
+    assert measured_checks["building:manual-house:distance"]["distance_m"] == pytest.approx(
+        math.sqrt(17)
+    )
+    assert measured_checks["building:manual-house:overlap"]["area_m2"] == 0
+    assert any("not verified clear space" in text for text in measured["limitations"])
+
+    mixed = local.model_dump(mode="json")
+    mixed["parcel"]["shape"]["crs"] = "EPSG:3157"
+    mismatch = TestClient(create_app()).post("/api/scouting-geometry/assess", json=mixed)
+    assert mismatch.json()["checks"][0]["reason"] == "geometry_crs_mismatch"
+    unknown = local.model_dump(mode="json")
+    unknown["projected_metre_crs"] = "LOCAL:FEET"
+    unknown["parcel"]["shape"]["crs"] = "LOCAL:FEET"
+    rejected = TestClient(create_app()).post("/api/scouting-geometry/assess", json=unknown)
+    assert rejected.json()["checks"][0]["reason"] == "invalid_crs"
+
+
 @pytest.mark.parametrize("value", [True, "2"])
 @pytest.mark.parametrize("field", ["width_m", "depth_m", "angle_degrees", "minimum_m", "centre_xy"])
 def test_numeric_boundary_rejects_boolean_and_text(value, field):
