@@ -16,6 +16,8 @@ import './case_preparations/pilot.css'
 
 export default function App() {
   const [page, setPage] = useState<'home' | 'inputs' | 'summary' | 'evidence' | 'pilot' | 'occupied'>('home')
+  const [occupiedOpened, setOccupiedOpened] = useState(false)
+  const openOccupied = () => { setOccupiedOpened(true); setPage('occupied') }
   const [draft, dispatch] = useReducer(draftReducer, initialDraft)
   const content = useRef<HTMLDivElement>(null)
   const [mode, setMode] = useState('real')
@@ -62,7 +64,7 @@ export default function App() {
           <button aria-current={page === 'home' ? 'page' : undefined} onClick={() => setPage('home')}>Home</button>
           <button aria-current={page === 'inputs' ? 'page' : undefined} onClick={() => setPage('inputs')}>Assessment inputs</button>
           <button aria-current={page === 'summary' ? 'page' : undefined} onClick={() => setPage('summary')}>Preparation summary</button>
-          <button aria-current={page === 'occupied' ? 'page' : undefined} onClick={() => setPage('occupied')}>Occupied-lot sketch</button>
+          <button aria-current={page === 'occupied' ? 'page' : undefined} onClick={openOccupied}>Occupied-lot sketch</button>
           <button aria-current={page === 'evidence' ? 'page' : undefined} onClick={() => setPage('evidence')}>Examples/evidence</button>
           <button aria-current={page === 'pilot' ? 'page' : undefined} onClick={() => setPage('pilot')}>Pilot investigation</button>
         </nav>
@@ -74,7 +76,7 @@ export default function App() {
         <p>Collect what you know about a building and its intended use. See which evidence is still needed before preliminary zoning scouting.</p>
         <p>We are exploring City of Victoria garden suites first. There is no accepted zoning dataset or real-site fit result yet. A preparation summary is not a feasibility assessment or permit approval.</p>
         <div className="sr-actions"><button className="sr-primary" onClick={() => setPage('inputs')}>Start an assessment</button>
-          <button onClick={() => setPage('occupied')}>Sketch a placement</button>
+          <button onClick={openOccupied}>Sketch a placement</button>
           <button onClick={() => setPage('evidence')}>Explore examples</button></div>
         <p>Begin with your own inputs, or explicitly load a labelled synthetic example. Unknown facts can stay unknown.</p>
       </section>}
@@ -82,7 +84,7 @@ export default function App() {
         onSummary={() => { if (!Object.keys(submissionErrors(draft)).length) setPage('summary') }}
         onEvidence={() => setPage('pilot')} />}
       {page === 'summary' && <PreparationSummary draft={draft} onEdit={() => setPage('inputs')} />}
-      {page === 'occupied' && <OccupiedLots />}
+      {occupiedOpened && <div hidden={page !== 'occupied'}><OccupiedLots /></div>}
       {page === 'pilot' && <PilotPreparation />}
       {page === 'evidence' && <>
       <section><h2>Examples and evidence</h2><p>Explore saved observations and software examples separately from your editable preparation. These views never evaluate your form values.</p>

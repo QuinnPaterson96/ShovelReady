@@ -1,5 +1,12 @@
 # MVP backlog
 
+Current direction (September 27): independent aux box Model 300 builder-website POC.
+See [builder task wave](builder-demo-wave.md) for #159/#160 and #147 ownership,
+dependencies and prompts. This supersedes The Landing as the first demo model;
+older planning checkpoints below remain historical. #139 stays open for manual-site
+fallback and #147 for remaining validation.
+
+
 Planning baseline: September 18, 2026; post-merge checkpoint: September 24, 2026. PRs #20, #21 and #19 merged the scaffold/CI, provisional contracts and raw pilot evidence; PRs #24-#26 added typed intake, persistence and the synthetic investigation preview; PRs #28/#29 added offline extraction replay and licensed spatial import. PRs #31-#33 added the draft scalar evaluator, persistent local database and real-observation API/UI. There is still no accepted real-site source-to-screening path, accepted dataset or cloud deployment.
 
 GitHub issues are the execution/status source of truth once published. These Markdown files preserve specifications and dated implementation handoffs; update both when scope changes. Dated checkpoints are not a second live status board. SR identifiers remain stable independently of GitHub issue numbers.
