@@ -10,6 +10,11 @@ change catalogue acceptance, publish zoning data or establish a customer relatio
 Code baseline inspected: main `1d0e199`. Earlier broad scouting and data-platform
 ideas remain possible future consumers of the same data system.
 
+Implementation follow-up: the [foundation integration](integration-builder-demo-foundation.md)
+records a measured nominal Model 300 candidate placement and mounts the map/enquiry
+components. That supersedes the unverified candidate-placement status below; company
+entry, manual fallback and accepted zoning results remain outstanding.
+
 ## Customer, job and commercial hypothesis
 
 The paying customer is a builder or prefab manufacturer with an existing website.
