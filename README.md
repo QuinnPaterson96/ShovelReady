@@ -2,7 +2,16 @@
 
 ShovelReady explores a practical question: **given a prefabricated building design, where could it plausibly be built?**
 
-The initial product is preliminary zoning scouting across municipalities, followed by source-backed investigation of selected zones or parcels. It does not determine legal compliance or guarantee permit approval.
+The current commercial POC is a screening journey for a prefab builder's website:
+help a visitor explore a model on their property and prepare a useful enquiry. The
+reference company is **aux box**, starting with **Model 300** and a bounded City of
+Victoria demonstration. See the [builder screening brief](docs/builder-screening-demo.md)
+for the choice, sourced constraints, acceptance cases and implementation sequence.
+This is an independent demonstration, not a commissioned aux box product.
+
+The underlying data system supports preliminary scouting and source-backed investigation.
+It does not determine legal compliance or guarantee permit approval. The company-specific
+journey is planned; the implementation history below records what is already available.
 
 ## Status
 
