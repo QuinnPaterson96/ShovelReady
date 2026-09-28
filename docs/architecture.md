@@ -2,6 +2,21 @@
 
 Status: agreed direction for experimentation, updated September 24, 2026. Foundation, contracts, draft persistence, licensed spatial import, offline extraction replay, draft scalar evaluator, observation API/UI and persistent local database tooling are implemented; accepted real-site evaluation/publication and deployment remain future work. See the [latest integration review](integration-review-2026-09-24.md), [restart assessment](restart-assessment.md) and [original handoff](prior-work/design-decisions.md) for evidence and earlier reasoning.
 
+## Current POC direction (September 27, 2026)
+
+The [builder website screening brief](builder-screening-demo.md) now sets the near-term
+consumer of this architecture: an independent aux box Model 300 demonstration in the
+City of Victoria, leading from model selection through supplied placement to an unsent
+enquiry summary. It supersedes The Landing as the first demo design candidate below.
+This is product scope, not an implemented integration or accepted regulatory result.
+
+Reuse the existing catalogue, placement API and evidence boundaries. Keep the reference
+company's model allow-list, presentation, stated coverage and eventual enquiry routing
+as configuration outside measurement and rule evaluation. API-populated facts and manual
+fallbacks retain distinct provenance. Useful approximate geometry can be shown before
+regulatory publication; it must not be presented as zoning compatibility. One company
+does not justify a tenant platform, a new service or a separate rules engine.
+
 ## Boundaries
 
 ```text
