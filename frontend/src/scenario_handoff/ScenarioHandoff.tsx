@@ -39,13 +39,26 @@ function checkDescription(check: Check, site: Case, assessment: Result) {
     case 'building_distance': return `Distance to ${roofLabel}: ${metres(check.distance_m)}.`
     case 'named_boundary_distance': return `Distance to captured named boundary: ${metres(check.distance_m)}.`
     case 'requirement': {
-      const target = check.id.includes('parcel') ? 'parcel boundary' : 'nearest captured building outline'
-      const outcome = check.comparison === 'meets' ? 'meets' : check.comparison === 'shortfall' ? 'falls short of' : 'has unresolved comparison with'
       const input = record(assessment.input)
       const requirement = (Array.isArray(input?.requirements) ? input.requirements : []).map(record)
-        .find(item => item?.id === check.id.replace(/^requirement:/, ''))
+        .find(item => item?.id === (label(record(check)?.requirement_id) ?? check.id.replace(/^requirement:/, '')))
+      const feature = requirement?.target === 'building' ? site.site.buildings.find(item => item.id === requirement.target_id)
+        : requirement?.target === 'named_boundary' ? site.site.named_boundaries.find(item => item.id === requirement.target_id) : null
+      const target = requirement?.target === 'parcel_boundary' ? 'captured parcel boundary'
+        : requirement?.target === 'nearest_building' ? 'nearest captured building outline'
+          : requirement?.target === 'building' ? `captured building outline ${feature?.source.record_label ?? '(record unknown)'}`
+            : requirement?.target === 'named_boundary' ? `captured named boundary ${feature?.source.record_label ?? '(record unknown)'}`
+              : 'unidentified target'
+      const status = label(requirement?.status) ?? label(record(check)?.requirement_status)
+      const provenance = status === 'user_assumption' ? 'User-assumed' : status === 'source_reviewed' ? 'Source-backed, reviewed' :
+        status === 'source_unreviewed' ? 'Source-backed, unreviewed' : 'Unattributed'
       const minimum = typeof requirement?.minimum_m === 'number' ? metres(requirement.minimum_m) : 'value unavailable'
-      return `User-assumed minimum to ${target} (${minimum}): measured distance ${outcome} the entered assumption${check.margin_m === null ? '' : ` by ${metres(Math.abs(check.margin_m))}`}. This is not a legal threshold.`
+      const source = record(requirement?.source)
+      const sourceLabel = source ? ` Source: ${label(source.provider) ?? 'provider unknown'}; ${label(source.record_label) ?? 'record unknown'}; captured ${readableDate(label(source.capture_date))}; ${label(source.review_status) ?? 'review status unknown'}.` : ''
+      if (check.status !== 'compared' || !check.comparison)
+        return `${provenance} minimum to ${target} (${minimum}): comparison unresolved (${check.status}${check.reason ? `; ${check.reason.replace(/_/g, ' ')}` : ''}).${sourceLabel}`
+      const outcome = check.comparison === 'meets' ? 'meets' : 'falls short of'
+      return `${provenance} minimum to ${target} (${minimum}): measured distance ${outcome} this minimum${check.margin_m === null ? '' : ` by ${metres(Math.abs(check.margin_m))}`}.${status === 'user_assumption' ? ' This is not a legal threshold.' : ' Legal applicability requires separate review.'}${sourceLabel}`
     }
     default: return `${check.kind.replace(/_/g, ' ')}: ${check.reason ?? check.relation?.replace(/_/g, ' ') ?? check.status}.`
   }
@@ -65,7 +78,9 @@ function isCurrentSite(site: Case, assessment: Result) {
   return assessment.input.parcel.id === site.site.parcel.id &&
     assessment.input.projected_metre_crs === site.site.projected_metre_crs &&
     JSON.stringify(assessment.input.parcel) === JSON.stringify(site.site.parcel) &&
-    JSON.stringify(record(assessment.input)?.buildings) === JSON.stringify(site.site.buildings)
+    JSON.stringify(record(assessment.input)?.buildings) === JSON.stringify(site.site.buildings) &&
+    JSON.stringify(record(assessment.input)?.named_boundaries) === JSON.stringify(site.site.named_boundaries) &&
+    JSON.stringify(record(assessment.input)?.capture) === JSON.stringify(site.site.capture)
 }
 
 export function providerEnquiry({ site, model, assessment }: ScenarioHandoffProps) {
@@ -80,6 +95,7 @@ export function providerEnquiry({ site, model, assessment }: ScenarioHandoffProp
     'UNSENT DRAFT — provider enquiry for preliminary investigation',
     `Property/example: ${site.label}. This is a retained scouting example; property identity and legal boundaries require confirmation.`,
     modelDescription(model, p),
+    ...(label(data?.service_area_status) || label(data?.service_area_note) ? [`Provider service coverage in captured catalogue: ${label(data?.service_area_status)?.replace(/_/g, ' ') ?? 'status unknown'}; ${label(data?.service_area_note) ?? 'details not supplied'}. Confirm current coverage with the provider.`] : []),
     `Submitted nominal footprint: ${metres(p.width_m)} wide × ${metres(p.depth_m)} deep; centre (${p.centre_xy[0]}, ${p.centre_xy[1]}) in ${assessment.input.projected_metre_crs}; rotation ${p.angle_degrees}°.`,
     `Site source: ${source.provider}; ${source.record_label}; captured ${readableDate(source.capture_date)}; ${source.review_status}. Capture scope: ${site.site.capture.scope}; completeness ${site.site.capture.completeness.replace(/_/g, ' ')}.`,
     ...(modelSource ? [`Design source: ${label(modelSource.locator) ?? 'record label unknown'}; captured ${readableDate(label(modelSource.captured_at))}; ${label(data?.review_status) ?? 'review status unknown'}.`] : ['Design source: capture date and record label unconfirmed.']),

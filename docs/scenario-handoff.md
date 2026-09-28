@@ -18,7 +18,10 @@ compared with submitted dimensions only when the supplied model has a usable
 nominal width and depth. Matching values cannot prove that no edit occurred;
 the draft says so. Raw technical IDs remain recoverable in the JSON disclosure
 and file, while the draft uses readable citations and links without query
-strings.
+strings. Captured provider service-area restrictions remain visible in the draft.
+Requirement comparisons use their actual target and attribution; unresolved
+comparisons are identified as such. Source-backed requirements retain their
+source and review status, and their legal applicability remains separately gated.
 
 ## Mounting after UI integration
 
@@ -35,7 +38,8 @@ import './scenario_handoff/scenario-handoff.css'
 Render only when `selected` is a current `Case`. The host must set `result` to
 `null` on **every** site, model, placement or assumption change and on request
 failure; it must accept a response only for the submitted inputs. The component
-also refuses a missing assessment or a mismatched parcel/building capture.
+also refuses a missing assessment or a mismatched parcel, building, named-boundary
+or capture record.
 With only these three public props it cannot independently detect a stale
 assessment after a model or placement edit. The current `OccupiedLots` state
 already invalidates those edits, but mounting and composed browser verification
@@ -48,12 +52,15 @@ remain integration work. Do not pass a cached earlier result.
   user assumption. Its approximately 1.03 m parcel-boundary distance is an
   engine observation, not independently surveyed truth.
 - The frontend test checks lossless site/model/assessment export, readable
-  assumption and roofline wording, no raw identifiers in copied text, and
-  refusal of missing or mismatched assessments. Frontend tests, typecheck and
-  build pass. The existing Vite main-chunk advisory remains.
-- This branch is not mounted in the app. Browser download, clipboard, keyboard
-  traversal and narrow-screen appearance remain unverified in a composed UI.
-  The coordinator should mount and exercise those before claiming demo usability.
+  assumption and roofline wording, service restrictions, source-backed and
+  named-boundary attribution, unresolved comparisons, no raw identifiers in
+  copied text, and refusal of missing or mismatched assessments. Frontend tests,
+  typecheck and build passed in the integration checkout after these changes.
+  The existing Vite main-chunk advisory remains.
+- The standalone PR branch was not mounted in the app. The integration checkout
+  mounts the component in `OccupiedLots`; browser download, clipboard, keyboard
+  traversal and narrow-screen appearance still need a composed UI check before
+  claiming demo usability.
 - Legal parcel lines, walls and building roles, current rules, controlled
   provider dimensions and installation/service commitments remain unreviewed.
   An accepted real evaluation still needs those artifacts and source review;

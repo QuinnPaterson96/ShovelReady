@@ -29,6 +29,8 @@ test('retained placement stays complete in JSON and readable in an unsent enquir
   assert.match(draft, /falls short/)
   assert.match(draft, /captured roofline 1/)
   assert.match(draft, /controlled drawing/)
+  assert.match(draft, /excluded by provider/)
+  assert.match(draft, /Sunshine Coast/)
   assert.doesNotMatch(draft, /sha256|snapshot_id|new-87-parcel:87|\?f=pjson/)
   assert.match(JSON.stringify(scenario), /new-87-parcel:87/)
   const html = renderToStaticMarkup(<ScenarioHandoff {...props} />)
@@ -42,7 +44,45 @@ test('missing or mismatched site measurement cannot produce either export', () =
   const altered = { ...site, site: { ...site.site, parcel: { ...site.site.parcel, id: 'another-parcel' } } }
   assert.equal(scenarioRecord({ site: altered, model, assessment }), null)
   assert.equal(providerEnquiry({ site: altered, model, assessment }), null)
+  const changedCapture = { ...site, site: { ...site.site, capture: { ...site.site.capture, scope: 'new capture scope' } } }
+  assert.equal(scenarioRecord({ site: changedCapture, model, assessment }), null)
+  const changedBoundaries = { ...site, site: { ...site.site, named_boundaries: [site.site.parcel] } }
+  assert.equal(scenarioRecord({ site: changedBoundaries, model, assessment }), null)
+  assert.equal(providerEnquiry({ site: changedBoundaries, model, assessment }), null)
   const html = renderToStaticMarkup(<ScenarioHandoff site={site} model={model} assessment={null} />)
   assert.match(html, /Measure the current site/)
   assert.doesNotMatch(html, /Download scenario JSON/)
+})
+
+test('source-backed and specific-target comparisons retain their attribution', () => {
+  const building = site.site.buildings[0]
+  const sourceRequirement = {
+    id: 'reviewed-building-clearance', target: 'building', target_id: building.id,
+    minimum_m: 2, status: 'source_reviewed', source: {
+      provider: 'Example municipality', record_label: 'Reviewed clause 4', capture_date: '2026-09-20', review_status: 'reviewed', reference: null,
+    },
+  }
+  const sourceCheck = {
+    ...assessment.checks.find(check => check.kind === 'requirement')!,
+    id: `requirement:${sourceRequirement.id}`, requirement_id: sourceRequirement.id,
+    requirement_status: sourceRequirement.status, comparison: 'shortfall', status: 'compared', margin_m: -0.5,
+  }
+  const withSource = parseResult({ ...assessment,
+    input: { ...assessment.input, requirements: [sourceRequirement] },
+    checks: [sourceCheck],
+  })
+  const draft = providerEnquiry({ site, model, assessment: withSource })
+  assert.ok(draft)
+  assert.match(draft, /Source-backed, reviewed minimum to captured building outline Mapped roofline 69542/)
+  assert.match(draft, /Example municipality; Reviewed clause 4; captured 2026-09-20; reviewed/)
+  assert.doesNotMatch(draft, /User-assumed minimum|entered assumption|not a legal threshold/)
+  const unresolved = parseResult({ ...withSource, checks: [{ ...sourceCheck, status: 'missing', comparison: null, reason: 'target_not_supplied', margin_m: null }] })
+  assert.match(providerEnquiry({ site, model, assessment: unresolved })!, /comparison unresolved \(missing; target not supplied\)/)
+  const boundary = { ...site.site.parcel, id: 'named-east-line', source: { ...site.site.parcel.source, record_label: 'East line survey lead' } }
+  const namedSite = { ...site, site: { ...site.site, named_boundaries: [boundary] } }
+  const namedAssessment = parseResult({ ...withSource,
+    input: { ...withSource.input, named_boundaries: [boundary], requirements: [{ ...sourceRequirement, target: 'named_boundary', target_id: boundary.id }] },
+    checks: [{ ...sourceCheck, source_feature_ids: [boundary.id] }],
+  })
+  assert.match(providerEnquiry({ site: namedSite, model, assessment: namedAssessment })!, /captured named boundary East line survey lead/)
 })

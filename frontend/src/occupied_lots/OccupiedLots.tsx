@@ -2,7 +2,10 @@ import { useEffect, useRef, useState } from 'react'
 import { bundledCatalogue } from '../model_catalogue/model'
 import { CopyableRecord, publicSourceUrl, readableDate, TechnicalDetails } from '../ReadableProvenance'
 import { parseResult, parseSites, path, points } from './contract'
+import { overlapFinding } from './observations'
 import type { Case, Check, Result } from './contract'
+import ScenarioHandoff from '../scenario_handoff/ScenarioHandoff'
+import '../scenario_handoff/scenario-handoff.css'
 import './occupied-lots.css'
 
 type Placement = { x: string; y: string; width: string; depth: string; angle: string }
@@ -181,15 +184,15 @@ export default function OccupiedLots() {
     finally { clearTimeout(timer); if (version.current === requestVersion) setAssessing(false) }
   }
   const source = selected?.site.parcel.source
-  const observedConflicts = result?.checks.filter(c => c.status === 'observed' &&
-    (c.kind === 'containment' && c.relation !== 'contained' || c.kind === 'building_overlap' && c.relation !== 'separate')) ?? []
+  const overlap = result && selected ? overlapFinding(selected, result) : null
+  const observedConflicts = overlap?.conflicts ?? []
   const clearances = result?.checks.filter(c => c.status === 'observed' && ['parcel_boundary_distance', 'nearest_building_distance', 'building_distance', 'named_boundary_distance'].includes(c.kind)) ?? []
   const comparisons = result?.checks.filter(c => c.kind === 'requirement') ?? []
   const otherChecks = result?.checks.filter(c => !['containment', 'building_overlap', 'parcel_boundary_distance', 'nearest_building_distance', 'building_distance', 'named_boundary_distance', 'requirement'].includes(c.kind) || c.status !== 'observed' && c.kind !== 'requirement') ?? []
-  const observationIncomplete = otherChecks.length > 0
+  const observationIncomplete = otherChecks.length > 0 || overlap?.complete === false
   const summary = result && selected ? [
     `Site: ${selected.label} (${selected.case_id}). City of Victoria captured parcel and roofline observations; ${source?.review_status}; captured ${readableDate(source?.capture_date)}.`,
-    `Nominal rectangle: ${width} m wide (${dimensionOrigin('width')}) × ${depth} m deep (${dimensionOrigin('depth')}); centre ${x}, ${y} in ${selected.site.projected_metre_crs}; rotation ${angle}°. ${model ? `${model.provider} ${model.name}, unreviewed provider lead.` : 'Dimensions supplied manually by user.'}`,
+    `Nominal rectangle: ${width} m wide (${dimensionOrigin('width')}) × ${depth} m deep (${dimensionOrigin('depth')}); centre ${x}, ${y} in ${selected.site.projected_metre_crs}; rotation ${angle}°. ${model ? `${model.provider} ${model.name}, unreviewed provider lead; provider measurements captured ${readableDate(model.sources[0]?.captured_at)}; source ${model.provider_url}; manufacturer revision ${model.source_revision ?? 'not supplied'}. ${model.service_area_note} ${model.footprint_note}` : 'Dimensions supplied manually by user.'}`,
     `Observed conflicts: ${observedConflicts.length ? observedConflicts.map(check => checkText(check, selected)).join('; ') : observationIncomplete ? 'Some measurements are unresolved; no clear-space conclusion.' : 'No parcel crossing or captured roofline overlap observed at this position; clear space is not established.'}`,
     `Measured clearances: ${clearances.map(check => checkText(check, selected)).join('; ')}`,
     ...comparisons.map(check => `${check.id.includes('parcel') ? 'Parcel boundary' : 'Nearest captured roofline'}: your entered minimum ${show(check.id.includes('parcel') ? parcelMinimum : buildingMinimum)}; measured ${show(check.distance_m)}; ${check.comparison ?? check.status}. This is a user assumption, not a legal threshold.`),
@@ -219,7 +222,7 @@ export default function OccupiedLots() {
             <h3>1 · Set the nominal footprint</h3>
             <label htmlFor="occupied-model">Prefab model or manual dimensions</label><select id="occupied-model" value={modelId} onChange={e => chooseModel(e.target.value)}>
               <option value="">Manual nominal footprint</option>{bundledCatalogue.models.map(m => <option key={m.model_id} value={m.model_id}>{m.provider} · {m.name}</option>)}</select>
-            {model && <p className="metadata">{model.provider} · {model.name} · provider measurements captured {readableDate(model.sources[0]?.captured_at)} · unreviewed. <a href={model.provider_url} target="_blank" rel="noreferrer">Provider model page</a>. Manufacturer revision {model.source_revision ?? 'not supplied'}.</p>}
+            {model && <p className="metadata">{model.provider} · {model.name} · provider measurements captured {readableDate(model.sources[0]?.captured_at)} · unreviewed. <a href={model.provider_url} target="_blank" rel="noreferrer">Provider model page</a>. Manufacturer revision {model.source_revision ?? 'not supplied'}. {model.service_area_note} {model.footprint_note}</p>}
             <div className="occupied-fields">{(['width', 'depth'] as const).map(key => <div key={key}>
               <label htmlFor={`occupied-${key}`}>Nominal exterior {key} (m)</label>
               <input id={`occupied-${key}`} type="number" step="any" value={placement[key]} onChange={e => { setDimensionOrigins(p => ({ ...p, [key]: 'user' })); changePlacement({ [key]: e.target.value }) }} />
@@ -261,10 +264,9 @@ export default function OccupiedLots() {
             <h4>Remaining questions</h4><ul><li>Are legal parcel lines and current siting rules different from this capture?</li><li>Where are the walls, principal building and other unmapped obstructions?</li><li>Are the provider footprint and installed clearances confirmed for this configuration?</li></ul>
             <p className="metadata">Capture: {selected.site.capture.scope}; {selected.site.capture.completeness.replace(/_/g, ' ')}. {selected.site.capture.limitations.join(' ')}</p>
             <CopyableRecord id="occupied-summary" label="Copyable plain-language summary" value={summary} />
-            {/* The ScenarioHandoff panel mounts here after #153 merges. Pass selected (Case), model (catalogue object or undefined), and result (Result). */}
-            <div className="occupied-handoff-slot" />
             <TechnicalDetails title="Exact sources, IDs, placement and assessment · copyable"><textarea readOnly aria-label="Complete geometry evidence record" value={JSON.stringify({ site: selected, model, assessment: result }, null, 2)} rows={14} /></TechnicalDetails>
           </section>}
+          <ScenarioHandoff site={selected} model={model ?? null} assessment={result} />
         </div>
       </div>
       <TechnicalDetails title="Captured site source and exact identifiers"><pre>{JSON.stringify(selected, null, 2)}</pre></TechnicalDetails>
