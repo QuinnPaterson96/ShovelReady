@@ -5,8 +5,6 @@ import { parseResult, parseSites, path, points } from './contract'
 import { overlapFinding } from './observations'
 import type { Case, Check, Result } from './contract'
 import ScenarioHandoff from '../scenario_handoff/ScenarioHandoff'
-import '../scenario_handoff/scenario-handoff.css'
-import './occupied-lots.css'
 
 type Placement = { x: string; y: string; width: string; depth: string; angle: string }
 const number = (value: string) => value.trim() !== '' && Number.isFinite(Number(value)) ? Number(value) : null
@@ -83,15 +81,28 @@ function Map({ selected, placement, onMove, nudgeMetres }: { selected: Case; pla
   </div>
 }
 
-export default function OccupiedLots() {
+export type OccupiedMeasurement = { site: Case; model: (typeof bundledCatalogue.models)[number] | null; result: Result; widthOrigin: 'catalogue' | 'user'; depthOrigin: 'catalogue' | 'user' }
+export type OccupiedLotsProps = {
+  allowedModelIds?: readonly string[]
+  initialModelId?: string
+  onMeasurement?: (measurement: OccupiedMeasurement | null) => void
+  showHandoff?: boolean
+}
+
+export default function OccupiedLots({ allowedModelIds, initialModelId = '', onMeasurement, showHandoff = true }: OccupiedLotsProps) {
+  const initialModel = bundledCatalogue.models.find(m => m.model_id === initialModelId && (!allowedModelIds || allowedModelIds.includes(m.model_id)))
+  const initialDimension = (name: string) => {
+    const quantity = initialModel?.measurements.find(m => m.name === name)?.quantity
+    return quantity?.unit === 'm' ? String(Number(quantity.value)) : ''
+  }
   const [cases, setCases] = useState<Case[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [reload, setReload] = useState(0)
   const [caseId, setCaseId] = useState('')
-  const [modelId, setModelId] = useState('')
-  const [placement, setPlacement] = useState<Placement>({ x: '', y: '', width: '', depth: '', angle: '0' })
-  const [dimensionOrigins, setDimensionOrigins] = useState<{ width: 'catalogue' | 'user'; depth: 'catalogue' | 'user' }>({ width: 'user', depth: 'user' })
+  const [modelId, setModelId] = useState(initialModel?.model_id ?? '')
+  const [placement, setPlacement] = useState<Placement>({ x: '', y: '', width: initialDimension('nominal_exterior_width'), depth: initialDimension('nominal_exterior_depth'), angle: '0' })
+  const [dimensionOrigins, setDimensionOrigins] = useState<{ width: 'catalogue' | 'user'; depth: 'catalogue' | 'user' }>({ width: initialModel ? 'catalogue' : 'user', depth: initialModel ? 'catalogue' : 'user' })
   const [assumptions, setAssumptions] = useState({ parcel: '', building: '' })
   const [nudgeMetres, setNudgeMetres] = useState(1)
   const [result, setResult] = useState<Result | null>(null)
@@ -99,15 +110,16 @@ export default function OccupiedLots() {
   const [assessmentError, setAssessmentError] = useState('')
   const version = useRef(0)
   const selected = cases.find(c => c.case_id === caseId) ?? null
-  const model = bundledCatalogue.models.find(m => m.model_id === modelId)
-  function invalidate() { version.current++; setResult(null); setAssessmentError(''); setAssessing(false) }
+  const allowedModels = bundledCatalogue.models.filter(m => !allowedModelIds || allowedModelIds.includes(m.model_id))
+  const model = allowedModels.find(m => m.model_id === modelId)
+  function invalidate() { version.current++; setResult(null); onMeasurement?.(null); setAssessmentError(''); setAssessing(false) }
   function changePlacement(patch: Partial<Placement>) { invalidate(); setPlacement(p => ({ ...p, ...patch })) }
   function changeAssumption(key: 'parcel' | 'building', value: string) { invalidate(); setAssumptions(p => ({ ...p, [key]: value })) }
   useEffect(() => {
     const controller = new AbortController()
     let active = true
     version.current++
-    setLoading(true); setError(''); setCases([]); setCaseId(''); setResult(null)
+    setLoading(true); setError(''); setCases([]); setCaseId(''); setResult(null); onMeasurement?.(null)
     const timer = setTimeout(() => controller.abort(), 10000)
     void (async () => {
       try {
@@ -145,7 +157,7 @@ export default function OccupiedLots() {
   }
   function chooseModel(id: string) {
     invalidate(); setModelId(id)
-    const model = bundledCatalogue.models.find(m => m.model_id === id)
+    const model = allowedModels.find(m => m.model_id === id)
     const measure = (name: string) => model?.measurements.find(m => m.name === name)?.quantity
     setDimensionOrigins({ width: measure('nominal_exterior_width')?.unit === 'm' ? 'catalogue' : 'user',
       depth: measure('nominal_exterior_depth')?.unit === 'm' ? 'catalogue' : 'user' })
@@ -179,6 +191,7 @@ export default function OccupiedLots() {
             JSON.stringify(parsed.input.placement.centre_xy) !== JSON.stringify([x, y]) || parsed.input.placement.width_m !== width || parsed.input.placement.depth_m !== depth || parsed.input.placement.angle_degrees !== angle)
           throw new Error('Assessment returned a different placement.')
         setResult(parsed)
+        onMeasurement?.({ site: selected, model: model ?? null, result: parsed, widthOrigin: dimensionOrigins.width, depthOrigin: dimensionOrigins.depth })
       }
     } catch (e) { if (version.current === requestVersion) setAssessmentError(controller.signal.aborted ? 'Assessment timed out. Try again.' : e instanceof Error ? e.message : 'Assessment failed.') }
     finally { clearTimeout(timer); if (version.current === requestVersion) setAssessing(false) }
@@ -221,7 +234,7 @@ export default function OccupiedLots() {
           <div className="occupied-controls">
             <h3>1 · Set the nominal footprint</h3>
             <label htmlFor="occupied-model">Prefab model or manual dimensions</label><select id="occupied-model" value={modelId} onChange={e => chooseModel(e.target.value)}>
-              <option value="">Manual nominal footprint</option>{bundledCatalogue.models.map(m => <option key={m.model_id} value={m.model_id}>{m.provider} · {m.name}</option>)}</select>
+              {!allowedModelIds && <option value="">Manual nominal footprint</option>}{allowedModels.map(m => <option key={m.model_id} value={m.model_id}>{m.provider} · {m.name}</option>)}</select>
             {model && <p className="metadata">{model.provider} · {model.name} · provider measurements captured {readableDate(model.sources[0]?.captured_at)} · unreviewed. <a href={model.provider_url} target="_blank" rel="noreferrer">Provider model page</a>. Manufacturer revision {model.source_revision ?? 'not supplied'}. {model.service_area_note} {model.footprint_note}</p>}
             <div className="occupied-fields">{(['width', 'depth'] as const).map(key => <div key={key}>
               <label htmlFor={`occupied-${key}`}>Nominal exterior {key} (m)</label>
@@ -266,7 +279,7 @@ export default function OccupiedLots() {
             <CopyableRecord id="occupied-summary" label="Copyable plain-language summary" value={summary} />
             <TechnicalDetails title="Exact sources, IDs, placement and assessment · copyable"><textarea readOnly aria-label="Complete geometry evidence record" value={JSON.stringify({ site: selected, model, assessment: result }, null, 2)} rows={14} /></TechnicalDetails>
           </section>}
-          <ScenarioHandoff site={selected} model={model ?? null} assessment={result} />
+          {showHandoff && <ScenarioHandoff site={selected} model={model ?? null} assessment={result} />}
         </div>
       </div>
       <TechnicalDetails title="Captured site source and exact identifiers"><pre>{JSON.stringify(selected, null, 2)}</pre></TechnicalDetails>
