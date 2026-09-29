@@ -6,6 +6,15 @@
 .sr-model-inputs input[aria-invalid="true"] { border-color: var(--danger); }
 .sr-model-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 1rem; }
 .sr-model-grid > div { min-width: 0; }
+.sr-model-field-label { display: flex; align-items: center; gap: .35rem; min-height: 44px; margin-top: 1rem; }
+.sr-model-field-label label { margin-top: 0; }
+.sr-model-info { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 44px; width: 44px; min-height: 44px; padding: 0; color: var(--primary); background: transparent; border: 0; border-radius: var(--radius-sm); cursor: pointer; }
+.sr-model-info span { display: inline-flex; align-items: center; justify-content: center; width: 1.25rem; height: 1.25rem; border: 1px solid currentColor; border-radius: 50%; font-weight: 650; }
+.sr-model-info:hover { background: var(--primary-soft); }
+.sr-model-info:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.sr-model-help { padding: .75rem; border-left: 3px solid var(--primary); background: var(--surface-subtle); overflow-wrap: anywhere; }
+.sr-model-help p { margin: 0; }
+.sr-model-help p + p { margin-top: .5rem; }
 .sr-model-hint { color: var(--ink-muted); font-size: .92rem; }
 .sr-model-error { color: var(--danger-ink); font-weight: 650; }
 .sr-model-notice { border-left: 5px solid var(--neutral-edge); background: var(--neutral-soft); color: var(--neutral-ink); padding: .8rem; }

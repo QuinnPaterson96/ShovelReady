@@ -1,15 +1,17 @@
+import { useState } from 'react'
 import { bundledCatalogue, editField, editHeightReference, editIdentity, fieldError, selectModel } from './model'
 import type { Catalogue, Field, Selection } from './model'
 import { readableDate, TechnicalDetails } from '../ReadableProvenance'
 import { PublishedDimensions } from './PublishedDimensions'
 
 const labels: Record<Field, string> = { width: 'Nominal exterior width (m)', depth: 'Nominal exterior depth (m)',
-  height: 'Roof height from foundation datum (m)', area: 'Manufacturer interior area (m²)' }
+  height: 'Height (m)', area: 'Manufacturer interior area (m²)' }
 const fields: Field[] = ['width', 'depth', 'height', 'area']
 
 export function ModelInputs({ value, onChange, catalogue = bundledCatalogue }: {
   value: Selection; onChange: (next: Selection) => void; catalogue?: Catalogue | null
 }) {
+  const [heightHelpOpen, setHeightHelpOpen] = useState(false)
   const model = catalogue?.models.find(item => item.model_id === value.modelId)
   const selected = model && value.snapshotId === catalogue?.snapshot_id ? model : null
   return <section className="sr-model-inputs" aria-labelledby="model-inputs-title">
@@ -43,13 +45,24 @@ export function ModelInputs({ value, onChange, catalogue = bundledCatalogue }: {
       const input = value.fields[field]
       const error = fieldError(input.value)
       return <div key={field}>
-        <label htmlFor={`sr-model-${field}`}>{labels[field]}</label>
+        <div className="sr-model-field-label">
+          <label htmlFor={`sr-model-${field}`}>{labels[field]}</label>
+          {field === 'height' && <button type="button" className="sr-model-info" aria-label="About height measurement"
+            aria-expanded={heightHelpOpen} aria-controls="sr-model-height-help"
+            onClick={() => setHeightHelpOpen(open => !open)}>
+            <span aria-hidden="true">i</span>
+          </button>}
+        </div>
+        {field === 'height' && <div id="sr-model-height-help" className="sr-model-help" hidden={!heightHelpOpen}>
+          <p><strong>Technical term: roof height from foundation datum.</strong> This is the distance from the foundation reference shown on the plans to the highest point of the roof.</p>
+          <p>It is separate from ceiling height and the provider's published exterior height. Height measured from the surrounding ground needs site details and the local rule's definition.</p>
+        </div>}
         <input id={`sr-model-${field}`} inputMode="decimal" value={input.value}
           aria-invalid={!!error} aria-describedby={`sr-model-hint-${field}${error ? ` sr-model-error-${field}` : ''}`}
           onChange={event => onChange(editField(value, field, event.target.value))} />
         <p id={`sr-model-hint-${field}`} className="sr-model-hint">
           {input.value.trim() ? input.origin === 'source' ? 'Source value · unreviewed' : 'User value · unreviewed' : 'Unknown'}.
-          {field === 'height' && ' Optional separate measurement from the foundation reference to the highest roof point. Published exterior height is shown above when available.'}
+          {field === 'height' && ' From the foundation reference to the highest roof point. Leave blank if unsure.'}
           {field === 'area' && ' Physical interior area, not regulatory floor area.'}
         </p>
         {error && <p id={`sr-model-error-${field}`} className="sr-model-error" role="alert">{error}</p>}
@@ -61,13 +74,13 @@ export function ModelInputs({ value, onChange, catalogue = bundledCatalogue }: {
         </details>}
       </div>
     })}</div>
-    <label htmlFor="sr-model-height-reference">Roof height measurement reference</label>
+    <label htmlFor="sr-model-height-reference">How was this height measured?</label>
     <select id="sr-model-height-reference" value={value.heightReference}
       onChange={event => onChange(editHeightReference(value, event.target.value as Selection['heightReference']))}>
       <option value="unknown">Unknown / not established</option>
-      <option value="foundation_datum_to_roof_high_point">Foundation datum to roof high point · user asserted</option>
+      <option value="foundation_datum_to_roof_high_point">From the foundation reference to the highest roof point</option>
     </select>
-    <p className="sr-model-hint">A height with unknown reference is retained in this draft but excluded from the assessment mapping. Regulatory height from grade requires separate site and rule evidence.</p>
+    <p className="sr-model-hint">If you are unsure how it was measured, we will save the value but leave the height check unresolved. Your answer remains unverified.</p>
     {selected && <details><summary>All source measurements and capture identity</summary>
       <p>{selected.provider} · {selected.name} · catalogue captured {readableDate(catalogue?.captured_at)} · unreviewed.</p>
       <ul>{selected.measurements.map(measure => <li key={measure.name}>{measure.name}: {measure.quantity?.original_text ?? 'unknown'} · {measure.definition}

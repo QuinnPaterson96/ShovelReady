@@ -66,8 +66,12 @@ The correction shows a shared **Published exterior dimensions** panel in model
 entry, preparation summary and the occupied-lot workspace. It uses the existing
 source quantities, original units, rounded metric display, source locator/link,
 capture date and review status. The provider-review text carries these dimensions
-as source facts, separately from edited inputs. The separate input is now labelled
-**Roof height from foundation datum**, and the 2D workspace explicitly states that
+as source facts, separately from edited inputs. Following user feedback, the separate
+input is labelled **Height (m)** with an information button that reveals the technical
+term **roof height from foundation datum** and its definition. The button supports
+click/tap and keyboard activation, exposes its expanded state to assistive technology,
+and opens inline help rather than relying on hover. A short measurement hint stays
+visible; the reference selector asks **How was this height measured?**. The 2D workspace explicitly states that
 it does not check height. Missing exterior heights remain missing; ceilings are
 not used as substitutes. No catalogue bytes, evaluation semantics or release change.
 
