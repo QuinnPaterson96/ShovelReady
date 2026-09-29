@@ -1,5 +1,11 @@
 # BC address candidate search
 
+September 29 integration update: see [combined behavior and verification](integration-live-parcel-discovery.md).
+The Model 300 route now owns live discovery and manual placement; the standalone
+worker limitations below describe the earlier handoff. Municipal responses also
+expose validated `planar_geometry`; geocoder evidence now includes `rawResponseText`.
+
+
 Status: implemented adapter boundary for #166. The route supplies address candidates, not a parcel match, reviewed site fact, or fit result. It does not change the retained `/api/site-preparations` contract.
 
 ## v1 HTTP contract

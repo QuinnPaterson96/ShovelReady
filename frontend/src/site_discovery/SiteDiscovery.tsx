@@ -31,7 +31,7 @@ function Map({ observation }: { observation: Observation }) {
   </svg><figcaption>Teal: captured parcel · Purple: captured rooflines, not walls · North ↑ · EPSG:3157 projected metres. Drawing is approximate, without a basemap or legal yard interpretation.</figcaption></figure>
 }
 
-export function SiteDiscovery({ onConfirm, transport = liveTransport }: { onConfirm: (value: Confirmed | null) => void; transport?: Transport }) {
+export function SiteDiscovery({ onConfirm, transport = liveTransport, onManual }: { onConfirm: (value: Confirmed | null) => void; transport?: Transport; onManual?: () => void }) {
   const [state, setState] = useState<State>(initial)
   const [flow] = useState(() => new DiscoveryFlow(transport, setState, onConfirm))
   useEffect(() => { void import('./site-discovery.css'); return () => flow.dispose() }, [flow])
@@ -71,6 +71,7 @@ export function SiteDiscovery({ onConfirm, transport = liveTransport }: { onConf
       <div className="sd-actions"><button type="button" onClick={() => flow.confirm()} disabled={!!confirmed}>Confirm this observed property</button><button type="button" onClick={() => flow.reject()}>Reject and correct search</button></div>
       <TechnicalDetails title="Complete observation and exact source records"><pre>{JSON.stringify(observation.raw, null, 2)}</pre></TechnicalDetails>
     </section>}
-    <p className="sd-fallback">You can continue with the retained lookup or <a href="#manual-address">manual site details below</a> if this search is wrong, outside Victoria or unavailable. This demonstration does not fill those fields or affect the prepared summary yet.</p>
+    {onManual ? <p className="sd-fallback"><button type="button" onClick={onManual}>Enter property details manually</button> if this search is wrong, outside Victoria or unavailable. Confirming a property opens approximate placement below.</p> :
+      <p className="sd-fallback">You can continue with the retained lookup or <a href="#manual-address">manual site details below</a> if this search is wrong, outside Victoria or unavailable. This demonstration does not fill those fields or affect the prepared summary yet.</p>}
   </section>
 }

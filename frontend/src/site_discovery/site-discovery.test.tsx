@@ -11,12 +11,32 @@ import cityAddress from './address_87.json'
 import cityParcelSearch from './parcel_search_87.json'
 import cityParcelObserve from './parcel_observe_87.json'
 import cityRoofs from './buildings_87.json'
+import municipalApi from './municipal-api.fixture.json'
+import { placementCase } from './placement'
 
 const source = { provider: 'Public source', record: 'test record', capturedAt: '2026-09-28', sourceDate: null, url: null, review: 'unreviewed' }
 const address: Address = { id: 'a', label: 'Corrected address', locality: 'Victoria', precision: 'CIVIC_NUMBER', issues: [], point: [-123, 48], crs: 'EPSG:4326', source, raw: { original: 'record' } }
 const parcel: Parcel = { id: 'p', label: 'Parcel option', match: 'Address point lead, identity unverified', source, raw: { original: 'parcel' } }
 const polygon = { type: 'Polygon' as const, coordinates: [[[500000, 5000000], [500010, 5000000], [500010, 5000010], [500000, 5000000]]] }
 const observation: Observation = { parcel: { geometry: polygon, areaM2: 49.987 }, roofs: [], crs: 'EPSG:3157', buildingsState: 'partial', issues: ['roofline_fetch_failed'], source, roofSource: null, raw: { complete: true } }
+
+test('actual API replay passes through the consumer into an attributed placement site', () => {
+  // Python CI compares this same fixture against actual mounted HTTP responses.
+  const parcel = parseParcels(municipalApi.search).candidates[0]
+  const observation = parseObservation(municipalApi.observation, parcel)
+  const confirmed: Confirmed = { schema_version: 'site-discovery.confirmed.v1', address, parcel, observation, review: 'unreviewed', screening: 'not_performed' }
+  const site = placementCase(confirmed)
+  assert.deepEqual(site.site.parcel.shape.geometry, municipalApi.observation.parcel.planar_geometry)
+  assert.equal(site.site.buildings[0].basis, 'roofline')
+  assert.equal(site.site.parcel.source.review_status, 'unreviewed')
+  assert.equal(site.site.parcel.source.reference, municipalApi.observation.evidence[0].source_url)
+  assert.doesNotMatch(site.case_id, /VIC-087/)
+  assert.equal(placementCase({ ...confirmed, observation: { ...observation, buildingsState: 'partial', roofs: [] } }).site.capture.completeness, 'partial')
+  const multipart = { type: 'MultiPolygon', coordinates: [municipalApi.observation.parcel.planar_geometry.coordinates] }
+  const multi = parseObservation({ ...municipalApi.observation, parcel: { ...municipalApi.observation.parcel, planar_geometry: multipart } }, parcel)
+  assert.deepEqual(multi.parcel.geometry, multipart)
+  assert.match(multi.issues.join(' '), /cannot measure multipart/)
+})
 function deferred<T>() { let resolve!: (value: T) => void; return { promise: new Promise<T>(r => { resolve = r }), resolve } }
 
 test('selection requires distinct address, parcel and property confirmation; edits invalidate it', async () => {
@@ -118,7 +138,7 @@ test('municipal contracts keep joined identity, projected geometry and partial r
   const parcel = parseParcels(search).candidates[0]
   assert.equal(parcel.label, '1144 MAY ST')
   assert.match(parcel.match, /unreviewed/)
-  const feature = (row: { attributes: object; geometry?: object }, area: number) => ({ attributes: row.attributes, geometry: row.geometry,
+  const feature = (row: { attributes: object; geometry?: object }, area: number) => ({ attributes: row.attributes, geometry: row.geometry, planar_geometry: { type: 'Polygon', coordinates: (row.geometry as { rings: number[][][] }).rings.map(ring => ring.map(point => point.slice(0, 2))) },
     horizontal_crs: 'EPSG:3157', area_m2: area, geometry_issue: null })
   const observed = { schema_version: 'municipal-sites.v1', status: 'available', parcel_ref: ref,
     parcel: feature(cityParcelObserve.features[0], 642.0220911965725),

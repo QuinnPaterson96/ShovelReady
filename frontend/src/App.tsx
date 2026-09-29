@@ -87,6 +87,7 @@ export default function App() {
       </section>}
       {page === 'builder' && <BuilderDemo />}
       {page === 'inputs' && <AssessmentForm draft={draft} dispatch={dispatch}
+        onBuilder={() => setPage('builder')}
         onSummary={() => { if (!Object.keys(submissionErrors(draft)).length) setPage('summary') }}
         onEvidence={() => setPage('pilot')} />}
       {page === 'summary' && <PreparationSummary draft={draft} onEdit={() => setPage('inputs')} />}

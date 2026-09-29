@@ -11,6 +11,7 @@ from urllib.request import urlopen
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, ConfigDict, Field, model_validator
+from shapely.geometry import mapping
 
 from app.spatial.geometry import xy_polygon
 
@@ -111,6 +112,7 @@ class SearchResponse(StrictModel):
 class GeometryFeature(StrictModel):
     attributes: dict[str, Any]
     geometry: dict[str, Any]
+    planar_geometry: dict[str, Any]
     horizontal_crs: Literal["EPSG:3157"]
     area_m2: float
     geometry_issue: str | None
@@ -177,11 +179,11 @@ def _fetch(layer: str, params: dict) -> tuple[dict, dict]:
                 if value.get("geometryType") != expected_type:
                     raise ValueError("unexpected geometry type")
             return value, _evidence(layer, url, raw, value)
-        except (TimeoutError, URLError, HTTPError) as exc:
+        except (TimeoutError, URLError, HTTPError, OSError) as exc:
             last_error = exc
             if attempt == 0:
                 continue
-        except (ValueError, json.JSONDecodeError) as exc:
+        except (ValueError, TypeError, AttributeError) as exc:
             last_error = exc
             break
     raise HTTPException(status_code=502, detail=f"City {layer} source unavailable: {last_error}")
@@ -358,7 +360,13 @@ def observe(request: ObserveRequest) -> dict:
             "issues": ["parcel_geometry_missing"],
             "evidence": [parcel_evidence],
         }
-    polygon, issue = xy_polygon({"spatialReference": {"wkid": 3157}, **raw_geometry})
+    polygon, issue = xy_polygon(
+        {"spatialReference": {"wkid": 3157}, **raw_geometry}
+        if isinstance(raw_geometry, dict)
+        else raw_geometry,
+        has_z=bool(value.get("hasZ")),
+        has_m=bool(value.get("hasM")),
+    )
     if polygon is None:
         return {
             "schema_version": VERSION,
@@ -372,6 +380,7 @@ def observe(request: ObserveRequest) -> dict:
     parcel = {
         "attributes": row["attributes"],
         "geometry": raw_geometry,
+        "planar_geometry": mapping(polygon),
         "horizontal_crs": "EPSG:3157",
         "area_m2": polygon.area,
         "geometry_issue": issue,
@@ -405,14 +414,16 @@ def observe(request: ObserveRequest) -> dict:
             "evidence": [parcel_evidence],
         }
     rooflines = []
-    issues = []
+    issues = [issue] if issue else []
     for feature in buildings:
         raw = feature.get("geometry")
         if raw is None:
             issues.append("roofline_geometry_missing")
             continue
         roof, roof_issue = xy_polygon(
-            {"spatialReference": {"wkid": 3157}, **raw}, has_z=bool(raw.get("hasZ"))
+            {"spatialReference": {"wkid": 3157}, **raw} if isinstance(raw, dict) else raw,
+            has_z=bool(buildings_value.get("hasZ")),
+            has_m=bool(buildings_value.get("hasM")),
         )
         if roof is None:
             issues.append(f"roofline_{roof_issue}")
@@ -425,6 +436,7 @@ def observe(request: ObserveRequest) -> dict:
             {
                 "attributes": feature["attributes"],
                 "geometry": raw,
+                "planar_geometry": mapping(roof),
                 "horizontal_crs": "EPSG:3157",
                 "area_m2": roof.area,
                 "intersection_area_m2": overlap.area,
@@ -432,6 +444,8 @@ def observe(request: ObserveRequest) -> dict:
                 "relationship": "spatial_intersection_not_ownership",
             }
         )
+        if roof_issue:
+            issues.append(roof_issue)
     if not rooflines:
         issues.append("no_usable_intersecting_rooflines_does_not_establish_empty_space")
     return {

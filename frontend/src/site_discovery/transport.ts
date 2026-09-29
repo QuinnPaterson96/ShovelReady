@@ -76,10 +76,13 @@ export function parseParcels(value: unknown): SearchResult<Parcel> {
 }
 
 function polygon(value: unknown): Polygon {
-  if (!object(value) || !Array.isArray(value.rings) || value.rings.length === 0 || value.rings.length > 100 ||
-    !value.rings.every(ring => Array.isArray(ring) && ring.length >= 4 && ring.length <= 10000 && ring.every(point =>
-      Array.isArray(point) && point.length >= 2 && finite(point[0]) && finite(point[1])))) throw Error('Invalid municipal geometry')
-  return { type: 'Polygon', coordinates: value.rings.map((ring: number[][]) => ring.map(point => [point[0], point[1]])) }
+  // Consume the server's validated ring nesting; Esri rings are not GeoJSON holes.
+  if (!object(value) || !['Polygon', 'MultiPolygon'].includes(String(value.type)) || !Array.isArray(value.coordinates)) throw Error('Invalid municipal geometry')
+  const parts = value.type === 'Polygon' ? [value.coordinates] : value.coordinates
+  if (!parts.length || parts.length > 100 || !parts.every(part => Array.isArray(part) && part.length > 0 && part.length <= 100 && part.every(ring =>
+    Array.isArray(ring) && ring.length >= 4 && ring.length <= 10000 && ring.every(point => Array.isArray(point) && point.length === 2 && finite(point[0]) && finite(point[1])) &&
+    JSON.stringify(ring[0]) === JSON.stringify(ring.at(-1))))) throw Error('Invalid municipal geometry')
+  return value as Polygon
 }
 
 export function parseObservation(value: unknown, selected: Parcel): Observation {
@@ -92,16 +95,17 @@ export function parseObservation(value: unknown, selected: Parcel): Observation 
   if (value.status === 'stale') throw new DiscoveryProblem('The selected parcel changed at the source. Search again or continue manually.')
   if (value.status === 'missing' || value.status === 'invalid') throw new DiscoveryProblem('Selected parcel geometry is missing or invalid. Choose another parcel or continue manually.')
   if (!object(value.parcel) || value.parcel.horizontal_crs !== 'EPSG:3157' || !finite(value.parcel.area_m2)) throw Error('Invalid parcel observation')
-  const parcelGeometry = polygon(value.parcel.geometry)
+  const parcelGeometry = polygon(value.parcel.planar_geometry)
   const source = municipalSource(value.evidence[0])
   const roofSource = value.evidence.length > 1 ? municipalSource(value.evidence[1]) : null
   const roofs = value.rooflines.map((roof, index) => {
     if (!object(roof) || roof.horizontal_crs !== 'EPSG:3157' || roof.relationship !== 'spatial_intersection_not_ownership' ||
       !object(roof.attributes)) throw Error('Invalid roofline observation')
-    return { id: String(roof.attributes.OBJECTID ?? index), geometry: polygon(roof.geometry) }
+    return { id: String(roof.attributes.OBJECTID ?? index), geometry: polygon(roof.planar_geometry) }
   })
   return { parcel: { geometry: parcelGeometry, areaM2: value.parcel.area_m2 }, roofs, crs: 'EPSG:3157',
-    buildingsState: value.status as string, issues: [...value.issues, (value.evidence[0] as Record<string, unknown>).source_date_limit as string],
+    buildingsState: value.status as string, issues: [...value.issues, (value.evidence[0] as Record<string, unknown>).source_date_limit as string,
+      ...(parcelGeometry.type === 'MultiPolygon' ? ['This parcel has separate components. The placement engine cannot measure multipart parcels yet; inspect or continue manually.'] : [])],
     source, roofSource, raw: value }
 }
 

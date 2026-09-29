@@ -1,5 +1,11 @@
 # Manual site input handoff
 
+September 29 integration update: see [combined behavior and verification](integration-live-parcel-discovery.md).
+The Model 300 route now owns live discovery and manual placement; the standalone
+worker limitations below describe the earlier handoff. Municipal responses also
+expose validated `planar_geometry`; geocoder evidence now includes `rawResponseText`.
+
+
 Issue #160 adds a standalone manual site form in `frontend/src/manual_site/`. It is not mounted in the app yet. It keeps user-entered address, stated area and notes in `facts` even when no shape is available. Address and area never generate geometry or a geocoded parcel match.
 
 ## Boundary and frame

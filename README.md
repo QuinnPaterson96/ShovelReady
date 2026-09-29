@@ -11,9 +11,18 @@ This is an independent demonstration, not a commissioned aux box product.
 
 The underlying data system supports preliminary scouting and source-backed investigation.
 It does not determine legal compliance or guarantee permit approval. The company-specific
-journey is planned; the implementation history below records what is already available.
+journey is implemented as a local demonstration; the history below records its scope.
 
 ## Status
+
+The [live parcel integration](docs/integration-live-parcel-discovery.md) connects the
+Model 300 demo to BC Address Geocoder and on-demand City of Victoria parcel/roofline
+observations. Explicitly confirm a property, measure an approximate placement and
+copy an unsent enquiry with source evidence. Manual facts and scaled local sketches
+work when lookup is unavailable or outside Victoria. No database is needed for this
+journey; source observations and provider dimensions remain unreviewed. Wider address
+coverage/strata validation, human testing and accepted zoning checks are still pending.
+
 
 The [builder-demo foundation integration](docs/integration-builder-demo-foundation.md)
 connects the map workspace to local scenario export and an unsent provider enquiry.

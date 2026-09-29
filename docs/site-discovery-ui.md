@@ -1,5 +1,11 @@
 # Address-to-property UI handoff
 
+September 29 integration update: see [combined behavior and verification](integration-live-parcel-discovery.md).
+The Model 300 route now owns live discovery and manual placement; the standalone
+worker limitations below describe the earlier handoff. Municipal responses also
+expose validated `planar_geometry`; geocoder evidence now includes `rawResponseText`.
+
+
 Status: bounded Assessment demonstration for #168 under #165. The frontend transport is bound to the published #166 and #167 branch contracts, but those backend routes are not on this branch or main. The retained lookup and manual inputs below remain usable. This is not an end-to-end connected live search, accepted site selection, placement, or fit result.
 
 ## Implemented

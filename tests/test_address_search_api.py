@@ -68,6 +68,7 @@ def test_captured_victoria_candidates_are_ordered_and_replayable():
         assert body["candidates"][0]["providerSiteId"]
         assert body["candidates"][1]["matchPrecision"] == "STREET"
         assert body["source"]["rawResponse"] == json.loads(raw)
+        assert body["source"]["rawResponseText"].encode("utf-8") == raw
         assert body["source"]["responseSha256"] == hashlib.sha256(raw).hexdigest()
         assert body["source"]["reviewStatus"] == "unreviewed"
         assert body["source"]["fetchedAt"] != body["source"]["providerBaseDataDate"]

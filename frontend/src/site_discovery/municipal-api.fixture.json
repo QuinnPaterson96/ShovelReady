@@ -1,0 +1,649 @@
+{
+  "note": "Offline replay of September 29 public source bytes; synthetic fixture clock 2000-01-01.",
+  "search": {
+    "schema_version": "municipal-sites.v1",
+    "status": "candidates",
+    "candidates": [
+      {
+        "parcel_ref": {
+          "source": "city-of-victoria-pid-parcels",
+          "object_id": 87
+        },
+        "pid": "001-328-107",
+        "gislink": "03229041",
+        "address": "1144 MAY ST",
+        "address_object_id": 9209,
+        "relation": "gislink_join",
+        "attributes": {
+          "OBJECTID": 87,
+          "PID": "001-328-107",
+          "VicPID": "V02291051",
+          "GISLINK": "03229041",
+          "ParcelType": "LA",
+          "ParcelStatus": "ACTIVE",
+          "Shape_Area": 642.0220911965724
+        },
+        "identity_status": "source_join_unreviewed"
+      }
+    ],
+    "evidence": [
+      {
+        "provider": "City of Victoria Open Data",
+        "record_label": "Address MapServer response",
+        "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=json&where=FullAddress%3D%271144+MAY+ST%27&outFields=OBJECTID%2CFullAddress%2CGISLINK%2CLegal_Type&returnGeometry=true&outSR=3157&resultRecordCount=25",
+        "captured_at_utc": "2000-01-01T00:00:00+00:00",
+        "review_status": "unreviewed_live_observation",
+        "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+        "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+        "source_date_limit": "Feature update date and positional accuracy not supplied; rooflines derive from aerial imagery, not surveyed walls.",
+        "sha256": "068d67187fb9c2e449258e171207fd43c4ce73de5a382f89da008695051eb4c8",
+        "raw_response": {
+          "displayFieldName": "FullAddress",
+          "fieldAliases": {
+            "OBJECTID": "OBJECTID",
+            "FullAddress": "FullAddress",
+            "GISLINK": "GISLINK",
+            "Legal_Type": "Legal_Type"
+          },
+          "geometryType": "esriGeometryPoint",
+          "spatialReference": {
+            "wkid": 3157,
+            "latestWkid": 3157
+          },
+          "fields": [
+            {
+              "name": "OBJECTID",
+              "type": "esriFieldTypeOID",
+              "alias": "OBJECTID"
+            },
+            {
+              "name": "FullAddress",
+              "type": "esriFieldTypeString",
+              "alias": "FullAddress",
+              "length": 200
+            },
+            {
+              "name": "GISLINK",
+              "type": "esriFieldTypeString",
+              "alias": "GISLINK",
+              "length": 16
+            },
+            {
+              "name": "Legal_Type",
+              "type": "esriFieldTypeString",
+              "alias": "Legal_Type",
+              "length": 200
+            }
+          ],
+          "features": [
+            {
+              "attributes": {
+                "OBJECTID": 9209,
+                "FullAddress": "1144 MAY ST",
+                "GISLINK": "03229041",
+                "Legal_Type": "LAND"
+              },
+              "geometry": {
+                "x": 473693.5730999997,
+                "y": 5362187.7564
+              }
+            }
+          ]
+        },
+        "raw_response_text": "{\"displayFieldName\":\"FullAddress\",\"fieldAliases\":{\"OBJECTID\":\"OBJECTID\",\"FullAddress\":\"FullAddress\",\"GISLINK\":\"GISLINK\",\"Legal_Type\":\"Legal_Type\"},\"geometryType\":\"esriGeometryPoint\",\"spatialReference\":{\"wkid\":3157,\"latestWkid\":3157},\"fields\":[{\"name\":\"OBJECTID\",\"type\":\"esriFieldTypeOID\",\"alias\":\"OBJECTID\"},{\"name\":\"FullAddress\",\"type\":\"esriFieldTypeString\",\"alias\":\"FullAddress\",\"length\":200},{\"name\":\"GISLINK\",\"type\":\"esriFieldTypeString\",\"alias\":\"GISLINK\",\"length\":16},{\"name\":\"Legal_Type\",\"type\":\"esriFieldTypeString\",\"alias\":\"Legal_Type\",\"length\":200}],\"features\":[{\"attributes\":{\"OBJECTID\":9209,\"FullAddress\":\"1144 MAY ST\",\"GISLINK\":\"03229041\",\"Legal_Type\":\"LAND\"},\"geometry\":{\"x\":473693.57309999969,\"y\":5362187.7564000003}}]}"
+      },
+      {
+        "provider": "City of Victoria Open Data",
+        "record_label": "Parcel MapServer response",
+        "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=json&where=GISLINK%3D%2703229041%27&outFields=OBJECTID%2CPID%2CVicPID%2CGISLINK%2CParcelType%2CParcelStatus%2CShape_Area&returnGeometry=false&outSR=3157&resultRecordCount=25",
+        "captured_at_utc": "2000-01-01T00:00:00+00:00",
+        "review_status": "unreviewed_live_observation",
+        "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+        "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+        "source_date_limit": "Feature update date and positional accuracy not supplied; rooflines derive from aerial imagery, not surveyed walls.",
+        "sha256": "734a9edaf67344ba57106598cbc02b406dd141c63c5a7a82a69afb5274c0aa9b",
+        "raw_response": {
+          "displayFieldName": "Name",
+          "fieldAliases": {
+            "OBJECTID": "OBJECTID",
+            "PID": "PID",
+            "VicPID": "VicPID",
+            "GISLINK": "GISLINK",
+            "ParcelType": "ParcelType",
+            "ParcelStatus": "ParcelStatus",
+            "Shape_Area": "Shape_Area"
+          },
+          "fields": [
+            {
+              "name": "OBJECTID",
+              "type": "esriFieldTypeOID",
+              "alias": "OBJECTID"
+            },
+            {
+              "name": "PID",
+              "type": "esriFieldTypeString",
+              "alias": "PID",
+              "length": 50
+            },
+            {
+              "name": "VicPID",
+              "type": "esriFieldTypeString",
+              "alias": "VicPID",
+              "length": 50
+            },
+            {
+              "name": "GISLINK",
+              "type": "esriFieldTypeString",
+              "alias": "GISLINK",
+              "length": 255
+            },
+            {
+              "name": "ParcelType",
+              "type": "esriFieldTypeString",
+              "alias": "ParcelType",
+              "length": 30
+            },
+            {
+              "name": "ParcelStatus",
+              "type": "esriFieldTypeString",
+              "alias": "ParcelStatus",
+              "length": 20
+            },
+            {
+              "name": "Shape_Area",
+              "type": "esriFieldTypeDouble",
+              "alias": "Shape_Area"
+            }
+          ],
+          "features": [
+            {
+              "attributes": {
+                "OBJECTID": 87,
+                "PID": "001-328-107",
+                "VicPID": "V02291051",
+                "GISLINK": "03229041",
+                "ParcelType": "LA",
+                "ParcelStatus": "ACTIVE",
+                "Shape_Area": 642.0220911965724
+              }
+            }
+          ]
+        },
+        "raw_response_text": "{\"displayFieldName\":\"Name\",\"fieldAliases\":{\"OBJECTID\":\"OBJECTID\",\"PID\":\"PID\",\"VicPID\":\"VicPID\",\"GISLINK\":\"GISLINK\",\"ParcelType\":\"ParcelType\",\"ParcelStatus\":\"ParcelStatus\",\"Shape_Area\":\"Shape_Area\"},\"fields\":[{\"name\":\"OBJECTID\",\"type\":\"esriFieldTypeOID\",\"alias\":\"OBJECTID\"},{\"name\":\"PID\",\"type\":\"esriFieldTypeString\",\"alias\":\"PID\",\"length\":50},{\"name\":\"VicPID\",\"type\":\"esriFieldTypeString\",\"alias\":\"VicPID\",\"length\":50},{\"name\":\"GISLINK\",\"type\":\"esriFieldTypeString\",\"alias\":\"GISLINK\",\"length\":255},{\"name\":\"ParcelType\",\"type\":\"esriFieldTypeString\",\"alias\":\"ParcelType\",\"length\":30},{\"name\":\"ParcelStatus\",\"type\":\"esriFieldTypeString\",\"alias\":\"ParcelStatus\",\"length\":20},{\"name\":\"Shape_Area\",\"type\":\"esriFieldTypeDouble\",\"alias\":\"Shape_Area\"}],\"features\":[{\"attributes\":{\"OBJECTID\":87,\"PID\":\"001-328-107\",\"VicPID\":\"V02291051\",\"GISLINK\":\"03229041\",\"ParcelType\":\"LA\",\"ParcelStatus\":\"ACTIVE\",\"Shape_Area\":642.02209119657243}}]}"
+      }
+    ],
+    "note": "Select a parcel explicitly; a source join or point lead is not verified legal identity."
+  },
+  "observation": {
+    "schema_version": "municipal-sites.v1",
+    "status": "available",
+    "parcel_ref": {
+      "source": "city-of-victoria-pid-parcels",
+      "object_id": 87
+    },
+    "parcel": {
+      "attributes": {
+        "OBJECTID": 87,
+        "PID": "001-328-107",
+        "VicPID": "V02291051",
+        "GISLINK": "03229041",
+        "ParcelType": "LA",
+        "ParcelStatus": "ACTIVE",
+        "Shape_Area": 642.0220911965724
+      },
+      "geometry": {
+        "rings": [
+          [
+            [
+              473704.5708999997,
+              5362207.274800001
+            ],
+            [
+              473697.6003999999,
+              5362165.7161
+            ],
+            [
+              473682.57519999985,
+              5362168.232999999
+            ],
+            [
+              473689.5469000004,
+              5362209.7984
+            ],
+            [
+              473704.5708999997,
+              5362207.274800001
+            ]
+          ]
+        ]
+      },
+      "planar_geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              473704.5708999997,
+              5362207.274800001
+            ],
+            [
+              473697.6003999999,
+              5362165.7161
+            ],
+            [
+              473682.57519999985,
+              5362168.232999999
+            ],
+            [
+              473689.5469000004,
+              5362209.7984
+            ],
+            [
+              473704.5708999997,
+              5362207.274800001
+            ]
+          ]
+        ]
+      },
+      "horizontal_crs": "EPSG:3157",
+      "area_m2": 642.0220911965725,
+      "geometry_issue": null
+    },
+    "rooflines": [
+      {
+        "attributes": {
+          "OBJECTID": 69542,
+          "LAYER": "Residential",
+          "SHAPE_Area": 195.44367200018118
+        },
+        "geometry": {
+          "hasZ": true,
+          "rings": [
+            [
+              [
+                473699.76999999955,
+                5362184.606000001,
+                11.346000000005006
+              ],
+              [
+                473698.44600000046,
+                5362176.959000001,
+                8.570999999996275
+              ],
+              [
+                473695.4450000003,
+                5362177.478,
+                9.84299999999348
+              ],
+              [
+                473695.1799999997,
+                5362175.948999999,
+                8.10899999999674
+              ],
+              [
+                473693.1320000002,
+                5362176.304,
+                8.687000000005355
+              ],
+              [
+                473692.9060000004,
+                5362174.998,
+                8.224000000001979
+              ],
+              [
+                473686.45999999996,
+                5362176.114,
+                8.224000000001979
+              ],
+              [
+                473686.96499999985,
+                5362179.029999999,
+                10.073999999993248
+              ],
+              [
+                473686.841,
+                5362179.051000001,
+                9.959000000002561
+              ],
+              [
+                473687.89300000016,
+                5362185.131999999,
+                10.190000000002328
+              ],
+              [
+                473687.69600000046,
+                5362185.165999999,
+                11.346000000005006
+              ],
+              [
+                473689.11400000006,
+                5362193.355,
+                11.346000000005006
+              ],
+              [
+                473700.9299999997,
+                5362191.3100000005,
+                11.346000000005006
+              ],
+              [
+                473699.76999999955,
+                5362184.606000001,
+                11.346000000005006
+              ]
+            ]
+          ]
+        },
+        "planar_geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                473699.76999999955,
+                5362184.606000001
+              ],
+              [
+                473698.44600000046,
+                5362176.959000001
+              ],
+              [
+                473695.4450000003,
+                5362177.478
+              ],
+              [
+                473695.1799999997,
+                5362175.948999999
+              ],
+              [
+                473693.1320000002,
+                5362176.304
+              ],
+              [
+                473692.9060000004,
+                5362174.998
+              ],
+              [
+                473686.45999999996,
+                5362176.114
+              ],
+              [
+                473686.96499999985,
+                5362179.029999999
+              ],
+              [
+                473686.841,
+                5362179.051000001
+              ],
+              [
+                473687.89300000016,
+                5362185.131999999
+              ],
+              [
+                473687.69600000046,
+                5362185.165999999
+              ],
+              [
+                473689.11400000006,
+                5362193.355
+              ],
+              [
+                473700.9299999997,
+                5362191.3100000005
+              ],
+              [
+                473699.76999999955,
+                5362184.606000001
+              ]
+            ]
+          ]
+        },
+        "horizontal_crs": "EPSG:3157",
+        "area_m2": 195.44367200018118,
+        "geometry_issue": null,
+        "intersection_area_m2": 195.44367200018115,
+        "relationship": "spatial_intersection_not_ownership"
+      }
+    ],
+    "issues": [],
+    "evidence": [
+      {
+        "provider": "City of Victoria Open Data",
+        "record_label": "Parcel MapServer response",
+        "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=json&objectIds=87&outFields=OBJECTID%2CPID%2CVicPID%2CGISLINK%2CParcelType%2CParcelStatus%2CShape_Area&returnGeometry=true&outSR=3157&resultRecordCount=2",
+        "captured_at_utc": "2000-01-01T00:00:00+00:00",
+        "review_status": "unreviewed_live_observation",
+        "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+        "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+        "source_date_limit": "Feature update date and positional accuracy not supplied; rooflines derive from aerial imagery, not surveyed walls.",
+        "sha256": "649714594dd0193e22c0b14e27bccf4db59a325382a5050b814a57671e0bbe40",
+        "raw_response": {
+          "displayFieldName": "Name",
+          "fieldAliases": {
+            "OBJECTID": "OBJECTID",
+            "PID": "PID",
+            "VicPID": "VicPID",
+            "GISLINK": "GISLINK",
+            "ParcelType": "ParcelType",
+            "ParcelStatus": "ParcelStatus",
+            "Shape_Area": "Shape_Area"
+          },
+          "geometryType": "esriGeometryPolygon",
+          "spatialReference": {
+            "wkid": 3157,
+            "latestWkid": 3157
+          },
+          "fields": [
+            {
+              "name": "OBJECTID",
+              "type": "esriFieldTypeOID",
+              "alias": "OBJECTID"
+            },
+            {
+              "name": "PID",
+              "type": "esriFieldTypeString",
+              "alias": "PID",
+              "length": 50
+            },
+            {
+              "name": "VicPID",
+              "type": "esriFieldTypeString",
+              "alias": "VicPID",
+              "length": 50
+            },
+            {
+              "name": "GISLINK",
+              "type": "esriFieldTypeString",
+              "alias": "GISLINK",
+              "length": 255
+            },
+            {
+              "name": "ParcelType",
+              "type": "esriFieldTypeString",
+              "alias": "ParcelType",
+              "length": 30
+            },
+            {
+              "name": "ParcelStatus",
+              "type": "esriFieldTypeString",
+              "alias": "ParcelStatus",
+              "length": 20
+            },
+            {
+              "name": "Shape_Area",
+              "type": "esriFieldTypeDouble",
+              "alias": "Shape_Area"
+            }
+          ],
+          "features": [
+            {
+              "attributes": {
+                "OBJECTID": 87,
+                "PID": "001-328-107",
+                "VicPID": "V02291051",
+                "GISLINK": "03229041",
+                "ParcelType": "LA",
+                "ParcelStatus": "ACTIVE",
+                "Shape_Area": 642.0220911965724
+              },
+              "geometry": {
+                "rings": [
+                  [
+                    [
+                      473704.5708999997,
+                      5362207.274800001
+                    ],
+                    [
+                      473697.6003999999,
+                      5362165.7161
+                    ],
+                    [
+                      473682.57519999985,
+                      5362168.232999999
+                    ],
+                    [
+                      473689.5469000004,
+                      5362209.7984
+                    ],
+                    [
+                      473704.5708999997,
+                      5362207.274800001
+                    ]
+                  ]
+                ]
+              }
+            }
+          ]
+        },
+        "raw_response_text": "{\"displayFieldName\":\"Name\",\"fieldAliases\":{\"OBJECTID\":\"OBJECTID\",\"PID\":\"PID\",\"VicPID\":\"VicPID\",\"GISLINK\":\"GISLINK\",\"ParcelType\":\"ParcelType\",\"ParcelStatus\":\"ParcelStatus\",\"Shape_Area\":\"Shape_Area\"},\"geometryType\":\"esriGeometryPolygon\",\"spatialReference\":{\"wkid\":3157,\"latestWkid\":3157},\"fields\":[{\"name\":\"OBJECTID\",\"type\":\"esriFieldTypeOID\",\"alias\":\"OBJECTID\"},{\"name\":\"PID\",\"type\":\"esriFieldTypeString\",\"alias\":\"PID\",\"length\":50},{\"name\":\"VicPID\",\"type\":\"esriFieldTypeString\",\"alias\":\"VicPID\",\"length\":50},{\"name\":\"GISLINK\",\"type\":\"esriFieldTypeString\",\"alias\":\"GISLINK\",\"length\":255},{\"name\":\"ParcelType\",\"type\":\"esriFieldTypeString\",\"alias\":\"ParcelType\",\"length\":30},{\"name\":\"ParcelStatus\",\"type\":\"esriFieldTypeString\",\"alias\":\"ParcelStatus\",\"length\":20},{\"name\":\"Shape_Area\",\"type\":\"esriFieldTypeDouble\",\"alias\":\"Shape_Area\"}],\"features\":[{\"attributes\":{\"OBJECTID\":87,\"PID\":\"001-328-107\",\"VicPID\":\"V02291051\",\"GISLINK\":\"03229041\",\"ParcelType\":\"LA\",\"ParcelStatus\":\"ACTIVE\",\"Shape_Area\":642.02209119657243},\"geometry\":{\"rings\":[[[473704.5708999997,5362207.2748000007],[473697.60039999988,5362165.7160999998],[473682.57519999985,5362168.2329999991],[473689.54690000042,5362209.7983999997],[473704.5708999997,5362207.2748000007]]]}}]}"
+      },
+      {
+        "provider": "City of Victoria Open Data",
+        "record_label": "Building MapServer response",
+        "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=json&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%2C%22rings%22%3A%5B%5B%5B473704.5708999997%2C5362207.274800001%5D%2C%5B473697.6003999999%2C5362165.7161%5D%2C%5B473682.57519999985%2C5362168.232999999%5D%2C%5B473689.5469000004%2C5362209.7984%5D%2C%5B473704.5708999997%2C5362207.274800001%5D%5D%5D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true&resultRecordCount=25",
+        "captured_at_utc": "2000-01-01T00:00:00+00:00",
+        "review_status": "unreviewed_live_observation",
+        "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+        "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+        "source_date_limit": "Feature update date and positional accuracy not supplied; rooflines derive from aerial imagery, not surveyed walls.",
+        "sha256": "a6923018105d3bc48dfd24cfd19a2d87c0a47e70d98ae34f40b6705a5c1617f8",
+        "raw_response": {
+          "displayFieldName": "AUC_Group",
+          "hasZ": true,
+          "fieldAliases": {
+            "OBJECTID": "OBJECTID",
+            "LAYER": "LAYER",
+            "SHAPE_Area": "SHAPE_Area"
+          },
+          "geometryType": "esriGeometryPolygon",
+          "spatialReference": {
+            "wkid": 3157,
+            "latestWkid": 3157
+          },
+          "fields": [
+            {
+              "name": "OBJECTID",
+              "type": "esriFieldTypeOID",
+              "alias": "OBJECTID"
+            },
+            {
+              "name": "LAYER",
+              "type": "esriFieldTypeString",
+              "alias": "LAYER",
+              "length": 255
+            },
+            {
+              "name": "SHAPE_Area",
+              "type": "esriFieldTypeDouble",
+              "alias": "SHAPE_Area"
+            }
+          ],
+          "features": [
+            {
+              "attributes": {
+                "OBJECTID": 69542,
+                "LAYER": "Residential",
+                "SHAPE_Area": 195.44367200018118
+              },
+              "geometry": {
+                "hasZ": true,
+                "rings": [
+                  [
+                    [
+                      473699.76999999955,
+                      5362184.606000001,
+                      11.346000000005006
+                    ],
+                    [
+                      473698.44600000046,
+                      5362176.959000001,
+                      8.570999999996275
+                    ],
+                    [
+                      473695.4450000003,
+                      5362177.478,
+                      9.84299999999348
+                    ],
+                    [
+                      473695.1799999997,
+                      5362175.948999999,
+                      8.10899999999674
+                    ],
+                    [
+                      473693.1320000002,
+                      5362176.304,
+                      8.687000000005355
+                    ],
+                    [
+                      473692.9060000004,
+                      5362174.998,
+                      8.224000000001979
+                    ],
+                    [
+                      473686.45999999996,
+                      5362176.114,
+                      8.224000000001979
+                    ],
+                    [
+                      473686.96499999985,
+                      5362179.029999999,
+                      10.073999999993248
+                    ],
+                    [
+                      473686.841,
+                      5362179.051000001,
+                      9.959000000002561
+                    ],
+                    [
+                      473687.89300000016,
+                      5362185.131999999,
+                      10.190000000002328
+                    ],
+                    [
+                      473687.69600000046,
+                      5362185.165999999,
+                      11.346000000005006
+                    ],
+                    [
+                      473689.11400000006,
+                      5362193.355,
+                      11.346000000005006
+                    ],
+                    [
+                      473700.9299999997,
+                      5362191.3100000005,
+                      11.346000000005006
+                    ],
+                    [
+                      473699.76999999955,
+                      5362184.606000001,
+                      11.346000000005006
+                    ]
+                  ]
+                ]
+              }
+            }
+          ]
+        },
+        "raw_response_text": "{\"displayFieldName\":\"AUC_Group\",\"hasZ\":true,\"fieldAliases\":{\"OBJECTID\":\"OBJECTID\",\"LAYER\":\"LAYER\",\"SHAPE_Area\":\"SHAPE_Area\"},\"geometryType\":\"esriGeometryPolygon\",\"spatialReference\":{\"wkid\":3157,\"latestWkid\":3157},\"fields\":[{\"name\":\"OBJECTID\",\"type\":\"esriFieldTypeOID\",\"alias\":\"OBJECTID\"},{\"name\":\"LAYER\",\"type\":\"esriFieldTypeString\",\"alias\":\"LAYER\",\"length\":255},{\"name\":\"SHAPE_Area\",\"type\":\"esriFieldTypeDouble\",\"alias\":\"SHAPE_Area\"}],\"features\":[{\"attributes\":{\"OBJECTID\":69542,\"LAYER\":\"Residential\",\"SHAPE_Area\":195.44367200018118},\"geometry\":{\"hasZ\":true,\"rings\":[[[473699.76999999955,5362184.6060000006,11.346000000005006],[473698.44600000046,5362176.9590000007,8.5709999999962747],[473695.4450000003,5362177.4780000001,9.8429999999934807],[473695.1799999997,5362175.9489999991,8.1089999999967404],[473693.13200000022,5362176.3039999995,8.6870000000053551],[473692.90600000042,5362174.9979999997,8.2240000000019791],[473686.45999999996,5362176.1140000001,8.2240000000019791],[473686.96499999985,5362179.0299999993,10.073999999993248],[473686.84100000001,5362179.0510000009,9.9590000000025611],[473687.89300000016,5362185.1319999993,10.190000000002328],[473687.69600000046,5362185.1659999993,11.346000000005006],[473689.11400000006,5362193.3550000004,11.346000000005006],[473700.9299999997,5362191.3100000005,11.346000000005006],[473699.76999999955,5362184.6060000006,11.346000000005006]]]}}]}"
+      }
+    ]
+  }
+}

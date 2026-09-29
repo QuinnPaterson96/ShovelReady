@@ -139,6 +139,7 @@ def _normalize(
             providerVersion=_optional_string(data.get("version", "")),
             responseSha256=hashlib.sha256(raw).hexdigest(),
             rawResponse=data,
+            rawResponseText=raw.decode("utf-8"),
         )
         return SearchResponse(
             query=request.query,

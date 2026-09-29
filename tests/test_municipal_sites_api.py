@@ -8,9 +8,10 @@ import json
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-from fastapi import FastAPI
 from fastapi.testclient import TestClient
+from shapely.geometry import shape
 
+from app.main import create_app
 from app.municipal_sites import api
 
 FIXTURES = Path(__file__).parent / "fixtures" / "municipal_sites"
@@ -57,9 +58,7 @@ def client(monkeypatch, replacements=None):
         return SavedResponse(url, raw)
 
     monkeypatch.setattr(api, "urlopen", saved)
-    app = FastAPI()
-    app.include_router(api.router)
-    return TestClient(app)
+    return TestClient(create_app())
 
 
 def request_search(address="1144 MAY ST", **extra):
@@ -207,3 +206,51 @@ def test_roofline_provider_failure_keeps_parcel_evidence(monkeypatch):
     assert result["parcel"]["area_m2"] > 600
     assert result["issues"][0] == "roofline_fetch_failed"
     assert len(result["evidence"]) == 1
+
+
+def test_multipart_and_hole_geometry_survives_http_to_measurement(monkeypatch):
+    # Two 10x10 metre components, with a 2x2 hole: area = 196 m².
+    # This reproduces the UI bug that treated every Esri ring after the first as a hole.
+    def ring(x, y, size):
+        return [[x, y], [x + size, y], [x + size, y + size], [x, y + size], [x, y]]
+
+    parcel = fixture("parcel_observe_87")
+    parcel["features"][0]["geometry"] = {
+        "rings": [ring(473000, 5363000, 10), ring(473002, 5363002, 2), ring(473020, 5363000, 10)]
+    }
+    http = client(
+        monkeypatch, {"parcel_observe_87": parcel, "buildings_87": {"error": {"code": 503}}}
+    )
+    observed = http.post("/api/municipal-sites/observe", json=request_observe()).json()
+    assert observed["status"] == "partial"
+    polygon = observed["parcel"]["planar_geometry"]
+    assert polygon["type"] == "MultiPolygon"
+    assert shape(polygon).area == 196
+    result = http.post(
+        "/api/scouting-geometry/assess",
+        json={
+            "schema_version": "scouting-geometry.v1",
+            "projected_metre_crs": "EPSG:3157",
+            "parcel": {
+                "id": "selected",
+                "shape": {"crs": "EPSG:3157", "geometry": polygon},
+                "source": {
+                    "provider": "City of Victoria",
+                    "record_label": "synthetic topology regression",
+                    "review_status": "unreviewed",
+                },
+            },
+            "buildings": [],
+            "capture": {"completeness": "partial", "scope": "roofline request unavailable"},
+            "placement": {"id": "test", "centre_xy": [473025, 5363005], "width_m": 2, "depth_m": 2},
+        },
+    )
+    assert result.status_code == 200
+    checks = result.json()["checks"]
+    # Existing placement engine intentionally accepts single Polygon only. Preserve
+    # the whole geometry and an unresolved result rather than inventing one shell.
+    containment = next(c for c in checks if c["kind"] == "containment")
+    assert containment["status"] == "invalid"
+    assert containment["reason"] == "expected_nonempty_Polygon"
+    assert containment["relation"] is None
+    assert next(c for c in checks if c["kind"] == "parcel_boundary_distance")["distance_m"] is None

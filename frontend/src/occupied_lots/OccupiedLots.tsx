@@ -91,9 +91,10 @@ export type OccupiedLotsProps = {
   initialModelId?: string
   onMeasurement?: (measurement: OccupiedMeasurement | null) => void
   showHandoff?: boolean
+  suppliedCase?: Case
 }
 
-export default function OccupiedLots({ allowedModelIds, initialModelId = '', onMeasurement, showHandoff = true }: OccupiedLotsProps) {
+export default function OccupiedLots({ allowedModelIds, initialModelId = '', onMeasurement, showHandoff = true, suppliedCase }: OccupiedLotsProps) {
   const initialModel = bundledCatalogue.models.find(m => m.model_id === initialModelId && (!allowedModelIds || allowedModelIds.includes(m.model_id)))
   const initialDimension = (name: string) => {
     const quantity = initialModel?.measurements.find(m => m.name === name)?.quantity
@@ -124,6 +125,11 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
     let active = true
     version.current++
     setLoading(true); setError(''); setCases([]); setCaseId(''); setResult(null); onMeasurement?.(null)
+    if (suppliedCase) {
+      setCases([suppliedCase]); setCaseId(suppliedCase.case_id); setLoading(false)
+      setPlacement(current => ({ ...current, x: '', y: '' }))
+      return () => { active = false; version.current++ }
+    }
     const timer = setTimeout(() => controller.abort(), 10000)
     void (async () => {
       try {
@@ -137,8 +143,8 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
         else setError('Retained site request timed out.') }
       finally { clearTimeout(timer); if (active) setLoading(false) }
     })()
-    return () => { active = false; controller.abort(); clearTimeout(timer) }
-  }, [reload])
+    return () => { active = false; version.current++; controller.abort(); clearTimeout(timer) }
+  }, [reload, suppliedCase])
   function chooseCase(id: string) {
     invalidate(); setCaseId(id)
     setPlacement(current => ({ ...current, x: '', y: '' }))
@@ -208,7 +214,7 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
   const otherChecks = result?.checks.filter(c => !['containment', 'building_overlap', 'parcel_boundary_distance', 'nearest_building_distance', 'building_distance', 'named_boundary_distance', 'requirement'].includes(c.kind) || c.status !== 'observed' && c.kind !== 'requirement') ?? []
   const observationIncomplete = otherChecks.length > 0 || overlap?.complete === false
   const summary = result && selected ? [
-    `Site: ${selected.label} (${selected.case_id}). City of Victoria captured parcel and roofline observations; ${source?.review_status}; captured ${readableDate(source?.capture_date)}.`,
+    `Site: ${selected.label}. ${source?.provider} parcel and roofline observations; ${source?.review_status}; captured ${readableDate(source?.capture_date)}.`,
     `Nominal rectangle: ${show(width)} wide (${dimensionOrigin('width')}) × ${show(depth)} deep (${dimensionOrigin('depth')}); centre ${x}, ${y} in ${selected.site.projected_metre_crs}; rotation ${angle}°. ${model ? `${model.provider} ${model.name}, unreviewed provider lead; provider measurements captured ${readableDate(model.sources[0]?.captured_at)}; source ${model.provider_url}; manufacturer revision ${model.source_revision ?? 'not supplied'}. ${model.service_area_note} ${model.footprint_note}` : 'Dimensions supplied manually by user.'}`,
     `Observed conflicts: ${observedConflicts.length ? observedConflicts.map(check => checkText(check, selected)).join('; ') : observationIncomplete ? 'Some measurements are unresolved; no clear-space conclusion.' : 'No parcel crossing or captured roofline overlap observed at this position; clear space is not established.'}`,
     `Measured clearances: ${clearances.map(check => checkText(check, selected)).join('; ')}`,
@@ -218,7 +224,7 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
   ].join('\n') : ''
   return <section className="occupied-lots" aria-labelledby="occupied-title">
     <p className="eyebrow">Occupied-lot workspace</p><h2 id="occupied-title">See what this footprint meets on a captured lot</h2>
-    <p className="occupied-intro">Choose a retained Victoria parcel and set the nominal footprint. Click to place it, then measure observed overlaps and distances for that one position.</p>
+    <p className="occupied-intro">{suppliedCase ? 'Use your confirmed property observation and set the nominal footprint.' : 'Choose a retained Victoria parcel and set the nominal footprint.'} Click to place it, then measure observed overlaps and distances for that one position.</p>
     <p className="notice">Approximate, parcel-intersecting captures only. Rooflines are not walls; no observed overlap does not certify clear space. Legal boundaries, setbacks, other obstructions and provider dimensions need separate review. This does not establish site fit or permit eligibility.</p>
     {loading && <p role="status">Loading retained sites…</p>}
     {error && <p role="alert">{error} No site sketch is available. <button onClick={() => setReload(n => n + 1)}>Retry</button></p>}

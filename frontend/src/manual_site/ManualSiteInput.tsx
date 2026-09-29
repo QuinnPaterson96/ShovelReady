@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { buildPlacement, buildSite, metres, type ManualAssessment, type ManualFacts, type ManualSiteOutput, type PlacementDraft, type RectangleDraft } from './model'
-import './manual-site.css'
+import { MeasurementInput } from '../MeasurementInput'
+import { measurementWithUnit } from '../measurements'
+import { parseResult } from '../occupied_lots/contract'
 
 export type ManualSiteInputProps = {
   onChange: (output: ManualSiteOutput) => void
@@ -13,6 +15,7 @@ const blankBuilding = (): RectangleDraft => ({ label: '', x: '', y: '', width: '
 const validFootprint = (n: number | null | undefined) => typeof n === 'number' && Number.isFinite(n) && n > 0 ? String(n) : ''
 
 export function ManualSiteInput({ onChange, footprint }: ManualSiteInputProps) {
+  useEffect(() => { void import('./manual-site.css') }, [])
   const [facts, setFacts] = useState(emptyFacts)
   const [siteWidth, setSiteWidth] = useState('')
   const [siteDepth, setSiteDepth] = useState('')
@@ -52,6 +55,7 @@ export function ManualSiteInput({ onChange, footprint }: ManualSiteInputProps) {
       const response = await fetch('/api/scouting-geometry/assess', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(request), signal: controller.signal })
       if (!response.ok) throw new Error(`Measurement service unavailable (${response.status}).`)
       const result = await response.json() as ManualAssessment
+      parseResult(result)
       if (revision.current !== requestRevision) return
       if (result.schema_version !== 'scouting-geometry.v1' || result.conclusion !== 'tested_placement_observations_only' ||
           !Array.isArray(result.checks) || !Array.isArray(result.limitations) ||
@@ -77,18 +81,18 @@ export function ManualSiteInput({ onChange, footprint }: ManualSiteInputProps) {
       <div>
         <h3>1 · Facts you know</h3>
         <label htmlFor="manual-address">Address or site description (optional)</label><input id="manual-address" type="text" value={facts.address} onChange={e => editFacts('address', e.target.value)} />
-        <label htmlFor="manual-area">Stated lot area in m² (optional)</label><input id="manual-area" type="number" min="0" step="any" value={facts.statedAreaM2} onChange={e => editFacts('statedAreaM2', e.target.value)} />
+        <label htmlFor="manual-area">Stated lot area in m² (optional)</label><MeasurementInput dimension="area" id="manual-area" type="number" min="0" step="any" value={facts.statedAreaM2} onChange={e => editFacts('statedAreaM2', e.target.value)} />
         <p className="metadata">An address or area does not produce a parcel outline or locate it on a map.</p>
         <label htmlFor="manual-notes">Site facts or questions (optional)</label><textarea id="manual-notes" rows={3} value={facts.notes} onChange={e => editFacts('notes', e.target.value)} />
         <h3>2 · Approximate parcel rectangle</h3>
         <p className="metadata">Set a local metre frame: lower-left corner is (0, 0); X runs along your width and Y along your depth. These are sketch directions, not compass bearings.</p>
-        <div className="manual-fields"><div><label htmlFor="manual-width">Parcel width (m)</label><input id="manual-width" type="number" min="0" step="any" value={siteWidth} onChange={e => { invalidate(); setSiteWidth(e.target.value) }} /></div>
-          <div><label htmlFor="manual-depth">Parcel depth (m)</label><input id="manual-depth" type="number" min="0" step="any" value={siteDepth} onChange={e => { invalidate(); setSiteDepth(e.target.value) }} /></div></div>
+        <div className="manual-fields"><div><label htmlFor="manual-width">Parcel width (m)</label><MeasurementInput dimension="length" id="manual-width" type="number" min="0" step="any" value={siteWidth} onChange={e => { invalidate(); setSiteWidth(e.target.value) }} /></div>
+          <div><label htmlFor="manual-depth">Parcel depth (m)</label><MeasurementInput dimension="length" id="manual-depth" type="number" min="0" step="any" value={siteDepth} onChange={e => { invalidate(); setSiteDepth(e.target.value) }} /></div></div>
         {!site && <p role="status">Enter positive width and depth for a measurable rectangle. Your facts remain available without one.</p>}
         <h3>3 · Existing structures you can locate</h3>
         <p className="metadata">Add approximate rectangles using their lower-left X/Y position in the same frame. The outline basis is unknown; no structures entered means obstruction coverage is unknown.</p>
         {buildings.map((b, i) => <fieldset key={i}><legend>Structure {i + 1}</legend><label htmlFor={`manual-building-${i}-label`}>Description</label><input id={`manual-building-${i}-label`} type="text" value={b.label} onChange={e => editBuilding(i, 'label', e.target.value)} />
-          <div className="manual-fields">{(['x', 'y', 'width', 'depth'] as const).map(key => <div key={key}><label htmlFor={`manual-building-${i}-${key}`}>{key.toUpperCase()} (m)</label><input id={`manual-building-${i}-${key}`} type="number" step="any" value={b[key]} onChange={e => editBuilding(i, key, e.target.value)} /></div>)}</div>
+          <div className="manual-fields">{(['x', 'y', 'width', 'depth'] as const).map(key => <div key={key}><label htmlFor={`manual-building-${i}-${key}`}>{key.toUpperCase()} (m)</label><MeasurementInput dimension="length" id={`manual-building-${i}-${key}`} type="number" step="any" value={b[key]} onChange={e => editBuilding(i, key, e.target.value)} /></div>)}</div>
           <button type="button" onClick={() => { invalidate(); setBuildings(old => old.filter((_, j) => j !== i)) }}>Remove structure</button></fieldset>)}
         <button type="button" onClick={() => { invalidate(); setBuildings(old => [...old, blankBuilding()]) }}>Add existing structure</button>
         <label htmlFor="manual-coverage">Other obstruction coverage</label><select id="manual-coverage" value={coverage} onChange={e => { invalidate(); setCoverage(e.target.value as 'unknown' | 'partial') }}><option value="unknown">Unknown</option><option value="partial">Partial: I have entered some structures</option></select>
@@ -97,13 +101,13 @@ export function ManualSiteInput({ onChange, footprint }: ManualSiteInputProps) {
         <h3>4 · Test one placement</h3>
         <p className="metadata">Position is the proposed building rectangle’s centre X/Y in this same local frame. Dimensions are nominal unless separately verified. Editing any field clears the earlier result.</p>
         {footprint?.label && <p className="metadata">Initial footprint: {footprint.label}. Changing model dimensions resets these two fields.</p>}
-        <div className="manual-fields">{(['x', 'y', 'width', 'depth', 'angle'] as const).map(key => <div key={key}><label htmlFor={`manual-placement-${key}`}>{key === 'angle' ? 'Rotation (degrees)' : `${key.toUpperCase()} (m)`}</label><input id={`manual-placement-${key}`} type="number" step="any" value={placement[key]} onChange={e => editPlacement(key, e.target.value)} /></div>)}</div>
+        <div className="manual-fields">{(['x', 'y', 'width', 'depth', 'angle'] as const).map(key => <div key={key}><label htmlFor={`manual-placement-${key}`}>{key === 'angle' ? 'Rotation (degrees)' : `${key.toUpperCase()} (m)`}</label><MeasurementInput dimension="length" id={`manual-placement-${key}`} type="number" step="any" value={placement[key]} onChange={e => editPlacement(key, e.target.value)} /></div>)}</div>
         {drawing && site && <svg className="manual-drawing" viewBox={`${-viewWidth * .05} ${-viewDepth * .05} ${viewWidth * 1.1} ${viewDepth * 1.1}`} role="img" aria-label="Approximate parcel and user entered structure rectangles; measurements are shown in text below"><rect x="0" y="0" width={viewWidth} height={viewDepth} className="manual-parcel" />{site.buildings.map(b => { const ring = b.shape.geometry.coordinates as number[][][]; const [x, y] = ring[0][0], width = ring[0][1][0] - x, depth = ring[0][2][1] - y; return <rect key={b.id} x={x} y={viewDepth - y - depth} width={width} height={depth} className="manual-building" /> })}{placed && <rect x={placed.centre_xy[0] - placed.width_m / 2} y={viewDepth - placed.centre_xy[1] - placed.depth_m / 2} width={placed.width_m} height={placed.depth_m} transform={`rotate(${-placed.angle_degrees} ${placed.centre_xy[0]} ${viewDepth - placed.centre_xy[1]})`} className="manual-placement" />}</svg>}
         <p className="metadata">Diagram is schematic. Coordinates and measurements, not its screen size, set scale.</p>
         <button type="button" className="manual-measure" disabled={!site || !placed || measuring} onClick={() => void measure()}>{measuring ? 'Measuring…' : 'Measure this placement'}</button>
         {error && <p role="alert">{error}</p>}
         {assessment && <section aria-label="Manual placement measurements"><p className="eyebrow">Measured local sketch only</p><h3>{containment?.relation === 'outside' || overlaps.some(c => c.relation === 'positive_area_overlap') ? 'Conflict at this placement' : 'Placement to investigate'}</h3>
-          <p>Parcel containment: {containment?.status === 'observed' ? `${containment.relation}; ${containment.area_m2?.toFixed(2)} m² outside` : 'unresolved'}. Distance to parcel boundary: {boundary?.status === 'observed' ? `${boundary.distance_m?.toFixed(2)} m` : 'unresolved'}.</p>
+          <p>Parcel containment: {containment?.status === 'observed' ? `${containment.relation}; ${measurementWithUnit(containment.area_m2, 'area')} outside` : 'unresolved'}. Distance to parcel boundary: {boundary?.status === 'observed' ? measurementWithUnit(boundary.distance_m, 'length') : 'unresolved'}.</p>
           <ul>{overlaps.map(c => { const feature = site?.buildings.find(b => c.id === `building:${b.id}:overlap`); return <li key={c.id}>{feature?.source.record_label || c.id}: {c.status === 'observed' ? `${c.relation?.replace(/_/g, ' ')}; ${c.area_m2?.toFixed(2)} m² overlap` : `unresolved (${c.reason})`}</li> })}</ul>
           {site?.capture.limitations.some(l => l.startsWith('Incomplete structure')) && <p>Incomplete structure entries were omitted; parcel measurements remain usable, but those structures were not checked.</p>}
           {unresolved.length > 0 && <p>Unresolved measurements: {unresolved.map(c => c.id).join(', ')}.</p>}

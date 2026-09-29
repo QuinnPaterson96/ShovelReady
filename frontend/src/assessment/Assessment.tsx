@@ -11,8 +11,6 @@ import { measurementCopy } from '../model_catalogue/measurementCopy'
 import type { Field as ModelField } from '../model_catalogue/model'
 import { formatMeasurement } from '../measurements'
 import { SitePreparation, addressEvidenceText } from '../site_preparations/SitePreparation'
-import { SiteDiscovery } from '../site_discovery/SiteDiscovery'
-import type { Confirmed as ConfirmedSiteObservation } from '../site_discovery/flow'
 import { buildEvidenceChecklist, evidenceChecklistText, technicalChecklistText } from '../evidence_checklist/model'
 import { EvidenceChecklistView } from '../evidence_checklist/EvidenceChecklistView'
 import { CopyableRecord, publicSourceUrl, readableDate, TechnicalDetails } from '../ReadableProvenance'
@@ -90,11 +88,10 @@ export function Provenance({ draft }: { draft: Draft }) {
   </details>
 }
 
-export function AssessmentForm({ draft, dispatch, onSummary, onEvidence }: {
-  draft: Draft; dispatch: Dispatch<Action>; onSummary: () => void; onEvidence: () => void
+export function AssessmentForm({ draft, dispatch, onSummary, onEvidence, onBuilder }: {
+  draft: Draft; dispatch: Dispatch<Action>; onSummary: () => void; onEvidence: () => void; onBuilder?: () => void
 }) {
   const [selected, setSelected] = useState<ExampleId | ''>('')
-  const [siteObservation, setSiteObservation] = useState<ConfirmedSiteObservation | null>(null)
   const cancel = useRef<HTMLButtonElement>(null)
   const load = useRef<HTMLButtonElement>(null)
   const form = useRef<HTMLElement>(null)
@@ -123,8 +120,7 @@ export function AssessmentForm({ draft, dispatch, onSummary, onEvidence }: {
       <h3>Building details · optional</h3>
       <ModelInputs value={draft.model} onChange={value => dispatch({ type: 'model', value })} />
       <h3>Site details · optional</h3>
-      <SiteDiscovery onConfirm={setSiteObservation} />
-      {siteObservation && <p role="status">Observed property selected: {siteObservation.address.label} · {siteObservation.parcel.label}. Unreviewed, with no site fit checked. This demonstration selection does not change the retained or manual site inputs below.</p>}
+      {onBuilder && <p>Live Victoria address search and approximate placement are available in the <button type="button" onClick={onBuilder}>Model 300 property demo</button>. General preparation below uses retained or manually entered facts.</p>}
       <SitePreparation onLookup={value => dispatch({ type: 'site-lookup', value })} draft={draft.siteInput} onDraftChange={(value, areaInvalid) => dispatch({ type: 'site-input', value, areaInvalid })} selection={draft.site} onEdit={areaInvalid => dispatch({ type: 'site', value: null, areaInvalid })} onConfirm={value => dispatch({ type: 'site', value })} />
       <p>Placement, principal building and constraints remain unverified. If a parcel lead appears, confirm it explicitly before preparing the summary. The model and site facts are preparation evidence, not a fit result.</p>
       <button className="sr-primary" type="button" onClick={() => { dispatch({ type: 'submit' }); onSummary() }}>Prepare summary</button>

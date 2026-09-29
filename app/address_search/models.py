@@ -87,6 +87,7 @@ class SourceCapture(BaseModel):
     )
     reviewStatus: Literal["unreviewed"] = "unreviewed"
     rawResponse: dict[str, Any]
+    rawResponseText: str
 
 
 class SearchResponse(BaseModel):

@@ -1,5 +1,11 @@
 # Victoria live municipal sites: provisional API boundary
 
+September 29 integration update: see [combined behavior and verification](integration-live-parcel-discovery.md).
+The Model 300 route now owns live discovery and manual placement; the standalone
+worker limitations below describe the earlier handoff. Municipal responses also
+expose validated `planar_geometry`; geocoder evidence now includes `rawResponseText`.
+
+
 Issue [#167](https://github.com/QuinnPaterson96/ShovelReady/issues/167), under [#165](https://github.com/QuinnPaterson96/ShovelReady/issues/165). Base: `cfddc1e`. This is a bounded, live public-source observation adapter, not an accepted site, title, occupancy, zoning or fit determination.
 
 ## Versioned contract

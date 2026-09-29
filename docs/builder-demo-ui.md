@@ -1,5 +1,11 @@
 # Model 300 sample journey
 
+September 29 integration update: see [combined behavior and verification](integration-live-parcel-discovery.md).
+The Model 300 route now owns live discovery and manual placement; the standalone
+worker limitations below describe the earlier handoff. Municipal responses also
+expose validated `planar_geometry`; geocoder evidence now includes `rawResponseText`.
+
+
 Implemented on the `Model 300 demo` route in the ShovelReady app. This is an
 independent demonstration using the existing unreviewed `aux-300` catalogue record.
 The general assessment and occupied-lot routes remain available. The builder route
