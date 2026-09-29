@@ -165,6 +165,14 @@ slice must not erase its remaining acceptance criteria.
 
 ## Definition of done
 
+For measurement presentation changes, check the display policy in
+[Civic Atlas](visual-identity.md#measurement-display-precision): rounded summaries
+must retain exact values in calculation payloads and technical evidence. Focusing
+and leaving a field must not alter its stored value or source attribution. Include
+a near-threshold case where the displayed numbers coincide but the reported
+shortfall remains visible; tiny nonzero overlaps must not display as zero. These
+checks protect numerical meaning, not a particular component implementation.
+
 A consequential change is done when:
 
 - Supported scope and assumptions are explicit.

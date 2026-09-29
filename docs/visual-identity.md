@@ -43,6 +43,28 @@ material uncertainty and required actions visible rather than hiding them in hel
 Use the same plain labels in validation messages and summaries, while retaining
 precise measurement meaning in detailed evidence and exported review records.
 
+## Measurement display precision
+
+Ordinary metric displays use **at most two decimal places for lengths** and
+**one for areas**, rounded to nearest, without unnecessary trailing zeros.
+For example, 3.048 m displays as 3.05 m and 13.56384384 m² as 13.6 m².
+These are decimal places, not significant figures or a claim of survey accuracy.
+
+Keep source wording, original units and full normalized values in evidence details.
+Store and evaluate the original values; formatting must never become an input to
+geometry, threshold comparison or serialization of the technical record. Editable
+fields show full values on focus and a rounded display on blur. Focus/blur alone
+must not change a value, mark a source value as edited or invalidate a result.
+Allow users to enter more precision than the default display.
+
+Never show a small nonzero overlap or shortfall as zero. Below display resolution,
+use an explicit bound (for example, “< 0.1 m²”) and preserve the reported outcome.
+Near thresholds, keep the direction and margin visible and the exact evidence
+accessible, even if displayed measurements and limits round to the same number.
+Do not round quoted rule text. Rounding everything upward is not consistently
+conservative: a larger available site can overstate space. Any future directional
+planning allowance must identify its purpose and remain separate from source facts.
+
 ## Palette and roles
 
 | Role | Token | Value | Use |

@@ -90,7 +90,23 @@ export; the stored `depth`, quantity bases and assessment mapping are unchanged.
 The visual/quality guides and AGENTS.md establish this as the default for future UI
 work, with jurisdiction-specific definitions requiring their own source/revision.
 
-Local verification of this correction: all 60 frontend tests passed with `npm test`;
+Ordinary metric input displays and summaries now round lengths to at most two
+decimal places and areas to one, to nearest. Model 240's 3.048 m width therefore
+shows 3.05 m, and its 13.56384384 m² interior area shows 13.6 m². Focusing a field
+reveals its editable full value; focus/blur alone does not change it. Source baseline
+details and technical exports retain full values. Evaluations continue to use the
+stored values, and small nonzero overlaps or shortfalls are shown with explicit
+bounds instead of becoming zero. This is a display policy, not an accuracy claim
+or an upward planning allowance.
+
+Rounding verification: all 61 frontend tests and TypeScript checking passed.
+The existing model-to-summary test now checks rounded display against full values
+in the assessment mapping and technical record. A handoff boundary case keeps a
+0.001 m shortfall and 0.004 m² overlap visible without changing exported numbers.
+Browser focus/blur and editing checks are recorded in the PR handoff separately.
+
+Local verification of the published-dimensions/label correction before rounding:
+all 60 frontend tests passed with `npm test`;
 `npm run build` passed TypeScript and Vite compilation, retaining the existing large
 bundle advisory. `git diff --check` passed. No backend/data contract changed and no
 database tests or accepted-source publication were needed for this presentation fix.

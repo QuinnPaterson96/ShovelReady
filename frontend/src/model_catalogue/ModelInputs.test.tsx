@@ -3,7 +3,7 @@ import { test } from 'node:test'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { ModelInputs } from './ModelInputs'
 import { assessmentValues, bundledCatalogue, emptySelection, selectModel } from './model'
-import { PreparationSummary, providerReviewText } from '../assessment/Assessment'
+import { PreparationSummary, providerReviewText, technicalReviewText } from '../assessment/Assessment'
 import { draftReducer, initialDraft } from '../assessment/model'
 
 test('published Model 240 dimensions remain visible through preparation without becoming roof height', () => {
@@ -34,13 +34,26 @@ test('published Model 240 dimensions remain visible through preparation without 
   assert.match(markup, /Leave blank if unsure/)
   assert.equal(selection.fields.height.value, '')
   assert.equal(assessmentValues(selection).height, '')
+  // 10 ft × 0.3048 = 3.048 m; 146 ft² × 0.09290304 = 13.56384384 m².
+  // Only the ordinary display rounds; mapping and evidence must retain these values.
+  assert.match(markup, /<input[^>]*id="sr-model-width"[^>]*value="3\.05"/)
+  assert.match(markup, /<input[^>]*id="sr-model-depth"[^>]*value="7\.34"/)
+  assert.match(markup, /<input[^>]*id="sr-model-area"[^>]*value="13\.6"/)
+  assert.equal(assessmentValues(selection).width, '3.048')
+  assert.equal(assessmentValues(selection).depth, '7.3406')
+  assert.equal(assessmentValues(selection).area, '13.56384384')
 
   const draft = draftReducer(initialDraft, { type: 'model', value: selection })
   const summary = renderToStaticMarkup(<PreparationSummary draft={draft} onEdit={() => {}} />)
   assert.match(summary, /Exterior height<\/dt><dd>10 ft 3 in \(≈ 3\.12 m\)/)
   assert.match(providerReviewText(draft), /Exterior height: 10 ft 3 in \(≈ 3\.12 m\)/)
   assert.match(providerReviewText(draft), /Height \(m\): unknown \(roof height from foundation datum;/)
-  assert.match(providerReviewText(draft), /Length \(m\): 7\.3406 \(nominal exterior depth;/)
+  assert.match(providerReviewText(draft), /Length \(m\): 7\.34 \(nominal exterior depth;/)
+  assert.match(providerReviewText(draft), /Interior floor area \(m²\): 13\.6/)
+  const evidence = JSON.parse(technicalReviewText(draft))
+  assert.equal(evidence.model.fields.width.value, '3.048')
+  assert.equal(evidence.model.fields.area.value, '13.56384384')
+  assert.deepEqual(evidence.model.fields.depth.baseline, selection.fields.depth.baseline)
 })
 
 test('unavailable catalogue shows manual fields without invented candidate data', () => {

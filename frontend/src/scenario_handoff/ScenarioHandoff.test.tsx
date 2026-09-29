@@ -54,6 +54,30 @@ test('missing or mismatched site measurement cannot produce either export', () =
   assert.doesNotMatch(html, /Download scenario JSON/)
 })
 
+test('rounded handoff retains tiny conflicts and full technical measurements', () => {
+  // Independently specified boundary case: 1.499 < 1.5 by 0.001 m; ordinary
+  // displays coincide at 1.5 m but must not erase the recorded shortfall.
+  // Likewise, 0.004 m² is positive although nearest-tenth rounding produces zero.
+  // This checks presentation and lossless export, not geometry-engine arithmetic.
+  const requirement = assessment.checks.find(check => check.kind === 'requirement')!
+  const overlap = assessment.checks.find(check => check.kind === 'building_overlap')!
+  const small = parseResult({ ...assessment, checks: [
+    { ...requirement, distance_m: 1.499, margin_m: -0.001, comparison: 'shortfall', status: 'compared' },
+    { ...overlap, area_m2: 0.004, relation: 'positive_area_overlap' },
+    { ...overlap, id: 'missing-overlap-area', area_m2: null },
+  ] })
+  const props = { site, model, assessment: small }
+  const draft = providerEnquiry(props)!
+  assert.match(draft, /falls short of this minimum by < 0\.01 m/)
+  assert.match(draft, /positive area overlap; < 0\.1 m²/)
+  assert.doesNotMatch(draft, /; 0 m²/)
+  const exported = JSON.parse(JSON.stringify(scenarioRecord(props)))
+  assert.equal(exported.assessment.checks[0].distance_m, 1.499)
+  assert.equal(exported.assessment.checks[0].margin_m, -0.001)
+  assert.equal(exported.assessment.checks[1].area_m2, 0.004)
+  assert.equal(exported.assessment.checks[2].area_m2, null)
+})
+
 test('source-backed and specific-target comparisons retain their attribution', () => {
   const building = site.site.buildings[0]
   const sourceRequirement = {

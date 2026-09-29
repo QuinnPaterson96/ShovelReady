@@ -1,5 +1,6 @@
 import type { CatalogueModel } from './model'
 import { publicSourceUrl, readableDate } from '../ReadableProvenance'
+import { formatMeasurement } from '../measurements'
 
 export function publishedDimensions(model: CatalogueModel) {
   return [
@@ -12,7 +13,7 @@ export function publishedDimensions(model: CatalogueModel) {
     const usable = quantity?.dimension === 'length' && quantity.unit === 'm'
       && Number.isFinite(Number(quantity.value)) && Number(quantity.value) > 0
     return { label, sourceId: measure?.source_id,
-      text: usable ? `${quantity.original_text} (≈ ${Number(quantity.value).toFixed(2)} m)` : 'Not available in captured sources' }
+      text: usable ? `${quantity.original_text} (≈ ${formatMeasurement(quantity.value, 'length')} m)` : 'Not available in captured sources' }
   })
 }
 

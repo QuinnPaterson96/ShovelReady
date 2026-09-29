@@ -4,6 +4,7 @@ import { readableDate, TechnicalDetails } from '../ReadableProvenance'
 import { PublishedDimensions } from './PublishedDimensions'
 import { MeasurementLabel } from './MeasurementLabel'
 import { measurementCopy } from './measurementCopy'
+import { MeasurementInput } from '../MeasurementInput'
 
 const fields: Field[] = ['width', 'depth', 'height', 'area']
 
@@ -39,12 +40,13 @@ export function ModelInputs({ value, onChange, catalogue = bundledCatalogue }: {
       <a href={selected.provider_url} target="_blank" rel="noreferrer">Provider model page</a>
       <p>Provider sources captured {readableDate(selected.sources[0]?.captured_at)} · unreviewed.</p>
     </div>}
+    <p className="sr-model-hint">Display rounds lengths to two decimal places and areas to one. Focus a field to edit its full value; calculations keep the stored precision.</p>
     <div className="sr-model-grid">{fields.map(field => {
       const input = value.fields[field]
       const error = fieldError(input.value)
       return <div key={field}>
         <MeasurementLabel field={field} inputId={`sr-model-${field}`} />
-        <input id={`sr-model-${field}`} inputMode="decimal" value={input.value}
+        <MeasurementInput id={`sr-model-${field}`} inputMode="decimal" value={input.value} dimension={field === 'area' ? 'area' : 'length'}
           aria-invalid={!!error} aria-describedby={`sr-model-hint-${field}${error ? ` sr-model-error-${field}` : ''}`}
           onChange={event => onChange(editField(value, field, event.target.value))} />
         <p id={`sr-model-hint-${field}`} className="sr-model-hint">
@@ -54,6 +56,7 @@ export function ModelInputs({ value, onChange, catalogue = bundledCatalogue }: {
         {error && <p id={`sr-model-error-${field}`} className="sr-model-error" role="alert">{error}</p>}
         {input.baseline && <details><summary>Source baseline and basis</summary>
           <p>{input.baseline.quantity?.original_text ?? 'Unknown'} · {input.baseline.definition}</p>
+          {input.baseline.quantity && <p>Full normalized source value: {input.baseline.quantity.value} {input.baseline.quantity.unit}</p>}
           <p>{input.baseline.reason ?? 'Source transcription'} · unreviewed provider observation.</p>
           <TechnicalDetails><p>Source ID: <code>{input.baseline.source_id ?? 'unknown'}</code></p></TechnicalDetails>
           {input.origin === 'user' && <p>Current entry overrides this baseline and remains unreviewed.</p>}

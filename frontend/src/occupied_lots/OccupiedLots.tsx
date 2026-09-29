@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { bundledCatalogue } from '../model_catalogue/model'
 import { PublishedDimensions } from '../model_catalogue/PublishedDimensions'
 import { MeasurementLabel } from '../model_catalogue/MeasurementLabel'
+import { MeasurementInput } from '../MeasurementInput'
+import { measurementWithUnit } from '../measurements'
 import { CopyableRecord, publicSourceUrl, readableDate, TechnicalDetails } from '../ReadableProvenance'
 import { parseResult, parseSites, path, points } from './contract'
 import { overlapFinding } from './observations'
@@ -12,7 +14,7 @@ import './occupied-lots.css'
 
 type Placement = { x: string; y: string; width: string; depth: string; angle: string }
 const number = (value: string) => value.trim() !== '' && Number.isFinite(Number(value)) ? Number(value) : null
-const show = (value: number | null) => value === null ? 'unknown' : `${Number(value.toFixed(2))} m`
+const show = (value: number | null) => measurementWithUnit(value, 'length')
 const roofName = (selected: Case, id: string) => {
   const index = selected.site.buildings.findIndex(b => b.id === id)
   return index < 0 ? 'captured outline' : `Roof ${index + 1}`
@@ -22,8 +24,8 @@ const checkText = (check: Check, selected?: Case) => {
   const roofLabel = index >= 0 ? `Roof ${index + 1}` : 'captured outline'
   if (check.status !== 'observed' && check.kind !== 'requirement') return `${check.kind.replace(/_/g, ' ')}: ${check.status}${check.reason ? ` · ${check.reason}` : ''}`
   switch (check.kind) {
-    case 'containment': return `Parcel containment: ${check.relation?.replace(/_/g, ' ') ?? 'unknown'}${check.area_m2 ? ` · ${Number(check.area_m2.toFixed(2))} m² outside` : ''}`
-    case 'building_overlap': return `${roofLabel}: ${check.relation === 'positive_area_overlap' ? `${Number((check.area_m2 ?? 0).toFixed(2))} m² overlap` : check.relation === 'touches' ? 'rectangle touches outline' : check.relation === 'separate' ? 'no observed overlap' : 'relation unknown'}`
+    case 'containment': return `Parcel containment: ${check.relation?.replace(/_/g, ' ') ?? 'unknown'}${check.area_m2 ? ` · ${measurementWithUnit(check.area_m2, 'area')} outside` : ''}`
+    case 'building_overlap': return `${roofLabel}: ${check.relation === 'positive_area_overlap' ? `${measurementWithUnit(check.area_m2, 'area')} overlap` : check.relation === 'touches' ? 'rectangle touches outline' : check.relation === 'separate' ? 'no observed overlap' : 'relation unknown'}`
     case 'parcel_boundary_distance': return `Distance to parcel boundary: ${show(check.distance_m)}`
     case 'nearest_building_distance': return `Nearest captured roofline (${check.source_feature_ids.map(id => selected ? roofName(selected, id) : 'roofline').join(', ')}): ${show(check.distance_m)}`
     case 'building_distance': return `Distance to ${roofLabel}: ${show(check.distance_m)}`
@@ -194,7 +196,7 @@ export default function OccupiedLots() {
   const observationIncomplete = otherChecks.length > 0 || overlap?.complete === false
   const summary = result && selected ? [
     `Site: ${selected.label} (${selected.case_id}). City of Victoria captured parcel and roofline observations; ${source?.review_status}; captured ${readableDate(source?.capture_date)}.`,
-    `Nominal rectangle: ${width} m wide (${dimensionOrigin('width')}) × ${depth} m deep (${dimensionOrigin('depth')}); centre ${x}, ${y} in ${selected.site.projected_metre_crs}; rotation ${angle}°. ${model ? `${model.provider} ${model.name}, unreviewed provider lead; provider measurements captured ${readableDate(model.sources[0]?.captured_at)}; source ${model.provider_url}; manufacturer revision ${model.source_revision ?? 'not supplied'}. ${model.service_area_note} ${model.footprint_note}` : 'Dimensions supplied manually by user.'}`,
+    `Nominal rectangle: ${show(width)} wide (${dimensionOrigin('width')}) × ${show(depth)} deep (${dimensionOrigin('depth')}); centre ${x}, ${y} in ${selected.site.projected_metre_crs}; rotation ${angle}°. ${model ? `${model.provider} ${model.name}, unreviewed provider lead; provider measurements captured ${readableDate(model.sources[0]?.captured_at)}; source ${model.provider_url}; manufacturer revision ${model.source_revision ?? 'not supplied'}. ${model.service_area_note} ${model.footprint_note}` : 'Dimensions supplied manually by user.'}`,
     `Observed conflicts: ${observedConflicts.length ? observedConflicts.map(check => checkText(check, selected)).join('; ') : observationIncomplete ? 'Some measurements are unresolved; no clear-space conclusion.' : 'No parcel crossing or captured roofline overlap observed at this position; clear space is not established.'}`,
     `Measured clearances: ${clearances.map(check => checkText(check, selected)).join('; ')}`,
     ...comparisons.map(check => `${check.id.includes('parcel') ? 'Parcel boundary' : 'Nearest captured roofline'}: your entered minimum ${show(check.id.includes('parcel') ? parcelMinimum : buildingMinimum)}; measured ${show(check.distance_m)}; ${check.comparison ?? check.status}. This is a user assumption, not a legal threshold.`),
@@ -228,10 +230,11 @@ export default function OccupiedLots() {
             {model && <PublishedDimensions model={model} />}
             <div className="occupied-fields">{(['width', 'depth'] as const).map(key => <div key={key}>
               <MeasurementLabel field={key} inputId={`occupied-${key}`} />
-              <input id={`occupied-${key}`} type="number" step="any" value={placement[key]} onChange={e => { setDimensionOrigins(p => ({ ...p, [key]: 'user' })); changePlacement({ [key]: e.target.value }) }} />
-              <small>{dimensionOrigin(key)}{model && nominal(key === 'width' ? 'nominal_exterior_width' : 'nominal_exterior_depth') ? ` · catalogue ${Number(nominal(key === 'width' ? 'nominal_exterior_width' : 'nominal_exterior_depth'))} m` : ''}</small>
+              <MeasurementInput id={`occupied-${key}`} dimension="length" type="number" step="any" value={placement[key]} onChange={e => { setDimensionOrigins(p => ({ ...p, [key]: 'user' })); changePlacement({ [key]: e.target.value }) }} />
+              <small>{dimensionOrigin(key)}{model && nominal(key === 'width' ? 'nominal_exterior_width' : 'nominal_exterior_depth') ? ` · catalogue ${measurementWithUnit(nominal(key === 'width' ? 'nominal_exterior_width' : 'nominal_exterior_depth'), 'length')}` : ''}</small>
             </div>)}</div>
             <p className="metadata">These values describe a nominal exterior rectangle, not an installed envelope. This placement sketch measures width and length only; it does not check height.</p>
+            <p className="metadata">Lengths display to two decimal places and areas to one. Focus a field to edit its full value. Comparisons use stored values; full measurements remain in the evidence export.</p>
             <h3>2 · Adjust the position</h3>
             <div className="occupied-nudge"><label htmlFor="occupied-step">Move by</label><select id="occupied-step" value={nudgeMetres} onChange={e => setNudgeMetres(Number(e.target.value))}>
               <option value={0.25}>0.25 m</option><option value={1}>1 m</option><option value={5}>5 m</option></select>
@@ -247,9 +250,9 @@ export default function OccupiedLots() {
             <details><summary>Compare your own clearance assumptions</summary>
               <p className="metadata">Optional what-if targets entered by you; these are not Victoria setbacks.</p>
               <div className="occupied-fields"><div><label htmlFor="occupied-parcel-minimum">Minimum to parcel boundary (m)</label>
-                <input id="occupied-parcel-minimum" type="number" min="0" step="any" value={assumptions.parcel} onChange={e => changeAssumption('parcel', e.target.value)} /></div>
+                <MeasurementInput id="occupied-parcel-minimum" dimension="length" type="number" min="0" step="any" value={assumptions.parcel} onChange={e => changeAssumption('parcel', e.target.value)} /></div>
                 <div><label htmlFor="occupied-building-minimum">Minimum to nearest captured roofline (m)</label>
-                  <input id="occupied-building-minimum" type="number" min="0" step="any" value={assumptions.building} onChange={e => changeAssumption('building', e.target.value)} /></div></div>
+                  <MeasurementInput id="occupied-building-minimum" dimension="length" type="number" min="0" step="any" value={assumptions.building} onChange={e => changeAssumption('building', e.target.value)} /></div></div>
             </details>
             {(!valid || !assumptionsValid) && <p role="status">Place the rectangle, enter positive width and depth, a finite rotation, and nonnegative optional minimums to measure.</p>}
             <button className="sr-primary" disabled={!valid || !assumptionsValid || assessing} onClick={() => void assess()}>{assessing ? 'Measuring…' : 'Measure this placement'}</button>
