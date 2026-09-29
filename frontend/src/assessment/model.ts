@@ -4,12 +4,13 @@ import failed from '../../../app/draft_evaluations/inputs/synthetic-placement-fa
 import type { StatusContent } from '../StatusBanner'
 import { assessmentValues, emptySelection, fieldError } from '../model_catalogue/model'
 import type { Selection } from '../model_catalogue/model'
+import { measurementCopy } from '../model_catalogue/measurementCopy'
 import { emptySiteInput, type SiteInputDraft, type Lookup, type SitePreparationSelection } from '../site_preparations/types'
 
 export const fields = {
   municipality: 'Municipality', use: 'Intended use', role: 'Building role',
-  width: 'Nominal exterior width (m)', depth: 'Nominal exterior depth (m)',
-  height: 'Roof height from foundation datum (m)', area: 'Manufacturer interior floor area (m²)',
+  width: measurementCopy.width.label, depth: measurementCopy.depth.label,
+  height: measurementCopy.height.label, area: measurementCopy.area.label,
 } as const
 export type Field = keyof typeof fields
 export type Values = Record<Field, string>

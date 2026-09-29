@@ -14,6 +14,57 @@ between a promising lead, an unresolved condition, a computed draft example, and
 an accepted result. The name suggests readiness; page labels must state the actual
 scope and evidence status without relying on colour or a distant disclaimer.
 
+## Plain-language labels and help
+
+Lead with familiar words and units. Prefer **Width (m)** over "Nominal exterior
+width", **Length (m)** over "Nominal exterior depth", and **Height (m)** over
+"Roof height from foundation datum". Keep distinctions that prevent an incorrect
+answer: **Interior floor area (m²)** is clearer than an ambiguous "Area".
+
+An adjacent information button opens help below the label: the exact technical
+term, a short plain-language definition, measurement basis and any relevant
+inclusions/exclusions. Use the shared `MeasurementLabel` for physical model inputs,
+the placement workspace and preparation summary. Support click/tap and Enter/Space,
+a meaningful accessible name, expanded state, associated help, visible focus and a
+44 px target. Do not rely on hover or a browser `title` tooltip alone. Keep a short
+visible hint when someone could otherwise enter the wrong kind of measurement.
+
+Familiar labels may stay consistent across municipalities, but their legal definitions
+must remain specific. Help for a rule-derived quantity must name the jurisdiction,
+source clause and applicable revision, and explain its measurement basis. If that
+definition or applicability is unresolved, say so; do not borrow another city's
+definition. Physical provider dimensions are separately attributed product facts,
+not a substitute for a local rule. The current shared help describes these physical
+inputs only; it does not implement jurisdiction-specific rule mappings.
+
+Simplifying display text must not rename or merge distinct data concepts, silently
+convert values, or erase original terminology and citations. Keep decision status,
+material uncertainty and required actions visible rather than hiding them in help.
+Use the same plain labels in validation messages and summaries, while retaining
+precise measurement meaning in detailed evidence and exported review records.
+
+## Measurement display precision
+
+Ordinary metric displays use **at most two decimal places for lengths** and
+**one for areas**, rounded to nearest, without unnecessary trailing zeros.
+For example, 3.048 m displays as 3.05 m and 13.56384384 m² as 13.6 m².
+These are decimal places, not significant figures or a claim of survey accuracy.
+
+Keep source wording, original units and full normalized values in evidence details.
+Store and evaluate the original values; formatting must never become an input to
+geometry, threshold comparison or serialization of the technical record. Editable
+fields show full values on focus and a rounded display on blur. Focus/blur alone
+must not change a value, mark a source value as edited or invalidate a result.
+Allow users to enter more precision than the default display.
+
+Never show a small nonzero overlap or shortfall as zero. Below display resolution,
+use an explicit bound (for example, “< 0.1 m²”) and preserve the reported outcome.
+Near thresholds, keep the direction and margin visible and the exact evidence
+accessible, even if displayed measurements and limits round to the same number.
+Do not round quoted rule text. Rounding everything upward is not consistently
+conservative: a larger available site can overstate space. Any future directional
+planning allowance must identify its purpose and remain separate from source facts.
+
 ## Palette and roles
 
 | Role | Token | Value | Use |

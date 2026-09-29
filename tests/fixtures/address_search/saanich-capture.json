@@ -1,0 +1,7 @@
+{
+  "url": "https://geocoder.api.gov.bc.ca/addresses.json?addressString=200+Gorge+Rd+W%2C+Saanich%2C+BC&maxResults=5&outputSRS=4326&echo=true&autoComplete=false",
+  "fetchedAt": "2026-09-29T02:49:14.929831+00:00",
+  "status": 200,
+  "sha256": "407528776b9d8fbc2f17d48d43d9abf3e2971a168aa68ccbc0c7f102d9536328",
+  "bytes": 5887
+}

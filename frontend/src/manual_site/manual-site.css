@@ -1,0 +1,11 @@
+.manual-site .manual-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1rem, 3vw, 2rem); }
+.manual-site .manual-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem 1rem; }
+.manual-site input, .manual-site textarea { width: 100%; min-height: 44px; padding: .6rem; color: var(--ink); background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); }
+.manual-site fieldset { margin: 1rem 0; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+.manual-site legend { font-weight: 700; }
+.manual-drawing { display: block; width: 100%; max-height: 25rem; background: var(--map-canvas); border: 1px solid var(--border); border-radius: var(--radius-sm); }
+.manual-parcel { fill: var(--map-parcel-fill); stroke: var(--map-parcel-stroke); stroke-width: .2%; }
+.manual-building { fill: var(--map-roof-fill); stroke: var(--map-roof-stroke); stroke-width: .2%; }
+.manual-placement { fill: var(--map-zone-fill); stroke: var(--map-zone-stroke); stroke-width: .2%; }
+.manual-site .manual-measure { background: var(--primary); color: white; border-color: var(--primary); }
+@media (max-width: 700px) { .manual-site .manual-grid { grid-template-columns: 1fr; } }

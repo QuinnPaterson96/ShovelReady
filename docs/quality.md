@@ -86,6 +86,19 @@ adding blanket string bans that would break technical exports.
 
 A user should be able to identify why a case was included/excluded, what was checked, what remains unknown, and the source date. Test this understanding on real users. A disclaimer does not repair an affirmative label unsupported by the data.
 
+Keep known source facts visible even when they cannot yet populate an evaluation
+field. For example, show a provider's published exterior height beside the separate
+foundation-to-roof input; an unresolved measurement reference must not make the
+published height appear absent. Check both visibility of useful facts and correct
+uncertainty propagation, including the human-facing summary/export.
+
+Follow the [plain-language label and help rules](visual-identity.md#plain-language-labels-and-help).
+For changed measurement controls, check the default label and units, expanded
+definition, keyboard/touch access and narrow-screen wrapping. Verify that simplified
+labels preserve measurement identity and uncertainty through summary/export. A
+jurisdiction-specific definition must carry its jurisdiction and source/revision;
+when unavailable, retain the gap instead of asserting a universal legal meaning.
+
 Record errors by stage and retain run/release identifiers. Monitor ingestion failures and unresolved-case rates, not just HTTP uptime. Unexpected decision changes are investigated before promotion. Maintain a known-good application image and dataset release; test recovery with backward-compatible schemas and backups.
 
 ## Virtual-user evaluation
@@ -151,6 +164,14 @@ say which external artifact or decision is needed. Passing tests or merging a pa
 slice must not erase its remaining acceptance criteria.
 
 ## Definition of done
+
+For measurement presentation changes, check the display policy in
+[Civic Atlas](visual-identity.md#measurement-display-precision): rounded summaries
+must retain exact values in calculation payloads and technical evidence. Focusing
+and leaving a field must not alter its stored value or source attribution. Include
+a near-threshold case where the displayed numbers coincide but the reported
+shortfall remains visible; tiny nonzero overlaps must not display as zero. These
+checks protect numerical meaning, not a particular component implementation.
 
 A consequential change is done when:
 

@@ -1,5 +1,12 @@
 # MVP backlog
 
+Latest integration: [live Victoria discovery and Model 300 placement](../integration-live-parcel-discovery.md).
+Source adapters #166/#167 and connected selection #168 are implemented, with
+builder/manual entry #159/#160 mounted. #169/#165 remain open for holdout addresses,
+real unit/strata ambiguity and measured review effort; #147/#16 remain user-validation
+work. Do not reopen architecture expansion ahead of those evidence gaps.
+
+
 Current direction (September 27): independent aux box Model 300 builder-website POC.
 See [builder task wave](builder-demo-wave.md) for #159/#160 and #147 ownership,
 dependencies and prompts. This supersedes The Landing as the first demo model;

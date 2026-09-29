@@ -1,13 +1,14 @@
 import { CopyableRecord, publicSourceUrl, readableDate, TechnicalDetails } from '../ReadableProvenance'
 import type { Case, Check, Result } from '../occupied_lots/contract'
+import { measurementWithUnit } from '../measurements'
 
 export type ScenarioHandoffProps = { site: Case; model: unknown; assessment: Result | null }
 
 const record = (value: unknown): Record<string, unknown> | null =>
   value !== null && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : null
 const label = (value: unknown) => typeof value === 'string' && value.trim() ? value.trim() : null
-const metres = (value: number | null) => value === null || !Number.isFinite(value) ? 'unknown' : `${Number(value.toFixed(2))} m`
-const area = (value: number | null) => value === null || !Number.isFinite(value) ? 'unknown' : `${Number(value.toFixed(2))} m²`
+const metres = (value: number | null) => measurementWithUnit(value, 'length')
+const area = (value: number | null) => measurementWithUnit(value, 'area')
 const cleanUrl = (value: unknown) => publicSourceUrl(typeof value === 'string' ? value : null)?.split('?')[0] ?? null
 
 function modelDescription(model: unknown, placement: Result['input']['placement']) {
@@ -101,6 +102,7 @@ export function providerEnquiry({ site, model, assessment }: ScenarioHandoffProp
     ...(modelSource ? [`Design source: ${label(modelSource.locator) ?? 'record label unknown'}; captured ${readableDate(label(modelSource.captured_at))}; ${label(data?.review_status) ?? 'review status unknown'}.`] : ['Design source: capture date and record label unconfirmed.']),
     ...(links.length ? [`Source links: ${links.join(' ; ')}`] : ['Source links unavailable.']),
     'Measurements for this one supplied placement:',
+    'Display rounds lengths to two decimal places and areas to one; the scenario JSON retains complete values. Comparisons use unrounded measurements.',
     ...assessment.checks.map(check => `• ${checkDescription(check, site, assessment)}`),
     'Important unknowns: legal parcel lines, walls versus captured rooflines, building roles, current siting rules, other obstructions and services, controlled provider dimensions and installation requirements. No overlap with captured outlines does not certify clear space.',
     ...assessment.limitations.map(limit => `Capture/assessment limit: ${limit}`),

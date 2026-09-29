@@ -7,10 +7,12 @@ from fastapi import FastAPI
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
+from app.address_search.api import router as address_search_router
 from app.case_preparations.api import router as case_preparations_router
 from app.draft_evaluations.api import router as draft_evaluations_router
 from app.identity import AppIdentity, capture_identity
 from app.investigation import router
+from app.municipal_sites.api import router as municipal_sites_router
 from app.reference_cases import router as reference_cases_router
 from app.scouting_geometry.api import router as scouting_geometry_router
 from app.scouting_sites.api import router as scouting_sites_router
@@ -27,6 +29,8 @@ def create_app(*, frontend_dist: Path = FRONTEND_DIST) -> FastAPI:
         )
     application = FastAPI(title="ShovelReady", version="0.1.0")
 
+    application.include_router(address_search_router)
+    application.include_router(municipal_sites_router)
     application.include_router(case_preparations_router)
     application.include_router(router)
     application.include_router(draft_evaluations_router)

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { geometryPath, parseInvestigation, ringsPath, safeUrl } from './adapter'
 import type { Investigation, Observation } from './adapter'
 import { observationSourceLabel, readableDate, TechnicalDetails } from '../ReadableProvenance'
+import { measurementWithUnit } from '../measurements'
 
 export function InertJson({ value }: { value: unknown }) {
   return <pre>{JSON.stringify(value, null, 2)}</pre>
@@ -244,8 +245,8 @@ export default function RealObservations() {
               <Map key={key(parcel)} observations={observations} parcel={parcel} />
               <h3>Query-scoped intersections</h3>
               <p>
-                Uncovered geometric area: {parcel.uncovered_area_m2 ?? 'unknown'} m². Overlapping
-                zone area: {parcel.overlapping_zone_area_m2 ?? 'unknown'} m². These are geometric
+                Uncovered geometric area: {measurementWithUnit(parcel.uncovered_area_m2, 'area')}. Overlapping
+                zone area: {measurementWithUnit(parcel.overlapping_zone_area_m2, 'area')}. These are geometric
                 calculations, not regulatory lot areas or exhaustive overlay checks.
               </p>
               {!parcel.intersections.length && (
@@ -254,7 +255,7 @@ export default function RealObservations() {
               <ul>
                 {parcel.intersections.map((i, n) => (
                   <li key={n}>
-                    {i.classification} · {i.area_m2} m² ·{' '}
+                    {i.classification} · {measurementWithUnit(i.area_m2, 'area')} ·{' '}
                     City of Victoria zoning feature {i.zoning_feature_index} · unreviewed
                     <TechnicalDetails title="Exact zoning observation identity"><code>{i.zoning_snapshot_id}</code></TechnicalDetails>
                   </li>
@@ -289,7 +290,7 @@ export default function RealObservations() {
                   <p>
                     City of Victoria {observationSourceLabel(chosen.o.source_id)} feature {chosen.i} · unreviewed. OBJECTID is retained below; it is not a permanent site identity.
                   </p>
-                  <p>Geometric area: {assessment?.geometric_area_m2 ?? 'unknown'} m².</p>
+                  <p>Geometric area: {measurementWithUnit(assessment?.geometric_area_m2, 'area')}.</p>
                   <ul>
                     {assessment?.issues.map((i) => (
                       <li key={i}>{i}</li>

@@ -1,9 +1,11 @@
 import { bundledCatalogue, editField, editHeightReference, editIdentity, fieldError, selectModel } from './model'
 import type { Catalogue, Field, Selection } from './model'
 import { readableDate, TechnicalDetails } from '../ReadableProvenance'
+import { PublishedDimensions } from './PublishedDimensions'
+import { MeasurementLabel } from './MeasurementLabel'
+import { measurementCopy } from './measurementCopy'
+import { MeasurementInput } from '../MeasurementInput'
 
-const labels: Record<Field, string> = { width: 'Nominal exterior width (m)', depth: 'Nominal exterior depth (m)',
-  height: 'Building height (m)', area: 'Manufacturer interior area (m²)' }
 const fields: Field[] = ['width', 'depth', 'height', 'area']
 
 export function ModelInputs({ value, onChange, catalogue = bundledCatalogue }: {
@@ -29,44 +31,45 @@ export function ModelInputs({ value, onChange, catalogue = bundledCatalogue }: {
     </div>}
     {selected && <div className="sr-model-source">
       <p><strong>{selected.provider} · {selected.name}</strong> · unreviewed provider observation</p>
+      <PublishedDimensions model={selected} />
       <p>Configuration: {selected.configuration}. Controlled model revision: {selected.source_revision ?? 'unknown'}.</p>
       <p>Service area: {selected.service_area_note}</p>
       <p>Installation: {selected.installation_note}</p>
       <p>Footprint: {selected.footprint_note}</p>
-      <p>Height: {selected.height_note}</p>
       <p>Use: {selected.intended_use_note}</p>
       <a href={selected.provider_url} target="_blank" rel="noreferrer">Provider model page</a>
       <p>Provider sources captured {readableDate(selected.sources[0]?.captured_at)} · unreviewed.</p>
     </div>}
+    <p className="sr-model-hint">Display rounds lengths to two decimal places and areas to one. Focus a field to edit its full value; calculations keep the stored precision.</p>
     <div className="sr-model-grid">{fields.map(field => {
       const input = value.fields[field]
       const error = fieldError(input.value)
       return <div key={field}>
-        <label htmlFor={`sr-model-${field}`}>{labels[field]}</label>
-        <input id={`sr-model-${field}`} inputMode="decimal" value={input.value}
+        <MeasurementLabel field={field} inputId={`sr-model-${field}`} />
+        <MeasurementInput id={`sr-model-${field}`} inputMode="decimal" value={input.value} dimension={field === 'area' ? 'area' : 'length'}
           aria-invalid={!!error} aria-describedby={`sr-model-hint-${field}${error ? ` sr-model-error-${field}` : ''}`}
           onChange={event => onChange(editField(value, field, event.target.value))} />
         <p id={`sr-model-hint-${field}`} className="sr-model-hint">
           {input.value.trim() ? input.origin === 'source' ? 'Source value · unreviewed' : 'User value · unreviewed' : 'Unknown'}.
-          {field === 'height' && ' Roof high point and measurement datum are required; ceiling and unspecified overall exterior height do not qualify.'}
-          {field === 'area' && ' Physical interior area, not regulatory floor area.'}
+          {' '}{measurementCopy[field].hint}
         </p>
         {error && <p id={`sr-model-error-${field}`} className="sr-model-error" role="alert">{error}</p>}
         {input.baseline && <details><summary>Source baseline and basis</summary>
           <p>{input.baseline.quantity?.original_text ?? 'Unknown'} · {input.baseline.definition}</p>
+          {input.baseline.quantity && <p>Full normalized source value: {input.baseline.quantity.value} {input.baseline.quantity.unit}</p>}
           <p>{input.baseline.reason ?? 'Source transcription'} · unreviewed provider observation.</p>
           <TechnicalDetails><p>Source ID: <code>{input.baseline.source_id ?? 'unknown'}</code></p></TechnicalDetails>
           {input.origin === 'user' && <p>Current entry overrides this baseline and remains unreviewed.</p>}
         </details>}
       </div>
     })}</div>
-    <label htmlFor="sr-model-height-reference">Building height measurement reference</label>
+    <label htmlFor="sr-model-height-reference">How was this height measured?</label>
     <select id="sr-model-height-reference" value={value.heightReference}
       onChange={event => onChange(editHeightReference(value, event.target.value as Selection['heightReference']))}>
       <option value="unknown">Unknown / not established</option>
-      <option value="foundation_datum_to_roof_high_point">Foundation datum to roof high point · user asserted</option>
+      <option value="foundation_datum_to_roof_high_point">From the foundation reference to the highest roof point</option>
     </select>
-    <p className="sr-model-hint">A height with unknown reference is retained in this draft but excluded from the assessment mapping. Regulatory height from grade requires separate site and rule evidence.</p>
+    <p className="sr-model-hint">If you are unsure how it was measured, we will save the value but leave the height check unresolved. Your answer remains unverified.</p>
     {selected && <details><summary>All source measurements and capture identity</summary>
       <p>{selected.provider} · {selected.name} · catalogue captured {readableDate(catalogue?.captured_at)} · unreviewed.</p>
       <ul>{selected.measurements.map(measure => <li key={measure.name}>{measure.name}: {measure.quantity?.original_text ?? 'unknown'} · {measure.definition}

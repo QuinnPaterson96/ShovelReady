@@ -1,5 +1,20 @@
 # Architecture direction
 
+## Live property discovery checkpoint - September 29, 2026
+
+The existing app mounts bounded synchronous BC geocoder and Victoria municipal
+adapters. The Model 300 host owns explicit address/parcel confirmation, passes a
+source-attributed site into the stateless placement engine, and clears results on
+edits. `site-discovery.confirmed.v1` stays separate from retained lookup/publication
+identity. Raw source text is included for user export; no durable live-observation
+store or startup fetch was introduced. The municipal adapter emits validated planar
+geometry alongside raw Esri geometry so hole/shell nesting survives the handoff.
+Manual sketches use `LOCAL:METRE`, never an invented geolocation. See the
+[integration record](integration-live-parcel-discovery.md) for verification and gaps.
+
+## Earlier direction
+
+
 Status: agreed direction for experimentation, updated September 24, 2026. Foundation, contracts, draft persistence, licensed spatial import, offline extraction replay, draft scalar evaluator, observation API/UI and persistent local database tooling are implemented; accepted real-site evaluation/publication and deployment remain future work. See the [latest integration review](integration-review-2026-09-24.md), [restart assessment](restart-assessment.md) and [original handoff](prior-work/design-decisions.md) for evidence and earlier reasoning.
 
 ## Current POC direction (September 27, 2026)

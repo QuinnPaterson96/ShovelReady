@@ -6,6 +6,8 @@ import type { Candidate, Fact, Lookup, ManualFacts, SitePreparationSelection, Si
 
 import { emptySiteInput } from './types'
 import { publicSourceUrl, readableDate, TechnicalDetails } from '../ReadableProvenance'
+import { MeasurementInput } from '../MeasurementInput'
+import { formatMeasurement } from '../measurements'
 
 export type SitePreparationProps = {
   onConfirm: (selection: SitePreparationSelection) => void
@@ -149,7 +151,7 @@ export function SitePreparation({ onConfirm, onEdit, selection, draft, onDraftCh
       <p>Source address: {candidate.address.value ?? 'unknown (PID search may have multiple address rows)'}</p>
       {candidate.address.value !== null && <details><summary>Address match method and capture</summary><p className="metadata">{addressEvidenceText(candidate.address)}</p></details>}
       <p>VicPID {candidate.vic_pid.value ?? 'unknown'} · {candidate.parcel_type.value ?? 'type unknown'} · {candidate.parcel_status.value ?? 'status unknown'}</p>
-      <p>Approximate GIS area: {candidate.approximate_area_m2.value ?? 'unknown'} m² ({candidate.boundary_crs} XY). Boundary is an unreviewed GIS polygon.</p>
+      <p>Approximate GIS area: {formatMeasurement(candidate.approximate_area_m2.value, 'area')} m² ({candidate.boundary_crs} XY). Boundary is an unreviewed GIS polygon.</p>
       <p>Zoning contacts: {candidate.zones.length ? candidate.zones.map((zone) => `${zone.zone.value ?? 'unknown'} (${zone.classification})`).join(', ') : 'none captured; coverage unresolved'}.</p>
       <p className="metadata">City of Victoria parcel observation · captured {readableDate(candidate.pid.evidence.captured_at)} · unreviewed · {publicSourceUrl(candidate.pid.evidence.source_url) ? <a href={publicSourceUrl(candidate.pid.evidence.source_url)!} target="_blank" rel="noreferrer">source layer</a> : 'source link unavailable'}.</p>
       <TechnicalDetails title="Parcel technical capture record"><pre>{JSON.stringify(candidate, null, 2)}</pre></TechnicalDetails>
@@ -161,7 +163,7 @@ export function SitePreparation({ onConfirm, onEdit, selection, draft, onDraftCh
       <p>Enter what you know; leave unknown fields empty. These values remain separate from any source observation. An address alone does not verify a parcel match.</p>
       <label htmlFor="manual-address">Address, if known</label><input id="manual-address" type="text" value={address} onChange={(event) => { edit({ address: event.target.value }) }} />
       <label htmlFor="manual-pid">PID, if known</label><input id="manual-pid" type="text" value={pid} onChange={(event) => { edit({ pid: event.target.value }) }} />
-      <label htmlFor="manual-area">Approximate lot area (m²), if known</label><input id="manual-area" type="number" min="0" step="any" value={area} aria-invalid={invalidArea(area)} onChange={(event) => { edit({ area: event.target.value }) }} />
+      <label htmlFor="manual-area">Approximate lot area (m²), if known</label><MeasurementInput id="manual-area" dimension="area" type="number" min="0" step="any" value={area} aria-invalid={invalidArea(area)} onChange={(event) => { edit({ area: event.target.value }) }} />
       {invalidArea(area) && <p role="alert" className="sr-error">Enter a positive lot area in m², or leave it blank.</p>}
       <label htmlFor="manual-notes">Source or uncertainty notes</label><input id="manual-notes" type="text" value={notes} onChange={(event) => { edit({ notes: event.target.value }) }} />
       <button type="button" disabled={invalidArea(area)} onClick={() => confirm(null)}>Use manual facts without a parcel match</button>
