@@ -11,4 +11,10 @@
 .sr-model-notice { border-left: 5px solid var(--neutral-edge); background: var(--neutral-soft); color: var(--neutral-ink); padding: .8rem; }
 .sr-model-source { border-left: 3px solid var(--primary); padding-left: 1rem; margin-top: 1rem; overflow-wrap: anywhere; }
 .sr-model-inputs details { margin: .4rem 0 .7rem; overflow-wrap: anywhere; }
+.sr-published-dimensions { margin: 1rem 0; padding: 1rem; background: var(--surface-subtle); border: 1px solid var(--border); border-radius: var(--radius-sm); overflow-wrap: anywhere; }
+.sr-published-dimensions h3 { margin-top: 0; }
+.sr-published-dimensions dl { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr)); gap: 1rem; margin: 0; }
+.sr-published-dimensions dt { color: var(--ink-muted); }
+.sr-published-dimensions dd { margin: .25rem 0 0; font-weight: 650; }
+.sr-published-dimensions .metadata { margin-bottom: 0; }
 @media (max-width: 540px) { .sr-model-grid { grid-template-columns: 1fr; } }

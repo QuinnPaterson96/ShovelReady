@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { bundledCatalogue } from '../model_catalogue/model'
+import { PublishedDimensions } from '../model_catalogue/PublishedDimensions'
 import { CopyableRecord, publicSourceUrl, readableDate, TechnicalDetails } from '../ReadableProvenance'
 import { parseResult, parseSites, path, points } from './contract'
 import { overlapFinding } from './observations'
@@ -223,12 +224,13 @@ export default function OccupiedLots() {
             <label htmlFor="occupied-model">Prefab model or manual dimensions</label><select id="occupied-model" value={modelId} onChange={e => chooseModel(e.target.value)}>
               <option value="">Manual nominal footprint</option>{bundledCatalogue.models.map(m => <option key={m.model_id} value={m.model_id}>{m.provider} · {m.name}</option>)}</select>
             {model && <p className="metadata">{model.provider} · {model.name} · provider measurements captured {readableDate(model.sources[0]?.captured_at)} · unreviewed. <a href={model.provider_url} target="_blank" rel="noreferrer">Provider model page</a>. Manufacturer revision {model.source_revision ?? 'not supplied'}. {model.service_area_note} {model.footprint_note}</p>}
+            {model && <PublishedDimensions model={model} />}
             <div className="occupied-fields">{(['width', 'depth'] as const).map(key => <div key={key}>
               <label htmlFor={`occupied-${key}`}>Nominal exterior {key} (m)</label>
               <input id={`occupied-${key}`} type="number" step="any" value={placement[key]} onChange={e => { setDimensionOrigins(p => ({ ...p, [key]: 'user' })); changePlacement({ [key]: e.target.value }) }} />
               <small>{dimensionOrigin(key)}{model && nominal(key === 'width' ? 'nominal_exterior_width' : 'nominal_exterior_depth') ? ` · catalogue ${Number(nominal(key === 'width' ? 'nominal_exterior_width' : 'nominal_exterior_depth'))} m` : ''}</small>
             </div>)}</div>
-            <p className="metadata">These values describe a nominal exterior rectangle, not an installed envelope.</p>
+            <p className="metadata">These values describe a nominal exterior rectangle, not an installed envelope. This placement sketch measures width and length only; it does not check height.</p>
             <h3>2 · Adjust the position</h3>
             <div className="occupied-nudge"><label htmlFor="occupied-step">Move by</label><select id="occupied-step" value={nudgeMetres} onChange={e => setNudgeMetres(Number(e.target.value))}>
               <option value={0.25}>0.25 m</option><option value={1}>1 m</option><option value={5}>5 m</option></select>

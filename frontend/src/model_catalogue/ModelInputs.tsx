@@ -1,9 +1,10 @@
 import { bundledCatalogue, editField, editHeightReference, editIdentity, fieldError, selectModel } from './model'
 import type { Catalogue, Field, Selection } from './model'
 import { readableDate, TechnicalDetails } from '../ReadableProvenance'
+import { PublishedDimensions } from './PublishedDimensions'
 
 const labels: Record<Field, string> = { width: 'Nominal exterior width (m)', depth: 'Nominal exterior depth (m)',
-  height: 'Building height (m)', area: 'Manufacturer interior area (m²)' }
+  height: 'Roof height from foundation datum (m)', area: 'Manufacturer interior area (m²)' }
 const fields: Field[] = ['width', 'depth', 'height', 'area']
 
 export function ModelInputs({ value, onChange, catalogue = bundledCatalogue }: {
@@ -29,11 +30,11 @@ export function ModelInputs({ value, onChange, catalogue = bundledCatalogue }: {
     </div>}
     {selected && <div className="sr-model-source">
       <p><strong>{selected.provider} · {selected.name}</strong> · unreviewed provider observation</p>
+      <PublishedDimensions model={selected} />
       <p>Configuration: {selected.configuration}. Controlled model revision: {selected.source_revision ?? 'unknown'}.</p>
       <p>Service area: {selected.service_area_note}</p>
       <p>Installation: {selected.installation_note}</p>
       <p>Footprint: {selected.footprint_note}</p>
-      <p>Height: {selected.height_note}</p>
       <p>Use: {selected.intended_use_note}</p>
       <a href={selected.provider_url} target="_blank" rel="noreferrer">Provider model page</a>
       <p>Provider sources captured {readableDate(selected.sources[0]?.captured_at)} · unreviewed.</p>
@@ -48,7 +49,7 @@ export function ModelInputs({ value, onChange, catalogue = bundledCatalogue }: {
           onChange={event => onChange(editField(value, field, event.target.value))} />
         <p id={`sr-model-hint-${field}`} className="sr-model-hint">
           {input.value.trim() ? input.origin === 'source' ? 'Source value · unreviewed' : 'User value · unreviewed' : 'Unknown'}.
-          {field === 'height' && ' Roof high point and measurement datum are required; ceiling and unspecified overall exterior height do not qualify.'}
+          {field === 'height' && ' Optional separate measurement from the foundation reference to the highest roof point. Published exterior height is shown above when available.'}
           {field === 'area' && ' Physical interior area, not regulatory floor area.'}
         </p>
         {error && <p id={`sr-model-error-${field}`} className="sr-model-error" role="alert">{error}</p>}
@@ -60,7 +61,7 @@ export function ModelInputs({ value, onChange, catalogue = bundledCatalogue }: {
         </details>}
       </div>
     })}</div>
-    <label htmlFor="sr-model-height-reference">Building height measurement reference</label>
+    <label htmlFor="sr-model-height-reference">Roof height measurement reference</label>
     <select id="sr-model-height-reference" value={value.heightReference}
       onChange={event => onChange(editHeightReference(value, event.target.value as Selection['heightReference']))}>
       <option value="unknown">Unknown / not established</option>

@@ -86,6 +86,12 @@ adding blanket string bans that would break technical exports.
 
 A user should be able to identify why a case was included/excluded, what was checked, what remains unknown, and the source date. Test this understanding on real users. A disclaimer does not repair an affirmative label unsupported by the data.
 
+Keep known source facts visible even when they cannot yet populate an evaluation
+field. For example, show a provider's published exterior height beside the separate
+foundation-to-roof input; an unresolved measurement reference must not make the
+published height appear absent. Check both visibility of useful facts and correct
+uncertainty propagation, including the human-facing summary/export.
+
 Record errors by stage and retain run/release identifiers. Monitor ingestion failures and unresolved-case rates, not just HTTP uptime. Unexpected decision changes are investigated before promotion. Maintain a known-good application image and dataset release; test recovery with backward-compatible schemas and backups.
 
 ## Virtual-user evaluation
