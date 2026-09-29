@@ -45,6 +45,72 @@ The selected Model 300 consumer payload has `modelId: 'aux-300'`, `modelRevision
 
 ## Verification and remaining work
 
+### Published-dimensions correction (September 28, 2026)
+
+The Model 240 page was rechecked at **The Specs > Dimensions** after a user reported
+that its height appeared missing. It still lists 24 ft 1 in long, 10 ft wide and
+10 ft 3 in high: approximately 7.34 × 3.05 × 3.12 m. This is a live corroboration
+of the existing transcription, not a replacement snapshot or accepted design revision.
+
+The original catalogue commit `0e30487` (September 25) already stored
+`advertised_overall_height = 3.124200 m` with its original 10 ft 3 in value and
+page/section citation. That same commit mapped the editable height field only to
+`roof_height`, because the exterior-height statement did not specify the foundation
+datum or roof measurement point. **This was a presentation omission, not failed
+extraction.** The UI put the useful height in cautionary prose and an expanded list
+while leaving the prominently labelled "Building height" input blank. The placement
+workspace showed only width and depth. Tests preserved the mapping restriction but
+did not check that the published height remained prominent.
+
+The correction shows a shared **Published exterior dimensions** panel in model
+entry, preparation summary and the occupied-lot workspace. It uses the existing
+source quantities, original units, rounded metric display, source locator/link,
+capture date and review status. The provider-review text carries these dimensions
+as source facts, separately from edited inputs. Following user feedback, the separate
+input is labelled **Height (m)** with an information button that reveals the technical
+term **roof height from foundation datum** and its definition. The button supports
+click/tap and keyboard activation, exposes its expanded state to assistive technology,
+and opens inline help rather than relying on hover. A short measurement hint stays
+visible; the reference selector asks **How was this height measured?**. The 2D workspace explicitly states that
+it does not check height. Missing exterior heights remain missing; ceilings are
+not used as substitutes. No catalogue bytes, evaluation semantics or release change.
+
+The regression extends the existing ModelInputs behavior test through preparation
+and its copyable summary: the source's 10.25 ft × 0.3048 = 3.1242 m must be visible
+(rounded to 3.12 m) while the assessment height remains unresolved. The quality
+agreement now explicitly checks visibility as well as uncertainty propagation.
+Installed foundation/grade relationships and rule-specific height references remain
+separate acquisition questions; they do not prevent showing published dimensions.
+
+The same presentation pattern now covers **Width**, **Length**, **Height** and
+**Interior floor area**, with units and accessible information buttons. Shared
+physical-measurement copy keeps model entry, placement controls, validation and
+the preparation summary consistent. Original terms remain in the help and review
+export; the stored `depth`, quantity bases and assessment mapping are unchanged.
+The visual/quality guides and AGENTS.md establish this as the default for future UI
+work, with jurisdiction-specific definitions requiring their own source/revision.
+
+Ordinary metric input displays and summaries now round lengths to at most two
+decimal places and areas to one, to nearest. Model 240's 3.048 m width therefore
+shows 3.05 m, and its 13.56384384 m² interior area shows 13.6 m². Focusing a field
+reveals its editable full value; focus/blur alone does not change it. Source baseline
+details and technical exports retain full values. Evaluations continue to use the
+stored values, and small nonzero overlaps or shortfalls are shown with explicit
+bounds instead of becoming zero. This is a display policy, not an accuracy claim
+or an upward planning allowance.
+
+Rounding verification: all 61 frontend tests and TypeScript checking passed.
+The existing model-to-summary test now checks rounded display against full values
+in the assessment mapping and technical record. A handoff boundary case keeps a
+0.001 m shortfall and 0.004 m² overlap visible without changing exported numbers.
+Browser focus/blur and editing checks are recorded in the PR handoff separately.
+
+Local verification of the published-dimensions/label correction before rounding:
+all 60 frontend tests passed with `npm test`;
+`npm run build` passed TypeScript and Vite compilation, retaining the existing large
+bundle advisory. `git diff --check` passed. No backend/data contract changed and no
+database tests or accepted-source publication were needed for this presentation fix.
+
 Run from repository root: `python -m uv run --locked python -m app.model_catalogue.build_snapshot --check`, `python -m uv run --locked pytest -q tests/test_model_catalogue.py`, and `python -m uv run --locked ruff check app/model_catalogue tests/test_model_catalogue.py`. From `frontend/` after `npm ci`: `npm test`, `npm run typecheck`, `npm run build`. All are offline. No database, model service, provider API or live provider page is used by these checks.
 
 The catalogue is a manual snapshot, not a continuously fresh feed. A documented provider API and reuse permission, controlled drawings, source review, installation conditions, Victoria service confirmation and a site-specific geometry/grade review remain acquisition tasks. The parent assessment wiring and central project status are assigned to the integrator. No accepted data release or user validation follows from these software checks.

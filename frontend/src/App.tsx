@@ -6,6 +6,7 @@ import IdentityPanel from './Identity'
 import DraftEvaluations from './draft_evaluations/DraftEvaluations'
 import PilotPreparation from './case_preparations/PilotPreparation'
 import OccupiedLots from './occupied_lots/OccupiedLots'
+import BuilderDemo from './builder_demo/BuilderDemo'
 import { AssessmentForm, PreparationSummary } from './assessment/Assessment'
 import { draftReducer, initialDraft, submissionErrors } from './assessment/model'
 import './assessment/assessment.css'
@@ -13,9 +14,12 @@ import './evidence_checklist/evidence-checklist.css'
 import './model_catalogue/model-inputs.css'
 import './site_preparations/site-preparation.css'
 import './case_preparations/pilot.css'
+import './builder_demo/builder-demo.css'
+import './occupied_lots/occupied-lots.css'
+import './scenario_handoff/scenario-handoff.css'
 
 export default function App() {
-  const [page, setPage] = useState<'home' | 'inputs' | 'summary' | 'evidence' | 'pilot' | 'occupied'>('home')
+  const [page, setPage] = useState<'home' | 'builder' | 'inputs' | 'summary' | 'evidence' | 'pilot' | 'occupied'>('home')
   const [occupiedOpened, setOccupiedOpened] = useState(false)
   const openOccupied = () => { setOccupiedOpened(true); setPage('occupied') }
   const [draft, dispatch] = useReducer(draftReducer, initialDraft)
@@ -62,6 +66,7 @@ export default function App() {
       </div>
         <nav className="sr-nav" aria-label="Main navigation">
           <button aria-current={page === 'home' ? 'page' : undefined} onClick={() => setPage('home')}>Home</button>
+          <button aria-current={page === 'builder' ? 'page' : undefined} onClick={() => setPage('builder')}>Model 300 demo</button>
           <button aria-current={page === 'inputs' ? 'page' : undefined} onClick={() => setPage('inputs')}>Assessment inputs</button>
           <button aria-current={page === 'summary' ? 'page' : undefined} onClick={() => setPage('summary')}>Preparation summary</button>
           <button aria-current={page === 'occupied' ? 'page' : undefined} onClick={openOccupied}>Occupied-lot sketch</button>
@@ -75,11 +80,12 @@ export default function App() {
         <h2>Prepare a design for source-backed investigation.</h2>
         <p>Collect what you know about a building and its intended use. See which evidence is still needed before preliminary zoning scouting.</p>
         <p>We are exploring City of Victoria garden suites first. There is no accepted zoning dataset or real-site fit result yet. A preparation summary is not a feasibility assessment or permit approval.</p>
-        <div className="sr-actions"><button className="sr-primary" onClick={() => setPage('inputs')}>Start an assessment</button>
+        <div className="sr-actions"><button className="sr-primary" onClick={() => setPage('builder')}>Explore Model 300</button><button onClick={() => setPage('inputs')}>Start a general assessment</button>
           <button onClick={openOccupied}>Sketch a placement</button>
           <button onClick={() => setPage('evidence')}>Explore examples</button></div>
         <p>Begin with your own inputs, or explicitly load a labelled synthetic example. Unknown facts can stay unknown.</p>
       </section>}
+      {page === 'builder' && <BuilderDemo />}
       {page === 'inputs' && <AssessmentForm draft={draft} dispatch={dispatch}
         onSummary={() => { if (!Object.keys(submissionErrors(draft)).length) setPage('summary') }}
         onEvidence={() => setPage('pilot')} />}

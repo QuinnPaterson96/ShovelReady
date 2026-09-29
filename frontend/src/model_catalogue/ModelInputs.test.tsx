@@ -2,18 +2,58 @@ import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { ModelInputs } from './ModelInputs'
-import { bundledCatalogue, emptySelection, selectModel } from './model'
+import { assessmentValues, bundledCatalogue, emptySelection, selectModel } from './model'
+import { PreparationSummary, providerReviewText, technicalReviewText } from '../assessment/Assessment'
+import { draftReducer, initialDraft } from '../assessment/model'
 
-test('component labels height, provenance and the unreviewed source boundary', () => {
-  const selection = selectModel(emptySelection(), bundledCatalogue, 'aux-300')
+test('published Model 240 dimensions remain visible through preparation without becoming roof height', () => {
+  // Reproduced UX defect: the source publishes 10 ft 3 in (10.25 * 0.3048 = 3.1242 m),
+  // but the blank assessment-height input made the known product height look missing.
+  const selection = selectModel(emptySelection(), bundledCatalogue, 'aux-240')
   const markup = renderToStaticMarkup(<ModelInputs value={selection} onChange={() => {}} />)
-  assert.match(markup, /Building height \(m\)/)
+  const card = markup.match(/<section class="sr-published-dimensions"[\s\S]*?<\/section>/)?.[0]
+  assert.ok(card)
+  assert.match(card, /Exterior height<\/dt><dd>10 ft 3 in \(≈ 3\.12 m\)/)
+  assert.match(card, /Length<\/dt><dd>24 ft 1 in \(≈ 7\.34 m\)/)
+  assert.match(card, /Width<\/dt><dd>10 ft \(≈ 3\.05 m\)/)
+  assert.match(card, /href="https:\/\/www\.auxbox\.ca\/model-240"/)
+  assert.match(card, /captured 2026-09-25/)
+  assert.doesNotMatch(card, /<details/)
+  assert.match(markup, /<label for="sr-model-height">Height \(m\)<\/label>/)
+  assert.match(markup, /<label for="sr-model-width">Width \(m\)<\/label>/)
+  assert.match(markup, /<label for="sr-model-depth">Length \(m\)<\/label>/)
+  assert.match(markup, /<label for="sr-model-area">Interior floor area \(m²\)<\/label>/)
+  assert.match(markup, /aria-label="About height measurement" aria-expanded="false" aria-controls="sr-model-height-help"/)
+  assert.match(markup, /id="sr-model-height-help" class="sr-model-help" hidden=""/)
+  assert.match(markup, /Technical term: roof height from foundation datum/)
   assert.match(markup, /datum\/roof point unspecified/)
   assert.match(markup, /Source baseline and basis/)
   assert.match(markup, /Provider model page/)
   assert.match(markup, /unreviewed provider observation/)
   assert.match(markup, /All source measurements and capture identity/)
-  assert.match(markup, /Roof high point and measurement datum are required/)
+  assert.match(markup, /Leave blank if unsure/)
+  assert.equal(selection.fields.height.value, '')
+  assert.equal(assessmentValues(selection).height, '')
+  // 10 ft × 0.3048 = 3.048 m; 146 ft² × 0.09290304 = 13.56384384 m².
+  // Only the ordinary display rounds; mapping and evidence must retain these values.
+  assert.match(markup, /<input[^>]*id="sr-model-width"[^>]*value="3\.05"/)
+  assert.match(markup, /<input[^>]*id="sr-model-depth"[^>]*value="7\.34"/)
+  assert.match(markup, /<input[^>]*id="sr-model-area"[^>]*value="13\.6"/)
+  assert.equal(assessmentValues(selection).width, '3.048')
+  assert.equal(assessmentValues(selection).depth, '7.3406')
+  assert.equal(assessmentValues(selection).area, '13.56384384')
+
+  const draft = draftReducer(initialDraft, { type: 'model', value: selection })
+  const summary = renderToStaticMarkup(<PreparationSummary draft={draft} onEdit={() => {}} />)
+  assert.match(summary, /Exterior height<\/dt><dd>10 ft 3 in \(≈ 3\.12 m\)/)
+  assert.match(providerReviewText(draft), /Exterior height: 10 ft 3 in \(≈ 3\.12 m\)/)
+  assert.match(providerReviewText(draft), /Height \(m\): unknown \(roof height from foundation datum;/)
+  assert.match(providerReviewText(draft), /Length \(m\): 7\.34 \(nominal exterior depth;/)
+  assert.match(providerReviewText(draft), /Interior floor area \(m²\): 13\.6/)
+  const evidence = JSON.parse(technicalReviewText(draft))
+  assert.equal(evidence.model.fields.width.value, '3.048')
+  assert.equal(evidence.model.fields.area.value, '13.56384384')
+  assert.deepEqual(evidence.model.fields.depth.baseline, selection.fields.depth.baseline)
 })
 
 test('unavailable catalogue shows manual fields without invented candidate data', () => {
@@ -21,4 +61,8 @@ test('unavailable catalogue shows manual fields without invented candidate data'
   assert.match(markup, /Catalogue unavailable/)
   assert.match(markup, /Model name/)
   assert.doesNotMatch(markup, /aux box/)
+  assert.doesNotMatch(markup, /Published exterior dimensions/)
+  const landing = selectModel(emptySelection(), bundledCatalogue, 'click-landing')
+  const landingMarkup = renderToStaticMarkup(<ModelInputs value={landing} onChange={() => {}} />)
+  assert.match(landingMarkup, /Exterior height<\/dt><dd>Not available in captured sources/)
 })

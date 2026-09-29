@@ -5,7 +5,14 @@ import { exampleIds, fields, preparationStatus } from './model'
 import type { Action, Draft, ExampleId, Field } from './model'
 import { ModelInputs } from '../model_catalogue/ModelInputs'
 import { bundledCatalogue } from '../model_catalogue/model'
+import { PublishedDimensions, publishedDimensions } from '../model_catalogue/PublishedDimensions'
+import { MeasurementLabel } from '../model_catalogue/MeasurementLabel'
+import { measurementCopy } from '../model_catalogue/measurementCopy'
+import type { Field as ModelField } from '../model_catalogue/model'
+import { formatMeasurement } from '../measurements'
 import { SitePreparation, addressEvidenceText } from '../site_preparations/SitePreparation'
+import { SiteDiscovery } from '../site_discovery/SiteDiscovery'
+import type { Confirmed as ConfirmedSiteObservation } from '../site_discovery/flow'
 import { buildEvidenceChecklist, evidenceChecklistText, technicalChecklistText } from '../evidence_checklist/model'
 import { EvidenceChecklistView } from '../evidence_checklist/EvidenceChecklistView'
 import { CopyableRecord, publicSourceUrl, readableDate, TechnicalDetails } from '../ReadableProvenance'
@@ -48,9 +55,11 @@ export function providerReviewText(draft: Draft) {
     `Site: ${candidate ? `retained City of Victoria GIS lead PID ${candidate.pid.value ?? 'unknown'}` : draft.site ? 'unmatched manual site' : 'not selected'}; captured ${readableDate(candidate?.pid.evidence.captured_at)}; unreviewed`,
     `Site source: ${publicSourceUrl(candidate?.pid.evidence.source_url) ?? 'link unavailable'}`,
     `Source address: ${candidate?.address.value ?? 'unknown'}; ${candidate ? addressEvidenceText(candidate.address) : 'no captured address evidence'}`,
-    `Manual site: address ${draft.site?.manual.address.value ?? 'unknown'}; PID ${draft.site?.manual.pid.value ?? 'unknown'}; area ${draft.site?.manual.lot_area_m2.value ?? 'unknown'} m²; notes ${draft.site?.manual.notes.value ?? 'none'}`,
+    `Manual site: address ${draft.site?.manual.address.value ?? 'unknown'}; PID ${draft.site?.manual.pid.value ?? 'unknown'}; area ${formatMeasurement(draft.site?.manual.lot_area_m2.value, 'area')} m²; notes ${draft.site?.manual.notes.value ?? 'none'}`,
     `Model: ${draft.model.provider || 'provider unknown'} / ${draft.model.modelName || 'model unknown'}; manufacturer revision ${draft.model.modelRevision ?? 'not supplied'}; captured ${readableDate(model?.sources[0]?.captured_at)}; unreviewed; height reference ${draft.model.heightReference}`,
-    ...(['width', 'depth', 'height', 'area'] as const).map(key => `${fields[key]}: ${draft.model.fields[key].value || 'unknown'} (${draft.model.fields[key].origin}; source baseline ${draft.model.fields[key].baseline?.quantity?.original_text ?? 'none'})`),
+    ...(model ? [`Published exterior dimensions (provider specification, unreviewed): ${publishedDimensions(model).map(dimension => `${dimension.label}: ${dimension.text}`).join('; ')}. Separate from user edits and installed/regulatory height.`] : []),
+    ...(['width', 'depth', 'height', 'area'] as const).map(key => `${fields[key]}: ${formatMeasurement(draft.model.fields[key].value, key === 'area' ? 'area' : 'length')} (${measurementCopy[key].technicalTerm}; ${draft.model.fields[key].origin}; source baseline ${draft.model.fields[key].baseline?.quantity?.original_text ?? 'none'})`),
+    'Display: lengths rounded to two decimal places and areas to one; complete values retained in the technical evidence record.',
     `Model sources: ${model?.sources.map(source => `${source.locator}; captured ${readableDate(source.captured_at)}; ${publicSourceUrl(source.url) ?? 'link unavailable'}`).join('; ') ?? 'none'}`,
     `Provisional rule source: City of Victoria ${victoriaPacket.source.instrument}; printed revision ${victoriaPacket.source.printed_revision ?? 'unknown'}; captured ${readableDate(victoriaPacket.source.captured_at)}; unreviewed; ${victoriaPacket.source.source_url}`,
     'Checks performed: none. Provisional rule candidates are not accepted or evaluated.',
@@ -85,6 +94,7 @@ export function AssessmentForm({ draft, dispatch, onSummary, onEvidence }: {
   draft: Draft; dispatch: Dispatch<Action>; onSummary: () => void; onEvidence: () => void
 }) {
   const [selected, setSelected] = useState<ExampleId | ''>('')
+  const [siteObservation, setSiteObservation] = useState<ConfirmedSiteObservation | null>(null)
   const cancel = useRef<HTMLButtonElement>(null)
   const load = useRef<HTMLButtonElement>(null)
   const form = useRef<HTMLElement>(null)
@@ -113,6 +123,8 @@ export function AssessmentForm({ draft, dispatch, onSummary, onEvidence }: {
       <h3>Building details · optional</h3>
       <ModelInputs value={draft.model} onChange={value => dispatch({ type: 'model', value })} />
       <h3>Site details · optional</h3>
+      <SiteDiscovery onConfirm={setSiteObservation} />
+      {siteObservation && <p role="status">Observed property selected: {siteObservation.address.label} · {siteObservation.parcel.label}. Unreviewed, with no site fit checked. This demonstration selection does not change the retained or manual site inputs below.</p>}
       <SitePreparation onLookup={value => dispatch({ type: 'site-lookup', value })} draft={draft.siteInput} onDraftChange={(value, areaInvalid) => dispatch({ type: 'site-input', value, areaInvalid })} selection={draft.site} onEdit={areaInvalid => dispatch({ type: 'site', value: null, areaInvalid })} onConfirm={value => dispatch({ type: 'site', value })} />
       <p>Placement, principal building and constraints remain unverified. If a parcel lead appears, confirm it explicitly before preparing the summary. The model and site facts are preparation evidence, not a fit result.</p>
       <button className="sr-primary" type="button" onClick={() => { dispatch({ type: 'submit' }); onSummary() }}>Prepare summary</button>
@@ -145,8 +157,11 @@ export function PreparationSummary({ draft, onEdit }: { draft: Draft; onEdit: ()
     <details open><summary>Copyable provider-review summary · no sending</summary>
       <CopyableRecord id="provider-review-text" label="Unreviewed provider review text" value={providerReviewText(draft)} />
     </details>
-    <dl className="sr-values">{(Object.keys(fields) as Field[]).map(key => <div key={key}><dt>{fields[key]}</dt>
-      <dd>{draft.values[key].trim() || 'Unknown'} · {draft.imported && !draft.edited.includes(key) ? 'Imported synthetic input' : key in draft.model.fields
+    {bundledCatalogue.models.filter(model => model.model_id === draft.model.modelId && draft.model.snapshotId === bundledCatalogue.snapshot_id)
+      .map(model => <PublishedDimensions key={model.model_id} model={model} />)}
+    <dl className="sr-values">{(Object.keys(fields) as Field[]).map(key => <div key={key}><dt>{key in measurementCopy
+      ? <MeasurementLabel field={key as ModelField} /> : fields[key]}</dt>
+      <dd>{key in measurementCopy ? formatMeasurement(draft.values[key], key === 'area' ? 'area' : 'length') : draft.values[key].trim() || 'Unknown'} · {draft.imported && !draft.edited.includes(key) ? 'Imported synthetic input' : key in draft.model.fields
         ? draft.model.fields[key as keyof typeof draft.model.fields].origin === 'source' && draft.values[key].trim()
           ? 'Provider source observation · unreviewed' : 'User supplied or unknown · unreviewed'
         : 'Your choice · unreviewed'}</dd></div>)}</dl>
@@ -161,15 +176,15 @@ export function PreparationSummary({ draft, onEdit }: { draft: Draft; onEdit: ()
       <CopyableRecord id="technical-checklist-text" label="Complete checklist evidence and associations" value={technicalChecklistText(buildEvidenceChecklist(draft))} />
     </TechnicalDetails>
     {draft.site && <details open><summary>Site source and manual facts</summary>
-      {draft.site.candidate && <p>Retained PID {draft.site.candidate.pid.value ?? 'unknown'} · approximate GIS area {draft.site.candidate.approximate_area_m2.value ?? 'unknown'} m² · {sourceLink(draft.site.candidate.pid.evidence.source_url) ? <a href={sourceLink(draft.site.candidate.pid.evidence.source_url)!}>source observation</a> : 'source link unavailable'}. Unreviewed geometry, not a legal survey.</p>}
+      {draft.site.candidate && <p>Retained PID {draft.site.candidate.pid.value ?? 'unknown'} · approximate GIS area {formatMeasurement(draft.site.candidate.approximate_area_m2.value, 'area')} m² · {sourceLink(draft.site.candidate.pid.evidence.source_url) ? <a href={sourceLink(draft.site.candidate.pid.evidence.source_url)!}>source observation</a> : 'source link unavailable'}. Unreviewed geometry, not a legal survey.</p>}
       {draft.site.candidate && <><p>Source address: {draft.site.candidate.address.value ?? 'unknown'} · captured address observation, unreviewed.</p>
         <details><summary>Address match method and capture</summary><p>{addressEvidenceText(draft.site.candidate.address)}</p></details></>}
       {draft.site.candidate && <details><summary>Complete retained parcel candidate and evidence</summary><pre>{JSON.stringify(draft.site.candidate, null, 2)}</pre></details>}
-      <p>Manual address {draft.site.manual.address.value ?? 'unknown'}; PID {draft.site.manual.pid.value ?? 'unknown'}; lot area {draft.site.manual.lot_area_m2.value ?? 'unknown'} m²; notes {draft.site.manual.notes.value ?? 'none'}. Manual values remain unreviewed and separate from source values.</p>
+      <p>Manual address {draft.site.manual.address.value ?? 'unknown'}; PID {draft.site.manual.pid.value ?? 'unknown'}; lot area {formatMeasurement(draft.site.manual.lot_area_m2.value, 'area')} m²; notes {draft.site.manual.notes.value ?? 'none'}. Manual values remain unreviewed and separate from source values.</p>
       <details><summary>Site capture and revision identifiers</summary><p>Spatial revision {draft.site.spatial_revision ?? 'unknown'} · schema {draft.site.schema_version} · review {draft.site.review_status} · source capture {draft.site.candidate?.pid.evidence.captured_at ?? 'unknown'} · snapshot {draft.site.candidate?.pid.evidence.snapshot_id ?? 'unknown'}.</p></details>
     </details>}
     <details open><summary>Model source and edits</summary><p>{draft.model.provider || 'Provider unknown'} · {draft.model.modelName || 'model unknown'} · unreviewed. Height reference: {draft.model.heightReference}.</p>
-      <ul>{(['width', 'depth', 'height', 'area'] as const).map(key => <li key={key}>{fields[key]}: {draft.model.fields[key].value || 'unknown'} · {draft.model.fields[key].origin} · baseline {draft.model.fields[key].baseline?.quantity?.original_text ?? 'none'}</li>)}</ul>
+      <ul>{(['width', 'depth', 'height', 'area'] as const).map(key => <li key={key}>{fields[key]}: {formatMeasurement(draft.model.fields[key].value, key === 'area' ? 'area' : 'length')} · {draft.model.fields[key].origin} · baseline {draft.model.fields[key].baseline?.quantity?.original_text ?? 'none'}</li>)}</ul>
       {bundledCatalogue.models.find(model => model.model_id === draft.model.modelId)?.sources.map(source => <p key={source.source_id}><a href={source.url}>Provider source</a> · {source.locator} · captured {readableDate(source.captured_at)} · unreviewed</p>)}
       <details><summary>Model capture and revision identifiers</summary><p>Snapshot {draft.model.snapshotId ?? 'none'} · revision {draft.model.modelRevision ?? 'unknown'} · review {draft.model.reviewStatus}.</p></details>
       <details><summary>Complete model selection and source baselines</summary><pre>{JSON.stringify(draft.model, null, 2)}</pre></details>
