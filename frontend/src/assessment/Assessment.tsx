@@ -6,6 +6,8 @@ import type { Action, Draft, ExampleId, Field } from './model'
 import { ModelInputs } from '../model_catalogue/ModelInputs'
 import { bundledCatalogue } from '../model_catalogue/model'
 import { SitePreparation, addressEvidenceText } from '../site_preparations/SitePreparation'
+import { SiteDiscovery } from '../site_discovery/SiteDiscovery'
+import type { Confirmed as ConfirmedSiteObservation } from '../site_discovery/flow'
 import { buildEvidenceChecklist, evidenceChecklistText, technicalChecklistText } from '../evidence_checklist/model'
 import { EvidenceChecklistView } from '../evidence_checklist/EvidenceChecklistView'
 import { CopyableRecord, publicSourceUrl, readableDate, TechnicalDetails } from '../ReadableProvenance'
@@ -85,6 +87,7 @@ export function AssessmentForm({ draft, dispatch, onSummary, onEvidence }: {
   draft: Draft; dispatch: Dispatch<Action>; onSummary: () => void; onEvidence: () => void
 }) {
   const [selected, setSelected] = useState<ExampleId | ''>('')
+  const [siteObservation, setSiteObservation] = useState<ConfirmedSiteObservation | null>(null)
   const cancel = useRef<HTMLButtonElement>(null)
   const load = useRef<HTMLButtonElement>(null)
   const form = useRef<HTMLElement>(null)
@@ -113,6 +116,8 @@ export function AssessmentForm({ draft, dispatch, onSummary, onEvidence }: {
       <h3>Building details · optional</h3>
       <ModelInputs value={draft.model} onChange={value => dispatch({ type: 'model', value })} />
       <h3>Site details · optional</h3>
+      <SiteDiscovery onConfirm={setSiteObservation} />
+      {siteObservation && <p role="status">Observed property selected: {siteObservation.address.label} · {siteObservation.parcel.label}. Unreviewed, with no site fit checked. This demonstration selection does not change the retained or manual site inputs below.</p>}
       <SitePreparation onLookup={value => dispatch({ type: 'site-lookup', value })} draft={draft.siteInput} onDraftChange={(value, areaInvalid) => dispatch({ type: 'site-input', value, areaInvalid })} selection={draft.site} onEdit={areaInvalid => dispatch({ type: 'site', value: null, areaInvalid })} onConfirm={value => dispatch({ type: 'site', value })} />
       <p>Placement, principal building and constraints remain unverified. If a parcel lead appears, confirm it explicitly before preparing the summary. The model and site facts are preparation evidence, not a fit result.</p>
       <button className="sr-primary" type="button" onClick={() => { dispatch({ type: 'submit' }); onSummary() }}>Prepare summary</button>
