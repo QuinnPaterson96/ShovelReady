@@ -4,9 +4,11 @@ Only the network edge is replaced.
 """
 
 import copy
+import hashlib
 import io
 import json
 import urllib.error
+import urllib.parse
 from pathlib import Path
 
 from fastapi.testclient import TestClient
@@ -66,6 +68,7 @@ def test_captured_victoria_candidates_are_ordered_and_replayable():
         assert body["candidates"][0]["providerSiteId"]
         assert body["candidates"][1]["matchPrecision"] == "STREET"
         assert body["source"]["rawResponse"] == json.loads(raw)
+        assert body["source"]["responseSha256"] == hashlib.sha256(raw).hexdigest()
         assert body["source"]["reviewStatus"] == "unreviewed"
         assert body["source"]["fetchedAt"] != body["source"]["providerBaseDataDate"]
         assert "selected" not in body
@@ -73,7 +76,21 @@ def test_captured_victoria_candidates_are_ordered_and_replayable():
 
 
 def test_saanich_query_keeps_saanich_and_victoria_alternatives():
-    with app_with(lambda _request, timeout: Response(provider("saanich"))) as client:
+    def source(request, timeout):
+        parsed = urllib.parse.urlsplit(request.full_url)
+        assert parsed.scheme == "https" and parsed.netloc == "geocoder.api.gov.bc.ca"
+        assert parsed.path == "/addresses.json"
+        assert urllib.parse.parse_qs(parsed.query) == {
+            "addressString": ["200 Gorge Rd W, Saanich, BC"],
+            "maxResults": ["5"],
+            "outputSRS": ["4326"],
+            "echo": ["true"],
+            "autoComplete": ["false"],
+        }
+        assert timeout == 4
+        return Response(provider("saanich"))
+
+    with app_with(source) as client:
         body = search(client, "200 Gorge Rd W, Saanich, BC").json()
     assert body["status"] == "candidates"
     assert body["candidates"][0]["locality"] == "Saanich"
@@ -142,3 +159,11 @@ def test_request_validation_and_bad_candidate_coordinates():
     invalid["features"][0]["geometry"]["coordinates"][0] = float("inf")
     with app_with(lambda _request, timeout: Response(json.dumps(invalid).encode())) as client:
         assert search(client).json()["status"] == "malformed"
+
+
+def test_app_construction_does_not_fetch():
+    def unexpected_fetch(_request, timeout):
+        raise AssertionError("unexpected network fetch")
+
+    with app_with(unexpected_fetch) as client:
+        assert client.get("/health").json() == {"status": "ok"}
