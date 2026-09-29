@@ -6,6 +6,9 @@ import type { Action, Draft, ExampleId, Field } from './model'
 import { ModelInputs } from '../model_catalogue/ModelInputs'
 import { bundledCatalogue } from '../model_catalogue/model'
 import { PublishedDimensions, publishedDimensions } from '../model_catalogue/PublishedDimensions'
+import { MeasurementLabel } from '../model_catalogue/MeasurementLabel'
+import { measurementCopy } from '../model_catalogue/measurementCopy'
+import type { Field as ModelField } from '../model_catalogue/model'
 import { SitePreparation, addressEvidenceText } from '../site_preparations/SitePreparation'
 import { buildEvidenceChecklist, evidenceChecklistText, technicalChecklistText } from '../evidence_checklist/model'
 import { EvidenceChecklistView } from '../evidence_checklist/EvidenceChecklistView'
@@ -52,7 +55,7 @@ export function providerReviewText(draft: Draft) {
     `Manual site: address ${draft.site?.manual.address.value ?? 'unknown'}; PID ${draft.site?.manual.pid.value ?? 'unknown'}; area ${draft.site?.manual.lot_area_m2.value ?? 'unknown'} m²; notes ${draft.site?.manual.notes.value ?? 'none'}`,
     `Model: ${draft.model.provider || 'provider unknown'} / ${draft.model.modelName || 'model unknown'}; manufacturer revision ${draft.model.modelRevision ?? 'not supplied'}; captured ${readableDate(model?.sources[0]?.captured_at)}; unreviewed; height reference ${draft.model.heightReference}`,
     ...(model ? [`Published exterior dimensions (provider specification, unreviewed): ${publishedDimensions(model).map(dimension => `${dimension.label}: ${dimension.text}`).join('; ')}. Separate from user edits and installed/regulatory height.`] : []),
-    ...(['width', 'depth', 'height', 'area'] as const).map(key => `${fields[key]}: ${draft.model.fields[key].value || 'unknown'} (${draft.model.fields[key].origin}; source baseline ${draft.model.fields[key].baseline?.quantity?.original_text ?? 'none'})`),
+    ...(['width', 'depth', 'height', 'area'] as const).map(key => `${fields[key]}: ${draft.model.fields[key].value || 'unknown'} (${measurementCopy[key].technicalTerm}; ${draft.model.fields[key].origin}; source baseline ${draft.model.fields[key].baseline?.quantity?.original_text ?? 'none'})`),
     `Model sources: ${model?.sources.map(source => `${source.locator}; captured ${readableDate(source.captured_at)}; ${publicSourceUrl(source.url) ?? 'link unavailable'}`).join('; ') ?? 'none'}`,
     `Provisional rule source: City of Victoria ${victoriaPacket.source.instrument}; printed revision ${victoriaPacket.source.printed_revision ?? 'unknown'}; captured ${readableDate(victoriaPacket.source.captured_at)}; unreviewed; ${victoriaPacket.source.source_url}`,
     'Checks performed: none. Provisional rule candidates are not accepted or evaluated.',
@@ -149,7 +152,8 @@ export function PreparationSummary({ draft, onEdit }: { draft: Draft; onEdit: ()
     </details>
     {bundledCatalogue.models.filter(model => model.model_id === draft.model.modelId && draft.model.snapshotId === bundledCatalogue.snapshot_id)
       .map(model => <PublishedDimensions key={model.model_id} model={model} />)}
-    <dl className="sr-values">{(Object.keys(fields) as Field[]).map(key => <div key={key}><dt>{fields[key]}</dt>
+    <dl className="sr-values">{(Object.keys(fields) as Field[]).map(key => <div key={key}><dt>{key in measurementCopy
+      ? <MeasurementLabel field={key as ModelField} /> : fields[key]}</dt>
       <dd>{draft.values[key].trim() || 'Unknown'} · {draft.imported && !draft.edited.includes(key) ? 'Imported synthetic input' : key in draft.model.fields
         ? draft.model.fields[key as keyof typeof draft.model.fields].origin === 'source' && draft.values[key].trim()
           ? 'Provider source observation · unreviewed' : 'User supplied or unknown · unreviewed'

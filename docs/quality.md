@@ -92,6 +92,13 @@ foundation-to-roof input; an unresolved measurement reference must not make the
 published height appear absent. Check both visibility of useful facts and correct
 uncertainty propagation, including the human-facing summary/export.
 
+Follow the [plain-language label and help rules](visual-identity.md#plain-language-labels-and-help).
+For changed measurement controls, check the default label and units, expanded
+definition, keyboard/touch access and narrow-screen wrapping. Verify that simplified
+labels preserve measurement identity and uncertainty through summary/export. A
+jurisdiction-specific definition must carry its jurisdiction and source/revision;
+when unavailable, retain the gap instead of asserting a universal legal meaning.
+
 Record errors by stage and retain run/release identifiers. Monitor ingestion failures and unresolved-case rates, not just HTTP uptime. Unexpected decision changes are investigated before promotion. Maintain a known-good application image and dataset release; test recovery with backward-compatible schemas and backups.
 
 ## Virtual-user evaluation

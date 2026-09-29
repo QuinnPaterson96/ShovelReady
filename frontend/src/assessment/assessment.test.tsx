@@ -22,7 +22,7 @@ test('empty stays unknown; invalid and nonfinite quantities are never zero or ac
   const submitted = draftReducer(initialDraft, { type: 'submit' })
   assert.equal(submitted.values.width, '')
   assert.equal(preparationStatus(submitted).status, 'needs_investigation')
-  assert.ok(preparationStatus(submitted).unresolved.some(v => v.includes('width')))
+  assert.ok(preparationStatus(submitted).unresolved.some(v => /\bwidth\b/i.test(v)))
 })
 
 test('imports map actual design inputs, never evaluator facts or ceiling height', () => {
@@ -83,12 +83,12 @@ test('complete arbitrary inputs and imported fixtures never produce regulatory p
 test('form exposes units, connected labels/errors, and explicit optional example choice', () => {
   const draft = draftReducer(draftReducer(initialDraft, { type: 'edit', field: 'height', value: '-2' }), { type: 'submit' })
   const html = renderToStaticMarkup(createElement(AssessmentForm, { draft, dispatch() {}, onSummary() {}, onEvidence() {} }))
-  assert.match(html, /width \(m\)/)
+  assert.match(html, /Width \(m\)/)
   assert.match(html, /area \(m²\)/)
   assert.match(html, /for="sr-model-height"/)
   assert.match(html, /for="sr-model-height-reference"/)
   assert.match(html, /for="manual-area"/)
-  assert.match(html, /Roof height from foundation datum \(m\) is invalid/)
+  assert.match(html, /Height \(m\) is invalid/)
   assert.match(html, /option value="" selected=""/)
   assert.match(html, /Load selected example/)
 })
@@ -105,7 +105,7 @@ test('model and site selections preserve source objects and invalidate prepared 
     ...model, fields: { ...model.fields, width: { ...model.fields.width, value: '-1' } },
   } })
   assert.equal(draftReducer(invalid, { type: 'submit' }).submitted, false)
-  assert.ok(preparationStatus(invalid).unresolved.some(item => item.includes('width') && item.includes('invalid')))
+  assert.ok(preparationStatus(invalid).unresolved.some(item => /\bwidth\b/i.test(item) && item.includes('invalid')))
   const invalidArea = draftReducer(withSite, { type: 'site', value: null, areaInvalid: true })
   assert.equal(draftReducer(invalidArea, { type: 'submit' }).submitted, false)
   assert.ok(preparationStatus(invalidArea).unresolved.some(item => item.includes('Manual lot area is invalid')))

@@ -82,6 +82,14 @@ agreement now explicitly checks visibility as well as uncertainty propagation.
 Installed foundation/grade relationships and rule-specific height references remain
 separate acquisition questions; they do not prevent showing published dimensions.
 
+The same presentation pattern now covers **Width**, **Length**, **Height** and
+**Interior floor area**, with units and accessible information buttons. Shared
+physical-measurement copy keeps model entry, placement controls, validation and
+the preparation summary consistent. Original terms remain in the help and review
+export; the stored `depth`, quantity bases and assessment mapping are unchanged.
+The visual/quality guides and AGENTS.md establish this as the default for future UI
+work, with jurisdiction-specific definitions requiring their own source/revision.
+
 Local verification of this correction: all 60 frontend tests passed with `npm test`;
 `npm run build` passed TypeScript and Vite compilation, retaining the existing large
 bundle advisory. `git diff --check` passed. No backend/data contract changed and no

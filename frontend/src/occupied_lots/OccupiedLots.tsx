@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { bundledCatalogue } from '../model_catalogue/model'
 import { PublishedDimensions } from '../model_catalogue/PublishedDimensions'
+import { MeasurementLabel } from '../model_catalogue/MeasurementLabel'
 import { CopyableRecord, publicSourceUrl, readableDate, TechnicalDetails } from '../ReadableProvenance'
 import { parseResult, parseSites, path, points } from './contract'
 import { overlapFinding } from './observations'
@@ -226,7 +227,7 @@ export default function OccupiedLots() {
             {model && <p className="metadata">{model.provider} · {model.name} · provider measurements captured {readableDate(model.sources[0]?.captured_at)} · unreviewed. <a href={model.provider_url} target="_blank" rel="noreferrer">Provider model page</a>. Manufacturer revision {model.source_revision ?? 'not supplied'}. {model.service_area_note} {model.footprint_note}</p>}
             {model && <PublishedDimensions model={model} />}
             <div className="occupied-fields">{(['width', 'depth'] as const).map(key => <div key={key}>
-              <label htmlFor={`occupied-${key}`}>Nominal exterior {key} (m)</label>
+              <MeasurementLabel field={key} inputId={`occupied-${key}`} />
               <input id={`occupied-${key}`} type="number" step="any" value={placement[key]} onChange={e => { setDimensionOrigins(p => ({ ...p, [key]: 'user' })); changePlacement({ [key]: e.target.value }) }} />
               <small>{dimensionOrigin(key)}{model && nominal(key === 'width' ? 'nominal_exterior_width' : 'nominal_exterior_depth') ? ` · catalogue ${Number(nominal(key === 'width' ? 'nominal_exterior_width' : 'nominal_exterior_depth'))} m` : ''}</small>
             </div>)}</div>

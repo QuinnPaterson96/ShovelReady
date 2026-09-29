@@ -1,17 +1,15 @@
-import { useState } from 'react'
 import { bundledCatalogue, editField, editHeightReference, editIdentity, fieldError, selectModel } from './model'
 import type { Catalogue, Field, Selection } from './model'
 import { readableDate, TechnicalDetails } from '../ReadableProvenance'
 import { PublishedDimensions } from './PublishedDimensions'
+import { MeasurementLabel } from './MeasurementLabel'
+import { measurementCopy } from './measurementCopy'
 
-const labels: Record<Field, string> = { width: 'Nominal exterior width (m)', depth: 'Nominal exterior depth (m)',
-  height: 'Height (m)', area: 'Manufacturer interior area (m²)' }
 const fields: Field[] = ['width', 'depth', 'height', 'area']
 
 export function ModelInputs({ value, onChange, catalogue = bundledCatalogue }: {
   value: Selection; onChange: (next: Selection) => void; catalogue?: Catalogue | null
 }) {
-  const [heightHelpOpen, setHeightHelpOpen] = useState(false)
   const model = catalogue?.models.find(item => item.model_id === value.modelId)
   const selected = model && value.snapshotId === catalogue?.snapshot_id ? model : null
   return <section className="sr-model-inputs" aria-labelledby="model-inputs-title">
@@ -45,25 +43,13 @@ export function ModelInputs({ value, onChange, catalogue = bundledCatalogue }: {
       const input = value.fields[field]
       const error = fieldError(input.value)
       return <div key={field}>
-        <div className="sr-model-field-label">
-          <label htmlFor={`sr-model-${field}`}>{labels[field]}</label>
-          {field === 'height' && <button type="button" className="sr-model-info" aria-label="About height measurement"
-            aria-expanded={heightHelpOpen} aria-controls="sr-model-height-help"
-            onClick={() => setHeightHelpOpen(open => !open)}>
-            <span aria-hidden="true">i</span>
-          </button>}
-        </div>
-        {field === 'height' && <div id="sr-model-height-help" className="sr-model-help" hidden={!heightHelpOpen}>
-          <p><strong>Technical term: roof height from foundation datum.</strong> This is the distance from the foundation reference shown on the plans to the highest point of the roof.</p>
-          <p>It is separate from ceiling height and the provider's published exterior height. Height measured from the surrounding ground needs site details and the local rule's definition.</p>
-        </div>}
+        <MeasurementLabel field={field} inputId={`sr-model-${field}`} />
         <input id={`sr-model-${field}`} inputMode="decimal" value={input.value}
           aria-invalid={!!error} aria-describedby={`sr-model-hint-${field}${error ? ` sr-model-error-${field}` : ''}`}
           onChange={event => onChange(editField(value, field, event.target.value))} />
         <p id={`sr-model-hint-${field}`} className="sr-model-hint">
           {input.value.trim() ? input.origin === 'source' ? 'Source value · unreviewed' : 'User value · unreviewed' : 'Unknown'}.
-          {field === 'height' && ' From the foundation reference to the highest roof point. Leave blank if unsure.'}
-          {field === 'area' && ' Physical interior area, not regulatory floor area.'}
+          {' '}{measurementCopy[field].hint}
         </p>
         {error && <p id={`sr-model-error-${field}`} className="sr-model-error" role="alert">{error}</p>}
         {input.baseline && <details><summary>Source baseline and basis</summary>

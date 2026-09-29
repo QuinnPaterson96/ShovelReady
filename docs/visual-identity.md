@@ -14,6 +14,35 @@ between a promising lead, an unresolved condition, a computed draft example, and
 an accepted result. The name suggests readiness; page labels must state the actual
 scope and evidence status without relying on colour or a distant disclaimer.
 
+## Plain-language labels and help
+
+Lead with familiar words and units. Prefer **Width (m)** over "Nominal exterior
+width", **Length (m)** over "Nominal exterior depth", and **Height (m)** over
+"Roof height from foundation datum". Keep distinctions that prevent an incorrect
+answer: **Interior floor area (m²)** is clearer than an ambiguous "Area".
+
+An adjacent information button opens help below the label: the exact technical
+term, a short plain-language definition, measurement basis and any relevant
+inclusions/exclusions. Use the shared `MeasurementLabel` for physical model inputs,
+the placement workspace and preparation summary. Support click/tap and Enter/Space,
+a meaningful accessible name, expanded state, associated help, visible focus and a
+44 px target. Do not rely on hover or a browser `title` tooltip alone. Keep a short
+visible hint when someone could otherwise enter the wrong kind of measurement.
+
+Familiar labels may stay consistent across municipalities, but their legal definitions
+must remain specific. Help for a rule-derived quantity must name the jurisdiction,
+source clause and applicable revision, and explain its measurement basis. If that
+definition or applicability is unresolved, say so; do not borrow another city's
+definition. Physical provider dimensions are separately attributed product facts,
+not a substitute for a local rule. The current shared help describes these physical
+inputs only; it does not implement jurisdiction-specific rule mappings.
+
+Simplifying display text must not rename or merge distinct data concepts, silently
+convert values, or erase original terminology and citations. Keep decision status,
+material uncertainty and required actions visible rather than hiding them in help.
+Use the same plain labels in validation messages and summaries, while retaining
+precise measurement meaning in detailed evidence and exported review records.
+
 ## Palette and roles
 
 | Role | Token | Value | Use |

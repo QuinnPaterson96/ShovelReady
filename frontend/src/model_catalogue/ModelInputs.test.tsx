@@ -20,6 +20,9 @@ test('published Model 240 dimensions remain visible through preparation without 
   assert.match(card, /captured 2026-09-25/)
   assert.doesNotMatch(card, /<details/)
   assert.match(markup, /<label for="sr-model-height">Height \(m\)<\/label>/)
+  assert.match(markup, /<label for="sr-model-width">Width \(m\)<\/label>/)
+  assert.match(markup, /<label for="sr-model-depth">Length \(m\)<\/label>/)
+  assert.match(markup, /<label for="sr-model-area">Interior floor area \(m²\)<\/label>/)
   assert.match(markup, /aria-label="About height measurement" aria-expanded="false" aria-controls="sr-model-height-help"/)
   assert.match(markup, /id="sr-model-height-help" class="sr-model-help" hidden=""/)
   assert.match(markup, /Technical term: roof height from foundation datum/)
@@ -36,7 +39,8 @@ test('published Model 240 dimensions remain visible through preparation without 
   const summary = renderToStaticMarkup(<PreparationSummary draft={draft} onEdit={() => {}} />)
   assert.match(summary, /Exterior height<\/dt><dd>10 ft 3 in \(≈ 3\.12 m\)/)
   assert.match(providerReviewText(draft), /Exterior height: 10 ft 3 in \(≈ 3\.12 m\)/)
-  assert.match(providerReviewText(draft), /Roof height from foundation datum \(m\): unknown/)
+  assert.match(providerReviewText(draft), /Height \(m\): unknown \(roof height from foundation datum;/)
+  assert.match(providerReviewText(draft), /Length \(m\): 7\.3406 \(nominal exterior depth;/)
 })
 
 test('unavailable catalogue shows manual fields without invented candidate data', () => {
