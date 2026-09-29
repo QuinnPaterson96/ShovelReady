@@ -1,0 +1,7 @@
+{
+  "url": "https://geocoder.api.gov.bc.ca/addresses.json?addressString=999999+Imaginary+Crescent%2C+Victoria%2C+BC&maxResults=5&outputSRS=4326&echo=true&autoComplete=false",
+  "fetchedAt": "2026-09-29T02:49:15.024369+00:00",
+  "status": 200,
+  "sha256": "1bc162cf56b9c2f69dcf96ebbe43511b2c7ae1d986e59c61fa9be607f6f52362",
+  "bytes": 5719
+}

@@ -1,0 +1,7 @@
+{
+  "url": "https://geocoder.api.gov.bc.ca/addresses.json?addressString=525+Superior+St%2C+Victoria%2C+BC&maxResults=5&outputSRS=4326&echo=true&autoComplete=false",
+  "fetchedAt": "2026-09-29T02:49:14.803883+00:00",
+  "status": 200,
+  "sha256": "016ac237c86403000a79527a9ea57ee992aa64746849e9bfc5524262856456a2",
+  "bytes": 5517
+}
