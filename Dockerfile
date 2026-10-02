@@ -9,7 +9,7 @@ COPY docs/rule-packets/victoria-garden-suite/packet.json /build/docs/rule-packet
 RUN npm run build
 
 FROM python:3.12-slim-bookworm
-ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 SHOVELREADY_ENV=development
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 SHOVELREADY_ENV=demo
 WORKDIR /app
 RUN python -m pip install --no-cache-dir uv==0.12.17
 COPY pyproject.toml uv.lock ./

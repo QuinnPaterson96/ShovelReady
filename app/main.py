@@ -23,10 +23,18 @@ FRONTEND_DIST = Path(__file__).resolve().parents[1] / "frontend" / "dist"
 
 def create_app(*, frontend_dist: Path = FRONTEND_DIST) -> FastAPI:
     environment = os.environ.get("SHOVELREADY_ENV", "development")
-    if environment not in {"development", "test"}:
+    if environment not in {"development", "test", "demo"}:
         raise RuntimeError(
-            "SHOVELREADY_ENV must be development or test; deployment is not configured"
+            "SHOVELREADY_ENV must be development, test or demo; "
+            "production deployment is not configured"
         )
+    if environment == "demo":
+        if not (frontend_dist / "index.html").is_file():
+            raise RuntimeError("Hosted demo requires the built frontend")
+        if os.environ.get("SHOVELREADY_DATABASE_URL") or os.environ.get(
+            "SHOVELREADY_DRAFT_EVALUATIONS_ENABLED"
+        ) == "true":
+            raise RuntimeError("Hosted demo is stateless; database access must remain disabled")
     application = FastAPI(title="ShovelReady", version="0.1.0")
 
     application.include_router(address_search_router)
