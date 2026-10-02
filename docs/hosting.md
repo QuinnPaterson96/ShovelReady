@@ -9,8 +9,12 @@ the immutable-image delivery/restore criteria in SR-15.
 ## Deployment
 
 - Deploy the repository Dockerfile from trusted main; enable Railway's Wait for CI.
-- The container serves the frontend and API on port 8000. Set domain target port to
-  8000; railway.json declares the health path, timeout and bounded restart policy.
+- The container serves the frontend and API on port 8000. Set PORT=8000 and domain
+  target port to 8000. Configure health path /health, timeout 120 seconds and restart
+  policy On Failure with 3 retries in the Railway service settings.
+- Railway's dashboard says new services cannot opt into railway.json Config as Code
+  after August 28, 2026. Use the documented dashboard settings for this single service;
+  do not introduce the larger Infrastructure as Code workflow just for this demo.
 - The image defaults to SHOVELREADY_ENV=demo. Startup requires a built frontend and
   refuses SHOVELREADY_DATABASE_URL or enabled draft database evaluations. No database,
   migration, volume, source publication, contact storage or automatic ingestion runs.
@@ -44,7 +48,7 @@ paid database is required for this deployment.
 
 ## Verification status
 
-Implementation: explicit demo startup, Railway configuration and commit identity.
+Implementation: explicit demo startup and commit identity; Railway settings runbook.
 Local startup/API integration checks cover frontend serving, refusal of incomplete
 or persistent demo configuration, and Railway identity. Hosting/DNS/HTTPS verification
 must be recorded after remote deployment; configuration files alone do not prove it.
