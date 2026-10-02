@@ -108,6 +108,20 @@ the site is buildable.
 
 ## Component use and review
 
+The compact `Brand` component in `frontend/src/brand/Brand.tsx` pairs a local
+parcel/window mark with a text wordmark. It has no navigation behavior; the
+header decides where the identity links. The mark distinguishes the existing
+building from an illustrative possible addition through teal and copper, but
+neither colour conveys a site result. The same local SVG is the favicon. Vite
+emits it under `/assets/`, which the application serves in a production build.
+
+`WorkflowIcon` provides small decorative site, model, review and share symbols
+for labelled steps. `PropertyIllustration` is a conceptual parcel scene with
+an accessible description and visible caption that explicitly rules out any
+measured fit, zoning permission or approval. Keep that caption when using the
+illustration. These assets use the system font and existing Civic Atlas colours;
+no remote font, external image or endorsement is involved.
+
 Use readable provenance in the default view: source/provider, record label, capture
 date, source link and review status. Put raw hashes and internal identifiers in
 labelled expandable technical details with complete copyable values. Provider
@@ -133,6 +147,11 @@ at least 8.7:1. This is a palette check, not a full accessibility audit or user 
 Revisit the visual direction after prospective users try the preparation and
 evidence tasks. Change tokens centrally and document the reason; do not infer a
 new decision status from a colour preference.
+
+The October 2 brand asset refresh passed `npm run build --prefix frontend` and
+`git diff --check`. Build output confirmed the favicon's emitted `/assets/` path.
+The new brand component and illustration have not yet been inspected in a
+composed browser page; that remains part of header integration review.
 
 ## Verification for this application
 
