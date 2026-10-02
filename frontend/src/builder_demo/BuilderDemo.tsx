@@ -80,9 +80,9 @@ export default function BuilderDemo() {
   const hasSite = !!(selection || live || manual && (manual.site || Object.values(manual.facts).some(value => value.trim())))
   const draftText = hasSite ? enquiry(selection, { intendedUse: use, timing, budget, access, services }, measurementResult, imported, live, manual) : ''
   return <div className="builder-demo">
-    <section className="builder-hero" aria-labelledby="builder-title">
+    <section className="builder-hero" id="builder-model" aria-labelledby="builder-title">
       <p className="eyebrow">Independent sample journey · aux box</p>
-      <h2 id="builder-title">Explore Model 300 on your site</h2>
+      <h1 id="builder-title">Explore Model 300 on your site</h1>
       <p>Start with a site lead or the facts you know. Find and confirm a Victoria property, or sketch your own approximate lot, then test one placement and take away an unsent enquiry.</p>
       <p className="notice">This ShovelReady demonstration is independent of aux box. It does not check zoning compatibility, confirm provider service, or contact the company.</p>
       <div className="builder-specs" aria-label="Captured model information">
@@ -94,15 +94,20 @@ export default function BuilderDemo() {
       <p className="metadata">{model.footprint_note} {model.height_note} {model.service_area_note}</p>
       <TechnicalDetails title="Catalogue source and exact model record"><pre>{JSON.stringify({ snapshot_id: bundledCatalogue.snapshot_id, model }, null, 2)}</pre></TechnicalDetails>
     </section>
+    <section className="builder-stage" id="builder-property" aria-labelledby="builder-property-title">
+    <p className="eyebrow">Property</p><h2 id="builder-property-title">Start with what you know</h2>
     <label htmlFor="builder-site-mode">How would you like to enter your property?</label>
     <select id="builder-site-mode" value={mode} onChange={event => { setMode(event.target.value as typeof mode); siteEdited(); setLive(null); setManual(null) }}>
       <option value="live">Search a Victoria address</option><option value="manual">Enter facts or sketch manually</option><option value="retained">Use the retained example workflow</option>
     </select>
-    {mode === 'live' && <><SiteDiscovery onConfirm={next => { setLive(next); setMeasurementResult(null); setRevision(value => value + 1) }} onManual={() => { setMode('manual'); setLive(null); setMeasurementResult(null) }} />
-      {liveCase && <OccupiedLots key={revision} suppliedCase={liveCase} allowedModelIds={[MODEL_ID]} initialModelId={MODEL_ID} onMeasurement={setMeasurementResult} showHandoff={false} />}</>}
-    {mode === 'manual' && <ManualSiteInput onChange={setManual} footprint={{ widthM: Number(measurement('nominal_exterior_width')?.quantity?.value) || null, depthM: Number(measurement('nominal_exterior_depth')?.quantity?.value) || null, label: 'aux box Model 300 · unreviewed nominal dimensions' }} />}
+    {mode === 'live' && <SiteDiscovery onConfirm={next => { setLive(next); setMeasurementResult(null); setRevision(value => value + 1) }} onManual={() => { setMode('manual'); setLive(null); setMeasurementResult(null) }} />}
     {mode === 'retained' && <SitePreparation draft={draft} onDraftChange={next => setDraft(next)} selection={selection}
       onEdit={siteEdited} onConfirm={next => { setSelection(next); setImported(false); setMeasurementResult(null); setRevision(value => value + 1) }} />}
+    </section>
+    <section className="builder-stage" id="builder-placement" aria-labelledby="builder-placement-title">
+      <p className="eyebrow">Placement</p><h2 id="builder-placement-title">Explore one approximate placement</h2>
+      {mode === 'live' && (liveCase ? <OccupiedLots key={revision} suppliedCase={liveCase} allowedModelIds={[MODEL_ID]} initialModelId={MODEL_ID} onMeasurement={setMeasurementResult} showHandoff={false} /> : <p>Confirm a Victoria property above to open its captured parcel sketch. Available geometry is approximate and unreviewed.</p>)}
+      {mode === 'manual' && <ManualSiteInput onChange={setManual} footprint={{ widthM: Number(measurement('nominal_exterior_width')?.quantity?.value) || null, depthM: Number(measurement('nominal_exterior_depth')?.quantity?.value) || null, label: 'aux box Model 300 · unreviewed nominal dimensions' }} />}
     {selection && <section className="builder-optional" aria-labelledby="builder-optional-title">
       <p className="eyebrow">Optional placement</p><h2 id="builder-optional-title">Import a retained example only if useful</h2>
       <p>Three captured lots are examples with their own parcel and roofline geometry. They are not citywide address coverage. Importing one does not match it to your address or parcel lead.</p>
@@ -110,9 +115,12 @@ export default function BuilderDemo() {
         : <><button type="button" onClick={() => { setImported(false); setMeasurementResult(null); setRevision(value => value + 1) }}>Remove example</button>
           <OccupiedLots key={revision} allowedModelIds={[MODEL_ID]} initialModelId={MODEL_ID} onMeasurement={setMeasurementResult} showHandoff={false} /></>}
     </section>}
-    {hasSite && <section className="builder-enquiry" aria-labelledby="builder-enquiry-title">
+    {mode === 'retained' && !selection && <p>Confirm a site lead above to consider a separate retained placement example. An example is never matched to your site lead.</p>}
+    </section>
+    <section className="builder-stage builder-enquiry" id="builder-next" aria-labelledby="builder-enquiry-title">
       <p className="eyebrow">Take away · local draft</p><h2 id="builder-enquiry-title">Prepare a useful question</h2>
-      <p>Leave unknown answers blank. This text stays in your browser until you copy it; no provider request or contact record is created.</p>
+      {!hasSite && <p>Add a property or your known site facts above to prepare an unsent enquiry. Your answers stay local to this journey.</p>}
+      {hasSite && <><p>Leave unknown answers blank. This text stays in your browser until you copy it; no provider request or contact record is created.</p>
       <div className="builder-questions">
         <label htmlFor="builder-use">Intended use</label><input id="builder-use" value={use} onChange={event => setUse(event.target.value)} placeholder="e.g. family accommodation; unknown is fine" />
         <label htmlFor="builder-timing">Possible timing</label><input id="builder-timing" value={timing} onChange={event => setTiming(event.target.value)} placeholder="e.g. next year; unknown is fine" />
@@ -122,6 +130,7 @@ export default function BuilderDemo() {
       </div>
       <CopyableRecord id="builder-enquiry-text" label="Copyable unsent enquiry draft" value={draftText} />
       <TechnicalDetails title="Complete site selection, sources and measurements"><CopyableRecord id="builder-technical-record" label="Complete technical evidence export" value={JSON.stringify({ schema_version: 'builder-evidence.v1', selection, live, manual, measurement: measurementResult }, null, 2)} /></TechnicalDetails>
-    </section>}
+      </>}
+    </section>
   </div>
 }
