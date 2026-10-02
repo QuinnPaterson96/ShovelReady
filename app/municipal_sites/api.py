@@ -3,6 +3,7 @@
 import hashlib
 import json
 import math
+import time
 from datetime import UTC, datetime
 from typing import Any, Literal
 from urllib.error import HTTPError, URLError
@@ -155,18 +156,37 @@ def _evidence(layer: str, url: str, raw: bytes, value: dict) -> dict:
 def _fetch(layer: str, params: dict) -> tuple[dict, dict]:
     # Only fixed layer URLs and internally constructed query keys are permitted.
     url = f"{LAYERS[layer]}/query?{urlencode({'f': 'json', **params})}"
-    last_error = None
     for attempt in range(2):
         try:
-            with urlopen(url, timeout=8) as response:
+            with urlopen(url, timeout=5) as response:
                 if response.url.split("?")[0] != f"{LAYERS[layer]}/query":
                     raise ValueError("unexpected provider redirect")
                 raw = response.read(MAX_BYTES + 1)
             if len(raw) > MAX_BYTES:
                 raise ValueError("provider response too large")
             value = json.loads(raw)
-            if not isinstance(value, dict) or value.get("error"):
-                raise ValueError("ArcGIS error envelope")
+            if not isinstance(value, dict):
+                raise ValueError("invalid JSON object")
+            if isinstance(value.get("error"), dict):
+                code = value["error"].get("code")
+                message = value["error"].get("message")
+                # This exact ArcGIS 400 was observed alternating with valid replies
+                # for the same bounded request. Other 400s may be query mistakes.
+                pagination_fault = code == 400 and message == "Pagination is not supported."
+                retryable = pagination_fault or code == 429 or (
+                    isinstance(code, int) and 500 <= code <= 599
+                )
+                if attempt == 0 and retryable:
+                    time.sleep(0.25)
+                    continue
+                status = 503 if retryable else 502
+                error_code = code if isinstance(code, int) else "unknown"
+                reason = (
+                    "pagination unsupported"
+                    if pagination_fault
+                    else f"ArcGIS error {error_code}"
+                )
+                raise HTTPException(status, f"City {layer} source {reason}")
             if value.get("exceededTransferLimit"):
                 raise ValueError("provider transfer limit exceeded")
             rows = value.get("features")
@@ -179,14 +199,20 @@ def _fetch(layer: str, params: dict) -> tuple[dict, dict]:
                 if value.get("geometryType") != expected_type:
                     raise ValueError("unexpected geometry type")
             return value, _evidence(layer, url, raw, value)
-        except (TimeoutError, URLError, HTTPError, OSError) as exc:
-            last_error = exc
-            if attempt == 0:
+        except HTTPError as exc:
+            if attempt == 0 and (exc.code == 429 or 500 <= exc.code <= 599):
+                time.sleep(0.25)
                 continue
+            status = 503 if exc.code == 429 or 500 <= exc.code <= 599 else 502
+            raise HTTPException(status, f"City {layer} source HTTP {exc.code}") from exc
+        except (TimeoutError, URLError, OSError) as exc:
+            if attempt == 0:
+                time.sleep(0.25)
+                continue
+            raise HTTPException(503, f"City {layer} source network unavailable") from exc
         except (ValueError, TypeError, AttributeError) as exc:
-            last_error = exc
-            break
-    raise HTTPException(status_code=502, detail=f"City {layer} source unavailable: {last_error}")
+            raise HTTPException(502, f"City {layer} source invalid response: {exc}") from exc
+    raise AssertionError("unreachable provider retry state")
 
 
 def _rows(value: dict, required: tuple[str, ...]) -> list[dict]:
@@ -211,7 +237,6 @@ def _parcel_query(where: str) -> tuple[list[dict], dict]:
             "outFields": "OBJECTID,PID,VicPID,GISLINK,ParcelType,ParcelStatus,Shape_Area",
             "returnGeometry": "false",
             "outSR": 3157,
-            "resultRecordCount": MAX_FEATURES,
         },
     )
     return _rows(value, ("OBJECTID", "PID", "GISLINK")), evidence
@@ -236,7 +261,6 @@ def search(request: SearchRequest) -> dict:
                 "outFields": "OBJECTID,FullAddress,GISLINK,Legal_Type",
                 "returnGeometry": "true",
                 "outSR": 3157,
-                "resultRecordCount": MAX_FEATURES,
             },
         )
         evidence.append(receipt)
@@ -270,7 +294,6 @@ def search(request: SearchRequest) -> dict:
                 "outFields": "OBJECTID,PID,GISLINK,ParcelType,ParcelStatus,Shape_Area",
                 "returnGeometry": "false",
                 "outSR": 3157,
-                "resultRecordCount": MAX_FEATURES,
             },
         )
         evidence.append(receipt)
@@ -324,7 +347,6 @@ def observe(request: ObserveRequest) -> dict:
             "outFields": "OBJECTID,PID,VicPID,GISLINK,ParcelType,ParcelStatus,Shape_Area",
             "returnGeometry": "true",
             "outSR": 3157,
-            "resultRecordCount": 2,
         },
     )
     rows = _rows(value, ("OBJECTID", "PID", "GISLINK"))
@@ -399,7 +421,6 @@ def observe(request: ObserveRequest) -> dict:
                 "outFields": "OBJECTID,LAYER,SHAPE_Area",
                 "returnGeometry": "true",
                 "returnZ": "true",
-                "resultRecordCount": MAX_FEATURES,
             },
         )
         buildings = _rows(buildings_value, ("OBJECTID", "LAYER"))
