@@ -90,6 +90,32 @@ test('late address and parcel replies cannot revive an old choice', async () => 
   third.confirm(); assert.equal(third.state.confirmed, null)
 })
 
+test('failed and partial observation retry clears confirmation and ignores the older response', async () => {
+  const late = deferred<Observation>()
+  const confirmed: (Confirmed | null)[] = []
+  let calls = 0
+  const full = { ...observation, buildingsState: 'available', issues: [], roofs: [{ id: 'roof', geometry: polygon }] }
+  const transport: Transport = {
+    async addresses() { return { status: 'ok', candidates: [address] } },
+    async parcels() { return { status: 'ok', candidates: [parcel] } },
+    observe() { calls++; if (calls === 1) return Promise.reject(Error('provider')); if (calls === 2) return Promise.resolve(observation); if (calls === 3) return late.promise; return Promise.resolve(full) },
+  }
+  const flow = new DiscoveryFlow(transport, () => {}, value => confirmed.push(value))
+  flow.edit('1144 May St'); await flow.search(); await flow.chooseAddress('a')
+  await flow.chooseParcel('p')
+  assert.match(flow.state.message, /response invalid/i)
+  assert.equal(flow.state.observation, null)
+  await flow.chooseParcel('p'); flow.confirm()
+  assert.equal(flow.state.confirmed?.observation.buildingsState, 'partial')
+  const pending = flow.chooseParcel('p')
+  assert.equal(confirmed.at(-1), null)
+  await flow.chooseParcel('p')
+  late.resolve(observation); await pending
+  assert.equal((flow.state.observation as Observation | null)?.buildingsState, 'available')
+  assert.equal(flow.state.confirmed, null)
+  assert.equal((flow.state.observation as Observation | null)?.roofs.length, 1)
+})
+
 test('service failure and no-match keep manual continuation visible', async () => {
   const transport: Transport = { async addresses() { throw Error('offline') }, async parcels() { throw Error('offline') }, async observe() { throw Error('offline') } }
   const flow = new DiscoveryFlow(transport, () => {}, () => {})
@@ -99,6 +125,15 @@ test('service failure and no-match keep manual continuation visible', async () =
   assert.match(html, /retained lookup or <a href="#manual-address">manual site details below<\/a>/)
   assert.match(html, /Search for a property/)
   assert.doesNotMatch(html, /fit result/i)
+})
+
+test('municipal network outage is identified as source unavailability', async () => {
+  const originalFetch = globalThis.fetch
+  globalThis.fetch = async () => { throw new TypeError('network down') }
+  try {
+    const victoria = { ...address, raw: { candidate: { address: { streetAddress: '1144 May St' } } } }
+    await assert.rejects(liveTransport.parcels(victoria, new AbortController().signal), /City source temporarily unavailable/)
+  } finally { globalThis.fetch = originalFetch }
 })
 
 test('published BC address contract preserves correction, coordinate CRS and source record', async () => {

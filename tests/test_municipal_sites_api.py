@@ -119,13 +119,14 @@ def test_malformed_input_and_out_of_coverage(monkeypatch):
 
 
 def test_provider_error_limit_and_wrong_crs_do_not_look_empty(monkeypatch):
-    for mutation in (
-        {"error": {"code": 500}},
-        {"exceededTransferLimit": True, "features": []},
-        {**fixture("address_87"), "spatialReference": {"wkid": 4326}},
+    for mutation, expected_status in (
+        ({"error": {"code": 500}}, 503),
+        ({"exceededTransferLimit": True, "features": []}, 502),
+        ({**fixture("address_87"), "spatialReference": {"wkid": 4326}}, 502),
     ):
         http = client(monkeypatch, {"address_87": mutation})
-        assert http.post("/api/municipal-sites/search", json=request_search()).status_code == 502
+        response = http.post("/api/municipal-sites/search", json=request_search())
+        assert response.status_code == expected_status
 
 
 def test_missing_invalid_stale_and_partial_geometry(monkeypatch):
@@ -206,6 +207,55 @@ def test_roofline_provider_failure_keeps_parcel_evidence(monkeypatch):
     assert result["parcel"]["area_m2"] > 600
     assert result["issues"][0] == "roofline_fetch_failed"
     assert len(result["evidence"]) == 1
+
+
+def test_intermittent_arcgis_pagination_error_recovers_without_losing_evidence(monkeypatch):
+    # Captured public error envelope alternated with a valid reply to the same
+    # parcel request. One retry is justified by that observation, not all 400s.
+    error = (FIXTURES / "arcgis_pagination_error.json").read_bytes()
+    normal = (FIXTURES / "parcel_observe_87.json").read_bytes()
+    roofs = (FIXTURES / "buildings_87.json").read_bytes()
+    calls = []
+
+    def upstream(url, timeout):
+        params = parse_qs(urlparse(url).query)
+        assert "resultRecordCount" not in params
+        layer = urlparse(url).path.split("/")[-2]
+        calls.append(layer)
+        return SavedResponse(url, error if len(calls) == 1 else normal if layer == "11" else roofs)
+
+    monkeypatch.setattr(api, "urlopen", upstream)
+    monkeypatch.setattr(api.time, "sleep", lambda _: None)
+    response = TestClient(create_app()).post(
+        "/api/municipal-sites/observe", json=request_observe(expected_pid="001-328-107")
+    )
+    assert response.status_code == 200
+    result = response.json()
+    assert calls == ["11", "11", "1"]
+    assert result["status"] == "available"
+    assert len(result["evidence"]) == 2
+    assert result["evidence"][0]["raw_response"]["features"][0]["attributes"]["OBJECTID"] == 87
+
+
+def test_nonretryable_arcgis_error_and_exhausted_retry_are_distinct(monkeypatch):
+    for error, expected_status, expected_calls in (
+        ({"error": {"code": 400, "message": "Invalid query", "details": []}}, 502, 1),
+        (fixture("arcgis_pagination_error"), 503, 2),
+    ):
+        calls = []
+
+        def upstream(url, timeout, calls=calls, error=error):
+            calls.append(url)
+            return SavedResponse(url, json.dumps(error).encode())
+
+        monkeypatch.setattr(api, "urlopen", upstream)
+        monkeypatch.setattr(api.time, "sleep", lambda _: None)
+        response = TestClient(create_app()).post(
+            "/api/municipal-sites/observe", json=request_observe()
+        )
+        assert response.status_code == expected_status
+        assert len(calls) == expected_calls
+        assert "City parcel source" in response.json()["detail"]
 
 
 def test_multipart_and_hole_geometry_survives_http_to_measurement(monkeypatch):

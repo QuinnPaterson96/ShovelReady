@@ -30,7 +30,7 @@
       {
         "provider": "City of Victoria Open Data",
         "record_label": "Address MapServer response",
-        "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=json&where=FullAddress%3D%271144+MAY+ST%27&outFields=OBJECTID%2CFullAddress%2CGISLINK%2CLegal_Type&returnGeometry=true&outSR=3157&resultRecordCount=25",
+        "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=json&where=FullAddress%3D%271144+MAY+ST%27&outFields=OBJECTID%2CFullAddress%2CGISLINK%2CLegal_Type&returnGeometry=true&outSR=3157",
         "captured_at_utc": "2000-01-01T00:00:00+00:00",
         "review_status": "unreviewed_live_observation",
         "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
@@ -95,7 +95,7 @@
       {
         "provider": "City of Victoria Open Data",
         "record_label": "Parcel MapServer response",
-        "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=json&where=GISLINK%3D%2703229041%27&outFields=OBJECTID%2CPID%2CVicPID%2CGISLINK%2CParcelType%2CParcelStatus%2CShape_Area&returnGeometry=false&outSR=3157&resultRecordCount=25",
+        "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=json&where=GISLINK%3D%2703229041%27&outFields=OBJECTID%2CPID%2CVicPID%2CGISLINK%2CParcelType%2CParcelStatus%2CShape_Area&returnGeometry=false&outSR=3157",
         "captured_at_utc": "2000-01-01T00:00:00+00:00",
         "review_status": "unreviewed_live_observation",
         "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
@@ -407,7 +407,7 @@
       {
         "provider": "City of Victoria Open Data",
         "record_label": "Parcel MapServer response",
-        "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=json&objectIds=87&outFields=OBJECTID%2CPID%2CVicPID%2CGISLINK%2CParcelType%2CParcelStatus%2CShape_Area&returnGeometry=true&outSR=3157&resultRecordCount=2",
+        "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=json&objectIds=87&outFields=OBJECTID%2CPID%2CVicPID%2CGISLINK%2CParcelType%2CParcelStatus%2CShape_Area&returnGeometry=true&outSR=3157",
         "captured_at_utc": "2000-01-01T00:00:00+00:00",
         "review_status": "unreviewed_live_observation",
         "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
@@ -517,7 +517,7 @@
       {
         "provider": "City of Victoria Open Data",
         "record_label": "Building MapServer response",
-        "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=json&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%2C%22rings%22%3A%5B%5B%5B473704.5708999997%2C5362207.274800001%5D%2C%5B473697.6003999999%2C5362165.7161%5D%2C%5B473682.57519999985%2C5362168.232999999%5D%2C%5B473689.5469000004%2C5362209.7984%5D%2C%5B473704.5708999997%2C5362207.274800001%5D%5D%5D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true&resultRecordCount=25",
+        "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=json&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%2C%22rings%22%3A%5B%5B%5B473704.5708999997%2C5362207.274800001%5D%2C%5B473697.6003999999%2C5362165.7161%5D%2C%5B473682.57519999985%2C5362168.232999999%5D%2C%5B473689.5469000004%2C5362209.7984%5D%2C%5B473704.5708999997%2C5362207.274800001%5D%5D%5D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
         "captured_at_utc": "2000-01-01T00:00:00+00:00",
         "review_status": "unreviewed_live_observation",
         "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",

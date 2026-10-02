@@ -6,15 +6,29 @@ const string = (value: unknown): value is string => typeof value === 'string' &&
 const optionalString = (value: unknown): value is string | null => value === null || typeof value === 'string'
 const finite = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value)
 
-async function post(path: string, body: unknown, signal: AbortSignal): Promise<unknown> {
+async function post(path: string, body: unknown, signal: AbortSignal, timeoutMs = 10000): Promise<unknown> {
   const controller = new AbortController()
   const abort = () => controller.abort()
   signal.addEventListener('abort', abort, { once: true })
-  const timer = setTimeout(abort, 10000)
+  let timedOut = false
+  const timer = setTimeout(() => { timedOut = true; abort() }, timeoutMs)
   try {
     const response = await fetch(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), signal: controller.signal })
-    if (!response.ok) throw Error(`HTTP ${response.status}`)
+    if (!response.ok) {
+      if (path.startsWith('/api/municipal-sites/')) {
+        throw new DiscoveryProblem(response.status === 503 || response.status === 429
+          ? 'City source temporarily unavailable. Retry this step or continue manually.'
+          : 'City source rejected the request or returned invalid data. Retry this step or continue manually.')
+      }
+      throw Error(`HTTP ${response.status}`)
+    }
     return await response.json()
+  } catch (error) {
+    if (path.startsWith('/api/municipal-sites/') && !signal.aborted &&
+      (timedOut || error instanceof TypeError)) {
+      throw new DiscoveryProblem('City source temporarily unavailable. Retry this step or continue manually.')
+    }
+    throw error
   } finally { clearTimeout(timer); signal.removeEventListener('abort', abort) }
 }
 
@@ -118,12 +132,12 @@ export const liveTransport: Transport = {
     const street = object(address.raw) && object(address.raw.candidate) && object(address.raw.candidate.address) ? address.raw.candidate.address.streetAddress : null
     const query = string(street) ? street : address.label.split(',')[0]
     if (query.length < 3 || query.length > 120) return { status: 'no_match', candidates: [], message: 'Address is too long for the City parcel search. Correct it or continue manually.' }
-    return parseParcels(await post('/api/municipal-sites/search', { schema_version: 'municipal-sites.v1', address: query }, signal))
+    return parseParcels(await post('/api/municipal-sites/search', { schema_version: 'municipal-sites.v1', address: query }, signal, 25000))
   },
   async observe(parcel: Parcel, signal: AbortSignal): Promise<Observation> {
     const candidate = (parcel.raw as { candidate?: { parcel_ref?: unknown; pid?: unknown } })?.candidate
     if (!candidate || !object(candidate.parcel_ref)) throw Error('Missing parcel reference')
     return parseObservation(await post('/api/municipal-sites/observe', { schema_version: 'municipal-sites.v1', parcel_ref: candidate.parcel_ref,
-      expected_pid: typeof candidate.pid === 'string' ? candidate.pid : null }, signal), parcel)
+      expected_pid: typeof candidate.pid === 'string' ? candidate.pid : null }, signal, 25000), parcel)
   },
 }

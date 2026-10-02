@@ -55,6 +55,7 @@ export function SiteDiscovery({ onConfirm, transport = liveTransport, onManual }
         <TechnicalDetails title="Complete address record"><pre>{JSON.stringify(candidate.raw, null, 2)}</pre></TechnicalDetails>
       </li>)}</ul></section>}
     {address && <p className="sd-choice">Chosen address lead: <strong>{address.label}</strong>. {address.locality && `Locality: ${address.locality}.`} You can choose a different address above or edit the search.</p>}
+    {address && !busy && parcels.length === 0 && <p><button type="button" onClick={() => void flow.chooseAddress(address.id)}>Retry Victoria parcel search</button></p>}
     {parcels.length > 0 && <section aria-label="Parcel choices"><h5>2 · Choose a parcel to inspect</h5><p>More than one parcel may match. A point or nearby candidate does not prove property identity.</p>
       <ul className="sd-options">{parcels.map(candidate => <li key={candidate.id}>
         <button type="button" aria-pressed={parcel?.id === candidate.id} onClick={() => void flow.chooseParcel(candidate.id)}>{candidate.label}</button>
@@ -71,6 +72,7 @@ export function SiteDiscovery({ onConfirm, transport = liveTransport, onManual }
       <div className="sd-actions"><button type="button" onClick={() => flow.confirm()} disabled={!!confirmed}>Confirm this observed property</button><button type="button" onClick={() => flow.reject()}>Reject and correct search</button></div>
       <TechnicalDetails title="Complete observation and exact source records"><pre>{JSON.stringify(observation.raw, null, 2)}</pre></TechnicalDetails>
     </section>}
+    {parcel && !busy && (!observation || observation.buildingsState === 'partial') && <p><button type="button" onClick={() => void flow.chooseParcel(parcel.id)}>Retry parcel and rooflines</button> Retrying clears the current property confirmation and placement result.</p>}
     {onManual ? <p className="sd-fallback"><button type="button" onClick={onManual}>Enter property details manually</button> if this search is wrong, outside Victoria or unavailable. Confirming a property opens approximate placement below.</p> :
       <p className="sd-fallback">You can continue with the retained lookup or <a href="#manual-address">manual site details below</a> if this search is wrong, outside Victoria or unavailable. This demonstration does not fill those fields or affect the prepared summary yet.</p>}
   </section>
