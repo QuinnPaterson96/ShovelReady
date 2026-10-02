@@ -86,6 +86,13 @@
 .sr-workspace-rail small { display: block; margin: .2rem .6rem; color: var(--ink-muted); line-height: 1.4; }
 .sr-visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .sr-home h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); max-width: 26ch; }
+.sr-page-content:focus { outline: none; }
+.sr-home-layout { display: grid; gap: 2rem; align-items: center; }
+.sr-home-layout > * { min-width: 0; }
+.sr-home-layout .sr-property-illustration { width: 100%; max-width: 28rem; }
+@media (min-width: 1050px) {
+  .sr-home-layout { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); }
+}
 .builder-demo .builder-hero h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); max-width: 30ch; }
 .builder-demo [id^="builder-"] { scroll-margin-top: 1rem; }
 .builder-demo > .builder-stage { margin-top: 1.5rem; }

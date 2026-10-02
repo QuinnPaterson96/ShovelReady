@@ -8,6 +8,7 @@ import PilotPreparation from './case_preparations/PilotPreparation'
 import OccupiedLots from './occupied_lots/OccupiedLots'
 import BuilderDemo from './builder_demo/BuilderDemo'
 import { Brand } from './brand/Brand'
+import { PropertyIllustration } from './brand/PropertyIllustration'
 import { AssessmentForm, PreparationSummary } from './assessment/Assessment'
 import { draftReducer, initialDraft, submissionErrors } from './assessment/model'
 import './assessment/assessment.css'
@@ -38,6 +39,7 @@ export default function App() {
   const [mode, setMode] = useState('real')
   const [health, setHealth] = useState('Checking backend…')
   useEffect(() => {
+    if (researchMenu.current) researchMenu.current.open = false
     content.current?.focus({ preventScroll: true })
     window.scrollTo({ top: 0 })
   }, [page])
@@ -93,7 +95,7 @@ export default function App() {
         </details>
       </header>
       <div ref={content} tabIndex={-1} className="sr-page-content">
-      {page === 'home' && <section className="sr-home">
+      {page === 'home' && <section className="sr-home sr-home-layout"><div>
         <p className="eyebrow">From an idea to the next useful question</p>
         <h1>Prepare a design for source-backed investigation.</h1>
         <p>Collect what you know about a building and its intended use. See which evidence is still needed before preliminary zoning scouting.</p>
@@ -102,6 +104,7 @@ export default function App() {
           <button onClick={openOccupied}>Sketch a placement</button>
           <button onClick={() => setPage('evidence')}>Explore examples</button></div>
         <p>Begin with your own inputs, or explicitly load a labelled synthetic example. Unknown facts can stay unknown.</p>
+        </div><PropertyIllustration />
       </section>}
       {builderOpened && <div hidden={page !== 'builder'} className="sr-workspace">
         <aside className="sr-workspace-rail"><nav aria-label="Model 300 steps">

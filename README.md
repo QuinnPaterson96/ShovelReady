@@ -15,6 +15,11 @@ journey is implemented as a local demonstration; the history below records its s
 
 ## Status
 
+The header now separates primary journeys from research tools and provides
+contextual assessment navigation. Model 300 inputs survive switching pages within
+the open app. See the [navigation and identity review](docs/navigation-refresh-qa.md)
+for combined verification and limits; this is not saved state across reloads.
+
 Railway hosting configuration now supports a stateless public observational demo;
 see [deployment and domain runbook](docs/hosting.md). This is separate from accepted
 zoning publication and the future persistent customer pilot.

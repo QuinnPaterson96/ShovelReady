@@ -108,6 +108,15 @@ the site is buildable.
 
 ## Component use and review
 
+The header groups Home, Model 300 and General assessment as primary areas;
+Research contains the separate examples, pilot and occupied-lot tools. Contextual
+navigation belongs inside the active workspace, with a left rail on wide screens
+and a compact horizontal section navigator on narrow screens. Section numbers
+provide wayfinding, not completion or compliance status. The builder journey and
+general assessment remain independent; do not imply they share site evidence.
+Keep the builder mounted after its first visit so navigation preserves its inputs,
+but hide inactive panels from interaction. Browser reload still clears local state.
+
 The compact `Brand` component in `frontend/src/brand/Brand.tsx` pairs a local
 parcel/window mark with a text wordmark. It has no navigation behavior; the
 header decides where the identity links. The mark distinguishes the existing
@@ -150,8 +159,8 @@ new decision status from a colour preference.
 
 The October 2 brand asset refresh passed `npm run build --prefix frontend` and
 `git diff --check`. Build output confirmed the favicon's emitted `/assets/` path.
-The new brand component and illustration have not yet been inspected in a
-composed browser page; that remains part of header integration review.
+See [combined navigation review](navigation-refresh-qa.md) for browser evidence,
+including state retention and responsive layout, and its remaining limitations.
 
 ## Verification for this application
 
