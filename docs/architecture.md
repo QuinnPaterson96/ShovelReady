@@ -1,5 +1,13 @@
 # Architecture direction
 
+## Hosting checkpoint - October 2, 2026
+
+The owner selected Railway and GoDaddy DNS for a stateless public observational demo.
+One container serves frontend/API; current geometry needs no PostGIS or hosted database.
+See [hosting runbook](hosting.md). This explicitly supersedes earlier accepted-data
+gates for hosting the observational journey; persistent pilot and exact-image CD
+requirements in SR-14/15 remain open. Hosting does not publish regulatory data.
+
 ## Live property discovery checkpoint - September 29, 2026
 
 The existing app mounts bounded synchronous BC geocoder and Victoria municipal

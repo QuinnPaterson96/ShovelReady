@@ -15,6 +15,10 @@ journey is implemented as a local demonstration; the history below records its s
 
 ## Status
 
+Railway hosting configuration now supports a stateless public observational demo;
+see [deployment and domain runbook](docs/hosting.md). This is separate from accepted
+zoning publication and the future persistent customer pilot.
+
 The [live parcel integration](docs/integration-live-parcel-discovery.md) connects the
 Model 300 demo to BC Address Geocoder and on-demand City of Victoria parcel/roofline
 observations. Explicitly confirm a property, measure an approximate placement and
@@ -117,7 +121,7 @@ npm run build
 The development frontend proxies `/health` and `/api` to the API on port 8000. Once built, FastAPI
 also serves `frontend/dist` at `/`. Copy `.env.example` only if you need to set explicit
 local environment values; the scaffold needs no database or model credentials. `SHOVELREADY_ENV`
-accepts `development` or `test`; deployment configuration is a later ticket. `DATABASE_URL`
+accepts `development`, `test` or stateless `demo`; see the hosting runbook. `DATABASE_URL`
 from historical code is ignored. The old `/zones/upload` endpoint was retired because its
 parsing and projection can give unsupported zoning answers.
 

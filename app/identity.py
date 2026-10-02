@@ -18,7 +18,12 @@ class AppIdentity(BaseModel):
 
 def capture_identity() -> AppIdentity:
     def safe(name, pattern):
-        value = os.environ.get(name, "")
+        fallback = (
+            os.environ.get("RAILWAY_GIT_COMMIT_SHA", "")
+            if name in {"SHOVELREADY_APPLICATION_COMMIT", "SHOVELREADY_FRONTEND_COMMIT"}
+            else ""
+        )
+        value = os.environ.get(name, fallback)
         return value if re.fullmatch(pattern, value) else None
 
     return AppIdentity(
