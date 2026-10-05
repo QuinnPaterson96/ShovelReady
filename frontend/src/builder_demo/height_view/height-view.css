@@ -1,0 +1,16 @@
+.height-view { min-width: 0; }
+.height-view-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 1rem; align-items: start; }
+.height-view-diagram { display: block; width: 100%; max-width: 28rem; height: auto; background: var(--surface-subtle); border: 1px solid var(--border); border-radius: var(--radius-sm); }
+.height-view-building { fill: var(--primary-soft); stroke: var(--primary); stroke-width: 2; }
+.height-view-roof { fill: none; stroke: var(--primary); stroke-width: 3; }
+.height-view-foundation { fill: var(--copper-soft); stroke: var(--copper); stroke-width: 2; stroke-dasharray: 6 4; }
+.height-view-ground { fill: none; stroke: var(--neutral-edge); stroke-width: 2; stroke-dasharray: 3 5; }
+.height-view-dimension { fill: none; stroke: var(--primary); stroke-width: 2; }
+.height-view-svg-label { fill: var(--ink); font: 600 13px system-ui, sans-serif; }
+.height-view-legend p { margin-top: 0; }
+.height-view input { width: min(100%, 18rem); min-height: 44px; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); padding: .5rem .75rem; }
+.height-view-error { color: var(--danger-ink); }
+.height-view-source { margin-top: 1.25rem; min-width: 0; overflow-wrap: anywhere; }
+.height-view-source p { margin: .4rem 0; }
+.height-view-source pre { max-width: 100%; }
+@media (max-width: 42rem) { .height-view-layout { grid-template-columns: minmax(0, 1fr); } }
