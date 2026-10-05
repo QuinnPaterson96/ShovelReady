@@ -8,6 +8,7 @@ import { SiteDiscovery } from './SiteDiscovery'
 import { CandidateChoices, leadingAddressIndex, leadingParcelIndex } from './CandidateChoices'
 import { liveTransport, parseAddresses, parseObservation, parseParcels } from './transport'
 import saanichResponse from './address-api.fixture.json'
+import mayStreetResponse from './may-street-api.fixture.json'
 import cityAddress from './address_87.json'
 import cityParcelSearch from './parcel_search_87.json'
 import cityParcelObserve from './parcel_observe_87.json'
@@ -139,7 +140,7 @@ test('municipal network outage is identified as source unavailability', async ()
 
 test('provider evidence controls the leading suggestion and keeps alternatives selectable', () => {
   const first = { ...address, id: 'first', label: 'First', providerScore: 92 }
-  const second = { ...address, id: 'second', label: 'Second', providerScore: 88 }
+  const second = { ...address, id: 'second', label: 'Second', precision: 'STREET', providerScore: 88 }
   const ranked = [second, first]
   assert.equal(leadingAddressIndex(ranked), 1)
   const html = renderToStaticMarkup(createElement(CandidateChoices, { candidates: ranked, selectedId: second.id,
@@ -150,10 +151,56 @@ test('provider evidence controls the leading suggestion and keeps alternatives s
   assert.match(html, /aria-pressed="true"/)
   assert.equal(leadingAddressIndex([first, { ...second, providerScore: 92 }]), null)
   assert.equal(leadingAddressIndex([{ ...first, issues: ['provider correction'] }, second]), null)
-  assert.equal(leadingAddressIndex([first, { ...second, locality: 'Saanich' }]), null)
-  assert.equal(leadingAddressIndex([first, { ...second, precision: 'STREET' }]), null)
+  assert.equal(leadingAddressIndex([first, { ...second, locality: 'Saanich' }]), 0)
+  assert.equal(leadingAddressIndex([first, { ...second, precision: 'BLOCK' }]), null)
+  assert.equal(leadingAddressIndex([first, { ...second, precision: 'CIVIC_NUMBER' }]), null)
   assert.equal(leadingAddressIndex([address, second]), null)
   assert.equal(leadingAddressIndex([{ ...first, raw: { candidate: { address: { unitNumber: '1' } } } }, { ...second, raw: { candidate: { address: { unitNumber: '2' } } } }]), null)
+})
+
+test('saved public May Street response shows the corrected civic lead, with raw faults recoverable', () => {
+  // Public BC Geocoder response captured 2026-10-05. The 1144 civic record has
+  // only PROVINCE/missing; all four alternatives are street-level and lose 1144.
+  const parsed = parseAddresses(mayStreetResponse)
+  assert.equal(leadingAddressIndex(parsed.candidates), 0)
+  assert.match(parsed.candidates[0].issues[0], /Province omitted from search; provider supplied BC/)
+  assert.doesNotMatch(parsed.candidates[0].issues.join(' '), /missing:/)
+  assert.deepEqual((parsed.candidates[0].raw as { candidate: { faults: unknown[] } }).candidate.faults, mayStreetResponse.candidates[0].faults)
+  assert.match(parsed.candidates[1].issues[0], /Street number.*1144.*did not match/)
+  const html = renderToStaticMarkup(createElement(CandidateChoices, { candidates: parsed.candidates, selectedId: null,
+    leadingIndex: leadingAddressIndex(parsed.candidates), kind: 'address', render: (candidate, label) => createElement('button', { type: 'button' }, `${label}: ${candidate.id}`) }))
+  assert.match(html, /Leading address suggestion:/)
+  assert.match(html, /Other matches \(4\)/)
+  assert.doesNotMatch(html, /<details[^>]*open=""/)
+})
+
+test('saved Saanich response and material civic, tie and unit alternatives stay expanded', () => {
+  const parsed = parseAddresses(saanichResponse)
+  assert.equal(leadingAddressIndex(parsed.candidates), null) // competing BLOCK record changes direction and locality
+  const [lead, street] = parseAddresses(mayStreetResponse).candidates
+  assert.equal(leadingAddressIndex([lead, { ...street, precision: 'CIVIC_NUMBER' }]), null)
+  assert.equal(leadingAddressIndex([lead, { ...street, providerScore: 99 }]), null)
+  assert.equal(leadingAddressIndex([{ ...lead, raw: { candidate: { address: { unitNumber: '1' } } } },
+    { ...street, raw: { candidate: { address: { unitNumber: '2' } } } }]), null)
+  assert.equal(leadingAddressIndex([{ ...lead, providerFaults: [{ element: 'LOCALITY', fault: 'isAlias', value: 'VICTORIA' }] }, street]), null)
+})
+
+test('choosing a disclosed May Street alternative clears the prior property confirmation', async () => {
+  const choices = parseAddresses(mayStreetResponse).candidates
+  const notices: (Confirmed | null)[] = []
+  const transport: Transport = { async addresses() { return { status: 'ok', candidates: choices } },
+    async parcels() { return { status: 'ok', candidates: [parcel] } }, async observe() { return observation } }
+  const flow = new DiscoveryFlow(transport, () => {}, value => notices.push(value))
+  flow.edit(mayStreetResponse.query); await flow.search()
+  assert.equal(flow.state.address, null)
+  await flow.chooseAddress(choices[0].id); await flow.chooseParcel(parcel.id); flow.confirm()
+  assert.equal(flow.state.confirmed?.address.id, choices[0].id)
+  await flow.chooseAddress(choices[1].id)
+  assert.equal((flow.state.address as Address | null)?.id, choices[1].id)
+  assert.equal(flow.state.parcel, null)
+  assert.equal(flow.state.observation, null)
+  assert.equal(flow.state.confirmed, null)
+  assert.equal(notices.at(-1), null)
 })
 
 test('multiple parcel joins stay unresolved while a sole source join can be shown first', () => {

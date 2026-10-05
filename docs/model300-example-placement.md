@@ -1,0 +1,11 @@
+# Saved Model 300 placement movement — 2026-10-05
+
+Issue: [#192](https://github.com/QuinnPaterson96/ShovelReady/issues/192). Base: merged #190, `13a1c7063fdfe284cef1e4d718037d77a1a9db36`.
+
+The frozen licensed VIC-087 example now has map click and rectangle drag placement, north/east/south/west movement buttons, and map arrow-key movement at selectable 0.25, 1, or 5 metre steps. Reset restores the illustrative centre, provider nominal width and length, and rotation. Exact EPSG:3157 coordinates remain in expandable technical evidence. Width, length and rotation stay editable. Movement and reset invalidate measured results and the unsent enquiry until remeasurement. The existing geometry API and late-response sequence guard are unchanged.
+
+Verification on this branch: `npm ci`, `npm test` (83 passed), `npm run build` (passed, existing large-bundle advisory), and `git diff --check`. Local stateless API at 127.0.0.1:18192 with the built frontend: initial example measured contained with no captured-roofline overlap, boundary distance 1.21 m and roofline distance 1.94 m. Button north movement changed Y from 5362171.53 to 5362172.53 and immediately removed the measured wording from the enquiry. Arrow-right movement, map click, rectangle drag, zero width disabling measurement, reset to full source dimensions (3.048 m × 9.144 m), remeasurement and switching to own property were checked in the default desktop browser. Focus showed full width precision without an edit. No database was used.
+
+For late-response rejection, a local temporary reverse proxy delayed the initial geometry reply by five seconds. Moving north during the pending measurement cleared the result, and the delayed reply did not repopulate either the result or enquiry (`measurement: null`). The proxy was not part of the product or commit.
+
+The current browser viewport is shared with other work, so narrow-screen inspection was not performed here. The responsive CSS stacks the map and controls below 680 px; a coordinated mobile and touch walkthrough remains a demo usability check. Software checks do not establish source accuracy, legal lot lines, zoning, setbacks, installed height, access, permit approval, or a real property fit. Reviewed sources and accepted regulatory publication are separate work; user comprehension should be validated with a prospective visitor.

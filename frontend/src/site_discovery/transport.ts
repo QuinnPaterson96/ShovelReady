@@ -2,6 +2,30 @@ import { DiscoveryProblem } from './flow'
 import type { Address, Observation, Parcel, Polygon, SearchResult, Source, Transport } from './flow'
 import type { RankedAddress, RelatedParcel } from './CandidateChoices'
 
+const addressField: Record<string, string> = {
+  PROVINCE: 'Province', LOCALITY: 'City or locality', LOCALITY_GARBAGE: 'City or locality',
+  LOCALITY_INITIAL_GARBAGE: 'City or locality', CIVIC_NUMBER: 'Street number',
+  STREET_NAME: 'Street name', STREET_TYPE: 'Street type', STREET_DIRECTION: 'Street direction',
+  STREET_QUALIFIER: 'Street qualifier', UNIT_NUMBER: 'Unit number', UNIT_DESIGNATOR: 'Unit type',
+}
+
+function correction(fault: { element: string; fault: string; value: string }, province: string): string {
+  if (fault.element === 'FAULTS' && fault.fault === 'tooMany') return 'Provider reported additional address corrections'
+  const field = addressField[fault.element] ?? fault.element.toLowerCase().replace(/_/g, ' ')
+  if (fault.element === 'PROVINCE' && fault.fault === 'missing') return `Province omitted from search; provider supplied ${province || 'a province'}`
+  const value = fault.value ? ` “${fault.value}”` : ''
+  switch (fault.fault) {
+    case 'missing': return `${field} was omitted from search`
+    case 'notMatched': return `${field}${value} did not match this suggestion`
+    case 'notInAnyBlock': return `${field}${value} did not match this suggestion`
+    case 'partialMatch': return `${field}${value} matched only partly`
+    case 'isAlias': return `${field}${value} was treated as an alternate name`
+    case 'notAllowed': return `${field}${value} could not be used for this suggestion`
+    case 'tooMany': return `${field}: provider reported further corrections`
+    default: return `${field}${value} needs review (provider correction)`
+  }
+}
+
 const object = (value: unknown): value is Record<string, unknown> => value !== null && typeof value === 'object' && !Array.isArray(value)
 const string = (value: unknown): value is string => typeof value === 'string' && value.length > 0
 const optionalString = (value: unknown): value is string | null => value === null || typeof value === 'string'
@@ -33,7 +57,7 @@ async function post(path: string, body: unknown, signal: AbortSignal, timeoutMs 
   } finally { clearTimeout(timer); signal.removeEventListener('abort', abort) }
 }
 
-export function parseAddresses(value: unknown): SearchResult<Address> {
+export function parseAddresses(value: unknown): SearchResult<RankedAddress> {
   if (!object(value) || value.schemaVersion !== 'sr-address-search.v1' || !string(value.query) ||
     !['candidates', 'no_match', 'unavailable', 'malformed', 'rate_limited'].includes(String(value.status)) ||
     !Array.isArray(value.candidates) || value.candidates.length > 5 || !value.candidates.every(object) ||
@@ -41,15 +65,19 @@ export function parseAddresses(value: unknown): SearchResult<Address> {
   const source = value.source
   const candidates = value.candidates.map((candidate, index) => {
     const point = candidate.point
-    if (!string(candidate.locator) || !string(candidate.fullAddress) || !object(candidate.address) ||
+    const addressParts = candidate.address as Record<string, unknown>
+    if (!string(candidate.locator) || !string(candidate.fullAddress) || !object(candidate.address) || !string(addressParts.provinceCode) ||
       !string(candidate.locality) || !string(candidate.matchPrecision) || !Array.isArray(candidate.faults) ||
-      !candidate.faults.every(fault => object(fault) && string(fault.fault) && typeof fault.value === 'string') ||
+      !candidate.faults.every(fault => object(fault) && string(fault.element) && string(fault.fault) && typeof fault.value === 'string' && finite(fault.penalty)) ||
       !finite(candidate.score) || !object(point) || point.crs !== 'EPSG:4326' || !finite(point.longitude) || Math.abs(point.longitude) > 180 || !finite(point.latitude) || Math.abs(point.latitude) > 90 ||
       !optionalString(candidate.sourceChangeDate) || !object(source) || !string(source.provider) ||
       !string(source.fetchedAt) || !string(source.reviewStatus) || !string(source.sourceUrl)) throw Error('Malformed address candidate')
     const parsed: RankedAddress = { id: candidate.locator as string, label: candidate.fullAddress as string, locality: candidate.locality as string,
-      precision: candidate.matchPrecision as string, issues: candidate.faults.map(fault => `${fault.fault}: ${fault.value}`),
+      precision: candidate.matchPrecision as string,
+      issues: candidate.faults.map(fault => correction(fault as { element: string; fault: string; value: string }, String(addressParts.provinceCode ?? ''))),
       providerScore: candidate.score as number,
+      providerFaults: candidate.faults as { element: string; fault: string; value: string }[],
+      providerProvince: addressParts.provinceCode as string,
       point: [point.longitude, point.latitude] as [number, number], crs: 'EPSG:4326',
       source: { provider: source.provider as string, record: `Address suggestion ${index + 1}`, capturedAt: source.fetchedAt as string,
         sourceDate: candidate.sourceChangeDate as string | null, url: source.sourceUrl as string, review: source.reviewStatus as string },
