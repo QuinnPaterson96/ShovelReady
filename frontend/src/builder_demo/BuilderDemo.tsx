@@ -11,6 +11,8 @@ import { SitePreparation } from '../site_preparations/SitePreparation'
 import { emptySiteInput, type SiteInputDraft, type SitePreparationSelection } from '../site_preparations/types'
 import OccupiedLots, { type OccupiedMeasurement } from '../occupied_lots/OccupiedLots'
 import { overlapFinding } from '../occupied_lots/observations'
+import { ExampleProperty } from './ExampleProperty'
+import { exampleCase, exampleSourcePage } from './example'
 
 const MODEL_ID = 'aux-300' as const
 const foundModel = bundledCatalogue.models.find(item => item.model_id === MODEL_ID)
@@ -26,7 +28,7 @@ const field = (value: string) => value.trim() || 'unknown'
 
 export function enquiry(selection: SitePreparationSelection | null, input: {
   intendedUse: string; timing: string; budget: string; access: string; services: string
-}, measured: OccupiedMeasurement | null, exampleImported = false, live: Confirmed | null = null, manual: ManualSiteOutput | null = null) {
+}, measured: OccupiedMeasurement | null, exampleImported = false, live: Confirmed | null = null, manual: ManualSiteOutput | null = null, savedExample = false) {
   const source = model.sources[0]
   const candidate = selection?.candidate
   const p = measured?.result.input.placement
@@ -45,24 +47,27 @@ export function enquiry(selection: SitePreparationSelection | null, input: {
     'UNSENT DRAFT · Model 300 enquiry for preliminary investigation',
     'Prepared independently with ShovelReady; no affiliation with or contact to aux box.',
     `Design: aux box Model 300; public page captured ${readableDate(source?.captured_at)}; unreviewed; manufacturer revision ${model.source_revision ?? 'unknown'}. Nominal exterior ${original('nominal_exterior_width')} × ${original('nominal_exterior_depth')} (${metres('nominal_exterior_width')} × ${metres('nominal_exterior_depth')}). Advertised exterior height ${original('advertised_overall_height')}; regulatory installed height and datum unknown. Source: ${model.provider_url}.`,
+    savedExample ? `Example property / saved data: City of Victoria ${exampleCase.site.parcel.source.record_label}; captured ${readableDate(exampleCase.site.parcel.source.capture_date)}; ${exampleCase.site.parcel.source.review_status}. Parcel source: ${exampleSourcePage(exampleCase.site.parcel.source.reference)} (${exampleCase.site.parcel.source.record_label}). Roofline source: ${exampleSourcePage(exampleCase.site.buildings[0]?.source.reference ?? null)} (${exampleCase.site.buildings[0]?.source.record_label ?? 'record unavailable'}). Contains information licensed under the Open Government Licence – City of Victoria: https://opendata.victoria.ca/pages/open-data-licence. Full source record links are in the technical evidence export. This is not the sender's property or a verified address.` :
     live ? `Site lead: ${live.address.label}; ${live.parcel.label}. User-confirmed City of Victoria source observation; source join and parcel identity remain unreviewed. Captured ${readableDate(live.observation.source.capturedAt)}. Source: ${live.observation.source.url}. ${live.observation.issues.join(' ')}` :
       manual ? `User-supplied site: ${field(manual.facts.address)}; stated area ${measurementWithUnit(manual.facts.statedAreaM2, 'area')}; notes ${field(manual.facts.notes)}. Approximate local sketch only, with no verified address, survey position or orientation.` :
       `Site lead: ${candidate ? `City of Victoria retained parcel observation, PID ${fact(candidate.pid.value)}` : 'manual facts without a matched parcel'}. Source address ${candidate ? fact(candidate.address.value) : 'unknown'}; manual address ${fact(selection?.manual.address.value ?? null)}; manual PID ${fact(selection?.manual.pid.value ?? null)}; manual approximate area ${measurementWithUnit(selection?.manual.lot_area_m2.value, 'area')}. Manual notes: ${fact(selection?.manual.notes.value ?? null)}. Manual entries are unverified and separate from source observations.`,
     ...(candidate ? [`Parcel source: City of Victoria; captured ${readableDate(candidate.pid.evidence.captured_at)}; ${candidate.pid.evidence.review_status}; ${publicSourceUrl(candidate.pid.evidence.source_url) ?? 'source link unavailable'}.`] : []),
     `Use: ${field(input.intendedUse)}. Timing: ${field(input.timing)}. Budget, if shared: ${field(input.budget)}.`,
     `Access and crane questions/known facts: ${field(input.access)}. Utility/services questions/known facts: ${field(input.services)}.`,
-    measured && p ? `${live ? `Placement on the confirmed property ${measured.site.label}` : `Optional, separately imported retained example ${measured.site.label} (not linked to the site lead)`}: nominal rectangle ${measurementWithUnit(p.width_m, 'length')} × ${measurementWithUnit(p.depth_m, 'length')} (width ${measured.widthOrigin === 'catalogue' ? 'catalogue nominal' : 'user edited'}; depth ${measured.depthOrigin === 'catalogue' ? 'catalogue nominal' : 'user edited'}), rotation ${p.angle_degrees}°. ${observed(containment) ? `Parcel containment ${containment?.relation?.replace(/_/g, ' ') ?? 'unknown'}.` : 'Parcel containment unresolved.'} ${overlapText} ${observed(boundary) && boundary?.distance_m != null ? `Observed parcel boundary distance ${measurementWithUnit(boundary.distance_m, 'length')}.` : 'Parcel boundary distance unresolved.'} Captured ${readableDate(measured.site.site.parcel.source.capture_date)}; ${measured.site.site.parcel.source.review_status}; approximate captured geometry only.`
+    measured && p ? `${savedExample ? `Illustrative placement on the saved example ${measured.site.label}` : live ? `Placement on the confirmed property ${measured.site.label}` : `Optional, separately imported retained example ${measured.site.label} (not linked to the site lead)`}: nominal rectangle ${measurementWithUnit(p.width_m, 'length')} × ${measurementWithUnit(p.depth_m, 'length')} (width ${measured.widthOrigin === 'catalogue' ? 'catalogue nominal' : 'user edited'}; depth ${measured.depthOrigin === 'catalogue' ? 'catalogue nominal' : 'user edited'}), rotation ${p.angle_degrees}°. ${observed(containment) ? `Parcel containment ${containment?.relation?.replace(/_/g, ' ') ?? 'unknown'}.` : 'Parcel containment unresolved.'} ${overlapText} ${observed(boundary) && boundary?.distance_m != null ? `Observed parcel boundary distance ${measurementWithUnit(boundary.distance_m, 'length')}.` : 'Parcel boundary distance unresolved.'} Captured ${readableDate(measured.site.site.parcel.source.capture_date)}; ${measured.site.site.parcel.source.review_status}; approximate captured geometry only.`
       : manual?.assessment ? `Measured user sketch: tested user-supplied rectangle ${measurementWithUnit(manual.assessment.input.placement.width_m, 'length')} × ${measurementWithUnit(manual.assessment.input.placement.depth_m, 'length')}; edits may differ from the model dimensions above. ${manual.assessment.checks.filter(c => c.status === 'observed').map(c => `${c.kind.replace(/_/g, ' ')}: ${c.relation?.replace(/_/g, ' ') ?? measurementWithUnit(c.distance_m, 'length')}`).join('; ')}. Obstruction coverage remains partial or unknown; no zoning or site fit assessed.`
+      : savedExample ? 'Saved example placement has no current measurement; measure again after edits. Zoning remains unassessed.'
       : live || manual?.site ? 'No current placement measurement. Position the footprint and measure again after edits. Zoning remains unassessed.'
       : `${exampleImported ? 'Imported example has no current measurement; remeasure after edits. ' : ''}Geometry and zoning unassessed for this site. An address or area does not define a usable parcel shape.`,
     `Provider service/installation: ${model.service_area_note} ${model.installation_note}`,
     'Questions: Please confirm the current controlled Model 300 drawing/revision, installed envelope and height datum; roof projections and site clearances; local delivery/crane access, foundation and utility requirements; and what site information you need before discussing this property.',
+    'Legal lot lines, building walls and roles, other obstructions, zoning and setbacks, installed height and datum, current controlled provider dimensions, access and services remain unresolved.',
     'No legal compatibility, permit approval, installed cost or availability has been determined.',
   ].join('\n')
 }
 
 export default function BuilderDemo() {
-  const [mode, setMode] = useState<'live' | 'manual' | 'retained'>('live')
+  const [mode, setMode] = useState<'live' | 'manual' | 'retained' | 'example'>('live')
   const [live, setLive] = useState<Confirmed | null>(null)
   const [manual, setManual] = useState<ManualSiteOutput | null>(null)
   const liveCase = useMemo(() => live ? placementCase(live) : undefined, [live])
@@ -77,8 +82,13 @@ export default function BuilderDemo() {
   const [access, setAccess] = useState('')
   const [services, setServices] = useState('')
   function siteEdited() { setSelection(null); setImported(false); setMeasurementResult(null); setRevision(value => value + 1) }
-  const hasSite = !!(selection || live || manual && (manual.site || Object.values(manual.facts).some(value => value.trim())))
-  const draftText = hasSite ? enquiry(selection, { intendedUse: use, timing, budget, access, services }, measurementResult, imported, live, manual) : ''
+  function changeMode(next: typeof mode) {
+    setMode(next); siteEdited(); setLive(null); setManual(null)
+    setDraft({ ...emptySiteInput, kind: 'address' })
+    setUse(''); setTiming(''); setBudget(''); setAccess(''); setServices('')
+  }
+  const hasSite = mode === 'example' || !!(selection || live || manual && (manual.site || Object.values(manual.facts).some(value => value.trim())))
+  const draftText = hasSite ? enquiry(selection, { intendedUse: use, timing, budget, access, services }, measurementResult, imported, live, manual, mode === 'example') : ''
   return <div className="builder-demo">
     <section className="builder-hero" id="builder-model" aria-labelledby="builder-title">
       <p className="eyebrow">Independent sample journey · aux box</p>
@@ -96,9 +106,11 @@ export default function BuilderDemo() {
     </section>
     <section className="builder-stage" id="builder-property" aria-labelledby="builder-property-title">
     <p className="eyebrow">Property</p><h2 id="builder-property-title">Start with what you know</h2>
+    <div className="builder-entry-choices"><div><strong>Use my own property</strong><p>Search a Victoria address or enter known facts.</p><button type="button" onClick={() => changeMode('live')}>Use my own property</button></div>
+      <div><strong>Try an example property</strong><p>Open a saved parcel and roofline with an illustrative Model 300 placement.</p><button type="button" onClick={() => changeMode('example')}>Try an example property</button></div></div>
     <label htmlFor="builder-site-mode">How would you like to enter your property?</label>
-    <select id="builder-site-mode" value={mode} onChange={event => { setMode(event.target.value as typeof mode); siteEdited(); setLive(null); setManual(null) }}>
-      <option value="live">Search a Victoria address</option><option value="manual">Enter facts or sketch manually</option><option value="retained">Use the retained example workflow</option>
+    <select id="builder-site-mode" value={mode} onChange={event => changeMode(event.target.value as typeof mode)}>
+      <option value="live">Search a Victoria address</option><option value="manual">Enter facts or sketch manually</option><option value="retained">Use the retained example workflow</option><option value="example">Example property / saved data</option>
     </select>
     {mode === 'live' && <SiteDiscovery onConfirm={next => { setLive(next); setMeasurementResult(null); setRevision(value => value + 1) }} onManual={() => { setMode('manual'); setLive(null); setMeasurementResult(null) }} />}
     {mode === 'retained' && <SitePreparation draft={draft} onDraftChange={next => setDraft(next)} selection={selection}
@@ -106,6 +118,7 @@ export default function BuilderDemo() {
     </section>
     <section className="builder-stage" id="builder-placement" aria-labelledby="builder-placement-title">
       <p className="eyebrow">Placement</p><h2 id="builder-placement-title">Explore one approximate placement</h2>
+      {mode === 'example' && <ExampleProperty key={revision} onMeasurement={setMeasurementResult} />}
       {mode === 'live' && (liveCase ? <OccupiedLots key={revision} suppliedCase={liveCase} allowedModelIds={[MODEL_ID]} initialModelId={MODEL_ID} onMeasurement={setMeasurementResult} showHandoff={false} /> : <p>Confirm a Victoria property above to open its captured parcel sketch. Available geometry is approximate and unreviewed.</p>)}
       {mode === 'manual' && <ManualSiteInput onChange={setManual} footprint={{ widthM: Number(measurement('nominal_exterior_width')?.quantity?.value) || null, depthM: Number(measurement('nominal_exterior_depth')?.quantity?.value) || null, label: 'aux box Model 300 · unreviewed nominal dimensions' }} />}
     {selection && <section className="builder-optional" aria-labelledby="builder-optional-title">
@@ -129,7 +142,7 @@ export default function BuilderDemo() {
         <label htmlFor="builder-services">Services or utility questions</label><input id="builder-services" value={services} onChange={event => setServices(event.target.value)} placeholder="Known services or questions" />
       </div>
       <CopyableRecord id="builder-enquiry-text" label="Copyable unsent enquiry draft" value={draftText} />
-      <TechnicalDetails title="Complete site selection, sources and measurements"><CopyableRecord id="builder-technical-record" label="Complete technical evidence export" value={JSON.stringify({ schema_version: 'builder-evidence.v1', selection, live, manual, measurement: measurementResult }, null, 2)} /></TechnicalDetails>
+      <TechnicalDetails title="Complete site selection, sources and measurements"><CopyableRecord id="builder-technical-record" label="Complete technical evidence export" value={JSON.stringify({ schema_version: 'builder-evidence.v1', selection, live, manual, example: mode === 'example' ? exampleCase : null, measurement: measurementResult }, null, 2)} /></TechnicalDetails>
       </>}
     </section>
   </div>
