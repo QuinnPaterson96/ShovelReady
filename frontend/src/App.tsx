@@ -7,6 +7,9 @@ import DraftEvaluations from './draft_evaluations/DraftEvaluations'
 import PilotPreparation from './case_preparations/PilotPreparation'
 import OccupiedLots from './occupied_lots/OccupiedLots'
 import BuilderDemo from './builder_demo/BuilderDemo'
+import { BuilderJourneyNav, emptyBuilderJourneyCompletion } from './navigation/BuilderJourneyNav'
+import './navigation/builder-journey-nav.css'
+import './builder_demo/model_image/model-image.css'
 import { Brand } from './brand/Brand'
 import { PropertyIllustration } from './brand/PropertyIllustration'
 import { AssessmentForm, PreparationSummary } from './assessment/Assessment'
@@ -25,6 +28,7 @@ import './navigation/navigation.css'
 export default function App() {
   const [page, setPage] = useState<'home' | 'builder' | 'inputs' | 'summary' | 'evidence' | 'pilot' | 'occupied'>('home')
   const [occupiedOpened, setOccupiedOpened] = useState(false)
+  const [builderCompletion, setBuilderCompletion] = useState(emptyBuilderJourneyCompletion)
   const [builderOpened, setBuilderOpened] = useState(false)
   const openBuilder = () => { setBuilderOpened(true); setPage('builder') }
   const openOccupied = () => { setOccupiedOpened(true); setPage('occupied') }
@@ -108,14 +112,8 @@ export default function App() {
         </div><PropertyIllustration />
       </section>}
       {builderOpened && <div hidden={page !== 'builder'} className="sr-workspace">
-        <aside className="sr-workspace-rail"><nav aria-label="Model 300 steps">
-          <p>Model 300 journey</p>
-          <a href="#builder-model">01 <span>Model</span></a>
-          <a href="#builder-property">02 <span>Property</span></a>
-          <a href="#builder-placement">03 <span>Placement</span></a>
-          <a href="#builder-next">04 <span>Next steps</span></a>
-        </nav></aside>
-        <BuilderDemo />
+        <BuilderJourneyNav completion={builderCompletion} />
+        <BuilderDemo onProgressChange={setBuilderCompletion} />
       </div>}
       {(page === 'inputs' || page === 'summary') && <div className="sr-workspace">
         <aside className="sr-workspace-rail"><nav aria-label="General assessment steps">

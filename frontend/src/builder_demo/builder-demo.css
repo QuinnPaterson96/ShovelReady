@@ -30,6 +30,19 @@
 .builder-demo .builder-questions label { margin: 0; }
 .builder-demo .builder-questions input { width: 100%; padding: .6rem .8rem; }
 .builder-demo .copyable-record textarea { min-height: 18rem; }
+.builder-demo .enquiry-preview { max-width: 60rem; margin: 1.5rem 0; padding: 1rem 1.25rem; border: 1px solid var(--border); border-radius: var(--radius-card); background: var(--surface-subtle); overflow-wrap: anywhere; }
+.builder-demo .enquiry-preview h3 { margin-top: 0; }
+.builder-demo .enquiry-preview h4 { margin-bottom: .35rem; }
+.builder-demo .enquiry-preview p { margin: .4rem 0 .8rem; line-height: 1.5; }
+.builder-demo .enquiry-question { font-weight: 600; }
+.builder-demo .enquiry-preview section { border-top: 1px solid var(--border); padding-top: .5rem; }
+.builder-demo .builder-enquiry-actions, .builder-demo .builder-email { max-width: 60rem; }
+.builder-demo .builder-enquiry-actions > button { margin: .5rem .5rem .5rem 0; }
+.builder-demo .builder-email { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+.builder-demo .builder-email > label:not(.builder-email-choice), .builder-demo .builder-email > input, .builder-demo .builder-email > textarea { display: block; width: 100%; max-width: 100%; }
+.builder-demo .builder-email > input, .builder-demo .builder-email > textarea { margin: .35rem 0 1rem; padding: .6rem .8rem; }
+.builder-demo .builder-email-choice { display: flex; align-items: center; gap: .5rem; }
+.builder-demo .builder-email-buttons { display: flex; flex-wrap: wrap; gap: .5rem; }
 @media (max-width: 680px) {
   .builder-demo .builder-specs { grid-template-columns: 1fr; }
   .builder-demo .builder-entry-choices, .builder-demo .builder-example-layout, .builder-demo .builder-example-fields { grid-template-columns: 1fr; }

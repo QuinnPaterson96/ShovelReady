@@ -3,7 +3,8 @@ import { readFileSync } from 'node:fs'
 import { test } from 'node:test'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
-import BuilderDemo, { enquiry } from './BuilderDemo'
+import BuilderDemo, { enquiry, enquiryDocument } from './BuilderDemo'
+import { EnquiryPreview, emailDraftUrl, enquiryEmailBody, enquiryMarkdown, enquiryPlainText, validRecipient } from './enquiry'
 import { buildSelection } from '../site_preparations/SitePreparation'
 import type { Fact, ManualFacts } from '../site_preparations/types'
 import { parseResult, parseSites } from '../occupied_lots/contract'
@@ -92,4 +93,43 @@ test('foundation assumption remains separate in the enquiry and is unknown when 
   assert.match(scenario, /0.5 m entered by the user/)
   assert.match(scenario, /not a verified installed height/)
   assert.match(enquiry(null, questions, null), /Foundation scenario allowance: not supplied/)
+})
+
+test('one structured enquiry drives accessible preview, plain copy, Markdown and concise email', () => {
+  const doc = enquiryDocument(buildSelection(null, null, manual), { ...questions, question: 'Could this suit family & guests <script>?', intendedUse: 'family & guests <script>', access: 'Crane access?' }, null)
+  const html = renderToStaticMarkup(createElement(EnquiryPreview, { document: doc }))
+  const plain = enquiryPlainText(doc)
+  const markdown = enquiryMarkdown(doc)
+  const emailWithoutSite = enquiryEmailBody(doc, false)
+  const emailWithSite = enquiryEmailBody(doc, true)
+  for (const heading of ['Model', 'Property', 'Placement', 'Still to confirm']) {
+    assert.match(html, new RegExp(`>${heading}<`))
+    assert.ok(plain.includes(heading))
+    assert.ok(markdown.includes(`## ${heading}`))
+  }
+  for (const output of [plain, emailWithoutSite, emailWithSite]) assert.ok(output.includes(doc.question))
+  assert.ok(html.indexOf('family &amp; guests') < html.indexOf('>Model<'))
+  assert.doesNotMatch(html, /<script>/)
+  assert.doesNotMatch(markdown, /<script>/)
+  assert.match(markdown, /&lt;script&gt;/)
+  assert.match(html, /href="https:\/\/www\.auxbox\.ca\/model-300"/)
+  assert.match(plain, /Unmatched example address/)
+  assert.match(markdown, /Unmatched example address/)
+  assert.doesNotMatch(emailWithoutSite, /Unmatched example address/)
+  assert.match(emailWithSite, /Unmatched example address/)
+  assert.doesNotMatch(emailWithoutSite, /EPSG:3157|snapshot_id|feature_index/)
+})
+
+test('email draft URLs encode content and reject recipient or URL injection without truncation', () => {
+  const body = 'Café & review\nLine two? yes'
+  const mailto = emailDraftUrl('mailto', ' person+site@example.com ', 'Model 300 & site', body)
+  const gmail = emailDraftUrl('gmail', '', 'Model 300 & site', body)
+  assert.ok(mailto)
+  assert.ok(gmail)
+  assert.equal(decodeURIComponent(new URL(mailto).searchParams.get('body') ?? ''), body)
+  assert.equal(new URL(gmail).searchParams.get('body'), body)
+  assert.match(mailto, /subject=Model%20300%20%26%20site/)
+  assert.equal(emailDraftUrl('mailto', 'safe@example.com\r\nBcc:evil@example.com', 'Hello', body), null)
+  assert.equal(validRecipient('a@example.com,b@example.com'), false)
+  assert.equal(emailDraftUrl('gmail', '', 'Hello', 'x'.repeat(1900)), null)
 })

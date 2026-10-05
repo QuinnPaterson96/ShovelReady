@@ -1,6 +1,6 @@
 # ShovelReady
 
-Latest demo integration: [address suggestions, example movement and visitor findings](docs/integration-demo-usability.md).
+Latest demo integration: [enquiry preview, email drafts and journey progress](docs/integration-enquiry-journey.md).
 
 ShovelReady explores a practical question: **given a prefabricated building design, where could it plausibly be built?**
 
