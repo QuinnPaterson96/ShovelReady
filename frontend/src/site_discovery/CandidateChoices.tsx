@@ -3,7 +3,8 @@ import type { Address, Parcel } from './flow'
 
 // These are optional because saved/manual Transport implementations need not supply
 // provider ranking metadata. A score compares address suggestions only.
-export type RankedAddress = Address & { providerScore?: number }
+export type ProviderFault = { element: string; fault: string; value: string }
+export type RankedAddress = Address & { providerScore?: number; providerFaults?: ProviderFault[]; providerProvince?: string }
 export type RelatedParcel = Parcel & { relation?: 'pid_exact' | 'gislink_join' | 'spatial_lead' }
 
 export function leadingAddressIndex(addresses: Address[]): number | null {
@@ -19,11 +20,15 @@ export function leadingAddressIndex(addresses: Address[]): number | null {
   if (new Set(units).size > 1) return null
   const top = Math.max(...ranked.map(address => address.providerScore!))
   const leaders = ranked.filter(address => address.providerScore === top)
-  if (leaders.length !== 1 || leaders[0].issues.length) return null
-  // A locality disagreement needs human resolution even when one score is higher.
-  const localities = new Set(ranked.map(address => address.locality?.trim().toLowerCase()))
-  const precisions = new Set(ranked.map(address => address.precision.trim().toLowerCase()))
-  if (localities.size !== 1 || precisions.size !== 1) return null
+  if (leaders.length !== 1) return null
+  const lead = leaders[0]
+  // The saved 1144 May response has only an omitted province on its civic
+  // record. Street/locality suggestions lose the civic identity entirely.
+  // A competing civic or block record remains a material identity choice.
+  if (lead.precision !== 'CIVIC_NUMBER' || (lead.providerFaults
+    ? lead.providerFaults.some(fault => fault.element !== 'PROVINCE' || fault.fault !== 'missing' || lead.providerProvince !== 'BC')
+    : lead.issues.length > 0)) return null
+  if (ranked.some(address => address !== lead && !['STREET', 'LOCALITY'].includes(address.precision))) return null
   return ranked.indexOf(leaders[0])
 }
 

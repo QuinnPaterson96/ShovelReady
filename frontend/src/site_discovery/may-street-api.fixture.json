@@ -1,0 +1,730 @@
+{
+  "schemaVersion": "sr-address-search.v1",
+  "query": "1144 May St, Victoria",
+  "status": "candidates",
+  "reason": null,
+  "candidates": [
+    {
+      "locator": "0:12c1110e8b9126d0",
+      "fullAddress": "1144 May St, Victoria, BC",
+      "address": {
+        "siteName": "",
+        "unitDesignator": "",
+        "unitNumber": "",
+        "unitNumberSuffix": "",
+        "civicNumber": "1144",
+        "civicNumberSuffix": "",
+        "streetName": "May",
+        "streetType": "St",
+        "streetDirection": "",
+        "streetQualifier": "",
+        "streetAddress": "1144 May St",
+        "localityName": "Victoria",
+        "localityType": "City",
+        "electoralArea": "",
+        "provinceCode": "BC"
+      },
+      "locality": "Victoria",
+      "providerSiteId": "12b7f58c-10c9-4cff-a31a-14d8fdaba192",
+      "score": 99.0,
+      "matchPrecision": "CIVIC_NUMBER",
+      "faults": [
+        {
+          "value": "",
+          "element": "PROVINCE",
+          "fault": "missing",
+          "penalty": 1.0
+        }
+      ],
+      "locationDescriptor": "parcelPoint",
+      "locationPositionalAccuracy": "high",
+      "point": {
+        "crs": "EPSG:4326",
+        "longitude": -123.3555208,
+        "latitude": 48.4122036
+      },
+      "sourceChangeDate": "2026-07-07"
+    },
+    {
+      "locator": "1:9614177e72378d95",
+      "fullAddress": "May St, Victoria, BC",
+      "address": {
+        "siteName": "",
+        "unitDesignator": "",
+        "unitNumber": "",
+        "unitNumberSuffix": "",
+        "civicNumber": "",
+        "civicNumberSuffix": "",
+        "streetName": "May",
+        "streetType": "St",
+        "streetDirection": "",
+        "streetQualifier": "",
+        "streetAddress": "May St",
+        "localityName": "Victoria",
+        "localityType": "City",
+        "electoralArea": "",
+        "provinceCode": "BC"
+      },
+      "locality": "Victoria",
+      "providerSiteId": null,
+      "score": 76.0,
+      "matchPrecision": "STREET",
+      "faults": [
+        {
+          "value": "1144",
+          "element": "CIVIC_NUMBER",
+          "fault": "notInAnyBlock",
+          "penalty": 1.0
+        },
+        {
+          "value": "",
+          "element": "PROVINCE",
+          "fault": "missing",
+          "penalty": 1.0
+        }
+      ],
+      "locationDescriptor": "streetPoint",
+      "locationPositionalAccuracy": "coarse",
+      "point": {
+        "crs": "EPSG:4326",
+        "longitude": -123.350785,
+        "latitude": 48.4114959
+      },
+      "sourceChangeDate": null
+    },
+    {
+      "locator": "2:69d7a5bc58f2c4ff",
+      "fullAddress": "Maywell Pl, Colwood, BC",
+      "address": {
+        "siteName": "",
+        "unitDesignator": "",
+        "unitNumber": "",
+        "unitNumberSuffix": "",
+        "civicNumber": "",
+        "civicNumberSuffix": "",
+        "streetName": "Maywell",
+        "streetType": "Pl",
+        "streetDirection": "",
+        "streetQualifier": "",
+        "streetAddress": "Maywell Pl",
+        "localityName": "Colwood",
+        "localityType": "City",
+        "electoralArea": "",
+        "provinceCode": "BC"
+      },
+      "locality": "Colwood",
+      "providerSiteId": null,
+      "score": 62.0,
+      "matchPrecision": "STREET",
+      "faults": [
+        {
+          "value": "MAY",
+          "element": "STREET_NAME",
+          "fault": "partialMatch",
+          "penalty": 1.0
+        },
+        {
+          "value": "VICTORIA",
+          "element": "LOCALITY",
+          "fault": "isAlias",
+          "penalty": 4.0
+        },
+        {
+          "value": "ST",
+          "element": "STREET_TYPE",
+          "fault": "notMatched",
+          "penalty": 3.0
+        },
+        {
+          "value": "1144",
+          "element": "CIVIC_NUMBER",
+          "fault": "notInAnyBlock",
+          "penalty": 1.0
+        },
+        {
+          "value": "",
+          "element": "PROVINCE",
+          "fault": "missing",
+          "penalty": 1.0
+        },
+        {
+          "value": "",
+          "element": "FAULTS",
+          "fault": "tooMany",
+          "penalty": 6.0
+        }
+      ],
+      "locationDescriptor": "streetPoint",
+      "locationPositionalAccuracy": "coarse",
+      "point": {
+        "crs": "EPSG:4326",
+        "longitude": -123.4831274,
+        "latitude": 48.4197234
+      },
+      "sourceChangeDate": null
+    },
+    {
+      "locator": "3:0dcea421be808f40",
+      "fullAddress": "Mayfair Gdns, Saanich, BC",
+      "address": {
+        "siteName": "",
+        "unitDesignator": "",
+        "unitNumber": "",
+        "unitNumberSuffix": "",
+        "civicNumber": "",
+        "civicNumberSuffix": "",
+        "streetName": "Mayfair",
+        "streetType": "Gdns",
+        "streetDirection": "",
+        "streetQualifier": "",
+        "streetAddress": "Mayfair Gdns",
+        "localityName": "Saanich",
+        "localityType": "District Municipality",
+        "electoralArea": "",
+        "provinceCode": "BC"
+      },
+      "locality": "Saanich",
+      "providerSiteId": null,
+      "score": 62.0,
+      "matchPrecision": "STREET",
+      "faults": [
+        {
+          "value": "MAY",
+          "element": "STREET_NAME",
+          "fault": "partialMatch",
+          "penalty": 1.0
+        },
+        {
+          "value": "VICTORIA",
+          "element": "LOCALITY",
+          "fault": "isAlias",
+          "penalty": 4.0
+        },
+        {
+          "value": "ST",
+          "element": "STREET_TYPE",
+          "fault": "notMatched",
+          "penalty": 3.0
+        },
+        {
+          "value": "1144",
+          "element": "CIVIC_NUMBER",
+          "fault": "notInAnyBlock",
+          "penalty": 1.0
+        },
+        {
+          "value": "",
+          "element": "PROVINCE",
+          "fault": "missing",
+          "penalty": 1.0
+        },
+        {
+          "value": "",
+          "element": "FAULTS",
+          "fault": "tooMany",
+          "penalty": 6.0
+        }
+      ],
+      "locationDescriptor": "streetPoint",
+      "locationPositionalAccuracy": "coarse",
+      "point": {
+        "crs": "EPSG:4326",
+        "longitude": -123.3242753,
+        "latitude": 48.4539575
+      },
+      "sourceChangeDate": null
+    },
+    {
+      "locator": "4:5e4570774e08d149",
+      "fullAddress": "Mayfair Dr, Saanich, BC",
+      "address": {
+        "siteName": "",
+        "unitDesignator": "",
+        "unitNumber": "",
+        "unitNumberSuffix": "",
+        "civicNumber": "",
+        "civicNumberSuffix": "",
+        "streetName": "Mayfair",
+        "streetType": "Dr",
+        "streetDirection": "",
+        "streetQualifier": "",
+        "streetAddress": "Mayfair Dr",
+        "localityName": "Saanich",
+        "localityType": "District Municipality",
+        "electoralArea": "",
+        "provinceCode": "BC"
+      },
+      "locality": "Saanich",
+      "providerSiteId": null,
+      "score": 62.0,
+      "matchPrecision": "STREET",
+      "faults": [
+        {
+          "value": "MAY",
+          "element": "STREET_NAME",
+          "fault": "partialMatch",
+          "penalty": 1.0
+        },
+        {
+          "value": "VICTORIA",
+          "element": "LOCALITY",
+          "fault": "isAlias",
+          "penalty": 4.0
+        },
+        {
+          "value": "ST",
+          "element": "STREET_TYPE",
+          "fault": "notMatched",
+          "penalty": 3.0
+        },
+        {
+          "value": "1144",
+          "element": "CIVIC_NUMBER",
+          "fault": "notInAnyBlock",
+          "penalty": 1.0
+        },
+        {
+          "value": "",
+          "element": "PROVINCE",
+          "fault": "missing",
+          "penalty": 1.0
+        },
+        {
+          "value": "",
+          "element": "FAULTS",
+          "fault": "tooMany",
+          "penalty": 6.0
+        }
+      ],
+      "locationDescriptor": "streetPoint",
+      "locationPositionalAccuracy": "coarse",
+      "point": {
+        "crs": "EPSG:4326",
+        "longitude": -123.3238986,
+        "latitude": 48.4568719
+      },
+      "sourceChangeDate": null
+    }
+  ],
+  "mayBeTruncated": true,
+  "source": {
+    "provider": "BC Address Geocoder",
+    "sourceUrl": "https://geocoder.api.gov.bc.ca/addresses.json?addressString=1144+May+St%2C+Victoria&maxResults=5&outputSRS=4326&echo=true&autoComplete=false",
+    "fetchedAt": "2026-10-05T18:34:18.442852Z",
+    "providerSearchTimestamp": "2026-10-05T11:34:17",
+    "providerBaseDataDate": "2026-07-07T20:10:43Z",
+    "providerVersion": "4.5.4",
+    "responseSha256": "141260d83c8fb56f08388f1deca4a47ceb583e758d8098d75ceac4257db40aac",
+    "licence": "Open Government Licence - British Columbia",
+    "reviewStatus": "unreviewed",
+    "rawResponse": {
+      "type": "FeatureCollection",
+      "queryAddress": "1144 May St, Victoria",
+      "encoding": "ascii",
+      "searchTimestamp": "2026-10-05T11:34:17",
+      "executionTime": 1.065,
+      "version": "4.5.4",
+      "baseDataDate": "2026-07-07T20:10:43Z",
+      "crs": {
+        "type": "EPSG",
+        "properties": {
+          "code": 4326
+        }
+      },
+      "interpolation": "adaptive",
+      "echo": "true",
+      "locationDescriptor": "any",
+      "setBack": 0,
+      "minScore": 0,
+      "maxResults": 5,
+      "disclaimer": "https://www2.gov.bc.ca/gov/content?id=79F93E018712422FBC8E674A67A70535",
+      "privacyStatement": "https://www2.gov.bc.ca/gov/content?id=9E890E16955E4FF4BF3B0E07B4722932",
+      "copyrightNotice": "Copyright © 2024 Province of British Columbia",
+      "copyrightLicense": "https://www2.gov.bc.ca/gov/content?id=A519A56BC2BF44E4A008B33FCF527F61",
+      "features": [
+        {
+          "type": "Feature",
+          "geometry": {
+            "type": "Point",
+            "crs": {
+              "type": "EPSG",
+              "properties": {
+                "code": 4326
+              }
+            },
+            "coordinates": [
+              -123.3555208,
+              48.4122036
+            ]
+          },
+          "properties": {
+            "fullAddress": "1144 May St, Victoria, BC",
+            "score": 99,
+            "matchPrecision": "CIVIC_NUMBER",
+            "precisionPoints": 100,
+            "faults": [
+              {
+                "value": "",
+                "element": "PROVINCE",
+                "fault": "missing",
+                "penalty": 1
+              }
+            ],
+            "siteName": "",
+            "unitDesignator": "",
+            "unitNumber": "",
+            "unitNumberSuffix": "",
+            "civicNumber": 1144,
+            "civicNumberSuffix": "",
+            "streetName": "May",
+            "streetType": "St",
+            "isStreetTypePrefix": "false",
+            "streetDirection": "",
+            "isStreetDirectionPrefix": "false",
+            "streetQualifier": "",
+            "localityName": "Victoria",
+            "streetAddress": "1144 May St",
+            "localityType": "City",
+            "electoralArea": "",
+            "provinceCode": "BC",
+            "locationPositionalAccuracy": "high",
+            "locationDescriptor": "parcelPoint",
+            "siteID": "12b7f58c-10c9-4cff-a31a-14d8fdaba192",
+            "blockID": 300685,
+            "fullSiteDescriptor": "",
+            "accessNotes": "\"",
+            "siteStatus": "active",
+            "siteRetireDate": "9999-12-31",
+            "changeDate": "2026-07-07",
+            "isOfficial": "true"
+          }
+        },
+        {
+          "type": "Feature",
+          "geometry": {
+            "type": "Point",
+            "crs": {
+              "type": "EPSG",
+              "properties": {
+                "code": 4326
+              }
+            },
+            "coordinates": [
+              -123.350785,
+              48.4114959
+            ]
+          },
+          "properties": {
+            "fullAddress": "May St, Victoria, BC",
+            "score": 76,
+            "matchPrecision": "STREET",
+            "precisionPoints": 78,
+            "faults": [
+              {
+                "value": 1144,
+                "element": "CIVIC_NUMBER",
+                "fault": "notInAnyBlock",
+                "penalty": 1
+              },
+              {
+                "value": "",
+                "element": "PROVINCE",
+                "fault": "missing",
+                "penalty": 1
+              }
+            ],
+            "siteName": "",
+            "unitDesignator": "",
+            "unitNumber": "",
+            "unitNumberSuffix": "",
+            "civicNumber": "",
+            "civicNumberSuffix": "",
+            "streetName": "May",
+            "streetType": "St",
+            "isStreetTypePrefix": "false",
+            "streetDirection": "",
+            "isStreetDirectionPrefix": "false",
+            "streetQualifier": "",
+            "localityName": "Victoria",
+            "streetAddress": "May St",
+            "localityType": "City",
+            "electoralArea": "",
+            "provinceCode": "BC",
+            "locationPositionalAccuracy": "coarse",
+            "locationDescriptor": "streetPoint",
+            "siteID": "",
+            "blockID": "",
+            "fullSiteDescriptor": "",
+            "accessNotes": "",
+            "siteStatus": "",
+            "siteRetireDate": "",
+            "changeDate": "",
+            "isOfficial": "true"
+          }
+        },
+        {
+          "type": "Feature",
+          "geometry": {
+            "type": "Point",
+            "crs": {
+              "type": "EPSG",
+              "properties": {
+                "code": 4326
+              }
+            },
+            "coordinates": [
+              -123.4831274,
+              48.4197234
+            ]
+          },
+          "properties": {
+            "fullAddress": "Maywell Pl, Colwood, BC",
+            "score": 62,
+            "matchPrecision": "STREET",
+            "precisionPoints": 78,
+            "faults": [
+              {
+                "value": "MAY",
+                "element": "STREET_NAME",
+                "fault": "partialMatch",
+                "penalty": 1
+              },
+              {
+                "value": "VICTORIA",
+                "element": "LOCALITY",
+                "fault": "isAlias",
+                "penalty": 4
+              },
+              {
+                "value": "ST",
+                "element": "STREET_TYPE",
+                "fault": "notMatched",
+                "penalty": 3
+              },
+              {
+                "value": 1144,
+                "element": "CIVIC_NUMBER",
+                "fault": "notInAnyBlock",
+                "penalty": 1
+              },
+              {
+                "value": "",
+                "element": "PROVINCE",
+                "fault": "missing",
+                "penalty": 1
+              },
+              {
+                "value": "",
+                "element": "FAULTS",
+                "fault": "tooMany",
+                "penalty": 6
+              }
+            ],
+            "siteName": "",
+            "unitDesignator": "",
+            "unitNumber": "",
+            "unitNumberSuffix": "",
+            "civicNumber": "",
+            "civicNumberSuffix": "",
+            "streetName": "Maywell",
+            "streetType": "Pl",
+            "isStreetTypePrefix": "false",
+            "streetDirection": "",
+            "isStreetDirectionPrefix": "false",
+            "streetQualifier": "",
+            "localityName": "Colwood",
+            "streetAddress": "Maywell Pl",
+            "localityType": "City",
+            "electoralArea": "",
+            "provinceCode": "BC",
+            "locationPositionalAccuracy": "coarse",
+            "locationDescriptor": "streetPoint",
+            "siteID": "",
+            "blockID": "",
+            "fullSiteDescriptor": "",
+            "accessNotes": "",
+            "siteStatus": "",
+            "siteRetireDate": "",
+            "changeDate": "",
+            "isOfficial": "true"
+          }
+        },
+        {
+          "type": "Feature",
+          "geometry": {
+            "type": "Point",
+            "crs": {
+              "type": "EPSG",
+              "properties": {
+                "code": 4326
+              }
+            },
+            "coordinates": [
+              -123.3242753,
+              48.4539575
+            ]
+          },
+          "properties": {
+            "fullAddress": "Mayfair Gdns, Saanich, BC",
+            "score": 62,
+            "matchPrecision": "STREET",
+            "precisionPoints": 78,
+            "faults": [
+              {
+                "value": "MAY",
+                "element": "STREET_NAME",
+                "fault": "partialMatch",
+                "penalty": 1
+              },
+              {
+                "value": "VICTORIA",
+                "element": "LOCALITY",
+                "fault": "isAlias",
+                "penalty": 4
+              },
+              {
+                "value": "ST",
+                "element": "STREET_TYPE",
+                "fault": "notMatched",
+                "penalty": 3
+              },
+              {
+                "value": 1144,
+                "element": "CIVIC_NUMBER",
+                "fault": "notInAnyBlock",
+                "penalty": 1
+              },
+              {
+                "value": "",
+                "element": "PROVINCE",
+                "fault": "missing",
+                "penalty": 1
+              },
+              {
+                "value": "",
+                "element": "FAULTS",
+                "fault": "tooMany",
+                "penalty": 6
+              }
+            ],
+            "siteName": "",
+            "unitDesignator": "",
+            "unitNumber": "",
+            "unitNumberSuffix": "",
+            "civicNumber": "",
+            "civicNumberSuffix": "",
+            "streetName": "Mayfair",
+            "streetType": "Gdns",
+            "isStreetTypePrefix": "false",
+            "streetDirection": "",
+            "isStreetDirectionPrefix": "false",
+            "streetQualifier": "",
+            "localityName": "Saanich",
+            "streetAddress": "Mayfair Gdns",
+            "localityType": "District Municipality",
+            "electoralArea": "",
+            "provinceCode": "BC",
+            "locationPositionalAccuracy": "coarse",
+            "locationDescriptor": "streetPoint",
+            "siteID": "",
+            "blockID": "",
+            "fullSiteDescriptor": "",
+            "accessNotes": "",
+            "siteStatus": "",
+            "siteRetireDate": "",
+            "changeDate": "",
+            "isOfficial": "true"
+          }
+        },
+        {
+          "type": "Feature",
+          "geometry": {
+            "type": "Point",
+            "crs": {
+              "type": "EPSG",
+              "properties": {
+                "code": 4326
+              }
+            },
+            "coordinates": [
+              -123.3238986,
+              48.4568719
+            ]
+          },
+          "properties": {
+            "fullAddress": "Mayfair Dr, Saanich, BC",
+            "score": 62,
+            "matchPrecision": "STREET",
+            "precisionPoints": 78,
+            "faults": [
+              {
+                "value": "MAY",
+                "element": "STREET_NAME",
+                "fault": "partialMatch",
+                "penalty": 1
+              },
+              {
+                "value": "VICTORIA",
+                "element": "LOCALITY",
+                "fault": "isAlias",
+                "penalty": 4
+              },
+              {
+                "value": "ST",
+                "element": "STREET_TYPE",
+                "fault": "notMatched",
+                "penalty": 3
+              },
+              {
+                "value": 1144,
+                "element": "CIVIC_NUMBER",
+                "fault": "notInAnyBlock",
+                "penalty": 1
+              },
+              {
+                "value": "",
+                "element": "PROVINCE",
+                "fault": "missing",
+                "penalty": 1
+              },
+              {
+                "value": "",
+                "element": "FAULTS",
+                "fault": "tooMany",
+                "penalty": 6
+              }
+            ],
+            "siteName": "",
+            "unitDesignator": "",
+            "unitNumber": "",
+            "unitNumberSuffix": "",
+            "civicNumber": "",
+            "civicNumberSuffix": "",
+            "streetName": "Mayfair",
+            "streetType": "Dr",
+            "isStreetTypePrefix": "false",
+            "streetDirection": "",
+            "isStreetDirectionPrefix": "false",
+            "streetQualifier": "",
+            "localityName": "Saanich",
+            "streetAddress": "Mayfair Dr",
+            "localityType": "District Municipality",
+            "electoralArea": "",
+            "provinceCode": "BC",
+            "locationPositionalAccuracy": "coarse",
+            "locationDescriptor": "streetPoint",
+            "siteID": "",
+            "blockID": "",
+            "fullSiteDescriptor": "",
+            "accessNotes": "",
+            "siteStatus": "",
+            "siteRetireDate": "",
+            "changeDate": "",
+            "isOfficial": "true"
+          }
+        }
+      ]
+    },
+    "rawResponseText": "{\"type\":\"FeatureCollection\",\"queryAddress\":\"1144 May St, Victoria\",\"encoding\":\"ascii\",\"searchTimestamp\":\"2026-10-05T11:34:17\",\"executionTime\":1.065,\"version\":\"4.5.4\",\"baseDataDate\":\"2026-07-07T20:10:43Z\",\"crs\":{\"type\":\"EPSG\",\"properties\":{\"code\":4326}},\"interpolation\":\"adaptive\",\"echo\":\"true\",\"locationDescriptor\":\"any\",\"setBack\":0,\"minScore\":0,\"maxResults\":5,\"disclaimer\":\"https:\\/\\/www2.gov.bc.ca\\/gov\\/content?id=79F93E018712422FBC8E674A67A70535\",\"privacyStatement\":\"https:\\/\\/www2.gov.bc.ca\\/gov\\/content?id=9E890E16955E4FF4BF3B0E07B4722932\",\"copyrightNotice\":\"Copyright \\u00A9 2024 Province of British Columbia\",\"copyrightLicense\":\"https:\\/\\/www2.gov.bc.ca\\/gov\\/content?id=A519A56BC2BF44E4A008B33FCF527F61\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"crs\":{\"type\":\"EPSG\",\"properties\":{\"code\":4326}},\"coordinates\":[-123.3555208,48.4122036]},\"properties\":{\"fullAddress\":\"1144 May St, Victoria, BC\",\"score\":99,\"matchPrecision\":\"CIVIC_NUMBER\",\"precisionPoints\":100,\"faults\":[{\"value\":\"\",\"element\":\"PROVINCE\",\"fault\":\"missing\",\"penalty\":1}],\"siteName\":\"\",\"unitDesignator\":\"\",\"unitNumber\":\"\",\"unitNumberSuffix\":\"\",\"civicNumber\":1144,\"civicNumberSuffix\":\"\",\"streetName\":\"May\",\"streetType\":\"St\",\"isStreetTypePrefix\":\"false\",\"streetDirection\":\"\",\"isStreetDirectionPrefix\":\"false\",\"streetQualifier\":\"\",\"localityName\":\"Victoria\",\"streetAddress\":\"1144 May St\",\"localityType\":\"City\",\"electoralArea\":\"\",\"provinceCode\":\"BC\",\"locationPositionalAccuracy\":\"high\",\"locationDescriptor\":\"parcelPoint\",\"siteID\":\"12b7f58c-10c9-4cff-a31a-14d8fdaba192\",\"blockID\":300685,\"fullSiteDescriptor\":\"\",\"accessNotes\":\"\\\"\",\"siteStatus\":\"active\",\"siteRetireDate\":\"9999-12-31\",\"changeDate\":\"2026-07-07\",\"isOfficial\":\"true\"}},{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"crs\":{\"type\":\"EPSG\",\"properties\":{\"code\":4326}},\"coordinates\":[-123.350785,48.4114959]},\"properties\":{\"fullAddress\":\"May St, Victoria, BC\",\"score\":76,\"matchPrecision\":\"STREET\",\"precisionPoints\":78,\"faults\":[{\"value\":1144,\"element\":\"CIVIC_NUMBER\",\"fault\":\"notInAnyBlock\",\"penalty\":1},{\"value\":\"\",\"element\":\"PROVINCE\",\"fault\":\"missing\",\"penalty\":1}],\"siteName\":\"\",\"unitDesignator\":\"\",\"unitNumber\":\"\",\"unitNumberSuffix\":\"\",\"civicNumber\":\"\",\"civicNumberSuffix\":\"\",\"streetName\":\"May\",\"streetType\":\"St\",\"isStreetTypePrefix\":\"false\",\"streetDirection\":\"\",\"isStreetDirectionPrefix\":\"false\",\"streetQualifier\":\"\",\"localityName\":\"Victoria\",\"streetAddress\":\"May St\",\"localityType\":\"City\",\"electoralArea\":\"\",\"provinceCode\":\"BC\",\"locationPositionalAccuracy\":\"coarse\",\"locationDescriptor\":\"streetPoint\",\"siteID\":\"\",\"blockID\":\"\",\"fullSiteDescriptor\":\"\",\"accessNotes\":\"\",\"siteStatus\":\"\",\"siteRetireDate\":\"\",\"changeDate\":\"\",\"isOfficial\":\"true\"}},{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"crs\":{\"type\":\"EPSG\",\"properties\":{\"code\":4326}},\"coordinates\":[-123.4831274,48.4197234]},\"properties\":{\"fullAddress\":\"Maywell Pl, Colwood, BC\",\"score\":62,\"matchPrecision\":\"STREET\",\"precisionPoints\":78,\"faults\":[{\"value\":\"MAY\",\"element\":\"STREET_NAME\",\"fault\":\"partialMatch\",\"penalty\":1},{\"value\":\"VICTORIA\",\"element\":\"LOCALITY\",\"fault\":\"isAlias\",\"penalty\":4},{\"value\":\"ST\",\"element\":\"STREET_TYPE\",\"fault\":\"notMatched\",\"penalty\":3},{\"value\":1144,\"element\":\"CIVIC_NUMBER\",\"fault\":\"notInAnyBlock\",\"penalty\":1},{\"value\":\"\",\"element\":\"PROVINCE\",\"fault\":\"missing\",\"penalty\":1},{\"value\":\"\",\"element\":\"FAULTS\",\"fault\":\"tooMany\",\"penalty\":6}],\"siteName\":\"\",\"unitDesignator\":\"\",\"unitNumber\":\"\",\"unitNumberSuffix\":\"\",\"civicNumber\":\"\",\"civicNumberSuffix\":\"\",\"streetName\":\"Maywell\",\"streetType\":\"Pl\",\"isStreetTypePrefix\":\"false\",\"streetDirection\":\"\",\"isStreetDirectionPrefix\":\"false\",\"streetQualifier\":\"\",\"localityName\":\"Colwood\",\"streetAddress\":\"Maywell Pl\",\"localityType\":\"City\",\"electoralArea\":\"\",\"provinceCode\":\"BC\",\"locationPositionalAccuracy\":\"coarse\",\"locationDescriptor\":\"streetPoint\",\"siteID\":\"\",\"blockID\":\"\",\"fullSiteDescriptor\":\"\",\"accessNotes\":\"\",\"siteStatus\":\"\",\"siteRetireDate\":\"\",\"changeDate\":\"\",\"isOfficial\":\"true\"}},{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"crs\":{\"type\":\"EPSG\",\"properties\":{\"code\":4326}},\"coordinates\":[-123.3242753,48.4539575]},\"properties\":{\"fullAddress\":\"Mayfair Gdns, Saanich, BC\",\"score\":62,\"matchPrecision\":\"STREET\",\"precisionPoints\":78,\"faults\":[{\"value\":\"MAY\",\"element\":\"STREET_NAME\",\"fault\":\"partialMatch\",\"penalty\":1},{\"value\":\"VICTORIA\",\"element\":\"LOCALITY\",\"fault\":\"isAlias\",\"penalty\":4},{\"value\":\"ST\",\"element\":\"STREET_TYPE\",\"fault\":\"notMatched\",\"penalty\":3},{\"value\":1144,\"element\":\"CIVIC_NUMBER\",\"fault\":\"notInAnyBlock\",\"penalty\":1},{\"value\":\"\",\"element\":\"PROVINCE\",\"fault\":\"missing\",\"penalty\":1},{\"value\":\"\",\"element\":\"FAULTS\",\"fault\":\"tooMany\",\"penalty\":6}],\"siteName\":\"\",\"unitDesignator\":\"\",\"unitNumber\":\"\",\"unitNumberSuffix\":\"\",\"civicNumber\":\"\",\"civicNumberSuffix\":\"\",\"streetName\":\"Mayfair\",\"streetType\":\"Gdns\",\"isStreetTypePrefix\":\"false\",\"streetDirection\":\"\",\"isStreetDirectionPrefix\":\"false\",\"streetQualifier\":\"\",\"localityName\":\"Saanich\",\"streetAddress\":\"Mayfair Gdns\",\"localityType\":\"District Municipality\",\"electoralArea\":\"\",\"provinceCode\":\"BC\",\"locationPositionalAccuracy\":\"coarse\",\"locationDescriptor\":\"streetPoint\",\"siteID\":\"\",\"blockID\":\"\",\"fullSiteDescriptor\":\"\",\"accessNotes\":\"\",\"siteStatus\":\"\",\"siteRetireDate\":\"\",\"changeDate\":\"\",\"isOfficial\":\"true\"}},{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"crs\":{\"type\":\"EPSG\",\"properties\":{\"code\":4326}},\"coordinates\":[-123.3238986,48.4568719]},\"properties\":{\"fullAddress\":\"Mayfair Dr, Saanich, BC\",\"score\":62,\"matchPrecision\":\"STREET\",\"precisionPoints\":78,\"faults\":[{\"value\":\"MAY\",\"element\":\"STREET_NAME\",\"fault\":\"partialMatch\",\"penalty\":1},{\"value\":\"VICTORIA\",\"element\":\"LOCALITY\",\"fault\":\"isAlias\",\"penalty\":4},{\"value\":\"ST\",\"element\":\"STREET_TYPE\",\"fault\":\"notMatched\",\"penalty\":3},{\"value\":1144,\"element\":\"CIVIC_NUMBER\",\"fault\":\"notInAnyBlock\",\"penalty\":1},{\"value\":\"\",\"element\":\"PROVINCE\",\"fault\":\"missing\",\"penalty\":1},{\"value\":\"\",\"element\":\"FAULTS\",\"fault\":\"tooMany\",\"penalty\":6}],\"siteName\":\"\",\"unitDesignator\":\"\",\"unitNumber\":\"\",\"unitNumberSuffix\":\"\",\"civicNumber\":\"\",\"civicNumberSuffix\":\"\",\"streetName\":\"Mayfair\",\"streetType\":\"Dr\",\"isStreetTypePrefix\":\"false\",\"streetDirection\":\"\",\"isStreetDirectionPrefix\":\"false\",\"streetQualifier\":\"\",\"localityName\":\"Saanich\",\"streetAddress\":\"Mayfair Dr\",\"localityType\":\"District Municipality\",\"electoralArea\":\"\",\"provinceCode\":\"BC\",\"locationPositionalAccuracy\":\"coarse\",\"locationDescriptor\":\"streetPoint\",\"siteID\":\"\",\"blockID\":\"\",\"fullSiteDescriptor\":\"\",\"accessNotes\":\"\",\"siteStatus\":\"\",\"siteRetireDate\":\"\",\"changeDate\":\"\",\"isOfficial\":\"true\"}}]}"
+  }
+}
