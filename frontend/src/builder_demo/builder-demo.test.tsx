@@ -48,6 +48,11 @@ test('saved example retains the licensed packet and an explicit measurable start
   assert.match(html, /Example property \/ saved data/)
   assert.match(html, /Open Government Licence/)
   assert.match(html, /Measure this placement/)
+  assert.match(html, /Click the map to move its centre or drag the copper rectangle/)
+  assert.match(html, /North ↑/)
+  assert.match(html, /Reset example position and dimensions/)
+  assert.match(html, /Saved example sources and exact projected coordinates/)
+  assert.doesNotMatch(html, /Centre X \(m\)|Centre Y \(m\)/)
   assert.match(html, /Unknown: legal lot lines/)
 })
 
