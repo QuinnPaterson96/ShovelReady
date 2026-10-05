@@ -10,6 +10,13 @@ export function leadingAddressIndex(addresses: Address[]): number | null {
   if (addresses.length < 2) return null
   const ranked = addresses as RankedAddress[]
   if (ranked.some(address => !Number.isFinite(address.providerScore))) return null
+  // Distinct unit records must remain visible even if their scores differ.
+  const units = ranked.map(address => {
+    const raw = address.raw as { candidate?: { address?: { unitDesignator?: string; unitNumber?: string; unitNumberSuffix?: string } } } | null
+    const unit = raw?.candidate?.address
+    return [unit?.unitDesignator, unit?.unitNumber, unit?.unitNumberSuffix].map(value => typeof value === 'string' ? value.trim().toLowerCase() : '').join('|')
+  })
+  if (new Set(units).size > 1) return null
   const top = Math.max(...ranked.map(address => address.providerScore!))
   const leaders = ranked.filter(address => address.providerScore === top)
   if (leaders.length !== 1 || leaders[0].issues.length) return null

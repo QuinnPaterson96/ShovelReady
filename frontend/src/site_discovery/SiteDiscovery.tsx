@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { publicSourceUrl, readableDate, TechnicalDetails } from '../ReadableProvenance'
 import { DiscoveryFlow, initial } from './flow'
-import type { Confirmed, Observation, Polygon, Source, State, Transport } from './flow'
+import type { Confirmed, Source, State, Transport } from './flow'
+import { ObservationMap } from './ObservationMap'
 import { liveTransport } from './transport'
 import { CandidateChoices, leadingAddressIndex, leadingParcelIndex } from './CandidateChoices'
 
@@ -9,29 +10,6 @@ function SourceLine({ source }: { source: Source }) {
   const url = publicSourceUrl(source.url)
   return <p className="sd-source">{source.provider} · {source.record} · captured {readableDate(source.capturedAt)} · {source.review}. Source date {readableDate(source.sourceDate)}. {url && <a href={url} target="_blank" rel="noreferrer">Source</a>}</p>
 }
-function rings(geometry: Polygon): number[][][] {
-  return geometry.type === 'Polygon' ? geometry.coordinates as number[][][] : (geometry.coordinates as number[][][][]).flat()
-}
-function mapPath(geometry: Polygon) {
-  return rings(geometry).map(ring => ring.map(([x, y], index) => `${index ? 'L' : 'M'}${x} ${-y}`).join(' ') + ' Z').join(' ')
-}
-function Map({ observation }: { observation: Observation }) {
-  const shapes = [observation.parcel.geometry, ...observation.roofs.map(roof => roof.geometry)]
-  const points = shapes.flatMap(shape => rings(shape).flat())
-  const xs = points.map(point => point[0]), ys = points.map(point => point[1])
-  const minX = Math.min(...xs), maxX = Math.max(...xs), minY = Math.min(...ys), maxY = Math.max(...ys)
-  const extent = Math.max(maxX - minX, maxY - minY, 20), pad = extent * .15
-  const viewBox = `${minX - pad} ${-maxY - pad} ${maxX - minX + pad * 2} ${maxY - minY + pad * 2}`
-  return <figure className="sd-map"><svg viewBox={viewBox} role="img" aria-label={`Approximate parcel and ${observation.roofs.length} captured roofline outlines; coordinates in EPSG:3157 metres. North is up.`}>
-    <path d={mapPath(observation.parcel.geometry)} fill="var(--map-parcel-fill)" stroke="var(--map-parcel-stroke)" fillRule="evenodd" strokeWidth="2" vectorEffect="non-scaling-stroke" />
-    {observation.roofs.map((roof, index) => {
-      const vertices = rings(roof.geometry).flat()
-      return <g key={roof.id}><path d={mapPath(roof.geometry)} fill="var(--map-roof-fill)" stroke="var(--map-roof-stroke)" fillRule="evenodd" strokeWidth="2" vectorEffect="non-scaling-stroke" />
-        <text x={Math.min(...vertices.map(point => point[0]))} y={-Math.max(...vertices.map(point => point[1])) - extent * .015} fontSize={extent * .04}>Roof {index + 1}</text></g>
-    })}
-  </svg><figcaption>Teal: captured parcel · Purple: captured rooflines, not walls · North ↑ · EPSG:3157 projected metres. Drawing is approximate, without a basemap or legal yard interpretation.</figcaption></figure>
-}
-
 export function SiteDiscovery({ onConfirm, transport = liveTransport, onManual }: { onConfirm: (value: Confirmed | null) => void; transport?: Transport; onManual?: () => void }) {
   const [state, setState] = useState<State>(initial)
   const [flow] = useState(() => new DiscoveryFlow(transport, setState, onConfirm))
@@ -71,11 +49,7 @@ export function SiteDiscovery({ onConfirm, transport = liveTransport, onManual }
     {parcel && <p className="sd-choice">Chosen parcel lead: <strong>{parcel.label}</strong>. {parcel.match} Inspect the observation before confirming.</p>}
     {observation && parcel && <section aria-label="Property observation"><h5>3 · Inspect and confirm the observed property</h5>
       <p className="sd-notice">Captured parcel and rooflines are approximate. Rooflines are not walls; missing or partial rooflines do not establish clear space. Check that the parcel shown is yours.</p>
-      <Map observation={observation} />
-      <p>Approximate mapped parcel area: {observation.parcel.areaM2 === null ? 'unknown' : `${Number(observation.parcel.areaM2.toFixed(1))} m²`}. {observation.roofs.length} roofline outline{observation.roofs.length === 1 ? '' : 's'} returned. Building fetch state: {observation.buildingsState.replace(/_/g, ' ')}.</p>
-      {observation.issues.length > 0 && <p>Source limitations: {observation.issues.map(issue => issue.replace(/_/g, ' ')).join('; ')}.</p>}
-      <SourceLine source={observation.source} />
-      {observation.roofSource && <SourceLine source={observation.roofSource} />}
+      <ObservationMap observation={observation} address={address ?? undefined} parcel={parcel} />
       <div className="sd-actions"><button type="button" onClick={() => flow.confirm()} disabled={!!confirmed}>Confirm this observed property</button><button type="button" onClick={() => flow.reject()}>Reject and correct search</button></div>
       <TechnicalDetails title="Complete observation and exact source records"><pre>{JSON.stringify(observation.raw, null, 2)}</pre></TechnicalDetails>
     </section>}

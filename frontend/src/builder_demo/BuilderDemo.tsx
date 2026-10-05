@@ -11,6 +11,7 @@ import { SitePreparation } from '../site_preparations/SitePreparation'
 import { emptySiteInput, type SiteInputDraft, type SitePreparationSelection } from '../site_preparations/types'
 import OccupiedLots, { type OccupiedMeasurement } from '../occupied_lots/OccupiedLots'
 import { overlapFinding } from '../occupied_lots/observations'
+import { HeightView } from './height_view/HeightView'
 import { ExampleProperty } from './ExampleProperty'
 import { exampleCase, exampleSourcePage } from './example'
 
@@ -28,7 +29,7 @@ const field = (value: string) => value.trim() || 'unknown'
 
 export function enquiry(selection: SitePreparationSelection | null, input: {
   intendedUse: string; timing: string; budget: string; access: string; services: string
-}, measured: OccupiedMeasurement | null, exampleImported = false, live: Confirmed | null = null, manual: ManualSiteOutput | null = null, savedExample = false) {
+}, measured: OccupiedMeasurement | null, exampleImported = false, live: Confirmed | null = null, manual: ManualSiteOutput | null = null, savedExample = false, foundationAllowanceM: string | null = null) {
   const source = model.sources[0]
   const candidate = selection?.candidate
   const p = measured?.result.input.placement
@@ -59,6 +60,7 @@ export function enquiry(selection: SitePreparationSelection | null, input: {
       : savedExample ? 'Saved example placement has no current measurement; measure again after edits. Zoning remains unassessed.'
       : live || manual?.site ? 'No current placement measurement. Position the footprint and measure again after edits. Zoning remains unassessed.'
       : `${exampleImported ? 'Imported example has no current measurement; remeasure after edits. ' : ''}Geometry and zoning unassessed for this site. An address or area does not define a usable parcel shape.`,
+    `Foundation scenario allowance: ${foundationAllowanceM === null ? 'not supplied' : measurementWithUnit(foundationAllowanceM, 'length') + ' entered by the user'}. This separate assumption is not a verified installed height and was not used in geometry or zoning checks.`,
     `Provider service/installation: ${model.service_area_note} ${model.installation_note}`,
     'Questions: Please confirm the current controlled Model 300 drawing/revision, installed envelope and height datum; roof projections and site clearances; local delivery/crane access, foundation and utility requirements; and what site information you need before discussing this property.',
     'Legal lot lines, building walls and roles, other obstructions, zoning and setbacks, installed height and datum, current controlled provider dimensions, access and services remain unresolved.',
@@ -67,6 +69,8 @@ export function enquiry(selection: SitePreparationSelection | null, input: {
 }
 
 export default function BuilderDemo() {
+  const [foundationAllowanceM, setFoundationAllowanceM] = useState<string | null>(null)
+  const [heightRevision, setHeightRevision] = useState(0)
   const [mode, setMode] = useState<'live' | 'manual' | 'retained' | 'example'>('live')
   const [live, setLive] = useState<Confirmed | null>(null)
   const [manual, setManual] = useState<ManualSiteOutput | null>(null)
@@ -83,12 +87,13 @@ export default function BuilderDemo() {
   const [services, setServices] = useState('')
   function siteEdited() { setSelection(null); setImported(false); setMeasurementResult(null); setRevision(value => value + 1) }
   function changeMode(next: typeof mode) {
+    setFoundationAllowanceM(null); setHeightRevision(value => value + 1)
     setMode(next); siteEdited(); setLive(null); setManual(null)
     setDraft({ ...emptySiteInput, kind: 'address' })
     setUse(''); setTiming(''); setBudget(''); setAccess(''); setServices('')
   }
   const hasSite = mode === 'example' || !!(selection || live || manual && (manual.site || Object.values(manual.facts).some(value => value.trim())))
-  const draftText = hasSite ? enquiry(selection, { intendedUse: use, timing, budget, access, services }, measurementResult, imported, live, manual, mode === 'example') : ''
+  const draftText = hasSite ? enquiry(selection, { intendedUse: use, timing, budget, access, services }, measurementResult, imported, live, manual, mode === 'example', foundationAllowanceM) : ''
   return <div className="builder-demo">
     <section className="builder-hero" id="builder-model" aria-labelledby="builder-title">
       <p className="eyebrow">Independent sample journey · aux box</p>
@@ -112,7 +117,7 @@ export default function BuilderDemo() {
     <select id="builder-site-mode" value={mode} onChange={event => changeMode(event.target.value as typeof mode)}>
       <option value="live">Search a Victoria address</option><option value="manual">Enter facts or sketch manually</option><option value="retained">Use the retained example workflow</option><option value="example">Example property / saved data</option>
     </select>
-    {mode === 'live' && <SiteDiscovery onConfirm={next => { setLive(next); setMeasurementResult(null); setRevision(value => value + 1) }} onManual={() => { setMode('manual'); setLive(null); setMeasurementResult(null) }} />}
+    {mode === 'live' && <SiteDiscovery onConfirm={next => { setLive(next); setMeasurementResult(null); setRevision(value => value + 1) }} onManual={() => changeMode('manual')} />}
     {mode === 'retained' && <SitePreparation draft={draft} onDraftChange={next => setDraft(next)} selection={selection}
       onEdit={siteEdited} onConfirm={next => { setSelection(next); setImported(false); setMeasurementResult(null); setRevision(value => value + 1) }} />}
     </section>
@@ -129,6 +134,7 @@ export default function BuilderDemo() {
           <OccupiedLots key={revision} allowedModelIds={[MODEL_ID]} initialModelId={MODEL_ID} onMeasurement={setMeasurementResult} showHandoff={false} /></>}
     </section>}
     {mode === 'retained' && !selection && <p>Confirm a site lead above to consider a separate retained placement example. An example is never matched to your site lead.</p>}
+      <HeightView key={`height-${heightRevision}`} model={model} onFoundationAllowanceChange={setFoundationAllowanceM} />
     </section>
     <section className="builder-stage builder-enquiry" id="builder-next" aria-labelledby="builder-enquiry-title">
       <p className="eyebrow">Take away · local draft</p><h2 id="builder-enquiry-title">Prepare a useful question</h2>
@@ -142,7 +148,7 @@ export default function BuilderDemo() {
         <label htmlFor="builder-services">Services or utility questions</label><input id="builder-services" value={services} onChange={event => setServices(event.target.value)} placeholder="Known services or questions" />
       </div>
       <CopyableRecord id="builder-enquiry-text" label="Copyable unsent enquiry draft" value={draftText} />
-      <TechnicalDetails title="Complete site selection, sources and measurements"><CopyableRecord id="builder-technical-record" label="Complete technical evidence export" value={JSON.stringify({ schema_version: 'builder-evidence.v1', selection, live, manual, example: mode === 'example' ? exampleCase : null, measurement: measurementResult }, null, 2)} /></TechnicalDetails>
+      <TechnicalDetails title="Complete site selection, sources and measurements"><CopyableRecord id="builder-technical-record" label="Complete technical evidence export" value={JSON.stringify({ schema_version: 'builder-evidence.v1', foundation_scenario: { allowance_m: foundationAllowanceM, basis: 'user_assumption', used_in_assessment: false }, selection, live, manual, example: mode === 'example' ? exampleCase : null, measurement: measurementResult }, null, 2)} /></TechnicalDetails>
       </>}
     </section>
   </div>

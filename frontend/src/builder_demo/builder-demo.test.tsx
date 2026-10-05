@@ -27,6 +27,7 @@ test('Model 300 entry uses an explicit single-model catalogue lead and optional 
   assert.doesNotMatch(html, /Import a separate retained example for placement/)
   assert.match(html, /Try an example property/)
   assert.match(html, /Use my own property/)
+  assert.match(html, /What the published height tells us/)
 })
 
 test('saved example retains the licensed packet and an explicit measurable starting placement', () => {
@@ -78,4 +79,12 @@ test('explicit retained measurement remains a separately named example with prov
   assert.match(text, /not linked to the site lead/)
   assert.match(text, /width user edited; depth catalogue nominal/)
   assert.match(text, /No overlap with the captured rooflines was observed/)
+})
+
+
+test('foundation assumption remains separate in the enquiry and is unknown when absent', () => {
+  const scenario = enquiry(null, questions, null, false, null, null, true, '0.5')
+  assert.match(scenario, /0.5 m entered by the user/)
+  assert.match(scenario, /not a verified installed height/)
+  assert.match(enquiry(null, questions, null), /Foundation scenario allowance: not supplied/)
 })

@@ -153,6 +153,7 @@ test('provider evidence controls the leading suggestion and keeps alternatives s
   assert.equal(leadingAddressIndex([first, { ...second, locality: 'Saanich' }]), null)
   assert.equal(leadingAddressIndex([first, { ...second, precision: 'STREET' }]), null)
   assert.equal(leadingAddressIndex([address, second]), null)
+  assert.equal(leadingAddressIndex([{ ...first, raw: { candidate: { address: { unitNumber: '1' } } } }, { ...second, raw: { candidate: { address: { unitNumber: '2' } } } }]), null)
 })
 
 test('multiple parcel joins stay unresolved while a sole source join can be shown first', () => {

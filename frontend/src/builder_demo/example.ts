@@ -32,7 +32,7 @@ export const initialExamplePosition = (): ExamplePosition => ({
 })
 
 export function exampleRequest(position: ExamplePosition) {
-  const values = Object.values(position).map(value => value.trim() === '' ? NaN : Number(value))
+  const values = [position.x, position.y, position.width, position.depth, position.angle].map(value => value.trim() === '' ? NaN : Number(value))
   const [x, y, width, depth, angle] = values
   if (!values.every(Number.isFinite) || width <= 0 || depth <= 0) return null
   return {
