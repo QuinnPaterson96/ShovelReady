@@ -96,7 +96,7 @@ test('foundation assumption remains separate in the enquiry and is unknown when 
 })
 
 test('one structured enquiry drives accessible preview, plain copy, Markdown and concise email', () => {
-  const doc = enquiryDocument(buildSelection(null, null, manual), { ...questions, intendedUse: 'family & guests <script>', access: 'Crane access?' }, null)
+  const doc = enquiryDocument(buildSelection(null, null, manual), { ...questions, question: 'Could this suit family & guests <script>?', intendedUse: 'family & guests <script>', access: 'Crane access?' }, null)
   const html = renderToStaticMarkup(createElement(EnquiryPreview, { document: doc }))
   const plain = enquiryPlainText(doc)
   const markdown = enquiryMarkdown(doc)
@@ -107,6 +107,7 @@ test('one structured enquiry drives accessible preview, plain copy, Markdown and
     assert.ok(plain.includes(heading))
     assert.ok(markdown.includes(`## ${heading}`))
   }
+  for (const output of [plain, emailWithoutSite, emailWithSite]) assert.ok(output.includes(doc.question))
   assert.ok(html.indexOf('family &amp; guests') < html.indexOf('>Model<'))
   assert.doesNotMatch(html, /<script>/)
   assert.doesNotMatch(markdown, /<script>/)

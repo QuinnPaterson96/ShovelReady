@@ -48,7 +48,7 @@ export function enquiryEmailBody(document: EnquiryDocument, includeSiteDetails: 
   return [document.example ? 'SAVED EXAMPLE ONLY — not my property.' : 'Preliminary Model 300 enquiry.',
     document.question,
     ...sections.map(section => `${section.heading}: ${section.emailSummary}`),
-    ...(!includeSiteDetails ? ['Site details and placement observations are withheld from this email draft. I can share them after reviewing the recipient.'] : []),
+    ...(!includeSiteDetails ? ['The automatic property summary and placement observations are withheld; the question above is included as written. I can share them after reviewing the recipient.'] : []),
     document.closing,
     'Prepared independently with ShovelReady. Please review and edit before sending.'].join('\n\n')
 }

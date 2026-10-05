@@ -12,6 +12,7 @@ import { emptySiteInput, type SiteInputDraft, type SitePreparationSelection } fr
 import OccupiedLots, { type OccupiedMeasurement } from '../occupied_lots/OccupiedLots'
 import { overlapFinding } from '../occupied_lots/observations'
 import { HeightView } from './height_view/HeightView'
+import { ModelImage } from './model_image/ModelImage'
 import { ExampleProperty } from './ExampleProperty'
 import { exampleCase, exampleSourcePage } from './example'
 import { EnquiryPreview, emailDraftUrl, enquiryEmailBody, enquiryMarkdown, enquiryPlainText, validRecipient, type EnquiryDocument } from './enquiry'
@@ -29,7 +30,7 @@ const fact = (value: string | number | null) => value === null || value === '' ?
 const field = (value: string) => value.trim() || 'unknown'
 
 export function enquiryDocument(selection: SitePreparationSelection | null, input: {
-  intendedUse: string; timing: string; budget: string; access: string; services: string
+  question?: string; intendedUse: string; timing: string; budget: string; access: string; services: string
 }, measured: OccupiedMeasurement | null, exampleImported = false, live: Confirmed | null = null, manual: ManualSiteOutput | null = null, savedExample = false, foundationAllowanceM: string | null = null) {
   const source = model.sources[0]
   const candidate = selection?.candidate
@@ -68,7 +69,7 @@ export function enquiryDocument(selection: SitePreparationSelection | null, inpu
     'No legal compatibility, permit approval, installed cost or availability has been determined.',
   ]
   const offset = candidate ? 1 : 0
-  const question = `I’m exploring aux box Model 300${input.intendedUse.trim() ? ` for ${input.intendedUse.trim()}` : ''}. Could you confirm the current design, installation requirements, and what you would need to discuss a possible site?`
+  const question = input.question?.trim() || `I’m exploring aux box Model 300${input.intendedUse.trim() ? ` for ${input.intendedUse.trim()}` : ''}. Could you confirm the current design, installation requirements, and what you would need to discuss a possible site?`
   return {
     title: savedExample ? 'UNSENT DRAFT · SAVED EXAMPLE ONLY · Model 300' : 'UNSENT DRAFT · Model 300 enquiry',
     question,
@@ -103,6 +104,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const [budget, setBudget] = useState('')
   const [access, setAccess] = useState('')
   const [services, setServices] = useState('')
+  const [question, setQuestion] = useState('')
   const [readyFor, setReadyFor] = useState<string | null>(null)
   const [manualConfirmedFor, setManualConfirmedFor] = useState<string | null>(null)
   const [recipient, setRecipient] = useState('')
@@ -113,11 +115,11 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     setFoundationAllowanceM(null); setHeightRevision(value => value + 1)
     setMode(next); siteEdited(); setLive(null); setManual(null)
     setDraft({ ...emptySiteInput, kind: 'address' })
-    setUse(''); setTiming(''); setBudget(''); setAccess(''); setServices('')
+    setQuestion(''); setUse(''); setTiming(''); setBudget(''); setAccess(''); setServices('')
     setReadyFor(null); setManualConfirmedFor(null); setIncludeSiteDetails(false); setEmailMessage('')
   }
   const hasSite = mode === 'example' || !!(selection || live || manual && (manual.site || Object.values(manual.facts).some(value => value.trim())))
-  const enquiryDoc = hasSite ? enquiryDocument(selection, { intendedUse: use, timing, budget, access, services }, measurementResult, imported, live, manual, mode === 'example', foundationAllowanceM) : null
+  const enquiryDoc = hasSite ? enquiryDocument(selection, { question, intendedUse: use, timing, budget, access, services }, measurementResult, imported, live, manual, mode === 'example', foundationAllowanceM) : null
   const draftText = enquiryDoc ? enquiryPlainText(enquiryDoc) : ''
   const manualSignature = JSON.stringify({ facts: manual?.facts ?? null, site: manual?.site ?? null })
   const propertyComplete = mode === 'example' || !!(live || selection || mode === 'manual' && manual && manualConfirmedFor === manualSignature)
@@ -160,6 +162,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       <h1 id="builder-title">Explore Model 300 on your site</h1>
       <p>Start with a site lead or the facts you know. Find and confirm a Victoria property, or sketch your own approximate lot, then test one placement and take away an unsent enquiry.</p>
       <p className="notice">This ShovelReady demonstration is independent of aux box. It does not check zoning compatibility, confirm provider service, or contact the company.</p>
+      <ModelImage />
       <div className="builder-specs" aria-label="Captured model information">
         <div><strong>{original('nominal_exterior_width')} × {original('nominal_exterior_depth')}</strong><span>Provider nominal exterior rectangle · {metres('nominal_exterior_width')} × {metres('nominal_exterior_depth')}</span></div>
         <div><strong>{original('advertised_overall_height')}</strong><span>Advertised exterior height; installed regulatory height and datum unknown</span></div>
@@ -202,6 +205,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       {!hasSite && <p>Add a property or your known site facts above to prepare an unsent enquiry. Your answers stay local to this journey.</p>}
       {hasSite && <><p>Leave unknown answers blank. This text stays in your browser until you copy it; no provider request or contact record is created.</p>
       <div className="builder-questions">
+        <label htmlFor="builder-question">Your question</label><textarea id="builder-question" value={question} onChange={event => setQuestion(event.target.value)} placeholder="What would you like to ask the builder? Leave blank for a suggested question." />
         <label htmlFor="builder-use">Intended use</label><input id="builder-use" value={use} onChange={event => setUse(event.target.value)} placeholder="e.g. family accommodation; unknown is fine" />
         <label htmlFor="builder-timing">Possible timing</label><input id="builder-timing" value={timing} onChange={event => setTiming(event.target.value)} placeholder="e.g. next year; unknown is fine" />
         <label htmlFor="builder-budget">Budget range, optional</label><input id="builder-budget" value={budget} onChange={event => setBudget(event.target.value)} placeholder="Leave blank if unknown" />
@@ -225,10 +229,10 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
         <p>Review the recipient and exact text below. Your email app opens a draft; only you can send it. This demonstration has no affiliation with aux box.</p>
         <p className="metadata">The <a href="https://www.auxbox.ca/contact" target="_blank" rel="noreferrer">official aux box contact page</a> directs general enquiries to a form. Its published email addresses are for privacy, media or careers, so no product enquiry recipient is prefilled. Checked 2026-10-05.</p>
         <label htmlFor="builder-email-recipient">Recipient email (optional; edit before opening)</label>
-        <input id="builder-email-recipient" type="email" autoComplete="email" value={recipient} onChange={event => setRecipient(event.target.value)} aria-invalid={!validRecipient(recipient)} />
+        <input id="builder-email-recipient" type="email" autoComplete="email" value={recipient} onChange={event => { setRecipient(event.target.value); setReadyFor(null); setEmailMessage('') }} aria-invalid={!validRecipient(recipient)} />
         {!validRecipient(recipient) && <p role="alert">Enter one valid email address without line breaks.</p>}
-        <label className="builder-email-choice"><input type="checkbox" checked={includeSiteDetails} onChange={event => setIncludeSiteDetails(event.target.checked)} /> Include site details in the email</label>
-        <p className="metadata">{includeSiteDetails ? 'The property summary below may include an address or site description.' : 'Property details are excluded from the email. The full copy and download still include them.'}</p>
+        <label className="builder-email-choice"><input type="checkbox" checked={includeSiteDetails} onChange={event => { setIncludeSiteDetails(event.target.checked); setReadyFor(null); setEmailMessage('') }} /> Include site details in the email</label>
+        <p className="metadata">{includeSiteDetails ? 'The property summary below may include an address or site description.' : 'The automatic property summary is excluded. Your question is still included; check it for any address or personal details you typed. The full copy and download include property details.'}</p>
         <label htmlFor="builder-email-subject">Subject</label><input id="builder-email-subject" readOnly value={emailSubject} />
         <label htmlFor="builder-email-body">Exact email body to share</label><textarea id="builder-email-body" readOnly rows={12} value={emailBody} />
         {emailTooLong && <p role="status">The full email is too long for a reliable draft link. The buttons open a short placeholder draft. Copy the complete text above and paste it into your email app before sending; no content is silently shortened.</p>}
