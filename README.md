@@ -1,5 +1,7 @@
 # ShovelReady
 
+Latest demo integration: [address suggestions, example movement and visitor findings](docs/integration-demo-usability.md).
+
 ShovelReady explores a practical question: **given a prefabricated building design, where could it plausibly be built?**
 
 The current commercial POC is a screening journey for a prefab builder's website:

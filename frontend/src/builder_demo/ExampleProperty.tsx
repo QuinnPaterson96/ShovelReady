@@ -145,6 +145,7 @@ export function ExampleProperty({ onMeasurement }: { onMeasurement: (value: Occu
       </div>
     </div>
     {result && <div className="builder-example-result"><h3>Measured observation for this position</h3>
+      {(editedDimensions.width || editedDimensions.depth) && <p className="notice"><strong>Custom size scenario.</strong> You changed the model dimensions. These measurements describe your edited rectangle; availability of this product size is unconfirmed.</p>}
       <p>{containment?.status === 'observed' ? `Parcel containment: ${containment.relation?.replace(/_/g, ' ') ?? 'unknown'}.` : 'Parcel containment unresolved.'} {finding?.conflicts.length ? 'A captured outline conflicts with this placement.' : finding?.complete ? 'No overlap with the captured roofline was observed. Other obstructions remain unknown.' : 'Captured roofline overlap remains unresolved.'}</p>
       <p>Distance to captured parcel boundary: {boundary?.status === 'observed' ? show(boundary.distance_m, 'length') : 'unresolved'}. Distance to nearest captured roofline: {nearestRoof?.status === 'observed' ? show(nearestRoof.distance_m, 'length') : 'unresolved'}.</p>
       <p>No zoning, legal setback, installed height, access or permit eligibility was assessed.</p></div>}
