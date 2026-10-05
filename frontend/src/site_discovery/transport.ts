@@ -1,20 +1,35 @@
 import { DiscoveryProblem } from './flow'
 import type { Address, Observation, Parcel, Polygon, SearchResult, Source, Transport } from './flow'
+import type { RankedAddress, RelatedParcel } from './CandidateChoices'
 
 const object = (value: unknown): value is Record<string, unknown> => value !== null && typeof value === 'object' && !Array.isArray(value)
 const string = (value: unknown): value is string => typeof value === 'string' && value.length > 0
 const optionalString = (value: unknown): value is string | null => value === null || typeof value === 'string'
 const finite = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value)
 
-async function post(path: string, body: unknown, signal: AbortSignal): Promise<unknown> {
+async function post(path: string, body: unknown, signal: AbortSignal, timeoutMs = 10000): Promise<unknown> {
   const controller = new AbortController()
   const abort = () => controller.abort()
   signal.addEventListener('abort', abort, { once: true })
-  const timer = setTimeout(abort, 10000)
+  let timedOut = false
+  const timer = setTimeout(() => { timedOut = true; abort() }, timeoutMs)
   try {
     const response = await fetch(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), signal: controller.signal })
-    if (!response.ok) throw Error(`HTTP ${response.status}`)
+    if (!response.ok) {
+      if (path.startsWith('/api/municipal-sites/')) {
+        throw new DiscoveryProblem(response.status === 503 || response.status === 429
+          ? 'City source temporarily unavailable. Retry this step or continue manually.'
+          : 'City source rejected the request or returned invalid data. Retry this step or continue manually.')
+      }
+      throw Error(`HTTP ${response.status}`)
+    }
     return await response.json()
+  } catch (error) {
+    if (path.startsWith('/api/municipal-sites/') && !signal.aborted &&
+      (timedOut || error instanceof TypeError)) {
+      throw new DiscoveryProblem('City source temporarily unavailable. Retry this step or continue manually.')
+    }
+    throw error
   } finally { clearTimeout(timer); signal.removeEventListener('abort', abort) }
 }
 
@@ -32,13 +47,15 @@ export function parseAddresses(value: unknown): SearchResult<Address> {
       !finite(candidate.score) || !object(point) || point.crs !== 'EPSG:4326' || !finite(point.longitude) || Math.abs(point.longitude) > 180 || !finite(point.latitude) || Math.abs(point.latitude) > 90 ||
       !optionalString(candidate.sourceChangeDate) || !object(source) || !string(source.provider) ||
       !string(source.fetchedAt) || !string(source.reviewStatus) || !string(source.sourceUrl)) throw Error('Malformed address candidate')
-    return { id: candidate.locator as string, label: candidate.fullAddress as string, locality: candidate.locality as string,
+    const parsed: RankedAddress = { id: candidate.locator as string, label: candidate.fullAddress as string, locality: candidate.locality as string,
       precision: candidate.matchPrecision as string, issues: candidate.faults.map(fault => `${fault.fault}: ${fault.value}`),
+      providerScore: candidate.score as number,
       point: [point.longitude, point.latitude] as [number, number], crs: 'EPSG:4326',
       source: { provider: source.provider as string, record: `Address suggestion ${index + 1}`, capturedAt: source.fetchedAt as string,
         sourceDate: candidate.sourceChangeDate as string | null, url: source.sourceUrl as string, review: source.reviewStatus as string },
       raw: { candidate, source },
     }
+    return parsed
   })
   if (new Set(candidates.map(candidate => candidate.id)).size !== candidates.length) throw Error('Duplicate address locator')
   if ((value.status === 'candidates') !== (candidates.length > 0)) throw Error('Inconsistent address response')
@@ -65,11 +82,13 @@ export function parseParcels(value: unknown): SearchResult<Parcel> {
       !['gislink_join', 'pid_exact', 'spatial_lead'].includes(String(candidate.relation)) || !object(candidate.attributes) ||
       !optionalString(candidate.pid) || !optionalString(candidate.address)) throw Error('Malformed parcel candidate')
     const label = candidate.address || (candidate.pid ? `PID ${candidate.pid}` : `Parcel option ${index + 1}`)
-    return { id: `${candidate.parcel_ref.object_id}:${index}`, label,
+    const parsed: RelatedParcel = { id: `${candidate.parcel_ref.object_id}:${index}`, label,
+      relation: candidate.relation as RelatedParcel['relation'],
       match: candidate.relation === 'spatial_lead' ? 'Nearby spatial lead only; identity unverified.' :
         candidate.relation === 'gislink_join' ? 'City address-to-parcel record join; unreviewed.' : 'City PID exact record match; unreviewed.',
       source: { ...source, record: `City parcel ${label}` }, raw: { candidate, evidence: value.evidence },
     }
+    return parsed
   })
   if ((value.status === 'candidates') !== (candidates.length > 0)) throw Error('Inconsistent municipal search response')
   return { status: candidates.length ? 'ok' : 'no_match', candidates }
@@ -118,12 +137,12 @@ export const liveTransport: Transport = {
     const street = object(address.raw) && object(address.raw.candidate) && object(address.raw.candidate.address) ? address.raw.candidate.address.streetAddress : null
     const query = string(street) ? street : address.label.split(',')[0]
     if (query.length < 3 || query.length > 120) return { status: 'no_match', candidates: [], message: 'Address is too long for the City parcel search. Correct it or continue manually.' }
-    return parseParcels(await post('/api/municipal-sites/search', { schema_version: 'municipal-sites.v1', address: query }, signal))
+    return parseParcels(await post('/api/municipal-sites/search', { schema_version: 'municipal-sites.v1', address: query }, signal, 25000))
   },
   async observe(parcel: Parcel, signal: AbortSignal): Promise<Observation> {
     const candidate = (parcel.raw as { candidate?: { parcel_ref?: unknown; pid?: unknown } })?.candidate
     if (!candidate || !object(candidate.parcel_ref)) throw Error('Missing parcel reference')
     return parseObservation(await post('/api/municipal-sites/observe', { schema_version: 'municipal-sites.v1', parcel_ref: candidate.parcel_ref,
-      expected_pid: typeof candidate.pid === 'string' ? candidate.pid : null }, signal), parcel)
+      expected_pid: typeof candidate.pid === 'string' ? candidate.pid : null }, signal, 25000), parcel)
   },
 }

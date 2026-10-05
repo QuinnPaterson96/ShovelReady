@@ -10,3 +10,7 @@ These are exact UTF-8 response bodies captured from City of Victoria MapServer l
 | `buildings_87.json` | `a6923018105d3bc48dfd24cfd19a2d87c0a47e70d98ae34f40b6705a5c1617f8` |
 
 The probe and tests prove adapter behavior against saved bytes. These fixture bytes are not an independent accuracy review or a current City release. Named failure cases in the tests mutate these responses in memory and are synthetic.
+
+`arcgis_pagination_error.json` is the public ArcGIS error envelope observed on October 2,
+2026. It contains only code 400, the provider message and an empty details array; it has
+no parcel or address data. The exact body may vary across provider instances.

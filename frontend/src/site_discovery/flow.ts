@@ -49,7 +49,7 @@ export class DiscoveryFlow {
       const result = await this.transport.parcels(address, controller.signal)
       if (!this.current(generation)) return
       this.publish({ busy: false, parcels: result.candidates, message: result.message ?? (result.status === 'outside_coverage' ? 'This address is outside the Victoria parcel demonstration. Continue manually.' : result.status === 'no_match' ? 'No parcel match. Continue manually or correct the address.' : '') })
-    } catch { if (this.current(generation)) this.publish({ busy: false, message: 'Parcel service unavailable or response invalid. Continue manually or retry.' }) }
+    } catch (error) { if (this.current(generation)) this.publish({ busy: false, message: error instanceof DiscoveryProblem ? error.message : 'Parcel response invalid. Choose the address again or continue manually.' }) }
   }
   async chooseParcel(id: string) {
     const parcel = this.state.parcels.find(candidate => candidate.id === id)
@@ -60,7 +60,7 @@ export class DiscoveryFlow {
       const observation = await this.transport.observe(parcel, controller.signal)
       if (!this.current(generation)) return
       this.publish({ busy: false, observation })
-    } catch (error) { if (this.current(generation)) this.publish({ busy: false, message: error instanceof DiscoveryProblem ? error.message : 'Parcel geometry unavailable or invalid. Choose another parcel or continue manually.' }) }
+    } catch (error) { if (this.current(generation)) this.publish({ busy: false, message: error instanceof DiscoveryProblem ? error.message : 'Parcel response invalid. Retry this parcel or continue manually.' }) }
   }
   confirm() {
     const { address, parcel, observation } = this.state

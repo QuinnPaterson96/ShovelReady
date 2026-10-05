@@ -11,6 +11,13 @@
 .site-discovery .sd-options button { text-align: left; font-weight: 650; }
 .site-discovery .sd-options button[aria-pressed='true'] { border-color: var(--primary); background: var(--primary-soft); }
 .site-discovery .sd-options p { margin: .3rem 0; }
+.site-discovery .sd-candidate-label { color: var(--ink-muted); font-size: .9rem; font-weight: 650; }
+.site-discovery .sd-other-matches { margin-top: .7rem; min-width: 0; }
+.site-discovery .sd-other-matches summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; padding: .5rem .75rem; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--surface-subtle); font-weight: 650; }
+.site-discovery .sd-other-matches summary::before { content: '▸'; margin-right: .5rem; }
+.site-discovery .sd-other-matches[open] summary::before { content: '▾'; }
+.site-discovery .sd-other-matches summary:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.site-discovery .sd-other-matches .sd-options { margin-top: .6rem; }
 .site-discovery .sd-source { color: var(--ink-muted); font-size: .9rem; }
 .site-discovery .sd-notice { padding: .65rem .8rem; border-left: 5px solid var(--copper); background: var(--copper-soft); }
 .site-discovery .sd-choice, .site-discovery .sd-fallback { padding: .6rem .8rem; background: var(--surface-subtle); }

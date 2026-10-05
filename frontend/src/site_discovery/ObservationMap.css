@@ -1,0 +1,16 @@
+.observation-map { margin: .8rem 0; min-width: 0; }
+.observation-map figcaption { display: grid; gap: .2rem; margin-bottom: .6rem; overflow-wrap: anywhere; }
+.observation-map figcaption span, .observation-map__source, .observation-map__note { color: var(--ink-muted); font-size: .9rem; }
+.observation-map__partial { padding: .65rem .8rem; border-left: 5px solid var(--copper); background: var(--copper-soft); color: var(--investigation-ink); }
+.observation-map svg { display: block; width: 100%; height: min(55vw, 380px); min-height: 220px; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--map-canvas); }
+.observation-map__parcel { fill: var(--map-parcel-fill); stroke: var(--map-parcel-stroke); stroke-width: 2; vector-effect: non-scaling-stroke; }
+.observation-map__roof { fill: var(--map-roof-fill); stroke: var(--map-roof-stroke); stroke-width: 2; vector-effect: non-scaling-stroke; }
+.observation-map__roof-label { fill: var(--ink); font-weight: 750; paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
+.observation-map__direction, .observation-map__scale { fill: var(--ink); font-weight: 700; }
+.observation-map__direction path, .observation-map__scale path { fill: none; stroke: var(--ink); stroke-width: 2; vector-effect: non-scaling-stroke; }
+.observation-map__legend { display: flex; flex-wrap: wrap; gap: .2rem 1.2rem; list-style: none; padding: 0; margin: .6rem 0 .25rem; }
+.observation-map__legend li { display: flex; align-items: center; gap: .4rem; margin: 0; }
+.observation-map__key { display: inline-block; width: 1.2rem; height: .8rem; border: 2px solid; flex: none; }
+.observation-map__key--parcel { border-color: var(--map-parcel-stroke); background: var(--map-parcel-fill); }
+.observation-map__key--roof { border-color: var(--map-roof-stroke); background: var(--map-roof-fill); }
+.observation-map__note, .observation-map__source { margin: .35rem 0; overflow-wrap: anywhere; }

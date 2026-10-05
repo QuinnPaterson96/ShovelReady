@@ -5,6 +5,7 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { DiscoveryFlow } from './flow'
 import type { Address, Confirmed, Observation, Parcel, SearchResult, Transport } from './flow'
 import { SiteDiscovery } from './SiteDiscovery'
+import { CandidateChoices, leadingAddressIndex, leadingParcelIndex } from './CandidateChoices'
 import { liveTransport, parseAddresses, parseObservation, parseParcels } from './transport'
 import saanichResponse from './address-api.fixture.json'
 import cityAddress from './address_87.json'
@@ -90,6 +91,32 @@ test('late address and parcel replies cannot revive an old choice', async () => 
   third.confirm(); assert.equal(third.state.confirmed, null)
 })
 
+test('failed and partial observation retry clears confirmation and ignores the older response', async () => {
+  const late = deferred<Observation>()
+  const confirmed: (Confirmed | null)[] = []
+  let calls = 0
+  const full = { ...observation, buildingsState: 'available', issues: [], roofs: [{ id: 'roof', geometry: polygon }] }
+  const transport: Transport = {
+    async addresses() { return { status: 'ok', candidates: [address] } },
+    async parcels() { return { status: 'ok', candidates: [parcel] } },
+    observe() { calls++; if (calls === 1) return Promise.reject(Error('provider')); if (calls === 2) return Promise.resolve(observation); if (calls === 3) return late.promise; return Promise.resolve(full) },
+  }
+  const flow = new DiscoveryFlow(transport, () => {}, value => confirmed.push(value))
+  flow.edit('1144 May St'); await flow.search(); await flow.chooseAddress('a')
+  await flow.chooseParcel('p')
+  assert.match(flow.state.message, /response invalid/i)
+  assert.equal(flow.state.observation, null)
+  await flow.chooseParcel('p'); flow.confirm()
+  assert.equal(flow.state.confirmed?.observation.buildingsState, 'partial')
+  const pending = flow.chooseParcel('p')
+  assert.equal(confirmed.at(-1), null)
+  await flow.chooseParcel('p')
+  late.resolve(observation); await pending
+  assert.equal((flow.state.observation as Observation | null)?.buildingsState, 'available')
+  assert.equal(flow.state.confirmed, null)
+  assert.equal((flow.state.observation as Observation | null)?.roofs.length, 1)
+})
+
 test('service failure and no-match keep manual continuation visible', async () => {
   const transport: Transport = { async addresses() { throw Error('offline') }, async parcels() { throw Error('offline') }, async observe() { throw Error('offline') } }
   const flow = new DiscoveryFlow(transport, () => {}, () => {})
@@ -101,10 +128,67 @@ test('service failure and no-match keep manual continuation visible', async () =
   assert.doesNotMatch(html, /fit result/i)
 })
 
+test('municipal network outage is identified as source unavailability', async () => {
+  const originalFetch = globalThis.fetch
+  globalThis.fetch = async () => { throw new TypeError('network down') }
+  try {
+    const victoria = { ...address, raw: { candidate: { address: { streetAddress: '1144 May St' } } } }
+    await assert.rejects(liveTransport.parcels(victoria, new AbortController().signal), /City source temporarily unavailable/)
+  } finally { globalThis.fetch = originalFetch }
+})
+
+test('provider evidence controls the leading suggestion and keeps alternatives selectable', () => {
+  const first = { ...address, id: 'first', label: 'First', providerScore: 92 }
+  const second = { ...address, id: 'second', label: 'Second', providerScore: 88 }
+  const ranked = [second, first]
+  assert.equal(leadingAddressIndex(ranked), 1)
+  const html = renderToStaticMarkup(createElement(CandidateChoices, { candidates: ranked, selectedId: second.id,
+    leadingIndex: leadingAddressIndex(ranked), kind: 'address', render: (candidate, label) => createElement('button', { type: 'button', 'aria-pressed': candidate.id === second.id }, `${label}: ${candidate.id}`) }))
+  assert.match(html, /Leading address suggestion: first/)
+  assert.match(html, /<details[^>]*open=""[^>]*>/)
+  assert.match(html, /Other match: second/)
+  assert.match(html, /aria-pressed="true"/)
+  assert.equal(leadingAddressIndex([first, { ...second, providerScore: 92 }]), null)
+  assert.equal(leadingAddressIndex([{ ...first, issues: ['provider correction'] }, second]), null)
+  assert.equal(leadingAddressIndex([first, { ...second, locality: 'Saanich' }]), null)
+  assert.equal(leadingAddressIndex([first, { ...second, precision: 'STREET' }]), null)
+  assert.equal(leadingAddressIndex([address, second]), null)
+  assert.equal(leadingAddressIndex([{ ...first, raw: { candidate: { address: { unitNumber: '1' } } } }, { ...second, raw: { candidate: { address: { unitNumber: '2' } } } }]), null)
+})
+
+test('multiple parcel joins stay unresolved while a sole source join can be shown first', () => {
+  const join = { ...parcel, id: 'join', relation: 'gislink_join' as const }
+  const otherJoin = { ...parcel, id: 'join2', relation: 'gislink_join' as const }
+  const nearby = { ...parcel, id: 'nearby', relation: 'spatial_lead' as const }
+  assert.equal(leadingParcelIndex([nearby, join]), 1)
+  assert.equal(leadingParcelIndex([join, otherJoin, nearby]), null)
+  assert.equal(leadingParcelIndex([parcel, nearby]), null)
+  const html = renderToStaticMarkup(createElement(CandidateChoices, { candidates: [join, otherJoin, nearby], selectedId: otherJoin.id,
+    leadingIndex: leadingParcelIndex([join, otherJoin, nearby]), kind: 'parcel', render: (candidate, label) => createElement('button', { type: 'button' }, `${label}: ${candidate.id}`) }))
+  assert.doesNotMatch(html, /Other matches/)
+  assert.match(html, /join2/)
+  assert.match(html, /nearby/)
+})
+
+test('alternate parcel choice invalidates a prior confirmation', async () => {
+  const alternate = { ...parcel, id: 'alternate', label: 'Other parcel' }
+  const notices: (Confirmed | null)[] = []
+  const transport: Transport = { async addresses() { return { status: 'ok', candidates: [address] } },
+    async parcels() { return { status: 'ok', candidates: [parcel, alternate] } }, async observe() { return observation } }
+  const flow = new DiscoveryFlow(transport, () => {}, value => notices.push(value))
+  flow.edit('1144 May St'); await flow.search(); await flow.chooseAddress('a'); await flow.chooseParcel('p'); flow.confirm()
+  assert.equal(flow.state.confirmed?.parcel.id, 'p')
+  await flow.chooseParcel('alternate')
+  assert.equal(flow.state.parcel?.id, 'alternate')
+  assert.equal(flow.state.confirmed, null)
+  assert.equal(notices.at(-1), null)
+})
+
 test('published BC address contract preserves correction, coordinate CRS and source record', async () => {
   // This is #166's saved public Saanich API response, copied without modification.
   const api = saanichResponse
   const parsed = parseAddresses(api)
+  assert.equal((parsed.candidates[0] as { providerScore?: number }).providerScore, api.candidates[0].score)
   assert.equal(parsed.candidates[0].locality, 'Saanich')
   assert.equal(parsed.candidates[0].source.sourceDate, '2026-07-07')
   assert.deepEqual(parsed.candidates[0].point, [-123.3965421, 48.4474531])
@@ -136,6 +220,7 @@ test('municipal contracts keep joined identity, projected geometry and partial r
       relation: 'gislink_join', identity_status: 'source_join_unreviewed', attributes: cityParcelSearch.features[0].attributes }],
     evidence: [receipt('Address MapServer response', cityAddress), receipt('Parcel MapServer response', cityParcelSearch)] }
   const parcel = parseParcels(search).candidates[0]
+  assert.equal((parcel as { relation?: string }).relation, 'gislink_join')
   assert.equal(parcel.label, '1144 MAY ST')
   assert.match(parcel.match, /unreviewed/)
   const feature = (row: { attributes: object; geometry?: object }, area: number) => ({ attributes: row.attributes, geometry: row.geometry, planar_geometry: { type: 'Polygon', coordinates: (row.geometry as { rings: number[][][] }).rings.map(ring => ring.map(point => point.slice(0, 2))) },
