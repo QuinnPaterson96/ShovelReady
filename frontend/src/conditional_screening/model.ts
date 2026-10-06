@@ -1,4 +1,5 @@
 import type { SiteAssumptions } from '../zoning_site_assumptions/model'
+import type { ProposalEvidence } from './projectSettings'
 
 export type Pathway = {
   proposed_use: 'garden_suite' | 'other' | null
@@ -12,7 +13,7 @@ export type Pathway = {
 export const emptyPathway = (): Pathway => ({ proposed_use: null, foundation_attached: null, confirmed_zone: null,
   confirmed_instrument: null, legal_lot_confirmed: null, floor_area_definition_acknowledged: null, no_relevant_projections: null })
 
-export type ScreeningRequest = { schema_version: 'conditional-screening.api.v1'; assumptions: SiteAssumptions; model_revision: string; proposal: Pathway }
+export type ScreeningRequest = { schema_version: 'conditional-screening.api.v1'; assumptions: SiteAssumptions; model_revision: string; proposal: Pathway; proposal_evidence?: ProposalEvidence }
 export type ScreeningStatus = 'meets_under_assumptions' | 'apparent_conflict_under_assumptions' | 'needs_information' | 'not_applicable' | 'unsupported'
 export type ScreeningCheck = { rule: { logical_id: string; revision_id: string; kind: string; fact_id: string; boundary_role: string | null; measurement_definition: string | null; source: {
   provider: string; record_label: string; url: string; locator: string; capture_date: string | null;

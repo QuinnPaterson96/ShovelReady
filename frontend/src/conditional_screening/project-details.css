@@ -1,0 +1,11 @@
+.project-details { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-card); padding: 1rem; margin: 1rem 0; }
+.project-details h3 { margin: 0 0 .5rem; }
+.project-details__summary { border-left: 5px solid var(--copper); background: var(--copper-soft); padding: .7rem 1rem; }
+.project-details__summary p { margin: .3rem 0; }
+.project-details > details { margin-top: .6rem; }
+.project-details summary { cursor: pointer; min-height: 44px; font-weight: 650; }
+.project-details label { display: block; margin: .7rem 0; }
+.project-details select { display: block; width: 100%; max-width: 36rem; min-height: 44px; margin-top: .25rem; padding: .5rem; background: var(--surface); color: var(--ink); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); }
+.project-details__municipal { border-left: 3px solid var(--primary); padding: .5rem .8rem; background: var(--surface-subtle); }
+.project-details__municipal p { margin: .3rem 0; }
+.project-details :is(summary, select, a):focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }

@@ -55,6 +55,7 @@ class Measurement(Strict):
         "proposed_wall_to_lot_line",
         "principal_wall_to_proposed_wall",
         "regulatory_floor_area",
+        "rough_floor_area_estimate",
     ]
     origin: Literal["user"]
     note: str | None = Field(default=None, max_length=1000)
@@ -144,11 +145,55 @@ class Proposal(Strict):
     no_relevant_projections: bool | None = None
 
 
+class SettingEvidence(Strict):
+    value: str | bool | None
+    origin: Literal["journey_default", "user", "municipal_lookup", "derived", "unknown"]
+    source: Source | None = None
+    note: str | None = Field(default=None, max_length=1000)
+
+    @model_validator(mode="after")
+    def provenance(self):
+        if self.origin == "municipal_lookup" and self.source is None:
+            raise ValueError("municipal lookup needs a source")
+        if self.origin != "municipal_lookup" and self.source is not None:
+            raise ValueError("only municipal lookup may carry municipal source")
+        if self.origin == "unknown" and self.value is not None:
+            raise ValueError("unknown setting cannot have a value")
+        return self
+
+
+class ProposalEvidence(Strict):
+    proposed_use: SettingEvidence
+    foundation_attached: SettingEvidence
+    confirmed_zone: SettingEvidence
+    confirmed_instrument: SettingEvidence
+    legal_lot_confirmed: SettingEvidence
+    floor_area_definition_acknowledged: SettingEvidence
+    no_relevant_projections: SettingEvidence
+
+    def matches(self, proposal: Proposal):
+        for name in type(self).model_fields:
+            item = getattr(self, name)
+            if item.value != getattr(proposal, name):
+                raise ValueError(f"{name} provenance does not match proposal")
+            if item.origin == "municipal_lookup" and name not in (
+                "confirmed_zone", "confirmed_instrument"
+            ):
+                raise ValueError("municipal lookup cannot assert this setting")
+
+
 class ApiRequest(Strict):
     schema_version: Literal["conditional-screening.api.v1"]
     assumptions: Assumptions
     model_revision: str = Field(min_length=1, max_length=240)
     proposal: Proposal
+    proposal_evidence: ProposalEvidence | None = None
+
+    @model_validator(mode="after")
+    def matching_evidence(self):
+        if self.proposal_evidence is not None:
+            self.proposal_evidence.matches(self.proposal)
+        return self
 
 
 @lru_cache(maxsize=1)
@@ -180,13 +225,18 @@ def _source(packet: dict, rule: dict) -> Source:
     )
 
 
-def _fact(name: str, value: bool | None, note: str | None = None) -> Fact:
+def _fact(name: str, value: bool | None, note: str | None = None,
+          evidence: SettingEvidence | None = None) -> Fact:
+    origins = {"journey_default": "journey_default", "user": "user_assumption",
+               "municipal_lookup": "municipal_observation", "derived": "derived_assumption",
+               "unknown": "user_assumption"}
     return Fact(
         id=name,
         status="known" if value is not None else "unknown",
         truth=value,
-        origin="user_assumption",
-        note=note,
+        origin=origins[evidence.origin] if evidence else "user_assumption",
+        source=evidence.source if evidence else None,
+        note=evidence.note if evidence else note,
     )
 
 
@@ -277,8 +327,15 @@ def _assemble(body: ApiRequest) -> Request:
         "principal_building": assumptions.principal_building_id.note,
         "waterfront": assumptions.waterfront.note,
     }
+    proposal_names = {"legal_lot": "legal_lot_confirmed", "zone": "confirmed_zone",
+                      "instrument": "confirmed_instrument", "proposed_use": "proposed_use",
+                      "foundation": "foundation_attached",
+                      "floor_area_definition": "floor_area_definition_acknowledged",
+                      "no_relevant_projections": "no_relevant_projections"}
     for name, value in assertions.items():
-        facts.append(_fact(name, value, notes.get(name)))
+        evidence = (getattr(body.proposal_evidence, proposal_names[name])
+                    if body.proposal_evidence and name in proposal_names else None)
+        facts.append(_fact(name, value, notes.get(name), evidence))
     for name in (
         "legal_lot",
         "zone",
@@ -450,6 +507,8 @@ def _assemble(body: ApiRequest) -> Request:
             ),
         ),
         site_assumptions=assumptions.model_dump(mode="json"),
+        proposal_evidence=(body.proposal_evidence.model_dump(mode="json")
+                           if body.proposal_evidence else None),
     )
 
 

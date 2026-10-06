@@ -4,7 +4,7 @@ export type EdgeRole = 'unknown' | 'front' | 'rear' | 'side' | 'flanking_street'
 export type BoundaryMapMode = 'place' | 'front' | 'rear'
 export type UserFact<T> = { value: T | null; origin: 'user'; note: string | null }
 export type BoundaryEdge = { id: string; ring: number; segment: number; start: [number, number]; end: [number, number]; role: UserFact<EdgeRole> }
-export type UserMeasurement = { value: number; unit: 'm' | 'm2'; basis: 'proposed_wall_to_lot_line' | 'principal_wall_to_proposed_wall' | 'regulatory_floor_area'; origin: 'user'; note: string | null; placement_revision: string }
+export type UserMeasurement = { value: number; unit: 'm' | 'm2'; basis: 'proposed_wall_to_lot_line' | 'principal_wall_to_proposed_wall' | 'regulatory_floor_area' | 'rough_floor_area_estimate'; origin: 'user'; note: string | null; placement_revision: string }
 export type SiteAssumptions = {
   schema_version: 'sr.zoning-site-assumptions.v1'
   property: { case_id: string; parcel_id: string; geometry_revision: string; crs: string; source: Feature['source']; capture: Site['capture'] }

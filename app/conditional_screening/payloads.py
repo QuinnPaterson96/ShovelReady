@@ -29,7 +29,7 @@ class Source(Boundary):
     capture_date: str | None = None
     source_revision: str | None = None
     currentness_limitations: tuple[str, ...] = ()
-    review_status: Literal["candidate", "reviewed"] = "candidate"
+    review_status: Literal["candidate", "reviewed", "unreviewed", "unreviewed_live_observation"] = "candidate"
 
 
 class Rule(Boundary):
@@ -80,7 +80,7 @@ class Fact(Boundary):
     measurement_definition: str | None = None
     boundary_role: Literal["front", "rear", "side", "flanking_street", "unknown"] | None = None
     geometry_basis: Literal["wall", "roofline", "nominal", "unknown"] | None = None
-    origin: Literal["source", "user_assumption", "user_measurement", "model"]
+    origin: Literal["source", "user_assumption", "user_measurement", "model", "journey_default", "municipal_observation", "derived_assumption"]
     source: Source | None = None
     note: str | None = None
 
@@ -108,6 +108,8 @@ class Request(Boundary):
     # Validated by the API adapter before echoing; preserves source metadata,
     # exact edge role assumptions and capture context for enquiries/evidence export.
     site_assumptions: dict | None = None
+    # Validated adapter projection of project-setting origins, echoed for exact review.
+    proposal_evidence: dict | None = None
 
     @model_validator(mode="after")
     def unique(self):

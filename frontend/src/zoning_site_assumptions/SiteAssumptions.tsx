@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import type { Case } from '../occupied_lots/contract'
 import { MeasurementInput } from '../MeasurementInput'
 import { assumptionsKey, initialAssumptions, suggestedBoundaryRoles, withPlacementRevision, type EdgeRole, type SiteAssumptions, type UserMeasurement } from './model'
@@ -9,7 +9,7 @@ const roleNames: Record<EdgeRole, string> = { unknown: 'Unknown', front: 'Front'
 function measure(raw: string, basis: UserMeasurement['basis'], placementRevision: string): UserMeasurement | null {
   if (!raw.trim()) return null
   const number = Number(raw)
-  return Number.isFinite(number) && number >= 0 ? { value: number, unit: basis === 'regulatory_floor_area' ? 'm2' : 'm', basis, origin: 'user', note: null, placement_revision: placementRevision } : null
+  return Number.isFinite(number) && number >= 0 ? { value: number, unit: basis === 'regulatory_floor_area' || basis === 'rough_floor_area_estimate' ? 'm2' : 'm', basis, origin: 'user', note: null, placement_revision: placementRevision } : null
 }
 
 function Editor({ site, geometryRevision, placementRevision, frontEdge = null, rearEdge = null, streetPattern = 'unknown', onChange }: Props) {
@@ -22,13 +22,16 @@ function Editor({ site, geometryRevision, placementRevision, frontEdge = null, r
   const [separationDraft, setSeparationDraft] = useState('')
   const [areaDraft, setAreaDraft] = useState('')
   const [manualBasis, setManualBasis] = useState(false)
+  const [areaBasis, setAreaBasis] = useState<'rough_floor_area_estimate' | 'regulatory_floor_area'>('rough_floor_area_estimate')
+  const [floorHelpOpen, setFloorHelpOpen] = useState(false)
+  const floorHelpId = useId()
 
   useEffect(() => { if (placementRevision === value.placement_revision) notify.current(value) }, [value, placementRevision])
   useEffect(() => {
     if (placementRevision !== value.placement_revision) {
       notify.current(null)
       setValue(previous => withPlacementRevision(previous, placementRevision))
-      setDistanceDraft({}); setSeparationDraft(''); setAreaDraft('')
+      setDistanceDraft({}); setSeparationDraft(''); setAreaDraft(''); setAreaBasis('rough_floor_area_estimate')
     }
   }, [placementRevision, value.placement_revision])
 
@@ -49,8 +52,13 @@ function Editor({ site, geometryRevision, placementRevision, frontEdge = null, r
   }
   const setSpecialMeasurement = (kind: 'principal_separation' | 'floor_area', raw: string) => {
     if (kind === 'principal_separation') setSeparationDraft(raw); else setAreaDraft(raw)
-    const basis = kind === 'principal_separation' ? 'principal_wall_to_proposed_wall' : 'regulatory_floor_area'
+    const basis = kind === 'principal_separation' ? 'principal_wall_to_proposed_wall' : areaBasis
     setValue(previous => ({ ...previous, measurements: { ...previous.measurements, [kind]: measure(raw, basis, placementRevision) } }))
+  }
+  const changeAreaBasis = (basis: typeof areaBasis) => {
+    setAreaBasis(basis)
+    setValue(previous => ({ ...previous, measurements: { ...previous.measurements,
+      floor_area: measure(areaDraft, basis, placementRevision) } }))
   }
 
   return <section className="zsa" aria-label="Property assumptions">
@@ -78,8 +86,13 @@ function Editor({ site, geometryRevision, placementRevision, frontEdge = null, r
       <details><summary>How should I identify edges?</summary><p>Use a survey or reliable property plan and identify street edges first. A long edge is not automatically the front. If a corner, through lot, triangle, easement or unusual boundary makes the roles unclear, leave them unknown for review.</p></details>
     </fieldset>
     <fieldset><legend>Measurements you can supply</legend>
-      <label className="zsa__check"><input type="checkbox" checked={manualBasis} onChange={event => { setManualBasis(event.target.checked); if (!event.target.checked) { setSeparationDraft(''); setAreaDraft(''); setValue(previous => ({ ...previous, measurements: { ...previous.measurements, principal_separation: null, floor_area: null } })) } }} /> I have measurements based on building walls or the applicable floor-area definition</label>
-      {manualBasis && <><label>Wall to wall separation (m) <input inputMode="decimal" value={separationDraft} onChange={event => setSpecialMeasurement('principal_separation', event.target.value)} placeholder="Unknown" /></label><label>Victoria floor area (m²) <input inputMode="decimal" value={areaDraft} onChange={event => setSpecialMeasurement('floor_area', event.target.value)} placeholder="Unknown" /></label><p className="zsa__hint">Enter measured wall separation and area only when you know the applicable definition. Roofline gaps and nominal product footprint do not supply these values. See the Victoria floor-area definition in the pathway section above.</p></>}
+      <label className="zsa__check"><input type="checkbox" checked={manualBasis} onChange={event => { setManualBasis(event.target.checked); if (!event.target.checked) { setSeparationDraft(''); setValue(previous => ({ ...previous, measurements: { ...previous.measurements, principal_separation: null } })) } }} /> I have a wall-to-wall separation measurement</label>
+      {manualBasis && <><label>Wall to wall separation (m) <input inputMode="decimal" value={separationDraft} onChange={event => setSpecialMeasurement('principal_separation', event.target.value)} placeholder="Unknown" /></label><p className="zsa__hint">Roofline gaps are not surveyed wall-to-wall separation. The candidate clause's endpoints still need source review.</p></>}
+      <div className="zsa__field-label"><label htmlFor="zsa-floor-area">Floor area (m²)</label><button type="button" className="zsa__info" aria-label="About City of Victoria floor area measurement" aria-expanded={floorHelpOpen} aria-controls={floorHelpId} onClick={() => setFloorHelpOpen(open => !open)}>i</button></div>
+      <p className="zsa__hint">Interior area; Model 300's advertised footprint is a different quantity. Choose the basis below if you enter a number.</p>
+      <MeasurementInput id="zsa-floor-area" dimension="area" type="number" min="0" step="any" value={areaDraft} onChange={event => setSpecialMeasurement('floor_area', event.target.value)} placeholder="Unknown" />
+      <div id={floorHelpId} hidden={!floorHelpOpen} className="zsa__help"><p><strong>Candidate City of Victoria Zoning Bylaw 2018, Part 2.1 “Floor Area” (PDF p16), rule revision candidate-2026-10-05-1.</strong> Measured to interior surfaces of exterior walls, with specified inclusions and exclusions across applicable levels. The source has conflicting consolidation labels and site applicability is unresolved. This is not a universal definition; if the applicable jurisdiction or rule differs, leave the regulatory basis unknown.</p><p>Published Model 300 nominal footprint and advertised 300 ft² are not regulatory floor area. A rough estimate is retained as an estimate but does not satisfy the candidate area check. <a href="https://www.victoria.ca/media/file/zoning-bylaw-2018" target="_blank" rel="noreferrer">Candidate City source</a>.</p></div>
+      {areaDraft.trim() && <fieldset className="zsa__area-basis"><legend>What is this number based on?</legend><label><input type="radio" name="zsa-area-basis" checked={areaBasis === 'rough_floor_area_estimate'} onChange={() => changeAreaBasis('rough_floor_area_estimate')} /> Rough interior estimate · not used for candidate area check</label><label><input type="radio" name="zsa-area-basis" checked={areaBasis === 'regulatory_floor_area'} onChange={() => changeAreaBasis('regulatory_floor_area')} /> Measured to the candidate Victoria definition above · unverified</label></fieldset>}
       {((separationDraft && !value.measurements.principal_separation) || (areaDraft && !value.measurements.floor_area)) && <p className="zsa__error">Measurements must be nonnegative numbers; invalid entries remain unknown.</p>}
     </fieldset>
     <p className="zsa__hint">Changing the property, geometry or placement requires fresh measurements. No zoning result is produced here.</p>
