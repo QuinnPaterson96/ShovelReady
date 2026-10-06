@@ -1,0 +1,285 @@
+{
+  "schemaVersion": "sr-address-search.v1",
+  "query": "419 Cecelia, Saanich",
+  "status": "candidates",
+  "reason": null,
+  "candidates": [
+    {
+      "locator": "0:b77031b7ddc3300e",
+      "fullAddress": "419 Cecelia Rd, Victoria, BC",
+      "address": {
+        "siteName": "",
+        "unitDesignator": "",
+        "unitNumber": "",
+        "unitNumberSuffix": "",
+        "civicNumber": "419",
+        "civicNumberSuffix": "",
+        "streetName": "Cecelia",
+        "streetType": "Rd",
+        "streetDirection": "",
+        "streetQualifier": "",
+        "streetAddress": "419 Cecelia Rd",
+        "localityName": "Victoria",
+        "localityType": "City",
+        "electoralArea": "",
+        "provinceCode": "BC"
+      },
+      "locality": "Victoria",
+      "providerSiteId": "736dd52d-2a56-4ee3-9052-0063480bff09",
+      "score": 89.0,
+      "matchPrecision": "CIVIC_NUMBER",
+      "faults": [
+        {
+          "value": "SAANICH",
+          "element": "LOCALITY",
+          "fault": "isAlias",
+          "penalty": 4.0
+        },
+        {
+          "value": "",
+          "element": "STREET_TYPE",
+          "fault": "missing",
+          "penalty": 6.0
+        },
+        {
+          "value": "",
+          "element": "PROVINCE",
+          "fault": "missing",
+          "penalty": 1.0
+        }
+      ],
+      "locationDescriptor": "parcelPoint",
+      "locationPositionalAccuracy": "high",
+      "point": {
+        "crs": "EPSG:4326",
+        "longitude": -123.3798043,
+        "latitude": 48.4450113
+      },
+      "sourceChangeDate": "2026-07-07"
+    },
+    {
+      "locator": "1:9f1c9a146650083f",
+      "fullAddress": "Cecelia Rd, Victoria, BC",
+      "address": {
+        "siteName": "",
+        "unitDesignator": "",
+        "unitNumber": "",
+        "unitNumberSuffix": "",
+        "civicNumber": "",
+        "civicNumberSuffix": "",
+        "streetName": "Cecelia",
+        "streetType": "Rd",
+        "streetDirection": "",
+        "streetQualifier": "",
+        "streetAddress": "Cecelia Rd",
+        "localityName": "Victoria",
+        "localityType": "City",
+        "electoralArea": "",
+        "provinceCode": "BC"
+      },
+      "locality": "Victoria",
+      "providerSiteId": null,
+      "score": 66.0,
+      "matchPrecision": "STREET",
+      "faults": [
+        {
+          "value": "SAANICH",
+          "element": "LOCALITY",
+          "fault": "isAlias",
+          "penalty": 4.0
+        },
+        {
+          "value": "",
+          "element": "STREET_TYPE",
+          "fault": "missing",
+          "penalty": 6.0
+        },
+        {
+          "value": "419",
+          "element": "CIVIC_NUMBER",
+          "fault": "notInAnyBlock",
+          "penalty": 1.0
+        },
+        {
+          "value": "",
+          "element": "PROVINCE",
+          "fault": "missing",
+          "penalty": 1.0
+        }
+      ],
+      "locationDescriptor": "streetPoint",
+      "locationPositionalAccuracy": "coarse",
+      "point": {
+        "crs": "EPSG:4326",
+        "longitude": -123.3763445,
+        "latitude": 48.4436323
+      },
+      "sourceChangeDate": null
+    },
+    {
+      "locator": "2:2960b0cbfe6bc1fd",
+      "fullAddress": "Saanich, BC",
+      "address": {
+        "siteName": "",
+        "unitDesignator": "",
+        "unitNumber": "",
+        "unitNumberSuffix": "",
+        "civicNumber": "",
+        "civicNumberSuffix": "",
+        "streetName": "",
+        "streetType": "",
+        "streetDirection": "",
+        "streetQualifier": "",
+        "streetAddress": "",
+        "localityName": "Saanich",
+        "localityType": "District Municipality",
+        "electoralArea": "",
+        "provinceCode": "BC"
+      },
+      "locality": "Saanich",
+      "providerSiteId": null,
+      "score": 47.0,
+      "matchPrecision": "LOCALITY",
+      "faults": [
+        {
+          "value": "419 CECELIA",
+          "element": "LOCALITY_INITIAL_GARBAGE",
+          "fault": "notAllowed",
+          "penalty": 20.0
+        },
+        {
+          "value": "",
+          "element": "PROVINCE",
+          "fault": "missing",
+          "penalty": 1.0
+        }
+      ],
+      "locationDescriptor": "localityPoint",
+      "locationPositionalAccuracy": "coarse",
+      "point": {
+        "crs": "EPSG:4326",
+        "longitude": -123.3733334,
+        "latitude": 48.4566667
+      },
+      "sourceChangeDate": null
+    },
+    {
+      "locator": "3:53e71123b522bee9",
+      "fullAddress": "Oak Bay, BC",
+      "address": {
+        "siteName": "",
+        "unitDesignator": "",
+        "unitNumber": "",
+        "unitNumberSuffix": "",
+        "civicNumber": "",
+        "civicNumberSuffix": "",
+        "streetName": "",
+        "streetType": "",
+        "streetDirection": "",
+        "streetQualifier": "",
+        "streetAddress": "",
+        "localityName": "Oak Bay",
+        "localityType": "District Municipality",
+        "electoralArea": "",
+        "provinceCode": "BC"
+      },
+      "locality": "Oak Bay",
+      "providerSiteId": null,
+      "score": 43.0,
+      "matchPrecision": "LOCALITY",
+      "faults": [
+        {
+          "value": "419 CECELIA",
+          "element": "LOCALITY_INITIAL_GARBAGE",
+          "fault": "notAllowed",
+          "penalty": 20.0
+        },
+        {
+          "value": "SAANICH",
+          "element": "LOCALITY",
+          "fault": "isAlias",
+          "penalty": 4.0
+        },
+        {
+          "value": "",
+          "element": "PROVINCE",
+          "fault": "missing",
+          "penalty": 1.0
+        }
+      ],
+      "locationDescriptor": "localityPoint",
+      "locationPositionalAccuracy": "coarse",
+      "point": {
+        "crs": "EPSG:4326",
+        "longitude": -123.3180555,
+        "latitude": 48.4258334
+      },
+      "sourceChangeDate": null
+    },
+    {
+      "locator": "4:474a17d4415c39de",
+      "fullAddress": "Central Saanich, BC",
+      "address": {
+        "siteName": "",
+        "unitDesignator": "",
+        "unitNumber": "",
+        "unitNumberSuffix": "",
+        "civicNumber": "",
+        "civicNumberSuffix": "",
+        "streetName": "",
+        "streetType": "",
+        "streetDirection": "",
+        "streetQualifier": "",
+        "streetAddress": "",
+        "localityName": "Central Saanich",
+        "localityType": "District Municipality",
+        "electoralArea": "",
+        "provinceCode": "BC"
+      },
+      "locality": "Central Saanich",
+      "providerSiteId": null,
+      "score": 43.0,
+      "matchPrecision": "LOCALITY",
+      "faults": [
+        {
+          "value": "419 CECELIA",
+          "element": "LOCALITY_INITIAL_GARBAGE",
+          "fault": "notAllowed",
+          "penalty": 20.0
+        },
+        {
+          "value": "SAANICH",
+          "element": "LOCALITY",
+          "fault": "isAlias",
+          "penalty": 4.0
+        },
+        {
+          "value": "",
+          "element": "PROVINCE",
+          "fault": "missing",
+          "penalty": 1.0
+        }
+      ],
+      "locationDescriptor": "localityPoint",
+      "locationPositionalAccuracy": "coarse",
+      "point": {
+        "crs": "EPSG:4326",
+        "longitude": -123.4208334,
+        "latitude": 48.5944445
+      },
+      "sourceChangeDate": null
+    }
+  ],
+  "mayBeTruncated": true,
+  "source": {
+    "provider": "BC Address Geocoder",
+    "sourceUrl": "https://geocoder.api.gov.bc.ca/addresses.json?addressString=419+Cecelia%2C+Saanich&maxResults=5&outputSRS=4326&echo=true&autoComplete=false",
+    "fetchedAt": "2026-10-06T06:44:20.742565Z",
+    "providerSearchTimestamp": "2026-10-05T23:44:20",
+    "providerBaseDataDate": "2026-07-07T20:10:43Z",
+    "providerVersion": "4.5.4",
+    "responseSha256": "1ba07f2611ca6f14d9bfe6037bce5286ca414f8456c888315702e0fa9f6673eb",
+    "licence": "Open Government Licence - British Columbia",
+    "reviewStatus": "unreviewed"
+  }
+}

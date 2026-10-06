@@ -67,6 +67,7 @@ export function parseAddresses(value: unknown): SearchResult<RankedAddress> {
     const point = candidate.point
     const addressParts = candidate.address as Record<string, unknown>
     if (!string(candidate.locator) || !string(candidate.fullAddress) || !object(candidate.address) || !string(addressParts.provinceCode) ||
+      !['civicNumber', 'streetName', 'streetType', 'localityName', 'unitDesignator', 'unitNumber', 'unitNumberSuffix'].every(field => typeof addressParts[field] === 'string') ||
       !string(candidate.locality) || !string(candidate.matchPrecision) || !Array.isArray(candidate.faults) ||
       !candidate.faults.every(fault => object(fault) && string(fault.element) && string(fault.fault) && typeof fault.value === 'string' && finite(fault.penalty)) ||
       !finite(candidate.score) || !object(point) || point.crs !== 'EPSG:4326' || !finite(point.longitude) || Math.abs(point.longitude) > 180 || !finite(point.latitude) || Math.abs(point.latitude) > 90 ||
@@ -78,6 +79,12 @@ export function parseAddresses(value: unknown): SearchResult<RankedAddress> {
       providerScore: candidate.score as number,
       providerFaults: candidate.faults as { element: string; fault: string; value: string }[],
       providerProvince: addressParts.provinceCode as string,
+      providerAddress: {
+        civicNumber: addressParts.civicNumber as string, streetName: addressParts.streetName as string,
+        streetType: addressParts.streetType as string, localityName: addressParts.localityName as string,
+        unitDesignator: addressParts.unitDesignator as string, unitNumber: addressParts.unitNumber as string,
+        unitNumberSuffix: addressParts.unitNumberSuffix as string,
+      },
       point: [point.longitude, point.latitude] as [number, number], crs: 'EPSG:4326',
       source: { provider: source.provider as string, record: `Address suggestion ${index + 1}`, capturedAt: source.fetchedAt as string,
         sourceDate: candidate.sourceChangeDate as string | null, url: source.sourceUrl as string, review: source.reviewStatus as string },

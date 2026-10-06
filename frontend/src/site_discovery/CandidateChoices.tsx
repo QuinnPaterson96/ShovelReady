@@ -4,8 +4,19 @@ import type { Address, Parcel } from './flow'
 // These are optional because saved/manual Transport implementations need not supply
 // provider ranking metadata. A score compares address suggestions only.
 export type ProviderFault = { element: string; fault: string; value: string }
-export type RankedAddress = Address & { providerScore?: number; providerFaults?: ProviderFault[]; providerProvince?: string }
+export type ProviderAddress = { civicNumber: string; streetName: string; streetType: string; localityName: string; unitDesignator: string; unitNumber: string; unitNumberSuffix: string }
+export type RankedAddress = Address & { providerScore?: number; providerFaults?: ProviderFault[]; providerProvince?: string; providerAddress?: ProviderAddress }
 export type RelatedParcel = Parcel & { relation?: 'pid_exact' | 'gislink_join' | 'spatial_lead' }
+
+export function harmlessCompletion(address: Address): boolean {
+  const candidate = address as RankedAddress
+  if (!candidate.providerFaults || !candidate.providerAddress) return address.issues.length === 0
+  return candidate.providerFaults.every(fault =>
+    fault.fault === 'missing' && (
+      (fault.element === 'PROVINCE' && candidate.providerProvince === 'BC') ||
+      (fault.element === 'STREET_TYPE' && !!candidate.providerAddress?.streetType)
+    ))
+}
 
 export function leadingAddressIndex(addresses: Address[]): number | null {
   if (addresses.length < 2) return null
@@ -13,8 +24,8 @@ export function leadingAddressIndex(addresses: Address[]): number | null {
   if (ranked.some(address => !Number.isFinite(address.providerScore))) return null
   // Distinct unit records must remain visible even if their scores differ.
   const units = ranked.map(address => {
-    const raw = address.raw as { candidate?: { address?: { unitDesignator?: string; unitNumber?: string; unitNumberSuffix?: string } } } | null
-    const unit = raw?.candidate?.address
+    const raw = address.raw as { candidate?: { address?: Partial<ProviderAddress> } } | null
+    const unit = address.providerAddress ?? raw?.candidate?.address
     return [unit?.unitDesignator, unit?.unitNumber, unit?.unitNumberSuffix].map(value => typeof value === 'string' ? value.trim().toLowerCase() : '').join('|')
   })
   if (new Set(units).size > 1) return null
@@ -22,13 +33,23 @@ export function leadingAddressIndex(addresses: Address[]): number | null {
   const leaders = ranked.filter(address => address.providerScore === top)
   if (leaders.length !== 1) return null
   const lead = leaders[0]
-  // The saved 1144 May response has only an omitted province on its civic
-  // record. Street/locality suggestions lose the civic identity entirely.
-  // A competing civic or block record remains a material identity choice.
-  if (lead.precision !== 'CIVIC_NUMBER' || (lead.providerFaults
-    ? lead.providerFaults.some(fault => fault.element !== 'PROVINCE' || fault.fault !== 'missing' || lead.providerProvince !== 'BC')
-    : lead.issues.length > 0)) return null
+  // A missing type is harmless only when the returned civic/street/locality
+  // identity is unique. A different street type with the same name is a real
+  // alternative even when the provider gives it a lower precision and score.
+  if (lead.precision !== 'CIVIC_NUMBER' || !harmlessCompletion(lead)) return null
   if (ranked.some(address => address !== lead && !['STREET', 'LOCALITY'].includes(address.precision))) return null
+  if (lead.providerFaults?.some(fault => fault.element === 'STREET_TYPE' && fault.fault === 'missing')) {
+    const selected = lead.providerAddress
+    if (!selected?.civicNumber || !selected.streetName || !selected.localityName) return null
+    if (ranked.some(address => {
+      if (address === lead || address.precision !== 'STREET') return false
+      const other = address.providerAddress
+      if (!other) return true
+      return other.streetName.toLowerCase() !== selected.streetName.toLowerCase() ||
+        other.streetType.toLowerCase() !== selected.streetType.toLowerCase() ||
+        other.localityName.toLowerCase() !== selected.localityName.toLowerCase()
+    })) return null
+  }
   return ranked.indexOf(leaders[0])
 }
 

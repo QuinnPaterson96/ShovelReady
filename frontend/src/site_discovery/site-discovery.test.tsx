@@ -4,11 +4,16 @@ import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { DiscoveryFlow } from './flow'
 import type { Address, Confirmed, Observation, Parcel, SearchResult, Transport } from './flow'
-import { SiteDiscovery } from './SiteDiscovery'
+import { AddressCandidates, SiteDiscovery } from './SiteDiscovery'
 import { CandidateChoices, leadingAddressIndex, leadingParcelIndex } from './CandidateChoices'
+import type { RankedAddress } from './CandidateChoices'
 import { liveTransport, parseAddresses, parseObservation, parseParcels } from './transport'
 import saanichResponse from './address-api.fixture.json'
 import mayStreetResponse from './may-street-api.fixture.json'
+import ceceliaResponse from './cecelia-api.fixture.json'
+import ceceliaComplete from './cecelia-complete-api.fixture.json'
+import ceceliaNoCity from './cecelia-no-city-api.fixture.json'
+import ceceliaWrongCity from './cecelia-wrong-city-api.fixture.json'
 import cityAddress from './address_87.json'
 import cityParcelSearch from './parcel_search_87.json'
 import cityParcelObserve from './parcel_observe_87.json'
@@ -174,14 +179,80 @@ test('saved public May Street response shows the corrected civic lead, with raw 
   assert.doesNotMatch(html, /<details[^>]*open=""/)
 })
 
+test('incomplete Cecelia address leads only when the civic, street and locality identity stays unique', () => {
+  // Public BC Geocoder response captured 2026-10-06. The reported query has one
+  // exact civic/street/locality record; its only faults are omitted type/province.
+  // The next candidate loses the civic number. These are provider observations,
+  // not a probability threshold or proof that the parcel belongs to the user.
+  const parsed = parseAddresses(ceceliaResponse)
+  const [lead, street] = parsed.candidates
+  assert.equal(lead.label, '419 Cecelia Rd, Victoria, BC')
+  assert.equal(lead.providerScore, 93)
+  assert.equal(street.precision, 'STREET')
+  assert.equal(leadingAddressIndex(parsed.candidates), 0)
+  assert.deepEqual(lead.providerFaults?.map(fault => `${fault.element}:${fault.fault}`), ['STREET_TYPE:missing', 'PROVINCE:missing'])
+  assert.deepEqual((lead.raw as { candidate: { faults: unknown[] } }).candidate.faults, ceceliaResponse.candidates[0].faults)
+  const html = renderToStaticMarkup(createElement(CandidateChoices, { candidates: parsed.candidates, selectedId: null,
+    leadingIndex: leadingAddressIndex(parsed.candidates), kind: 'address', render: (candidate, label) => createElement('button', { type: 'button' }, `${label}: ${candidate.id}`) }))
+  assert.match(html, /Leading address suggestion: 0:/)
+  assert.match(html, /Other matches \(4\)/)
+  assert.doesNotMatch(html, /<details[^>]*open=""/)
+  const view = renderToStaticMarkup(createElement(AddressCandidates, { addresses: parsed.candidates, selectedId: null, onChoose() {} }))
+  assert.match(view, /Matched to 419 Cecelia Rd/)
+  assert.doesNotMatch(view, /Several address matches need review/)
+  assert.match(view, /Other matches \(4\)/)
+  assert.match(view, /Provider address details/)
+  assert.match(view, /Street type was omitted from search/)
+  assert.match(view, /BC Address Geocoder/)
+  assert.match(view, /Complete address record/)
+
+  const sameStreet = lead.providerAddress!
+  assert.equal(leadingAddressIndex([lead, { ...street, providerAddress: { ...sameStreet, civicNumber: '', streetType: 'St' } }]), null)
+  assert.equal(leadingAddressIndex([lead, { ...street, providerAddress: { ...sameStreet, civicNumber: '', localityName: 'Saanich' } }]), null)
+  assert.equal(leadingAddressIndex([lead, { ...street, precision: 'CIVIC_NUMBER', providerAddress: { ...sameStreet, civicNumber: '421' } }]), null)
+  assert.equal(leadingAddressIndex([lead, { ...street, precision: 'BLOCK' }]), null)
+  assert.equal(leadingAddressIndex([{ ...lead, providerFaults: [{ element: 'STREET_TYPE', fault: 'notMatched', value: 'ST' }] }, street]), null)
+  assert.equal(leadingAddressIndex([{ ...lead, providerFaults: [{ element: 'LOCALITY', fault: 'isAlias', value: 'SAANICH' }] }, street]), null)
+  assert.equal(leadingAddressIndex([{ ...lead, providerFaults: [{ element: 'LOCALITY', fault: 'missing', value: '' }] }, street]), null)
+  const ambiguous = renderToStaticMarkup(createElement(AddressCandidates, { addresses: [{ ...lead, providerFaults: [{ element: 'LOCALITY', fault: 'isAlias', value: 'SAANICH' }], issues: ['City or locality “SAANICH” was treated as an alternate name'] }, street], selectedId: null, onChoose() {} }))
+  assert.equal((ambiguous.match(/Several address matches need review/g) ?? []).length, 1)
+  assert.match(ambiguous, /City or locality.*SAANICH/)
+  assert.doesNotMatch(ambiguous, /Other matches/)
+  const units: RankedAddress[] = [{ ...lead, providerAddress: { ...sameStreet, unitNumber: '1' } },
+    { ...street, providerAddress: { ...sameStreet, unitNumber: '2' } }]
+  assert.equal(leadingAddressIndex(units), null)
+})
+
+test('actual complete and municipality variants preserve address identity boundaries', () => {
+  const complete = parseAddresses(ceceliaComplete).candidates
+  assert.equal(complete[0].label, '419 Cecelia Rd, Victoria, BC')
+  assert.equal(complete[0].providerScore, 100)
+  assert.deepEqual(complete[0].providerFaults, [])
+  assert.equal(leadingAddressIndex(complete), 0)
+
+  // Without Victoria, the provider also offers 419 Celia Rd in Cranbrook at
+  // BLOCK precision, only three provider points below the Victoria civic row.
+  const noCity = parseAddresses(ceceliaNoCity).candidates
+  assert.equal(noCity[1].label, '419 Celia Rd, Cranbrook, BC')
+  assert.equal(noCity[1].precision, 'BLOCK')
+  assert.equal(leadingAddressIndex(noCity), null)
+
+  // Saanich is supplied but the civic result reports it as a locality alias.
+  const wrongCity = parseAddresses(ceceliaWrongCity).candidates
+  assert.equal(wrongCity[0].locality, 'Victoria')
+  assert.equal(wrongCity[0].providerFaults?.[0].element, 'LOCALITY')
+  assert.equal(leadingAddressIndex(wrongCity), null)
+})
+
 test('saved Saanich response and material civic, tie and unit alternatives stay expanded', () => {
   const parsed = parseAddresses(saanichResponse)
   assert.equal(leadingAddressIndex(parsed.candidates), null) // competing BLOCK record changes direction and locality
   const [lead, street] = parseAddresses(mayStreetResponse).candidates
   assert.equal(leadingAddressIndex([lead, { ...street, precision: 'CIVIC_NUMBER' }]), null)
   assert.equal(leadingAddressIndex([lead, { ...street, providerScore: 99 }]), null)
-  assert.equal(leadingAddressIndex([{ ...lead, raw: { candidate: { address: { unitNumber: '1' } } } },
-    { ...street, raw: { candidate: { address: { unitNumber: '2' } } } }]), null)
+  const unitChoices: RankedAddress[] = [{ ...lead, providerAddress: { ...lead.providerAddress!, unitNumber: '1' } },
+    { ...street, providerAddress: { ...street.providerAddress!, unitNumber: '2' } }]
+  assert.equal(leadingAddressIndex(unitChoices), null)
   assert.equal(leadingAddressIndex([{ ...lead, providerFaults: [{ element: 'LOCALITY', fault: 'isAlias', value: 'VICTORIA' }] }, street]), null)
 })
 
