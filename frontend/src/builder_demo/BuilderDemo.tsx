@@ -79,7 +79,7 @@ export function enquiryDocument(selection: SitePreparationSelection | null, inpu
   const mappedSource = settings?.evidence.confirmed_zone.source
   const settingSourceSummary = mappedSource ? ` Mapped zoning observation: ${mappedSource.provider}, ${mappedSource.record_label}, ${mappedSource.locator}, captured ${readableDate(mappedSource.capture_date)}, ${mappedSource.review_status}; ${mappedSource.url}.` : ''
   const assumptionsSummary = siteAssumptions
-    ? `Property assumptions: main building ${siteAssumptions.building_type.value ?? 'unknown'}; existing garden suites ${siteAssumptions.existing_garden_suites.value ?? 'unknown'}; waterfront ${siteAssumptions.waterfront.value === null ? 'unknown' : siteAssumptions.waterfront.value ? 'assumed yes' : 'assumed no'}; ${siteAssumptions.edges.filter(edge => edge.role.value && edge.role.value !== 'unknown').length} parcel edges classified by the user. Project settings: use ${pathway?.proposed_use ?? 'unknown'} (${settings?.evidence.proposed_use.origin ?? 'unattributed'}), foundation ${pathway?.foundation_attached === null || pathway?.foundation_attached === undefined ? 'unknown' : pathway.foundation_attached ? 'scenario attached' : 'scenario unattached'} (${settings?.evidence.foundation_attached.origin ?? 'unattributed'}), lot/zone/instrument ${pathway?.legal_lot_confirmed ? 'assumed legal lot' : 'unknown or incompatible'} / ${pathway?.confirmed_zone ?? 'unknown'} (${settings?.evidence.confirmed_zone.origin ?? 'unattributed'}) / ${pathway?.confirmed_instrument ?? 'unknown'} (${settings?.evidence.confirmed_instrument.origin ?? 'unattributed'}).${settingSourceSummary} These are scenario settings and unreviewed observations, not verified site or legal facts.`
+    ? `Property assumptions: main building ${siteAssumptions.building_type.value ?? 'unknown'}; existing garden suites ${siteAssumptions.existing_garden_suites.value ?? 'unknown'} (${siteAssumptions.existing_garden_suites.value === null ? 'unknown' : siteAssumptions.existing_garden_suites.evidence_state === 'user_confirmed' ? 'user-confirmed, not independently verified' : siteAssumptions.existing_garden_suites.origin === 'journey_default' ? 'default assumption' : 'your assumption'}); waterfront ${siteAssumptions.waterfront.value === null ? 'unknown' : siteAssumptions.waterfront.value ? 'assumed yes' : 'assumed no'}; ${siteAssumptions.edges.filter(edge => edge.role.value && edge.role.value !== 'unknown').length} parcel edges classified by the user. Project settings: use ${pathway?.proposed_use ?? 'unknown'} (${settings?.evidence.proposed_use.origin ?? 'unattributed'}), foundation ${pathway?.foundation_attached === null || pathway?.foundation_attached === undefined ? 'unknown' : pathway.foundation_attached ? 'scenario attached' : 'scenario unattached'} (${settings?.evidence.foundation_attached.origin ?? 'unattributed'}), lot/zone/instrument ${pathway?.legal_lot_confirmed ? 'assumed legal lot' : 'unknown or incompatible'} / ${pathway?.confirmed_zone ?? 'unknown'} (${settings?.evidence.confirmed_zone.origin ?? 'unattributed'}) / ${pathway?.confirmed_instrument ?? 'unknown'} (${settings?.evidence.confirmed_instrument.origin ?? 'unattributed'}).${settingSourceSummary} Assumptions and user confirmations remain distinct from source observations.`
     : 'Property boundary roles and zoning pathway facts remain unknown.'
   const lines = [
     'UNSENT DRAFT · Model 300 enquiry for preliminary investigation',
@@ -101,7 +101,7 @@ export function enquiryDocument(selection: SitePreparationSelection | null, inpu
     `Provider service/installation: ${model.service_area_note} ${model.installation_note}`,
     'Questions: Please confirm the current controlled Model 300 drawing/revision, installed envelope and height datum; roof projections and site clearances; local delivery/crane access, foundation and utility requirements; and what site information you need before discussing this property.',
     'Legal lot lines, building walls and roles, other obstructions, zoning and setbacks, installed height and datum, current controlled provider dimensions, access and services remain unresolved.',
-    'No legal compatibility, permit approval, installed cost or availability has been determined.',
+    'Preliminary screening · limited checks. Ask the provider about the open questions and requirements not covered.',
   ]
   const offset = candidate ? 1 : 0
   const question = input.question?.trim() || `I’m exploring aux box Model 300${input.intendedUse.trim() ? ` for ${input.intendedUse.trim()}` : ''}. Could you confirm the current design, installation requirements, and what you would need to discuss a possible site?`
@@ -151,6 +151,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const [conditionalBusy, setConditionalBusy] = useState(false)
   const [conditionalRetry, setConditionalRetry] = useState(0)
   const [streetEdge, setStreetEdge] = useState<string | null>(null)
+  const [selectedBoundary, setSelectedBoundary] = useState<string | null>(null)
   const [rearEdge, setRearEdge] = useState<string | null>(null)
   const [boundaryMode, setBoundaryMode] = useState<BoundaryMapMode>('place')
   const [streetPattern, setStreetPattern] = useState<ScenarioRequest['street_pattern']>('unknown')
@@ -171,7 +172,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const [recipient, setRecipient] = useState('')
   const [includeSiteDetails, setIncludeSiteDetails] = useState(false)
   const [emailMessage, setEmailMessage] = useState('')
-  function siteEdited() { setSelection(null); setImported(false); setMeasurementResult(null); setSiteAssumptions(null); setProjectSettings(initialProjectSettings()); setStreetEdge(null); setRearEdge(null); setBoundaryMode('place'); setStreetPattern('unknown'); setReadyFor(null); setRevision(value => value + 1) }
+  function siteEdited() { setSelection(null); setImported(false); setMeasurementResult(null); setSiteAssumptions(null); setProjectSettings(initialProjectSettings()); setStreetEdge(null); setRearEdge(null); setSelectedBoundary(null); setBoundaryMode('place'); setStreetPattern('unknown'); setReadyFor(null); setRevision(value => value + 1) }
   function changeMode(next: typeof mode) {
     setFoundationAllowanceM(null); setHeightRevision(value => value + 1)
     setExpanded({ property: next !== 'example', placement: next === 'example', next: false })
@@ -210,10 +211,12 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const mappedZoning = currentZoning && geometryRevision ? zoningProjection(currentZoning, geometryRevision) : null
   const effectiveSettings = withFloorAreaBasis(applyMappedZoning(projectSettings, mappedZoning, geometryRevision ?? ''), currentAssumptions?.measurements.floor_area?.basis === 'regulatory_floor_area' ? 'regulatory_floor_area' : currentAssumptions?.measurements.floor_area?.basis === 'rough_floor_area_estimate' ? 'rough_floor_area_estimate' : null)
   const pathway = effectiveSettings.proposal
+  function selectBoundary(id: string | null) { setSelectedBoundary(id); if (id) requestAnimationFrame(() => focusSummaryTarget(document, 'boundary-roles')) }
   const boundaryInteraction: BoundaryMapInteraction | undefined = zoningCase ? {
-    edges: currentAssumptions?.edges ?? [], mode: boundaryMode, frontId: streetEdge, rearId: rearEdge,
+    editor: <SiteAssumptionsEditor homeownerDefaults sharedMode={boundaryMode} selectedBoundary={selectedBoundary} onBoundarySelect={selectBoundary} site={zoningCase} geometryRevision={geometryRevision!} placementRevision={placementRevision} frontEdge={streetEdge} rearEdge={rearEdge} streetPattern={streetPattern} onChange={next => { setSiteAssumptions(next); setReadyFor(null) }} />,
+    selectedId: selectedBoundary, edges: currentAssumptions?.edges ?? [], mode: boundaryMode, frontId: streetEdge, rearId: rearEdge,
     streetPattern, onModeChange: setBoundaryMode,
-    onSelect: id => { if (boundaryMode === 'front') setStreetEdge(id); else if (boundaryMode === 'rear') setRearEdge(id) },
+    onSelect: id => { if (boundaryMode === 'front') setStreetEdge(id); else if (boundaryMode === 'rear') selectBoundary(id) },
     onStreetPattern: setStreetPattern,
   } : undefined
   const additionalKey = JSON.stringify([geometryRevision, placementRevision, revision])
@@ -324,6 +327,8 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   }
   function navigateFlag(target: string) {
     if (target === 'placement-map') setBoundaryMode('place')
+    if (target === 'boundary-roles') setBoundaryMode('rear')
+    if (target === 'street-side') { setBoundaryMode('front'); target = 'placement-action-front' }
     if (target === 'zoning-retry') { setZoningRetry(value => value + 1); return }
     if (target === 'retry-scenario') { setScenarioRetry(value => value + 1); return }
     if (target === 'retry-screening') { setConditionalRetry(value => value + 1); return }
@@ -378,7 +383,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       <p className="eyebrow">Independent sample journey · aux box</p>
       <h1 id="builder-title">Explore Model 300 on your site</h1>
       <p>Start with a site lead or the facts you know. Find a Victoria property, or sketch your own approximate lot, then test one placement and take away an unsent enquiry.</p>
-      <p className="notice">This ShovelReady demonstration is independent of aux box. It offers limited conditional Victoria checks when you supply assumptions; it does not establish legal compatibility, confirm provider service, or contact the company.</p>
+      <p className="notice">See whether Model 300 looks plausible enough to discuss with the provider. This independent aux box example prepares an enquiry; nothing is sent automatically.</p>
       <p><strong>Model 300</strong> · {original('nominal_exterior_width')} × {original('nominal_exterior_depth')} · advertised height {original('advertised_overall_height')}. Provider dimensions are unreviewed.</p>
       <ModelImage />
       <PriceTiming model={model} />
@@ -421,7 +426,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     {propertyComplete && <div className="builder-selected-property"><strong>Property: {mode === 'example' ? 'Saved Victoria example · not your property' : live?.address.label || manual?.facts.address || 'User-supplied site'}</strong><span>{live ? `${live.parcel.label} · source match, identity and ownership unverified` : 'Approximate and unreviewed'}</span><button type="button" onClick={changeProperty}>Wrong property? Change</button></div>}
     <section className="builder-stage" id="builder-placement" aria-labelledby="builder-placement-title">
       <p className="eyebrow">Placement</p><h2 id="builder-placement-title">Explore one approximate placement</h2>
-      <p>{propertyComplete ? zoningCase ? 'Explore the placement, then review the summary and next actions below.' : placementSummary : 'Choose a property to explore placement.'}</p>
+      <p>{propertyComplete ? zoningCase ? 'Place the unit and see what is worth exploring.' : placementSummary : 'Choose a property to explore placement.'}</p>
       <button type="button" aria-expanded={expanded.placement && propertyComplete} aria-controls="builder-placement-content" disabled={!propertyComplete} onClick={() => toggleStep('placement')}>{expanded.placement ? 'Collapse placement' : 'Explore placement'}</button>
       <div id="builder-placement-content" hidden={!expanded.placement || !propertyComplete}>
       {mode === 'manual' && <p>Your manual sketch and placement controls are in Property. Reopen that step to adjust them.</p>}
@@ -434,10 +439,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       </details></section>
       <AdditionalInputs key={additionalKey} onHeight={value => { setScoutingHeight({ key: additionalKey, value }); setReadyFor(null) }} result={currentScenario} />
       <ProjectDetails settings={effectiveSettings} mapped={mappedZoning} lookup={currentZoning} busy={!!zoningKey && zoningBusy && !currentZoning} error={currentZoningError} onRetry={() => setZoningRetry(value => value + 1)} onChange={next => { setProjectSettings(next); setReadyFor(null) }} />
-      <details className="builder-optional"><summary>Optional assumptions and user measurements</summary>
-      <p>Use the current placement with explicitly stated lot and building assumptions. Candidate rules are sourced, but their currentness and site applicability still need review.</p>
-      <SiteAssumptionsEditor site={zoningCase} geometryRevision={geometryRevision!} placementRevision={placementRevision} frontEdge={streetEdge} rearEdge={rearEdge} streetPattern={streetPattern} onChange={next => { setSiteAssumptions(next); setReadyFor(null) }} />
-    </details></>}
+</>}
     {selection && <section className="builder-optional" aria-labelledby="builder-optional-title">
       <p className="eyebrow">Optional placement</p><h2 id="builder-optional-title">Import a retained example only if useful</h2>
       <p>Three captured lots are examples with their own parcel and roofline geometry. They are not citywide address coverage. Importing one does not match it to your address or parcel lead.</p>

@@ -42,7 +42,7 @@ export function ModelImage({ photo }: ModelImageProps) {
         <h3>Model 300</h3>
         <p>A prefabricated living space with a private bedroom, kitchen and full bathroom. The manufacturer lists a 300 sq ft footprint.</p>
         <a className="model-preview-link" href={MODEL_PAGE} target="_blank" rel="noopener noreferrer">View photos and specifications on aux box <span aria-hidden="true">↗</span></a>
-        <p className="model-preview-disclaimer">Independent ShovelReady demo; no aux box affiliation. Options and site installation may vary.</p>
+        <p className="model-preview-disclaimer">Options and site installation may vary.</p>
       </figcaption>
     </div>
     {localPhoto && <div className="model-preview-credit">

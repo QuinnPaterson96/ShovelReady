@@ -1,9 +1,9 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import type { Case } from '../occupied_lots/contract'
 import { MeasurementInput } from '../MeasurementInput'
-import { assumptionsKey, initialAssumptions, suggestedBoundaryRoles, withPlacementRevision, type EdgeRole, type SiteAssumptions, type UserMeasurement } from './model'
+import { assumptionsKey, initialAssumptions, suiteCountFact, suggestedBoundaryRoles, withPlacementRevision, type EdgeRole, type SiteAssumptions, type UserMeasurement } from './model'
 
-type Props = { site: Case; geometryRevision: string; placementRevision: string; frontEdge?: string | null; rearEdge?: string | null; streetPattern?: 'unknown' | 'single' | 'corner_or_multiple'; onChange: (value: SiteAssumptions | null) => void }
+type Props = { sharedMode?: 'place' | 'front' | 'rear'; selectedBoundary?: string | null; onBoundarySelect?: (id: string) => void; homeownerDefaults?: boolean; site: Case; geometryRevision: string; placementRevision: string; frontEdge?: string | null; rearEdge?: string | null; streetPattern?: 'unknown' | 'single' | 'corner_or_multiple'; onChange: (value: SiteAssumptions | null) => void }
 const roleNames: Record<EdgeRole, string> = { unknown: 'Unknown', front: 'Front', rear: 'Rear', side: 'Side', flanking_street: 'Flanking street' }
 
 function measure(raw: string, basis: UserMeasurement['basis'], placementRevision: string): UserMeasurement | null {
@@ -12,11 +12,11 @@ function measure(raw: string, basis: UserMeasurement['basis'], placementRevision
   return Number.isFinite(number) && number >= 0 ? { value: number, unit: basis === 'regulatory_floor_area' || basis === 'rough_floor_area_estimate' ? 'm2' : 'm', basis, origin: 'user', note: null, placement_revision: placementRevision } : null
 }
 
-function Editor({ site, geometryRevision, placementRevision, frontEdge = null, rearEdge = null, streetPattern = 'unknown', onChange }: Props) {
+function Editor({ site, geometryRevision, placementRevision, frontEdge = null, rearEdge = null, streetPattern = 'unknown', sharedMode, selectedBoundary, onBoundarySelect, homeownerDefaults = false, onChange }: Props) {
   useEffect(() => { void import('./site-assumptions.css') }, [])
   const notify = useRef(onChange)
   notify.current = onChange
-  const [value, setValue] = useState(() => initialAssumptions(site, geometryRevision, placementRevision))
+  const [value, setValue] = useState(() => initialAssumptions(site, geometryRevision, placementRevision, homeownerDefaults))
   const [selectedEdge, setSelectedEdge] = useState<string | null>(null)
   const [distanceDraft, setDistanceDraft] = useState<Record<string, string>>({})
   const [separationDraft, setSeparationDraft] = useState('')
@@ -35,11 +35,12 @@ function Editor({ site, geometryRevision, placementRevision, frontEdge = null, r
     }
   }, [placementRevision, value.placement_revision])
 
+  const activeEdge = sharedMode !== undefined ? selectedBoundary ?? value.edges[0]?.id : selectedEdge
   const suggested = suggestedBoundaryRoles(value.edges, frontEdge, rearEdge, streetPattern)
   const edgeLabel = (edge: SiteAssumptions['edges'][number]) => `Edge ${edge.segment + 1}`
   const setRole = (id: string, role: EdgeRole) => setValue(previous => ({ ...previous, edges: previous.edges.map(edge => edge.id === id ? { ...edge, role: { value: role, origin: 'user', note: null } } : edge) }))
   const setFact = <K extends 'building_type' | 'existing_garden_suites' | 'principal_building_id' | 'waterfront'>(key: K, raw: SiteAssumptions[K]['value']) =>
-    setValue(previous => ({ ...previous, [key]: { value: raw, origin: 'user', note: null } }))
+    setValue(previous => ({ ...previous, [key]: key === 'existing_garden_suites' ? suiteCountFact(raw as 0 | 1 | 'two_or_more' | null) : { value: raw, origin: 'user', note: null } }))
   const setBoundaryDistance = (edgeId: string, raw: string) => {
     setDistanceDraft(previous => ({ ...previous, [edgeId]: raw }))
     setValue(previous => {
@@ -62,30 +63,34 @@ function Editor({ site, geometryRevision, placementRevision, frontEdge = null, r
   }
 
   return <section className="zsa" aria-label="Property assumptions">
-    <h3>Property details for a preliminary check</h3>
-    <p>These are your assumptions. Unknown is fine. The captured parcel and rooflines have not been checked against legal survey or building walls.</p>
+    {sharedMode === undefined && <h3>Property details for a preliminary check</h3>}
+    <p hidden={sharedMode !== undefined}>These are your assumptions. Unknown is fine. The captured parcel and rooflines have not been checked against legal survey or building walls.</p>
     <details><summary>Source and geometry details</summary><p>{value.property.source.provider} · {value.property.source.record_label} · captured {value.property.source.capture_date ?? 'date unknown'} · {value.property.source.review_status}. Geometry revision: {geometryRevision}. Rooflines are mapped outlines, not walls.</p></details>
-    <fieldset><legend>Existing property</legend>
+    <details><summary>Property facts · {value.existing_garden_suites.value === null ? 'existing suite count unknown' : value.existing_garden_suites.evidence_state === 'user_confirmed' ? 'suite count user-confirmed' : value.existing_garden_suites.value === 0 ? 'assuming none already exist' : 'assuming one or more existing'}</summary><fieldset><legend>Existing property</legend>
       <label>Existing main building <select value={value.building_type.value ?? ''} onChange={event => setFact('building_type', event.target.value === '' ? null : event.target.value as 'single_detached' | 'duplex' | 'other')}><option value="">Unknown</option><option value="single_detached">Single detached home</option><option value="duplex">Duplex</option><option value="other">Other</option></select></label>
-      <label>Existing garden suites <select id="existing-suites" value={value.existing_garden_suites.value ?? ''} onChange={event => setFact('existing_garden_suites', event.target.value === '' ? null : event.target.value === 'two_or_more' ? 'two_or_more' : Number(event.target.value) as 0 | 1)}><option value="">Unknown</option><option value="0">None known</option><option value="1">One</option><option value="two_or_more">Two or more</option></select></label>
+      <label>Existing garden suites <select id="existing-suites" value={value.existing_garden_suites.value ?? ''} onChange={event => setFact('existing_garden_suites', event.target.value === '' ? null : event.target.value === 'two_or_more' ? 'two_or_more' : Number(event.target.value) as 0 | 1)}><option value="">Not sure</option><option value="0">None</option><option value="1">One or more</option><option value="two_or_more" hidden>Two or more</option></select></label>
+      <p role="status">{value.existing_garden_suites.value === null ? 'Existing count unknown' : value.existing_garden_suites.evidence_state === 'user_confirmed' ? 'Count user-confirmed · not independently verified' : value.existing_garden_suites.value === 0 ? 'Assuming none already exist' : 'Assuming one or more already exist'}</p>
+      <label className="zsa__check"><input type="checkbox" disabled={value.existing_garden_suites.value === null} checked={value.existing_garden_suites.evidence_state === 'user_confirmed'} onChange={event => setValue(previous => ({ ...previous, existing_garden_suites: suiteCountFact(previous.existing_garden_suites.value, event.target.checked) }))} /> I confirm this count · optional, not independently verified</label>
       <label>Main building on map <select id="principal-building" value={value.principal_building_id.value ?? ''} onChange={event => setFact('principal_building_id', event.target.value || null)}><option value="">Unknown or not mapped</option>{value.observed_buildings.map((building, index) => <option key={building.id} value={building.id}>Outline {index + 1} ({building.basis})</option>)}</select></label>
       <label>Waterfront lot <select id="waterfront-lot" value={value.waterfront.value === null ? '' : String(value.waterfront.value)} onChange={event => setFact('waterfront', event.target.value === '' ? null : event.target.value === 'true')}><option value="">Unknown</option><option value="true">Yes</option><option value="false">No</option></select></label>
       <p className="zsa__hint">Selecting a mapped roofline identifies a possible main building; it does not turn that roofline into wall geometry.</p>
     </fieldset>
-    <fieldset><legend>Parcel edge roles</legend>
+    </details>
+    <fieldset hidden={sharedMode !== undefined && sharedMode !== 'rear'}><legend>Parcel edge roles</legend>
       <p>Choose each edge’s role only if you know it. Street access and legal lot lines can change the answer, especially at corners and through lots.</p>
       {Object.keys(suggested).length > 0 && <p role="status">For this ordinary four-edge single-street sketch, the selected edge suggests an opposite rear and two sides. These are editable assumptions, not verified legal roles.</p>}
       {value.edges.length === 0 && <p role="status">This parcel outline cannot be divided into supported edges. Record roles as unknown and use a reviewed plan.</p>}
       {value.edges.some(edge => edge.ring > 0) && <p role="status">This outline has inner rings. Their roles need manual review.</p>}
-      <div className="zsa__edge-list">{value.edges.map(edge => <div key={edge.id} className={selectedEdge === edge.id ? 'zsa__edge-row zsa__edge-row--selected' : 'zsa__edge-row'}>
-        <button type="button" onClick={() => setSelectedEdge(edge.id)} aria-pressed={selectedEdge === edge.id}>{edge.ring === 0 ? edgeLabel(edge) : `Inner ring ${edge.ring}, edge ${edge.segment + 1}`}</button>
-        <label>Role <select id={edge === value.edges[0] ? 'boundary-roles' : undefined} aria-label={`${edgeLabel(edge)} role`} value={edge.role.value ?? 'unknown'} onChange={event => setRole(edge.id, event.target.value as EdgeRole)}>{Object.entries(roleNames).map(([id, name]) => <option key={id} value={id}>{name}</option>)}</select></label>
+      {sharedMode !== undefined && <div className="boundary-map-buttons">{value.edges.map(edge => <button key={edge.id} type="button" aria-pressed={activeEdge === edge.id} onClick={() => onBoundarySelect?.(edge.id)}>{edgeLabel(edge)}</button>)}</div>}
+      <div className="zsa__edge-list">{value.edges.map(edge => <div key={edge.id} hidden={sharedMode !== undefined && activeEdge !== edge.id} className={activeEdge === edge.id ? 'zsa__edge-row zsa__edge-row--selected' : 'zsa__edge-row'}>
+        {sharedMode === undefined ? <button type="button" onClick={() => setSelectedEdge(edge.id)} aria-pressed={activeEdge === edge.id}>{edge.ring === 0 ? edgeLabel(edge) : `Inner ring ${edge.ring}, edge ${edge.segment + 1}`}</button> : <strong>{edgeLabel(edge)}</strong>}
+        <label>Role <select id={activeEdge ? edge.id === activeEdge ? 'boundary-roles' : undefined : edge === value.edges[0] ? 'boundary-roles' : undefined} aria-label={`${edgeLabel(edge)} role`} value={edge.role.value ?? 'unknown'} onChange={event => setRole(edge.id, event.target.value as EdgeRole)}>{Object.entries(roleNames).map(([id, name]) => <option key={id} value={id}>{name}</option>)}</select></label>
         {suggested[edge.id] && <span>Suggested: {roleNames[suggested[edge.id]]}; choose a role above only if you can support it.</span>}
         <details><summary>Use my measurement</summary><label>Wall to legal lot line (m), if measured <MeasurementInput dimension="length" type="number" min="0" step="any" aria-label={`${edgeLabel(edge)} wall to lot line in metres`} value={distanceDraft[edge.id] ?? ''} onChange={event => setBoundaryDistance(edge.id, event.target.value)} placeholder="Unknown" /></label><p>Your wall-based value replaces this edge’s approximate comparison only. It is unverified and stays distinct from the captured edge-to-nominal-rectangle distance.</p>{distanceDraft[edge.id] && !value.measurements.boundary[edge.id] && <span className="zsa__error">Enter a nonnegative number or leave blank.</span>}</details>
       </div>)}</div>
       <details><summary>How should I identify edges?</summary><p>Use a survey or reliable property plan and identify street edges first. A long edge is not automatically the front. If a corner, through lot, triangle, easement or unusual boundary makes the roles unclear, leave them unknown for review.</p></details>
     </fieldset>
-    <fieldset><legend>Measurements you can supply</legend>
+    <details><summary>Detailed measurements</summary><fieldset><legend>Measurements you can supply</legend>
       <label className="zsa__check"><input id="separation-measurement-choice" type="checkbox" checked={manualBasis} onChange={event => { setManualBasis(event.target.checked); if (!event.target.checked) { setSeparationDraft(''); setValue(previous => ({ ...previous, measurements: { ...previous.measurements, principal_separation: null } })) } }} /> I have a wall-to-wall separation measurement</label>
       {manualBasis && <><label>Wall to wall separation (m) <input inputMode="decimal" value={separationDraft} onChange={event => setSpecialMeasurement('principal_separation', event.target.value)} placeholder="Unknown" /></label><p className="zsa__hint">Roofline gaps are not surveyed wall-to-wall separation. The candidate clause's endpoints still need source review.</p></>}
       <div className="zsa__field-label"><label htmlFor="zsa-floor-area">Floor area (m²)</label><button type="button" className="zsa__info" aria-label="About City of Victoria floor area measurement" aria-expanded={floorHelpOpen} aria-controls={floorHelpId} onClick={() => setFloorHelpOpen(open => !open)}>i</button></div>
@@ -95,7 +100,8 @@ function Editor({ site, geometryRevision, placementRevision, frontEdge = null, r
       {areaDraft.trim() && <fieldset className="zsa__area-basis"><legend>What is this number based on?</legend><label><input type="radio" name="zsa-area-basis" checked={areaBasis === 'rough_floor_area_estimate'} onChange={() => changeAreaBasis('rough_floor_area_estimate')} /> Rough interior estimate · not used for candidate area check</label><label><input type="radio" name="zsa-area-basis" checked={areaBasis === 'regulatory_floor_area'} onChange={() => changeAreaBasis('regulatory_floor_area')} /> Measured to the candidate Victoria definition above · unverified</label></fieldset>}
       {((separationDraft && !value.measurements.principal_separation) || (areaDraft && !value.measurements.floor_area)) && <p className="zsa__error">Measurements must be nonnegative numbers; invalid entries remain unknown.</p>}
     </fieldset>
-    <p className="zsa__hint">Changing the property, geometry or placement requires fresh measurements. No zoning result is produced here.</p>
+    </details>
+    <p hidden={sharedMode !== undefined} className="zsa__hint">Changing the property, geometry or placement requires fresh measurements. No zoning result is produced here.</p>
   </section>
 }
 

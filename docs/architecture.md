@@ -298,3 +298,24 @@ Three retained Victoria parcels now connect to a placement sketch and stateless 
 API. Users can drag/rotate a supplied rectangle and inspect approximate partial results.
 See [integration evidence and next round](integration-placement-ui.md). This is geometric exploration,
 not accepted zoning evaluation. #139 and #147 retain their outstanding criteria.
+
+## Homeowner placement workspace
+
+The Model 300 journey uses one placement map with Move unit, Mark street side,
+and Adjust boundaries tabs. Tab changes preserve placement and map view. The
+selected map edge and its boundary form share state; checklist actions open the
+relevant tab and focus the correction control. Detailed measurements and evidence
+remain expandable in that workspace. Street-side suggestions require a supported
+four-edge boundary and an explicit single-street assumption.
+
+Existing suite count initially assumes none, with explicit journey-default
+provenance. Homeowners can choose none, one or more, or not sure and optionally
+confirm their answer. Confirmation records what the homeowner said, without
+independent verification. These states survive API evaluation and technical export;
+unknown prerequisites still prevent a favourable result. Height, legal boundary
+status, variance and measurement definitions receive no favourable default.
+
+The map-adjacent summary leads with the decision and next action. A worthwhile
+provider enquiry requires supporting coverage beyond containment and checked
+counts, including height and siting checks; incomplete coverage remains visible.
+This UI does not publish accepted zoning data or establish site applicability.

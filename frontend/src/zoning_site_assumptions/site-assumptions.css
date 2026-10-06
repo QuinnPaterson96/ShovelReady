@@ -21,3 +21,8 @@
 .zsa__area-basis label { flex-direction: row; align-items: center; gap: .5rem; }
 .zsa__area-basis input[type="radio"] { width: 1.2rem; height: 1.2rem; min-height: 0; }
 @media (max-width: 650px) { .zsa__edge-row { grid-template-columns: 1fr; } }
+
+.boundary-map-modes [role="tab"][aria-selected="true"] { background: var(--primary); color: var(--surface); border-color: var(--primary); font-weight: 700; }
+.boundary-map-modes [role="tab"] { min-height: 44px; }
+.boundary-map-tools .zsa { margin-top: .5rem; padding: .5rem; box-shadow: none; }
+.zsa [hidden], .occupied-controls[hidden], .occupied-map-actions[hidden] { display: none; }

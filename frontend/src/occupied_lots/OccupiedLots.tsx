@@ -10,7 +10,7 @@ import { parseResult, parseSites, path, points } from './contract'
 import { overlapFinding } from './observations'
 import type { Case, Check, Result } from './contract'
 import ScenarioHandoff from '../scenario_handoff/ScenarioHandoff'
-import { BoundaryMapTools, BoundaryOverlay, type BoundaryMapInteraction } from '../zoning_site_assumptions/BoundaryMapTools'
+import { BoundaryActionTabs, BoundaryMapTools, BoundaryOverlay, type BoundaryMapInteraction } from '../zoning_site_assumptions/BoundaryMapTools'
 
 type Placement = { x: string; y: string; width: string; depth: string; angle: string }
 const number = (value: string) => value.trim() !== '' && Number.isFinite(Number(value)) ? Number(value) : null
@@ -34,7 +34,7 @@ const checkText = (check: Check, selected?: Case) => {
     default: return `${check.kind.replace(/_/g, ' ')}: ${check.relation ?? check.status}`
   }
 }
-function Map({ selected, placement, onMove, nudgeMetres, conflictIds, boundaryInteraction, showBoundaryTools = true }: { showBoundaryTools?: boolean; selected: Case; placement: Placement; onMove: (x: number, y: number) => void; nudgeMetres: number; conflictIds?: Set<string>; boundaryInteraction?: BoundaryMapInteraction }) {
+function Map({ selected, placement, onMove, nudgeMetres, conflictIds, boundaryInteraction, placementSummary, showBoundaryTools = true }: { placementSummary?: ReactNode; showBoundaryTools?: boolean; selected: Case; placement: Placement; onMove: (x: number, y: number) => void; nudgeMetres: number; conflictIds?: Set<string>; boundaryInteraction?: BoundaryMapInteraction }) {
   const svg = useRef<SVGSVGElement>(null)
   const drag = useRef(false)
   const suppressClick = useRef(false)
@@ -56,7 +56,9 @@ function Map({ selected, placement, onMove, nudgeMetres, conflictIds, boundaryIn
     onMove(Number(p.x.toFixed(2)), Number((-p.y).toFixed(2)))
   }
   return <div className="occupied-map-panel" id={boundaryInteraction ? 'placement-map' : undefined}>
-    <div className="occupied-map-heading"><h3>Place the footprint</h3><p className="metadata">Click the map to place its centre. Drag the copper rectangle to adjust it.</p></div>
+    {boundaryInteraction && <BoundaryActionTabs interaction={boundaryInteraction} />}
+    <div id="placement-action-panel" role={boundaryInteraction ? 'tabpanel' : undefined} aria-labelledby={boundaryInteraction ? `placement-action-${boundaryInteraction.mode}` : undefined}>
+    <div className="occupied-map-heading"><h3>{boundaryInteraction?.mode === 'front' ? 'Mark the street side' : boundaryInteraction?.mode === 'rear' ? 'Adjust boundary facts' : 'Place the footprint'}</h3><p className="metadata">{boundaryInteraction && boundaryInteraction.mode !== 'place' ? 'Select a numbered edge on the map or below. Your placement stays in position.' : 'Click the map to place its centre. Drag the copper rectangle to adjust it.'}</p></div>
     <svg ref={svg} className="occupied-map" role="img" tabIndex={0} aria-label={boundaryInteraction?.mode !== 'place' && boundaryInteraction ? `Boundary selection map of ${selected.label}. Choose a numbered edge or use the buttons above. The model cannot move in this mode.` : `Approximate map of ${selected.label}. Click to place. Arrow keys move the rectangle ${nudgeMetres} ${nudgeMetres === 1 ? 'metre' : 'metres'}. Parcel and Roof 1 through Roof ${site.buildings.length} are captured outlines.`} viewBox={view}
       onClick={e => { if (boundaryInteraction && boundaryInteraction.mode !== 'place') return; if (suppressClick.current) { suppressClick.current = false; return }; move(e.clientX, e.clientY) }}
       onKeyDown={e => {
@@ -85,7 +87,9 @@ function Map({ selected, placement, onMove, nudgeMetres, conflictIds, boundaryIn
       {boundaryInteraction && <BoundaryOverlay interaction={boundaryInteraction} />}
     </svg>
     <p className="occupied-map-legend"><span>Teal · captured parcel</span><span>Purple · captured rooflines, not walls</span>{conflictIds && <span>Red dashed outline · current conflict</span>}<span>Copper · your nominal footprint</span><span>North ↑ · {site.projected_metre_crs}</span></p>
+    {placementSummary && <div className="builder-map-summary">{placementSummary}</div>}
     {showBoundaryTools && boundaryInteraction && <BoundaryMapTools interaction={boundaryInteraction} />}
+    </div>
   </div>
 }
 
@@ -259,14 +263,13 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
       {compactPlacement && <div className="occupied-compact-summary"><strong>{model ? `${model.name} · ` : 'Manual footprint · '}{show(width)} wide × {show(depth)} long</strong><span>Nominal exterior rectangle · {dimensionOrigin('width').toLowerCase()} width, {dimensionOrigin('depth').toLowerCase()} length.</span><span>{source?.provider} · {source?.record_label} · captured {readableDate(source?.capture_date)} · {source?.review_status}. {publicSourceUrl(source?.reference) && <a href={publicSourceUrl(source?.reference)!} target="_blank" rel="noreferrer">Parcel source</a>}</span></div>}
       <div className="occupied-workspace">
         <div className="occupied-map-column">
-          <Map showBoundaryTools={!compactPlacement} selected={selected} placement={placement} nudgeMetres={nudgeMetres} conflictIds={compactPlacement ? conflictIds : undefined} onMove={(x, y) => changePlacement({ x: String(x), y: String(y) })} boundaryInteraction={boundaryInteraction} />
-          {compactPlacement && boundaryInteraction && <details><summary>Boundary roles and map tools</summary><BoundaryMapTools interaction={boundaryInteraction} /></details>}
-          <div className="occupied-map-actions"><button onClick={placeAtCentre}>{compactPlacement ? 'Place or reset at parcel centre' : 'Recenter rectangle on parcel'}</button>
+          <Map placementSummary={placementSummary} showBoundaryTools selected={selected} placement={placement} nudgeMetres={nudgeMetres} conflictIds={compactPlacement ? conflictIds : undefined} onMove={(x, y) => changePlacement({ x: String(x), y: String(y) })} boundaryInteraction={boundaryInteraction} />
+          <div className="occupied-map-actions" hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}><button onClick={placeAtCentre}>{compactPlacement ? 'Place or reset at parcel centre' : 'Recenter rectangle on parcel'}</button>
             <button disabled={number(placement.x) === null && number(placement.y) === null} onClick={() => changePlacement({ x: '', y: '' })}>Clear placement</button></div>
-          <p className="metadata">Recenter uses the parcel drawing's bounding-box centre as an explicit sketch starting point. It does not search for a suitable location.</p>
+          <details><summary>About the starting position</summary><p>Recenter uses the parcel drawing's bounding-box centre as a sketch starting point. It does not search for a suitable location.</p></details>
         </div>
         <div className="occupied-side">
-          <div className="occupied-controls">
+          <div className="occupied-controls" hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}>
             <details className="occupied-model-settings" open={!compactPlacement ? true : undefined}><summary>{compactPlacement ? 'Details and edit dimensions' : 'Set the nominal footprint'}</summary>
             <label htmlFor="occupied-model">Prefab model or manual dimensions</label><select id="occupied-model" value={modelId} onChange={e => chooseModel(e.target.value)}>
               {!allowedModelIds && <option value="">Manual nominal footprint</option>}{allowedModels.map(m => <option key={m.model_id} value={m.model_id}>{m.provider} · {m.name}</option>)}</select>
@@ -308,10 +311,9 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
             <button className="sr-primary" disabled={!valid || !assumptionsValid || assessing} onClick={() => void assess()}>{assessing ? 'Checking…' : assessmentError ? 'Retry placement check' : 'Recheck placement'}</button>
             {assessmentError && <p role="alert">{assessmentError} Edit the sketch or try again; no result is shown.</p>}
           </div>
-          {placementSummary && <div className="builder-map-summary">{placementSummary}</div>}
           {compactPlacement ? result && (observedConflicts.length > 0 || observationIncomplete || comparisons.some(c => c.comparison === null)) && <div className={`placement-check placement-check--${observedConflicts.length ? 'conflict' : 'unknown'}`} role="alert">
             <strong>{observedConflicts.length ? 'Conflict at this position' : 'Placement could not be fully checked'}</strong>
-            <p>{observedConflicts.length ? `${crossesParcel ? 'The unit crosses or touches the mapped parcel boundary. ' : ''}${overlapsRoof ? 'The unit overlaps or touches a mapped roofline. ' : ''}Move the unit on the map and recheck. This finding applies to this position only.` : 'Some mapped geometry or your comparison could not be checked. Review How we checked and try another position.'} Approximate map; legal siting remains unassessed.</p>
+            <p>{observedConflicts.length ? `${crossesParcel ? 'The unit crosses or touches the mapped parcel boundary. ' : ''}${overlapsRoof ? 'The unit overlaps or touches a mapped roofline. ' : ''}Move the unit on the map and recheck. This finding applies to this position only.` : 'Some mapped geometry or your comparison could not be checked. Review How we checked and try another position.'}</p>
           </div> : <div className={`placement-check placement-check--${result ? geometryTone : 'unknown'}`} role="status">
             <strong><span aria-hidden="true">{result ? geometryTone === 'conflict' ? '✕ ' : geometryTone === 'clear' ? '✓ ' : '… ' : '… '}</span>{result ? geometryTone === 'conflict' ? 'Observed geometry conflict' : geometryTone === 'clear' ? 'No observed geometry conflict' : 'Clearance or geometry needs review' : assessing ? 'Checking placement…' : assessmentError ? 'Check unavailable' : 'Place or edit the rectangle for an automatic check'}</strong>
             <p>Approximate captured geometry only. Zoning legality, other obstructions and permit eligibility remain unassessed.</p>

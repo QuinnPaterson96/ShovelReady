@@ -38,7 +38,7 @@ export function BuilderJourneyNav({ completion }: { completion: BuilderJourneyCo
           </span>
         </a>
       })}
-      <small>Checks mark completed journey steps, not site feasibility or permit approval.</small>
+      <small>Ticks show completed steps. Placement findings appear beside the map.</small>
     </nav>
   </aside>
 }

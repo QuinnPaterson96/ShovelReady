@@ -60,8 +60,8 @@ export function PlacementScenarios({ assumptions, request, result, busy, error, 
       })}</ul>
       <p>Captured geometry is approximate. A street-facing edge is a scenario clue, not a legal front lot line. Full values and every scenario remain in technical evidence.</p>
       {result && <TechnicalDetails title="Exact scenario measurements, source and assignments · copyable"><textarea readOnly aria-label="Complete approximate scenario evidence" rows={12} value={JSON.stringify({ request, result }, null, 2)} /></TechnicalDetails>}
-    {result?.status === 'clarify' && <div className="placement-scenarios__choice"><p>Select a possible street-facing or rear edge on the placement map if you know it. The map pauses model movement while selecting. “Not sure” remains available.</p><button type="button" onClick={() => { onBoundaryMode('front'); document.getElementById('placement-map')?.scrollIntoView({ block: 'center' }) }}>Choose on placement map</button></div>}
-    {boundaryMode !== 'place' && <p>Boundary selection is active on the placement map. Choose “Move model” there to resume placement.</p>}
+    {result?.status === 'clarify' && <div className="placement-scenarios__choice"><p>Select a possible street-facing or rear edge on the placement map if you know it. The map pauses model movement while selecting. “Not sure” remains available.</p><button type="button" onClick={() => { onBoundaryMode('front'); requestAnimationFrame(() => { const tab = document.getElementById('placement-action-front'); tab?.scrollIntoView({ block: 'center' }); tab?.focus() }) }}>Choose on placement map</button></div>}
+    {boundaryMode !== 'place' && <p>Boundary selection is active on the placement map. Choose “Move unit” there to resume placement.</p>}
     <p className="placement-scenarios__notice">This is a bounded approximate distance screen. Missing front, rear-yard, height and site-specific checks prevent a complete zoning pass.</p>
   </section>
 }

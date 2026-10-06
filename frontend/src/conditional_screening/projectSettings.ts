@@ -1,6 +1,6 @@
 import type { Pathway } from './model'
 
-export type SettingOrigin = 'journey_default' | 'user' | 'municipal_lookup' | 'derived' | 'unknown'
+export type SettingOrigin = 'journey_default' | 'user' | 'user_confirmed' | 'municipal_lookup' | 'derived' | 'unknown'
 export type MunicipalSource = { provider: string; record_label: string; url: string; capture_date: string | null; review_status: string; locator: string; source_revision?: string | null; currentness_limitations?: string[] }
 export type SettingEvidence = { value: string | boolean | null; origin: SettingOrigin; source: MunicipalSource | null; note: string | null }
 export type ProposalEvidence = { [K in keyof Pathway]: SettingEvidence }
@@ -45,7 +45,7 @@ export function applyMappedZoning(settings: ProjectSettings, mapped: MappedZonin
   const instrument = mapped.instrument === 'Zoning Bylaw 2018 (No. 18-072)' ? 'Zoning Bylaw 2018' : 'other'
   let next = cleared
   for (const [key, value] of [['confirmed_zone', zone], ['confirmed_instrument', instrument]] as const) {
-    if (next.evidence[key].origin === 'user') continue
+    if (next.evidence[key].origin === 'user' || next.evidence[key].origin === 'user_confirmed') continue
     next = { proposal: { ...next.proposal, [key]: value }, evidence: { ...next.evidence,
       [key]: { value, origin: 'municipal_lookup', source: mapped.source, note: `Mapped ${mapped.zone} under ${mapped.instrument}. ${mapped.reason}; unreviewed site applicability.` } } }
   }
@@ -57,4 +57,11 @@ export function withFloorAreaBasis(settings: ProjectSettings, basis: 'regulatory
   return { proposal: { ...settings.proposal, floor_area_definition_acknowledged: value }, evidence: { ...settings.evidence,
     floor_area_definition_acknowledged: value === null ? unknown() : { value: true, origin: 'derived', source: null,
       note: 'Derived from the user choosing a measured Victoria floor-area basis for the entered area; applicability unreviewed.' } } }
+}
+
+export function confirmProjectSetting(settings: ProjectSettings, key: 'proposed_use' | 'foundation_attached', confirmed: boolean): ProjectSettings {
+  const item = settings.evidence[key]
+  if (item.value === null) return settings
+  return { ...settings, evidence: { ...settings.evidence, [key]: { ...item,
+    origin: confirmed ? 'user_confirmed' : 'user', note: confirmed ? 'User-confirmed scenario; not independently verified.' : 'Unconfirmed scenario assumption.' } } }
 }

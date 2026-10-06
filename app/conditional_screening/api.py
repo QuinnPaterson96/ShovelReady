@@ -27,8 +27,24 @@ class Strict(BaseModel):
 
 class UserFact(Strict):
     value: str | bool | int | None
-    origin: Literal["user"]
+    origin: Literal["user", "journey_default"]
+    evidence_state: Literal["assumed", "user_confirmed", "unknown"] | None = None
     note: str | None = Field(default=None, max_length=1000)
+
+
+    @model_validator(mode="after")
+    def evidence(self):
+        if self.evidence_state == "unknown" and self.value is not None:
+            raise ValueError("unknown fact cannot have a value")
+        if self.evidence_state == "user_confirmed" and (
+            self.origin != "user" or self.value is None
+        ):
+            raise ValueError("confirmation needs a user value")
+        if self.origin == "journey_default" and (
+            self.evidence_state != "assumed" or self.value is None
+        ):
+            raise ValueError("journey default needs an explicit assumption")
+        return self
 
 
 class Edge(Strict):
@@ -100,6 +116,10 @@ class Assumptions(Strict):
     def references(self):
         if self.building_type.value not in (None, "single_detached", "duplex", "other"):
             raise ValueError("invalid building type")
+        other_facts = (self.building_type, self.principal_building_id, self.waterfront,
+                       *(edge.role for edge in self.edges))
+        if any(fact.origin == "journey_default" for fact in other_facts):
+            raise ValueError("only existing suite count supports a homeowner default")
         count = self.existing_garden_suites.value
         if not (count is None or type(count) is int and count in (0, 1)
                 or count == "two_or_more"):
@@ -147,7 +167,9 @@ class Proposal(Strict):
 
 class SettingEvidence(Strict):
     value: str | bool | None
-    origin: Literal["journey_default", "user", "municipal_lookup", "derived", "unknown"]
+    origin: Literal[
+        "journey_default", "user", "user_confirmed", "municipal_lookup", "derived", "unknown"
+    ]
     source: Source | None = None
     note: str | None = Field(default=None, max_length=1000)
 
@@ -176,6 +198,10 @@ class ProposalEvidence(Strict):
             item = getattr(self, name)
             if item.value != getattr(proposal, name):
                 raise ValueError(f"{name} provenance does not match proposal")
+            if item.origin == "journey_default" and name not in (
+                "proposed_use", "foundation_attached"
+            ):
+                raise ValueError("this setting cannot acquire a favourable default")
             if item.origin == "municipal_lookup" and name not in (
                 "confirmed_zone", "confirmed_instrument"
             ):
@@ -228,7 +254,8 @@ def _source(packet: dict, rule: dict) -> Source:
 def _fact(name: str, value: bool | None, note: str | None = None,
           evidence: SettingEvidence | None = None) -> Fact:
     origins = {"journey_default": "journey_default", "user": "user_assumption",
-               "municipal_lookup": "municipal_observation", "derived": "derived_assumption",
+               "user_confirmed": "user_confirmed", "municipal_lookup": "municipal_observation",
+               "derived": "derived_assumption",
                "unknown": "user_assumption"}
     return Fact(
         id=name,
@@ -356,7 +383,13 @@ def _assemble(body: ApiRequest) -> Request:
             status="known" if total is not None else "unknown",
             quantity={"value": total, "unit": "count"} if total is not None else None,
             measurement_definition=count["measurement_basis"],
-            origin="user_assumption",
+            origin=(
+                "journey_default"
+                if assumptions.existing_garden_suites.origin == "journey_default"
+                else "user_confirmed"
+                if assumptions.existing_garden_suites.evidence_state == "user_confirmed"
+                else "user_assumption"
+            ),
             note=(
                 "Existing suite count plus one proposed suite; "
                 "two_or_more uses a lower bound of three. "

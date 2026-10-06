@@ -199,3 +199,45 @@ def test_no_edges_does_not_establish_no_flanking_street():
     assert response.status_code == 200, response.text
     checks = {check["rule"]["fact_id"]: check for check in response.json()["checks"]}
     assert checks["flanking_presence"]["status"] == "needs_information"
+
+
+@pytest.mark.parametrize("state,origin,value,expected", [
+    ("assumed", "journey_default", 0, "meets_under_assumptions"),
+    ("user_confirmed", "user", 0, "meets_under_assumptions"),
+    ("assumed", "user", 1, "apparent_conflict_under_assumptions"),
+    ("unknown", "user", None, "needs_information"),
+])
+def test_homeowner_count_evidence_survives_http_evaluation(state, origin, value, expected):
+    # Independent count rule: one proposed + zero existing = 1; +one existing = 2.
+    # A confirmation changes provenance, never legal acceptance or source review.
+    body = payload()
+    fact = {"value": value, "origin": origin, "evidence_state": state, "note": "Unverified"}
+    body["assumptions"]["existing_garden_suites"] = fact
+    response = post(body)
+    assert response.status_code == 200, response.text
+    data = response.json()
+    assert data["request"]["site_assumptions"]["existing_garden_suites"] == fact
+    count = next(c for c in data["checks"] if c["rule"]["kind"] == "count_max")
+    assert count["status"] == expected
+    assert count["fact"]["origin"] == (
+        "user_confirmed" if state == "user_confirmed" else
+        "journey_default" if origin == "journey_default" else "user_assumption"
+    )
+    if value == 0:
+        body["proposal"]["legal_lot_confirmed"] = None
+        unresolved = post(body).json()
+        count = next(c for c in unresolved["checks"] if c["rule"]["kind"] == "count_max")
+        assert count["status"] == "needs_information"
+
+
+def test_evidence_states_cannot_forge_confirmation_or_favourable_legal_defaults():
+    body = payload()
+    body["assumptions"]["existing_garden_suites"] = {
+        "value": 0, "origin": "journey_default", "evidence_state": "user_confirmed"
+    }
+    assert post(body).status_code == 422
+    body["assumptions"]["existing_garden_suites"] = user(0)
+    body["assumptions"]["edges"][0]["role"] = {
+        "value": "front", "origin": "journey_default", "evidence_state": "assumed"
+    }
+    assert post(body).status_code == 422
