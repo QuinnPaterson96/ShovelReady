@@ -1,0 +1,21 @@
+.zsa { color: var(--ink); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-card); padding: 1rem; }
+.zsa p { max-width: 72ch; }
+.zsa fieldset { border: 1px solid var(--border); border-radius: var(--radius-sm); margin: 1rem 0; padding: 1rem; }
+.zsa legend { font-weight: 700; padding: 0 .3rem; }
+.zsa label { display: flex; flex-direction: column; gap: .35rem; margin: .6rem 0; }
+.zsa select, .zsa input:not([type="checkbox"]), .zsa button { color: var(--ink); background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); min-height: 44px; padding: .45rem .6rem; font: inherit; }
+.zsa :is(select, input, button, summary):focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.zsa summary { cursor: pointer; min-height: 44px; padding: .6rem 0; }
+.zsa__hint { color: var(--ink-muted); }
+.zsa__error { color: var(--status-conflict-text, #8b2e25); }
+.zsa__map { display: block; width: min(100%, 600px); height: 280px; background: var(--surface-subtle); border: 1px solid var(--border-strong); margin: .8rem 0; }
+.zsa__edge { stroke: var(--primary); stroke-width: 1.2; cursor: pointer; }
+.zsa__edge--selected { stroke: var(--copper); stroke-width: 2.2; }
+.zsa__edge-label { fill: var(--ink); font-size: 2px; pointer-events: none; }
+.zsa__edge-list { display: grid; gap: .6rem; }
+.zsa__edge-row { display: grid; grid-template-columns: minmax(7rem, 1fr) minmax(8rem, 1fr) minmax(12rem, 2fr); gap: .6rem; align-items: end; padding: .6rem; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+.zsa__edge-row--selected { border-color: var(--copper); background: var(--copper-soft); }
+.zsa__edge-row label { margin: 0; }
+.zsa__check { flex-direction: row !important; align-items: center; }
+.zsa__check input { width: 1.25rem; height: 1.25rem; }
+@media (max-width: 650px) { .zsa__edge-row { grid-template-columns: 1fr; } .zsa__map { height: 220px; } }
