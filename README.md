@@ -266,3 +266,11 @@ Three retained Victoria parcels now connect to a placement sketch and stateless 
 API. Users can drag/rotate a supplied rectangle and inspect approximate partial results.
 See [integration evidence and next round](docs/integration-placement-ui.md). This is geometric exploration,
 not accepted zoning evaluation. #139 and #147 retain their outstanding criteria.
+
+
+The Model 300 journey now includes labelled probable area/height estimates,
+editable boundary offsets, provisional largest-outline separation, automatic
+street-mark completion on advancing, and a bounded City heritage/planning map scan.
+Empty searched layers are scoped probable findings; permit documents, title and
+servicing remain review gaps. See [architecture](docs/architecture.md) for defaults,
+provenance and uncertainty handling. These features do not publish accepted data.

@@ -2,6 +2,7 @@
 
 from copy import deepcopy
 
+import pytest
 from fastapi.testclient import TestClient
 
 from app.main import create_app
@@ -86,6 +87,9 @@ def test_pga_additional_checks_use_rear_yard_denominator_and_keep_roofline_basis
     assert next(c for c in screen(body)["additional_checks"]
                 if c["id"] == "height")["status"] == "conflict"
     body["assumptions"]["principal_building_id"]["value"] = None
+    assert next(c for c in screen(body)["additional_checks"]
+                if c["id"] == "separation")["status"] == "probable"
+    body["geometry"]["buildings"].append({**deepcopy(house), "id": "same-size-outline"})
     assert next(c for c in screen(body)["additional_checks"]
                 if c["id"] == "separation")["status"] == "unknown"
     body["proposal"]["confirmed_zone"] = "other"
@@ -208,3 +212,56 @@ def test_user_wall_measurement_changes_comparison_but_preserves_captured_distanc
         0.59, "user_wall_to_lot_line", False)
     body["assumptions"]["measurements"]["boundary"][edge_id]["basis"] = "regulatory_floor_area"
     assert screen(body)["status"] == "unresolved"
+
+
+def test_buffer_estimates_and_front_override_preserve_exact_evidence():
+    # Independent arithmetic: 40*1.1=44 m2 and 3.2*1.1+.30=3.82m.
+    # Unknown installed grade remains a probable estimate, never a measured pass.
+    body = request((10, 16))
+    body["proposal"] = {"confirmed_zone": "GRD-1",
+                        "confirmed_instrument": "Zoning Bylaw 2018"}
+    body["street_pattern"] = "single"
+    body["street_edge_id"] = "geom:ring-0:segment-0"
+    body["additional_inputs"] = {"nominal_footprint_area_m2": 40.0,
+                                 "advertised_height_m": 3.2}
+    checks = {c["id"]: c for c in screen(body)["additional_checks"]}
+    assert checks["area"]["observed"] == 44
+    assert checks["height"]["observed"] == pytest.approx(3.82)
+    assert checks["area"]["status"] == checks["height"]["status"] == "probable"
+    assert checks["front"]["observed"] == 15
+    assert checks["front"]["status"] == "probable"
+    body["assumptions"]["measurements"]["boundary"]["geom:ring-0:segment-0"] = {
+        "value": 3.99, "unit": "m", "basis": "proposed_wall_to_lot_line",
+        "origin": "user", "note": None, "placement_revision": "place-1"}
+    result = screen(body)
+    front = next(c for c in result["additional_checks"] if c["id"] == "front")
+    assert (front["observed"], front["status"]) == (3.99, "conflict")
+    assert result["edge_distances_m"]["geom:ring-0:segment-0"] == 15
+    body["assumptions"]["measurements"]["floor_area"] = {
+        "value": 70.0, "unit": "m2", "basis": "regulatory_floor_area",
+        "origin": "user", "note": None, "placement_revision": "place-1"}
+    area = next(c for c in screen(body)["additional_checks"] if c["id"] == "area")
+    assert (area["observed"], area["status"]) == (70, "conflict")
+    body["assumptions"]["measurements"]["floor_area"] = None
+    body["additional_inputs"].update(nominal_footprint_area_m2=56.0, advertised_height_m=4.0)
+    checks = {c["id"]: c for c in screen(body)["additional_checks"]}
+    assert checks["area"]["status"] == checks["height"]["status"] == "unknown"
+    body["additional_inputs"]["height_from_average_grade_m"] = 4.200001
+    assert next(c for c in screen(body)["additional_checks"]
+                if c["id"] == "height")["status"] == "conflict"
+
+
+def test_completed_corner_marks_limit_coherent_front_and_flanking_choices():
+    # A 20m square has streets on south/east, so only those fronts are plausible.
+    body = request()
+    edges = body["assumptions"]["edges"]
+    body["assumptions"]["street_adjacency"] = {
+        "edge_ids": [edges[0]["id"], edges[1]["id"]], "all_marked": True,
+        "origin": "user", "completion_method": "advance"}
+    result = screen(body)
+    assert len(result["scenarios"]) == 2
+    assert {s["front_edge_id"] for s in result["scenarios"]} == {edges[0]["id"], edges[1]["id"]}
+    for scenario in result["scenarios"]:
+        assert sum(c["role"] == "flanking_street" for c in scenario["checks"]) == 1
+    body["assumptions"]["street_adjacency"]["all_marked"] = False
+    assert len(screen(body)["scenarios"]) == 16

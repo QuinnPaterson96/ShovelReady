@@ -2,10 +2,21 @@ import { useState } from 'react'
 import { MeasurementInput } from '../MeasurementInput'
 import type { ScenarioResult } from './scenarios'
 
-export function AdditionalInputs({ onHeight, result }: { onHeight: (height: number | null) => void; result: ScenarioResult | null }) {
+export function AdditionalInputs({ onHeight, result, buffers, onBuffers, foundation, onFoundation }: {
+  onHeight: (height: number | null) => void; result: ScenarioResult | null
+  buffers: { area: number; height: number }; onBuffers: (value: { area: number; height: number }) => void
+  foundation: string | null; onFoundation: (value: string | null) => void
+}) {
   const [height, setHeight] = useState('')
   return <section className="project-details" aria-label="Additional site checks">
     <h3>Complete the remaining checks</h3>
+    <div id="scouting-area-buffer" tabIndex={-1}>
+      <h4>Preliminary measurement allowances</h4>
+      <p>Floor area uses the nominal footprint or your rough area estimate plus a buffer. Height uses advertised height plus a buffer and foundation allowance. These estimates do not establish legal measurements.</p>
+      <label>Area buffer (%) <MeasurementInput dimension="area" type="number" min="0" max="100" value={String(buffers.area)} onChange={event => { const value = Number(event.target.value); if (event.target.value.trim() && Number.isFinite(value) && value >= 0 && value <= 100) onBuffers({ ...buffers, area: value }) }} /></label>
+      <label>Height buffer (%) <MeasurementInput dimension="length" type="number" min="0" max="100" value={String(buffers.height)} onChange={event => { const value = Number(event.target.value); if (event.target.value.trim() && Number.isFinite(value) && value >= 0 && value <= 100) onBuffers({ ...buffers, height: value }) }} /></label>
+      <label>Foundation allowance (m) <MeasurementInput dimension="length" type="number" min="0" step="any" value={foundation ?? ''} onChange={event => onFoundation(event.target.value.trim() && Number.isFinite(Number(event.target.value)) && Number(event.target.value) >= 0 ? event.target.value : null)} /></label>
+    </div>
     <label htmlFor="scouting-height">Height (m)</label>
     <p className="metadata">Installed height from average ground level, using the Victoria definition. Leave blank if you only know the manufacturer's exterior height.</p>
     <MeasurementInput id="scouting-height" dimension="length" type="number" min="0" step="any" value={height} onChange={event => {

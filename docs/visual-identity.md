@@ -262,3 +262,10 @@ readable and document scroll width equalled client width (375 px excluding the
 scrollbar). The viewport override was reset. The visual preview ran without
 the project API, so observation data was unavailable; no map geometry or live
 result was visually verified in that session.
+
+
+The preliminary `Probably fine` status uses the existing green candidate surface
+with a yellow check icon (`--assumption-icon` / `--assumption-soft`), visible status
+words and an accessible question-mark popup containing its assumption. It is
+separate from Checked. Both popup variants support hover, focus, click/tap pinning
+and Escape dismissal. This display does not upgrade underlying legal facts.

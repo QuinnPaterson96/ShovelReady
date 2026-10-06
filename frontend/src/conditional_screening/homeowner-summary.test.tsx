@@ -9,6 +9,7 @@ import type { Result } from '../occupied_lots/contract'
 import type { MappedZoning } from './projectSettings'
 import { applyMappedZoning, changeProjectSetting, initialProjectSettings } from './projectSettings'
 import type { ScenarioResult } from './scenarios'
+import { parsePropertyScan, type PropertyScanResult } from './PropertyScan'
 import type { ScreeningResult } from './model'
 
 const captured = JSON.parse(readFileSync('src/scenario_handoff/retained-assessment.fixture.json', 'utf8')) as Result
@@ -48,7 +49,7 @@ test('clear captured geometry with missing rules remains a closer look', () => {
   const html = renderToStaticMarkup(createElement(HomeownerSummary, { summary, onNavigate: () => {} }))
   assert.match(html, /Height · Not covered/)
   assert.match(html, /Enter suite count/)
-  assert.match(html, /Mark street edges/)
+  assert.match(html, /Review boundary offsets/)
 })
 
 test('zoning outage offers retry while an unsupported mapped zone stays outside scope', () => {
@@ -114,6 +115,34 @@ test('provider exploration needs supported comparisons, not geometry or a majori
   assert.match(summary.checks.find(check => check.label === 'Existing garden suite')!.detail, /assuming none existing/)
   assert.ok(summary.checks.some(check => check.status === 'unsupported'))
   assert.equal(homeownerSummary({ ...input, scenario: { ...scenario, status: 'clarify' } }).conclusion, 'Resolve this question first')
-  assert.equal(homeownerSummary({ ...input, screening: { ...screening, checks: screening.checks.map(check => check.rule.kind === 'count_max' ? { ...check, status: 'needs_information' } : check) } }).conclusion, 'Resolve this question first')
+  assert.equal(homeownerSummary({ ...input, screening: { ...screening, checks: screening.checks.map(check => check.rule.kind === 'count_max' ? { ...check, status: 'needs_information' } : check) } }).conclusion, 'Worth exploring with the provider')
   assert.equal(homeownerSummary({ ...input, geometryComplete: false }).conclusion, 'Resolve this question first')
+})
+
+
+test('probable defaults stay labelled and never replace a measured conflict', () => {
+  const assumptions = { existing_garden_suites: { value: 0, origin: 'journey_default', evidence_state: 'assumed' } } as import('../zoning_site_assumptions/model').SiteAssumptions
+  const scenario = { additional_checks: [{ id: 'area', label: 'Floor area', status: 'probable', detail: 'Nominal footprint +10%.' }] } as ScenarioResult
+  const summary = homeownerSummary({ ...base, assumptions, scenario })
+  assert.equal(summary.checks.find(row => row.label === 'Existing garden suite')?.status, 'probable')
+  assert.equal(summary.checks.find(row => row.label === 'Floor area')?.status, 'probable')
+  const html = renderToStaticMarkup(createElement(HomeownerSummary, { summary, onNavigate() {} }))
+  assert.match(html, /Existing garden suite .* Probably fine/)
+  assert.match(html, /About Floor area assumption/)
+  const conflict = homeownerSummary({ ...base, assumptions, scenario, screening: { checks: [{ rule: { kind: 'area_max' }, status: 'apparent_conflict_under_assumptions' }] } as ScreeningResult })
+  assert.equal(conflict.checks.find(row => row.label === 'Floor area')?.status, 'conflict')
+})
+
+
+test('scan failures and malformed empty results cannot become probable clearances', () => {
+  const parcel_ref = { source: 'city-of-victoria-pid-parcels' as const, object_id: 87 }
+  const labels = ['Heritage properties', 'Heritage conservation areas', 'Development permit areas', 'Mapped special restrictions', 'Mapped development applications', 'Development application history']
+  const scan: PropertyScanResult = { schema_version: 'victoria-property-scan.v1', parcel_ref, parcel_source: null, limitations: ['Permit documents remain unsearched.'], findings: labels.map((label, index) => ({ label, status: 'probably_clear', records: [], detail: 'No mapped records in this searched scope.', source: { provider: 'City of Victoria Open Data', record_label: label, review_status: 'unreviewed_live_observation', captured_at_utc: '2026-10-06T00:00:00Z', sha256: 'a'.repeat(64), source_url: `https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/${[10,14,11,1,3,18][index]}/query?f=json` } })) }
+  assert.equal(parsePropertyScan(scan, parcel_ref), scan)
+  assert.equal(homeownerSummary({ ...base, propertyScan: scan }).checks.find(row => row.label === 'Mapped heritage and planning flags')?.status, 'probable')
+  const partial = { ...scan, findings: scan.findings.map((row, index) => index === 0 ? { ...row, status: 'unknown' as const, source: null } : row) }
+  assert.equal(homeownerSummary({ ...base, propertyScan: partial }).checks.find(row => row.label === 'Mapped heritage and planning flags')?.status, 'unknown')
+  assert.throws(() => parsePropertyScan({ ...scan, findings: scan.findings.slice(1) }, parcel_ref))
+  assert.throws(() => parsePropertyScan({ ...scan, findings: scan.findings.map(row => ({ ...row, source: null })) }, parcel_ref))
+  assert.throws(() => parsePropertyScan(scan, { ...parcel_ref, object_id: 88 }))
 })

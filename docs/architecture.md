@@ -312,8 +312,9 @@ Existing suite count initially assumes none, with explicit journey-default
 provenance. Homeowners can choose none, one or more, or not sure and optionally
 confirm their answer. Confirmation records what the homeowner said, without
 independent verification. These states survive API evaluation and technical export;
-unknown prerequisites still prevent a favourable result. Height, legal boundary
-status, variance and measurement definitions receive no favourable default.
+Unknown prerequisites remain unresolved in legal evaluation. A separate probable
+scouting status can describe explicitly attributed defaults and measurement proxies;
+legal boundary status, variances and measurement definitions receive no verified default.
 
 The map-adjacent summary leads with the decision and next action. A worthwhile
 provider enquiry requires supporting coverage beyond containment and checked
@@ -328,10 +329,12 @@ need manual review. Next-action and journey-step information buttons expose near
 explanations by click/tap/keyboard without changing inputs or advancing the journey.
 
 Street adjacency is a separate optional typed user observation in the site-assumptions
-contract: a set of exterior edge IDs and an explicit completeness confirmation.
+contract: a set of exterior edge IDs and a completeness observation. Completeness records
+whether the user explicitly confirmed it or advanced from street marking.
 Edits clear completeness; property/geometry changes clear marks. A complete single
 street edge on a simple four-edge parcel may narrow scenario suggestions; multiple
-or incomplete marks never silently establish legal front/flanking roles. Road bands
+marks narrow coherent scouting alternatives only when complete; incomplete marks
+never establish legal front/flanking roles. Road bands
 are schematic exterior offsets only for supported convex four-edge geometry; other
 outlines retain marks without invented road geometry. All modes retain these bands,
 and enquiry/technical exports retain attribution and completeness. Step information
@@ -346,3 +349,33 @@ suspend suggestions. Map labels identify suggested roles and the editor can acce
 one as an explicit user assumption. The optional typed `boundary_role_suggestions`
 record preserves suggestion basis and conflicts in HTTP/evidence exports; it never
 supplies evaluator facts. Irregular outlines continue to require manual review.
+
+
+October 6 preliminary assumptions update: advancing with Next/Prepare enquiry or
+Adjust boundaries completes street marks; returning to the street tab reopens
+completion. A boundary-offset grid shares the existing manual wall-to-line entries,
+with captured approximate values shown separately. Complete marks constrain the
+scouting front alternatives to marked streets and remaining adjacent street edges
+to flanking alternatives; explicit legal-role assumptions can still conflict.
+
+Scouting area uses nominal footprint (or supplied rough estimate) +10%. Scouting
+height uses advertised height +10% +0.30 m foundation allowance. Buffers and
+allowance are editable, source values remain unchanged, and clearing a candidate
+limit yields `probable`, never a measured or accepted pass. Above-limit proxies
+remain unknown; entered installed-height conflicts and regulatory-area findings
+retain priority. Source rule identities and exact observations remain exported.
+The unique largest valid mapped outline within the parcel is a provisional main
+building for separation only, with an explicit override; tied/unsupported outlines
+remain unknown. Rear-yard checks still require main-building use and site context.
+Front distance uses coherent front alternatives and any supplied wall-to-line
+overrides, preserving captured values independently.
+
+`POST /api/victoria-zoning/property-scan` (`victoria-property-scan.v1`) queries six
+fixed City heritage/conservation/DPA/special-restriction/application/history sources,
+using the selected parcel polygon and its GISLINK history join. Bounded failures,
+missing joins and truncated responses remain unknown; records require review.
+Successful empty searches are probably clear only within that searched scope.
+Issued permit documents, title covenants, projections and servicing are not scanned.
+The UI retains these as separate review gaps and links the City's records portals.
+No new dataset release or accepted source interpretation is published. Saved Parcel
+87 also receives the current zoning lookup; manual sketches receive no invented zone.

@@ -254,7 +254,9 @@ def test_street_observations_survive_http_without_becoming_boundary_roles(comple
     response = post(body)
     assert response.status_code == 200, response.text
     data = response.json()
-    assert data["request"]["site_assumptions"]["street_adjacency"] == marks
+    assert data["request"]["site_assumptions"]["street_adjacency"] == {
+        **marks, "completion_method": None
+    }
     assert all(item["role"]["value"] == "unknown"
                for item in data["request"]["site_assumptions"]["edges"])
     # Stated physical street adjacency supplies no legal role or flanking permission.

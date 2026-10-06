@@ -31,7 +31,7 @@
 .zsa--marking .zsa__boundaries { order: -1; margin-top: 0; }
 .zsa__mark-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; margin-top: .5rem; }
 .zsa__mark-buttons button[aria-pressed="true"] { background: var(--primary); color: var(--surface); }
-.boundary-action-panel[data-mode="rear"] { display: grid; grid-template-columns: minmax(0, 1fr) 15rem; gap: .75rem; align-items: start; }
+.boundary-action-panel[data-mode="rear"] { display: grid; grid-template-columns: minmax(0, 1fr) 18rem; gap: .75rem; align-items: start; }
 .boundary-action-panel[data-mode="rear"] > .occupied-map-heading { grid-column: 1 / -1; }
 .boundary-action-panel[data-mode="rear"] > .occupied-map { grid-column: 1; grid-row: 2; }
 .boundary-action-panel[data-mode="rear"] > .occupied-map-legend { grid-column: 1; grid-row: 3; }
@@ -49,3 +49,7 @@
 .builder-demo .builder-example-layout[data-mode="rear"] > .builder-example-controls { padding: 0; border: 0; }
 .boundary-action-panel[data-mode="rear"] .zsa__boundaries { padding: .6rem; }
 .boundary-action-panel[data-mode="rear"] .zsa__edge-row { padding: .4rem; }
+
+.zsa__offset-grid label { display: grid; grid-template-columns: minmax(0, 1fr) minmax(4rem, 6rem); gap: .5rem; align-items: center; }
+.zsa__offset-grid input { width: 100%; min-width: 0; box-sizing: border-box; }
+.zsa__offset-grid small { display: block; color: var(--ink-muted); }

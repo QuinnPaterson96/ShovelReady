@@ -9,12 +9,17 @@ from shapely.geometry import Polygon, shape
 class AdditionalInputs(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True, strict=True)
     height_from_average_grade_m: float | None = Field(default=None, ge=0, allow_inf_nan=False)
+    nominal_footprint_area_m2: float | None = Field(default=None, ge=0, allow_inf_nan=False)
+    advertised_height_m: float | None = Field(default=None, ge=0, allow_inf_nan=False)
+    area_buffer_percent: float = Field(default=10, ge=0, le=100, allow_inf_nan=False)
+    height_buffer_percent: float = Field(default=10, ge=0, le=100, allow_inf_nan=False)
+    foundation_allowance_m: float | None = Field(default=0.30, ge=0, allow_inf_nan=False)
 
 
 class AdditionalCheck(BaseModel):
     id: str
     label: str
-    status: Literal["checked", "conflict", "unknown", "unsupported"]
+    status: Literal["checked", "probable", "conflict", "unknown", "unsupported"]
     detail: str
     action_target: str | None = None
     observed: float | None = None
@@ -26,7 +31,23 @@ class AdditionalCheck(BaseModel):
 
 def additional_checks(body, boundary_result, packet, source_factory):
     """No overall fit verdict. Roofline geometry stays roofline geometry."""
-    rules = packet["additional_scouting"]
+    rules = dict(packet["additional_scouting"])
+    area_rule = next(
+        rule
+        for rule in packet["rules"]
+        if rule["logical_rule_id"] == "victoria-zb2018-garden-suite-floor-area"
+    )
+    estimates = body.additional_inputs
+    supplied_area = body.assumptions.measurements.floor_area
+    measured_area = supplied_area is not None and (
+        supplied_area.unit == "m2" and supplied_area.basis == "regulatory_floor_area"
+    )
+    if estimates.nominal_footprint_area_m2 is not None or measured_area:
+        rules["area"] = {
+            **area_rule,
+            "threshold": float(area_rule["normalized"]["value"]),
+            "unit": "m2",
+        }
     checks = []
     labels = {
         "separation": "Distance from the main building",
@@ -35,7 +56,10 @@ def additional_checks(body, boundary_result, packet, source_factory):
         "rear_occupancy": "Share of the rear yard",
         "height": "Height",
     }
+    if "area" in rules:
+        labels["area"] = "Floor area"
     targets = {
+        "area": "zsa-floor-area" if measured_area else "scouting-area-buffer",
         "separation": "principal-building",
         "front": "boundary-roles",
         "rear_location": "principal-building",
@@ -51,7 +75,9 @@ def additional_checks(body, boundary_result, packet, source_factory):
                 label=labels[key],
                 status=status,
                 detail=detail,
-                action_target=targets[key] if status in ("unknown", "conflict") else None,
+                action_target=targets[key]
+                if status in ("unknown", "conflict", "probable")
+                else None,
                 observed=observed,
                 threshold=rule.get("threshold"),
                 unit=rule.get("unit"),
@@ -84,18 +110,66 @@ def additional_checks(body, boundary_result, packet, source_factory):
             )
         return tuple(checks)
 
-    height = body.additional_inputs.height_from_average_grade_m
+    if "area" in rules:
+        area = (
+            supplied_area.value
+            if measured_area
+            else estimates.nominal_footprint_area_m2 * (1 + estimates.area_buffer_percent / 100)
+        )
+        limit = rules["area"]["threshold"]
+        add(
+            "area",
+            "probable" if area <= limit else "conflict" if measured_area else "unknown",
+            (
+                f"Entered regulatory floor area {'meets' if area <= limit else 'exceeds'} "
+                f"the {limit:g} m² candidate limit. User-supplied basis; "
+                "other applicability prerequisites remain unresolved."
+                if measured_area
+                else f"Nominal footprint plus {estimates.area_buffer_percent:g}% = {area:.1f} m², "
+                f"{'below' if area <= limit else 'above'} the {limit:g} m² candidate limit. "
+                "Planning estimate, not measured regulatory floor area; "
+                "confirm levels, inclusions and model configuration."
+            ),
+            observed=area,
+            basis="user-entered regulatory floor area; unverified measurement and applicability"
+            if measured_area
+            else "nominal footprint plus explicit planning buffer; unverified floor-area proxy",
+        )
+    height = estimates.height_from_average_grade_m
     limit = rules["height"]["threshold"]
-    add(
-        "height",
-        "unknown" if height is None else "checked" if height <= limit else "conflict",
-        "Enter installed height using Victoria's grade/roof definition, not catalogue height."
-        if height is None
-        else (f"Entered height {'meets' if height <= limit else 'exceeds'} {limit:g} m. "
-              "Candidate comparison; grade and roof basis are user-supplied."),
-        observed=height,
-        basis="user-entered Victoria height from average grade",
-    )
+    if height is not None:
+        add(
+            "height",
+            "checked" if height <= limit else "conflict",
+            f"Entered height {'meets' if height <= limit else 'exceeds'} {limit:g} m. "
+            "Candidate comparison; grade and roof basis are user-supplied.",
+            observed=height,
+            basis="user-entered Victoria height from average grade",
+        )
+    elif estimates.advertised_height_m is not None and estimates.foundation_allowance_m is not None:
+        height = (
+            estimates.advertised_height_m * (1 + estimates.height_buffer_percent / 100)
+            + estimates.foundation_allowance_m
+        )
+        add(
+            "height",
+            "probable" if height <= limit else "unknown",
+            f"Advertised height plus {estimates.height_buffer_percent:g}% and "
+            f"{estimates.foundation_allowance_m:g} m foundation allowance = {height:.2f} m, "
+            f"{'below' if height <= limit else 'above'} the {limit:g} m candidate limit. "
+            "Grade, slope, foundation design and roof datum remain unverified; "
+            "enter installed height if known.",
+            observed=height,
+            basis="advertised height plus planning buffer and foundation allowance; "
+            "not installed height",
+        )
+    else:
+        add(
+            "height",
+            "unknown",
+            "Enter installed height using Victoria's grade/roof definition, "
+            "or supply the planning estimate inputs.",
+        )
 
     # Existing boundary validation establishes parcel/placement/edge correspondence.
     if not boundary_result.scenarios:
@@ -106,7 +180,7 @@ def additional_checks(body, boundary_result, packet, source_factory):
                 "Review placement and boundary roles; a valid contained placement is needed.",
             )
         return tuple(checks)
-    if assumptions.waterfront.value is not False:
+    if assumptions.waterfront.value is True:
         for key in ("separation", "front", "rear_location", "rear_occupancy"):
             add(
                 key,
@@ -117,28 +191,60 @@ def additional_checks(body, boundary_result, packet, source_factory):
         return tuple(checks)
 
     front_distances = [
-        boundary_result.edge_distances_m[s.front_edge_id] for s in boundary_result.scenarios
+        assumptions.measurements.boundary[s.front_edge_id].value
+        if s.front_edge_id in assumptions.measurements.boundary
+        else boundary_result.edge_distances_m[s.front_edge_id]
+        for s in boundary_result.scenarios
     ]
     limit = rules["front"]["threshold"]
     outcomes = [distance >= limit for distance in front_distances]
     outcome = "meets" if all(outcomes) else "falls below" if not any(outcomes) else "may meet"
     add(
         "front",
-        "checked" if all(outcomes) else "conflict" if not any(outcomes) else "unknown",
+        "checked"
+        if all(outcomes) and assumptions.waterfront.value is False
+        else "probable"
+        if all(outcomes)
+        else "conflict"
+        if not any(outcomes)
+        else "unknown",
         f"Approximate front distance {outcome} {limit:g} m across tested front-edge choices. "
-        "Building faces and projections need review.",
+        "Building faces and projections need review. "
+        + (
+            "Assuming this is not a waterfront lot." if assumptions.waterfront.value is None else ""
+        ),
         observed=min(front_distances),
-        basis="captured parcel to nominal rectangle; coherent front-edge scenarios",
+        basis="captured parcel to nominal rectangle with user wall-to-line overrides; "
+        "coherent front-edge scenarios",
     )
 
     building_id = assumptions.principal_building_id.value
     building = next((b for b in body.geometry.buildings if b.id == building_id), None)
-    if building is None or assumptions.building_type.value not in ("single_detached", "duplex"):
+    inferred = False
+    if building_id is None:
+        parcel = shape(body.geometry.parcel.shape.geometry)
+        candidates = []
+        for item in body.geometry.buildings:
+            outline = shape(item.shape.geometry)
+            if (
+                item.shape.crs == body.geometry.projected_metre_crs
+                and item.basis != "unknown"
+                and outline.geom_type == "Polygon"
+                and outline.is_valid
+                and not outline.is_empty
+                and parcel.covers(outline)
+            ):
+                candidates.append((outline.area, item))
+        candidates.sort(key=lambda item: item[0], reverse=True)
+        if candidates and (len(candidates) == 1 or candidates[0][0] > candidates[1][0]):
+            building = candidates[0][1]
+            inferred = True
+    if building is None:
         for key in ("separation", "rear_location", "rear_occupancy"):
             add(
                 key,
                 "unknown",
-                "Select the main building and its use: single detached home or duplex.",
+                "Select the main building; no unique usable largest outline was found.",
             )
         return tuple(checks)
     principal = shape(building.shape.geometry)
@@ -162,14 +268,33 @@ def additional_checks(body, boundary_result, packet, source_factory):
     footprint = shape(geometry.placement_geometry)
     gap = footprint.distance(principal)
     limit = rules["separation"]["threshold"]
+    building_label = (
+        "largest mapped outline, assumed main building" if inferred else "selected building"
+    )
     add(
         "separation",
-        "checked" if gap >= limit else "conflict",
+        "probable" if gap >= limit and inferred else "checked" if gap >= limit else "conflict",
         f"The nominal model {'meets' if gap >= limit else 'falls below'} {limit:g} m "
-        f"to the selected {building.basis}. Approximate only; legal endpoints need review.",
+        f"to the {building_label} "
+        f"({building.basis}). Approximate only; legal endpoints need review.",
         observed=gap,
-        basis=f"selected {building.basis} to nominal model; not legal wall separation",
+        basis=f"{'largest-outline assumption' if inferred else 'user-selected building'} "
+        f"{building.id}: {building.basis} to nominal model; not legal wall separation",
     )
+
+    if (
+        inferred
+        or assumptions.building_type.value not in ("single_detached", "duplex")
+        or assumptions.waterfront.value is not False
+    ):
+        for key in ("rear_location", "rear_occupancy"):
+            add(
+                key,
+                "unknown",
+                "Confirm main building use and waterfront status "
+                "to explore legal rear-yard assumptions.",
+            )
+        return tuple(checks)
 
     # A single coherent rear line and a simple principal outline are prerequisites.
     rears = {c.edge_id for s in boundary_result.scenarios for c in s.checks if c.role == "rear"}
@@ -198,15 +323,18 @@ def additional_checks(body, boundary_result, packet, source_factory):
     ux, uy = dx / length, dy / length
     nx, ny = -uy, ux
     origin = rear.start
+
     def dot(point):
         return (point[0] - origin[0]) * nx + (point[1] - origin[1]) * ny
+
     if dot((parcel.centroid.x, parcel.centroid.y)) < 0:
         nx, ny = -nx, -ny
     cut = min(dot(point) for point in principal.exterior.coords)
     span = max(parcel.bounds[2] - parcel.bounds[0], parcel.bounds[3] - parcel.bounds[1]) * 4
+
     def point(along, inward):
-        return (origin[0] + along * ux + inward * nx,
-                origin[1] + along * uy + inward * ny)
+        return (origin[0] + along * ux + inward * nx, origin[1] + along * uy + inward * ny)
+
     yard = parcel.intersection(
         Polygon([point(-span, -span), point(span, -span), point(span, cut), point(-span, cut)])
     )

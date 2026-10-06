@@ -3,7 +3,7 @@ import type { Case } from '../occupied_lots/contract'
 import { MeasurementInput } from '../MeasurementInput'
 import { assumptionsKey, initialAssumptions, suiteCountFact, inferBoundaryRoles, suggestedBoundaryRoles, withPlacementRevision, type EdgeRole, type SiteAssumptions, type UserMeasurement } from './model'
 
-type Props = { streetAdjacency?: import('./model').StreetAdjacency; markingRole?: EdgeRole | null; onMarkingRoleChange?: (role: EdgeRole) => void; boundaryMark?: { id: string; role: EdgeRole } | null; sharedMode?: 'place' | 'front' | 'rear'; selectedBoundary?: string | null; onBoundarySelect?: (id: string) => void; homeownerDefaults?: boolean; site: Case; geometryRevision: string; placementRevision: string; frontEdge?: string | null; rearEdge?: string | null; streetPattern?: 'unknown' | 'single' | 'corner_or_multiple'; onChange: (value: SiteAssumptions | null) => void }
+type Props = { edgeDistances?: Record<string, number>; streetAdjacency?: import('./model').StreetAdjacency; markingRole?: EdgeRole | null; onMarkingRoleChange?: (role: EdgeRole) => void; boundaryMark?: { id: string; role: EdgeRole } | null; sharedMode?: 'place' | 'front' | 'rear'; selectedBoundary?: string | null; onBoundarySelect?: (id: string) => void; homeownerDefaults?: boolean; site: Case; geometryRevision: string; placementRevision: string; frontEdge?: string | null; rearEdge?: string | null; streetPattern?: 'unknown' | 'single' | 'corner_or_multiple'; onChange: (value: SiteAssumptions | null) => void }
 const roleNames: Record<EdgeRole, string> = { unknown: 'Unknown', front: 'Front', rear: 'Rear', side: 'Side', flanking_street: 'Flanking street' }
 
 function measure(raw: string, basis: UserMeasurement['basis'], placementRevision: string): UserMeasurement | null {
@@ -12,7 +12,7 @@ function measure(raw: string, basis: UserMeasurement['basis'], placementRevision
   return Number.isFinite(number) && number >= 0 ? { value: number, unit: basis === 'regulatory_floor_area' || basis === 'rough_floor_area_estimate' ? 'm2' : 'm', basis, origin: 'user', note: null, placement_revision: placementRevision } : null
 }
 
-function Editor({ streetAdjacency, site, geometryRevision, placementRevision, frontEdge = null, rearEdge = null, streetPattern = 'unknown', markingRole, onMarkingRoleChange, boundaryMark, sharedMode, selectedBoundary, onBoundarySelect, homeownerDefaults = false, onChange }: Props) {
+function Editor({ edgeDistances, streetAdjacency, site, geometryRevision, placementRevision, frontEdge = null, rearEdge = null, streetPattern = 'unknown', markingRole, onMarkingRoleChange, boundaryMark, sharedMode, selectedBoundary, onBoundarySelect, homeownerDefaults = false, onChange }: Props) {
   useEffect(() => { void import('./site-assumptions.css') }, [])
   const notify = useRef(onChange)
   notify.current = onChange
@@ -87,7 +87,7 @@ function Editor({ streetAdjacency, site, geometryRevision, placementRevision, fr
     </details>
     <fieldset className="zsa__boundaries" hidden={sharedMode !== undefined && sharedMode !== 'rear'}><legend>Parcel edge roles</legend>
       <p hidden={sharedMode !== undefined}>Choose each edge’s role only if you know it. Street access and legal lot lines can change the answer, especially at corners and through lots.</p>
-      {Object.keys(suggested).length > 0 && <p role="status">Suggested from your front/rear and street marks. One confirmed street suggests Front; the opposite edge suggests Rear. Remaining edges suggest Flanking if marked as street, or Side once all streets are marked. These are editable suggestions, not verified legal roles.</p>}
+      {Object.keys(suggested).length > 0 && <p role="status">Roles suggested from your street/front/rear marks. Review or override below.</p>}
       {inference.conflicts.map(message => <p role="status" key={message}>{message}</p>)}
       {value.edges.length === 0 && <p role="status">This parcel outline cannot be divided into supported edges. Record roles as unknown and use a reviewed plan.</p>}
       {value.edges.some(edge => edge.ring > 0) && <p role="status">This outline has inner rings. Their roles need manual review.</p>}
@@ -98,6 +98,10 @@ function Editor({ streetAdjacency, site, geometryRevision, placementRevision, fr
         <details><summary>Mark with keyboard</summary><label>Edge to mark <select aria-label="Edge to mark" value={activeEdge ?? ''} onChange={event => onBoundarySelect?.(event.target.value)}>{value.edges.map(edge => <option key={edge.id} value={edge.id}>{edgeLabel(edge)} · {roleNames[edge.role.value ?? 'unknown']}</option>)}</select></label>
         <button type="button" disabled={!markingRole || !activeEdge} onClick={() => { if (activeEdge) onBoundarySelect?.(activeEdge) }}>Mark selected edge</button></details>
       </div>}
+      <div id="boundary-offsets" tabIndex={-1} className="zsa__offset-grid" role="group" aria-label="Boundary offsets in metres">
+        <strong>Boundary offsets (m)</strong><p>Captured distances are approximate. Enter wall-to-legal-line measurements only if known.</p>
+        {value.edges.map(edge => <label key={edge.id}><span>{edgeLabel(edge)} · {roleNames[edge.role.value && edge.role.value !== 'unknown' ? edge.role.value : suggested[edge.id] ?? 'unknown']}{suggested[edge.id] ? ' (suggested)' : ''}<small>{edgeDistances?.[edge.id] !== undefined ? `Captured ≈ ${edgeDistances[edge.id].toFixed(2)} m` : 'Not captured'}</small></span><MeasurementInput dimension="length" type="number" min="0" step="any" aria-label={`${edgeLabel(edge)} boundary offset in metres`} value={distanceDraft[edge.id] ?? ''} onChange={event => setBoundaryDistance(edge.id, event.target.value)} placeholder="Offset" /></label>)}
+      </div>
       <div className="zsa__edge-list">{value.edges.map(edge => <div key={edge.id} hidden={sharedMode !== undefined && activeEdge !== edge.id} className={activeEdge === edge.id ? 'zsa__edge-row zsa__edge-row--selected' : 'zsa__edge-row'}>
         {sharedMode === undefined ? <button type="button" onClick={() => setSelectedEdge(edge.id)} aria-pressed={activeEdge === edge.id}>{edge.ring === 0 ? edgeLabel(edge) : `Inner ring ${edge.ring}, edge ${edge.segment + 1}`}</button> : <strong>{edgeLabel(edge)}</strong>}
         {sharedMode === undefined && <label>Role <select id={activeEdge ? edge.id === activeEdge ? 'boundary-roles' : undefined : edge === value.edges[0] ? 'boundary-roles' : undefined} aria-label={`${edgeLabel(edge)} role`} value={edge.role.value ?? 'unknown'} onChange={event => setRole(edge.id, event.target.value as EdgeRole)}>{Object.entries(roleNames).map(([id, name]) => <option key={id} value={id}>{name}</option>)}</select></label>}
