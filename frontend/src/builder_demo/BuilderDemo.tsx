@@ -131,6 +131,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   useEffect(() => { setReadyFor(null) }, [draftText])
   const emailBody = enquiryDoc ? enquiryEmailBody(enquiryDoc, includeSiteDetails) : ''
   const emailSubject = enquiryDoc?.example ? 'Saved example only — Model 300 question' : 'Model 300 preliminary enquiry'
+  useEffect(() => { setEmailMessage('') }, [emailBody, emailSubject])
   const emailTooLong = !!enquiryDoc && (!emailDraftUrl('mailto', recipient, emailSubject, emailBody) || !emailDraftUrl('gmail', recipient, emailSubject, emailBody)) && validRecipient(recipient)
   const shortEmailBody = enquiryDoc?.example
     ? 'SAVED EXAMPLE ONLY — not my property. I will paste the full reviewed Model 300 enquiry into this draft before sending.'
@@ -138,9 +139,15 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   function openDraft(kind: 'mailto' | 'gmail') {
     const url = emailDraftUrl(kind, recipient, emailSubject, emailTooLong ? shortEmailBody : emailBody)
     if (!url) { setEmailMessage('Enter one valid email address without line breaks.'); return }
-    if (kind === 'mailto') window.location.href = url
-    else window.open(url, '_blank', 'noopener,noreferrer')
-    setEmailMessage(emailTooLong ? 'Short draft opened. Copy and paste the full text shown above before sending.' : 'Draft opened for your review. You must send it yourself.')
+    try {
+      if (kind === 'mailto') window.location.href = url
+      else window.open(url, '_blank', 'noopener,noreferrer')
+      setEmailMessage(emailTooLong
+        ? 'Short placeholder draft requested. If no compose window opens, copy the full email body above into a new message. Nothing was sent.'
+        : 'Email draft requested. If no compose window opens, copy the email body above into a new message. Nothing was sent.')
+    } catch {
+      setEmailMessage('The browser could not request an email draft. Copy the email body above into a new message. Nothing was sent.')
+    }
   }
   async function copyEmailBody() {
     try {
@@ -226,7 +233,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       </div>
       <section className="builder-email" aria-labelledby="builder-email-title">
         <h3 id="builder-email-title">Open an editable email draft</h3>
-        <p>Review the recipient and exact text below. Your email app opens a draft; only you can send it. This demonstration has no affiliation with aux box.</p>
+        <p>Review the recipient and exact text below. These buttons ask your browser to open an editable draft; your browser or email setup may prevent it. Only you can send it. This demonstration has no affiliation with aux box.</p>
         <p className="metadata">The <a href="https://www.auxbox.ca/contact" target="_blank" rel="noreferrer">official aux box contact page</a> directs general enquiries to a form. Its published email addresses are for privacy, media or careers, so no product enquiry recipient is prefilled. Checked 2026-10-05.</p>
         <label htmlFor="builder-email-recipient">Recipient email (optional; edit before opening)</label>
         <input id="builder-email-recipient" type="email" autoComplete="email" value={recipient} onChange={event => { setRecipient(event.target.value); setReadyFor(null); setEmailMessage('') }} aria-invalid={!validRecipient(recipient)} />
@@ -235,12 +242,13 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
         <p className="metadata">{includeSiteDetails ? 'The property summary below may include an address or site description.' : 'The automatic property summary is excluded. Your question is still included; check it for any address or personal details you typed. The full copy and download include property details.'}</p>
         <label htmlFor="builder-email-subject">Subject</label><input id="builder-email-subject" readOnly value={emailSubject} />
         <label htmlFor="builder-email-body">Exact email body to share</label><textarea id="builder-email-body" readOnly rows={12} value={emailBody} />
-        {emailTooLong && <p role="status">The full email is too long for a reliable draft link. The buttons open a short placeholder draft. Copy the complete text above and paste it into your email app before sending; no content is silently shortened.</p>}
+        {emailTooLong && <p role="status">The full email is too long for a reliable draft link. The buttons request a short placeholder draft. Copy the complete text above and paste it into your email app before sending; no content is silently shortened.</p>}
         <div className="builder-email-buttons">
           <button type="button" onClick={() => void copyEmailBody()}>Copy email body</button>
           <button type="button" disabled={!validRecipient(recipient)} onClick={() => openDraft('mailto')}>Open in default email app</button>
           <button type="button" disabled={!validRecipient(recipient)} onClick={() => openDraft('gmail')}>Open in Gmail</button>
         </div>
+        <p className="metadata">If no compose window opens, use Copy email body and paste the exact text shown above into a new message. Check the recipient and subject there before sending.</p>
         <p role="status">{emailMessage}</p>
       </section>
       <TechnicalDetails title="Complete site selection, sources and measurements"><CopyableRecord id="builder-technical-record" label="Complete technical evidence export" value={JSON.stringify({ schema_version: 'builder-evidence.v1', foundation_scenario: { allowance_m: foundationAllowanceM, basis: 'user_assumption', used_in_assessment: false }, selection, live, manual, example: mode === 'example' ? exampleCase : null, measurement: measurementResult }, null, 2)} /></TechnicalDetails>
