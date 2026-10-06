@@ -127,6 +127,9 @@ files were changed. A scoped private import is a separate UI-owned follow-up if 
 - Errors omit diagnostics, credentials and echoed validation inputs. This code logs
   no scenario inputs/results. Run without access/debug logging and review client tracing
   separately. Optional existing geocoder credentials are read at use, never returned.
+  The HTTP boundary validates envelopes with the SDK's public message models first:
+  a reproduced SDK malformed-envelope error otherwise echoed rejected input. Regression
+  cases cover both malformed envelopes and tool-call parameter types without echoing them.
 
 ## Optional ChatGPT connection: private tunnel
 

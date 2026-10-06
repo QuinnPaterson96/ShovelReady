@@ -4,8 +4,11 @@ import ipaddress
 import time
 from collections import deque
 
+from mcp import types
 from mcp.server.streamable_http_manager import StreamableHTTPSessionManager
-from mcp.server.transport_security import TransportSecuritySettings
+from mcp.server.transport_security import TransportSecurityMiddleware, TransportSecuritySettings
+from pydantic import ValidationError
+from starlette.requests import Request
 from starlette.responses import PlainTextResponse
 from starlette.routing import Route
 
@@ -36,6 +39,46 @@ class PrivateEndpoint:
                 )(scope, receive, send)
                 return
             self.requests.append(now)
+            # SDK transport validation can echo input values and log malformed messages.
+            # Validate with its public models before forwarding, retaining no diagnostics.
+            request = Request(scope, receive)
+            body = bytearray()
+            async for chunk in request.stream():
+                body.extend(chunk)
+                if len(body) > 131_072:
+                    await PlainTextResponse("MCP request exceeds 128 KiB", 413)(
+                        scope, receive, send
+                    )
+                    return
+            security = TransportSecurityMiddleware(self.manager.security_settings)
+            failure = await security.validate_request(request, is_post=True)
+            if failure is not None:
+                await failure(scope, receive, send)
+                return
+            raw = bytes(body)
+            try:
+                message = types.JSONRPCMessage.model_validate_json(raw).root
+                if isinstance(message, types.JSONRPCRequest):
+                    types.ClientRequest.model_validate_json(raw)
+                elif isinstance(message, types.JSONRPCNotification):
+                    types.ClientNotification.model_validate_json(raw)
+            except ValidationError:
+                await PlainTextResponse(
+                    "Invalid MCP message. Check the protocol envelope and parameter types.", 400
+                )(scope, receive, send)
+                return
+
+            original_receive = receive
+            delivered = False
+
+            async def replay():
+                nonlocal delivered
+                if delivered:
+                    return await original_receive()
+                delivered = True
+                return {"type": "http.request", "body": raw, "more_body": False}
+
+            receive = replay
         await self.manager.handle_request(scope, receive, send)
 
 

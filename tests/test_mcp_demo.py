@@ -352,6 +352,19 @@ def test_metadata_errors_identity_and_exposure_controls(endpoint, monkeypatch):
 
     asyncio.run(non_loopback())
     with httpx.Client(base_url=url) as http:
+        for malformed in (
+            {"sensitive-marker": "sensitive-marker"},
+            {
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "tools/call",
+                "params": {"name": "supported_models", "arguments": "sensitive-marker"},
+            },
+        ):
+            rejected = http.post(
+                "/mcp", json=malformed, headers={"Accept": "application/json, text/event-stream"}
+            )
+            assert rejected.status_code == 400 and "sensitive-marker" not in rejected.text
         assert http.post("/mcp", headers={"Host": "evil.example"}, json={}).status_code == 421
         assert (
             http.post("/mcp", headers={"Origin": "https://evil.example"}, json={}).status_code
