@@ -35,7 +35,9 @@ export function homeownerSummary(input: {
     : scenarioError ? { label: 'Distance to boundaries', status: 'unknown', detail: 'The distance comparison could not be loaded. The captured geometry remains separate.', action: { label: 'Retry distance check', target: 'retry-scenario' } }
     : scenario?.status === 'bounded_pass'
       ? { label: 'Distance to boundaries', status: 'checked', detail: 'Tested side and rear distances pass in coherent approximate scenarios. Front and legal-line distances remain unchecked.' }
-      : { label: 'Distance to boundaries', status: 'unknown', detail: scenario?.status === 'clarify' ? 'The possible boundary roles change the result.' : 'A useful boundary comparison needs a current placement and boundary context.', action: { label: 'Mark street side', target: 'street-side' } })
+      : { label: 'Distance to boundaries', status: 'unknown', detail: scenario?.status === 'clarify' ? 'The possible boundary roles change the result.' : 'A useful boundary comparison needs a current placement and boundary context.', action: { label: 'Mark street edges', target: 'street-side' } })
+
+  if (assumptions?.street_adjacency) checks.push({ label: 'Street edges', status: assumptions.street_adjacency.all_marked ? 'checked' : 'unknown', detail: assumptions.street_adjacency.all_marked ? 'You say all street edges are marked. These are physical-adjacency assumptions, not verified legal boundary roles.' : 'Mark known street edges and confirm whether the selection is complete. Unmarked edges remain uncertain.', action: { label: 'Review street edges', target: 'street-side' } })
 
   const suiteCount = assumptions?.existing_garden_suites.value
   const countConflict = screening?.checks.some(check => check.rule.kind === 'count_max' && check.status === 'apparent_conflict_under_assumptions') ?? false

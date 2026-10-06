@@ -10,3 +10,8 @@
 .boundary-map-edge-hit { stroke: transparent; stroke-width: 22; vector-effect: non-scaling-stroke; pointer-events: stroke; cursor: pointer; }
 .boundary-map-edge-label { fill: var(--ink); font-weight: 700; font-size: 1.8px; paint-order: stroke; stroke: var(--surface); stroke-width: .3px; pointer-events: none; }
 @media (max-width: 540px) { .boundary-map-modes button, .boundary-map-buttons button { flex: 1 1 9rem; } }
+
+.street-road { pointer-events: none; }
+.street-road polygon { fill: var(--border); stroke: var(--border-strong); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.street-road line { stroke: var(--surface); stroke-width: 1; stroke-dasharray: 5 4; vector-effect: non-scaling-stroke; }
+.street-road text { fill: var(--ink); font-size: 1.1px; paint-order: stroke; stroke: var(--surface); stroke-width: .2px; font-weight: 650; }

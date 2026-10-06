@@ -301,7 +301,7 @@ not accepted zoning evaluation. #139 and #147 retain their outstanding criteria.
 
 ## Homeowner placement workspace
 
-The Model 300 journey uses one placement map with Move unit, Mark street side,
+The Model 300 journey uses one placement map with Move unit, Mark street edges,
 and Adjust boundaries tabs. Tab changes preserve placement and map view. The
 selected map edge and its boundary form share state; checklist actions open the
 relevant tab and focus the correction control. Detailed measurements and evidence
@@ -326,3 +326,13 @@ labels echo the stored role; keyboard users can select an edge and apply the sam
 mark. Clear removes a mark without deriving a replacement. Irregular outlines still
 need manual review. Next-action and journey-step information buttons expose nearby
 explanations by click/tap/keyboard without changing inputs or advancing the journey.
+
+Street adjacency is a separate optional typed user observation in the site-assumptions
+contract: a set of exterior edge IDs and an explicit completeness confirmation.
+Edits clear completeness; property/geometry changes clear marks. A complete single
+street edge on a simple four-edge parcel may narrow scenario suggestions; multiple
+or incomplete marks never silently establish legal front/flanking roles. Road bands
+are schematic exterior offsets only for supported convex four-edge geometry; other
+outlines retain marks without invented road geometry. All modes retain these bands,
+and enquiry/technical exports retain attribution and completeness. Step information
+is a viewport-bounded hover/focus popup with tap pinning and Escape/outside dismissal.

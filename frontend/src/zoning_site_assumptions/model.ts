@@ -5,7 +5,9 @@ export type BoundaryMapMode = 'place' | 'front' | 'rear'
 export type UserFact<T> = { value: T | null; origin: 'user' | 'journey_default'; note: string | null; evidence_state?: 'assumed' | 'user_confirmed' | 'unknown' }
 export type BoundaryEdge = { id: string; ring: number; segment: number; start: [number, number]; end: [number, number]; role: UserFact<EdgeRole> }
 export type UserMeasurement = { value: number; unit: 'm' | 'm2'; basis: 'proposed_wall_to_lot_line' | 'principal_wall_to_proposed_wall' | 'regulatory_floor_area' | 'rough_floor_area_estimate'; origin: 'user'; note: string | null; placement_revision: string }
+export type StreetAdjacency = { edge_ids: string[]; all_marked: boolean; origin: 'user' }
 export type SiteAssumptions = {
+  street_adjacency?: StreetAdjacency
   schema_version: 'sr.zoning-site-assumptions.v1'
   property: { case_id: string; parcel_id: string; geometry_revision: string; crs: string; source: Feature['source']; capture: Site['capture'] }
   observed_buildings: { id: string; basis: 'roofline' | 'wall' | 'unknown'; source: Feature['source'] }[]
