@@ -1,5 +1,48 @@
 # Architecture direction
 
+## Municipality-aware homeowner flow
+
+Decision: October 6, 2026. This is the implementation direction, not a claim that
+the current Victoria-specific UI has already been generalized.
+
+The property carries attributed municipality context. The selected parcel's
+governing jurisdiction is preferred over geocoder locality; unresolved matches
+require clarification. Manual lots allow explicit municipality selection. Separate
+identity from service/rule coverage: an unsupported municipality can still use
+local geometric exploration without borrowing Victoria regulations.
+
+Use stable physical measurement fields with contextual definitions in accessible
+information help. A small typed definition record should identify its quantity,
+basis/reference, units, inclusions/exclusions, jurisdiction, applicable rule and
+revision, source and review status. Definitions belong to supported rule packages;
+source retrieval belongs to municipal adapters. Municipality alone is insufficient
+to choose a legal definition when bylaws/pathways differ. Missing definitions stay
+unresolved, with generic physical help available.
+
+Original measurements retain their meaning and provenance when context changes.
+Invalidate jurisdiction-dependent conclusions and reassess measurement compatibility;
+never silently reinterpret a number under a new definition. Preserve placement only
+when its geometry and coordinate context remain valid. Keep material incompatibilities
+visible beside inputs instead of burying them in help.
+
+Generic homeowner components consume structured findings with explicit status,
+scope, missing facts, available actions and evidence references. They do not parse
+diagnostic prose or recognise individual zone codes. Present a short finding and
+next action; expand details for calculations and sources. Unsupported coverage is
+neither prohibition nor permission. A geometry pass is not an overall feasibility pass.
+
+Implement with ordinary modules and configuration; no plugin loader, universal rule
+language or speculative service architecture. Sequence:
+
+1. [#246: Property municipality context](https://github.com/QuinnPaterson96/ShovelReady/issues/246).
+2. [#247: Contextual measurement definitions](https://github.com/QuinnPaterson96/ShovelReady/issues/247), using #246.
+3. [#248: Second-municipality vertical slice](https://github.com/QuinnPaterson96/ShovelReady/issues/248), validating both against the homeowner work in #242/#243.
+
+The structured-findings presentation boundary is part of existing #242, not a
+parallel competing summary implementation. Coordinate shared UI ownership before
+starting these follow-ups. The second-city slice does not imply new accepted legal
+coverage; existing Saanich topology and Langford source/rights gaps remain open.
+
 ## Zoning lookup checkpoint — October 6, 2026
 
 The stateless app now includes a bounded City of Victoria parcel-polygon zoning
