@@ -339,15 +339,16 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       <div id="builder-placement-content" hidden={!expanded.placement || !propertyComplete}>
       {mode === 'manual' && <p>Your manual sketch and placement controls are in Property. Reopen that step to adjust them.</p>}
       {mode === 'example' && <ExampleProperty key={revision} boundaryInteraction={boundaryInteraction} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} />}
-      {mode === 'live' && (liveCase ? <OccupiedLots key={revision} suppliedCase={liveCase} boundaryInteraction={boundaryInteraction} allowedModelIds={[MODEL_ID]} initialModelId={MODEL_ID} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} showHandoff={false} /> : <p>Confirm a Victoria property above to open its captured parcel sketch. Available geometry is approximate and unreviewed.</p>)}
+      {mode === 'live' && (liveCase ? <OccupiedLots key={revision} compactPlacement suppliedCase={liveCase} boundaryInteraction={boundaryInteraction} allowedModelIds={[MODEL_ID]} initialModelId={MODEL_ID} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} showHandoff={false} /> : <p>Confirm a Victoria property above to open its captured parcel sketch. Available geometry is approximate and unreviewed.</p>)}
 
-    {zoningCase && <>
+    {zoningCase && <><section className="builder-placement-results" aria-label="Current placement results and checklist"><h3>Current results and checklist</h3>
+      {measurementResult?.result.checks.some(check => check.relation === 'outside' || check.relation === 'touches' || check.relation === 'positive_area_overlap') && <p className="notice"><strong>Captured geometry conflict at this position.</strong> A passing candidate distance subset below cannot cancel a parcel or roofline overlap.</p>}
       <PlacementScenarios assumptions={currentAssumptions} request={scenarioRequest} result={currentScenario} busy={!!scenarioKey && scenarioBusy && !currentScenario} error={currentScenarioError} frontEdge={streetEdge} rearEdge={rearEdge} boundaryMode={boundaryMode} onBoundaryMode={setBoundaryMode} />
-      <details className="builder-optional"><summary>Adjust boundary assumptions and explore conditional checks</summary>
+      <ConditionalScreen compact result={currentScreening} busy={!!requestKey && conditionalBusy && !currentScreening} error={currentScreeningError} /></section>
+      <details className="builder-optional"><summary>Optional assumptions and user measurements</summary>
       <p>Use the current placement with explicitly stated lot and building assumptions. Candidate rules are sourced, but their currentness and site applicability still need review.</p>
       <PathwayAssumptions value={pathway} onChange={next => { setPathway(next); setReadyFor(null) }} />
       <SiteAssumptionsEditor site={zoningCase} geometryRevision={geometryRevision!} placementRevision={placementRevision} frontEdge={streetEdge} rearEdge={rearEdge} streetPattern={streetPattern} onChange={next => { setSiteAssumptions(next); setReadyFor(null) }} />
-      <ConditionalScreen result={currentScreening} busy={!!requestKey && conditionalBusy && !currentScreening} error={currentScreeningError} />
     </details></>}
     {selection && <section className="builder-optional" aria-labelledby="builder-optional-title">
       <p className="eyebrow">Optional placement</p><h2 id="builder-optional-title">Import a retained example only if useful</h2>
@@ -357,7 +358,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
           <OccupiedLots key={revision} allowedModelIds={[MODEL_ID]} initialModelId={MODEL_ID} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} showHandoff={false} /></>}
     </section>}
     {mode === 'retained' && !selection && <p>Confirm a site lead above to consider a separate retained placement example. An example is never matched to your site lead.</p>}
-      <HeightView key={`height-${heightRevision}`} model={model} onFoundationAllowanceChange={value => { setFoundationAllowanceM(value); setReadyFor(null) }} />
+      <details className="builder-optional"><summary>Height and foundation context · not checked</summary><HeightView key={`height-${heightRevision}`} model={model} onFoundationAllowanceChange={value => { setFoundationAllowanceM(value); setReadyFor(null) }} /></details>
       </div>
       {propertyComplete && <button className="builder-continue" type="button" onClick={() => { setExpanded({ property: false, placement: false, next: true }); requestAnimationFrame(() => document.getElementById('builder-next')?.scrollIntoView({ block: 'start' })) }}>Prepare enquiry{placementComplete ? '' : ' with placement unknown'}</button>}
     </section>

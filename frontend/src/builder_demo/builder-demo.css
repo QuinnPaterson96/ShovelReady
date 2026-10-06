@@ -71,3 +71,21 @@
 .builder-example-outcome--clear, .placement-check--clear { color: #205536 !important; background: #edf7ef !important; border-left: 5px solid #36834f !important; }
 .placement-check { padding: 1rem; margin: 1rem 0; background: var(--neutral-soft); border-left: 5px solid var(--neutral-edge); }
 .placement-check--conflict { color: var(--danger-ink); background: var(--danger-soft); border-color: var(--danger); }
+.builder-demo .builder-example { display: flex; flex-direction: column; gap: .6rem; }
+.builder-demo .builder-example-summary { order: 0; display: flex; flex-wrap: wrap; gap: .35rem 1rem; margin: 0; padding: .75rem 1rem; background: var(--surface-subtle); border: 1px solid var(--border); border-radius: var(--radius-card); }
+.builder-demo .builder-example-summary span { color: var(--ink-muted); }
+.builder-demo .builder-example-status { order: 7; margin: .2rem 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-card); }
+.builder-demo .builder-example > .technical-evidence { order: 8; }
+.builder-demo .builder-example-outcome { order: 3; margin: .2rem 0; }
+.builder-demo .builder-example-layout { display: contents; }
+.builder-demo .builder-example-map { order: 1; width: 100%; }
+.builder-demo .builder-example-map svg { width: 100%; height: min(54vw, 570px); max-height: none; }
+.builder-demo .builder-example-controls { order: 2; padding: .8rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-card); }
+.builder-demo .builder-example-result { order: 4; margin: .2rem 0; }
+.builder-demo .builder-example-controls h3 { margin: .2rem 0; }
+.builder-demo .builder-example-main-actions { display: flex; flex-wrap: wrap; align-items: end; gap: .5rem; }
+.builder-demo .builder-example-main-actions input { display: block; width: 9rem; }
+.builder-demo .builder-example-main-actions button { margin: 0; }
+.builder-demo .builder-example-controls > details { margin: .5rem 0; }
+.builder-demo .builder-example-movement { padding: .5rem .75rem; }
+@media (max-width: 540px) { .builder-demo .builder-example-map svg { height: 360px; } .builder-demo .builder-example-controls { padding: .75rem; } }

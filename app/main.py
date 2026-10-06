@@ -18,6 +18,7 @@ from app.reference_cases import router as reference_cases_router
 from app.scouting_geometry.api import router as scouting_geometry_router
 from app.scouting_sites.api import router as scouting_sites_router
 from app.site_preparations.api import router as site_preparations_router
+from app.victoria_zoning.api import router as victoria_zoning_router
 
 FRONTEND_DIST = Path(__file__).resolve().parents[1] / "frontend" / "dist"
 
@@ -40,6 +41,7 @@ def create_app(*, frontend_dist: Path = FRONTEND_DIST) -> FastAPI:
 
     application.include_router(address_search_router)
     application.include_router(municipal_sites_router)
+    application.include_router(victoria_zoning_router)
     application.include_router(case_preparations_router)
     application.include_router(conditional_screening_router)
     application.include_router(router)

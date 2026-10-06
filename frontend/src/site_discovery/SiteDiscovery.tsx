@@ -1,14 +1,28 @@
 import { useEffect, useState } from 'react'
 import { publicSourceUrl, readableDate, TechnicalDetails } from '../ReadableProvenance'
 import { DiscoveryFlow, initial } from './flow'
-import type { Confirmed, Source, State, Transport } from './flow'
+import type { Address, Confirmed, Source, State, Transport } from './flow'
 import { ObservationMap } from './ObservationMap'
 import { liveTransport } from './transport'
-import { CandidateChoices, leadingAddressIndex, leadingParcelIndex } from './CandidateChoices'
+import { CandidateChoices, harmlessCompletion, leadingAddressIndex, leadingParcelIndex } from './CandidateChoices'
 
 function SourceLine({ source }: { source: Source }) {
   const url = publicSourceUrl(source.url)
   return <p className="sd-source">{source.provider} · {source.record} · captured {readableDate(source.capturedAt)} · {source.review}. Source date {readableDate(source.sourceDate)}. {url && <a href={url} target="_blank" rel="noreferrer">Source</a>}</p>
+}
+export function AddressCandidates({ addresses, selectedId, onChoose }: { addresses: Address[]; selectedId: string | null; onChoose: (id: string) => void }) {
+  const leading = leadingAddressIndex(addresses)
+  return <section aria-label="Address choices"><h5>1 · Choose the address record</h5><p>Choose an address explicitly. Suggestions are unreviewed; a provider score is a ranking aid, not a probability or proof of parcel identity.</p>
+    {leading === null && addresses.length > 1 && <p className="sd-notice">Several address matches need review. Check the street, city and any corrections before choosing.</p>}
+    <CandidateChoices candidates={addresses} selectedId={selectedId} leadingIndex={leading} kind="address" render={(candidate, label) => <>
+      <p className="sd-candidate-label">{label === 'Leading address suggestion' && harmlessCompletion(candidate) ? `Matched to ${candidate.label.split(',')[0]}` : label}</p>
+      <button type="button" aria-pressed={selectedId === candidate.id} onClick={() => onChoose(candidate.id)}>{candidate.label}{candidate.locality ? ` · ${candidate.locality}` : ''}</button>
+      <p>Address match: {candidate.precision.replace(/_/g, ' ').toLowerCase()}{!harmlessCompletion(candidate) && candidate.issues.length ? ` · Review: ${candidate.issues.join('; ')}` : ''}. Parcel identity requires a separate check.</p>
+      <SourceLine source={candidate.source} />
+      {candidate.issues.length > 0 && <details><summary>Provider address details</summary><p>{candidate.issues.join('; ')}.</p></details>}
+      <TechnicalDetails title="Complete address record"><pre>{JSON.stringify(candidate.raw, null, 2)}</pre></TechnicalDetails>
+    </>} />
+  </section>
 }
 export function SiteDiscovery({ onConfirm, transport = liveTransport, onManual }: { onConfirm: (value: Confirmed | null) => void; transport?: Transport; onManual?: () => void }) {
   const [state, setState] = useState<State>(initial)
@@ -30,16 +44,7 @@ export function SiteDiscovery({ onConfirm, transport = liveTransport, onManual }
     </form>}
     {busy && <p role="status">{state.stage === 'addresses' ? 'Searching addresses…' : state.stage === 'parcels' ? 'Searching Victoria parcels…' : 'Fetching parcel and rooflines…'}</p>}
     {message && <p className="sd-notice" role="status">{message}</p>}
-    {addressOpen && addresses.length > 0 && <section aria-label="Address choices"><h5>1 · Choose the address record</h5><p>Address suggestions can be corrected or ambiguous. Provider scores compare address suggestions only; they are not match probabilities or proof of parcel identity. Choose a record explicitly.</p>
-      {leadingAddressIndex(addresses) === null && addresses.length > 1 && <p className="sd-notice">These address results have no clear leading suggestion. Review every locality, precision and provider correction before choosing.</p>}
-      {addresses.some(candidate => candidate.issues.length > 0) && <p className="sd-notice">At least one address suggestion has a provider correction or issue. Review those details before choosing; the entered address may differ from the provider record.</p>}
-      <CandidateChoices candidates={addresses} selectedId={address?.id ?? null} leadingIndex={leadingAddressIndex(addresses)} kind="address" render={(candidate, label) => <>
-        <p className="sd-candidate-label">{label}</p>
-        <button type="button" aria-pressed={address?.id === candidate.id} onClick={() => { setAddressOpen(false); setParcelOpen(true); setObservationOpen(true); void flow.chooseAddress(candidate.id) }}>{candidate.label}{candidate.locality ? ` · ${candidate.locality}` : ''}</button>
-        <p>Address match: {candidate.precision.replace(/_/g, ' ').toLowerCase()}{candidate.issues.length ? ` · Provider corrections or issues: ${candidate.issues.join('; ')}` : ''}. This is not parcel identity.</p>
-        <SourceLine source={candidate.source} />
-        <TechnicalDetails title="Complete address record"><pre>{JSON.stringify(candidate.raw, null, 2)}</pre></TechnicalDetails>
-      </>} /></section>}
+    {addressOpen && addresses.length > 0 && <AddressCandidates addresses={addresses} selectedId={address?.id ?? null} onChoose={id => { setAddressOpen(false); setParcelOpen(true); setObservationOpen(true); void flow.chooseAddress(id) }} />}
     {address && !busy && parcels.length === 0 && <p><button type="button" onClick={() => void flow.chooseAddress(address.id)}>Retry Victoria parcel search</button></p>}
     {parcel && !parcelOpen && <div className="sd-selected"><p><strong>Parcel lead:</strong> {parcel.label}. {parcel.match} Property confirmation is still required.</p><button type="button" onClick={() => setParcelOpen(true)}>Change parcel</button></div>}
     {parcelOpen && parcels.length > 0 && <section aria-label="Parcel choices"><h5>2 · Choose a parcel to inspect</h5><p>More than one parcel may match. A source join is unreviewed; a nearby point does not prove property identity. Choose a parcel explicitly.</p>
