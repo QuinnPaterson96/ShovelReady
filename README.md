@@ -1,6 +1,6 @@
 # ShovelReady
 
-Latest demo integration: [Project details with mapped zoning, attributed defaults and floor-area help](docs/integration-project-details.md), building on the [address and placement integration](docs/integration-map-zoning.md).
+Latest demo integration: [one homeowner placement summary with focused next actions](docs/integration-homeowner-summary.md), building on [Project details and mapped zoning](docs/integration-project-details.md).
 
 ShovelReady explores a practical question: **given a prefabricated building design, where could it plausibly be built?**
 

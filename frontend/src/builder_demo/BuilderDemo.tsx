@@ -24,6 +24,9 @@ import { applyMappedZoning, initialProjectSettings, withFloorAreaBasis } from '.
 import type { ProjectSettings } from '../conditional_screening/projectSettings'
 import { parseZoningLookup, selectedParcelRef, zoningProjection, type ZoningLookup } from '../conditional_screening/victoriaZoning'
 import { PlacementScenarios } from '../conditional_screening/PlacementScenarios'
+import { HomeownerSummary } from '../conditional_screening/HomeownerSummary'
+import { homeownerSummary } from '../conditional_screening/victoriaSummaryAdapter'
+import { focusSummaryTarget } from '../conditional_screening/summaryNavigation'
 import { parseScenarioResult, type ScenarioRequest, type ScenarioResult } from '../conditional_screening/scenarios'
 import { currentPlacementRevision, expectedPropertyRevision, parseScreeningResult, propertyGeometryRevision, screeningCheckTitle, screeningIdentity, type Pathway, type ScreeningRequest, type ScreeningResult } from '../conditional_screening/model'
 import { EnquiryPreview, emailDraftUrl, enquiryEmailBody, enquiryMarkdown, enquiryPlainText, validRecipient, type EnquiryDocument } from './enquiry'
@@ -141,6 +144,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const [conditionalState, setConditionalState] = useState<{ key: string; result: ScreeningResult } | null>(null)
   const [conditionalError, setConditionalError] = useState<{ key: string; message: string } | null>(null)
   const [conditionalBusy, setConditionalBusy] = useState(false)
+  const [conditionalRetry, setConditionalRetry] = useState(0)
   const [streetEdge, setStreetEdge] = useState<string | null>(null)
   const [rearEdge, setRearEdge] = useState<string | null>(null)
   const [boundaryMode, setBoundaryMode] = useState<BoundaryMapMode>('place')
@@ -148,6 +152,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const [scenarioState, setScenarioState] = useState<{ key: string; result: ScenarioResult } | null>(null)
   const [scenarioError, setScenarioError] = useState<{ key: string; message: string } | null>(null)
   const [scenarioBusy, setScenarioBusy] = useState(false)
+  const [scenarioRetry, setScenarioRetry] = useState(0)
   const [revision, setRevision] = useState(0)
   const [use, setUse] = useState('')
   const [timing, setTiming] = useState('')
@@ -209,7 +214,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     ? { schema_version: 'placement-scenarios.request.v1', geometry: measurementResult.result.input, assumptions: currentAssumptions,
       model_revision: `catalogue-record:${model.model_id}@${bundledCatalogue.snapshot_id}`, proposal: pathway, proposal_evidence: effectiveSettings.evidence,
       street_edge_id: streetEdge, rear_edge_id: rearEdge, street_pattern: streetPattern } : null
-  const scenarioKey = scenarioRequest ? JSON.stringify(scenarioRequest) : null
+  const scenarioKey = scenarioRequest ? JSON.stringify([scenarioRequest, scenarioRetry]) : null
   const currentScenario = scenarioKey && scenarioState?.key === scenarioKey ? scenarioState.result : null
   const currentScenarioError = scenarioKey && scenarioError?.key === scenarioKey ? scenarioError.message : ''
   useEffect(() => {
@@ -240,7 +245,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   }, [scenarioKey])
   const screeningRequest: ScreeningRequest | null = measurementResult && currentAssumptions && zoningCase && measurementResult.site.site.parcel.id === zoningCase.site.parcel.id
     ? { schema_version: 'conditional-screening.api.v1', assumptions: currentAssumptions, model_revision: `catalogue-record:${model.model_id}@${bundledCatalogue.snapshot_id}`, proposal: pathway, proposal_evidence: effectiveSettings.evidence } : null
-  const requestKey = screeningRequest ? screeningIdentity(screeningRequest) : null
+  const requestKey = screeningRequest ? JSON.stringify([screeningIdentity(screeningRequest), conditionalRetry]) : null
   const currentScreening = requestKey && conditionalState?.key === requestKey ? conditionalState.result : null
   const currentScreeningError = requestKey && conditionalError?.key === requestKey ? conditionalError.message : ''
   useEffect(() => {
@@ -286,6 +291,18 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     return () => document.removeEventListener('click', revealStep)
   }, [])
   const currentMeasurement = measurementResult?.result ?? manual?.assessment
+  const summary = zoningCase ? homeownerSummary({ geometry: measurementResult?.result ?? null,
+    geometryComplete: !!measurementResult && overlapFinding(zoningCase, measurementResult.result).complete,
+    scenario: currentScenario, screening: currentScreening,
+    assumptions: currentAssumptions, settings: effectiveSettings, mapped: mappedZoning, lookup: currentZoning, zoningBusy, zoningError: currentZoningError,
+    scenarioError: currentScenarioError, screeningError: currentScreeningError, onRetryAvailable: !!zoningKey }) : null
+  function navigateFlag(target: string) {
+    if (target === 'zoning-retry') { setZoningRetry(value => value + 1); return }
+    if (target === 'retry-scenario') { setScenarioRetry(value => value + 1); return }
+    if (target === 'retry-screening') { setConditionalRetry(value => value + 1); return }
+    setExpanded(previous => ({ ...previous, placement: true }))
+    requestAnimationFrame(() => focusSummaryTarget(document, target))
+  }
   const placementSummary = currentMeasurement
     ? `Measured observation · ${currentMeasurement.checks.some(check => check.relation === 'outside' || check.relation === 'touches' || check.relation === 'positive_area_overlap') ? 'conflict observed' : 'review captured geometry'}${measurementResult?.result.checks.some(check => check.comparison === 'shortfall') ? ' · clearance shortfall' : ''} · ${currentScreening ? 'conditional candidate zoning checks available' : 'zoning comparison unresolved'}. Expand to review distances and findings.`
     : 'No current measurement. Placement can remain unknown in your enquiry.'
@@ -369,17 +386,19 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     </section>
     <section className="builder-stage" id="builder-placement" aria-labelledby="builder-placement-title">
       <p className="eyebrow">Placement</p><h2 id="builder-placement-title">Explore one approximate placement</h2>
-      <p>{propertyComplete ? placementSummary : 'Choose and confirm a property to explore placement.'}</p>
+      <p>{propertyComplete ? zoningCase ? 'Explore the placement, then review the summary and next actions below.' : placementSummary : 'Choose and confirm a property to explore placement.'}</p>
       <button type="button" aria-expanded={expanded.placement && propertyComplete} aria-controls="builder-placement-content" disabled={!propertyComplete} onClick={() => toggleStep('placement')}>{expanded.placement ? 'Collapse placement' : 'Explore placement'}</button>
       <div id="builder-placement-content" hidden={!expanded.placement || !propertyComplete}>
       {mode === 'manual' && <p>Your manual sketch and placement controls are in Property. Reopen that step to adjust them.</p>}
       {mode === 'example' && <ExampleProperty key={revision} boundaryInteraction={boundaryInteraction} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} />}
       {mode === 'live' && (liveCase ? <OccupiedLots key={revision} compactPlacement suppliedCase={liveCase} boundaryInteraction={boundaryInteraction} allowedModelIds={[MODEL_ID]} initialModelId={MODEL_ID} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} showHandoff={false} /> : <p>Confirm a Victoria property above to open its captured parcel sketch. Available geometry is approximate and unreviewed.</p>)}
 
-    {zoningCase && <><section className="builder-placement-results" aria-label="Current placement results and checklist"><h3>Current results and checklist</h3>
-      {measurementResult?.result.checks.some(check => check.relation === 'outside' || check.relation === 'touches' || check.relation === 'positive_area_overlap') && <p className="notice"><strong>Captured geometry conflict at this position.</strong> A passing candidate distance subset below cannot cancel a parcel or roofline overlap.</p>}
-      <PlacementScenarios assumptions={currentAssumptions} request={scenarioRequest} result={currentScenario} busy={!!scenarioKey && scenarioBusy && !currentScenario} error={currentScenarioError} frontEdge={streetEdge} rearEdge={rearEdge} boundaryMode={boundaryMode} onBoundaryMode={setBoundaryMode} />
-      <ConditionalScreen compact result={currentScreening} busy={!!requestKey && conditionalBusy && !currentScreening} error={currentScreeningError} /></section>
+    {zoningCase && <><section className="builder-placement-results" aria-label="Current placement results">
+      {summary && <HomeownerSummary summary={summary} onNavigate={navigateFlag} />}
+      <details className="builder-how-checked"><summary>How we checked · sources, assumptions and exact evidence</summary>
+        <PlacementScenarios assumptions={currentAssumptions} request={scenarioRequest} result={currentScenario} busy={!!scenarioKey && scenarioBusy && !currentScenario} error={currentScenarioError} frontEdge={streetEdge} rearEdge={rearEdge} boundaryMode={boundaryMode} onBoundaryMode={setBoundaryMode} />
+        <ConditionalScreen compact result={currentScreening} busy={!!requestKey && conditionalBusy && !currentScreening} error={currentScreeningError} />
+      </details></section>
       <ProjectDetails settings={effectiveSettings} mapped={mappedZoning} lookup={currentZoning} busy={!!zoningKey && zoningBusy && !currentZoning} error={currentZoningError} onRetry={() => setZoningRetry(value => value + 1)} onChange={next => { setProjectSettings(next); setReadyFor(null) }} />
       <details className="builder-optional"><summary>Optional assumptions and user measurements</summary>
       <p>Use the current placement with explicitly stated lot and building assumptions. Candidate rules are sourced, but their currentness and site applicability still need review.</p>

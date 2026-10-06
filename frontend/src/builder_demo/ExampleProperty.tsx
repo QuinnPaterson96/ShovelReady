@@ -126,12 +126,10 @@ export function ExampleProperty({ onMeasurement, boundaryInteraction }: { onMeas
   const conflictIds = new Set(finding?.conflicts.flatMap(check => check.source_feature_ids) ?? [])
   const conflict = observation?.conflict ?? false
   const unresolved = observation?.unresolved ?? false
-  const shortfall = observation?.shortfall ?? false
-  const status = phase === 'stale' ? 'Placement changed — check pending' :
-    phase === 'measuring' ? 'Measuring this placement' : phase === 'unresolved' ? 'Measurement unresolved' :
-      conflict ? 'Observed placement conflict' : unresolved ? 'Measurement unresolved' :
-        shortfall ? 'Your clearance target has a shortfall' : 'No observed conflict at this position'
-  const statusTone = phase === 'current' ? conflict ? 'conflict' : unresolved || shortfall ? 'unknown' : 'clear' : 'unknown'
+  const conflicts = finding?.conflicts ?? []
+  const crossesParcel = conflicts.some(check => check.kind === 'containment')
+  const overlapsRoof = conflicts.some(check => check.kind === 'building_overlap')
+  const checkWarning = phase === 'unresolved' || phase === 'current' && (conflict || unresolved)
 
   return <section className="builder-example" aria-label="Saved example property">
     <p className="builder-example-summary"><strong>Model 300 · {show(Number(position.width), 'length')} wide × {show(Number(position.depth), 'length')} long</strong><span>Nominal exterior rectangle · saved Victoria example · {source.provider}, {source.record_label} · captured {readableDate(source.capture_date)} · {source.review_status} · <a href={publicSourceUrl(source.reference) ?? '#builder-example-evidence'} target="_blank" rel="noreferrer">Parcel source</a></span></p>
@@ -173,18 +171,18 @@ export function ExampleProperty({ onMeasurement, boundaryInteraction }: { onMeas
           <label htmlFor="builder-example-roofline-minimum">Minimum to captured roofline (m)</label><MeasurementInput id="builder-example-roofline-minimum" dimension="length" type="number" min="0" step="any" value={assumptions.roofline} onChange={event => editAssumption('roofline', event.target.value)} />
         </fieldset></details>
         <button type="button" disabled={busy || !request} onClick={() => void measure(position, assumptions)}>{busy ? 'Checking…' : phase === 'unresolved' ? 'Retry placement check' : 'Recheck placement'}</button>
-        <p role="status">{message}</p>
       </div>
     </div>
-    <div className={`builder-example-outcome builder-example-outcome--${statusTone}`} role="status" aria-live="polite">
-      <strong><span aria-hidden="true">{statusTone === 'conflict' ? '✕ ' : statusTone === 'clear' ? '✓ ' : '… '}</span>{status}</strong><p>{phase === 'stale' ? 'The previous observation no longer describes these inputs.' : phase === 'measuring' ? 'Checking the supplied rectangle against captured geometry.' : phase === 'unresolved' ? `${message} No current geometry conclusion is available.` : conflict ? 'The supplied rectangle crosses or touches a captured parcel or roofline outline. This does not test other positions.' : unresolved ? 'Some captured geometry or assumption comparisons could not be resolved. Inspect the details below.' : shortfall ? 'The observed distance falls below a minimum you entered. This is not a legal setback comparison.' : 'No parcel crossing or captured roofline overlap was observed for this supplied position. Other obstructions and legal conditions remain unknown.'}</p>
-    </div>
-    {result && <div className="builder-example-result"><h3>Measured observation for this position</h3>
-      {(editedDimensions.width || editedDimensions.depth) && <p className="notice"><strong>Custom size scenario.</strong> You changed the model dimensions. These measurements describe your edited rectangle; availability of this product size is unconfirmed.</p>}
+    {checkWarning && <div className={`builder-example-outcome builder-example-outcome--${conflict ? 'conflict' : 'unknown'}`} role="alert">
+      <strong>{phase === 'unresolved' || unresolved && !conflict ? 'Placement could not be fully checked' : 'Conflict at this position'}</strong>
+      <p>{phase === 'unresolved' ? `${message} ${request ? 'Try again or edit the placement.' : 'Correct the placement inputs to check again.'}` : conflict ? `${crossesParcel ? 'The unit crosses or touches the mapped parcel boundary. ' : ''}${overlapsRoof ? 'The unit overlaps or touches a mapped roofline. ' : ''}Move the unit on the map and recheck. This finding applies to this position only.${unresolved ? ' Some measurements also remain unresolved; review How we checked.' : ''}` : 'Some mapped geometry or your comparison could not be checked. Review How we checked and try another position.'} Approximate map; legal siting remains unassessed.</p>
+    </div>}
+    {result && (editedDimensions.width || editedDimensions.depth) && <p className="notice builder-example-custom-size"><strong>Custom size scenario.</strong> You changed the model dimensions. These measurements describe your edited rectangle; availability of this product size is unconfirmed.</p>}
+    {result && <details className="builder-example-result"><summary>How we checked · geometry measurements and evidence</summary>
       <p>{containment?.status === 'observed' ? `Parcel containment: ${containment.relation?.replace(/_/g, ' ') ?? 'unknown'}${containment.area_m2 && containment.area_m2 > 0 ? `; ${show(containment.area_m2, 'area')} outside` : ''}.` : 'Parcel containment unresolved.'} {finding?.conflicts.length ? `${finding.conflicts.filter(check => check.kind === 'building_overlap').map(check => { const index = exampleCase.site.buildings.findIndex(roof => check.source_feature_ids.includes(roof.id)); return `Captured roofline ${index + 1}: ${check.relation === 'touches' ? 'touches the rectangle' : `${show(check.area_m2, 'area')} overlap`}` }).join('; ')}${finding.conflicts.some(check => check.kind === 'containment') ? ' Parcel boundary conflict.' : ''}` : finding?.complete ? 'No overlap with the captured roofline was observed. Other obstructions remain unknown.' : 'Captured roofline overlap remains unresolved.'}</p>
       <p>Distance to captured parcel boundary: {boundary?.status === 'observed' ? show(boundary.distance_m, 'length') : 'unresolved'}. Distance to nearest captured roofline: {nearestRoof?.status === 'observed' ? show(nearestRoof.distance_m, 'length') : 'unresolved'}.</p>
       {comparisons.length > 0 && <><h4>Your clearance target comparisons</h4><ul>{comparisons.map(check => { const parcel = check.id === 'requirement:user-parcel-minimum'; const minimum = parcel ? assumptions.parcel : assumptions.roofline; return <li key={check.id}>{parcel ? 'Captured parcel boundary' : 'Captured roofline'}: your minimum {show(Number(minimum), 'length')}; measured {show(check.distance_m, 'length')}. {check.comparison === 'shortfall' ? `Short by ${show(check.margin_m === null ? null : Math.abs(check.margin_m), 'length')}.` : check.comparison === 'meets' ? `Meets your target by ${show(check.margin_m, 'length')}.` : `Unresolved${check.reason ? `: ${check.reason.replace(/_/g, ' ')}` : '.'}`} User assumption, not a legal setback or permit result.</li> })}</ul></>}
-      <p>This geometry observation does not establish zoning, legal setbacks, installed height, access or permit eligibility. Exact distances and shortfalls are available in the source details below.</p></div>}
+      <p>This geometry observation does not establish zoning, legal setbacks, installed height, access or permit eligibility. Exact distances and shortfalls are available in the source details below.</p></details>}
     <details className="builder-example-status"><summary>Site source and limits</summary>
       <p>City of Victoria {source.record_label}; parcel and mapped roofline snapshot captured {readableDate(source.capture_date)}. Source observations and Model 300 dimensions are unreviewed. The copper rectangle is an illustrative placement, not a proposed or approved building location.</p>
       <p>Contains information licensed under the <a href="https://opendata.victoria.ca/pages/open-data-licence" target="_blank" rel="noreferrer">Open Government Licence – City of Victoria</a>. <a href={publicSourceUrl(source.reference) ?? '#builder-example-evidence'} target="_blank" rel="noreferrer">Parcel source</a>{roofSource && <> · <a href={publicSourceUrl(roofSource.reference) ?? '#builder-example-evidence'} target="_blank" rel="noreferrer">Roofline source</a></>}.</p>

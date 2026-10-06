@@ -1,0 +1,16 @@
+.homeowner-summary { border: 1px solid var(--border); border-left: 5px solid var(--copper); border-radius: var(--radius-card); background: var(--surface); padding: 1rem; margin: 1rem 0; }
+.homeowner-summary h3 { margin: 0 0 .35rem; }
+.homeowner-summary p { margin: .3rem 0 .7rem; }
+.homeowner-summary__scope { color: var(--ink-muted); }
+.homeowner-summary ul { list-style: none; padding: 0; margin: 1rem 0 0; display: grid; gap: .55rem; }
+.homeowner-summary li { display: flex; gap: .75rem; align-items: flex-start; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: .7rem; min-width: 0; }
+.homeowner-summary li > div { min-width: 0; }
+.homeowner-summary li p { margin: .2rem 0 .4rem; }
+.homeowner-summary__icon { display: inline-grid; place-items: center; width: 1.65rem; height: 1.65rem; flex: 0 0 auto; border-radius: 50%; border: 1px solid currentColor; font-weight: 700; }
+.homeowner-summary__conflict { color: var(--danger-ink); background: var(--danger-soft); }
+.homeowner-summary__checked { color: var(--neutral-ink); background: var(--neutral-soft); }
+.homeowner-summary__unknown, .homeowner-summary__unsupported { color: var(--ink); background: var(--surface-subtle); }
+.homeowner-summary button { min-height: 44px; }
+.homeowner-summary button:focus-visible, .builder-how-checked summary:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.builder-how-checked > summary { cursor: pointer; min-height: 44px; font-weight: 650; }
+@media (max-width: 390px) { .homeowner-summary { padding: .75rem; } .homeowner-summary li { padding: .55rem; } }
