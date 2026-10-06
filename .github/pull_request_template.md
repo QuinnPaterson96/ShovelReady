@@ -16,6 +16,7 @@ Separate implemented, verified, proposed and blocked work. -->
 - Checks: <!-- Exact commands, working directory, relevant setup/environment and observed results. Link durable evidence where useful. -->
 - Skips/not run: <!-- What and why; distinguish local checks from CI and flag evidence from an earlier head. -->
 - Demo: <!-- Runnable command + setup/expected result, or N/A with reason. -->
+- Homeowner UX (if affected): <!-- Apply docs/visual-identity.md#homeowner-decision-and-disclosure-standard. Show the decision and next action, attributed/correctable assumptions, flag-to-control navigation, one shared placement workspace and keyboard/mobile behavior. Deduplicate generic disclaimers; retain material uncertainty. State evidence or remaining gaps; N/A for non-UI changes. -->
 
 ## Remaining work
 

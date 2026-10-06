@@ -14,6 +14,94 @@ between a promising lead, an unresolved condition, a computed draft example, and
 an accepted result. The name suggests readiness; page labels must state the actual
 scope and evidence status without relying on colour or a distant disclaimer.
 
+## Homeowner decision and disclosure standard
+
+Decision: October 6, 2026. These are design and review requirements; they do not
+claim that every existing screen already follows them.
+
+The homeowner journey answers **“Does this look plausible enough that contacting
+the provider is worthwhile?”** It supports preliminary screening, not legal
+certainty. Optimize for a useful next decision and a better-informed enquiry.
+Neither a wall of disclaimers nor a reassuring answer unsupported by the checks
+serves that purpose.
+
+### Results before explanations
+
+- Lead with a short conclusion, the reason that matters and one useful next action.
+  Examples are “Worth exploring with the provider”, “Resolve this question first”
+  and “This placement has a conflict”. These are conditional examples, not default
+  conclusions: an overall recommendation needs sufficient relevant coverage and
+  must not follow from a geometry pass or a majority of green rows alone.
+- Show the check counts adjacent to placement, with text and icons as well as
+  colour. Counts describe coverage and findings, not an approval probability.
+  Distinguish completed workflow steps from successful assessment checks.
+- Keep material assumptions, conflicts and unknowns visible. Prioritize unknowns
+  by whether they could change the next decision; do not turn every missing fact
+  into a blocking warning or quietly classify unsupported checks as passes.
+- Each resolvable flag opens and focuses its actual control or offers a real retry.
+  Distinguish a homeowner question from missing product coverage or a source review
+  task. State the useful next step when the homeowner cannot resolve it in the app.
+
+### Explain scope once; explain specific uncertainty where it matters
+
+Use one concise preliminary-screening statement at the journey entry or result.
+Do not repeat generic “not legal advice”, “not permit approval” or equivalent
+paragraphs at each field, step and check. A standalone export or enquiry carries
+its own concise scope and material assumptions because it may leave the app.
+
+Add a local qualification only when it changes interpretation, input or action:
+for example, “Manufacturer height excludes the site's foundation and grade” or
+“The mapped outline may omit an existing building”. Keep that qualification
+specific and actionable. Avoid stacking generic caveats around it.
+
+Put calculations, full citations, review history and technical limitations in
+accessible expandable help/evidence. Show a compact shared source summary where
+multiple findings use the same evidence instead of repeating it on every row.
+Preserve complete provenance in contracts and exports; disclosure reduction is
+a presentation change, not a reduction in evidence or uncertainty tracking.
+
+### Transparent defaults and confirmation
+
+Reasonable, reversible scenario defaults may reduce work, such as proposing a new
+garden suite or assuming none already exists. Name the assumption: “Assuming no
+existing garden suite”, rather than “Assumed yes”. Offer a direct correction and
+“Not sure”; the latter restores unknown. Confirmation changes the evidence state
+to **user-confirmed**, never independently verified. A result relying on an
+unconfirmed default retains a short “assuming…” qualification.
+
+Keep default assumptions, user confirmations and source observations distinct
+through evaluation, summaries, exports and enquiries. Never replace entered or
+observed facts with a default, reapply a rejected default, or carry incompatible
+confirmations to a changed property. Do not default installed height, legal
+boundaries, variances or measurement definitions to favourable facts. An unknown
+must not become zero, false or permission merely to simplify the UI.
+
+### One placement workspace
+
+Organize controls around homeowner tasks rather than internal evaluator modules.
+Use one map and one shared set of controls, with accessible action tabs such as
+**Move unit / Mark street side / Adjust boundaries**. Switching actions preserves
+the current map view and compatible placement inputs. Checklist links activate
+the relevant action, expand required controls and move focus to them.
+
+Do not create a competing edge editor in another section of the same journey.
+Detailed measurements belong in an expandable part of the shared panel. Ask extra
+boundary questions when they could change the result, using existing conservative
+scenarios first. Suggested opposite/side roles remain attributed suggestions and
+are limited to supported geometry; unusual lots retain an explicit correction or
+unknown path. Provide keyboard and touch operation and a clear active action.
+
+### UI review questions
+
+For affected journeys, demonstrate that a homeowner can identify the finding,
+its material assumption and the next action without opening technical evidence.
+Review whether flags reach the right input, defaults can be corrected or made
+unknown, tabs preserve state, and mobile/keyboard use remains practical. Remove
+duplicated controls, repeated generic disclaimers and evaluator prose dumps.
+Verify meaningful state transitions and evidence preservation with proportionate
+integration/journey tests; do not freeze incidental wording or add tests merely
+for documentation changes. Record unimplemented rules as gaps, not completed UX.
+
 ## Plain-language labels and help
 
 Lead with familiar words and units. Prefer **Width (m)** over "Nominal exterior
