@@ -42,7 +42,7 @@ test('saved example retains the licensed packet and an explicit measurable start
   assert.equal(request.placement.width_m, 3.048)
   assert.equal(request.placement.depth_m, 9.144)
   assert.deepEqual(request.placement.centre_xy, [473689.18, 5362171.53])
-  assert.equal(request.placement.angle_degrees, 90)
+  assert.ok(request.placement.angle_degrees > -10 && request.placement.angle_degrees < -9, 'building length follows the saved lot axis')
   assert.equal(exampleRequest({ ...initialExamplePosition(), width: '' }), null)
   assert.equal(exampleRequest({ ...initialExamplePosition(), x: 'unknown' }), null)
   const html = renderToStaticMarkup(createElement(ExampleProperty, { onMeasurement: () => {} }))

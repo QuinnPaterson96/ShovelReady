@@ -1,4 +1,5 @@
 import savedCase from './example-site.json'
+import { suggestPlacementOrientation } from '../placement_orientation'
 import { bundledCatalogue } from '../model_catalogue/model'
 import type { Case, Result } from '../occupied_lots/contract'
 import { parseResult } from '../occupied_lots/contract'
@@ -12,8 +13,9 @@ export const exampleSourcePage = (reference: string | null) => {
   const url = new URL(reference)
   return `${url.origin}${url.pathname}`
 }
+export const exampleOrientation = suggestPlacementOrientation(exampleCase.site)
 export const examplePlacement = {
-  x: 473689.18, y: 5362171.53, angle: 90,
+  x: 473689.18, y: 5362171.53, angle: exampleOrientation.status === 'suggested' ? exampleOrientation.angle_degrees : 90,
 } as const
 
 const model = bundledCatalogue.models.find(item => item.model_id === 'aux-300')

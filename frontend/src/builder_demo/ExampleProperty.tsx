@@ -6,7 +6,7 @@ import { publicSourceUrl, readableDate, TechnicalDetails } from '../ReadableProv
 import { path, points } from '../occupied_lots/contract'
 import type { OccupiedMeasurement } from '../occupied_lots/OccupiedLots'
 import type { Result } from '../occupied_lots/contract'
-import { emptyExampleAssumptions, exampleCase, exampleObservation, exampleRequest, initialExamplePosition, parseExampleResult } from './example'
+import { emptyExampleAssumptions, exampleCase, exampleOrientation, exampleObservation, exampleRequest, initialExamplePosition, parseExampleResult } from './example'
 import type { ExampleAssumptions, ExamplePosition } from './example'
 
 const source = exampleCase.site.parcel.source
@@ -25,6 +25,7 @@ export function ExampleProperty({ onMeasurement }: { onMeasurement: (value: Occu
   const [busy, setBusy] = useState(false)
   const [editedDimensions, setEditedDimensions] = useState({ width: false, depth: false })
   const [step, setStep] = useState(1)
+  const [rotationFocused, setRotationFocused] = useState(false)
   const version = useRef(0)
   const map = useRef<SVGSVGElement>(null)
   const dragging = useRef(false)
@@ -161,8 +162,10 @@ export function ExampleProperty({ onMeasurement }: { onMeasurement: (value: Occu
         <div className="builder-example-fields">
           <div><MeasurementLabel field="width" inputId="builder-example-width" /><MeasurementInput id="builder-example-width" dimension="length" type="number" step="any" value={position.width} onChange={event => edit('width', event.target.value)} /></div>
           <div><MeasurementLabel field="depth" inputId="builder-example-depth" /><MeasurementInput id="builder-example-depth" dimension="length" type="number" step="any" value={position.depth} onChange={event => edit('depth', event.target.value)} /></div>
-          <div><label htmlFor="builder-example-angle">Rotation (degrees)</label><input id="builder-example-angle" type="number" step="any" value={position.angle} onChange={event => edit('angle', event.target.value)} /></div>
+          <div><label htmlFor="builder-example-angle">Rotation (degrees)</label><input id="builder-example-angle" type="number" step="any" value={rotationFocused || !position.angle.trim() || !Number.isFinite(Number(position.angle)) ? position.angle : String(Number(Number(position.angle).toFixed(2)))} onFocus={() => setRotationFocused(true)} onBlur={() => setRotationFocused(false)} onChange={event => edit('angle', event.target.value)} /></div>
         </div>
+        <button type="button" disabled={exampleOrientation.status !== 'suggested'} onClick={() => { if (exampleOrientation.status === 'suggested') edit('angle', String(exampleOrientation.angle_degrees)) }}>Align to lot</button>
+        <p className="metadata">{exampleOrientation.status === 'suggested' ? 'The initial rotation follows the approximate long direction of the captured lot. You can change it or align it again; alignment does not choose a clear position or establish frontage or setbacks.' : exampleOrientation.reason}</p>
         <fieldset className="builder-example-assumptions"><legend>Optional clearance targets you choose</legend>
           <p>Compare measured distances with your own minimums. Blank means no target; these are not Victoria setback rules.</p>
           <label htmlFor="builder-example-parcel-minimum">Minimum to captured parcel boundary (m)</label><MeasurementInput id="builder-example-parcel-minimum" dimension="length" type="number" min="0" step="any" value={assumptions.parcel} onChange={event => editAssumption('parcel', event.target.value)} />
@@ -176,8 +179,8 @@ export function ExampleProperty({ onMeasurement }: { onMeasurement: (value: Occu
       {(editedDimensions.width || editedDimensions.depth) && <p className="notice"><strong>Custom size scenario.</strong> You changed the model dimensions. These measurements describe your edited rectangle; availability of this product size is unconfirmed.</p>}
       <p>{containment?.status === 'observed' ? `Parcel containment: ${containment.relation?.replace(/_/g, ' ') ?? 'unknown'}${containment.area_m2 && containment.area_m2 > 0 ? `; ${show(containment.area_m2, 'area')} outside` : ''}.` : 'Parcel containment unresolved.'} {finding?.conflicts.length ? `${finding.conflicts.filter(check => check.kind === 'building_overlap').map(check => { const index = exampleCase.site.buildings.findIndex(roof => check.source_feature_ids.includes(roof.id)); return `Captured roofline ${index + 1}: ${check.relation === 'touches' ? 'touches the rectangle' : `${show(check.area_m2, 'area')} overlap`}` }).join('; ')}${finding.conflicts.some(check => check.kind === 'containment') ? ' Parcel boundary conflict.' : ''}` : finding?.complete ? 'No overlap with the captured roofline was observed. Other obstructions remain unknown.' : 'Captured roofline overlap remains unresolved.'}</p>
       <p>Distance to captured parcel boundary: {boundary?.status === 'observed' ? show(boundary.distance_m, 'length') : 'unresolved'}. Distance to nearest captured roofline: {nearestRoof?.status === 'observed' ? show(nearestRoof.distance_m, 'length') : 'unresolved'}.</p>
-      {comparisons.length > 0 && <><h4>Your clearance target comparisons</h4><ul>{comparisons.map(check => { const parcel = check.id === 'requirement:user-parcel-minimum'; const minimum = parcel ? assumptions.parcel : assumptions.roofline; return <li key={check.id}>{parcel ? 'Captured parcel boundary' : 'Captured roofline'}: your minimum {show(Number(minimum), 'length')}; measured {show(check.distance_m, 'length')}. {check.comparison === 'shortfall' ? `Short by ${show(check.margin_m === null ? null : Math.abs(check.margin_m), 'length')} (exact ${check.margin_m === null ? 'unknown' : Math.abs(check.margin_m)} m).` : check.comparison === 'meets' ? `Meets your target by ${show(check.margin_m, 'length')}.` : `Unresolved${check.reason ? `: ${check.reason.replace(/_/g, ' ')}` : '.'}`} User assumption, not a legal setback or permit result.</li> })}</ul></>}
-      <p>No zoning, legal setback, installed height, access or permit eligibility was assessed.</p></div>}
+      {comparisons.length > 0 && <><h4>Your clearance target comparisons</h4><ul>{comparisons.map(check => { const parcel = check.id === 'requirement:user-parcel-minimum'; const minimum = parcel ? assumptions.parcel : assumptions.roofline; return <li key={check.id}>{parcel ? 'Captured parcel boundary' : 'Captured roofline'}: your minimum {show(Number(minimum), 'length')}; measured {show(check.distance_m, 'length')}. {check.comparison === 'shortfall' ? `Short by ${show(check.margin_m === null ? null : Math.abs(check.margin_m), 'length')}.` : check.comparison === 'meets' ? `Meets your target by ${show(check.margin_m, 'length')}.` : `Unresolved${check.reason ? `: ${check.reason.replace(/_/g, ' ')}` : '.'}`} User assumption, not a legal setback or permit result.</li> })}</ul></>}
+      <p>No zoning, legal setback, installed height, access or permit eligibility was assessed. Exact distances and shortfalls are available in the source details below.</p></div>}
     <TechnicalDetails title="Saved example sources and exact projected coordinates"><pre id="builder-example-evidence">{JSON.stringify({ schema_version: 'builder-example.v1', source: exampleCase, placement: position, assumption_inputs: assumptions, request_requirements: request?.requirements ?? null, measurement: result }, null, 2)}</pre></TechnicalDetails>
   </section>
 }
