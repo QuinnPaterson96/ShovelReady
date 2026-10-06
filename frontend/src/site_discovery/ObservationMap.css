@@ -1,8 +1,8 @@
-.observation-map { margin: .8rem 0; min-width: 0; }
+.site-discovery .observation-map { display: block; box-sizing: border-box; width: 100%; height: auto; margin: .8rem 0; min-width: 0; padding: .75rem; }
 .observation-map figcaption { display: grid; gap: .2rem; margin-bottom: .6rem; overflow-wrap: anywhere; }
 .observation-map figcaption span, .observation-map__source, .observation-map__note { color: var(--ink-muted); font-size: .9rem; }
 .observation-map__partial { padding: .65rem .8rem; border-left: 5px solid var(--copper); background: var(--copper-soft); color: var(--investigation-ink); }
-.observation-map svg { display: block; width: 100%; height: min(55vw, 380px); min-height: 220px; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--map-canvas); }
+.observation-map svg { display: block; box-sizing: border-box; width: 100%; height: clamp(220px, 42vw, 380px); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--map-canvas); overflow: hidden; }
 .observation-map__parcel { fill: var(--map-parcel-fill); stroke: var(--map-parcel-stroke); stroke-width: 2; vector-effect: non-scaling-stroke; }
 .observation-map__roof { fill: var(--map-roof-fill); stroke: var(--map-roof-stroke); stroke-width: 2; vector-effect: non-scaling-stroke; }
 .observation-map__roof-label { fill: var(--ink); font-weight: 750; paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
@@ -14,3 +14,5 @@
 .observation-map__key--parcel { border-color: var(--map-parcel-stroke); background: var(--map-parcel-fill); }
 .observation-map__key--roof { border-color: var(--map-roof-stroke); background: var(--map-roof-fill); }
 .observation-map__note, .observation-map__source { margin: .35rem 0; overflow-wrap: anywhere; }
+.observation-map__evidence { margin-top: .5rem; }
+.observation-map__evidence summary { cursor: pointer; padding: .5rem 0; }

@@ -10,6 +10,7 @@ import { parseResult, parseSites, path, points } from './contract'
 import { overlapFinding } from './observations'
 import type { Case, Check, Result } from './contract'
 import ScenarioHandoff from '../scenario_handoff/ScenarioHandoff'
+import { BoundaryMapTools, BoundaryOverlay, type BoundaryMapInteraction } from '../zoning_site_assumptions/BoundaryMapTools'
 
 type Placement = { x: string; y: string; width: string; depth: string; angle: string }
 const number = (value: string) => value.trim() !== '' && Number.isFinite(Number(value)) ? Number(value) : null
@@ -33,7 +34,7 @@ const checkText = (check: Check, selected?: Case) => {
     default: return `${check.kind.replace(/_/g, ' ')}: ${check.relation ?? check.status}`
   }
 }
-function Map({ selected, placement, onMove, nudgeMetres }: { selected: Case; placement: Placement; onMove: (x: number, y: number) => void; nudgeMetres: number }) {
+function Map({ selected, placement, onMove, nudgeMetres, boundaryInteraction }: { selected: Case; placement: Placement; onMove: (x: number, y: number) => void; nudgeMetres: number; boundaryInteraction?: BoundaryMapInteraction }) {
   const svg = useRef<SVGSVGElement>(null)
   const drag = useRef(false)
   const suppressClick = useRef(false)
@@ -54,17 +55,18 @@ function Map({ selected, placement, onMove, nudgeMetres }: { selected: Case; pla
     const p = new DOMPoint(clientX, clientY).matrixTransform(matrix)
     onMove(Number(p.x.toFixed(2)), Number((-p.y).toFixed(2)))
   }
-  return <div className="occupied-map-panel">
+  return <div className="occupied-map-panel" id={boundaryInteraction ? 'placement-map' : undefined}>
     <div className="occupied-map-heading"><h3>Place the footprint</h3><p className="metadata">Click the map to place its centre. Drag the copper rectangle to adjust it.</p></div>
-    <svg ref={svg} className="occupied-map" role="img" tabIndex={0} aria-label={`Approximate map of ${selected.label}. Click to place. Arrow keys move the rectangle ${nudgeMetres} ${nudgeMetres === 1 ? 'metre' : 'metres'}. Parcel and Roof 1 through Roof ${site.buildings.length} are captured outlines.`} viewBox={view}
-      onClick={e => { if (suppressClick.current) { suppressClick.current = false; return }; move(e.clientX, e.clientY) }}
+    {boundaryInteraction && <BoundaryMapTools interaction={boundaryInteraction} />}
+    <svg ref={svg} className="occupied-map" role="img" tabIndex={0} aria-label={boundaryInteraction?.mode !== 'place' && boundaryInteraction ? `Boundary selection map of ${selected.label}. Choose a numbered edge or use the buttons above. The model cannot move in this mode.` : `Approximate map of ${selected.label}. Click to place. Arrow keys move the rectangle ${nudgeMetres} ${nudgeMetres === 1 ? 'metre' : 'metres'}. Parcel and Roof 1 through Roof ${site.buildings.length} are captured outlines.`} viewBox={view}
+      onClick={e => { if (boundaryInteraction && boundaryInteraction.mode !== 'place') return; if (suppressClick.current) { suppressClick.current = false; return }; move(e.clientX, e.clientY) }}
       onKeyDown={e => {
         const directions: Record<string, [number, number]> = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] }
         const direction = directions[e.key]
-        if (!direction || px === null || py === null) return
+        if ((boundaryInteraction && boundaryInteraction.mode !== 'place') || !direction || px === null || py === null) return
         e.preventDefault(); onMove(Number((px + direction[0] * nudgeMetres).toFixed(2)), Number((py + direction[1] * nudgeMetres).toFixed(2)))
       }}
-      onPointerMove={e => { if (drag.current) move(e.clientX, e.clientY) }}
+      onPointerMove={e => { if ((!boundaryInteraction || boundaryInteraction.mode === 'place') && drag.current) move(e.clientX, e.clientY) }}
       onPointerUp={e => { drag.current = false; if (e.currentTarget.hasPointerCapture(e.pointerId)) e.currentTarget.releasePointerCapture(e.pointerId) }}
       onPointerCancel={() => { drag.current = false; suppressClick.current = false }}>
       <path d={path(site.parcel)} fill="var(--map-parcel-fill)" stroke="var(--map-parcel-stroke)" fillRule="evenodd" vectorEffect="non-scaling-stroke" strokeWidth="2" />
@@ -76,11 +78,12 @@ function Map({ selected, placement, onMove, nudgeMetres }: { selected: Case; pla
       {site.named_boundaries.map(b => <path key={b.id} d={path(b)} fill="none" stroke="var(--map-zone-stroke)" vectorEffect="non-scaling-stroke" strokeWidth="2" />)}
       {px !== null && py !== null && w !== null && d !== null && a !== null && w > 0 && d > 0 && <g transform={`translate(${px} ${-py}) rotate(${-a})`}>
         <rect x={-w / 2} y={-d / 2} width={w} height={d} fill="var(--map-zone-fill)" stroke="var(--map-zone-stroke)" strokeWidth="3" vectorEffect="non-scaling-stroke" style={{ cursor: 'grab', touchAction: 'none' }}
-          onPointerDown={e => { drag.current = true; suppressClick.current = true; e.currentTarget.ownerSVGElement?.setPointerCapture(e.pointerId) }} />
+          onPointerDown={e => { if (boundaryInteraction && boundaryInteraction.mode !== 'place') return; drag.current = true; suppressClick.current = true; e.currentTarget.ownerSVGElement?.setPointerCapture(e.pointerId) }} />
         <circle r={Math.min(w, d) / 12} fill="var(--map-zone-stroke)" pointerEvents="none" />
       </g>}
       <g className="occupied-scale" aria-hidden="true"><path d={`M${scaleX} ${scaleY} h${scale} m${-scale} -2 v4 m${scale} -4 v4`} fill="none" stroke="var(--ink)" vectorEffect="non-scaling-stroke" strokeWidth="2" />
         <text x={scaleX} y={scaleY - 3} fontSize={extent * .034}>{scale} m</text></g>
+      {boundaryInteraction && <BoundaryOverlay interaction={boundaryInteraction} />}
     </svg>
     <p className="occupied-map-legend"><span>Teal · captured parcel</span><span>Purple · captured rooflines, not walls</span><span>Copper · your nominal footprint</span><span>North ↑ · {site.projected_metre_crs}</span></p>
   </div>
@@ -93,9 +96,10 @@ export type OccupiedLotsProps = {
   onMeasurement?: (measurement: OccupiedMeasurement | null) => void
   showHandoff?: boolean
   suppliedCase?: Case
+  boundaryInteraction?: BoundaryMapInteraction
 }
 
-export default function OccupiedLots({ allowedModelIds, initialModelId = '', onMeasurement, showHandoff = true, suppliedCase }: OccupiedLotsProps) {
+export default function OccupiedLots({ allowedModelIds, initialModelId = '', onMeasurement, showHandoff = true, suppliedCase, boundaryInteraction }: OccupiedLotsProps) {
   const initialModel = bundledCatalogue.models.find(m => m.model_id === initialModelId && (!allowedModelIds || allowedModelIds.includes(m.model_id)))
   const initialDimension = (name: string) => {
     const quantity = initialModel?.measurements.find(m => m.name === name)?.quantity
@@ -249,7 +253,7 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
           {publicSourceUrl(source?.reference) && <> {' '}<a href={publicSourceUrl(source?.reference)!} target="_blank" rel="noreferrer">Parcel source</a></>}</p></div>
       <div className="occupied-workspace">
         <div className="occupied-map-column">
-          <Map selected={selected} placement={placement} nudgeMetres={nudgeMetres} onMove={(x, y) => changePlacement({ x: String(x), y: String(y) })} />
+          <Map selected={selected} placement={placement} nudgeMetres={nudgeMetres} onMove={(x, y) => changePlacement({ x: String(x), y: String(y) })} boundaryInteraction={boundaryInteraction} />
           <div className="occupied-map-actions"><button onClick={placeAtCentre}>Recenter rectangle on parcel</button>
             <button disabled={number(placement.x) === null && number(placement.y) === null} onClick={() => changePlacement({ x: '', y: '' })}>Clear placement</button></div>
           <p className="metadata">Recenter uses the parcel drawing's bounding-box centre as an explicit sketch starting point. It does not search for a suitable location.</p>

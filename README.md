@@ -1,6 +1,6 @@
 # ShovelReady
 
-Latest demo integration: [conditional Victoria zoning comparisons and manufacturer preview](docs/integration-conditional-zoning.md).
+Latest demo integration: [compact property selection, automatic placement scenarios and zoning checklist](docs/integration-placement-checklist.md).
 
 ShovelReady explores a practical question: **given a prefabricated building design, where could it plausibly be built?**
 
