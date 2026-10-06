@@ -93,6 +93,8 @@ export function enquiry(...args: Parameters<typeof enquiryDocument>) { return en
 
 export type BuilderProgress = { model: boolean; property: boolean; placement: boolean; enquiry: boolean }
 export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (progress: BuilderProgress) => void } = {}) {
+  const [expanded, setExpanded] = useState({ property: true, placement: false, next: false })
+  const toggleStep = (step: keyof typeof expanded) => setExpanded(value => ({ ...value, [step]: !value[step] }))
   const [foundationAllowanceM, setFoundationAllowanceM] = useState<string | null>(null)
   const [heightRevision, setHeightRevision] = useState(0)
   const [mode, setMode] = useState<'live' | 'manual' | 'retained' | 'example'>('live')
@@ -118,6 +120,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   function siteEdited() { setSelection(null); setImported(false); setMeasurementResult(null); setReadyFor(null); setRevision(value => value + 1) }
   function changeMode(next: typeof mode) {
     setFoundationAllowanceM(null); setHeightRevision(value => value + 1)
+    setExpanded({ property: next !== 'example', placement: next === 'example', next: false })
     setMode(next); siteEdited(); setLive(null); setManual(null)
     setDraft({ ...emptySiteInput, kind: 'address' })
     setQuestion(''); setUse(''); setTiming(''); setBudget(''); setAccess(''); setServices('')
@@ -129,6 +132,26 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const manualSignature = JSON.stringify({ facts: manual?.facts ?? null, site: manual?.site ?? null })
   const propertyComplete = mode === 'example' || !!(live || selection || mode === 'manual' && manual && manualConfirmedFor === manualSignature)
   const placementComplete = !!(measurementResult || mode === 'manual' && manual?.assessment)
+  const previousPropertyComplete = useRef(false)
+  useEffect(() => {
+    if (propertyComplete && !previousPropertyComplete.current) setExpanded({ property: false, placement: true, next: false })
+    if (!propertyComplete && previousPropertyComplete.current) setExpanded({ property: true, placement: false, next: false })
+    previousPropertyComplete.current = propertyComplete
+  }, [propertyComplete])
+  useEffect(() => {
+    function revealStep(event: MouseEvent) {
+      const anchor = event.target instanceof Element ? event.target.closest('a') : null
+      const step = anchor?.getAttribute('href')?.replace('#builder-', '')
+      if (step === 'property' || step === 'placement' || step === 'next') setExpanded(value => ({ ...value, [step]: true }))
+    }
+    document.addEventListener('click', revealStep)
+    return () => document.removeEventListener('click', revealStep)
+  }, [])
+  const currentMeasurement = measurementResult?.result ?? manual?.assessment
+  const placementSummary = currentMeasurement
+    ? `Measured observation · ${currentMeasurement.checks.some(check => check.relation === 'outside' || check.relation === 'touches' || check.relation === 'positive_area_overlap') ? 'conflict observed' : 'review captured geometry'}${measurementResult?.result.checks.some(check => check.comparison === 'shortfall') ? ' · clearance shortfall' : ''} · zoning unassessed. Expand to review distances and clearance findings.`
+    : 'No current measurement. Placement can remain unknown in your enquiry.'
+
   const enquiryReady = !!enquiryDoc && readyFor === draftText
   const progressCallback = useRef(onProgressChange)
   progressCallback.current = onProgressChange
@@ -174,6 +197,8 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       <h1 id="builder-title">Explore Model 300 on your site</h1>
       <p>Start with a site lead or the facts you know. Find and confirm a Victoria property, or sketch your own approximate lot, then test one placement and take away an unsent enquiry.</p>
       <p className="notice">This ShovelReady demonstration is independent of aux box. It does not check zoning compatibility, confirm provider service, or contact the company.</p>
+      <p><strong>Model 300</strong> · {original('nominal_exterior_width')} × {original('nominal_exterior_depth')} · advertised height {original('advertised_overall_height')}. Provider dimensions are unreviewed.</p>
+      <details className="builder-model-details"><summary>Model photos, specifications and sources</summary>
       <ModelImage />
       <div className="builder-specs" aria-label="Captured model information">
         <div><strong>{original('nominal_exterior_width')} × {original('nominal_exterior_depth')}</strong><span>Provider nominal exterior rectangle · {metres('nominal_exterior_width')} × {metres('nominal_exterior_depth')}</span></div>
@@ -183,9 +208,13 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       <p className="metadata">aux box · Model 300 public product page · captured {readableDate(model.sources[0]?.captured_at)} · {model.review_status}; manufacturer revision unknown. <a href={model.provider_url} target="_blank" rel="noreferrer">Provider source page</a>.</p>
       <p className="metadata">{model.footprint_note} {model.height_note} {model.service_area_note}</p>
       <TechnicalDetails title="Catalogue source and exact model record"><pre>{JSON.stringify({ snapshot_id: bundledCatalogue.snapshot_id, model }, null, 2)}</pre></TechnicalDetails>
+      </details>
     </section>
     <section className="builder-stage" id="builder-property" aria-labelledby="builder-property-title">
     <p className="eyebrow">Property</p><h2 id="builder-property-title">Start with what you know</h2>
+    <p>{propertyComplete ? (mode === 'example' ? 'Saved Victoria example selected.' : `${live?.address.label || manual?.facts.address || selection?.candidate?.address.value || selection?.manual.address.value || 'Site description'} · confirmed for this enquiry; unverified.`) : 'Choose a property or enter the facts you know.'}</p>
+    <button type="button" aria-expanded={expanded.property} aria-controls="builder-property-content" onClick={() => toggleStep('property')}>{expanded.property ? 'Collapse property' : 'Review or change property'}</button>
+    <div id="builder-property-content" hidden={!expanded.property}>
     <div className="builder-entry-choices"><div><strong>Use my own property</strong><p>Search a Victoria address or enter known facts.</p><button type="button" onClick={() => changeMode('live')}>Use my own property</button></div>
       <div><strong>Try an example property</strong><p>Open a saved parcel and roofline with an illustrative Model 300 placement.</p><button type="button" onClick={() => changeMode('example')}>Try an example property</button></div></div>
     <p className="metadata">Changing property mode clears the current placement, answers and unsent draft. Copy any question you want to keep first.</p>
@@ -196,12 +225,19 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     {mode === 'live' && <SiteDiscovery onConfirm={next => { setLive(next); setMeasurementResult(null); setReadyFor(null); setRevision(value => value + 1) }} onManual={() => changeMode('manual')} />}
     {mode === 'retained' && <SitePreparation draft={draft} onDraftChange={next => { setDraft(next); setReadyFor(null) }} selection={selection}
       onEdit={siteEdited} onConfirm={next => { setSelection(next); setImported(false); setMeasurementResult(null); setReadyFor(null); setRevision(value => value + 1) }} />}
+      {mode === 'manual' && <ManualSiteInput onChange={value => { if (JSON.stringify(value) !== JSON.stringify(manual)) { setManual(value); setReadyFor(null) } }} footprint={{ widthM: Number(measurement('nominal_exterior_width')?.quantity?.value) || null, depthM: Number(measurement('nominal_exterior_depth')?.quantity?.value) || null, label: 'aux box Model 300 · unreviewed nominal dimensions' }} />}
+      {mode === 'manual' && hasSite && <button type="button" onClick={() => setManualConfirmedFor(manualSignature)} disabled={propertyComplete}>Confirm my site description</button>}
+    </div>
     </section>
     <section className="builder-stage" id="builder-placement" aria-labelledby="builder-placement-title">
       <p className="eyebrow">Placement</p><h2 id="builder-placement-title">Explore one approximate placement</h2>
+      <p>{propertyComplete ? placementSummary : 'Choose and confirm a property to explore placement.'}</p>
+      <button type="button" aria-expanded={expanded.placement && propertyComplete} aria-controls="builder-placement-content" disabled={!propertyComplete} onClick={() => toggleStep('placement')}>{expanded.placement ? 'Collapse placement' : 'Explore placement'}</button>
+      <div id="builder-placement-content" hidden={!expanded.placement || !propertyComplete}>
+      {mode === 'manual' && <p>Your manual sketch and placement controls are in Property. Reopen that step to adjust them.</p>}
       {mode === 'example' && <ExampleProperty key={revision} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} />}
       {mode === 'live' && (liveCase ? <OccupiedLots key={revision} suppliedCase={liveCase} allowedModelIds={[MODEL_ID]} initialModelId={MODEL_ID} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} showHandoff={false} /> : <p>Confirm a Victoria property above to open its captured parcel sketch. Available geometry is approximate and unreviewed.</p>)}
-      {mode === 'manual' && <ManualSiteInput onChange={value => { if (JSON.stringify(value) !== JSON.stringify(manual)) { setManual(value); setReadyFor(null) } }} footprint={{ widthM: Number(measurement('nominal_exterior_width')?.quantity?.value) || null, depthM: Number(measurement('nominal_exterior_depth')?.quantity?.value) || null, label: 'aux box Model 300 · unreviewed nominal dimensions' }} />}
+
     {selection && <section className="builder-optional" aria-labelledby="builder-optional-title">
       <p className="eyebrow">Optional placement</p><h2 id="builder-optional-title">Import a retained example only if useful</h2>
       <p>Three captured lots are examples with their own parcel and roofline geometry. They are not citywide address coverage. Importing one does not match it to your address or parcel lead.</p>
@@ -211,9 +247,14 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     </section>}
     {mode === 'retained' && !selection && <p>Confirm a site lead above to consider a separate retained placement example. An example is never matched to your site lead.</p>}
       <HeightView key={`height-${heightRevision}`} model={model} onFoundationAllowanceChange={value => { setFoundationAllowanceM(value); setReadyFor(null) }} />
+      </div>
+      {propertyComplete && <button className="builder-continue" type="button" onClick={() => { setExpanded({ property: false, placement: false, next: true }); requestAnimationFrame(() => document.getElementById('builder-next')?.scrollIntoView({ block: 'start' })) }}>Prepare enquiry{placementComplete ? '' : ' with placement unknown'}</button>}
     </section>
     <section className="builder-stage builder-enquiry" id="builder-next" aria-labelledby="builder-enquiry-title">
       <p className="eyebrow">Take away · local draft</p><h2 id="builder-enquiry-title">Prepare a useful question</h2>
+      <p>Review a summary for the builder, then open an editable email draft. Nothing is sent automatically.</p>
+      <button type="button" aria-expanded={expanded.next} aria-controls="builder-enquiry-content" onClick={() => toggleStep('next')}>{expanded.next ? 'Collapse enquiry' : 'Review enquiry'}</button>
+      <div id="builder-enquiry-content" hidden={!expanded.next}>
       {!hasSite && <p>Add a property or your known site facts above to prepare an unsent enquiry. Your answers stay local to this journey.</p>}
       {hasSite && <><p>Leave unknown answers blank. This text stays in your browser until you copy it; no provider request or contact record is created.</p>
       <div className="builder-questions">
@@ -224,11 +265,6 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
         <label htmlFor="builder-access">Access or crane questions</label><input id="builder-access" value={access} onChange={event => setAccess(event.target.value)} placeholder="Known access facts or questions" />
         <label htmlFor="builder-services">Services or utility questions</label><input id="builder-services" value={services} onChange={event => setServices(event.target.value)} placeholder="Known services or questions" />
       </div>
-      {mode === 'manual' && <div className="builder-manual-confirm">
-        <p>Manual facts and sketches are unverified. Confirm that this is the site description you want to use for this draft.</p>
-        <button type="button" onClick={() => setManualConfirmedFor(manualSignature)} disabled={manualConfirmedFor === manualSignature}>Confirm my site description</button>
-        <span role="status">{manualConfirmedFor === manualSignature ? 'Site description confirmed for this draft.' : 'Site description not yet confirmed.'}</span>
-      </div>}
       {enquiryDoc && <EnquiryPreview document={enquiryDoc} />}
       <div className="builder-enquiry-actions">
         <CopyableRecord id="builder-enquiry-text" label="Plain-text enquiry to copy" value={draftText} />
@@ -249,15 +285,16 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
         <label htmlFor="builder-email-body">Exact email body to share</label><textarea id="builder-email-body" readOnly rows={12} value={emailBody} />
         {emailTooLong && <p role="status">The full email is too long for a reliable draft link. The buttons request a short placeholder draft. Copy the complete text above and paste it into your email app before sending; no content is silently shortened.</p>}
         <div className="builder-email-buttons">
-          <button type="button" onClick={() => void copyEmailBody()}>Copy email body</button>
-          <button type="button" disabled={!validRecipient(recipient)} onClick={() => openDraft('mailto')}>Open in default email app</button>
+          <button className="builder-email-primary" type="button" disabled={!validRecipient(recipient)} onClick={() => openDraft('mailto')}><span aria-hidden="true">✉ </span>Create email draft</button>
           <button type="button" disabled={!validRecipient(recipient)} onClick={() => openDraft('gmail')}>Open in Gmail</button>
+          <button type="button" onClick={() => void copyEmailBody()}>Copy email body</button>
         </div>
         <p className="metadata">If no compose window opens, use Copy email body and paste the exact text shown above into a new message. Check the recipient and subject there before sending.</p>
         <p role="status">{emailMessage}</p>
       </section>
       <TechnicalDetails title="Complete site selection, sources and measurements"><CopyableRecord id="builder-technical-record" label="Complete technical evidence export" value={JSON.stringify({ schema_version: 'builder-evidence.v1', foundation_scenario: { allowance_m: foundationAllowanceM, basis: 'user_assumption', used_in_assessment: false }, selection, live, manual, example: mode === 'example' ? exampleCase : null, measurement: measurementResult }, null, 2)} /></TechnicalDetails>
       </>}
+      </div>
     </section>
   </div>
 }

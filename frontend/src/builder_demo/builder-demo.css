@@ -56,3 +56,14 @@
   .builder-demo .builder-questions { grid-template-columns: 1fr; }
   .builder-demo .builder-questions label { margin-top: .7rem; }
 }
+
+.builder-demo [hidden] { display: none !important; }
+.builder-demo .builder-model-details summary { cursor: pointer; padding: .8rem 0; font-weight: 600; }
+.builder-demo .builder-stage > button { margin: .4rem .5rem .8rem 0; }
+.builder-demo .builder-continue, .builder-demo .builder-email-primary {
+  background: var(--primary); color: white; border: 2px solid var(--primary);
+  padding: .9rem 1.4rem; font-size: 1.1rem; font-weight: 700; min-height: 48px;
+}
+.builder-demo .builder-email-primary:hover, .builder-demo .builder-continue:hover { background: var(--primary-hover); }
+.builder-demo .builder-email-primary:disabled { opacity: .55; }
+.builder-demo .builder-email { padding: 1.25rem; border: 2px solid var(--primary); border-radius: var(--radius-card); background: var(--primary-soft); }
