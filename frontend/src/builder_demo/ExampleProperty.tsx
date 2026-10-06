@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { MeasurementInput } from '../MeasurementInput'
 import { MeasurementLabel } from '../model_catalogue/MeasurementLabel'
 import { measurementWithUnit } from '../measurements'
@@ -17,7 +17,7 @@ const directions: Record<string, [number, number]> = {
   ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1],
 }
 
-export function ExampleProperty({ onMeasurement, boundaryInteraction }: { onMeasurement: (value: OccupiedMeasurement | null) => void; boundaryInteraction?: BoundaryMapInteraction }) {
+export function ExampleProperty({ onMeasurement, boundaryInteraction, placementSummary }: { onMeasurement: (value: OccupiedMeasurement | null) => void; boundaryInteraction?: BoundaryMapInteraction; placementSummary?: ReactNode }) {
   const [position, setPosition] = useState(initialExamplePosition)
   const [assumptions, setAssumptions] = useState(emptyExampleAssumptions)
   const [result, setResult] = useState<Result | null>(null)
@@ -148,8 +148,9 @@ export function ExampleProperty({ onMeasurement, boundaryInteraction }: { onMeas
             onPointerDown={event => { if (boundaryInteraction && boundaryInteraction.mode !== 'place') return; dragging.current = true; suppressClick.current = true; event.currentTarget.ownerSVGElement?.setPointerCapture(event.pointerId) }} />
         </g>}
         {boundaryInteraction && <BoundaryOverlay interaction={boundaryInteraction} />}
-      </svg><figcaption>Teal: captured parcel · Purple: captured roofline, not walls · Red dashed outline: observed conflict in current measurement · Copper: illustrative nominal rectangle · North ↑ · EPSG:3157 metres. Diagram is approximate.</figcaption>{boundaryInteraction && <BoundaryMapTools interaction={boundaryInteraction} />}</figure>
-      <div className="builder-example-controls"><h3>Adjust the footprint</h3>
+      </svg><figcaption>Teal: captured parcel · Purple: captured roofline, not walls · Red dashed outline: observed conflict in current measurement · Copper: illustrative nominal rectangle · North ↑ · EPSG:3157 metres. Diagram is approximate.</figcaption></figure>
+      {placementSummary && <div className="builder-map-summary">{placementSummary}</div>}
+      <div className="builder-example-controls">{boundaryInteraction && <details><summary>Boundary roles and map tools</summary><BoundaryMapTools interaction={boundaryInteraction} /></details>}<h3>Adjust the footprint</h3>
         <p>Click the map or drag the rectangle. Arrow keys move it when the map has focus. Checks update automatically after movement settles.</p>
         <div className="builder-example-main-actions"><div><label htmlFor="builder-example-angle">Rotation (degrees)</label><input id="builder-example-angle" type="number" step="any" value={rotationFocused || !position.angle.trim() || !Number.isFinite(Number(position.angle)) ? position.angle : String(Number(Number(position.angle).toFixed(2)))} onFocus={() => setRotationFocused(true)} onBlur={() => setRotationFocused(false)} onChange={event => edit('angle', event.target.value)} /></div>
         <button type="button" disabled={exampleOrientation.status !== 'suggested'} onClick={() => { if (exampleOrientation.status === 'suggested') edit('angle', String(exampleOrientation.angle_degrees)) }}>Align to lot</button>

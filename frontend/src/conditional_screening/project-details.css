@@ -9,3 +9,4 @@
 .project-details__municipal { border-left: 3px solid var(--primary); padding: .5rem .8rem; background: var(--surface-subtle); }
 .project-details__municipal p { margin: .3rem 0; }
 .project-details :is(summary, select, a):focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.project-details { min-width: 0; overflow-wrap: anywhere; }

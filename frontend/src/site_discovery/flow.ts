@@ -3,7 +3,8 @@ export type Address = { id: string; label: string; locality: string | null; prec
 export type Parcel = { id: string; label: string; match: string; source: Source; raw: unknown }
 export type Polygon = { type: 'Polygon' | 'MultiPolygon'; coordinates: number[][][] | number[][][][] }
 export type Observation = { parcel: { geometry: Polygon; areaM2: number | null }; roofs: { id: string; geometry: Polygon }[]; crs: 'EPSG:3157'; buildingsState: string; issues: string[]; source: Source; roofSource: Source | null; raw: unknown }
-export type Confirmed = { schema_version: 'site-discovery.confirmed.v1'; address: Address; parcel: Parcel; observation: Observation; review: 'unreviewed'; screening: 'not_performed' }
+type PropertyObservation = { address: Address; parcel: Parcel; observation: Observation; review: 'unreviewed'; screening: 'not_performed' }
+export type Confirmed = PropertyObservation & ({ schema_version: 'site-discovery.confirmed.v1' } | { schema_version: 'site-discovery.selected.v1'; selection_basis: 'sole_candidate' | 'user_choice'; identity_attestation: 'not_confirmed' })
 export type SearchResult<T> = { status: 'ok' | 'no_match' | 'outside_coverage'; candidates: T[]; message?: string }
 export type Transport = {
   addresses(query: string, signal: AbortSignal): Promise<SearchResult<Address>>
@@ -21,8 +22,9 @@ export class DiscoveryFlow {
   private transport: Transport
   private notify: (state: State) => void
   private onConfirm: (value: Confirmed | null) => void
-  constructor(transport: Transport, notify: (state: State) => void, onConfirm: (value: Confirmed | null) => void) {
-    this.transport = transport; this.notify = notify; this.onConfirm = onConfirm
+  private autoProceed: boolean
+  constructor(transport: Transport, notify: (state: State) => void, onConfirm: (value: Confirmed | null) => void, autoProceed = false) {
+    this.autoProceed = autoProceed; this.transport = transport; this.notify = notify; this.onConfirm = onConfirm
   }
   private publish(patch: Partial<State>) { this.state = { ...this.state, ...patch }; this.notify(this.state) }
   private invalidate() { this.generation++; this.controller?.abort(); this.controller = null; if (this.state.confirmed) this.onConfirm(null) }
@@ -49,6 +51,7 @@ export class DiscoveryFlow {
       const result = await this.transport.parcels(address, controller.signal)
       if (!this.current(generation)) return
       this.publish({ busy: false, parcels: result.candidates, message: result.message ?? (result.status === 'outside_coverage' ? 'This address is outside the Victoria parcel demonstration. Continue manually.' : result.status === 'no_match' ? 'No parcel match. Continue manually or correct the address.' : '') })
+      if (this.autoProceed && result.status === 'ok' && result.candidates.length === 1) await this.chooseParcel(result.candidates[0].id)
     } catch (error) { if (this.current(generation)) this.publish({ busy: false, message: error instanceof DiscoveryProblem ? error.message : 'Parcel response invalid. Choose the address again or continue manually.' }) }
   }
   async chooseParcel(id: string) {
@@ -60,6 +63,17 @@ export class DiscoveryFlow {
       const observation = await this.transport.observe(parcel, controller.signal)
       if (!this.current(generation)) return
       this.publish({ busy: false, observation })
+      if (this.autoProceed && observation.parcel.geometry.type !== 'Polygon') {
+        this.publish({ message: 'This parcel has separate components. Placement measurements are not supported yet. Choose another property or continue manually.' })
+        return
+      }
+      if (this.autoProceed) {
+        const address = this.state.address
+        if (!address) return
+        const confirmed: Confirmed = { schema_version: 'site-discovery.selected.v1', selection_basis: this.state.parcels.length === 1 ? 'sole_candidate' : 'user_choice', identity_attestation: 'not_confirmed', address, parcel, observation, review: 'unreviewed', screening: 'not_performed' }
+        this.publish({ confirmed, message: 'Source property selected for approximate placement. Identity, ownership and legal boundaries remain unverified.' })
+        this.onConfirm(confirmed)
+      }
     } catch (error) { if (this.current(generation)) this.publish({ busy: false, message: error instanceof DiscoveryProblem ? error.message : 'Parcel response invalid. Retry this parcel or continue manually.' }) }
   }
   confirm() {

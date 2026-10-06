@@ -16,7 +16,7 @@ export function placementCase(value: Confirmed): Case {
       named_boundaries: [],
       capture: { completeness: observation.buildingsState === 'available' ? 'complete_for_declared_scope' : 'partial',
         scope: 'City rooflines returned by this parcel-intersection query only; not a complete obstruction inventory',
-        limitations: [...observation.issues, 'Parcel identity confirmed by the user only; source join and positional accuracy remain unreviewed.',
+        limitations: [...observation.issues, value.schema_version === 'site-discovery.selected.v1' ? 'Source-selected observation; identity, ownership and legal boundaries are not confirmed. Source join and positional accuracy remain unreviewed.' : 'Parcel identity confirmed by the user only; source join and positional accuracy remain unreviewed.',
           'Rooflines are not walls. Other obstructions, zoning, setbacks, services and delivery access remain unassessed.'] },
     },
   }

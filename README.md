@@ -1,6 +1,6 @@
 # ShovelReady
 
-Latest demo integration: [one homeowner placement summary with focused next actions](docs/integration-homeowner-summary.md), building on [Project details and mapped zoning](docs/integration-project-details.md).
+Latest demo integration: [property selection and results beneath the map](docs/integration-homeowner-summary.md#homeowner-property-selection-and-placement-summary-253), building on [Project details and mapped zoning](docs/integration-project-details.md).
 
 ShovelReady explores a practical question: **given a prefabricated building design, where could it plausibly be built?**
 
@@ -28,7 +28,9 @@ zoning publication and the future persistent customer pilot.
 
 The [live parcel integration](docs/integration-live-parcel-discovery.md) connects the
 Model 300 demo to BC Address Geocoder and on-demand City of Victoria parcel/roofline
-observations. Explicitly confirm a property, measure an approximate placement and
+observations. Select an address; a sole usable parcel opens placement automatically, while multiple
+parcel candidates require a choice. Source selection does not confirm identity, ownership
+or legal boundaries. Measure an approximate placement and
 copy an unsent enquiry with source evidence. Manual facts and scaled local sketches
 work when lookup is unavailable or outside Victoria. No database is needed for this
 journey; source observations and provider dimensions remain unreviewed. Wider address

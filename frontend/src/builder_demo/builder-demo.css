@@ -89,3 +89,16 @@
 .builder-demo .builder-example-controls > details { margin: .5rem 0; }
 .builder-demo .builder-example-movement { padding: .5rem .75rem; }
 @media (max-width: 540px) { .builder-demo .builder-example-map svg { height: 360px; } .builder-demo .builder-example-controls { padding: .75rem; } }
+.builder-demo .builder-map-summary { order: 2; min-width: 0; }
+.builder-demo .builder-example-controls { order: 3; }
+.builder-demo .builder-example-outcome, .builder-demo .builder-example-custom-size { order: 4; }
+.builder-demo .builder-example-result { order: 5; }
+.builder-progress ol { list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .5rem; padding: 0; }
+.builder-progress button { width: 100%; text-align: left; padding: .65rem; }
+.builder-progress strong, .builder-progress span { display: block; }
+.builder-progress span { font-size: .85rem; margin-top: .25rem; }
+.builder-selected-property { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1rem; background: var(--primary-soft); border: 1px solid var(--border); border-radius: var(--radius-card); padding: .75rem; }
+.builder-selected-property span { color: var(--ink-muted); }
+.builder-selected-property button { margin-left: auto; }
+@media (max-width: 600px) { .builder-progress ol { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.builder-progress button { margin: 0; min-width: 0; overflow-wrap: anywhere; }
