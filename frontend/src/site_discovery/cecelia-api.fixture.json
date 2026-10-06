@@ -1,0 +1,273 @@
+{
+  "schemaVersion": "sr-address-search.v1",
+  "query": "419 Cecelia, Victoria",
+  "status": "candidates",
+  "reason": null,
+  "candidates": [
+    {
+      "locator": "0:350c292415ce4471",
+      "fullAddress": "419 Cecelia Rd, Victoria, BC",
+      "address": {
+        "siteName": "",
+        "unitDesignator": "",
+        "unitNumber": "",
+        "unitNumberSuffix": "",
+        "civicNumber": "419",
+        "civicNumberSuffix": "",
+        "streetName": "Cecelia",
+        "streetType": "Rd",
+        "streetDirection": "",
+        "streetQualifier": "",
+        "streetAddress": "419 Cecelia Rd",
+        "localityName": "Victoria",
+        "localityType": "City",
+        "electoralArea": "",
+        "provinceCode": "BC"
+      },
+      "locality": "Victoria",
+      "providerSiteId": "736dd52d-2a56-4ee3-9052-0063480bff09",
+      "score": 93.0,
+      "matchPrecision": "CIVIC_NUMBER",
+      "faults": [
+        {
+          "value": "",
+          "element": "STREET_TYPE",
+          "fault": "missing",
+          "penalty": 6.0
+        },
+        {
+          "value": "",
+          "element": "PROVINCE",
+          "fault": "missing",
+          "penalty": 1.0
+        }
+      ],
+      "locationDescriptor": "parcelPoint",
+      "locationPositionalAccuracy": "high",
+      "point": {
+        "crs": "EPSG:4326",
+        "longitude": -123.3798043,
+        "latitude": 48.4450113
+      },
+      "sourceChangeDate": "2026-07-07"
+    },
+    {
+      "locator": "1:3dd1a3092e465f0d",
+      "fullAddress": "Cecelia Rd, Victoria, BC",
+      "address": {
+        "siteName": "",
+        "unitDesignator": "",
+        "unitNumber": "",
+        "unitNumberSuffix": "",
+        "civicNumber": "",
+        "civicNumberSuffix": "",
+        "streetName": "Cecelia",
+        "streetType": "Rd",
+        "streetDirection": "",
+        "streetQualifier": "",
+        "streetAddress": "Cecelia Rd",
+        "localityName": "Victoria",
+        "localityType": "City",
+        "electoralArea": "",
+        "provinceCode": "BC"
+      },
+      "locality": "Victoria",
+      "providerSiteId": null,
+      "score": 70.0,
+      "matchPrecision": "STREET",
+      "faults": [
+        {
+          "value": "",
+          "element": "STREET_TYPE",
+          "fault": "missing",
+          "penalty": 6.0
+        },
+        {
+          "value": "419",
+          "element": "CIVIC_NUMBER",
+          "fault": "notInAnyBlock",
+          "penalty": 1.0
+        },
+        {
+          "value": "",
+          "element": "PROVINCE",
+          "fault": "missing",
+          "penalty": 1.0
+        }
+      ],
+      "locationDescriptor": "streetPoint",
+      "locationPositionalAccuracy": "coarse",
+      "point": {
+        "crs": "EPSG:4326",
+        "longitude": -123.3763445,
+        "latitude": 48.4436323
+      },
+      "sourceChangeDate": null
+    },
+    {
+      "locator": "2:b6ab456b1c4afd41",
+      "fullAddress": "Victoria, BC",
+      "address": {
+        "siteName": "",
+        "unitDesignator": "",
+        "unitNumber": "",
+        "unitNumberSuffix": "",
+        "civicNumber": "",
+        "civicNumberSuffix": "",
+        "streetName": "",
+        "streetType": "",
+        "streetDirection": "",
+        "streetQualifier": "",
+        "streetAddress": "",
+        "localityName": "Victoria",
+        "localityType": "City",
+        "electoralArea": "",
+        "provinceCode": "BC"
+      },
+      "locality": "Victoria",
+      "providerSiteId": null,
+      "score": 47.0,
+      "matchPrecision": "LOCALITY",
+      "faults": [
+        {
+          "value": "419 CECELIA",
+          "element": "LOCALITY_INITIAL_GARBAGE",
+          "fault": "notAllowed",
+          "penalty": 20.0
+        },
+        {
+          "value": "",
+          "element": "PROVINCE",
+          "fault": "missing",
+          "penalty": 1.0
+        }
+      ],
+      "locationDescriptor": "localityPoint",
+      "locationPositionalAccuracy": "coarse",
+      "point": {
+        "crs": "EPSG:4326",
+        "longitude": -123.3647222,
+        "latitude": 48.4283333
+      },
+      "sourceChangeDate": null
+    },
+    {
+      "locator": "3:8537becfd5f4cd74",
+      "fullAddress": "Victoria-Fraserview in Vancouver, BC",
+      "address": {
+        "siteName": "",
+        "unitDesignator": "",
+        "unitNumber": "",
+        "unitNumberSuffix": "",
+        "civicNumber": "",
+        "civicNumberSuffix": "",
+        "streetName": "",
+        "streetType": "",
+        "streetDirection": "",
+        "streetQualifier": "",
+        "streetAddress": "",
+        "localityName": "Victoria-Fraserview in Vancouver",
+        "localityType": "Community",
+        "electoralArea": "",
+        "provinceCode": "BC"
+      },
+      "locality": "Victoria-Fraserview in Vancouver",
+      "providerSiteId": null,
+      "score": 46.0,
+      "matchPrecision": "LOCALITY",
+      "faults": [
+        {
+          "value": "419 CECELIA",
+          "element": "LOCALITY_INITIAL_GARBAGE",
+          "fault": "notAllowed",
+          "penalty": 20.0
+        },
+        {
+          "value": "VICTORIA",
+          "element": "LOCALITY",
+          "fault": "partialMatch",
+          "penalty": 1.0
+        },
+        {
+          "value": "",
+          "element": "PROVINCE",
+          "fault": "missing",
+          "penalty": 1.0
+        }
+      ],
+      "locationDescriptor": "localityPoint",
+      "locationPositionalAccuracy": "coarse",
+      "point": {
+        "crs": "EPSG:4326",
+        "longitude": -123.0680555,
+        "latitude": 49.2163889
+      },
+      "sourceChangeDate": null
+    },
+    {
+      "locator": "4:691e58c6927077a4",
+      "fullAddress": "Oak Bay, BC",
+      "address": {
+        "siteName": "",
+        "unitDesignator": "",
+        "unitNumber": "",
+        "unitNumberSuffix": "",
+        "civicNumber": "",
+        "civicNumberSuffix": "",
+        "streetName": "",
+        "streetType": "",
+        "streetDirection": "",
+        "streetQualifier": "",
+        "streetAddress": "",
+        "localityName": "Oak Bay",
+        "localityType": "District Municipality",
+        "electoralArea": "",
+        "provinceCode": "BC"
+      },
+      "locality": "Oak Bay",
+      "providerSiteId": null,
+      "score": 45.0,
+      "matchPrecision": "LOCALITY",
+      "faults": [
+        {
+          "value": "419 CECELIA",
+          "element": "LOCALITY_INITIAL_GARBAGE",
+          "fault": "notAllowed",
+          "penalty": 20.0
+        },
+        {
+          "value": "VICTORIA",
+          "element": "LOCALITY",
+          "fault": "isAlias",
+          "penalty": 2.0
+        },
+        {
+          "value": "",
+          "element": "PROVINCE",
+          "fault": "missing",
+          "penalty": 1.0
+        }
+      ],
+      "locationDescriptor": "localityPoint",
+      "locationPositionalAccuracy": "coarse",
+      "point": {
+        "crs": "EPSG:4326",
+        "longitude": -123.3180555,
+        "latitude": 48.4258334
+      },
+      "sourceChangeDate": null
+    }
+  ],
+  "mayBeTruncated": true,
+  "source": {
+    "provider": "BC Address Geocoder",
+    "sourceUrl": "https://geocoder.api.gov.bc.ca/addresses.json?addressString=419+Cecelia%2C+Victoria&maxResults=5&outputSRS=4326&echo=true&autoComplete=false",
+    "fetchedAt": "2026-10-06T06:39:59.689860Z",
+    "providerSearchTimestamp": "2026-10-05T23:39:59",
+    "providerBaseDataDate": "2026-07-07T20:10:43Z",
+    "providerVersion": "4.5.4",
+    "responseSha256": "9cedb6318425ea1a5763ca08b64a0de4361ca6dc7485d3e04bee087a08a4b554",
+    "licence": "Open Government Licence - British Columbia",
+    "reviewStatus": "unreviewed"
+  }
+}

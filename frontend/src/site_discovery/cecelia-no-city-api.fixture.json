@@ -1,0 +1,321 @@
+{
+  "schemaVersion": "sr-address-search.v1",
+  "query": "419 Cecelia",
+  "status": "candidates",
+  "reason": null,
+  "candidates": [
+    {
+      "locator": "0:0affe08af37137ed",
+      "fullAddress": "419 Cecelia Rd, Victoria, BC",
+      "address": {
+        "siteName": "",
+        "unitDesignator": "",
+        "unitNumber": "",
+        "unitNumberSuffix": "",
+        "civicNumber": "419",
+        "civicNumberSuffix": "",
+        "streetName": "Cecelia",
+        "streetType": "Rd",
+        "streetDirection": "",
+        "streetQualifier": "",
+        "streetAddress": "419 Cecelia Rd",
+        "localityName": "Victoria",
+        "localityType": "City",
+        "electoralArea": "",
+        "provinceCode": "BC"
+      },
+      "locality": "Victoria",
+      "providerSiteId": "736dd52d-2a56-4ee3-9052-0063480bff09",
+      "score": 83.0,
+      "matchPrecision": "CIVIC_NUMBER",
+      "faults": [
+        {
+          "value": "",
+          "element": "LOCALITY",
+          "fault": "missing",
+          "penalty": 10.0
+        },
+        {
+          "value": "",
+          "element": "STREET_TYPE",
+          "fault": "missing",
+          "penalty": 6.0
+        },
+        {
+          "value": "",
+          "element": "PROVINCE",
+          "fault": "missing",
+          "penalty": 1.0
+        }
+      ],
+      "locationDescriptor": "parcelPoint",
+      "locationPositionalAccuracy": "high",
+      "point": {
+        "crs": "EPSG:4326",
+        "longitude": -123.3798043,
+        "latitude": 48.4450113
+      },
+      "sourceChangeDate": "2026-07-07"
+    },
+    {
+      "locator": "1:061afb7b24acdba8",
+      "fullAddress": "419 Celia Rd, Cranbrook, BC",
+      "address": {
+        "siteName": "",
+        "unitDesignator": "",
+        "unitNumber": "",
+        "unitNumberSuffix": "",
+        "civicNumber": "419",
+        "civicNumberSuffix": "",
+        "streetName": "Celia",
+        "streetType": "Rd",
+        "streetDirection": "",
+        "streetQualifier": "",
+        "streetAddress": "419 Celia Rd",
+        "localityName": "Cranbrook",
+        "localityType": "City",
+        "electoralArea": "RDEK Electoral Area C",
+        "provinceCode": "BC"
+      },
+      "locality": "Cranbrook",
+      "providerSiteId": null,
+      "score": 80.0,
+      "matchPrecision": "BLOCK",
+      "faults": [
+        {
+          "value": "",
+          "element": "LOCALITY",
+          "fault": "missing",
+          "penalty": 10.0
+        },
+        {
+          "value": "CECELIA",
+          "element": "STREET_NAME",
+          "fault": "spelledWrong",
+          "penalty": 2.0
+        },
+        {
+          "value": "",
+          "element": "STREET_TYPE",
+          "fault": "missing",
+          "penalty": 6.0
+        },
+        {
+          "value": "",
+          "element": "PROVINCE",
+          "fault": "missing",
+          "penalty": 1.0
+        }
+      ],
+      "locationDescriptor": "accessPoint",
+      "locationPositionalAccuracy": "low",
+      "point": {
+        "crs": "EPSG:4326",
+        "longitude": -115.8091623,
+        "latitude": 49.504567
+      },
+      "sourceChangeDate": null
+    },
+    {
+      "locator": "2:05b4f138e79cfc6c",
+      "fullAddress": "Cecelia Rd, Victoria, BC",
+      "address": {
+        "siteName": "",
+        "unitDesignator": "",
+        "unitNumber": "",
+        "unitNumberSuffix": "",
+        "civicNumber": "",
+        "civicNumberSuffix": "",
+        "streetName": "Cecelia",
+        "streetType": "Rd",
+        "streetDirection": "",
+        "streetQualifier": "",
+        "streetAddress": "Cecelia Rd",
+        "localityName": "Victoria",
+        "localityType": "City",
+        "electoralArea": "",
+        "provinceCode": "BC"
+      },
+      "locality": "Victoria",
+      "providerSiteId": null,
+      "score": 60.0,
+      "matchPrecision": "STREET",
+      "faults": [
+        {
+          "value": "",
+          "element": "LOCALITY",
+          "fault": "missing",
+          "penalty": 10.0
+        },
+        {
+          "value": "",
+          "element": "STREET_TYPE",
+          "fault": "missing",
+          "penalty": 6.0
+        },
+        {
+          "value": "419",
+          "element": "CIVIC_NUMBER",
+          "fault": "notInAnyBlock",
+          "penalty": 1.0
+        },
+        {
+          "value": "",
+          "element": "PROVINCE",
+          "fault": "missing",
+          "penalty": 1.0
+        }
+      ],
+      "locationDescriptor": "streetPoint",
+      "locationPositionalAccuracy": "coarse",
+      "point": {
+        "crs": "EPSG:4326",
+        "longitude": -123.3763445,
+        "latitude": 48.4436323
+      },
+      "sourceChangeDate": null
+    },
+    {
+      "locator": "3:0757877d141025a4",
+      "fullAddress": "Cecelia St, Chemainus, BC",
+      "address": {
+        "siteName": "",
+        "unitDesignator": "",
+        "unitNumber": "",
+        "unitNumberSuffix": "",
+        "civicNumber": "",
+        "civicNumberSuffix": "",
+        "streetName": "Cecelia",
+        "streetType": "St",
+        "streetDirection": "",
+        "streetQualifier": "",
+        "streetAddress": "Cecelia St",
+        "localityName": "Chemainus",
+        "localityType": "Community",
+        "electoralArea": "",
+        "provinceCode": "BC"
+      },
+      "locality": "Chemainus",
+      "providerSiteId": null,
+      "score": 60.0,
+      "matchPrecision": "STREET",
+      "faults": [
+        {
+          "value": "",
+          "element": "LOCALITY",
+          "fault": "missing",
+          "penalty": 10.0
+        },
+        {
+          "value": "",
+          "element": "STREET_TYPE",
+          "fault": "missing",
+          "penalty": 6.0
+        },
+        {
+          "value": "419",
+          "element": "CIVIC_NUMBER",
+          "fault": "notInAnyBlock",
+          "penalty": 1.0
+        },
+        {
+          "value": "",
+          "element": "PROVINCE",
+          "fault": "missing",
+          "penalty": 1.0
+        }
+      ],
+      "locationDescriptor": "streetPoint",
+      "locationPositionalAccuracy": "coarse",
+      "point": {
+        "crs": "EPSG:4326",
+        "longitude": -123.717894,
+        "latitude": 48.9194501
+      },
+      "sourceChangeDate": null
+    },
+    {
+      "locator": "4:e2c2ce7449ed2808",
+      "fullAddress": "Celia Cres, Trail, BC",
+      "address": {
+        "siteName": "",
+        "unitDesignator": "",
+        "unitNumber": "",
+        "unitNumberSuffix": "",
+        "civicNumber": "",
+        "civicNumberSuffix": "",
+        "streetName": "Celia",
+        "streetType": "Cres",
+        "streetDirection": "",
+        "streetQualifier": "",
+        "streetAddress": "Celia Cres",
+        "localityName": "Trail",
+        "localityType": "City",
+        "electoralArea": "",
+        "provinceCode": "BC"
+      },
+      "locality": "Trail",
+      "providerSiteId": null,
+      "score": 52.0,
+      "matchPrecision": "STREET",
+      "faults": [
+        {
+          "value": "",
+          "element": "LOCALITY",
+          "fault": "missing",
+          "penalty": 10.0
+        },
+        {
+          "value": "CECELIA",
+          "element": "STREET_NAME",
+          "fault": "spelledWrong",
+          "penalty": 2.0
+        },
+        {
+          "value": "",
+          "element": "STREET_TYPE",
+          "fault": "missing",
+          "penalty": 6.0
+        },
+        {
+          "value": "419",
+          "element": "CIVIC_NUMBER",
+          "fault": "notInAnyBlock",
+          "penalty": 1.0
+        },
+        {
+          "value": "",
+          "element": "PROVINCE",
+          "fault": "missing",
+          "penalty": 1.0
+        },
+        {
+          "value": "",
+          "element": "FAULTS",
+          "fault": "tooMany",
+          "penalty": 6.0
+        }
+      ],
+      "locationDescriptor": "streetPoint",
+      "locationPositionalAccuracy": "coarse",
+      "point": {
+        "crs": "EPSG:4326",
+        "longitude": -117.7204952,
+        "latitude": 49.1179784
+      },
+      "sourceChangeDate": null
+    }
+  ],
+  "mayBeTruncated": true,
+  "source": {
+    "provider": "BC Address Geocoder",
+    "sourceUrl": "https://geocoder.api.gov.bc.ca/addresses.json?addressString=419+Cecelia&maxResults=5&outputSRS=4326&echo=true&autoComplete=false",
+    "fetchedAt": "2026-10-06T06:44:20.638585Z",
+    "providerSearchTimestamp": "2026-10-05T23:44:20",
+    "providerBaseDataDate": "2026-07-07T20:10:43Z",
+    "providerVersion": "4.5.4",
+    "responseSha256": "bbaec9e40c6d24c5fd808e44ad11331400c610958b2da98ac109eea985e12f1e",
+    "licence": "Open Government Licence - British Columbia",
+    "reviewStatus": "unreviewed"
+  }
+}
