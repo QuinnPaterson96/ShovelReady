@@ -138,6 +138,11 @@ For the real spatial viewer, follow the [persistent database and API setup](docs
 It requires explicit database, collection and revision configuration; a running preview
 in an older worktree does not pick up merged changes automatically.
 
+The opt-in [Model 300 MCP developer demo](docs/mcp-demo.md) exposes three read-only
+tools over existing screening services, with a real loopback client smoke command.
+Private ChatGPT tunnel setup is prepared but unverified; the map handoff requires
+manual re-entry because scenario resume is not implemented.
+
 Run focused checks from the repository root with:
 
 ```powershell

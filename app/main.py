@@ -1,7 +1,9 @@
 """Scaffold only: no ingestion, database connections, or schema creation at startup."""
 
 import os
+from contextlib import asynccontextmanager
 from pathlib import Path
+from urllib.parse import urlsplit
 
 from fastapi import FastAPI
 from fastapi.responses import FileResponse, JSONResponse
@@ -37,7 +39,37 @@ def create_app(*, frontend_dist: Path = FRONTEND_DIST) -> FastAPI:
             "SHOVELREADY_DRAFT_EVALUATIONS_ENABLED"
         ) == "true":
             raise RuntimeError("Hosted demo is stateless; database access must remain disabled")
-    application = FastAPI(title="ShovelReady", version="0.1.0")
+    mcp_manager = None
+    mcp_route = None
+    if os.environ.get("SHOVELREADY_MCP_ENABLED") == "true":
+        from app.mcp_demo.http import build_http
+
+        app_url = os.environ.get("SHOVELREADY_MCP_APP_URL", "http://127.0.0.1:5173/")
+        parsed = urlsplit(app_url)
+        if (
+            parsed.scheme not in {"http", "https"}
+            or not parsed.hostname
+            or parsed.username
+            or parsed.password
+            or parsed.query
+            or parsed.fragment
+        ):
+            raise RuntimeError(
+                "MCP app handoff must be a configured HTTP(S) URL without private data"
+            )
+        mcp_manager, mcp_route = build_http(app_url=app_url)
+
+    @asynccontextmanager
+    async def lifespan(_application):
+        if mcp_manager is None:
+            yield
+        else:
+            async with mcp_manager.run():
+                yield
+
+    application = FastAPI(title="ShovelReady", version="0.1.0", lifespan=lifespan)
+    if mcp_route is not None:
+        application.router.routes.append(mcp_route)
 
     application.include_router(address_search_router)
     application.include_router(municipal_sites_router)

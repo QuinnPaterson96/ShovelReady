@@ -1,0 +1,220 @@
+{
+  "municipality": "Victoria",
+  "pathway": "garden_suite",
+  "selected_property": {
+    "case_id": "synthetic-mcp-demo",
+    "parcel_id": "synthetic-lot",
+    "geometry_revision": "synthetic-geometry-1",
+    "crs": "EPSG:3157",
+    "source": {
+      "provider": "Synthetic demo fixture",
+      "record_label": "Constructed 30 by 40 metre lot",
+      "capture_date": null,
+      "review_status": "unreviewed",
+      "reference": null
+    },
+    "capture": {
+      "completeness": "partial"
+    }
+  },
+  "property_selection_confirmed": true,
+  "selected_model": {
+    "model_id": "aux-300",
+    "catalogue_snapshot_id": "sr-40.2026-10-06.provider-pages.v2",
+    "input_revision": "aux-300-synthetic-inputs-1",
+    "dimension_origin": "provider_nominal"
+  },
+  "scenario": {
+    "schema_version": "placement-scenarios.request.v1",
+    "geometry": {
+      "schema_version": "scouting-geometry.v1",
+      "projected_metre_crs": "EPSG:3157",
+      "parcel": {
+        "id": "synthetic-lot",
+        "source": {
+          "provider": "Synthetic demo fixture",
+          "record_label": "Constructed 30 by 40 metre lot",
+          "capture_date": null,
+          "review_status": "unreviewed",
+          "reference": null
+        },
+        "shape": {
+          "crs": "EPSG:3157",
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [
+                  0,
+                  0
+                ],
+                [
+                  30,
+                  0
+                ],
+                [
+                  30,
+                  40
+                ],
+                [
+                  0,
+                  40
+                ],
+                [
+                  0,
+                  0
+                ]
+              ]
+            ]
+          }
+        }
+      },
+      "buildings": [],
+      "capture": {
+        "completeness": "partial",
+        "scope": "Synthetic lot only; building capture is incomplete"
+      },
+      "placement": {
+        "id": "synthetic-placement",
+        "centre_xy": [
+          15,
+          26
+        ],
+        "width_m": 3.048,
+        "depth_m": 9.144,
+        "angle_degrees": 0
+      }
+    },
+    "assumptions": {
+      "schema_version": "sr.zoning-site-assumptions.v1",
+      "property": {
+        "case_id": "synthetic-mcp-demo",
+        "parcel_id": "synthetic-lot",
+        "geometry_revision": "synthetic-geometry-1",
+        "crs": "EPSG:3157",
+        "source": {
+          "provider": "Synthetic demo fixture",
+          "record_label": "Constructed 30 by 40 metre lot",
+          "capture_date": null,
+          "review_status": "unreviewed",
+          "reference": null
+        },
+        "capture": {
+          "completeness": "partial"
+        }
+      },
+      "observed_buildings": [],
+      "edges": [
+        {
+          "id": "synthetic-geometry-1:ring-0:segment-0",
+          "ring": 0,
+          "segment": 0,
+          "start": [
+            0,
+            0
+          ],
+          "end": [
+            30,
+            0
+          ],
+          "role": {
+            "value": "unknown",
+            "origin": "user",
+            "note": "Explicit synthetic test assumption; not a real property fact."
+          }
+        },
+        {
+          "id": "synthetic-geometry-1:ring-0:segment-1",
+          "ring": 0,
+          "segment": 1,
+          "start": [
+            30,
+            0
+          ],
+          "end": [
+            30,
+            40
+          ],
+          "role": {
+            "value": "unknown",
+            "origin": "user",
+            "note": "Explicit synthetic test assumption; not a real property fact."
+          }
+        },
+        {
+          "id": "synthetic-geometry-1:ring-0:segment-2",
+          "ring": 0,
+          "segment": 2,
+          "start": [
+            30,
+            40
+          ],
+          "end": [
+            0,
+            40
+          ],
+          "role": {
+            "value": "unknown",
+            "origin": "user",
+            "note": "Explicit synthetic test assumption; not a real property fact."
+          }
+        },
+        {
+          "id": "synthetic-geometry-1:ring-0:segment-3",
+          "ring": 0,
+          "segment": 3,
+          "start": [
+            0,
+            40
+          ],
+          "end": [
+            0,
+            0
+          ],
+          "role": {
+            "value": "unknown",
+            "origin": "user",
+            "note": "Explicit synthetic test assumption; not a real property fact."
+          }
+        }
+      ],
+      "building_type": {
+        "value": "single_detached",
+        "origin": "user",
+        "note": "Explicit synthetic test assumption; not a real property fact."
+      },
+      "existing_garden_suites": {
+        "value": 0,
+        "origin": "user",
+        "note": "Explicit synthetic test assumption; not a real property fact."
+      },
+      "principal_building_id": {
+        "value": null,
+        "origin": "user",
+        "note": "Explicit synthetic test assumption; not a real property fact."
+      },
+      "waterfront": {
+        "value": null,
+        "origin": "user",
+        "note": "Explicit synthetic test assumption; not a real property fact."
+      },
+      "measurements": {
+        "boundary": {},
+        "principal_separation": null,
+        "floor_area": null
+      },
+      "placement_revision": "synthetic-placement-1",
+      "limitations": [
+        "Synthetic test inputs; not real-world evidence."
+      ]
+    },
+    "model_revision": "aux-300-synthetic-inputs-1",
+    "proposal": {
+      "proposed_use": "garden_suite",
+      "foundation_attached": true,
+      "confirmed_zone": "GRD-1",
+      "confirmed_instrument": "Zoning Bylaw 2018"
+    },
+    "street_pattern": "unknown"
+  }
+}
