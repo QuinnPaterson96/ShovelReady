@@ -16,3 +16,15 @@ Floor area is entered under a plain `Floor area (m²)` label with click/keyboard
 - Local browser walkthrough used the saved Victoria example and public 419 Cecelia Rd demonstration address, with explicit address and PID parcel selection. The zoning provider returned `unavailable` after the parcel request; the UI kept zone and bylaw unknown, showed the City source and issue, and a manual GRD-1 entry remained labelled unverified. At a 390 px browser viewport, the document and scroll widths were both 375 px. The saved example showed editable defaults and the floor-area help opened by click. A successful live City zoning response was covered by contract tests, not observed in this browser run.
 - Municipal map records are live, unreviewed observations. They do not establish a current legal zoning designation, overlays, amendments, variance, lot identity, parcel boundary accuracy or garden-suite permission. City feature update dates and legal revisions are not supplied by the live map response.
 - The candidate Victoria garden-suite packet remains unreviewed and unpublished. Front setback, rear-yard occupancy/location, height, projections, full site-specific provisions and current applicability remain outside positive coverage. A real evaluation needs reviewed current source documents, controlled manufacturer drawings, legal lot evidence and user validation. See [quality gates](quality.md#explicit-integration-gaps).
+# Integration review — October 6, 2026
+
+PR #241 reviewed on main `0d251ab`. Local production build, 113 frontend tests and
+20 targeted conditional/scenario/zoning API tests passed. Independent browser check
+of the saved example confirmed labelled journey defaults, unknown zoning, and a
+manual GRD-1 edit retaining user/unverified attribution. The saved case does not
+perform a live zoning lookup. Worker browser evidence and source-outage limits
+below remain applicable; successful live mapped UI still needs a provider-backed
+browser pass. Integration corrected uncovered-area display to the shared formatter
+so a small nonzero gap cannot display as zero, with a behavioral regression added.
+README and architecture status now identify implemented UI consumption. Final-head
+CI is required again after these integration edits. No accepted data was published.

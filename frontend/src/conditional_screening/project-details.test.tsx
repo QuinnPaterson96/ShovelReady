@@ -36,6 +36,11 @@ test('exact selected PID parcel reference and complete mapping drive tentative s
   assert.match(html, /Garden suite district/)
   assert.match(html, /unreviewed live observation/)
   assert.match(html, /100% of parcel/)
+  // A known positive coverage gap must not disappear as zero after display rounding.
+  const tinyGap = renderToStaticMarkup(createElement(ProjectDetails, { settings, mapped,
+    lookup: { ...result, status: 'partial_coverage', uncovered_area_m2: 0.001 }, busy: false,
+    error: '', onRetry: () => {}, onChange: () => {} }))
+  assert.match(tinyGap, /Uncovered area: &lt; 0.1 m²/)
 })
 
 test('mixed, stale and malformed observations stay unresolved; manual choice stays separate', () => {
