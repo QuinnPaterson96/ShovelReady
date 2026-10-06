@@ -34,7 +34,7 @@ const checkText = (check: Check, selected?: Case) => {
     default: return `${check.kind.replace(/_/g, ' ')}: ${check.relation ?? check.status}`
   }
 }
-function Map({ selected, placement, onMove, nudgeMetres, boundaryInteraction }: { selected: Case; placement: Placement; onMove: (x: number, y: number) => void; nudgeMetres: number; boundaryInteraction?: BoundaryMapInteraction }) {
+function Map({ selected, placement, onMove, nudgeMetres, conflictIds, boundaryInteraction }: { selected: Case; placement: Placement; onMove: (x: number, y: number) => void; nudgeMetres: number; conflictIds?: Set<string>; boundaryInteraction?: BoundaryMapInteraction }) {
   const svg = useRef<SVGSVGElement>(null)
   const drag = useRef(false)
   const suppressClick = useRef(false)
@@ -68,10 +68,10 @@ function Map({ selected, placement, onMove, nudgeMetres, boundaryInteraction }: 
       onPointerMove={e => { if ((!boundaryInteraction || boundaryInteraction.mode === 'place') && drag.current) move(e.clientX, e.clientY) }}
       onPointerUp={e => { drag.current = false; if (e.currentTarget.hasPointerCapture(e.pointerId)) e.currentTarget.releasePointerCapture(e.pointerId) }}
       onPointerCancel={() => { drag.current = false; suppressClick.current = false }}>
-      <path d={path(site.parcel)} fill="var(--map-parcel-fill)" stroke="var(--map-parcel-stroke)" fillRule="evenodd" vectorEffect="non-scaling-stroke" strokeWidth="2" />
+      <path d={path(site.parcel)} fill="var(--map-parcel-fill)" stroke={conflictIds?.has(site.parcel.id) ? 'var(--danger)' : 'var(--map-parcel-stroke)'} strokeDasharray={conflictIds?.has(site.parcel.id) ? '7 4' : undefined} fillRule="evenodd" vectorEffect="non-scaling-stroke" strokeWidth={conflictIds?.has(site.parcel.id) ? '4' : '2'} />
       {site.buildings.map((b, i) => {
         const coords = points(b), left = Math.min(...coords.map(p => p[0])), top = Math.max(...coords.map(p => p[1]))
-        return <g key={b.id}><path d={path(b)} fill="var(--map-roof-fill)" stroke="var(--map-roof-stroke)" fillRule="evenodd" vectorEffect="non-scaling-stroke" strokeWidth="2" />
+        return <g key={b.id}><path d={path(b)} fill="var(--map-roof-fill)" stroke={conflictIds?.has(b.id) ? 'var(--danger)' : 'var(--map-roof-stroke)'} strokeDasharray={conflictIds?.has(b.id) ? '7 4' : undefined} fillRule="evenodd" vectorEffect="non-scaling-stroke" strokeWidth={conflictIds?.has(b.id) ? '4' : '2'}><title>{`Captured roofline ${i + 1}${conflictIds?.has(b.id) ? ': observed conflict' : ''}`}</title></path>
           <text x={left} y={-top - extent * .015} className="occupied-roof-label" fontSize={extent * .034}>Roof {i + 1}</text></g>
       })}
       {site.named_boundaries.map(b => <path key={b.id} d={path(b)} fill="none" stroke="var(--map-zone-stroke)" vectorEffect="non-scaling-stroke" strokeWidth="2" />)}
@@ -84,7 +84,7 @@ function Map({ selected, placement, onMove, nudgeMetres, boundaryInteraction }: 
         <text x={scaleX} y={scaleY - 3} fontSize={extent * .034}>{scale} m</text></g>
       {boundaryInteraction && <BoundaryOverlay interaction={boundaryInteraction} />}
     </svg>
-    <p className="occupied-map-legend"><span>Teal · captured parcel</span><span>Purple · captured rooflines, not walls</span><span>Copper · your nominal footprint</span><span>North ↑ · {site.projected_metre_crs}</span></p>
+    <p className="occupied-map-legend"><span>Teal · captured parcel</span><span>Purple · captured rooflines, not walls</span>{conflictIds && <span>Red dashed outline · current conflict</span>}<span>Copper · your nominal footprint</span><span>North ↑ · {site.projected_metre_crs}</span></p>
     {boundaryInteraction && <BoundaryMapTools interaction={boundaryInteraction} />}
   </div>
 }
@@ -227,6 +227,9 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
   const source = selected?.site.parcel.source
   const overlap = result && selected ? overlapFinding(selected, result) : null
   const observedConflicts = overlap?.conflicts ?? []
+  const conflictIds = new Set(observedConflicts.flatMap(check => check.source_feature_ids))
+  const crossesParcel = observedConflicts.some(check => check.kind === 'containment')
+  const overlapsRoof = observedConflicts.some(check => check.kind === 'building_overlap')
   const clearances = result?.checks.filter(c => c.status === 'observed' && ['parcel_boundary_distance', 'nearest_building_distance', 'building_distance', 'named_boundary_distance'].includes(c.kind)) ?? []
   const comparisons = result?.checks.filter(c => c.kind === 'requirement') ?? []
   const otherChecks = result?.checks.filter(c => !['containment', 'building_overlap', 'parcel_boundary_distance', 'nearest_building_distance', 'building_distance', 'named_boundary_distance', 'requirement'].includes(c.kind) || c.status !== 'observed' && c.kind !== 'requirement') ?? []
@@ -255,7 +258,7 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
       {compactPlacement && <div className="occupied-compact-summary"><strong>{model ? `${model.name} · ` : 'Manual footprint · '}{show(width)} wide × {show(depth)} long</strong><span>Nominal exterior rectangle · {dimensionOrigin('width').toLowerCase()} width, {dimensionOrigin('depth').toLowerCase()} length.</span><span>{source?.provider} · {source?.record_label} · captured {readableDate(source?.capture_date)} · {source?.review_status}. {publicSourceUrl(source?.reference) && <a href={publicSourceUrl(source?.reference)!} target="_blank" rel="noreferrer">Parcel source</a>}</span></div>}
       <div className="occupied-workspace">
         <div className="occupied-map-column">
-          <Map selected={selected} placement={placement} nudgeMetres={nudgeMetres} onMove={(x, y) => changePlacement({ x: String(x), y: String(y) })} boundaryInteraction={boundaryInteraction} />
+          <Map selected={selected} placement={placement} nudgeMetres={nudgeMetres} conflictIds={compactPlacement ? conflictIds : undefined} onMove={(x, y) => changePlacement({ x: String(x), y: String(y) })} boundaryInteraction={boundaryInteraction} />
           <div className="occupied-map-actions"><button onClick={placeAtCentre}>{compactPlacement ? 'Place or reset at parcel centre' : 'Recenter rectangle on parcel'}</button>
             <button disabled={number(placement.x) === null && number(placement.y) === null} onClick={() => changePlacement({ x: '', y: '' })}>Clear placement</button></div>
           <p className="metadata">Recenter uses the parcel drawing's bounding-box centre as an explicit sketch starting point. It does not search for a suitable location.</p>
@@ -303,11 +306,14 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
             <button className="sr-primary" disabled={!valid || !assumptionsValid || assessing} onClick={() => void assess()}>{assessing ? 'Checking…' : assessmentError ? 'Retry placement check' : 'Recheck placement'}</button>
             {assessmentError && <p role="alert">{assessmentError} Edit the sketch or try again; no result is shown.</p>}
           </div>
-          <div className={`placement-check placement-check--${result ? geometryTone : 'unknown'}`} role="status">
+          {compactPlacement ? result && (observedConflicts.length > 0 || observationIncomplete || comparisons.some(c => c.comparison === null)) && <div className={`placement-check placement-check--${observedConflicts.length ? 'conflict' : 'unknown'}`} role="alert">
+            <strong>{observedConflicts.length ? 'Conflict at this position' : 'Placement could not be fully checked'}</strong>
+            <p>{observedConflicts.length ? `${crossesParcel ? 'The unit crosses or touches the mapped parcel boundary. ' : ''}${overlapsRoof ? 'The unit overlaps or touches a mapped roofline. ' : ''}Move the unit on the map and recheck. This finding applies to this position only.` : 'Some mapped geometry or your comparison could not be checked. Review How we checked and try another position.'} Approximate map; legal siting remains unassessed.</p>
+          </div> : <div className={`placement-check placement-check--${result ? geometryTone : 'unknown'}`} role="status">
             <strong><span aria-hidden="true">{result ? geometryTone === 'conflict' ? '✕ ' : geometryTone === 'clear' ? '✓ ' : '… ' : '… '}</span>{result ? geometryTone === 'conflict' ? 'Observed geometry conflict' : geometryTone === 'clear' ? 'No observed geometry conflict' : 'Clearance or geometry needs review' : assessing ? 'Checking placement…' : assessmentError ? 'Check unavailable' : 'Place or edit the rectangle for an automatic check'}</strong>
             <p>Approximate captured geometry only. Zoning legality, other obstructions and permit eligibility remain unassessed.</p>
-          </div>
-          {result && <details className="occupied-results" open={!compactPlacement}><summary>Geometry observations and exact evidence</summary><section aria-labelledby="occupied-results"><p className="eyebrow">Measured position only</p><h3 id="occupied-results">{observedConflicts.length ? 'Observed conflicts at this position' : observationIncomplete ? 'Some measurements unresolved' : 'No overlap observed at this position'}</h3>
+          </div>}
+          {result && <details className="occupied-results" open={!compactPlacement}><summary>{compactPlacement ? 'How we checked · geometry measurements and evidence' : 'Geometry observations and exact evidence'}</summary><section aria-labelledby="occupied-results"><p className="eyebrow">Measured position only</p><h3 id="occupied-results">{observedConflicts.length ? 'Observed conflicts at this position' : observationIncomplete ? 'Some measurements unresolved' : 'No overlap observed at this position'}</h3>
             <p>These observations cover the supplied rectangle and mapped features only. Another position could differ.</p>
             <h4>Observed conflicts</h4>{observedConflicts.length ? <ul>{observedConflicts.map(c => <li key={c.id}>{checkText(c, selected)}</li>)}</ul> : <p>{observationIncomplete ? 'Some measurements are unresolved; inspect them below before drawing an overlap conclusion.' : 'No parcel crossing or captured roofline overlap was observed for this placement. This does not establish clear space.'}</p>}
             <h4>Measured clearances</h4><ul>{clearances.map(c => <li key={c.id}>{checkText(c, selected)}</li>)}</ul>
