@@ -16,6 +16,11 @@ test('published Model 300 height stays attributed and separate from a user allow
   assert.match(html, /Installed height:<\/strong> unknown/)
   assert.match(html, /Applicable regulatory height and limit:<\/strong> unknown/)
   assert.doesNotMatch(html, /3\.45 m|legal height limit/)
+  const shared = renderToStaticMarkup(createElement(HeightView, { model, foundationAllowanceM: '0.30' }))
+  assert.match(shared, /0\.3 m planning assumption/)
+  assert.match(shared, /Changing it updates that estimate/)
+  assert.doesNotMatch(shared, /none supplied|does not.*change any placement or zoning result/)
+  assert.match(shared, /Installed height:<\/strong> unknown/)
 })
 
 test('missing published height and invalid allowance never become drawn dimensions', () => {

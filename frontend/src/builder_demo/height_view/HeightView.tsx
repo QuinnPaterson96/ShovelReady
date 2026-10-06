@@ -8,6 +8,7 @@ export type HeightViewProps = {
   model: CatalogueModel
   /** Optional local scenario input in metres; this is never promoted to source evidence. */
   initialFoundationAllowanceM?: string
+  foundationAllowanceM?: string | null
   onFoundationAllowanceChange?: (metres: string | null) => void
 }
 
@@ -15,8 +16,9 @@ function validAllowance(value: string): boolean {
   return /^(?:\d+(?:\.\d*)?|\.\d+)$/.test(value) && Number.isFinite(Number(value)) && Number(value) >= 0
 }
 
-export function HeightView({ model, initialFoundationAllowanceM = '', onFoundationAllowanceChange }: HeightViewProps) {
-  const [allowance, setAllowance] = useState(initialFoundationAllowanceM)
+export function HeightView({ model, initialFoundationAllowanceM = '', foundationAllowanceM, onFoundationAllowanceChange }: HeightViewProps) {
+  const [localAllowance, setAllowance] = useState(initialFoundationAllowanceM)
+  const allowance = foundationAllowanceM === undefined ? localAllowance : foundationAllowanceM ?? ''
   const advertised = model.measurements.find(item => item.name === 'advertised_overall_height')
   const quantity = advertised?.status === 'known' && advertised.quantity?.dimension === 'length'
     ? advertised.quantity : null
@@ -42,13 +44,13 @@ export function HeightView({ model, initialFoundationAllowanceM = '', onFoundati
       </svg>
       <div className="height-view-legend">
         <p><strong>A · Manufacturer overall height:</strong> {measured ? <>{quantity!.original_text} ({quantity!.unit === 'm' ? measurementWithUnit(quantity!.value, 'length') : 'normalized value unavailable'})</> : 'unknown'}. {measured ? 'The published figure has no stated datum or roof-point definition.' : 'No usable published exterior height is available.'}</p>
-        <p><strong>B · Foundation allowance:</strong> {allowancePresent ? allowanceValid ? `${measurementWithUnit(allowance, 'length')} entered by you` : 'invalid entry; no usable allowance' : 'none supplied'}. This is an optional scenario assumption, separate from the manufacturer figure.</p>
+        <p><strong>B · Foundation allowance:</strong> {allowancePresent ? allowanceValid ? `${measurementWithUnit(allowance, 'length')} ${foundationAllowanceM === undefined ? 'entered by you' : 'planning assumption (default or edited)'}` : 'invalid entry; no usable allowance' : 'none supplied'}. This is an optional scenario assumption, separate from the manufacturer figure.</p>
         <p><strong>Installed height:</strong> unknown. The foundation relationship, site grade datum, and roof high point need confirmation. A and B cannot be added as a verified installed or regulatory height.</p>
         <p><strong>Applicable regulatory height and limit:</strong> unknown. No reviewed local rule, definition, or applicable limit is supplied here.</p>
       </div>
     </div>
     <label htmlFor="height-view-allowance">Optional foundation allowance (m)</label>
-    <p id="height-view-allowance-hint" className="metadata">Enter a non-negative scenario amount if you have one. It does not establish installed height or change any placement or zoning result.</p>
+    <p id="height-view-allowance-hint" className="metadata">{foundationAllowanceM === undefined ? 'Enter a non-negative scenario amount if you have one. It does not establish installed height or change any placement or zoning result.' : 'This shares the foundation allowance used in the labelled preliminary height estimate. Changing it updates that estimate; it does not establish installed or regulatory height.'}</p>
     <input id="height-view-allowance" type="text" inputMode="decimal" value={allowance}
       aria-describedby={`height-view-allowance-hint${allowanceValid ? '' : ' height-view-allowance-error'}`}
       aria-invalid={!allowanceValid}
