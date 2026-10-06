@@ -128,3 +128,40 @@ def test_known_exception_or_different_pathway_cannot_become_a_pass():
     body = request()
     body["proposal"] = {"confirmed_zone": "other"}
     assert screen(body)["status"] == "unresolved"
+
+
+def test_rear_clue_is_reciprocal_only_for_stated_single_street_lot():
+    body = request((2, 10))
+    body["rear_edge_id"] = "geom:ring-0:segment-1"
+    assert screen(body)["status"] == "clarify"  # clue alone leaves other fronts
+    body["street_pattern"] = "single"
+    selected = screen(body)
+    assert selected["status"] == "bounded_pass"
+    assert [item["front_edge_id"] for item in selected["scenarios"]] == [
+        "geom:ring-0:segment-3"]
+    body["street_edge_id"] = "geom:ring-0:segment-0"
+    assert screen(body)["status"] == "unresolved"  # inconsistent pair
+    body["street_pattern"] = "corner_or_multiple"
+    assert screen(body)["status"] == "clarify"
+
+
+def test_user_wall_measurement_changes_comparison_but_preserves_captured_distance():
+    body = request((2, 10))
+    body["street_edge_id"] = "geom:ring-0:segment-0"
+    body["street_pattern"] = "single"
+    base = screen(body)
+    assert base["status"] == "bounded_pass"
+    edge_id = "geom:ring-0:segment-3"
+    body["assumptions"]["measurements"]["boundary"][edge_id] = {
+        "value": 0.59, "unit": "m", "basis": "proposed_wall_to_lot_line",
+        "origin": "user", "note": None, "placement_revision": "place-1",
+    }
+    changed = screen(body)
+    assert changed["status"] == "apparent_conflict"
+    assert changed["edge_distances_m"][edge_id] == 1
+    check = next(item for item in changed["scenarios"][0]["checks"]
+                 if item["edge_id"] == edge_id)
+    assert (check["distance_m"], check["basis"], check["meets"]) == (
+        0.59, "user_wall_to_lot_line", False)
+    body["assumptions"]["measurements"]["boundary"][edge_id]["basis"] = "regulatory_floor_area"
+    assert screen(body)["status"] == "unresolved"

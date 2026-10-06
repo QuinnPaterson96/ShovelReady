@@ -8,6 +8,7 @@ import type { OccupiedMeasurement } from '../occupied_lots/OccupiedLots'
 import type { Result } from '../occupied_lots/contract'
 import { emptyExampleAssumptions, exampleCase, exampleOrientation, exampleObservation, exampleRequest, initialExamplePosition, parseExampleResult } from './example'
 import type { ExampleAssumptions, ExamplePosition } from './example'
+import { BoundaryMapTools, BoundaryOverlay, type BoundaryMapInteraction } from '../zoning_site_assumptions/BoundaryMapTools'
 
 const source = exampleCase.site.parcel.source
 const roofSource = exampleCase.site.buildings[0]?.source
@@ -16,7 +17,7 @@ const directions: Record<string, [number, number]> = {
   ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1],
 }
 
-export function ExampleProperty({ onMeasurement }: { onMeasurement: (value: OccupiedMeasurement | null) => void }) {
+export function ExampleProperty({ onMeasurement, boundaryInteraction }: { onMeasurement: (value: OccupiedMeasurement | null) => void; boundaryInteraction?: BoundaryMapInteraction }) {
   const [position, setPosition] = useState(initialExamplePosition)
   const [assumptions, setAssumptions] = useState(emptyExampleAssumptions)
   const [result, setResult] = useState<Result | null>(null)
@@ -142,18 +143,21 @@ export function ExampleProperty({ onMeasurement }: { onMeasurement: (value: Occu
       <strong><span aria-hidden="true">{statusTone === 'conflict' ? '✕ ' : statusTone === 'clear' ? '✓ ' : '… '}</span>{status}</strong><p>{phase === 'stale' ? 'The previous observation no longer describes these inputs.' : phase === 'measuring' ? 'Checking the supplied rectangle against captured geometry.' : phase === 'unresolved' ? `${message} No current geometry conclusion is available.` : conflict ? 'The supplied rectangle crosses or touches a captured parcel or roofline outline. This does not test other positions.' : unresolved ? 'Some captured geometry or assumption comparisons could not be resolved. Inspect the details below.' : shortfall ? 'The observed distance falls below a minimum you entered. This is not a legal setback comparison.' : 'No parcel crossing or captured roofline overlap was observed for this supplied position. Other obstructions and legal conditions remain unknown.'}</p>
     </div>
     <div className="builder-example-layout">
-      <figure className="builder-example-map"><svg ref={map} viewBox={viewBox} role="img" tabIndex={0} aria-label={`Saved City of Victoria parcel and roofline with an illustrative Model 300 nominal rectangle. Click to move its centre or drag the rectangle. Arrow keys move it ${step} ${step === 1 ? 'metre' : 'metres'}; north is up.`}
-        onClick={event => { if (suppressClick.current) { suppressClick.current = false; return }; moveFromPointer(event.clientX, event.clientY) }}
-        onKeyDown={event => { const direction = directions[event.key]; if (!direction) return; event.preventDefault(); nudge(...direction) }}
-        onPointerMove={event => { if (dragging.current) moveFromPointer(event.clientX, event.clientY) }}
+      <figure className="builder-example-map" id="placement-map">
+        {boundaryInteraction && <BoundaryMapTools interaction={boundaryInteraction} />}
+        <svg ref={map} viewBox={viewBox} role="img" tabIndex={0} aria-label={boundaryInteraction?.mode !== 'place' && boundaryInteraction ? 'Saved parcel boundary selection map. Choose a numbered edge here or use the buttons above. The model cannot move in this mode.' : `Saved City of Victoria parcel and roofline with an illustrative Model 300 nominal rectangle. Click to move its centre or drag the rectangle. Arrow keys move it ${step} ${step === 1 ? 'metre' : 'metres'}; north is up.`}
+        onClick={event => { if (boundaryInteraction && boundaryInteraction.mode !== 'place') return; if (suppressClick.current) { suppressClick.current = false; return }; moveFromPointer(event.clientX, event.clientY) }}
+        onKeyDown={event => { if (boundaryInteraction && boundaryInteraction.mode !== 'place') return; const direction = directions[event.key]; if (!direction) return; event.preventDefault(); nudge(...direction) }}
+        onPointerMove={event => { if ((!boundaryInteraction || boundaryInteraction.mode === 'place') && dragging.current) moveFromPointer(event.clientX, event.clientY) }}
         onPointerUp={event => { dragging.current = false; if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId) }}
         onPointerCancel={() => { dragging.current = false; suppressClick.current = false }}>
         <path d={path(exampleCase.site.parcel)} fill="var(--map-parcel-fill)" stroke={conflictIds.has(exampleCase.site.parcel.id) ? 'var(--danger)' : 'var(--map-parcel-stroke)'} strokeDasharray={conflictIds.has(exampleCase.site.parcel.id) ? '7 4' : undefined} fillRule="evenodd" strokeWidth={conflictIds.has(exampleCase.site.parcel.id) ? '4' : '2'} vectorEffect="non-scaling-stroke" />
         {exampleCase.site.buildings.map((roof, index) => <path key={roof.id} d={path(roof)} fill="var(--map-roof-fill)" stroke={conflictIds.has(roof.id) ? 'var(--danger)' : 'var(--map-roof-stroke)'} strokeDasharray={conflictIds.has(roof.id) ? '7 4' : undefined} strokeWidth={conflictIds.has(roof.id) ? '4' : '2'} vectorEffect="non-scaling-stroke"><title>{`Captured roofline ${index + 1}${conflictIds.has(roof.id) ? ': observed conflict' : ''}`}</title></path>)}
         {footprint && <g transform={`translate(${footprint.centre_xy[0]} ${-footprint.centre_xy[1]}) rotate(${-footprint.angle_degrees})`}>
           <rect x={-footprint.width_m / 2} y={-footprint.depth_m / 2} width={footprint.width_m} height={footprint.depth_m} fill="var(--map-zone-fill)" stroke="var(--map-zone-stroke)" strokeWidth="3" vectorEffect="non-scaling-stroke" style={{ cursor: 'grab', touchAction: 'none' }}
-            onPointerDown={event => { dragging.current = true; suppressClick.current = true; event.currentTarget.ownerSVGElement?.setPointerCapture(event.pointerId) }} />
+            onPointerDown={event => { if (boundaryInteraction && boundaryInteraction.mode !== 'place') return; dragging.current = true; suppressClick.current = true; event.currentTarget.ownerSVGElement?.setPointerCapture(event.pointerId) }} />
         </g>}
+        {boundaryInteraction && <BoundaryOverlay interaction={boundaryInteraction} />}
       </svg><figcaption>Teal: captured parcel · Purple: captured roofline, not walls · Red dashed outline: observed conflict in current measurement · Copper: illustrative nominal rectangle · North ↑ · EPSG:3157 metres. Diagram is approximate.</figcaption></figure>
       <div className="builder-example-controls"><h3>Edit the illustrative placement</h3>
         <p>The nominal rectangle starts at Model 300's unreviewed provider dimensions. Current width {show(Number(position.width), 'length')} × length {show(Number(position.depth), 'length')}. Click the map to move its centre or drag the copper rectangle. North is up; movement changes the example only. Changes are checked automatically after a short pause. Zoning legality is not assessed.</p>

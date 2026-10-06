@@ -3,12 +3,4 @@
 .placement-scenarios--apparent_conflict { border-left-color: var(--status-conflict, #a64638); }
 .placement-scenarios__source, .placement-scenarios__notice { color: var(--ink-muted); }
 .placement-scenarios__choice { border: 1px solid var(--border); border-radius: var(--radius-card); margin-top: 1rem; padding: 1rem; }
-.placement-scenarios__map { display: block; width: min(100%, 28rem); height: auto; min-height: 11rem; background: var(--surface-subtle); margin-block: 1rem; }
-.placement-scenarios__edge { stroke: var(--primary); stroke-width: 1.5; cursor: pointer; }
-.placement-scenarios__edge--selected { stroke: var(--copper); stroke-width: 3; }
-.placement-scenarios__map text { fill: var(--ink); font-size: 3px; font-weight: bold; text-anchor: middle; paint-order: stroke; stroke: var(--surface); stroke-width: .8px; }
-.placement-scenarios__buttons { display: flex; flex-wrap: wrap; gap: .5rem; }
-.placement-scenarios__buttons button { min-height: 44px; }
-.placement-scenarios__buttons button[aria-pressed="true"] { background: var(--primary-soft); border-color: var(--primary); }
-.placement-scenarios__single { display: flex; align-items: center; gap: .5rem; margin-top: 1rem; }
 .placement-scenarios textarea { max-width: 100%; }

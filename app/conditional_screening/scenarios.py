@@ -23,6 +23,7 @@ class ScenarioRequest(Strict):
     model_revision: str = Field(min_length=1)
     proposal: Proposal = Proposal()
     street_edge_id: str | None = None
+    rear_edge_id: str | None = None
     street_pattern: Literal["unknown", "single", "corner_or_multiple"] = "unknown"
 
 
@@ -30,6 +31,7 @@ class EdgeCheck(Strict):
     edge_id: str
     role: Literal["rear", "side", "flanking_street"]
     distance_m: float
+    basis: Literal["captured_nominal", "user_wall_to_lot_line"]
     minimum_m: float
     meets: bool
     rule_id: str
@@ -78,13 +80,16 @@ def screen(body: ScenarioRequest) -> ScenarioResult:
         packet_id=packet["packet_id"],
         packet_revision=packet["packet_revision"],
         thresholds_m={"side_rear": side_limit, "flanking_street": flank_limit},
-        scope="Approximate nominal rectangle to captured parcel edges, candidate City of Victoria "
-        "ordinary GRD-1 garden-suite side/rear/flanking distances only",
+        scope="Approximate nominal rectangle to captured parcel edges, with separately labelled "
+        "user wall-to-line overrides where supplied; candidate City of Victoria ordinary "
+        "GRD-1 garden-suite side/rear/flanking distances only",
         sources=(_source(packet, side_rule).model_dump(mode="json"),
                  _source(packet, flank_rule).model_dump(mode="json")),
         limitations=(
             "Captured parcel edges are not verified registered legal lot lines; the nominal "
             "rectangle is not a surveyed building face or installed envelope.",
+            "User wall-to-line distances are unverified assumptions and do not alter the "
+            "captured nominal geometry observations.",
             "Street-facing choice is a scenario assumption, not a legal front lot line "
             "classification.",
             "Front setback, rear-yard location/occupancy, height, site-specific provisions, "
@@ -128,8 +133,12 @@ def screen(body: ScenarioRequest) -> ScenarioResult:
                                or tuple(edge.end) != tuple(ring[index + 1])
                                for index, edge in enumerate(edges))):
         return unresolved("The supplied edge identities do not match the captured parcel.")
-    if body.street_edge_id is not None and body.street_edge_id not in {edge.id for edge in edges}:
-        return unresolved("The selected street edge is not part of this parcel.")
+    if any(edge_id is not None and edge_id not in {edge.id for edge in edges}
+           for edge_id in (body.street_edge_id, body.rear_edge_id)):
+        return unresolved("A selected boundary edge is not part of this parcel.")
+    if any(item.unit != "m" or item.basis != "proposed_wall_to_lot_line"
+           or item.origin != "user" for item in assumptions.measurements.boundary.values()):
+        return unresolved("A user boundary measurement has an unsupported unit or basis.")
     footprint = shape(observed.placement_geometry)
     distances = {edge.id: footprint.distance(LineString([edge.start, edge.end]))
                  for edge in edges}
@@ -137,8 +146,10 @@ def screen(body: ScenarioRequest) -> ScenarioResult:
     # A street-facing edge alone does not establish the legal front on corner or
     # multiple-street lots. Narrow only when the user also states it is the sole street edge.
     fronts = [index for index, edge in enumerate(edges)
-              if body.street_pattern != "single" or body.street_edge_id is None
-              or edge.id == body.street_edge_id]
+              if body.street_pattern != "single"
+              or ((body.street_edge_id is None or edge.id == body.street_edge_id)
+                  and (body.rear_edge_id is None
+                       or edges[(index + 2) % 4].id == body.rear_edge_id))]
     for front in fronts:
         rear = (front + 2) % 4
         sides = [index for index in range(4) if index not in (front, rear)]
@@ -153,9 +164,11 @@ def screen(body: ScenarioRequest) -> ScenarioResult:
             checks = tuple(EdgeCheck(
                 edge_id=edges[index].id,
                 role=assignment[index],
-                distance_m=distances[edges[index].id],
+                distance_m=(manual.value if (manual := assumptions.measurements.boundary.get(
+                    edges[index].id)) is not None else distances[edges[index].id]),
+                basis="user_wall_to_lot_line" if manual is not None else "captured_nominal",
                 minimum_m=flank_limit if assignment[index] == "flanking_street" else side_limit,
-                meets=distances[edges[index].id] >= (
+                meets=(manual.value if manual is not None else distances[edges[index].id]) >= (
                     flank_limit if assignment[index] == "flanking_street" else side_limit),
                 rule_id=(flank_rule if assignment[index] == "flanking_street" else side_rule)[
                     "logical_rule_id"],

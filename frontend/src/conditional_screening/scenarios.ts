@@ -9,6 +9,7 @@ export type ScenarioRequest = {
   model_revision: string
   proposal: Pathway
   street_edge_id: string | null
+  rear_edge_id: string | null
   street_pattern: 'unknown' | 'single' | 'corner_or_multiple'
 }
 export type ScenarioResult = {
@@ -24,7 +25,7 @@ export type ScenarioResult = {
   edge_distances_m: Record<string, number>
   thresholds_m: { side_rear: number; flanking_street: number }
   scenarios: { front_edge_id: string; outcome: 'pass' | 'fail'; checks: {
-    edge_id: string; role: 'side' | 'rear' | 'flanking_street'; distance_m: number;
+    edge_id: string; role: 'side' | 'rear' | 'flanking_street'; distance_m: number; basis: 'captured_nominal' | 'user_wall_to_lot_line';
     minimum_m: number; meets: boolean; rule_id: string
   }[] }[]
   sources: { provider: string; record_label: string; capture_date: string | null; review_status: string; url: string; locator: string }[]
@@ -41,7 +42,8 @@ export function parseScenarioResult(raw: unknown): ScenarioResult {
     !Number.isFinite(result.thresholds_m?.side_rear) || !Number.isFinite(result.thresholds_m?.flanking_street) ||
     !Array.isArray(result.scenarios) || !Array.isArray(result.sources) || !Array.isArray(result.limitations) ||
     !result.scenarios.every(scenario => ['pass', 'fail'].includes(scenario.outcome) && Array.isArray(scenario.checks) &&
-      scenario.checks.every(check => Number.isFinite(check.distance_m) && Number.isFinite(check.minimum_m))))
+      scenario.checks.every(check => Number.isFinite(check.distance_m) && Number.isFinite(check.minimum_m) &&
+        ['captured_nominal', 'user_wall_to_lot_line'].includes(check.basis))))
     throw new Error('Scenario response is malformed.')
   return result
 }
