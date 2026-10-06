@@ -476,3 +476,23 @@ async def conditional_evaluate(request: HttpRequest) -> Result:
         raise HTTPException(status_code=422, detail=detail) from exc
     except (ValueError, KeyError, json.JSONDecodeError) as exc:
         raise HTTPException(status_code=422, detail="invalid candidate request") from exc
+
+
+# Imported after the packet adapter is defined: the scenario module reuses its
+# validated assumption boundary and candidate source projection.
+from .scenarios import ScenarioRequest, ScenarioResult, screen  # noqa: E402
+
+
+@router.post("/placement-scenarios", response_model=ScenarioResult)
+async def placement_scenarios(request: HttpRequest) -> ScenarioResult:
+    raw = await request.body()
+    if len(raw) > _MAX_BYTES:
+        raise HTTPException(status_code=413, detail="request too large")
+    try:
+        return screen(ScenarioRequest.model_validate_json(raw))
+    except ValidationError as exc:
+        detail = [{"field": ".".join(str(part) for part in error["loc"]),
+                   "message": error["msg"]} for error in exc.errors(include_input=False)]
+        raise HTTPException(status_code=422, detail=detail) from exc
+    except (ValueError, KeyError, TypeError) as exc:
+        raise HTTPException(status_code=422, detail="invalid placement scenario request") from exc

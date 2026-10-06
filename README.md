@@ -1,6 +1,7 @@
 # ShovelReady
 
 Latest demo integration: [conditional Victoria zoning comparisons and manufacturer preview](docs/integration-conditional-zoning.md).
+The [approximate placement setback scenario handoff](docs/integration-placement-scenarios.md) records the bounded automatic screen and its remaining legal and geometry gaps.
 
 ShovelReady explores a practical question: **given a prefabricated building design, where could it plausibly be built?**
 
