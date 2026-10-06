@@ -15,6 +15,7 @@ RUN python -m pip install --no-cache-dir uv==0.12.17
 COPY pyproject.toml uv.lock ./
 RUN uv sync --locked --no-dev
 COPY app ./app
+COPY docs/rule-packets/victoria-garden-suite-scouting/packet.json ./docs/rule-packets/victoria-garden-suite-scouting/packet.json
 COPY docs/research/public-cases/cases.json ./docs/research/public-cases/cases.json
 COPY alembic.ini ./
 COPY migrations ./migrations

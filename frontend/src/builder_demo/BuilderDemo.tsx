@@ -15,6 +15,10 @@ import { HeightView } from './height_view/HeightView'
 import { ModelImage } from './model_image/ModelImage'
 import { ExampleProperty } from './ExampleProperty'
 import { exampleCase, exampleSourcePage } from './example'
+import { SiteAssumptionsEditor } from '../zoning_site_assumptions/SiteAssumptions'
+import type { SiteAssumptions } from '../zoning_site_assumptions/model'
+import { ConditionalScreen, PathwayAssumptions } from '../conditional_screening/ConditionalScreen'
+import { currentPlacementRevision, emptyPathway, expectedPropertyRevision, parseScreeningResult, propertyGeometryRevision, screeningCheckTitle, screeningIdentity, type Pathway, type ScreeningRequest, type ScreeningResult } from '../conditional_screening/model'
 import { EnquiryPreview, emailDraftUrl, enquiryEmailBody, enquiryMarkdown, enquiryPlainText, validRecipient, type EnquiryDocument } from './enquiry'
 
 const MODEL_ID = 'aux-300' as const
@@ -31,7 +35,8 @@ const field = (value: string) => value.trim() || 'unknown'
 
 export function enquiryDocument(selection: SitePreparationSelection | null, input: {
   question?: string; intendedUse: string; timing: string; budget: string; access: string; services: string
-}, measured: OccupiedMeasurement | null, exampleImported = false, live: Confirmed | null = null, manual: ManualSiteOutput | null = null, savedExample = false, foundationAllowanceM: string | null = null) {
+}, measured: OccupiedMeasurement | null, exampleImported = false, live: Confirmed | null = null, manual: ManualSiteOutput | null = null, savedExample = false, foundationAllowanceM: string | null = null,
+  conditional: ScreeningResult | null = null, siteAssumptions: SiteAssumptions | null = null, pathway: Pathway | null = null) {
   const source = model.sources[0]
   const candidate = selection?.candidate
   const p = measured?.result.input.placement
@@ -51,6 +56,14 @@ export function enquiryDocument(selection: SitePreparationSelection | null, inpu
     const outcome = check.comparison === 'shortfall' && check.margin_m !== null ? `shortfall ${measurementWithUnit(Math.abs(check.margin_m), 'length')}` : check.comparison === 'meets' ? 'meets the supplied target' : 'comparison unresolved'
     return `${label}: ${outcome}; measured ${measurementWithUnit(check.distance_m, 'length')}. ${check.id.startsWith('requirement:user-') ? 'User assumption, not a legal setback.' : 'Source-derived comparison; applicability requires review.'}`
   }).join(' ')
+  const conditionalSummary = conditional
+    ? `Candidate Victoria garden-suite comparison for this supplied placement: ${conditional.coverage.meets_under_assumptions} checks meet under stated assumptions; ${conditional.coverage.apparent_conflict_under_assumptions} apparent conflicts; ${conditional.coverage.needs_information} need information; ${conditional.coverage.unsupported} outside scope. Candidate source/currentness and site facts remain unreviewed; no approval or complete bylaw review.`
+    : 'Conditional zoning findings are not current for these inputs. No legal compatibility conclusion is available.'
+  const conditionalCheckDetails = conditional?.checks.map(check => `${screeningCheckTitle(check)}: ${check.status.replace(/_/g, ' ')}${check.normalized_observed !== null && check.normalized_threshold !== null ? `; supplied ${check.normalized_observed} ${check.normalized_unit ?? ''}, candidate threshold ${check.normalized_threshold} ${check.normalized_unit ?? ''}` : ''}. ${check.reasons.join(' ')} Source: ${check.rule.source.provider}, ${check.rule.source.record_label}, ${check.rule.source.locator}, captured ${check.rule.source.capture_date ?? 'date unknown'}, ${check.rule.source.review_status}; ${check.rule.source.url}.`) ?? []
+  const sourceCaveat = conditional?.checks[0]?.rule.source.currentness_limitations.join(' ') ?? ''
+  const assumptionsSummary = siteAssumptions
+    ? `Property assumptions: main building ${siteAssumptions.building_type.value ?? 'unknown'}; existing garden suites ${siteAssumptions.existing_garden_suites.value ?? 'unknown'}; waterfront ${siteAssumptions.waterfront.value === null ? 'unknown' : siteAssumptions.waterfront.value ? 'assumed yes' : 'assumed no'}; ${siteAssumptions.edges.filter(edge => edge.role.value && edge.role.value !== 'unknown').length} parcel edges classified by the user. Pathway assumptions: use ${pathway?.proposed_use ?? 'unknown'}, foundation ${pathway?.foundation_attached === null || pathway?.foundation_attached === undefined ? 'unknown' : pathway.foundation_attached ? 'assumed attached' : 'assumed unattached'}, lot/zone/instrument ${pathway?.legal_lot_confirmed ? 'assumed legal lot' : 'unknown or incompatible'} / ${pathway?.confirmed_zone ?? 'unknown'} / ${pathway?.confirmed_instrument ?? 'unknown'}. These are user assertions, not reviewed site or legal facts.`
+    : 'Property boundary roles and zoning pathway facts remain unknown.'
   const lines = [
     'UNSENT DRAFT · Model 300 enquiry for preliminary investigation',
     'Prepared independently with ShovelReady; no affiliation with or contact to aux box.',
@@ -82,7 +95,8 @@ export function enquiryDocument(selection: SitePreparationSelection | null, inpu
     sections: [
       { heading: 'Model', paragraphs: [lines[1], lines[2], lines[8 + offset]], emailSummary: `aux box Model 300; nominal exterior ${original('nominal_exterior_width')} × ${original('nominal_exterior_depth')}; source ${model.provider_url}; current controlled revision and installed height unknown.` },
       { heading: 'Property', paragraphs: [lines[3], ...(candidate ? [lines[4]] : []), lines[4 + offset], lines[5 + offset]], emailSummary: savedExample ? 'Saved City of Victoria example only; this is not my property.' : live ? `Confirmed Victoria lead: ${live.address.label}. Captured observation remains unreviewed.` : manual ? `User-supplied site: ${field(manual.facts.address)}; facts and sketch unverified.` : `Site lead: ${candidate ? fact(candidate.address.value) : fact(selection?.manual.address.value ?? null)}; identity and dimensions unverified.` },
-      { heading: 'Placement', paragraphs: [lines[6 + offset], lines[7 + offset], ...(clearanceText ? [clearanceText] : [])], emailSummary: measured ? `Approximate measured rectangle ${measurementWithUnit(p?.width_m, 'length')} × ${measurementWithUnit(p?.depth_m, 'length')}; ${measured.widthOrigin === 'user' || measured.depthOrigin === 'user' ? 'custom size, provider availability unknown; ' : ''}geometry observations only; zoning unassessed. ${clearanceText}` : manual?.assessment ? `User sketch measured at ${measurementWithUnit(manual.assessment.input.placement.width_m, 'length')} × ${measurementWithUnit(manual.assessment.input.placement.depth_m, 'length')}; unverified geometry; zoning unassessed.` : 'No current placement measurement; geometry and zoning unassessed.' },
+      { heading: 'Placement', paragraphs: [lines[6 + offset], lines[7 + offset], ...(clearanceText ? [clearanceText] : [])], emailSummary: measured ? `Approximate measured rectangle ${measurementWithUnit(p?.width_m, 'length')} × ${measurementWithUnit(p?.depth_m, 'length')}; ${measured.widthOrigin === 'user' || measured.depthOrigin === 'user' ? 'custom size, provider availability unknown; ' : ''}geometry observations recorded; ${conditional ? 'see separate conditional zoning checks' : 'zoning comparison unresolved'}. ${clearanceText}` : manual?.assessment ? `User sketch measured at ${measurementWithUnit(manual.assessment.input.placement.width_m, 'length')} × ${measurementWithUnit(manual.assessment.input.placement.depth_m, 'length')}; unverified geometry; zoning unassessed.` : 'No current placement measurement; geometry and zoning unassessed.' },
+      { heading: 'Conditional zoning', paragraphs: [assumptionsSummary, conditionalSummary, ...(sourceCaveat ? [sourceCaveat] : []), ...conditionalCheckDetails], emailSummary: conditional ? `${conditionalSummary} ${sourceCaveat} ${conditionalCheckDetails.join(' ')}` : 'No current conditional zoning findings.' },
       { heading: 'Still to confirm', paragraphs: [lines[9 + offset], lines[10 + offset]], emailSummary: `Current drawing and revision, installed envelope and height, site access, foundations, utilities, legal boundaries and zoning. Timing: ${field(input.timing)}. Budget: ${field(input.budget)}. Access: ${field(input.access)}. Services: ${field(input.services)}.` },
     ],
     closing: lines[11 + offset],
@@ -105,6 +119,11 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const [selection, setSelection] = useState<SitePreparationSelection | null>(null)
   const [imported, setImported] = useState(false)
   const [measurementResult, setMeasurementResult] = useState<OccupiedMeasurement | null>(null)
+  const [siteAssumptions, setSiteAssumptions] = useState<SiteAssumptions | null>(null)
+  const [pathway, setPathway] = useState<Pathway>(emptyPathway)
+  const [conditionalState, setConditionalState] = useState<{ key: string; result: ScreeningResult } | null>(null)
+  const [conditionalError, setConditionalError] = useState<{ key: string; message: string } | null>(null)
+  const [conditionalBusy, setConditionalBusy] = useState(false)
   const [revision, setRevision] = useState(0)
   const [use, setUse] = useState('')
   const [timing, setTiming] = useState('')
@@ -117,7 +136,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const [recipient, setRecipient] = useState('')
   const [includeSiteDetails, setIncludeSiteDetails] = useState(false)
   const [emailMessage, setEmailMessage] = useState('')
-  function siteEdited() { setSelection(null); setImported(false); setMeasurementResult(null); setReadyFor(null); setRevision(value => value + 1) }
+  function siteEdited() { setSelection(null); setImported(false); setMeasurementResult(null); setSiteAssumptions(null); setPathway(emptyPathway()); setReadyFor(null); setRevision(value => value + 1) }
   function changeMode(next: typeof mode) {
     setFoundationAllowanceM(null); setHeightRevision(value => value + 1)
     setExpanded({ property: next !== 'example', placement: next === 'example', next: false })
@@ -127,7 +146,38 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     setReadyFor(null); setManualConfirmedFor(null); setIncludeSiteDetails(false); setEmailMessage('')
   }
   const hasSite = mode === 'example' || !!(selection || live || manual && (manual.site || Object.values(manual.facts).some(value => value.trim())))
-  const enquiryDoc = hasSite ? enquiryDocument(selection, { question, intendedUse: use, timing, budget, access, services }, measurementResult, imported, live, manual, mode === 'example', foundationAllowanceM) : null
+  const zoningCase = mode === 'example' ? exampleCase : mode === 'live' ? liveCase ?? null : null
+  const geometryRevision = zoningCase ? propertyGeometryRevision(zoningCase) : null
+  const placementRevision = measurementResult ? currentPlacementRevision({ placement: measurementResult.result.input.placement, model: measurementResult.model?.model_id ?? null, widthOrigin: measurementResult.widthOrigin, depthOrigin: measurementResult.depthOrigin }) : 'placement-unmeasured'
+  const currentAssumptions = zoningCase && geometryRevision && siteAssumptions?.property.case_id === zoningCase.case_id && siteAssumptions.property.parcel_id === zoningCase.site.parcel.id && siteAssumptions.property.geometry_revision === geometryRevision && siteAssumptions.placement_revision === placementRevision ? siteAssumptions : null
+  const screeningRequest: ScreeningRequest | null = measurementResult && currentAssumptions && zoningCase && measurementResult.site.site.parcel.id === zoningCase.site.parcel.id
+    ? { schema_version: 'conditional-screening.api.v1', assumptions: currentAssumptions, model_revision: `catalogue-record:${model.model_id}@${bundledCatalogue.snapshot_id}`, proposal: pathway } : null
+  const requestKey = screeningRequest ? screeningIdentity(screeningRequest) : null
+  const currentScreening = requestKey && conditionalState?.key === requestKey ? conditionalState.result : null
+  const currentScreeningError = requestKey && conditionalError?.key === requestKey ? conditionalError.message : ''
+  useEffect(() => {
+    if (!screeningRequest || !requestKey) { setConditionalBusy(false); return }
+    const controller = new AbortController()
+    const timeout = window.setTimeout(() => controller.abort('timeout'), 10000)
+    setConditionalBusy(true)
+    const timer = window.setTimeout(async () => {
+      try {
+        const response = await fetch('/api/conditional-screening/v1/evaluate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(screeningRequest), signal: controller.signal })
+        if (!response.ok) throw new Error(`Conditional screen unavailable (${response.status}).`)
+        const result = parseScreeningResult(await response.json())
+        if (result.request.property_revision !== expectedPropertyRevision(screeningRequest.assumptions) ||
+          result.request.placement_revision !== screeningRequest.assumptions.placement_revision ||
+          result.request.model_revision !== screeningRequest.model_revision) throw new Error('Conditional response did not match the current input revisions.')
+        if (!controller.signal.aborted) { setConditionalState({ key: requestKey, result }); setConditionalError(null); setConditionalBusy(false) }
+      } catch (error) {
+        if (!controller.signal.aborted || controller.signal.reason === 'timeout') { setConditionalError({ key: requestKey, message: controller.signal.reason === 'timeout' ? 'Conditional screen timed out.' : error instanceof Error ? error.message : 'Conditional screen unavailable.' }); setConditionalBusy(false) }
+      } finally {
+        window.clearTimeout(timeout)
+      }
+    }, 300)
+    return () => { controller.abort(); window.clearTimeout(timer); window.clearTimeout(timeout) }
+  }, [requestKey])
+  const enquiryDoc = hasSite ? enquiryDocument(selection, { question, intendedUse: use, timing, budget, access, services }, measurementResult, imported, live, manual, mode === 'example', foundationAllowanceM, currentScreening, currentAssumptions, pathway) : null
   const draftText = enquiryDoc ? enquiryPlainText(enquiryDoc) : ''
   const manualSignature = JSON.stringify({ facts: manual?.facts ?? null, site: manual?.site ?? null })
   const propertyComplete = mode === 'example' || !!(live || selection || mode === 'manual' && manual && manualConfirmedFor === manualSignature)
@@ -149,7 +199,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   }, [])
   const currentMeasurement = measurementResult?.result ?? manual?.assessment
   const placementSummary = currentMeasurement
-    ? `Measured observation · ${currentMeasurement.checks.some(check => check.relation === 'outside' || check.relation === 'touches' || check.relation === 'positive_area_overlap') ? 'conflict observed' : 'review captured geometry'}${measurementResult?.result.checks.some(check => check.comparison === 'shortfall') ? ' · clearance shortfall' : ''} · zoning unassessed. Expand to review distances and clearance findings.`
+    ? `Measured observation · ${currentMeasurement.checks.some(check => check.relation === 'outside' || check.relation === 'touches' || check.relation === 'positive_area_overlap') ? 'conflict observed' : 'review captured geometry'}${measurementResult?.result.checks.some(check => check.comparison === 'shortfall') ? ' · clearance shortfall' : ''} · ${currentScreening ? 'conditional candidate zoning checks available' : 'zoning comparison unresolved'}. Expand to review distances and findings.`
     : 'No current measurement. Placement can remain unknown in your enquiry.'
 
   const enquiryReady = !!enquiryDoc && readyFor === draftText
@@ -196,10 +246,10 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       <p className="eyebrow">Independent sample journey · aux box</p>
       <h1 id="builder-title">Explore Model 300 on your site</h1>
       <p>Start with a site lead or the facts you know. Find and confirm a Victoria property, or sketch your own approximate lot, then test one placement and take away an unsent enquiry.</p>
-      <p className="notice">This ShovelReady demonstration is independent of aux box. It does not check zoning compatibility, confirm provider service, or contact the company.</p>
+      <p className="notice">This ShovelReady demonstration is independent of aux box. It offers limited conditional Victoria checks when you supply assumptions; it does not establish legal compatibility, confirm provider service, or contact the company.</p>
       <p><strong>Model 300</strong> · {original('nominal_exterior_width')} × {original('nominal_exterior_depth')} · advertised height {original('advertised_overall_height')}. Provider dimensions are unreviewed.</p>
-      <details className="builder-model-details"><summary>Model photos, specifications and sources</summary>
       <ModelImage />
+      <details className="builder-model-details"><summary>Model photos, specifications and sources</summary>
       <div className="builder-specs" aria-label="Captured model information">
         <div><strong>{original('nominal_exterior_width')} × {original('nominal_exterior_depth')}</strong><span>Provider nominal exterior rectangle · {metres('nominal_exterior_width')} × {metres('nominal_exterior_depth')}</span></div>
         <div><strong>{original('advertised_overall_height')}</strong><span>Advertised exterior height; installed regulatory height and datum unknown</span></div>
@@ -222,7 +272,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     <select id="builder-site-mode" value={mode} onChange={event => changeMode(event.target.value as typeof mode)}>
       <option value="live">Search a Victoria address</option><option value="manual">Enter facts or sketch manually</option><option value="retained">Use the retained example workflow</option><option value="example">Example property / saved data</option>
     </select>
-    {mode === 'live' && <SiteDiscovery onConfirm={next => { setLive(next); setMeasurementResult(null); setReadyFor(null); setRevision(value => value + 1) }} onManual={() => changeMode('manual')} />}
+    {mode === 'live' && <SiteDiscovery onConfirm={next => { setLive(next); setMeasurementResult(null); setSiteAssumptions(null); setPathway(emptyPathway()); setReadyFor(null); setRevision(value => value + 1) }} onManual={() => changeMode('manual')} />}
     {mode === 'retained' && <SitePreparation draft={draft} onDraftChange={next => { setDraft(next); setReadyFor(null) }} selection={selection}
       onEdit={siteEdited} onConfirm={next => { setSelection(next); setImported(false); setMeasurementResult(null); setReadyFor(null); setRevision(value => value + 1) }} />}
       {mode === 'manual' && <ManualSiteInput onChange={value => { if (JSON.stringify(value) !== JSON.stringify(manual)) { setManual(value); setReadyFor(null) } }} footprint={{ widthM: Number(measurement('nominal_exterior_width')?.quantity?.value) || null, depthM: Number(measurement('nominal_exterior_depth')?.quantity?.value) || null, label: 'aux box Model 300 · unreviewed nominal dimensions' }} />}
@@ -238,6 +288,12 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       {mode === 'example' && <ExampleProperty key={revision} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} />}
       {mode === 'live' && (liveCase ? <OccupiedLots key={revision} suppliedCase={liveCase} allowedModelIds={[MODEL_ID]} initialModelId={MODEL_ID} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} showHandoff={false} /> : <p>Confirm a Victoria property above to open its captured parcel sketch. Available geometry is approximate and unreviewed.</p>)}
 
+    {zoningCase && <details className="builder-optional"><summary>Explore conditional Victoria garden-suite checks</summary>
+      <p>Use the current placement with explicitly stated lot and building assumptions. Candidate rules are sourced, but their currentness and site applicability still need review.</p>
+      <PathwayAssumptions value={pathway} onChange={next => { setPathway(next); setReadyFor(null) }} />
+      <SiteAssumptionsEditor site={zoningCase} geometryRevision={geometryRevision!} placementRevision={placementRevision} onChange={next => { setSiteAssumptions(next); setReadyFor(null) }} />
+      <ConditionalScreen result={currentScreening} busy={!!requestKey && conditionalBusy && !currentScreening} error={currentScreeningError} />
+    </details>}
     {selection && <section className="builder-optional" aria-labelledby="builder-optional-title">
       <p className="eyebrow">Optional placement</p><h2 id="builder-optional-title">Import a retained example only if useful</h2>
       <p>Three captured lots are examples with their own parcel and roofline geometry. They are not citywide address coverage. Importing one does not match it to your address or parcel lead.</p>
@@ -292,7 +348,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
         <p className="metadata">If no compose window opens, use Copy email body and paste the exact text shown above into a new message. Check the recipient and subject there before sending.</p>
         <p role="status">{emailMessage}</p>
       </section>
-      <TechnicalDetails title="Complete site selection, sources and measurements"><CopyableRecord id="builder-technical-record" label="Complete technical evidence export" value={JSON.stringify({ schema_version: 'builder-evidence.v1', foundation_scenario: { allowance_m: foundationAllowanceM, basis: 'user_assumption', used_in_assessment: false }, selection, live, manual, example: mode === 'example' ? exampleCase : null, measurement: measurementResult }, null, 2)} /></TechnicalDetails>
+      <TechnicalDetails title="Complete site selection, sources and measurements"><CopyableRecord id="builder-technical-record" label="Complete technical evidence export" value={JSON.stringify({ schema_version: 'builder-evidence.v1', foundation_scenario: { allowance_m: foundationAllowanceM, basis: 'user_assumption', used_in_assessment: false }, selection, live, manual, example: mode === 'example' ? exampleCase : null, measurement: measurementResult, zoning_site_assumptions: currentAssumptions, zoning_pathway_assumptions: zoningCase ? pathway : null, conditional_screening: currentScreening }, null, 2)} /></TechnicalDetails>
       </>}
       </div>
     </section>
