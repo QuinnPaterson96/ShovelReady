@@ -29,7 +29,9 @@ class Source(Boundary):
     capture_date: str | None = None
     source_revision: str | None = None
     currentness_limitations: tuple[str, ...] = ()
-    review_status: Literal["candidate", "reviewed", "unreviewed", "unreviewed_live_observation"] = "candidate"
+    review_status: Literal[
+        "candidate", "reviewed", "unreviewed", "unreviewed_live_observation"
+    ] = "candidate"
 
 
 class Rule(Boundary):
@@ -80,7 +82,10 @@ class Fact(Boundary):
     measurement_definition: str | None = None
     boundary_role: Literal["front", "rear", "side", "flanking_street", "unknown"] | None = None
     geometry_basis: Literal["wall", "roofline", "nominal", "unknown"] | None = None
-    origin: Literal["source", "user_assumption", "user_measurement", "model", "journey_default", "municipal_observation", "derived_assumption"]
+    origin: Literal[
+        "source", "user_assumption", "user_measurement", "model", "journey_default",
+        "municipal_observation", "derived_assumption",
+    ]
     source: Source | None = None
     note: str | None = None
 
