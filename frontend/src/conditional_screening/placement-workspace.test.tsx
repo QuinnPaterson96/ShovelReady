@@ -43,4 +43,12 @@ test('malformed nested scenario evidence is rejected before it can be displayed'
   assert.throws(() => parseScenarioResult({ ...result, scenarios: [{ ...result.scenarios[0], checks: [{ ...result.scenarios[0].checks[0], role: 'front' }] }] }), /malformed/)
   assert.throws(() => parseScenarioResult({ ...result, sources: [{ ...source, record_label: null }] }), /malformed/)
   assert.throws(() => parseScenarioResult({ ...result, edge_distances_m: { [ids[0]]: Infinity } }), /malformed/)
+  // Independently contradictory evidence: a pass cannot contain a shortfall,
+  // one edge cannot serve twice, and captured evidence must equal its distance.
+  for (const patch of [{ meets: false }, { edge_id: ids[2] }, { distance_m: .1 }]) {
+    const changed = structuredClone(result)
+    Object.assign(changed.scenarios[0].checks[0], patch)
+    assert.throws(() => parseScenarioResult(changed), /malformed/)
+  }
+  assert.throws(() => parseScenarioResult({ ...result, status: 'clarify' }), /malformed/)
 })

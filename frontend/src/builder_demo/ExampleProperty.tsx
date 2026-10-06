@@ -149,7 +149,6 @@ export function ExampleProperty({ onMeasurement, boundaryInteraction, placementS
         </g>}
         {boundaryInteraction && <BoundaryOverlay interaction={boundaryInteraction} />}
       </svg><figcaption>Teal: captured parcel · Purple: captured roofline, not walls · Red dashed outline: observed conflict in current measurement · Copper: illustrative nominal rectangle · North ↑ · EPSG:3157 metres. Diagram is approximate.</figcaption></figure>
-      {placementSummary && <div className="builder-map-summary">{placementSummary}</div>}
       <div className="builder-example-controls">{boundaryInteraction && <details><summary>Boundary roles and map tools</summary><BoundaryMapTools interaction={boundaryInteraction} /></details>}<h3>Adjust the footprint</h3>
         <p>Click the map or drag the rectangle. Arrow keys move it when the map has focus. Checks update automatically after movement settles.</p>
         <div className="builder-example-main-actions"><div><label htmlFor="builder-example-angle">Rotation (degrees)</label><input id="builder-example-angle" type="number" step="any" value={rotationFocused || !position.angle.trim() || !Number.isFinite(Number(position.angle)) ? position.angle : String(Number(Number(position.angle).toFixed(2)))} onFocus={() => setRotationFocused(true)} onBlur={() => setRotationFocused(false)} onChange={event => edit('angle', event.target.value)} /></div>
@@ -173,6 +172,7 @@ export function ExampleProperty({ onMeasurement, boundaryInteraction, placementS
         </fieldset></details>
         <button type="button" disabled={busy || !request} onClick={() => void measure(position, assumptions)}>{busy ? 'Checking…' : phase === 'unresolved' ? 'Retry placement check' : 'Recheck placement'}</button>
       </div>
+      {placementSummary && <div className="builder-map-summary">{placementSummary}</div>}
     </div>
     {checkWarning && <div className={`builder-example-outcome builder-example-outcome--${conflict ? 'conflict' : 'unknown'}`} role="alert">
       <strong>{phase === 'unresolved' || unresolved && !conflict ? 'Placement could not be fully checked' : 'Conflict at this position'}</strong>

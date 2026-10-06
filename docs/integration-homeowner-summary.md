@@ -139,3 +139,75 @@ change that outside-packet result.
 - Human validation: #147 should test whether homeowners understand the headline,
   named counts and next action. This agent browser inspection is software/UI
   evidence, not measured homeowner comprehension or a full accessibility audit.
+
+## Unified placement checklist and map workspace (#231 / #233)
+
+Implemented October 6, 2026 on `codex/homeowner-screening-summary`, following
+#253 at `d29f57d`. This section supersedes the earlier remaining #231/#233 demo
+UI work above. Historical verification records remain dated to their own changes.
+
+### Implemented
+
+- Saved and live Model 300 layouts use a compact footprint/source strip, bounded
+  full-width map, controls below it, then automatic summary and current checklist.
+  Fine movement and optional input/evidence remain disclosed. Generic occupied-lot
+  layout retains its original defaults.
+- One current checklist groups each edge's approximate captured distance, derived
+  scenario roles and optional user role/wall-to-legal-line entries. Its legal-basis
+  evidence is nested in that same row, rather than competing unknown boundary rows.
+  Other candidate checks and explicitly omitted front setback, rear-yard location,
+  rear-yard occupancy, height and other applicable provisions remain visible.
+- Derived roles stay in scenario evidence; no user facts are populated from them.
+  Complete scenarios determine the bounded outcome. Changing street/frontage
+  choices immediately removes stale evidence and recomputes roles, preserving
+  attributed manual entries. Moving the footprint clears obsolete measurements.
+  Complex topology remains unresolved. Exact source/rule/revision evidence and
+  currentness limits are retained in expandable records and enquiry export.
+- Response validation rejects inconsistent nested edges, roles, comparison bases,
+  distances, thresholds, outcomes and current user choices. Both boundary and
+  candidate screens offer retry after failure. Candidate loading ends at ten
+  seconds even when a transport ignores abort; late responses cannot restore a
+  timed-out or superseded result.
+
+### Verification
+
+- `npm test` in `frontend`: 126 pass, zero skips. Mounted host/map/checklist/enquiry
+  integration covers timeout with ignored abort, a 503 and retry, late responses,
+  derived roles without copying user facts, preserved role/measurement origin,
+  frontage changes, corner/multiple-street suggestions, boundary-mode keyboard
+  isolation and technical enquiry export. Retained HTTP fixtures verify workflow,
+  not source accuracy or geometry arithmetic. Existing parser/unknown/conflict and
+  generic occupied-lot coverage is retained.
+- `npm run build` in `frontend`: TypeScript/Vite pass; existing large-bundle advisory.
+  `git diff --check`: pass. Backend/database tests not run: no backend change and
+  no disposable database configured.
+- Built app served in stateless demo mode on owned port 18153. In-app browser at
+  desktop and 390 x 844: saved and live map/control/result ordering, saved drag,
+  keyboard invalidation, boundary-mode immobility, separately attributed manual
+  measurement and consistent derived roles. Live public research address 1144 May
+  St proceeded from a sole source match; mapped GRD-1 (PGA) remained outside exact
+  candidate packet coverage. Mobile document client/scroll widths both 375 px.
+  No email or enquiry sent. Pointer dragging was exercised at both widths; a
+  physical touch device and prospective homeowner understanding were not tested.
+
+Screenshots: [desktop boundary evidence](qa/issue-231-233/desktop-boundary-evidence.jpg),
+[mobile boundary evidence](qa/issue-231-233/mobile-boundary-evidence.jpg),
+[desktop map](qa/issue-231-233/desktop-map.jpg),
+[mobile map](qa/issue-231-233/mobile-map.jpg),
+[desktop live workspace](qa/issue-231-233/desktop-live.jpg), and
+[mobile live workspace](qa/issue-231-233/mobile-live.jpg).
+
+### Remaining gaps and owners
+
+- Demo validation: #147 / product owner must test physical-device touch placement,
+  accessible interaction and homeowner comprehension. Browser-width and pointer
+  checks establish implemented behavior, not user usefulness or a full audit.
+- Live provider coverage: multipart parcels remain manual continuation; missing,
+  partial and slow observations can limit results. Municipal adapter owners retain
+  recovery/coverage expansion; #246-#248 are independent broader-city work.
+- Accepted real evaluation: #104 / source-review owners must resolve currentness,
+  applicability, legal lot/wall measurements, installed provider dimensions and
+  omitted front/rear-yard/height/site-specific rules, then publish accepted data.
+  Current software remains an unreviewed bounded scouting demonstration.
+- Deployment: PR #255 is for review; production merge/deployment is a separate
+  owner action. This work has not published data or deployed code.

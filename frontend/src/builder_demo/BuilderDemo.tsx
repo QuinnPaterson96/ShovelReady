@@ -231,7 +231,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       try {
         const response = await fetch('/api/conditional-screening/v1/placement-scenarios', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(scenarioRequest), signal: controller.signal })
         if (!response.ok) throw new Error(`Approximate setback screen unavailable (${response.status}).`)
-        const result = parseScenarioResult(await response.json())
+        const result = parseScenarioResult(await response.json(), scenarioRequest)
         if (result.property_revision !== expectedPropertyRevision(scenarioRequest.assumptions) ||
           result.placement_revision !== scenarioRequest.assumptions.placement_revision ||
           result.model_revision !== scenarioRequest.model_revision) throw new Error('Scenario response did not match current inputs.')
@@ -252,7 +252,11 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   useEffect(() => {
     if (!screeningRequest || !requestKey) { setConditionalBusy(false); return }
     const controller = new AbortController()
-    const timeout = window.setTimeout(() => controller.abort('timeout'), 10000)
+    const timeout = window.setTimeout(() => {
+      controller.abort('timeout')
+      setConditionalError({ key: requestKey, message: 'Conditional screen timed out.' })
+      setConditionalBusy(false)
+    }, 10000)
     setConditionalBusy(true)
     const timer = window.setTimeout(async () => {
       try {
@@ -264,7 +268,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
           result.request.model_revision !== screeningRequest.model_revision) throw new Error('Conditional response did not match the current input revisions.')
         if (!controller.signal.aborted) { setConditionalState({ key: requestKey, result }); setConditionalError(null); setConditionalBusy(false) }
       } catch (error) {
-        if (!controller.signal.aborted || controller.signal.reason === 'timeout') { setConditionalError({ key: requestKey, message: controller.signal.reason === 'timeout' ? 'Conditional screen timed out.' : error instanceof Error ? error.message : 'Conditional screen unavailable.' }); setConditionalBusy(false) }
+        if (!controller.signal.aborted) { setConditionalError({ key: requestKey, message: error instanceof Error ? error.message : 'Conditional screen unavailable.' }); setConditionalBusy(false) }
       } finally {
         window.clearTimeout(timeout)
       }
@@ -418,8 +422,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
 
     {zoningCase && <><section className="builder-placement-results" aria-label="Current placement results">
       <details className="builder-how-checked"><summary>How we checked · sources, assumptions and exact evidence</summary>
-        <PlacementScenarios assumptions={currentAssumptions} request={scenarioRequest} result={currentScenario} busy={!!scenarioKey && scenarioBusy && !currentScenario} error={currentScenarioError} frontEdge={streetEdge} rearEdge={rearEdge} boundaryMode={boundaryMode} onBoundaryMode={setBoundaryMode} />
-        <ConditionalScreen compact result={currentScreening} busy={!!requestKey && conditionalBusy && !currentScreening} error={currentScreeningError} />
+        <ConditionalScreen compact result={currentScreening} busy={!!requestKey && conditionalBusy && !currentScreening} error={currentScreeningError} onRetry={() => setConditionalRetry(value => value + 1)} boundaryEvidence={<PlacementScenarios assumptions={currentAssumptions} request={scenarioRequest} result={currentScenario} legalResult={currentScreening} busy={!!scenarioKey && scenarioBusy && !currentScenario} error={currentScenarioError} frontEdge={streetEdge} rearEdge={rearEdge} boundaryMode={boundaryMode} onBoundaryMode={setBoundaryMode} onRetry={() => setScenarioRetry(value => value + 1)} />} />
       </details></section>
       <ProjectDetails settings={effectiveSettings} mapped={mappedZoning} lookup={currentZoning} busy={!!zoningKey && zoningBusy && !currentZoning} error={currentZoningError} onRetry={() => setZoningRetry(value => value + 1)} onChange={next => { setProjectSettings(next); setReadyFor(null) }} />
       <details className="builder-optional"><summary>Optional assumptions and user measurements</summary>

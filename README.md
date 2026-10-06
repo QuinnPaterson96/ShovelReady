@@ -1,6 +1,6 @@
 # ShovelReady
 
-Latest demo integration: [property selection and results beneath the map](docs/integration-homeowner-summary.md#homeowner-property-selection-and-placement-summary-253), building on [Project details and mapped zoning](docs/integration-project-details.md).
+Latest demo integration: [unified placement checklist and map workspace](docs/integration-homeowner-summary.md#unified-placement-checklist-and-map-workspace-231--233), building on [Project details and mapped zoning](docs/integration-project-details.md).
 
 ShovelReady explores a practical question: **given a prefabricated building design, where could it plausibly be built?**
 

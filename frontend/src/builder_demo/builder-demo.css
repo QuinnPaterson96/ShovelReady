@@ -89,8 +89,8 @@
 .builder-demo .builder-example-controls > details { margin: .5rem 0; }
 .builder-demo .builder-example-movement { padding: .5rem .75rem; }
 @media (max-width: 540px) { .builder-demo .builder-example-map svg { height: 360px; } .builder-demo .builder-example-controls { padding: .75rem; } }
-.builder-demo .builder-map-summary { order: 2; min-width: 0; }
-.builder-demo .builder-example-controls { order: 3; }
+.builder-demo .builder-map-summary { order: 3; min-width: 0; }
+.builder-demo .builder-example-controls { order: 2; }
 .builder-demo .builder-example-outcome, .builder-demo .builder-example-custom-size { order: 4; }
 .builder-demo .builder-example-result { order: 5; }
 .builder-progress ol { list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .5rem; padding: 0; }
@@ -102,3 +102,6 @@
 .builder-selected-property button { margin-left: auto; }
 @media (max-width: 600px) { .builder-progress ol { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .builder-progress button { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+.builder-how-checked .cs-results { border: 0; padding: 0; margin: 0; }
+.builder-how-checked .placement-scenarios h4 { margin-top: 0; }
+.builder-map-summary { margin-top: .7rem; }

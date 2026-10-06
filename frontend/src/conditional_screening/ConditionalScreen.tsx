@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import { screeningCheckTitle, type ScreeningCheck, type ScreeningResult, type ScreeningStatus } from './model'
 import { measurementWithUnit } from '../measurements'
 
@@ -29,7 +29,7 @@ const packetOutstanding: Record<string, { title: string; next: string }[]> = {
   ],
 }
 
-function Evidence({ check }: { check: ScreeningCheck }) {
+export function Evidence({ check }: { check: ScreeningCheck }) {
   const source = check.rule.source
   return <div className="cs-evidence">
     {check.reasons.length > 0 && <p><strong>Why:</strong> {check.reasons.map(readable).join(' ')}</p>}
@@ -58,19 +58,21 @@ function CheckRow({ check, assumed = false }: { check: ScreeningCheck; assumed?:
   </li>
 }
 
-export function ConditionalScreen({ result, busy, error, compact = false }: { result: ScreeningResult | null; busy: boolean; error: string; compact?: boolean }) {
+export function ConditionalScreen({ result, busy, error, compact = false, boundaryEvidence, onRetry }: { result: ScreeningResult | null; busy: boolean; error: string; compact?: boolean; boundaryEvidence?: ReactNode; onRetry?: () => void }) {
   useEffect(() => { void import('./conditional-screen.css') }, [])
   const assumed = result?.checks.filter(check => check.rule.kind === 'prerequisite') ?? []
-  const evaluated = result?.checks.filter(check => check.rule.kind !== 'prerequisite') ?? []
+  const groupedBoundary = (check: ScreeningCheck) => !!boundaryEvidence && (check.rule.fact_id.startsWith('boundary:') || check.rule.fact_id.startsWith('edge_role:'))
+  const evaluated = result?.checks.filter(check => check.rule.kind !== 'prerequisite' && !groupedBoundary(check)) ?? []
   const packetId = result?.request.packet_id
   const packetRevision = result?.request.packet_revision
   const outstanding = typeof packetId === 'string' && typeof packetRevision === 'string' ? packetOutstanding[`${packetId}@${packetRevision}`] : undefined
   const source = result?.checks[0]?.rule.source
   return <section className="cs-results" aria-label="Conditional zoning checklist">
-    <h3>Legal-basis candidate checklist</h3>
-    <p className="cs-note">This checklist uses only your explicit property and wall/legal-line entries for regulatory comparisons. The derived roles and approximate map distances above are separate scenario evidence; they are not copied here as legal facts. An unknown here can coexist with a bounded approximate scenario.</p>
+    <h3>{boundaryEvidence ? 'Current placement checklist' : 'Legal-basis candidate checklist'}</h3>
+    <p className="cs-note">{boundaryEvidence ? 'Each boundary row separates approximate scenario evidence from your optional wall/legal-line entries. Derived roles are never copied into legal facts. Candidate checks cover this placement only; source review and omitted rules remain unresolved.' : 'This checklist uses only your explicit property and wall/legal-line entries for regulatory comparisons. Derived roles and approximate map distances are separate scenario evidence, never legal facts.'}</p>
     {busy && <p role="status">Checking the current assumptions and placement…</p>}
-    {error && <p role="status">{error} Geometry measurements remain available above.</p>}
+    {error && <p role="status">{error} Geometry measurements remain available above. {onRetry && <button type="button" onClick={onRetry}>Retry candidate checks</button>}</p>}
+    {boundaryEvidence}
     {!result && !busy && !error && <p>Candidate checks await a current placement. Optional property and pathway assumptions can be entered below; unknown facts remain open.</p>}
     {result && <>
       <p className="cs-note">City of Victoria candidate packet · supplied placement only · agent mapped and unreviewed. Each result applies only to its named check under the stated assumptions.</p>
@@ -78,7 +80,7 @@ export function ConditionalScreen({ result, busy, error, compact = false }: { re
       {compact && <p><strong>{evaluated.filter(check => check.status === 'meets_under_assumptions').length} candidate checks meet supplied assumptions; {evaluated.filter(check => check.status === 'apparent_conflict_under_assumptions').length} apparent conflicts; {evaluated.filter(check => check.status === 'needs_information' || check.status === 'unsupported').length} unknown or unsupported.</strong> These counts apply only to the named checks, not the full rule set.</p>}
       {compact && <div className="cs-outstanding"><strong>Known missing coverage:</strong> {outstanding ? outstanding.map(item => item.title).join(' · ') : 'Full applicable rule inventory still needs review'}.</div>}
       <details className="cs-compact-details" open={!compact}><summary>Inspect candidate checks and exact evidence</summary>
-      <h4>Compared checks</h4><ol className="cs-checks">{evaluated.map((check, index) => <CheckRow key={`${check.rule.logical_id}-${index}`} check={check} />)}</ol>
+      <h4>{boundaryEvidence ? 'Other candidate checks' : 'Compared checks'}</h4><ol className="cs-checks">{evaluated.map((check, index) => <CheckRow key={`${check.rule.logical_id}-${index}`} check={check} />)}</ol>
       <h4>Scenario assumptions</h4><p className="cs-note">These are supplied choices, not independent confirmation of zoning or the legal lot.</p>
       <ol className="cs-checks">{assumed.map((check, index) => <CheckRow key={`${check.rule.logical_id}-${index}`} check={check} assumed />)}</ol>
       <h4>Still unresolved</h4>

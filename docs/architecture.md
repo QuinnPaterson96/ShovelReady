@@ -73,8 +73,8 @@ ownership or legal boundaries.
 
 The generic homeowner renderer consumes named statuses and action targets; the
 Victoria adapter determines scope. A host-supplied summary slot below each map
-puts counts and the next action before adjustment/evidence. No evaluation API,
-rule packet or persistence change is involved. See the
+puts counts and the next action after compact adjustment controls and before detailed evidence. No evaluation API,
+rule packet or persistence change is involved. The #231/#233 follow-up groups derived scenario roles and optional legal-basis entries in one boundary checklist, retaining separate origins and exact exports. See the
 [verification and remaining gaps](integration-homeowner-summary.md).
 
 ## Live property discovery checkpoint - September 29, 2026
