@@ -10,6 +10,7 @@ import type { Fact, ManualFacts } from '../site_preparations/types'
 import { parseResult, parseSites } from '../occupied_lots/contract'
 import { exampleCase, exampleRequest, initialExamplePosition } from './example'
 import { ExampleProperty } from './ExampleProperty'
+import OccupiedLots from '../occupied_lots/OccupiedLots'
 
 const manualFact = (value: string | number | null): Fact => ({
   value, unit: null, basis: null, unresolved_reason: value === null ? 'unknown' : null,
@@ -55,6 +56,15 @@ test('saved example retains the licensed packet and an explicit measurable start
   assert.match(html, /Saved example sources and exact projected coordinates/)
   assert.doesNotMatch(html, /Centre X \(m\)|Centre Y \(m\)/)
   assert.match(html, /Unknown: legal lot lines/)
+  assert.doesNotMatch(html, /builder-example-outcome|Measured observation for this position/)
+})
+
+test('Model 300 live placement starts without a success panel while generic occupied-lot guidance remains', () => {
+  const compact = renderToStaticMarkup(createElement(OccupiedLots, { compactPlacement: true, showHandoff: false, suppliedCase: exampleCase, initialModelId: 'aux-300' }))
+  const generic = renderToStaticMarkup(createElement(OccupiedLots, { showHandoff: false }))
+  assert.doesNotMatch(compact, /placement-check--clear|No observed geometry conflict/)
+  assert.match(generic, /Observed overlaps and distances are checked automatically after edits settle/)
+  assert.match(generic, /Loading retained sites/)
 })
 
 test('example enquiry carries source identity and clears measured wording after an edit or exit', () => {
