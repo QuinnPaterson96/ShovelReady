@@ -49,4 +49,7 @@ test('mixed, stale and malformed observations stay unresolved; manual choice sta
   assert.equal(applyMappedZoning(manual, zoningProjection(lookup, 'geometry-a'), 'geometry-a').proposal.confirmed_zone, 'other')
   assert.equal(withFloorAreaBasis(manual, 'rough_floor_area_estimate').proposal.floor_area_definition_acknowledged, null)
   assert.equal(withFloorAreaBasis(manual, 'regulatory_floor_area').proposal.floor_area_definition_acknowledged, true)
+  const conflicting = applyMappedZoning(manual, zoningProjection(lookup, 'geometry-a'), 'geometry-a')
+  const html = renderToStaticMarkup(createElement(ProjectDetails, { settings: conflicting, mapped: zoningProjection(lookup, 'geometry-a'), lookup, busy: false, error: '', onRetry: () => {}, onChange: () => {} }))
+  assert.match(html, /Your entered zoning differs from the mapped observation/)
 })

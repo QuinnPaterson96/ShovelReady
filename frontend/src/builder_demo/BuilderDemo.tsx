@@ -175,7 +175,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const placementRevision = measurementResult ? currentPlacementRevision({ placement: measurementResult.result.input.placement, model: measurementResult.model?.model_id ?? null, widthOrigin: measurementResult.widthOrigin, depthOrigin: measurementResult.depthOrigin }) : 'placement-unmeasured'
   const currentAssumptions = zoningCase && geometryRevision && siteAssumptions?.property.case_id === zoningCase.case_id && siteAssumptions.property.parcel_id === zoningCase.site.parcel.id && siteAssumptions.property.geometry_revision === geometryRevision && siteAssumptions.placement_revision === placementRevision ? siteAssumptions : null
   const selectedRef = mode === 'live' ? selectedParcelRef(live) : null
-  const zoningKey = selectedRef && geometryRevision ? JSON.stringify([selectedRef, geometryRevision, zoningRetry]) : null
+  const zoningKey = selectedRef && geometryRevision ? JSON.stringify([selectedRef, geometryRevision, revision, zoningRetry]) : null
   const currentZoning = zoningKey && zoningState?.key === zoningKey ? zoningState.result : null
   const currentZoningError = zoningKey && zoningError?.key === zoningKey ? zoningError.message : ''
   useEffect(() => {

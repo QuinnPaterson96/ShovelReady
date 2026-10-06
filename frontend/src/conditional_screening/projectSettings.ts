@@ -30,21 +30,6 @@ export function changeProjectSetting<K extends keyof Pathway>(settings: ProjectS
 export type MappedZoning = { schema_version: 'sr.mapped-zoning.v1'; property_revision: string;
   status: 'single' | 'multiple' | 'partial' | 'unavailable'; zone: string | null; instrument: string | null;
   source: MunicipalSource | null; reason: string }
-export function parseMappedZoning(raw: unknown): MappedZoning {
-  const item = raw as MappedZoning
-  const record = (value: unknown): value is Record<string, unknown> => !!value && typeof value === 'object' && !Array.isArray(value)
-  const text = (value: unknown) => typeof value === 'string' && value.trim().length > 0
-  if (!record(raw) || item.schema_version !== 'sr.mapped-zoning.v1' || !text(item.property_revision) ||
-      !['single', 'multiple', 'partial', 'unavailable'].includes(item.status) || !text(item.reason) ||
-      (item.zone !== null && !text(item.zone)) || (item.instrument !== null && !text(item.instrument)) ||
-      (item.status === 'single' && (!text(item.zone) || !text(item.instrument) || !record(item.source))) ||
-      (item.status !== 'single' && (item.zone !== null || item.instrument !== null)) ||
-      (item.source !== null && (!record(item.source) || !text(item.source.provider) || !text(item.source.record_label) ||
-        !text(item.source.url) || !text(item.source.review_status) || !text(item.source.locator) ||
-        (item.source.capture_date !== null && !text(item.source.capture_date))))) throw new Error('Mapped zoning observation is malformed.')
-  return item
-}
-
 export function applyMappedZoning(settings: ProjectSettings, mapped: MappedZoning | null, propertyRevision: string): ProjectSettings {
   const reset = (key: 'confirmed_zone' | 'confirmed_instrument') => settings.evidence[key].origin === 'municipal_lookup'
     ? { value: null, origin: 'unknown' as const, source: null, note: null } : settings.evidence[key]
