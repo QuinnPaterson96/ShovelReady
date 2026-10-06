@@ -1,3 +1,4 @@
+import { StepInfo } from '../StepInfo'
 import { AdditionalInputs } from '../conditional_screening/AdditionalInputs'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { SiteDiscovery } from '../site_discovery/SiteDiscovery'
@@ -151,6 +152,8 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const [conditionalBusy, setConditionalBusy] = useState(false)
   const [conditionalRetry, setConditionalRetry] = useState(0)
   const [streetEdge, setStreetEdge] = useState<string | null>(null)
+  const [markingRole, setMarkingRole] = useState<import('../zoning_site_assumptions/model').EdgeRole | null>(null)
+  const [boundaryMark, setBoundaryMark] = useState<{ id: string; role: import('../zoning_site_assumptions/model').EdgeRole } | null>(null)
   const [selectedBoundary, setSelectedBoundary] = useState<string | null>(null)
   const [rearEdge, setRearEdge] = useState<string | null>(null)
   const [boundaryMode, setBoundaryMode] = useState<BoundaryMapMode>('place')
@@ -172,7 +175,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const [recipient, setRecipient] = useState('')
   const [includeSiteDetails, setIncludeSiteDetails] = useState(false)
   const [emailMessage, setEmailMessage] = useState('')
-  function siteEdited() { setSelection(null); setImported(false); setMeasurementResult(null); setSiteAssumptions(null); setProjectSettings(initialProjectSettings()); setStreetEdge(null); setRearEdge(null); setSelectedBoundary(null); setBoundaryMode('place'); setStreetPattern('unknown'); setReadyFor(null); setRevision(value => value + 1) }
+  function siteEdited() { setSelection(null); setImported(false); setMeasurementResult(null); setSiteAssumptions(null); setProjectSettings(initialProjectSettings()); setStreetEdge(null); setRearEdge(null); setSelectedBoundary(null); setBoundaryMark(null); setMarkingRole(null); setBoundaryMode('place'); setStreetPattern('unknown'); setReadyFor(null); setRevision(value => value + 1) }
   function changeMode(next: typeof mode) {
     setFoundationAllowanceM(null); setHeightRevision(value => value + 1)
     setExpanded({ property: next !== 'example', placement: next === 'example', next: false })
@@ -211,9 +214,9 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const mappedZoning = currentZoning && geometryRevision ? zoningProjection(currentZoning, geometryRevision) : null
   const effectiveSettings = withFloorAreaBasis(applyMappedZoning(projectSettings, mappedZoning, geometryRevision ?? ''), currentAssumptions?.measurements.floor_area?.basis === 'regulatory_floor_area' ? 'regulatory_floor_area' : currentAssumptions?.measurements.floor_area?.basis === 'rough_floor_area_estimate' ? 'rough_floor_area_estimate' : null)
   const pathway = effectiveSettings.proposal
-  function selectBoundary(id: string | null) { setSelectedBoundary(id); if (id) requestAnimationFrame(() => focusSummaryTarget(document, 'boundary-roles')) }
+  function selectBoundary(id: string | null) { setSelectedBoundary(id); if (id && markingRole) setBoundaryMark({ id, role: markingRole }) }
   const boundaryInteraction: BoundaryMapInteraction | undefined = zoningCase ? {
-    editor: <SiteAssumptionsEditor homeownerDefaults sharedMode={boundaryMode} selectedBoundary={selectedBoundary} onBoundarySelect={selectBoundary} site={zoningCase} geometryRevision={geometryRevision!} placementRevision={placementRevision} frontEdge={streetEdge} rearEdge={rearEdge} streetPattern={streetPattern} onChange={next => { setSiteAssumptions(next); setReadyFor(null) }} />,
+    editor: <SiteAssumptionsEditor homeownerDefaults markingRole={markingRole} onMarkingRoleChange={setMarkingRole} boundaryMark={boundaryMark} sharedMode={boundaryMode} selectedBoundary={selectedBoundary} onBoundarySelect={selectBoundary} site={zoningCase} geometryRevision={geometryRevision!} placementRevision={placementRevision} frontEdge={streetEdge} rearEdge={rearEdge} streetPattern={streetPattern} onChange={next => { setSiteAssumptions(next); setReadyFor(null) }} />,
     selectedId: selectedBoundary, edges: currentAssumptions?.edges ?? [], mode: boundaryMode, frontId: streetEdge, rearId: rearEdge,
     streetPattern, onModeChange: setBoundaryMode,
     onSelect: id => { if (boundaryMode === 'front') setStreetEdge(id); else if (boundaryMode === 'rear') selectBoundary(id) },
@@ -418,10 +421,10 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     </div>
     </section>
     <nav className="builder-progress" aria-label="Edit journey steps"><ol>
-      <li><button type="button" onClick={() => openProgress('property')}><strong>1 · Property</strong><span>{propertyComplete ? 'Selected' : 'Choose property'}</span></button></li>
-      <li><button type="button" disabled={!propertyComplete} onClick={() => openProgress('placement')}><strong>2 · Placement</strong><span>{placementComplete ? 'Measured' : 'Explore position'}</span></button></li>
-      <li><button type="button" disabled={!summary} onClick={() => openProgress('checks')}><strong>3 · Quick checks</strong><span>Review findings</span></button></li>
-      <li><button type="button" disabled={!hasSite} onClick={() => openProgress('enquiry')}><strong>4 · Enquiry</strong><span>{enquiryReady ? 'Draft ready' : 'Prepare draft'}</span></button></li>
+      <li><button type="button" onClick={() => openProgress('property')}><strong>1 · Property</strong><span>{propertyComplete ? 'Selected' : 'Choose property'}</span></button><StepInfo label="Property">Choose the property you want to explore. Source matches are leads; you can correct them or enter your own property facts.</StepInfo></li>
+      <li><button type="button" disabled={!propertyComplete} onClick={() => openProgress('placement')}><strong>2 · Placement</strong><span>{placementComplete ? 'Measured' : 'Explore position'}</span></button><StepInfo label="Placement">Move the unit on the map to test this position against captured outlines. Changing a boundary mark does not move the unit.</StepInfo></li>
+      <li><button type="button" disabled={!summary} onClick={() => openProgress('checks')}><strong>3 · Quick checks</strong><span>Review findings</span></button><StepInfo label="Quick checks">Review conflicts and missing information beside the map. Use the correction actions to supply facts you know.</StepInfo></li>
+      <li><button type="button" disabled={!hasSite} onClick={() => openProgress('enquiry')}><strong>4 · Enquiry</strong><span>{enquiryReady ? 'Draft ready' : 'Prepare draft'}</span></button><StepInfo label="Enquiry">Prepare a useful provider question with the current findings and open questions. The draft stays local until you choose to share it.</StepInfo></li>
     </ol></nav>
     {propertyComplete && <div className="builder-selected-property"><strong>Property: {mode === 'example' ? 'Saved Victoria example · not your property' : live?.address.label || manual?.facts.address || 'User-supplied site'}</strong><span>{live ? `${live.parcel.label} · source match, identity and ownership unverified` : 'Approximate and unreviewed'}</span><button type="button" onClick={changeProperty}>Wrong property? Change</button></div>}
     <section className="builder-stage" id="builder-placement" aria-labelledby="builder-placement-title">

@@ -15,15 +15,15 @@ export type BoundaryMapInteraction = {
 }
 
 export function BoundaryOverlay({ interaction }: { interaction: BoundaryMapInteraction }) {
-  if (interaction.mode === 'place' || !ordinaryFourEdgeBoundary(interaction.edges)) return null
+  if (interaction.mode === 'place') return null
   return <g className="boundary-map-overlay" aria-hidden="true">
-    {interaction.edges.filter(edge => edge.ring === 0).map((edge, index) => <g key={edge.id}>
+    {interaction.edges.map((edge, index) => <g key={edge.id}>
       <line x1={edge.start[0]} y1={-edge.start[1]} x2={edge.end[0]} y2={-edge.end[1]}
         className={(interaction.mode === 'front' ? interaction.frontId === edge.id : interaction.selectedId === edge.id) ? 'boundary-map-edge boundary-map-edge--selected' : 'boundary-map-edge'} />
       <line x1={edge.start[0]} y1={-edge.start[1]} x2={edge.end[0]} y2={-edge.end[1]}
-        className="boundary-map-edge-hit" onClick={event => { event.stopPropagation(); interaction.onSelect(edge.id) }} />
-      <text x={(edge.start[0] + edge.end[0]) / 2} y={-(edge.start[1] + edge.end[1]) / 2}
-        className="boundary-map-edge-label">{index + 1}</text>
+        className="boundary-map-edge-hit" onClick={event => { event.stopPropagation(); interaction.onSelect(edge.id) }} data-edge-id={edge.id} />
+      <text transform={`translate(${(edge.start[0] + edge.end[0]) / 2} ${-(edge.start[1] + edge.end[1]) / 2})`} x="0" y="0"
+        textAnchor="middle" dominantBaseline="middle" className="boundary-map-edge-label">{edge.ring ? `Inner ${edge.ring} · ${edge.segment + 1}` : index + 1}{edge.role.value && edge.role.value !== 'unknown' ? ` · ${edge.role.value === 'flanking_street' ? 'Flanking' : edge.role.value[0].toUpperCase() + edge.role.value.slice(1)}` : ''}</text>
     </g>)}
   </g>
 }
@@ -33,7 +33,7 @@ export function BoundaryMapTools({ interaction }: { interaction: BoundaryMapInte
   const exterior = edges.filter(edge => edge.ring === 0)
   const supported = ordinaryFourEdgeBoundary(edges)
   return <div className="boundary-map-tools" aria-label="Boundary selection controls">
-    {!supported && <p>Boundary roles for this irregular or incomplete parcel remain unknown. Review a legal plan; this map cannot resolve frontage.</p>}
+    {!supported && <p>This outline needs manual review. Marks record your assumptions; street-side suggestions cannot resolve its frontage.</p>}
     {supported && mode === 'front' && <>
       <p role="status">Boundary selection is on. Clicking an edge or its numbered button selects it; clicking elsewhere cannot move the model. Use <strong>Move unit</strong> to reposition it.</p>
       <div className="boundary-map-buttons">{exterior.map((edge, index) => <button type="button" key={edge.id}
