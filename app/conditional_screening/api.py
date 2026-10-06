@@ -105,7 +105,14 @@ class StreetAdjacency(Strict):
     origin: Literal["user"]
 
 
+class BoundaryRoleSuggestions(Strict):
+    roles: dict[str, Literal["front", "rear", "side", "flanking_street"]] = Field(max_length=64)
+    conflicts: tuple[str, ...] = Field(max_length=8)
+    basis: Literal["user_marks"]
+
+
 class Assumptions(Strict):
+    boundary_role_suggestions: BoundaryRoleSuggestions | None = None
     street_adjacency: StreetAdjacency | None = None
     schema_version: Literal["sr.zoning-site-assumptions.v1"]
     property: Property
@@ -154,6 +161,9 @@ class Assumptions(Strict):
             exterior_ids = {edge.id for edge in self.edges if edge.ring == 0}
             if len(street_ids) != len(set(street_ids)) or not set(street_ids) <= exterior_ids:
                 raise ValueError("street adjacency must reference distinct exterior edges")
+        if self.boundary_role_suggestions:
+            if not self.boundary_role_suggestions.roles.keys() <= set(ids):
+                raise ValueError("boundary suggestion references absent edge")
         all_measurements = (
             *self.measurements.boundary.values(),
             self.measurements.principal_separation,

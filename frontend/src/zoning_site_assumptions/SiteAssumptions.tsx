@@ -1,7 +1,7 @@
-import { useEffect, useId, useRef, useState } from 'react'
+import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import type { Case } from '../occupied_lots/contract'
 import { MeasurementInput } from '../MeasurementInput'
-import { assumptionsKey, initialAssumptions, suiteCountFact, suggestedBoundaryRoles, withPlacementRevision, type EdgeRole, type SiteAssumptions, type UserMeasurement } from './model'
+import { assumptionsKey, initialAssumptions, suiteCountFact, inferBoundaryRoles, suggestedBoundaryRoles, withPlacementRevision, type EdgeRole, type SiteAssumptions, type UserMeasurement } from './model'
 
 type Props = { streetAdjacency?: import('./model').StreetAdjacency; markingRole?: EdgeRole | null; onMarkingRoleChange?: (role: EdgeRole) => void; boundaryMark?: { id: string; role: EdgeRole } | null; sharedMode?: 'place' | 'front' | 'rear'; selectedBoundary?: string | null; onBoundarySelect?: (id: string) => void; homeownerDefaults?: boolean; site: Case; geometryRevision: string; placementRevision: string; frontEdge?: string | null; rearEdge?: string | null; streetPattern?: 'unknown' | 'single' | 'corner_or_multiple'; onChange: (value: SiteAssumptions | null) => void }
 const roleNames: Record<EdgeRole, string> = { unknown: 'Unknown', front: 'Front', rear: 'Rear', side: 'Side', flanking_street: 'Flanking street' }
@@ -26,7 +26,8 @@ function Editor({ streetAdjacency, site, geometryRevision, placementRevision, fr
   const [floorHelpOpen, setFloorHelpOpen] = useState(false)
   const floorHelpId = useId()
 
-  useEffect(() => { if (placementRevision === value.placement_revision) notify.current(value) }, [value, placementRevision])
+  const inference = useMemo(() => streetAdjacency ? inferBoundaryRoles(value.edges, streetAdjacency) : { roles: suggestedBoundaryRoles(value.edges, frontEdge, rearEdge, streetPattern), conflicts: [], basis: 'user_marks' as const }, [value.edges, streetAdjacency, streetPattern, frontEdge, rearEdge])
+  useEffect(() => { if (placementRevision === value.placement_revision) notify.current({ ...value, boundary_role_suggestions: inference }) }, [value, placementRevision, inference])
   useEffect(() => {
     if (placementRevision !== value.placement_revision) {
       notify.current(null)
@@ -44,7 +45,7 @@ function Editor({ streetAdjacency, site, geometryRevision, placementRevision, fr
   }, [streetAdjacency])
 
   const activeEdge = sharedMode !== undefined ? selectedBoundary ?? value.edges[0]?.id : selectedEdge
-  const suggested = suggestedBoundaryRoles(value.edges, frontEdge, rearEdge, streetPattern)
+  const suggested = inference.roles
   const edgeLabel = (edge: SiteAssumptions['edges'][number]) => edge.ring ? `Inner ring ${edge.ring}, edge ${edge.segment + 1}` : `Edge ${edge.segment + 1}`
   const setRole = (id: string, role: EdgeRole) => setValue(previous => ({ ...previous, edges: previous.edges.map(edge => edge.id === id ? { ...edge, role: { value: role, origin: 'user', note: null } } : edge) }))
   const setFact = <K extends 'building_type' | 'existing_garden_suites' | 'principal_building_id' | 'waterfront'>(key: K, raw: SiteAssumptions[K]['value']) =>
@@ -86,7 +87,8 @@ function Editor({ streetAdjacency, site, geometryRevision, placementRevision, fr
     </details>
     <fieldset className="zsa__boundaries" hidden={sharedMode !== undefined && sharedMode !== 'rear'}><legend>Parcel edge roles</legend>
       <p hidden={sharedMode !== undefined}>Choose each edge’s role only if you know it. Street access and legal lot lines can change the answer, especially at corners and through lots.</p>
-      {Object.keys(suggested).length > 0 && <p role="status">For this ordinary four-edge single-street sketch, the selected edge suggests an opposite rear and two sides. These are editable assumptions, not verified legal roles.</p>}
+      {Object.keys(suggested).length > 0 && <p role="status">Suggested from your front/rear and street marks. One confirmed street suggests Front; the opposite edge suggests Rear. Remaining edges suggest Flanking if marked as street, or Side once all streets are marked. These are editable suggestions, not verified legal roles.</p>}
+      {inference.conflicts.map(message => <p role="status" key={message}>{message}</p>)}
       {value.edges.length === 0 && <p role="status">This parcel outline cannot be divided into supported edges. Record roles as unknown and use a reviewed plan.</p>}
       {value.edges.some(edge => edge.ring > 0) && <p role="status">This outline has inner rings. Their roles need manual review.</p>}
       {sharedMode !== undefined && <div id="boundary-roles" tabIndex={-1} role="group" aria-label="Mark a boundary">
@@ -100,7 +102,7 @@ function Editor({ streetAdjacency, site, geometryRevision, placementRevision, fr
         {sharedMode === undefined ? <button type="button" onClick={() => setSelectedEdge(edge.id)} aria-pressed={activeEdge === edge.id}>{edge.ring === 0 ? edgeLabel(edge) : `Inner ring ${edge.ring}, edge ${edge.segment + 1}`}</button> : <strong>{edgeLabel(edge)}</strong>}
         {sharedMode === undefined && <label>Role <select id={activeEdge ? edge.id === activeEdge ? 'boundary-roles' : undefined : edge === value.edges[0] ? 'boundary-roles' : undefined} aria-label={`${edgeLabel(edge)} role`} value={edge.role.value ?? 'unknown'} onChange={event => setRole(edge.id, event.target.value as EdgeRole)}>{Object.entries(roleNames).map(([id, name]) => <option key={id} value={id}>{name}</option>)}</select></label>}
         {sharedMode !== undefined && <><span role="status">{edgeLabel(edge)} · {roleNames[edge.role.value ?? 'unknown']} · your assumption</span><button type="button" onClick={() => setRole(edge.id, 'unknown')}>Clear this mark</button></>}
-        {suggested[edge.id] && <span>Suggested: {roleNames[suggested[edge.id]]}; choose a role above only if you can support it.</span>}
+        {suggested[edge.id] && <><span>Suggested: {roleNames[suggested[edge.id]]} · from your marks</span><button type="button" onClick={() => setRole(edge.id, suggested[edge.id])}>Use suggested {roleNames[suggested[edge.id]].toLowerCase()}</button></>}
         <details><summary>Use my measurement</summary><label>Wall to legal lot line (m), if measured <MeasurementInput dimension="length" type="number" min="0" step="any" aria-label={`${edgeLabel(edge)} wall to lot line in metres`} value={distanceDraft[edge.id] ?? ''} onChange={event => setBoundaryDistance(edge.id, event.target.value)} placeholder="Unknown" /></label><p>Your wall-based value replaces this edge’s approximate comparison only. It is unverified and stays distinct from the captured edge-to-nominal-rectangle distance.</p>{distanceDraft[edge.id] && !value.measurements.boundary[edge.id] && <span className="zsa__error">Enter a nonnegative number or leave blank.</span>}</details>
       </div>)}</div>
       <details><summary>How should I identify edges?</summary><p>Use a survey or reliable property plan and identify street edges first. A long edge is not automatically the front. If a corner, through lot, triangle, easement or unusual boundary makes the roles unclear, leave them unknown for review.</p></details>

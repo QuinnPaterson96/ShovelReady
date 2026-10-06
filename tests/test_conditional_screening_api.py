@@ -263,3 +263,20 @@ def test_street_observations_survive_http_without_becoming_boundary_roles(comple
     for invalid in ([marks["edge_ids"][0]] * 2, ["absent-edge"]):
         body["assumptions"]["street_adjacency"]["edge_ids"] = invalid
         assert post(body).status_code == 422
+
+
+def test_boundary_suggestions_are_exported_without_supplying_legal_facts():
+    body = payload()
+    for item in body["assumptions"]["edges"]:
+        item["role"] = user("unknown")
+    suggestions = {"roles": {edge(0, "unknown")["id"]: "flanking_street"},
+                   "conflicts": [], "basis": "user_marks"}
+    body["assumptions"]["boundary_role_suggestions"] = suggestions
+    response = post(body)
+    assert response.status_code == 200, response.text
+    data = response.json()
+    assert data["request"]["site_assumptions"]["boundary_role_suggestions"] == suggestions
+    checks = {item["rule"]["fact_id"]: item for item in data["checks"]}
+    assert checks["flanking_presence"]["status"] == "needs_information"
+    body["assumptions"]["boundary_role_suggestions"]["roles"] = {"absent": "front"}
+    assert post(body).status_code == 422

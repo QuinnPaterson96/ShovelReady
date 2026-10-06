@@ -4,7 +4,7 @@ import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import type { Case } from '../occupied_lots/contract'
 import { SiteAssumptionsEditor } from './SiteAssumptions'
-import { assumptionsKey, initialAssumptions, ordinaryFourEdgeBoundary, suggestedBoundaryRoles, withPlacementRevision } from './model'
+import { assumptionsKey, initialAssumptions, inferBoundaryRoles, ordinaryFourEdgeBoundary, suggestedBoundaryRoles, withPlacementRevision } from './model'
 
 const source = { provider: 'Constructed example', record_label: 'Parcel sketch', capture_date: null, review_status: 'unreviewed', reference: null }
 const site = (id: string, coordinates: number[][]): Case => ({ case_id: id, label: id, site: {
@@ -57,4 +57,28 @@ test('opposite-edge suggestion is display-only and scoped to a simple single-str
   assert.equal(ordinaryFourEdgeBoundary(irregular.edges), false)
   assert.deepEqual(suggestedBoundaryRoles(irregular.edges, irregular.edges[0].id, null, 'single'), {})
   assert.ok(ordinary.edges.every(edge => edge.role.value === 'unknown'))
+})
+
+// Independently specified clockwise rectangle: edge 0 opposite 2, edge 1 opposite 3.
+// Guards unknown propagation, explicit overrides and misleading corner frontage.
+test('front/rear anchors infer editable corner roles without overwriting explicit marks', () => {
+  const value = initialAssumptions(site('rectangle', [[0, 0], [10, 0], [10, 20], [0, 20], [0, 0]]), 'capture', 'placement')
+  const [a, b, c, d] = value.edges
+  const streets = { edge_ids: [a.id, b.id], all_marked: true, origin: 'user' as const }
+  assert.deepEqual(inferBoundaryRoles(value.edges, streets).roles, {})
+  a.role.value = 'front'
+  assert.deepEqual(inferBoundaryRoles(value.edges, streets).roles, { [b.id]: 'flanking_street', [c.id]: 'rear', [d.id]: 'side' })
+  assert.deepEqual(inferBoundaryRoles(value.edges, { ...streets, all_marked: false }).roles, { [b.id]: 'flanking_street', [c.id]: 'rear' })
+  a.role.value = 'unknown'; c.role.value = 'rear'
+  assert.deepEqual(inferBoundaryRoles(value.edges, streets).roles, { [a.id]: 'front', [b.id]: 'flanking_street', [d.id]: 'side' })
+  b.role.value = 'side'
+  assert.equal(inferBoundaryRoles(value.edges, streets).roles[b.id], undefined)
+  assert.match(inferBoundaryRoles(value.edges, streets).conflicts.join(' '), /your side mark differs/)
+  assert.equal(b.role.value, 'side')
+  b.role.value = 'front'
+  assert.deepEqual(inferBoundaryRoles(value.edges, streets).roles, {})
+  assert.match(inferBoundaryRoles(value.edges, streets).conflicts.join(' '), /not opposite/)
+  b.role.value = c.role.value = 'unknown'
+  assert.deepEqual(inferBoundaryRoles(value.edges, { ...streets, edge_ids: [a.id] }).roles, { [a.id]: 'front', [b.id]: 'side', [c.id]: 'rear', [d.id]: 'side' })
+  assert.deepEqual(inferBoundaryRoles(value.edges, { ...streets, edge_ids: [a.id], all_marked: false }).roles, {})
 })
