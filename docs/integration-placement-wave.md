@@ -18,3 +18,9 @@ Browser verification against the stateless built application on localhost: initi
 - Source review and publication are distinct from passing software tests. Captured geometry and provider dimensions remain unreviewed.
 
 This record supersedes the #209 handoff's temporary host-enquiry gap and always-visible exact-shortfall description: integration connects the comparisons and keeps exact values in technical evidence.
+
+## Progressive journey follow-up
+
+Model specifications now expand from a compact summary. Property starts open; confirmation collapses it and opens placement. Placement and enquiry can be reopened independently through labelled disclosure buttons or the step navigation, with component state retained. Collapsed placement summaries retain observed conflicts and clearance shortfalls. Manual facts/sketch entry remains together in Property, with explicit confirmation there; an enquiry may proceed without a measured placement. The email panel has a prominent Create email draft button and secondary Gmail/copy actions; it still never sends automatically.
+
+Verified with 98 frontend tests, TypeScript/Vite build, and local browser checks: initial disclosure, example confirmation, collapsed conflict summary, enquiry text retained across collapse/reopen and sidebar navigation, property-mode reset, and manual facts-only continuation. No external email client was launched. Existing chunk-size warning and human email-client validation gap remain. The primary checkout's old Python environment could not start; browser QA used the existing integration checkout's Python runtime against this checkout's application and built frontend.
