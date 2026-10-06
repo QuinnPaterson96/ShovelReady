@@ -35,14 +35,25 @@ export type ScenarioResult = {
 export function parseScenarioResult(raw: unknown): ScenarioResult {
   if (!raw || typeof raw !== 'object') throw new Error('Scenario response is malformed.')
   const result = raw as ScenarioResult
+  const record = (value: unknown): value is Record<string, unknown> => !!value && typeof value === 'object' && !Array.isArray(value)
+  const nonempty = (value: unknown) => typeof value === 'string' && value.trim().length > 0
+  const finiteNonnegative = (value: unknown) => typeof value === 'number' && Number.isFinite(value) && value >= 0
   if (result.schema_version !== 'placement-scenarios.result.v1' ||
     !['bounded_pass', 'clarify', 'apparent_conflict', 'unresolved'].includes(result.status) ||
-    typeof result.reason !== 'string' || typeof result.property_revision !== 'string' ||
-    typeof result.placement_revision !== 'string' || typeof result.model_revision !== 'string' ||
-    !Number.isFinite(result.thresholds_m?.side_rear) || !Number.isFinite(result.thresholds_m?.flanking_street) ||
+    !nonempty(result.reason) || !nonempty(result.property_revision) ||
+    !nonempty(result.placement_revision) || !nonempty(result.model_revision) ||
+    !nonempty(result.packet_id) || !nonempty(result.packet_revision) || !nonempty(result.scope) ||
+    !record(result.thresholds_m) || !finiteNonnegative(result.thresholds_m.side_rear) || !finiteNonnegative(result.thresholds_m.flanking_street) ||
+    !record(result.edge_distances_m) || !Object.values(result.edge_distances_m).every(finiteNonnegative) ||
     !Array.isArray(result.scenarios) || !Array.isArray(result.sources) || !Array.isArray(result.limitations) ||
-    !result.scenarios.every(scenario => ['pass', 'fail'].includes(scenario.outcome) && Array.isArray(scenario.checks) &&
-      scenario.checks.every(check => Number.isFinite(check.distance_m) && Number.isFinite(check.minimum_m) &&
+    !result.limitations.every(nonempty) || !result.sources.every(source => record(source) &&
+      nonempty(source.provider) && nonempty(source.record_label) && (source.capture_date === null || nonempty(source.capture_date)) &&
+      nonempty(source.review_status) && nonempty(source.url) && nonempty(source.locator)) ||
+    !result.scenarios.every(scenario => record(scenario) && nonempty(scenario.front_edge_id) &&
+      ['pass', 'fail'].includes(scenario.outcome) && Array.isArray(scenario.checks) &&
+      scenario.checks.every(check => record(check) && nonempty(check.edge_id) &&
+        ['side', 'rear', 'flanking_street'].includes(check.role) && finiteNonnegative(check.distance_m) && finiteNonnegative(check.minimum_m) &&
+        typeof check.meets === 'boolean' && nonempty(check.rule_id) &&
         ['captured_nominal', 'user_wall_to_lot_line'].includes(check.basis))))
     throw new Error('Scenario response is malformed.')
   return result

@@ -57,7 +57,6 @@ function Map({ selected, placement, onMove, nudgeMetres, boundaryInteraction }: 
   }
   return <div className="occupied-map-panel" id={boundaryInteraction ? 'placement-map' : undefined}>
     <div className="occupied-map-heading"><h3>Place the footprint</h3><p className="metadata">Click the map to place its centre. Drag the copper rectangle to adjust it.</p></div>
-    {boundaryInteraction && <BoundaryMapTools interaction={boundaryInteraction} />}
     <svg ref={svg} className="occupied-map" role="img" tabIndex={0} aria-label={boundaryInteraction?.mode !== 'place' && boundaryInteraction ? `Boundary selection map of ${selected.label}. Choose a numbered edge or use the buttons above. The model cannot move in this mode.` : `Approximate map of ${selected.label}. Click to place. Arrow keys move the rectangle ${nudgeMetres} ${nudgeMetres === 1 ? 'metre' : 'metres'}. Parcel and Roof 1 through Roof ${site.buildings.length} are captured outlines.`} viewBox={view}
       onClick={e => { if (boundaryInteraction && boundaryInteraction.mode !== 'place') return; if (suppressClick.current) { suppressClick.current = false; return }; move(e.clientX, e.clientY) }}
       onKeyDown={e => {
@@ -86,11 +85,13 @@ function Map({ selected, placement, onMove, nudgeMetres, boundaryInteraction }: 
       {boundaryInteraction && <BoundaryOverlay interaction={boundaryInteraction} />}
     </svg>
     <p className="occupied-map-legend"><span>Teal · captured parcel</span><span>Purple · captured rooflines, not walls</span><span>Copper · your nominal footprint</span><span>North ↑ · {site.projected_metre_crs}</span></p>
+    {boundaryInteraction && <BoundaryMapTools interaction={boundaryInteraction} />}
   </div>
 }
 
 export type OccupiedMeasurement = { site: Case; model: (typeof bundledCatalogue.models)[number] | null; result: Result; widthOrigin: 'catalogue' | 'user'; depthOrigin: 'catalogue' | 'user' }
 export type OccupiedLotsProps = {
+  compactPlacement?: boolean
   allowedModelIds?: readonly string[]
   initialModelId?: string
   onMeasurement?: (measurement: OccupiedMeasurement | null) => void
@@ -99,7 +100,7 @@ export type OccupiedLotsProps = {
   boundaryInteraction?: BoundaryMapInteraction
 }
 
-export default function OccupiedLots({ allowedModelIds, initialModelId = '', onMeasurement, showHandoff = true, suppliedCase, boundaryInteraction }: OccupiedLotsProps) {
+export default function OccupiedLots({ allowedModelIds, initialModelId = '', onMeasurement, showHandoff = true, suppliedCase, boundaryInteraction, compactPlacement = false }: OccupiedLotsProps) {
   const initialModel = bundledCatalogue.models.find(m => m.model_id === initialModelId && (!allowedModelIds || allowedModelIds.includes(m.model_id)))
   const initialDimension = (name: string) => {
     const quantity = initialModel?.measurements.find(m => m.name === name)?.quantity
@@ -240,27 +241,28 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
     `Coverage: ${selected.site.capture.scope}; ${selected.site.capture.completeness.replace(/_/g, ' ')}. Captured rooflines are not walls; unmapped obstructions and legal conditions remain unknown. This tests only the supplied placement.`,
     `Next: verify legal parcel lines, building walls and roles, siting pathway, provider dimensions and other site constraints.`,
   ].join('\n') : ''
-  return <section className="occupied-lots" aria-labelledby="occupied-title">
-    <p className="eyebrow">Occupied-lot workspace</p><h2 id="occupied-title">See what this footprint meets on a captured lot</h2>
-    <p className="occupied-intro">{suppliedCase ? 'Use your confirmed property observation and set the nominal footprint.' : 'Choose a retained Victoria parcel and set the nominal footprint.'} Click to place it. Observed overlaps and distances are checked automatically after edits settle.</p>
-    <p className="notice">Approximate, parcel-intersecting captures only. Rooflines are not walls; no observed overlap does not certify clear space. Legal boundaries, setbacks, other obstructions and provider dimensions need separate review. This does not establish site fit or permit eligibility.</p>
+  return <section className={`occupied-lots${compactPlacement ? ' occupied-lots--compact' : ''}`} aria-labelledby={compactPlacement ? undefined : 'occupied-title'} aria-label={compactPlacement ? 'Model 300 placement map' : undefined}>
+    {!compactPlacement && <><p className="eyebrow">Occupied-lot workspace</p><h2 id="occupied-title">See what this footprint meets on a captured lot</h2></>}
+    <p className="occupied-intro">{compactPlacement ? 'Click the map or drag the rectangle. Captured geometry is checked after edits settle.' : `${suppliedCase ? 'Use your confirmed property observation and set the nominal footprint.' : 'Choose a retained Victoria parcel and set the nominal footprint.'} Click to place it. Observed overlaps and distances are checked automatically after edits settle.`}</p>
+    {compactPlacement ? <details><summary>Map scope and limitations</summary><p className="notice">Approximate, parcel-intersecting captures only. Rooflines are not walls; no observed overlap does not certify clear space. Legal boundaries, setbacks, other obstructions and provider dimensions need separate review. This does not establish site fit or permit eligibility.</p></details> : <p className="notice">Approximate, parcel-intersecting captures only. Rooflines are not walls; no observed overlap does not certify clear space. Legal boundaries, setbacks, other obstructions and provider dimensions need separate review. This does not establish site fit or permit eligibility.</p>}
     {loading && <p role="status">Loading retained sites…</p>}
     {error && <p role="alert">{error} No site sketch is available. <button onClick={() => setReload(n => n + 1)}>Retry</button></p>}
     {selected && <>
-      <div className="occupied-site-select"><label htmlFor="occupied-site">Captured parcel</label><select id="occupied-site" value={caseId} onChange={e => chooseCase(e.target.value)}>
+      {(!compactPlacement || !suppliedCase) && <div className="occupied-site-select"><label htmlFor="occupied-site">Captured parcel</label><select id="occupied-site" value={caseId} onChange={e => chooseCase(e.target.value)}>
         {cases.map(c => <option key={c.case_id} value={c.case_id}>{c.label}</option>)}</select>
         <p className="metadata">{source?.provider} · {source?.record_label} · captured {readableDate(source?.capture_date)} · {source?.review_status}.
-          {publicSourceUrl(source?.reference) && <> {' '}<a href={publicSourceUrl(source?.reference)!} target="_blank" rel="noreferrer">Parcel source</a></>}</p></div>
+          {publicSourceUrl(source?.reference) && <> {' '}<a href={publicSourceUrl(source?.reference)!} target="_blank" rel="noreferrer">Parcel source</a></>}</p></div>}
+      {compactPlacement && <div className="occupied-compact-summary"><strong>{model ? `${model.name} · ` : 'Manual footprint · '}{show(width)} wide × {show(depth)} long</strong><span>Nominal exterior rectangle · {dimensionOrigin('width').toLowerCase()} width, {dimensionOrigin('depth').toLowerCase()} length.</span><span>{source?.provider} · {source?.record_label} · captured {readableDate(source?.capture_date)} · {source?.review_status}. {publicSourceUrl(source?.reference) && <a href={publicSourceUrl(source?.reference)!} target="_blank" rel="noreferrer">Parcel source</a>}</span></div>}
       <div className="occupied-workspace">
         <div className="occupied-map-column">
           <Map selected={selected} placement={placement} nudgeMetres={nudgeMetres} onMove={(x, y) => changePlacement({ x: String(x), y: String(y) })} boundaryInteraction={boundaryInteraction} />
-          <div className="occupied-map-actions"><button onClick={placeAtCentre}>Recenter rectangle on parcel</button>
+          <div className="occupied-map-actions"><button onClick={placeAtCentre}>{compactPlacement ? 'Place or reset at parcel centre' : 'Recenter rectangle on parcel'}</button>
             <button disabled={number(placement.x) === null && number(placement.y) === null} onClick={() => changePlacement({ x: '', y: '' })}>Clear placement</button></div>
           <p className="metadata">Recenter uses the parcel drawing's bounding-box centre as an explicit sketch starting point. It does not search for a suitable location.</p>
         </div>
         <div className="occupied-side">
           <div className="occupied-controls">
-            <h3>1 · Set the nominal footprint</h3>
+            <details className="occupied-model-settings" open={!compactPlacement ? true : undefined}><summary>{compactPlacement ? 'Details and edit dimensions' : 'Set the nominal footprint'}</summary>
             <label htmlFor="occupied-model">Prefab model or manual dimensions</label><select id="occupied-model" value={modelId} onChange={e => chooseModel(e.target.value)}>
               {!allowedModelIds && <option value="">Manual nominal footprint</option>}{allowedModels.map(m => <option key={m.model_id} value={m.model_id}>{m.provider} · {m.name}</option>)}</select>
             {model && <p className="metadata">{model.provider} · {model.name} · provider measurements captured {readableDate(model.sources[0]?.captured_at)} · unreviewed. <a href={model.provider_url} target="_blank" rel="noreferrer">Provider model page</a>. Manufacturer revision {model.source_revision ?? 'not supplied'}. {model.service_area_note} {model.footprint_note}</p>}
@@ -272,7 +274,13 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
             </div>)}</div>
             <p className="metadata">These values describe a nominal exterior rectangle, not an installed envelope. This placement sketch measures width and length only; it does not check height.</p>
             <p className="metadata">Lengths display to two decimal places and areas to one. Focus a field to edit its full value. Comparisons use stored values; full measurements remain in the evidence export.</p>
-            <h3>2 · Adjust the position</h3>
+            </details>
+            <h3>{compactPlacement ? 'Adjust the footprint' : '2 · Adjust the position'}</h3>
+            <p className="metadata">Click the map or drag the rectangle. Checks update automatically after movement settles.</p>
+            <div className="occupied-main-actions"><label htmlFor="occupied-angle">Rotation (degrees)</label><input id="occupied-angle" type="number" step="any" value={rotationFocused || !placement.angle.trim() || !Number.isFinite(Number(placement.angle)) ? placement.angle : String(Number(Number(placement.angle).toFixed(2)))} onFocus={() => setRotationFocused(true)} onBlur={() => setRotationFocused(false)} onChange={e => changePlacement({ angle: e.target.value })} />
+            <button type="button" disabled={orientation?.status !== 'suggested'} onClick={() => { if (orientation?.status === 'suggested') changePlacement({ angle: String(orientation.angle_degrees) }) }}>Align to lot</button></div>
+            <p className="metadata">{orientation?.status === 'suggested' ? 'Alignment follows the approximate long direction; it does not choose a clear position or establish legal frontage.' : orientation?.reason}</p>
+            <details className="occupied-fine-adjustment" open={!compactPlacement}><summary>Fine adjustment</summary>
             <div className="occupied-nudge"><label htmlFor="occupied-step">Move by</label><select id="occupied-step" value={nudgeMetres} onChange={e => setNudgeMetres(Number(e.target.value))}>
               <option value={0.25}>0.25 m</option><option value={1}>1 m</option><option value={5}>5 m</option></select>
               <div className="occupied-direction"><button disabled={x === null || y === null} onClick={() => nudge(0, 1)} aria-label={`Move north ${nudgeMetres} ${nudgeMetres === 1 ? 'metre' : 'metres'}`}>↑ North</button>
@@ -280,9 +288,6 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
                 <button disabled={x === null || y === null} onClick={() => nudge(1, 0)} aria-label={`Move east ${nudgeMetres} ${nudgeMetres === 1 ? 'metre' : 'metres'}`}>East →</button>
                 <button disabled={x === null || y === null} onClick={() => nudge(0, -1)} aria-label={`Move south ${nudgeMetres} ${nudgeMetres === 1 ? 'metre' : 'metres'}`}>↓ South</button></div>
               <p className="metadata">Focus the map and use arrow keys for the same metre increments.</p></div>
-            <button type="button" disabled={orientation?.status !== 'suggested'} onClick={() => { if (orientation?.status === 'suggested') changePlacement({ angle: String(orientation.angle_degrees) }) }}>Align to lot</button>
-            <p className="metadata">{orientation?.status === 'suggested' ? 'Starting rotation follows the approximate long direction of this lot. Alignment does not choose a clear position or establish legal frontage.' : orientation?.reason}</p>
-            <label htmlFor="occupied-angle">Rotation (degrees)</label><input id="occupied-angle" type="number" step="any" value={rotationFocused || !placement.angle.trim() || !Number.isFinite(Number(placement.angle)) ? placement.angle : String(Number(Number(placement.angle).toFixed(2)))} onFocus={() => setRotationFocused(true)} onBlur={() => setRotationFocused(false)} onChange={e => changePlacement({ angle: e.target.value })} />
             <details><summary>Advanced position · projected XY</summary><p className="metadata">Centre coordinates in {selected.site.projected_metre_crs}, metres.</p>
               <div className="occupied-fields">{(['x', 'y'] as const).map(key => <div key={key}><label htmlFor={`occupied-${key}`}>Centre {key.toUpperCase()} (m)</label>
                 <input id={`occupied-${key}`} type="number" step="any" value={placement[key]} onChange={e => changePlacement({ [key]: e.target.value })} /></div>)}</div></details>
@@ -293,15 +298,16 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
                 <div><label htmlFor="occupied-building-minimum">Minimum to nearest captured roofline (m)</label>
                   <MeasurementInput id="occupied-building-minimum" dimension="length" type="number" min="0" step="any" value={assumptions.building} onChange={e => changeAssumption('building', e.target.value)} /></div></div>
             </details>
+            </details>
             {(!valid || !assumptionsValid) && <p role="status">Place the rectangle, enter positive width and depth, a finite rotation, and nonnegative optional minimums to measure.</p>}
-            <button className="sr-primary" disabled={!valid || !assumptionsValid || assessing} onClick={() => void assess()}>{assessing ? 'Measuring…' : 'Measure this placement'}</button>
+            <button className="sr-primary" disabled={!valid || !assumptionsValid || assessing} onClick={() => void assess()}>{assessing ? 'Checking…' : assessmentError ? 'Retry placement check' : 'Recheck placement'}</button>
             {assessmentError && <p role="alert">{assessmentError} Edit the sketch or try again; no result is shown.</p>}
           </div>
           <div className={`placement-check placement-check--${result ? geometryTone : 'unknown'}`} role="status">
             <strong><span aria-hidden="true">{result ? geometryTone === 'conflict' ? '✕ ' : geometryTone === 'clear' ? '✓ ' : '… ' : '… '}</span>{result ? geometryTone === 'conflict' ? 'Observed geometry conflict' : geometryTone === 'clear' ? 'No observed geometry conflict' : 'Clearance or geometry needs review' : assessing ? 'Checking placement…' : assessmentError ? 'Check unavailable' : 'Place or edit the rectangle for an automatic check'}</strong>
             <p>Approximate captured geometry only. Zoning legality, other obstructions and permit eligibility remain unassessed.</p>
           </div>
-          {result && <section className="occupied-results" aria-labelledby="occupied-results"><p className="eyebrow">Measured position only</p><h3 id="occupied-results">{observedConflicts.length ? 'Observed conflicts at this position' : observationIncomplete ? 'Some measurements unresolved' : 'No overlap observed at this position'}</h3>
+          {result && <details className="occupied-results" open={!compactPlacement}><summary>Geometry observations and exact evidence</summary><section aria-labelledby="occupied-results"><p className="eyebrow">Measured position only</p><h3 id="occupied-results">{observedConflicts.length ? 'Observed conflicts at this position' : observationIncomplete ? 'Some measurements unresolved' : 'No overlap observed at this position'}</h3>
             <p>These observations cover the supplied rectangle and mapped features only. Another position could differ.</p>
             <h4>Observed conflicts</h4>{observedConflicts.length ? <ul>{observedConflicts.map(c => <li key={c.id}>{checkText(c, selected)}</li>)}</ul> : <p>{observationIncomplete ? 'Some measurements are unresolved; inspect them below before drawing an overlap conclusion.' : 'No parcel crossing or captured roofline overlap was observed for this placement. This does not establish clear space.'}</p>}
             <h4>Measured clearances</h4><ul>{clearances.map(c => <li key={c.id}>{checkText(c, selected)}</li>)}</ul>
@@ -314,7 +320,7 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
             <p className="metadata">Capture: {selected.site.capture.scope}; {selected.site.capture.completeness.replace(/_/g, ' ')}. {selected.site.capture.limitations.join(' ')}</p>
             <CopyableRecord id="occupied-summary" label="Copyable plain-language summary" value={summary} />
             <TechnicalDetails title="Exact sources, IDs, placement and assessment · copyable"><textarea readOnly aria-label="Complete geometry evidence record" value={JSON.stringify({ site: selected, model, assessment: result }, null, 2)} rows={14} /></TechnicalDetails>
-          </section>}
+          </section></details>}
           {showHandoff && <ScenarioHandoff site={selected} model={model ?? null} assessment={result} />}
         </div>
       </div>
