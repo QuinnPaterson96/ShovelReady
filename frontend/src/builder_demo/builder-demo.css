@@ -10,6 +10,10 @@
 .builder-demo .builder-entry-choices p { color: var(--ink-muted); }
 .builder-demo .builder-example-status, .builder-demo .builder-example-result { border-left: 5px solid var(--copper); background: var(--copper-soft); padding: 1rem; margin: 1rem 0; }
 .builder-demo .builder-example-status p, .builder-demo .builder-example-result p { margin-bottom: .5rem; }
+.builder-demo .builder-example-outcome { border-left: 5px solid var(--copper); background: var(--copper-soft); padding: 1rem; margin: 1rem 0; }
+.builder-demo .builder-example-outcome--conflict { border-color: var(--danger); background: var(--danger-soft); color: var(--danger-ink); }
+.builder-demo .builder-example-outcome--clear { border-color: var(--neutral-edge); background: var(--neutral-soft); color: var(--neutral-ink); }
+.builder-demo .builder-example-outcome p { margin: .4rem 0 0; }
 .builder-demo .builder-example-layout { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(18rem, 1fr); gap: 1rem; align-items: start; }
 .builder-demo .builder-example-map { min-width: 0; margin: 0; border: 1px solid var(--border); border-radius: var(--radius-card); background: var(--surface); padding: .75rem; }
 .builder-demo .builder-example-map svg { display: block; width: 100%; height: auto; max-height: 30rem; cursor: crosshair; touch-action: none; }
@@ -24,6 +28,9 @@
 .builder-demo .builder-example-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .7rem; }
 .builder-demo .builder-example-fields > div { min-width: 0; }
 .builder-demo .builder-example-fields input { display: block; width: 100%; }
+.builder-demo .builder-example-assumptions { margin-top: 1rem; border: 1px solid var(--border); border-radius: var(--radius-card); }
+.builder-demo .builder-example-assumptions label, .builder-demo .builder-example-assumptions input { display: block; width: 100%; }
+.builder-demo .builder-example-assumptions label { margin-top: .7rem; }
 .builder-demo .builder-example-controls > button { margin-top: 1rem; }
 .builder-demo .builder-example pre { white-space: pre-wrap; overflow-wrap: anywhere; }
 .builder-demo .builder-questions { display: grid; grid-template-columns: 13rem minmax(0, 1fr); align-items: center; gap: .7rem 1rem; max-width: 52rem; }
