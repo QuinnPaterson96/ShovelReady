@@ -474,7 +474,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
           <OccupiedLots key={revision} allowedModelIds={[MODEL_ID]} initialModelId={MODEL_ID} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} showHandoff={false} /></>}
     </section>}
     {mode === 'retained' && !selection && <p>Confirm a site lead above to consider a separate retained placement example. An example is never matched to your site lead.</p>}
-      <details className="builder-optional"><summary>Illustrate model height and foundation</summary><p>This illustration is separate from the installed-height comparison above. A foundation allowance does not establish average grade.</p><HeightView key={`height-${heightRevision}`} model={model} onFoundationAllowanceChange={value => { setFoundationAllowanceM(value); setReadyFor(null) }} /></details>
+      <details className="builder-optional"><summary>Illustrate model height and foundation</summary><p>This illustration is separate from the installed-height comparison above. A foundation allowance does not establish average grade.</p><HeightView key={`height-${heightRevision}`} model={model} foundationAllowanceM={foundationAllowanceM} onFoundationAllowanceChange={value => { setFoundationAllowanceM(value); setReadyFor(null) }} /></details>
       </div>
       {propertyComplete && <button className="builder-continue" type="button" onClick={() => { if (boundaryMode === 'front') completeStreetMarks(); setExpanded({ property: false, placement: false, next: true }); requestAnimationFrame(() => document.getElementById('builder-next')?.scrollIntoView({ block: 'start' })) }}>Prepare enquiry{placementComplete ? '' : ' with placement unknown'}</button>}
     </section>
