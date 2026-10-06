@@ -1,4 +1,4 @@
-.homeowner-summary { border: 1px solid var(--border); border-left: 5px solid var(--copper); border-radius: var(--radius-card); background: var(--surface); padding: 1rem; margin: 1rem 0; }
+.homeowner-summary { container-type: inline-size; border: 1px solid var(--border); border-left: 5px solid var(--copper); border-radius: var(--radius-card); background: var(--surface); padding: 1rem; margin: 1rem 0; }
 .homeowner-summary h3 { margin: 0 0 .35rem; }
 .homeowner-summary p { margin: .3rem 0 .7rem; }
 .homeowner-summary__scope { color: var(--ink-muted); }
@@ -22,5 +22,6 @@
 .homeowner-summary__unsupported { color: var(--neutral-ink); background: var(--neutral-soft); }
 .homeowner-summary__next { font-weight: 700; }
 .homeowner-summary__checks > summary { min-height: 44px; padding: .65rem 0; cursor: pointer; font-weight: 700; }
-@media (max-width: 700px) { .homeowner-summary__counts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.homeowner-summary__counts strong { min-width: 0; overflow-wrap: anywhere; }
+@container (max-width: 600px) { .homeowner-summary__counts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@container (max-width: 340px) { .homeowner-summary__counts { grid-template-columns: 1fr; } }
+.homeowner-summary__counts strong { min-width: 0; overflow-wrap: normal; }
