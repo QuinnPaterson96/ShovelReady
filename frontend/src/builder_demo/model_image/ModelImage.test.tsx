@@ -5,7 +5,10 @@ import { ModelImage, type ClearedModelPhoto } from './ModelImage'
 
 test('uncleared Model 300 imagery stays off the page while the official source remains reachable', () => {
   const fallback = renderToStaticMarkup(<ModelImage />)
-  assert.match(fallback, /Model 300 photo unavailable/)
+  assert.match(fallback, /Manufacturer photo available on aux box/)
+  assert.match(fallback, /View photos and specifications on aux box/)
+  assert.match(fallback, /private bedroom, kitchen and full bathroom/)
+  assert.match(fallback, /rel="noopener noreferrer"/)
   assert.match(fallback, /https:\/\/www\.auxbox\.ca\/model-300/)
   assert.doesNotMatch(fallback, /<img\b/)
 
