@@ -178,8 +178,15 @@ def _boundary_screen(body: ScenarioRequest) -> ScenarioResult:
         rear = (front + 2) % 4
         sides = [index for index in range(4) if index not in (front, rear)]
         # Unknown street pattern retains both ordinary side and flanking possibilities.
-        variants = [("side", "side")] if body.street_pattern == "single" else product(
-            ("side", "flanking_street"), repeat=2)
+        streets = assumptions.street_adjacency
+        if streets and streets.all_marked:
+            if edges[front].id not in streets.edge_ids:
+                continue
+            variants = [tuple("flanking_street" if edges[index].id in streets.edge_ids else "side"
+                              for index in sides)]
+        else:
+            variants = [("side", "side")] if body.street_pattern == "single" else product(
+                ("side", "flanking_street"), repeat=2)
         for roles in variants:
             assignment = {front: "front", rear: "rear", **dict(zip(sides, roles, strict=True))}
             if any(edge.role.value not in (None, "unknown", assignment[index])

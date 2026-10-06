@@ -102,6 +102,7 @@ class ObservedBuilding(Strict):
 class StreetAdjacency(Strict):
     edge_ids: tuple[str, ...] = Field(max_length=64)
     all_marked: bool
+    completion_method: Literal["explicit_confirmation", "advance"] | None = None
     origin: Literal["user"]
 
 

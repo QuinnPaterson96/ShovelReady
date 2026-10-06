@@ -124,9 +124,15 @@ def _query(layer: str, params: dict[str, Any], label: str) -> tuple[dict, Source
         rows = value.get("features")
         if not isinstance(rows, list) or len(rows) >= MAX_FEATURES:
             raise SourceFailure("provider feature count unavailable or excessive")
-        if value.get("spatialReference", {}).get("wkid") != 3157:
+        if (
+            params.get("returnGeometry") != "false"
+            and value.get("spatialReference", {}).get("wkid") != 3157
+        ):
             raise SourceFailure("unexpected provider CRS")
-        if value.get("geometryType") != "esriGeometryPolygon":
+        if (
+            params.get("returnGeometry") != "false"
+            and value.get("geometryType") != "esriGeometryPolygon"
+        ):
             raise SourceFailure("unexpected provider geometry type")
         record = SourceRecord(
             provider="City of Victoria Open Data",

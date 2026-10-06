@@ -13,10 +13,10 @@ export type ScenarioRequest = {
   street_edge_id: string | null
   rear_edge_id: string | null
   street_pattern: 'unknown' | 'single' | 'corner_or_multiple'
-  additional_inputs?: { height_from_average_grade_m: number | null }
+  additional_inputs?: { height_from_average_grade_m: number | null; nominal_footprint_area_m2?: number | null; advertised_height_m?: number | null; area_buffer_percent?: number; height_buffer_percent?: number; foundation_allowance_m?: number | null }
 }
 export type AdditionalCheck = {
-  id: string; label: string; status: 'checked' | 'conflict' | 'unknown' | 'unsupported'; detail: string;
+  id: string; label: string; status: 'checked' | 'probable' | 'conflict' | 'unknown' | 'unsupported'; detail: string;
   action_target: string | null; observed: number | null; threshold: number | null; unit: string | null;
   basis: string; source: { provider: string; record_label: string; url: string; locator: string; review_status: string }
 }
@@ -50,13 +50,14 @@ export function parseScenarioResult(raw: unknown, request?: ScenarioRequest): Sc
   const nonempty = (value: unknown) => typeof value === 'string' && value.trim().length > 0
   const finiteNonnegative = (value: unknown) => typeof value === 'number' && Number.isFinite(value) && value >= 0
   if (result.additional_checks !== undefined && (!Array.isArray(result.additional_checks) ||
-    result.additional_revision !== 'candidate-scouting-2026-10-06-1' || result.additional_checks.length !== 5 ||
-    new Set(result.additional_checks.map(check => check?.id)).size !== 5 ||
-    !result.additional_checks.every(check => record(check) && ['separation', 'front', 'rear_location', 'rear_occupancy', 'height'].includes(check.id) &&
-      ['checked', 'conflict', 'unknown', 'unsupported'].includes(check.status) && nonempty(check.label) && nonempty(check.detail) && nonempty(check.basis) &&
+    result.additional_revision !== 'candidate-scouting-2026-10-06-1' || ![5, 6].includes(result.additional_checks.length) ||
+    !['separation', 'front', 'rear_location', 'rear_occupancy', 'height'].every(id => result.additional_checks!.some(check => check?.id === id)) ||
+    new Set(result.additional_checks.map(check => check?.id)).size !== result.additional_checks.length ||
+    !result.additional_checks.every(check => record(check) && ['separation', 'front', 'rear_location', 'rear_occupancy', 'height', 'area'].includes(check.id) &&
+      ['checked', 'probable', 'conflict', 'unknown', 'unsupported'].includes(check.status) && nonempty(check.label) && nonempty(check.detail) && nonempty(check.basis) &&
       (check.observed === null || finiteNonnegative(check.observed)) && (check.threshold === null || finiteNonnegative(check.threshold)) &&
       (check.unit === null || typeof check.unit === 'string') &&
-      (check.action_target === null || ['principal-building', 'boundary-roles', 'scouting-height', 'waterfront-lot'].includes(check.action_target)) &&
+      (check.action_target === null || ['principal-building', 'boundary-roles', 'scouting-height', 'scouting-area-buffer', 'zsa-floor-area', 'waterfront-lot'].includes(check.action_target)) &&
       record(check.source) && nonempty(check.source.locator) && nonempty(check.source.provider) &&
       check.source.url === 'https://www.victoria.ca/media/file/zoning-bylaw-2018'))) throw new Error('Additional scouting response is malformed.')
   if (result.schema_version !== 'placement-scenarios.result.v1' ||

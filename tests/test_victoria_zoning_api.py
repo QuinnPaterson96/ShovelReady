@@ -133,3 +133,49 @@ def test_invalid_input_and_unsupported_geometry(monkeypatch):
     result = lookup(client(monkeypatch, [], parcel_value=bad)).json()
     assert result["status"] == "unsupported_geometry"
     assert result["covered_area_m2"] is None
+
+
+def test_property_scan_replays_all_sources_and_preserves_partial_failures(monkeypatch):
+    # Transport replay protects the full HTTP -> fixed City queries -> sourced findings path.
+    # Empty is probably clear only after a successful bounded query, never after failure.
+    captured = {}
+    failures = set()
+    heritage = []
+
+    def saved(url, timeout):
+        parsed = urlparse(url)
+        params = parse_qs(parsed.query)
+        if "OpenData_Land" in parsed.path:
+            value = parcel()
+            value["features"][0]["attributes"]["GISLINK"] = "12345"
+            return SavedResponse(url, value)
+        layer = int(parsed.path.split("/")[-2])
+        captured[layer] = params
+        if layer in failures:
+            return SavedResponse(url, {"features": [], "exceededTransferLimit": True})
+        return SavedResponse(url, {"features": heritage if layer == 10 else []})
+
+    monkeypatch.setattr(api, "urlopen", saved)
+    http = TestClient(create_app())
+    body = {"schema_version": "victoria-property-scan.v1",
+            "parcel_ref": {"source": "city-of-victoria-pid-parcels", "object_id": 87},
+            "expected_pid": "001-328-107"}
+    result = http.post("/api/victoria-zoning/property-scan", json=body).json()
+    assert len(result["findings"]) == 6
+    assert all(row["status"] == "probably_clear" for row in result["findings"])
+    assert set(captured) == {1, 3, 10, 11, 14, 18}
+    assert captured[18]["where"] == ["gislink='12345'"]
+    assert captured[10]["returnGeometry"] == ["false"]
+    assert captured[10]["spatialRel"] == ["esriSpatialRelIntersects"]
+    assert all(row["source"]["sha256"] for row in result["findings"])
+    assert "service capacity" in " ".join(result["limitations"])
+    heritage.append({"attributes": {"OBJECTID": 12, "Heritage": "Registered"}})
+    failures.add(14)
+    result = http.post("/api/victoria-zoning/property-scan", json=body).json()
+    assert result["findings"][0]["status"] == "review"
+    assert result["findings"][0]["records"][0]["Heritage"] == "Registered"
+    assert result["findings"][1]["status"] == "unknown"
+    assert result["findings"][1]["source"] is None
+    body["expected_pid"] = "changed"
+    result = http.post("/api/victoria-zoning/property-scan", json=body).json()
+    assert all(row["status"] == "unknown" for row in result["findings"])
