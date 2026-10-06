@@ -1,0 +1,6 @@
+.placement-scenarios { border: 1px solid var(--border); border-left: 5px solid var(--copper); border-radius: var(--radius-card); background: var(--surface); padding: 1rem; margin-block: 1rem; }
+.placement-scenarios h3 { margin-top: 0; }
+.placement-scenarios--apparent_conflict { border-left-color: var(--status-conflict, #a64638); }
+.placement-scenarios__source, .placement-scenarios__notice { color: var(--ink-muted); }
+.placement-scenarios__choice { border: 1px solid var(--border); border-radius: var(--radius-card); margin-top: 1rem; padding: 1rem; }
+.placement-scenarios textarea { max-width: 100%; }

@@ -81,9 +81,12 @@ export function ObservationMap({ observation, address, parcel }: { observation: 
       <li><span className="observation-map__key observation-map__key--roof" aria-hidden="true" />Captured rooflines ({roofCount === 1 ? 'R1' : roofCount ? `R1–R${roofCount}` : 'none returned'}; not walls)</li>
     </ul>
     <p className="observation-map__note">Approximate mapped parcel area: {observation.parcel.areaM2 === null ? 'unknown' : `${Number(observation.parcel.areaM2.toFixed(1))} m²`}. {roofCount} roofline {roofCount === 1 ? 'outline' : 'outlines'} returned. {roofCount === 0 ? 'No rooflines shown does not mean no buildings exist. ' : ''}North is up; scale uses EPSG:3157 metres. Approximate source outlines; no basemap, surveyed wall positions, legal yards or fit assessment.</p>
-    <p className="observation-map__source">Parcel source: {observation.source.provider} · {observation.source.record} · captured {readableDate(observation.source.capturedAt)} · {observation.source.review}. {parcelUrl && <a href={parcelUrl} target="_blank" rel="noreferrer">Source</a>}</p>
-    {observation.roofSource && <p className="observation-map__source">Roofline source: {observation.roofSource.provider} · {observation.roofSource.record} · captured {readableDate(observation.roofSource.capturedAt)} · {observation.roofSource.review}. {roofUrl && <a href={roofUrl} target="_blank" rel="noreferrer">Source</a>}</p>}
+    <p className="observation-map__source">Source: {observation.source.provider} · {observation.source.record} · captured {readableDate(observation.source.capturedAt)} · {observation.source.review}. {parcelUrl && <a href={parcelUrl} target="_blank" rel="noreferrer">Parcel record</a>}</p>
     {observation.issues.length > 0 && <p className="observation-map__source">Source limitations: {observation.issues.map(issue => issue.replace(/_/g, ' ').replace(/[.\s]+$/, '')).join('; ')}.</p>}
-    {address?.point && <p className="observation-map__source">Address marker unavailable: the address point uses {address.crs ?? 'an unknown coordinate system'}, while this map uses EPSG:3157 metres.</p>}
+    <details className="observation-map__evidence"><summary>Full map source details</summary>
+      <p className="observation-map__source">Parcel source: {observation.source.provider} · {observation.source.record} · captured {readableDate(observation.source.capturedAt)} · {observation.source.review}. Source date {readableDate(observation.source.sourceDate)}. {parcelUrl && <a href={parcelUrl} target="_blank" rel="noreferrer">Source</a>}</p>
+      {observation.roofSource && <p className="observation-map__source">Roofline source: {observation.roofSource.provider} · {observation.roofSource.record} · captured {readableDate(observation.roofSource.capturedAt)} · {observation.roofSource.review}. Source date {readableDate(observation.roofSource.sourceDate)}. {roofUrl && <a href={roofUrl} target="_blank" rel="noreferrer">Source</a>}</p>}
+      {address?.point && <p className="observation-map__source">Address marker unavailable: the address point uses {address.crs ?? 'an unknown coordinate system'}, while this map uses EPSG:3157 metres.</p>}
+    </details>
   </figure>
 }

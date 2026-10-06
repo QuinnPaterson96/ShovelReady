@@ -1,6 +1,7 @@
 import type { Case, Feature, Site } from '../occupied_lots/contract'
 
 export type EdgeRole = 'unknown' | 'front' | 'rear' | 'side' | 'flanking_street'
+export type BoundaryMapMode = 'place' | 'front' | 'rear'
 export type UserFact<T> = { value: T | null; origin: 'user'; note: string | null }
 export type BoundaryEdge = { id: string; ring: number; segment: number; start: [number, number]; end: [number, number]; role: UserFact<EdgeRole> }
 export type UserMeasurement = { value: number; unit: 'm' | 'm2'; basis: 'proposed_wall_to_lot_line' | 'principal_wall_to_proposed_wall' | 'regulatory_floor_area'; origin: 'user'; note: string | null; placement_revision: string }
@@ -67,4 +68,31 @@ export function assumptionsKey(site: Case, geometryRevision: string, placementRe
 export function withPlacementRevision(value: SiteAssumptions, revision: string): SiteAssumptions {
   return revision === value.placement_revision ? value : { ...value, placement_revision: revision,
     measurements: { boundary: {}, principal_separation: null, floor_area: null } }
+}
+
+/** Display-only suggestions. They never become surveyed roles or overwrite a user choice. */
+export function suggestedBoundaryRoles(edges: BoundaryEdge[], frontId: string | null, rearId: string | null,
+  streetPattern: 'unknown' | 'single' | 'corner_or_multiple'): Record<string, EdgeRole> {
+  if (streetPattern !== 'single' || !ordinaryFourEdgeBoundary(edges)) return {}
+  const ordered = [...edges].sort((a, b) => a.segment - b.segment)
+  const front = ordered.findIndex(edge => edge.id === frontId)
+  const rear = ordered.findIndex(edge => edge.id === rearId)
+  if (front < 0 && rear < 0 || front >= 0 && rear >= 0 && (front + 2) % 4 !== rear) return {}
+  const frontIndex = front >= 0 ? front : (rear + 2) % 4
+  return Object.fromEntries(ordered.map((edge, index) => [edge.id,
+    index === frontIndex ? 'front' : index === (frontIndex + 2) % 4 ? 'rear' : 'side']))
+}
+
+export function ordinaryFourEdgeBoundary(edges: BoundaryEdge[]): boolean {
+  if (edges.length !== 4 || edges.some(edge => edge.ring !== 0)) return false
+  const ordered = [...edges].sort((a, b) => a.segment - b.segment)
+  if (ordered.some((edge, index) => edge.segment !== index ||
+    edge.end[0] !== ordered[(index + 1) % 4].start[0] ||
+    edge.end[1] !== ordered[(index + 1) % 4].start[1])) return false
+  const turns = ordered.map((edge, index) => {
+    const next = ordered[(index + 1) % 4]
+    return (edge.end[0] - edge.start[0]) * (next.end[1] - next.start[1]) -
+      (edge.end[1] - edge.start[1]) * (next.end[0] - next.start[0])
+  })
+  return turns.every(turn => turn > 0) || turns.every(turn => turn < 0)
 }

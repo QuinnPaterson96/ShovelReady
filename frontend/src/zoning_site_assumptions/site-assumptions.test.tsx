@@ -4,7 +4,7 @@ import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import type { Case } from '../occupied_lots/contract'
 import { SiteAssumptionsEditor } from './SiteAssumptions'
-import { assumptionsKey, initialAssumptions, withPlacementRevision } from './model'
+import { assumptionsKey, initialAssumptions, ordinaryFourEdgeBoundary, suggestedBoundaryRoles, withPlacementRevision } from './model'
 
 const source = { provider: 'Constructed example', record_label: 'Parcel sketch', capture_date: null, review_status: 'unreviewed', reference: null }
 const site = (id: string, coordinates: number[][]): Case => ({ case_id: id, label: id, site: {
@@ -34,10 +34,27 @@ test('placement edits clear user measurements while keeping boundary roles', () 
   assert.equal(changed.placement_revision, 'placement-b')
 })
 
-test('rendered component offers labelled controls and a keyboard alternative to map edges', () => {
+test('rendered component offers labelled controls without another map', () => {
   const html = renderToStaticMarkup(createElement(SiteAssumptionsEditor, { site: site('ordinary', [[0, 0], [10, 0], [10, 20], [0, 20], [0, 0]]), geometryRevision: 'capture-a', placementRevision: 'placement-a', onChange: () => {} }))
   assert.match(html, /Parcel edge roles/)
   assert.match(html, /Edge 1 role/)
-  assert.match(html, /keyboard access/)
+  assert.match(html, /Use my measurement/)
+  assert.doesNotMatch(html, /<svg/)
   assert.match(html, /Rooflines are mapped outlines, not walls/)
+})
+
+test('opposite-edge suggestion is display-only and scoped to a simple single-street lot', () => {
+  const ordinary = initialAssumptions(site('ordinary', [[0, 0], [10, 0], [10, 20], [0, 20], [0, 0]]), 'capture-a', 'placement-a')
+  const [front, side, rear, other] = ordinary.edges
+  assert.deepEqual(suggestedBoundaryRoles(ordinary.edges, front.id, null, 'single'), {
+    [front.id]: 'front', [side.id]: 'side', [rear.id]: 'rear', [other.id]: 'side',
+  })
+  assert.deepEqual(suggestedBoundaryRoles(ordinary.edges, null, rear.id, 'single'),
+    suggestedBoundaryRoles(ordinary.edges, front.id, null, 'single'))
+  assert.deepEqual(suggestedBoundaryRoles(ordinary.edges, front.id, null, 'corner_or_multiple'), {})
+  assert.equal(ordinaryFourEdgeBoundary(ordinary.edges), true)
+  const irregular = initialAssumptions(site('irregular', [[0, 0], [10, 0], [12, 8], [10, 20], [0, 20], [0, 0]]), 'capture-b', 'placement-a')
+  assert.equal(ordinaryFourEdgeBoundary(irregular.edges), false)
+  assert.deepEqual(suggestedBoundaryRoles(irregular.edges, irregular.edges[0].id, null, 'single'), {})
+  assert.ok(ordinary.edges.every(edge => edge.role.value === 'unknown'))
 })
