@@ -22,3 +22,9 @@ Local stateless demo: `SHOVELREADY_ENV=demo python -m uv run --locked uvicorn ap
 - #197/#200: URL construction, encoding and long-body fallback tested, but actual Gmail/default-client draft handoff was not exercised. Markdown serialization passed; browser download capture timed out, so successful download delivery is unverified. Follow up with a real browser/mail-client smoke test without sending.
 - #185: human comprehension, keyboard/screen-reader breadth and physical touch-device validation remain separate from agent walkthroughs.
 - No changes to zoning interpretation, accepted publication, provider availability or site-fit claims. Existing source/coverage gaps remain.
+
+## Deployed QA follow-up
+
+The #205 worker verified the public release at application/frontend 68a727c: actual UTF-8 Markdown file delivery, custom multiline/Unicode question and source content, editable Gmail drafts with blank or synthetic recipient, automatic site-detail exclusion and explicit inclusion, complete clipboard text and the visible long-body placeholder fallback. No message was sent. See [#205](https://github.com/QuinnPaterson96/ShovelReady/issues/205) for the captured file evidence and exact procedure. This supersedes the earlier unverified download/Gmail checkpoint above.
+
+Default OS mail-client handoff was blocked by the browser policy; configured/unconfigured mail-client and deliberately blocked-popup recovery still need a human smoke check. Keep #205 open. Photo permission #199, human usability #185 and accepted source/rule publication remain separate gaps.
