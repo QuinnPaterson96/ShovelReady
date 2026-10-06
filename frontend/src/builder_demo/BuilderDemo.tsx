@@ -181,6 +181,11 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     if (!scenarioRequest || !scenarioKey) { setScenarioBusy(false); return }
     const controller = new AbortController()
     setScenarioBusy(true)
+    const timeout = window.setTimeout(() => {
+      controller.abort()
+      setScenarioError({ key: scenarioKey, message: 'Approximate setback screen timed out. Change the placement or measure again to retry.' })
+      setScenarioBusy(false)
+    }, 10000)
     const timer = window.setTimeout(async () => {
       try {
         const response = await fetch('/api/conditional-screening/v1/placement-scenarios', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(scenarioRequest), signal: controller.signal })
@@ -192,9 +197,11 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
         if (!controller.signal.aborted) { setScenarioState({ key: scenarioKey, result }); setScenarioError(null); setScenarioBusy(false) }
       } catch (error) {
         if (!controller.signal.aborted) { setScenarioError({ key: scenarioKey, message: error instanceof Error ? error.message : 'Approximate setback screen unavailable.' }); setScenarioBusy(false) }
+      } finally {
+        window.clearTimeout(timeout)
       }
     }, 300)
-    return () => { controller.abort(); window.clearTimeout(timer) }
+    return () => { controller.abort(); window.clearTimeout(timer); window.clearTimeout(timeout) }
   }, [scenarioKey])
   const screeningRequest: ScreeningRequest | null = measurementResult && currentAssumptions && zoningCase && measurementResult.site.site.parcel.id === zoningCase.site.parcel.id
     ? { schema_version: 'conditional-screening.api.v1', assumptions: currentAssumptions, model_revision: `catalogue-record:${model.model_id}@${bundledCatalogue.snapshot_id}`, proposal: pathway } : null
