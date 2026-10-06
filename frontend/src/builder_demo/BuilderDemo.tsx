@@ -24,7 +24,8 @@ import { applyMappedZoning, initialProjectSettings, withFloorAreaBasis } from '.
 import type { ProjectSettings } from '../conditional_screening/projectSettings'
 import { parseZoningLookup, selectedParcelRef, zoningProjection, type ZoningLookup } from '../conditional_screening/victoriaZoning'
 import { PlacementScenarios } from '../conditional_screening/PlacementScenarios'
-import { HomeownerSummary, homeownerSummary } from '../conditional_screening/HomeownerSummary'
+import { HomeownerSummary } from '../conditional_screening/HomeownerSummary'
+import { homeownerSummary } from '../conditional_screening/victoriaSummaryAdapter'
 import { focusSummaryTarget } from '../conditional_screening/summaryNavigation'
 import { parseScenarioResult, type ScenarioRequest, type ScenarioResult } from '../conditional_screening/scenarios'
 import { currentPlacementRevision, expectedPropertyRevision, parseScreeningResult, propertyGeometryRevision, screeningCheckTitle, screeningIdentity, type Pathway, type ScreeningRequest, type ScreeningResult } from '../conditional_screening/model'
@@ -296,6 +297,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     assumptions: currentAssumptions, settings: effectiveSettings, mapped: mappedZoning, lookup: currentZoning, zoningBusy, zoningError: currentZoningError,
     scenarioError: currentScenarioError, screeningError: currentScreeningError, onRetryAvailable: !!zoningKey }) : null
   function navigateFlag(target: string) {
+    if (target === 'zoning-retry') { setZoningRetry(value => value + 1); return }
     if (target === 'retry-scenario') { setScenarioRetry(value => value + 1); return }
     if (target === 'retry-screening') { setConditionalRetry(value => value + 1); return }
     setExpanded(previous => ({ ...previous, placement: true }))

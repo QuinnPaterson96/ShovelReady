@@ -3,11 +3,13 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
-import { homeownerSummary, HomeownerSummary } from './HomeownerSummary'
+import { HomeownerSummary } from './HomeownerSummary'
+import { homeownerSummary } from './victoriaSummaryAdapter'
 import type { Result } from '../occupied_lots/contract'
 import type { MappedZoning } from './projectSettings'
 import { changeProjectSetting, initialProjectSettings } from './projectSettings'
 import type { ScenarioResult } from './scenarios'
+import type { ScreeningResult } from './model'
 
 const captured = JSON.parse(readFileSync('src/scenario_handoff/retained-assessment.fixture.json', 'utf8')) as Result
 const clear = { ...captured, checks: captured.checks.map(check => ({ ...check,
@@ -45,6 +47,15 @@ test('zoning outage offers retry while an unsupported mapped zone stays outside 
   assert.equal(outside.checks.at(-1)?.status, 'unsupported')
   assert.match(outside.checks.at(-1)?.detail ?? '', /does not mean a garden suite is prohibited/)
   assert.equal(outside.checks.at(-1)?.action, undefined)
+  assert.equal(outside.checks.find(check => check.label === 'Distance to boundaries')?.status, 'unsupported')
   const entered = homeownerSummary({ ...base, settings: changeProjectSetting(initialProjectSettings(), 'confirmed_zone', 'other') })
   assert.equal(entered.checks.at(-1)?.status, 'unsupported')
+})
+
+test('a supplied area conflict has a visible actionable row rather than only changing the headline', () => {
+  const screening = { checks: [{ rule: { kind: 'area_max' }, status: 'apparent_conflict_under_assumptions' }] } as ScreeningResult
+  const summary = homeownerSummary({ ...base, screening })
+  assert.equal(summary.conclusion, 'This placement has a problem')
+  assert.equal(summary.checks.find(check => check.label === 'Floor area')?.status, 'conflict')
+  assert.equal(summary.checks.find(check => check.label === 'Floor area')?.action?.target, 'zsa-floor-area')
 })
