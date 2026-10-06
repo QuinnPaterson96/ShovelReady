@@ -99,7 +99,14 @@ class ObservedBuilding(Strict):
     source: dict
 
 
+class StreetAdjacency(Strict):
+    edge_ids: tuple[str, ...] = Field(max_length=64)
+    all_marked: bool
+    origin: Literal["user"]
+
+
 class Assumptions(Strict):
+    street_adjacency: StreetAdjacency | None = None
     schema_version: Literal["sr.zoning-site-assumptions.v1"]
     property: Property
     observed_buildings: tuple[ObservedBuilding, ...] = Field(max_length=64)
@@ -142,6 +149,11 @@ class Assumptions(Strict):
             raise ValueError("edge does not reference supplied geometry revision")
         if not self.measurements.boundary.keys() <= set(ids):
             raise ValueError("boundary measurement references absent edge")
+        if self.street_adjacency:
+            street_ids = self.street_adjacency.edge_ids
+            exterior_ids = {edge.id for edge in self.edges if edge.ring == 0}
+            if len(street_ids) != len(set(street_ids)) or not set(street_ids) <= exterior_ids:
+                raise ValueError("street adjacency must reference distinct exterior edges")
         all_measurements = (
             *self.measurements.boundary.values(),
             self.measurements.principal_separation,

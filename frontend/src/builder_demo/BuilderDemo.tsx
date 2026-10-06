@@ -19,7 +19,7 @@ import { ModelImage } from './model_image/ModelImage'
 import { ExampleProperty } from './ExampleProperty'
 import { exampleCase, exampleSourcePage } from './example'
 import { SiteAssumptionsEditor } from '../zoning_site_assumptions/SiteAssumptions'
-import type { BoundaryMapMode, SiteAssumptions } from '../zoning_site_assumptions/model'
+import { ordinaryFourEdgeBoundary, type StreetAdjacency, type BoundaryMapMode, type SiteAssumptions } from '../zoning_site_assumptions/model'
 import type { BoundaryMapInteraction } from '../zoning_site_assumptions/BoundaryMapTools'
 import { ConditionalScreen } from '../conditional_screening/ConditionalScreen'
 import { ProjectDetails } from '../conditional_screening/ProjectDetails'
@@ -79,8 +79,9 @@ export function enquiryDocument(selection: SitePreparationSelection | null, inpu
   const sourceCaveat = conditional?.checks[0]?.rule.source.currentness_limitations.join(' ') ?? ''
   const mappedSource = settings?.evidence.confirmed_zone.source
   const settingSourceSummary = mappedSource ? ` Mapped zoning observation: ${mappedSource.provider}, ${mappedSource.record_label}, ${mappedSource.locator}, captured ${readableDate(mappedSource.capture_date)}, ${mappedSource.review_status}; ${mappedSource.url}.` : ''
+  const streetSummary = siteAssumptions?.street_adjacency ? ` Street-adjacent edges: ${siteAssumptions.street_adjacency.edge_ids.length} marked by the user; ${siteAssumptions.street_adjacency.all_marked ? 'user says all street edges are marked' : 'remaining street adjacency unknown'}. Road bands are diagrammatic, not surveyed road locations or access points.` : ''
   const assumptionsSummary = siteAssumptions
-    ? `Property assumptions: main building ${siteAssumptions.building_type.value ?? 'unknown'}; existing garden suites ${siteAssumptions.existing_garden_suites.value ?? 'unknown'} (${siteAssumptions.existing_garden_suites.value === null ? 'unknown' : siteAssumptions.existing_garden_suites.evidence_state === 'user_confirmed' ? 'user-confirmed, not independently verified' : siteAssumptions.existing_garden_suites.origin === 'journey_default' ? 'default assumption' : 'your assumption'}); waterfront ${siteAssumptions.waterfront.value === null ? 'unknown' : siteAssumptions.waterfront.value ? 'assumed yes' : 'assumed no'}; ${siteAssumptions.edges.filter(edge => edge.role.value && edge.role.value !== 'unknown').length} parcel edges classified by the user. Project settings: use ${pathway?.proposed_use ?? 'unknown'} (${settings?.evidence.proposed_use.origin ?? 'unattributed'}), foundation ${pathway?.foundation_attached === null || pathway?.foundation_attached === undefined ? 'unknown' : pathway.foundation_attached ? 'scenario attached' : 'scenario unattached'} (${settings?.evidence.foundation_attached.origin ?? 'unattributed'}), lot/zone/instrument ${pathway?.legal_lot_confirmed ? 'assumed legal lot' : 'unknown or incompatible'} / ${pathway?.confirmed_zone ?? 'unknown'} (${settings?.evidence.confirmed_zone.origin ?? 'unattributed'}) / ${pathway?.confirmed_instrument ?? 'unknown'} (${settings?.evidence.confirmed_instrument.origin ?? 'unattributed'}).${settingSourceSummary} Assumptions and user confirmations remain distinct from source observations.`
+    ? `Property assumptions: main building ${siteAssumptions.building_type.value ?? 'unknown'}; existing garden suites ${siteAssumptions.existing_garden_suites.value ?? 'unknown'} (${siteAssumptions.existing_garden_suites.value === null ? 'unknown' : siteAssumptions.existing_garden_suites.evidence_state === 'user_confirmed' ? 'user-confirmed, not independently verified' : siteAssumptions.existing_garden_suites.origin === 'journey_default' ? 'default assumption' : 'your assumption'}); waterfront ${siteAssumptions.waterfront.value === null ? 'unknown' : siteAssumptions.waterfront.value ? 'assumed yes' : 'assumed no'}; ${siteAssumptions.edges.filter(edge => edge.role.value && edge.role.value !== 'unknown').length} parcel edges classified by the user. Project settings: use ${pathway?.proposed_use ?? 'unknown'} (${settings?.evidence.proposed_use.origin ?? 'unattributed'}), foundation ${pathway?.foundation_attached === null || pathway?.foundation_attached === undefined ? 'unknown' : pathway.foundation_attached ? 'scenario attached' : 'scenario unattached'} (${settings?.evidence.foundation_attached.origin ?? 'unattributed'}), lot/zone/instrument ${pathway?.legal_lot_confirmed ? 'assumed legal lot' : 'unknown or incompatible'} / ${pathway?.confirmed_zone ?? 'unknown'} (${settings?.evidence.confirmed_zone.origin ?? 'unattributed'}) / ${pathway?.confirmed_instrument ?? 'unknown'} (${settings?.evidence.confirmed_instrument.origin ?? 'unattributed'}).${settingSourceSummary}${streetSummary} Assumptions and user confirmations remain distinct from source observations.`
     : 'Property boundary roles and zoning pathway facts remain unknown.'
   const lines = [
     'UNSENT DRAFT · Model 300 enquiry for preliminary investigation',
@@ -151,13 +152,12 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const [conditionalError, setConditionalError] = useState<{ key: string; message: string } | null>(null)
   const [conditionalBusy, setConditionalBusy] = useState(false)
   const [conditionalRetry, setConditionalRetry] = useState(0)
-  const [streetEdge, setStreetEdge] = useState<string | null>(null)
+  const [streetMarks, setStreetMarks] = useState<{ revision: string | null; data: StreetAdjacency }>({ revision: null, data: { edge_ids: [], all_marked: false, origin: 'user' } })
   const [markingRole, setMarkingRole] = useState<import('../zoning_site_assumptions/model').EdgeRole | null>(null)
   const [boundaryMark, setBoundaryMark] = useState<{ id: string; role: import('../zoning_site_assumptions/model').EdgeRole } | null>(null)
   const [selectedBoundary, setSelectedBoundary] = useState<string | null>(null)
   const [rearEdge, setRearEdge] = useState<string | null>(null)
   const [boundaryMode, setBoundaryMode] = useState<BoundaryMapMode>('place')
-  const [streetPattern, setStreetPattern] = useState<ScenarioRequest['street_pattern']>('unknown')
   const [scenarioState, setScenarioState] = useState<{ key: string; result: ScenarioResult } | null>(null)
   const [scenarioError, setScenarioError] = useState<{ key: string; message: string } | null>(null)
   const [scenarioBusy, setScenarioBusy] = useState(false)
@@ -175,7 +175,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const [recipient, setRecipient] = useState('')
   const [includeSiteDetails, setIncludeSiteDetails] = useState(false)
   const [emailMessage, setEmailMessage] = useState('')
-  function siteEdited() { setSelection(null); setImported(false); setMeasurementResult(null); setSiteAssumptions(null); setProjectSettings(initialProjectSettings()); setStreetEdge(null); setRearEdge(null); setSelectedBoundary(null); setBoundaryMark(null); setMarkingRole(null); setBoundaryMode('place'); setStreetPattern('unknown'); setReadyFor(null); setRevision(value => value + 1) }
+  function siteEdited() { setSelection(null); setImported(false); setMeasurementResult(null); setSiteAssumptions(null); setProjectSettings(initialProjectSettings()); setStreetMarks({ revision: null, data: { edge_ids: [], all_marked: false, origin: 'user' } }); setRearEdge(null); setSelectedBoundary(null); setBoundaryMark(null); setMarkingRole(null); setBoundaryMode('place'); setReadyFor(null); setRevision(value => value + 1) }
   function changeMode(next: typeof mode) {
     setFoundationAllowanceM(null); setHeightRevision(value => value + 1)
     setExpanded({ property: next !== 'example', placement: next === 'example', next: false })
@@ -214,13 +214,19 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const mappedZoning = currentZoning && geometryRevision ? zoningProjection(currentZoning, geometryRevision) : null
   const effectiveSettings = withFloorAreaBasis(applyMappedZoning(projectSettings, mappedZoning, geometryRevision ?? ''), currentAssumptions?.measurements.floor_area?.basis === 'regulatory_floor_area' ? 'regulatory_floor_area' : currentAssumptions?.measurements.floor_area?.basis === 'rough_floor_area_estimate' ? 'rough_floor_area_estimate' : null)
   const pathway = effectiveSettings.proposal
+  const streetAdjacency = useMemo<StreetAdjacency>(() => streetMarks.revision === geometryRevision ? streetMarks.data : { edge_ids: [], all_marked: false, origin: 'user' }, [streetMarks, geometryRevision])
+  const streetEdge = streetAdjacency.all_marked && streetAdjacency.edge_ids.length === 1 && ordinaryFourEdgeBoundary(currentAssumptions?.edges ?? []) ? streetAdjacency.edge_ids[0] : null
+  const streetPattern: ScenarioRequest['street_pattern'] = streetEdge ? 'single' : streetAdjacency.all_marked && streetAdjacency.edge_ids.length > 1 ? 'corner_or_multiple' : 'unknown'
+  function toggleStreet(id: string | null) {
+    if (id && !currentAssumptions?.edges.some(edge => edge.id === id && edge.ring === 0)) return
+    setStreetMarks({ revision: geometryRevision, data: { origin: 'user', all_marked: false, edge_ids: id === null ? [] : streetAdjacency.edge_ids.includes(id) ? streetAdjacency.edge_ids.filter(edge => edge !== id) : [...streetAdjacency.edge_ids, id] } }); setReadyFor(null)
+  }
   function selectBoundary(id: string | null) { setSelectedBoundary(id); if (id && markingRole) setBoundaryMark({ id, role: markingRole }) }
   const boundaryInteraction: BoundaryMapInteraction | undefined = zoningCase ? {
-    editor: <SiteAssumptionsEditor homeownerDefaults markingRole={markingRole} onMarkingRoleChange={setMarkingRole} boundaryMark={boundaryMark} sharedMode={boundaryMode} selectedBoundary={selectedBoundary} onBoundarySelect={selectBoundary} site={zoningCase} geometryRevision={geometryRevision!} placementRevision={placementRevision} frontEdge={streetEdge} rearEdge={rearEdge} streetPattern={streetPattern} onChange={next => { setSiteAssumptions(next); setReadyFor(null) }} />,
-    selectedId: selectedBoundary, edges: currentAssumptions?.edges ?? [], mode: boundaryMode, frontId: streetEdge, rearId: rearEdge,
+    editor: <SiteAssumptionsEditor homeownerDefaults streetAdjacency={streetAdjacency} markingRole={markingRole} onMarkingRoleChange={setMarkingRole} boundaryMark={boundaryMark} sharedMode={boundaryMode} selectedBoundary={selectedBoundary} onBoundarySelect={selectBoundary} site={zoningCase} geometryRevision={geometryRevision!} placementRevision={placementRevision} frontEdge={streetEdge} rearEdge={rearEdge} streetPattern={streetPattern} onChange={next => { setSiteAssumptions(next); setReadyFor(null) }} />,
+    streetIds: streetAdjacency.edge_ids, allStreetsMarked: streetAdjacency.all_marked, onStreetComplete: all_marked => { setStreetMarks({ revision: geometryRevision, data: { ...streetAdjacency, all_marked } }); setReadyFor(null) }, selectedId: selectedBoundary, edges: currentAssumptions?.edges ?? [], mode: boundaryMode, frontId: streetEdge, rearId: rearEdge,
     streetPattern, onModeChange: setBoundaryMode,
-    onSelect: id => { if (boundaryMode === 'front') setStreetEdge(id); else if (boundaryMode === 'rear') selectBoundary(id) },
-    onStreetPattern: setStreetPattern,
+    onSelect: id => { if (boundaryMode === 'front') toggleStreet(id); else if (boundaryMode === 'rear') selectBoundary(id) },
   } : undefined
   const additionalKey = JSON.stringify([geometryRevision, placementRevision, revision])
   const scenarioRequest: ScenarioRequest | null = measurementResult && currentAssumptions && zoningCase && measurementResult.site.site.parcel.id === zoningCase.site.parcel.id

@@ -48,7 +48,7 @@ test('clear captured geometry with missing rules remains a closer look', () => {
   const html = renderToStaticMarkup(createElement(HomeownerSummary, { summary, onNavigate: () => {} }))
   assert.match(html, /Height · Not covered/)
   assert.match(html, /Enter suite count/)
-  assert.match(html, /Mark street side/)
+  assert.match(html, /Mark street edges/)
 })
 
 test('zoning outage offers retry while an unsupported mapped zone stays outside scope', () => {

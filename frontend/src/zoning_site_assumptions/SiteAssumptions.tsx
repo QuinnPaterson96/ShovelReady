@@ -3,7 +3,7 @@ import type { Case } from '../occupied_lots/contract'
 import { MeasurementInput } from '../MeasurementInput'
 import { assumptionsKey, initialAssumptions, suiteCountFact, suggestedBoundaryRoles, withPlacementRevision, type EdgeRole, type SiteAssumptions, type UserMeasurement } from './model'
 
-type Props = { markingRole?: EdgeRole | null; onMarkingRoleChange?: (role: EdgeRole) => void; boundaryMark?: { id: string; role: EdgeRole } | null; sharedMode?: 'place' | 'front' | 'rear'; selectedBoundary?: string | null; onBoundarySelect?: (id: string) => void; homeownerDefaults?: boolean; site: Case; geometryRevision: string; placementRevision: string; frontEdge?: string | null; rearEdge?: string | null; streetPattern?: 'unknown' | 'single' | 'corner_or_multiple'; onChange: (value: SiteAssumptions | null) => void }
+type Props = { streetAdjacency?: import('./model').StreetAdjacency; markingRole?: EdgeRole | null; onMarkingRoleChange?: (role: EdgeRole) => void; boundaryMark?: { id: string; role: EdgeRole } | null; sharedMode?: 'place' | 'front' | 'rear'; selectedBoundary?: string | null; onBoundarySelect?: (id: string) => void; homeownerDefaults?: boolean; site: Case; geometryRevision: string; placementRevision: string; frontEdge?: string | null; rearEdge?: string | null; streetPattern?: 'unknown' | 'single' | 'corner_or_multiple'; onChange: (value: SiteAssumptions | null) => void }
 const roleNames: Record<EdgeRole, string> = { unknown: 'Unknown', front: 'Front', rear: 'Rear', side: 'Side', flanking_street: 'Flanking street' }
 
 function measure(raw: string, basis: UserMeasurement['basis'], placementRevision: string): UserMeasurement | null {
@@ -12,7 +12,7 @@ function measure(raw: string, basis: UserMeasurement['basis'], placementRevision
   return Number.isFinite(number) && number >= 0 ? { value: number, unit: basis === 'regulatory_floor_area' || basis === 'rough_floor_area_estimate' ? 'm2' : 'm', basis, origin: 'user', note: null, placement_revision: placementRevision } : null
 }
 
-function Editor({ site, geometryRevision, placementRevision, frontEdge = null, rearEdge = null, streetPattern = 'unknown', markingRole, onMarkingRoleChange, boundaryMark, sharedMode, selectedBoundary, onBoundarySelect, homeownerDefaults = false, onChange }: Props) {
+function Editor({ streetAdjacency, site, geometryRevision, placementRevision, frontEdge = null, rearEdge = null, streetPattern = 'unknown', markingRole, onMarkingRoleChange, boundaryMark, sharedMode, selectedBoundary, onBoundarySelect, homeownerDefaults = false, onChange }: Props) {
   useEffect(() => { void import('./site-assumptions.css') }, [])
   const notify = useRef(onChange)
   notify.current = onChange
@@ -38,6 +38,10 @@ function Editor({ site, geometryRevision, placementRevision, frontEdge = null, r
   useEffect(() => {
     if (boundaryMark) setValue(previous => ({ ...previous, edges: previous.edges.map(edge => edge.id === boundaryMark.id ? { ...edge, role: { value: boundaryMark.role, origin: 'user', note: null } } : edge) }))
   }, [boundaryMark])
+
+  useEffect(() => {
+    if (streetAdjacency) setValue(previous => ({ ...previous, street_adjacency: streetAdjacency }))
+  }, [streetAdjacency])
 
   const activeEdge = sharedMode !== undefined ? selectedBoundary ?? value.edges[0]?.id : selectedEdge
   const suggested = suggestedBoundaryRoles(value.edges, frontEdge, rearEdge, streetPattern)

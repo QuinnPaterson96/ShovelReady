@@ -149,7 +149,7 @@ export function ExampleProperty({ onMeasurement, boundaryInteraction, placementS
             onPointerDown={event => { if (boundaryInteraction && boundaryInteraction.mode !== 'place') return; dragging.current = true; suppressClick.current = true; event.currentTarget.ownerSVGElement?.setPointerCapture(event.pointerId) }} />
         </g>}
         {boundaryInteraction && <BoundaryOverlay interaction={boundaryInteraction} />}
-      </svg><figcaption>Teal: captured parcel · Purple: captured roofline, not walls · Red dashed outline: observed conflict in current measurement · Copper: illustrative nominal rectangle · North ↑ · EPSG:3157 metres. Diagram is approximate.</figcaption></figure>
+      </svg><figcaption>Teal: captured parcel · Purple: captured roofline, not walls · Red dashed outline: observed conflict in current measurement · Copper: illustrative nominal rectangle · North ↑ · EPSG:3157 metres. Diagram is approximate.{!!boundaryInteraction?.streetIds?.length && <> Grey road bands · your marks, diagram only.</>}</figcaption></figure>
       {placementSummary && <div className="builder-map-summary">{placementSummary}</div>}
       <div className="builder-example-controls">{boundaryInteraction && <BoundaryMapTools interaction={boundaryInteraction} />}<div hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}><h3>Adjust the footprint</h3>
         <p>Click the map or drag the rectangle. Arrow keys move it when the map has focus. Checks update automatically after movement settles.</p>
