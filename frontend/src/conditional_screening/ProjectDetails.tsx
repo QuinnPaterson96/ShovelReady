@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { readableDate } from '../ReadableProvenance'
+import { readableDate, TechnicalDetails } from '../ReadableProvenance'
 import { formatMeasurement } from '../measurements'
 import { changeProjectSetting, type MappedZoning, type ProjectSettings, type SettingEvidence } from './projectSettings'
 import type { Pathway } from './model'
@@ -23,7 +23,7 @@ export function ProjectDetails({ settings, mapped, lookup, busy, error, onRetry,
     settings.evidence.confirmed_instrument.origin === 'user' && proposal.confirmed_instrument !== null && proposal.confirmed_instrument !== mappedBylawChoice)
   const mappedText = busy ? 'Checking the selected parcel against the City zoning map…' : error ? `Zoning lookup unavailable: ${error}. Zone and bylaw remain unresolved.` : !mapped ? 'No municipal zoning lookup for this property. Zone and bylaw remain unknown unless you enter an assumption.' :
     mapped.status === 'single' ? `Mapped ${mapped.zone} under ${mapped.instrument}; unreviewed parcel observation.` :
-      `${mapped.status === 'multiple' ? 'Multiple zones' : mapped.status === 'partial' ? 'Partial zone coverage' : lookup?.status === 'unavailable' ? 'City zoning map unavailable' : lookup?.status.replace(/_/g, ' ') ?? 'Zoning lookup unavailable'}. No zoning settings were taken from this observation. ${lookup?.issues.length ? `Issue: ${lookup.issues.join('; ')}.` : ''}`
+      `${mapped.status === 'multiple' ? 'Multiple zones' : mapped.status === 'partial' ? 'Partial zone coverage' : lookup?.status === 'unavailable' ? 'City zoning map unavailable' : lookup?.status.replace(/_/g, ' ') ?? 'Zoning lookup unavailable'}. No zoning settings were taken from this observation. ${lookup?.issues.length ? 'Source limitations need review; see zoning lookup notes below.' : ''}`
   const coverageText = lookup ? `${lookup.zones.length ? lookup.zones.map(zone => `${zone.source_fields.Zoning ?? 'unknown zone'} · ${zone.bylaw_name ?? zone.source_fields.ZoningBylaw ?? 'unknown bylaw'} · ${Math.round(zone.parcel_coverage_fraction * 1000) / 10}% of parcel`).join('; ') : 'No zone polygon returned.'} ${lookup.uncovered_area_m2 !== null ? `Uncovered area: ${formatMeasurement(lookup.uncovered_area_m2, 'area')} m².` : 'Coverage unresolved.'}` : ''
   return <section className="project-details" aria-label="Project details">
     <h3>Project details</h3>
@@ -33,7 +33,7 @@ export function ProjectDetails({ settings, mapped, lookup, busy, error, onRetry,
       <p>{mappedText}</p>
       {manualConflict && <p role="status"><strong>Your entered zoning differs from the mapped observation.</strong> Both remain visible for review; the entered choice is used only as an unverified scenario assumption.</p>}
       {lookup && <><p>{coverageText}</p>{lookup.source_records.map((source, index) => <p key={`${source.sha256}:${index}`}>{source.provider} · {source.record_label} · captured {readableDate(source.captured_at_utc)} · {source.review_status.replace(/_/g, ' ')}. {source.source_date_limit} <a href={source.source_url} target="_blank" rel="noreferrer">City source record</a></p>)}
-        {lookup.issues.length > 0 && <p>Lookup issues: {lookup.issues.join('; ')}.</p>}</>}
+        {lookup.issues.length > 0 && <TechnicalDetails title="Zoning lookup notes"><p>Source-reported issues (technical): {lookup.issues.join('; ')}.</p></TechnicalDetails>}</>}
     </div>
     <details><summary>Adjust settings</summary>
       <p>Change only what you know. A default lets you explore this garden-suite question; it is not a manufacturer or site confirmation.</p>

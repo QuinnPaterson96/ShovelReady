@@ -15,7 +15,7 @@ export const emptyPathway = (): Pathway => ({ proposed_use: null, foundation_att
 
 export type ScreeningRequest = { schema_version: 'conditional-screening.api.v1'; assumptions: SiteAssumptions; model_revision: string; proposal: Pathway; proposal_evidence?: ProposalEvidence }
 export type ScreeningStatus = 'meets_under_assumptions' | 'apparent_conflict_under_assumptions' | 'needs_information' | 'not_applicable' | 'unsupported'
-export type ScreeningCheck = { rule: { logical_id: string; revision_id: string; kind: string; fact_id: string; boundary_role: string | null; measurement_definition: string | null; source: {
+export type ScreeningCheck = { rule: { logical_id: string; revision_id: string; kind: string; fact_id: string; boundary_role: string | null; applicability?: 'applicable' | 'unknown' | 'not_applicable' | 'unsupported'; measurement_definition: string | null; source: {
   provider: string; record_label: string; url: string; locator: string; capture_date: string | null;
   source_revision: string | null; currentness_limitations: string[]; review_status: string
 }; threshold?: unknown }; fact?: unknown; status: ScreeningStatus; reasons: string[];
@@ -49,6 +49,7 @@ export function parseScreeningResult(raw: unknown): ScreeningResult {
     !Array.isArray(raw.limitations) || !raw.limitations.every(value => typeof value === 'string') ||
     !raw.checks.every(check => object(check) && object(check.rule) && typeof check.rule.logical_id === 'string' &&
       typeof check.rule.revision_id === 'string' && typeof check.rule.fact_id === 'string' && typeof check.rule.kind === 'string' &&
+      (check.rule.applicability === undefined || ['applicable', 'unknown', 'not_applicable', 'unsupported'].includes(String(check.rule.applicability))) &&
       object(check.rule.source) && typeof check.rule.source.provider === 'string' && typeof check.rule.source.record_label === 'string' &&
       typeof check.rule.source.locator === 'string' && typeof check.rule.source.url === 'string' && /^https:\/\/www\.victoria\.ca\//.test(check.rule.source.url) &&
       typeof check.rule.source.review_status === 'string' && Array.isArray(check.rule.source.currentness_limitations) &&

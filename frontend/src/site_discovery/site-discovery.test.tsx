@@ -20,6 +20,7 @@ import cityParcelObserve from './parcel_observe_87.json'
 import cityRoofs from './buildings_87.json'
 import municipalApi from './municipal-api.fixture.json'
 import { placementCase } from './placement'
+import { enquiry } from '../builder_demo/BuilderDemo'
 
 const source = { provider: 'Public source', record: 'test record', capturedAt: '2026-09-28', sourceDate: null, url: null, review: 'unreviewed' }
 const address: Address = { id: 'a', label: 'Corrected address', locality: 'Victoria', precision: 'CIVIC_NUMBER', issues: [], point: [-123, 48], crs: 'EPSG:4326', source, raw: { original: 'record' } }
@@ -113,7 +114,7 @@ test('failed and partial observation retry clears confirmation and ignores the o
   assert.match(flow.state.message, /response invalid/i)
   assert.equal(flow.state.observation, null)
   await flow.chooseParcel('p'); flow.confirm()
-  assert.equal(flow.state.confirmed?.observation.buildingsState, 'partial')
+  assert.equal((flow.state.confirmed as Confirmed | null)?.observation.buildingsState, 'partial')
   const pending = flow.chooseParcel('p')
   assert.equal(confirmed.at(-1), null)
   await flow.chooseParcel('p')
@@ -371,4 +372,66 @@ test('municipal contracts keep joined identity, projected geometry and partial r
     assert.deepEqual(calls[1], ['/api/municipal-sites/observe', { schema_version: 'municipal-sites.v1', parcel_ref: ref, expected_pid: '001-328-107' }])
     assert.equal((await liveTransport.parcels({ ...victoria, locality: 'Saanich' }, new AbortController().signal)).status, 'outside_coverage')
   } finally { globalThis.fetch = originalFetch }
+})
+
+test('Model 300 sole parcel proceeds with selected provenance; alternatives still require a choice', async () => {
+  // Provider boundary returns either one parcel or two equally valid candidates.
+  // A sole lead permits exploration, never user identity attestation.
+  const accepted: (Confirmed | null)[] = []
+  const transport: Transport = { async addresses() { return { status: 'ok', candidates: [address] } }, async parcels() { return { status: 'ok', candidates: [parcel] } }, async observe() { return observation } }
+  const flow = new DiscoveryFlow(transport, () => {}, value => accepted.push(value), true)
+  flow.edit('Example Victoria address'); await flow.search(); await flow.chooseAddress('a')
+  assert.equal((flow.state.confirmed as Confirmed | null)?.schema_version, 'site-discovery.selected.v1')
+  const selected = flow.state.confirmed!
+  assert.ok(selected.schema_version === 'site-discovery.selected.v1')
+  assert.equal(selected.selection_basis, 'sole_candidate')
+  assert.equal(selected.identity_attestation, 'not_confirmed')
+  assert.deepEqual(selected.observation, observation)
+  const draft = enquiry(null, { intendedUse: '', timing: '', budget: '', access: '', services: '' }, null, false, selected)
+  assert.match(draft, /Source-selected City of Victoria observation; identity, ownership and legal boundaries are not confirmed/)
+  assert.doesNotMatch(draft, /User-confirmed/)
+  assert.match(placementCase(selected).site.capture.limitations.join(' '), /identity, ownership and legal boundaries are not confirmed/)
+  flow.reject()
+  assert.equal(accepted.at(-1), null)
+  assert.equal(flow.state.confirmed, null)
+  const multiple = new DiscoveryFlow({ ...transport, async parcels() { return { status: 'ok', candidates: [parcel, { ...parcel, id: 'alternative' }] } } }, () => {}, () => {}, true)
+  multiple.edit('Example Victoria address'); await multiple.search(); await multiple.chooseAddress('a')
+  assert.equal(multiple.state.parcel, null)
+  assert.equal(multiple.state.confirmed, null)
+  await multiple.chooseParcel('alternative')
+  const chosen = multiple.state.confirmed as Confirmed | null
+  assert.equal(chosen?.parcel.id, 'alternative')
+  assert.ok(chosen?.schema_version === 'site-discovery.selected.v1')
+  assert.equal(chosen.selection_basis, 'user_choice')
+})
+
+test('automatic selection ignores late geometry after address edits and recovers from missing geometry', async () => {
+  const late = deferred<Observation>()
+  const accepted: (Confirmed | null)[] = []
+  let attempt = 0
+  const flow = new DiscoveryFlow({ async addresses() { return { status: 'ok', candidates: [address] } }, async parcels() { return { status: 'ok', candidates: [parcel] } }, observe() { attempt++; return attempt === 1 ? late.promise : attempt === 2 ? Promise.reject(Error('geometry missing')) : Promise.resolve(observation) } }, () => {}, value => accepted.push(value), true)
+  flow.edit('Original address'); await flow.search()
+  const pending = flow.chooseAddress('a')
+  await Promise.resolve() // Parcel reply starts the observation request.
+  flow.edit('Changed address')
+  late.resolve(observation); await pending
+  assert.equal(flow.state.confirmed, null)
+  assert.equal(accepted.length, 0)
+  await flow.search(); await flow.chooseAddress('a')
+  assert.equal(flow.state.confirmed, null)
+  assert.match(flow.state.message, /Retry this parcel or continue manually/)
+  await flow.chooseParcel('p')
+  assert.equal((flow.state.confirmed as Confirmed | null)?.schema_version, 'site-discovery.selected.v1')
+  const retry = flow.chooseParcel('p')
+  assert.equal(accepted.at(-1), null)
+  await retry
+  assert.equal((flow.state.confirmed as Confirmed | null)?.observation.buildingsState, 'partial')
+})
+
+test('automatic property selection with multipart geometry stays a manual continuation', async () => {
+  const multi: Observation = { ...observation, parcel: { ...observation.parcel, geometry: { type: 'MultiPolygon', coordinates: [polygon.coordinates] } } }
+  const flow = new DiscoveryFlow({ async addresses() { return { status: 'ok', candidates: [address] } }, async parcels() { return { status: 'ok', candidates: [parcel] } }, async observe() { return multi } }, () => {}, () => { assert.fail('Unusable parcel must not open placement') }, true)
+  flow.edit('Example address'); await flow.search(); await flow.chooseAddress('a')
+  assert.equal(flow.state.confirmed, null)
+  assert.match(flow.state.message, /not supported yet/)
 })

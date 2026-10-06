@@ -60,6 +60,23 @@ See [hosting runbook](hosting.md). This explicitly supersedes earlier accepted-d
 gates for hosting the observational journey; persistent pilot and exact-image CD
 requirements in SR-14/15 remain open. Hosting does not publish regulatory data.
 
+## Homeowner workflow checkpoint — October 6, 2026
+
+Model 300 opts into source selection: after an address choice, a sole parcel lead
+with supported geometry proceeds automatically; alternatives require a parcel
+choice. The separate confirmation gate remains in generic discovery. The new
+`site-discovery.selected.v1` local record has explicit selection basis and
+`identity_attestation: not_confirmed`; the older confirmed record keeps its
+original meaning. Placement provenance, enquiry and evidence export distinguish
+these records. Neither source selection nor workflow completion establishes
+ownership or legal boundaries.
+
+The generic homeowner renderer consumes named statuses and action targets; the
+Victoria adapter determines scope. A host-supplied summary slot below each map
+puts counts and the next action after compact adjustment controls and before detailed evidence. No evaluation API,
+rule packet or persistence change is involved. The #231/#233 follow-up groups derived scenario roles and optional legal-basis entries in one boundary checklist, retaining separate origins and exact exports. See the
+[verification and remaining gaps](integration-homeowner-summary.md).
+
 ## Live property discovery checkpoint - September 29, 2026
 
 The existing app mounts bounded synchronous BC geocoder and Victoria municipal
