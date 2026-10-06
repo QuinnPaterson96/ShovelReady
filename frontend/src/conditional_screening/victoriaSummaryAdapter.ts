@@ -39,7 +39,9 @@ export function homeownerSummary(input: {
   const suiteCount = assumptions?.existing_garden_suites.value
   const countConflict = screening?.checks.some(check => check.rule.kind === 'count_max' && check.status === 'apparent_conflict_under_assumptions') ?? false
   const countChecked = screening?.checks.some(check => check.rule.kind === 'count_max' && check.status === 'meets_under_assumptions') ?? false
-  checks.push(countConflict
+  checks.push(outsideScope
+    ? { label: 'Existing garden suite', status: 'unsupported', detail: 'Suite count rules for this zoning are not covered.' }
+    : countConflict
     ? { label: 'Existing garden suite', status: 'conflict', detail: 'The supplied suite count conflicts with the candidate count check.', action: { label: 'Review suite count', target: 'existing-suites' } }
     : suiteCount === null || suiteCount === undefined
       ? { label: 'Existing garden suite', status: 'unknown', detail: 'Tell us if there is already a garden suite on the property.', action: { label: 'Enter suite count', target: 'existing-suites' } }
@@ -51,12 +53,20 @@ export function homeownerSummary(input: {
     ['separation_min', 'Distance from the main building', 'separation-measurement-choice'],
   ] as const) {
     const check = screening?.checks.find(item => item.rule.kind === kind)
+    if (kind === 'separation_min' && check && (check.rule.measurement_definition === null || check.rule.applicability === 'unknown')) {
+      checks.push({ label, status: 'unsupported', detail: 'The source rule’s separation measurement basis is unresolved. Entering a distance cannot complete this check; source review is needed.' })
+      continue
+    }
+    if (outsideScope || check?.status === 'unsupported') {
+      checks.push({ label, status: 'unsupported', detail: `${label} rules for this property are not covered by the supported comparison.` })
+      continue
+    }
     checks.push({ label, status: check?.status === 'apparent_conflict_under_assumptions' ? 'conflict'
-      : check?.status === 'meets_under_assumptions' ? 'checked' : check?.status === 'unsupported' ? 'unsupported' : 'unknown',
+      : check?.status === 'meets_under_assumptions' ? 'checked' : 'unknown',
       detail: check?.status === 'apparent_conflict_under_assumptions' ? 'The supplied measurement conflicts with this candidate check; review the measurement and its basis.'
         : check?.status === 'meets_under_assumptions' ? 'The supplied measurement meets this candidate check under its assumptions.'
         : 'A usable measurement and supported rule comparison are still needed.',
-      ...(check?.status === 'unsupported' ? {} : { action: { label: `Review ${label.toLowerCase()}`, target } }),
+      action: { label: `Review ${label.toLowerCase()}`, target },
     })
   }
   checks.push({ label: 'Other siting requirements', status: 'unsupported', detail: 'Front setback, rear-yard location and occupancy, and site-specific provisions are not yet covered.' })
@@ -74,8 +84,8 @@ export function homeownerSummary(input: {
   const supportedConflict = screening?.checks.some(check => check.rule.kind !== 'prerequisite' && check.rule.kind !== 'boundary_min' && check.status === 'apparent_conflict_under_assumptions') ?? false
   const conflict = geometryConflict || legalDistanceConflict || scenario?.status === 'apparent_conflict' || countConflict || supportedConflict
   return {
-    conclusion: conflict ? 'This placement has a problem' : geometry ? 'This placement needs a closer look' : 'Insufficient information for a placement answer',
-    next: conflict ? 'Review the flagged position or supplied facts, then check the remaining unknowns.' : geometry ? 'The captured placement is a starting point. Confirm the unknowns and missing rule coverage before relying on it.' : 'Place the model on a property to start the approximate checks.',
+    conclusion: conflict ? 'This placement has a problem' : contained && geometryComplete ? 'A promising starting position · limited checks' : geometry ? 'This placement needs a closer look' : 'Insufficient information for a placement answer',
+    next: conflict ? 'Review the flagged position or supplied facts, then check the remaining unknowns.' : contained && geometryComplete ? 'No mapped overlap was observed in the checked geometry. Review missing information and arrange a review of requirements this tool does not cover.' : geometry ? 'Some geometry remains unresolved. Review the placement and source coverage before relying on it.' : 'Place the model on a property to start the approximate checks.',
     checks,
   }
 }

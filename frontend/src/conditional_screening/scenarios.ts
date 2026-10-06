@@ -35,7 +35,7 @@ export type ScenarioResult = {
   proposal_evidence?: ProposalEvidence | null
 }
 
-export function parseScenarioResult(raw: unknown): ScenarioResult {
+export function parseScenarioResult(raw: unknown, request?: ScenarioRequest): ScenarioResult {
   if (!raw || typeof raw !== 'object') throw new Error('Scenario response is malformed.')
   const result = raw as ScenarioResult
   const record = (value: unknown): value is Record<string, unknown> => !!value && typeof value === 'object' && !Array.isArray(value)
@@ -59,5 +59,41 @@ export function parseScenarioResult(raw: unknown): ScenarioResult {
         typeof check.meets === 'boolean' && nonempty(check.rule_id) &&
         ['captured_nominal', 'user_wall_to_lot_line'].includes(check.basis))))
     throw new Error('Scenario response is malformed.')
+  // A nested, well-shaped response can still combine incompatible edges or
+  // claim a pass with failing distances. Reject that evidence at the boundary.
+  const ids = Object.keys(result.edge_distances_m)
+  const valid = result.scenarios.every(scenario => {
+    const checkedIds = scenario.checks.map(check => check.edge_id)
+    return ids.length === 4 && ids.includes(scenario.front_edge_id) && scenario.checks.length === 3 &&
+      new Set([scenario.front_edge_id, ...checkedIds]).size === 4 && checkedIds.every(id => ids.includes(id)) &&
+      scenario.checks.filter(check => check.role === 'rear').length === 1 &&
+      scenario.outcome === (scenario.checks.every(check => check.meets) ? 'pass' : 'fail') &&
+      scenario.checks.every(check => check.meets === (check.distance_m >= check.minimum_m) &&
+        check.minimum_m === (check.role === 'flanking_street' ? result.thresholds_m.flanking_street : result.thresholds_m.side_rear) &&
+        (check.basis !== 'captured_nominal' || check.distance_m === result.edge_distances_m[check.edge_id]))
+  })
+  const status = !result.scenarios.length ? 'unresolved' : result.scenarios.every(scenario => scenario.outcome === 'pass') ? 'bounded_pass'
+    : result.scenarios.every(scenario => scenario.outcome === 'fail') ? 'apparent_conflict' : 'clarify'
+  if (!valid || result.status !== status || !result.sources.length || !result.sources.every(source => /^https?:\/\//i.test(source.url)))
+    throw new Error('Scenario response is malformed.')
+  if (request) {
+    const edges = request.assumptions.edges
+    if (ids.some(id => !edges.some(edge => edge.id === id)) || result.scenarios.some(scenario => {
+      const roles = new Map<string, string>([[scenario.front_edge_id, 'front'], ...scenario.checks.map(check => [check.edge_id, check.role] as [string, string])])
+      const ordered = [...edges].sort((a, b) => a.segment - b.segment)
+      const front = ordered.findIndex(edge => edge.id === scenario.front_edge_id)
+      return edges.some(edge => edge.role.value && edge.role.value !== 'unknown' && edge.role.value !== roles.get(edge.id)) ||
+        ordered.length !== 4 || ordered.some(edge => edge.ring !== 0) ||
+        !scenario.checks.some(check => check.role === 'rear' && check.edge_id === ordered[(front + 2) % 4]?.id) ||
+        scenario.checks.some(check => {
+          const manual = request.assumptions.measurements.boundary[check.edge_id]
+          return manual ? check.basis !== 'user_wall_to_lot_line' || check.distance_m !== manual.value || manual.placement_revision !== request.assumptions.placement_revision
+            : check.basis !== 'captured_nominal'
+        }) || request.street_pattern === 'single' &&
+          (request.street_edge_id !== null && request.street_edge_id !== scenario.front_edge_id ||
+            request.rear_edge_id !== null && !scenario.checks.some(check => check.role === 'rear' && check.edge_id === request.rear_edge_id) ||
+            scenario.checks.some(check => check.role === 'flanking_street'))
+    })) throw new Error('Scenario response did not match current boundary choices.')
+  }
   return result
 }

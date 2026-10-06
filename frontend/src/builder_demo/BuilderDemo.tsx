@@ -85,13 +85,13 @@ export function enquiryDocument(selection: SitePreparationSelection | null, inpu
     'Prepared independently with ShovelReady; no affiliation with or contact to aux box.',
     `Design: aux box Model 300; public page captured ${readableDate(source?.captured_at)}; unreviewed; manufacturer revision ${model.source_revision ?? 'unknown'}. Nominal exterior ${original('nominal_exterior_width')} × ${original('nominal_exterior_depth')} (${metres('nominal_exterior_width')} × ${metres('nominal_exterior_depth')}). Advertised exterior height ${original('advertised_overall_height')}; regulatory installed height and datum unknown. Source: ${model.provider_url}.`,
     savedExample ? `Example property / saved data: City of Victoria ${exampleCase.site.parcel.source.record_label}; captured ${readableDate(exampleCase.site.parcel.source.capture_date)}; ${exampleCase.site.parcel.source.review_status}. Parcel source: ${exampleSourcePage(exampleCase.site.parcel.source.reference)} (${exampleCase.site.parcel.source.record_label}). Roofline source: ${exampleSourcePage(exampleCase.site.buildings[0]?.source.reference ?? null)} (${exampleCase.site.buildings[0]?.source.record_label ?? 'record unavailable'}). Contains information licensed under the Open Government Licence – City of Victoria: https://opendata.victoria.ca/pages/open-data-licence. Full source record links are in the technical evidence export. This is not the sender's property or a verified address.` :
-    live ? `Site lead: ${live.address.label}; ${live.parcel.label}. User-confirmed City of Victoria source observation; source join and parcel identity remain unreviewed. Captured ${readableDate(live.observation.source.capturedAt)}. Source: ${live.observation.source.url}. ${live.observation.issues.join(' ')}` :
+    live ? `Site lead: ${live.address.label}; ${live.parcel.label}. ${live.schema_version === 'site-discovery.selected.v1' ? 'Source-selected City of Victoria observation; identity, ownership and legal boundaries are not confirmed' : 'User-confirmed City of Victoria source observation'}; source join and parcel identity remain unreviewed. Captured ${readableDate(live.observation.source.capturedAt)}. Source: ${live.observation.source.url}. ${live.observation.issues.join(' ')}` :
       manual ? `User-supplied site: ${field(manual.facts.address)}; stated area ${measurementWithUnit(manual.facts.statedAreaM2, 'area')}; notes ${field(manual.facts.notes)}. Approximate local sketch only, with no verified address, survey position or orientation.` :
       `Site lead: ${candidate ? 'City of Victoria retained parcel observation' : 'manual facts without a matched parcel'}. Source address ${candidate ? fact(candidate.address.value) : 'unknown'}; manual address ${fact(selection?.manual.address.value ?? null)}; manual approximate area ${measurementWithUnit(selection?.manual.lot_area_m2.value, 'area')}. Manual notes: ${fact(selection?.manual.notes.value ?? null)}. Manual entries are unverified and separate from source observations. Exact parcel identifiers remain in technical evidence.`,
     ...(candidate ? [`Parcel source: City of Victoria; captured ${readableDate(candidate.pid.evidence.captured_at)}; ${candidate.pid.evidence.review_status}; ${publicSourceUrl(candidate.pid.evidence.source_url) ?? 'source link unavailable'}.`] : []),
     `Use: ${field(input.intendedUse)}. Timing: ${field(input.timing)}. Budget, if shared: ${field(input.budget)}.`,
     `Access and crane questions/known facts: ${field(input.access)}. Utility/services questions/known facts: ${field(input.services)}.`,
-    measured && p ? `${savedExample ? `Illustrative placement on the saved example ${measured.site.label}` : live ? `Placement on the confirmed property ${measured.site.label}` : `Optional, separately imported retained example ${measured.site.label} (not linked to the site lead)`}: nominal rectangle ${measurementWithUnit(p.width_m, 'length')} × ${measurementWithUnit(p.depth_m, 'length')} (width ${measured.widthOrigin === 'catalogue' ? 'catalogue nominal' : 'user edited'}; depth ${measured.depthOrigin === 'catalogue' ? 'catalogue nominal' : 'user edited'}), rotation ${Number(p.angle_degrees.toFixed(2))}°. ${observed(containment) ? `Parcel containment ${containment?.relation?.replace(/_/g, ' ') ?? 'unknown'}.` : 'Parcel containment unresolved.'} ${overlapText} ${observed(boundary) && boundary?.distance_m != null ? `Observed parcel boundary distance ${measurementWithUnit(boundary.distance_m, 'length')}.` : 'Parcel boundary distance unresolved.'} Captured ${readableDate(measured.site.site.parcel.source.capture_date)}; ${measured.site.site.parcel.source.review_status}; approximate captured geometry only.`
+    measured && p ? `${savedExample ? `Illustrative placement on the saved example ${measured.site.label}` : live ? `Placement on the selected source property ${measured.site.label}` : `Optional, separately imported retained example ${measured.site.label} (not linked to the site lead)`}: nominal rectangle ${measurementWithUnit(p.width_m, 'length')} × ${measurementWithUnit(p.depth_m, 'length')} (width ${measured.widthOrigin === 'catalogue' ? 'catalogue nominal' : 'user edited'}; depth ${measured.depthOrigin === 'catalogue' ? 'catalogue nominal' : 'user edited'}), rotation ${Number(p.angle_degrees.toFixed(2))}°. ${observed(containment) ? `Parcel containment ${containment?.relation?.replace(/_/g, ' ') ?? 'unknown'}.` : 'Parcel containment unresolved.'} ${overlapText} ${observed(boundary) && boundary?.distance_m != null ? `Observed parcel boundary distance ${measurementWithUnit(boundary.distance_m, 'length')}.` : 'Parcel boundary distance unresolved.'} Captured ${readableDate(measured.site.site.parcel.source.capture_date)}; ${measured.site.site.parcel.source.review_status}; approximate captured geometry only.`
       : manual?.assessment ? `Measured user sketch: tested user-supplied rectangle ${measurementWithUnit(manual.assessment.input.placement.width_m, 'length')} × ${measurementWithUnit(manual.assessment.input.placement.depth_m, 'length')}; edits may differ from the model dimensions above. ${manual.assessment.checks.filter(c => c.status === 'observed').map(c => `${c.kind.replace(/_/g, ' ')}: ${c.relation?.replace(/_/g, ' ') ?? measurementWithUnit(c.distance_m, 'length')}`).join('; ')}. Obstruction coverage remains partial or unknown; no zoning or site fit assessed.`
       : savedExample ? 'Saved example placement has no current measurement; measure again after edits. Zoning remains unassessed.'
       : live || manual?.site ? 'No current placement measurement. Position the footprint and measure again after edits. Zoning remains unassessed.'
@@ -111,7 +111,7 @@ export function enquiryDocument(selection: SitePreparationSelection | null, inpu
     sections: [
       { heading: 'Price & timing', paragraphs: priceTimingParagraphs(model), emailSummary: priceTimingParagraphs(model).join(' ') },
       { heading: 'Model', paragraphs: [lines[1], lines[2], lines[8 + offset]], emailSummary: `aux box Model 300; nominal exterior ${original('nominal_exterior_width')} × ${original('nominal_exterior_depth')}; source ${model.provider_url}; current controlled revision and installed height unknown.` },
-      { heading: 'Property', paragraphs: [lines[3], ...(candidate ? [lines[4]] : []), lines[4 + offset], lines[5 + offset]], emailSummary: savedExample ? 'Saved City of Victoria example only; this is not my property.' : live ? `Confirmed Victoria lead: ${live.address.label}. Captured observation remains unreviewed.` : manual ? `User-supplied site: ${field(manual.facts.address)}; facts and sketch unverified.` : `Site lead: ${candidate ? fact(candidate.address.value) : fact(selection?.manual.address.value ?? null)}; identity and dimensions unverified.` },
+      { heading: 'Property', paragraphs: [lines[3], ...(candidate ? [lines[4]] : []), lines[4 + offset], lines[5 + offset]], emailSummary: savedExample ? 'Saved City of Victoria example only; this is not my property.' : live ? `Selected Victoria source lead: ${live.address.label}. Identity, ownership and legal boundaries remain unverified.` : manual ? `User-supplied site: ${field(manual.facts.address)}; facts and sketch unverified.` : `Site lead: ${candidate ? fact(candidate.address.value) : fact(selection?.manual.address.value ?? null)}; identity and dimensions unverified.` },
       { heading: 'Placement', paragraphs: [lines[6 + offset], lines[7 + offset], ...(clearanceText ? [clearanceText] : [])], emailSummary: measured ? `Approximate measured rectangle ${measurementWithUnit(p?.width_m, 'length')} × ${measurementWithUnit(p?.depth_m, 'length')}; ${measured.widthOrigin === 'user' || measured.depthOrigin === 'user' ? 'custom size, provider availability unknown; ' : ''}geometry observations recorded; ${conditional ? 'see separate conditional zoning checks' : 'zoning comparison unresolved'}. ${clearanceText}` : manual?.assessment ? `User sketch measured at ${measurementWithUnit(manual.assessment.input.placement.width_m, 'length')} × ${measurementWithUnit(manual.assessment.input.placement.depth_m, 'length')}; unverified geometry; zoning unassessed.` : 'No current placement measurement; geometry and zoning unassessed.' },
       { heading: 'Approximate setbacks', paragraphs: [scenarioSummary], emailSummary: scenarioSummary },
       { heading: 'Conditional zoning', paragraphs: [assumptionsSummary, conditionalSummary, ...(sourceCaveat ? [sourceCaveat] : []), ...conditionalCheckDetails], emailSummary: conditional ? `${conditionalSummary} ${sourceCaveat} ${conditionalCheckDetails.join(' ')}` : 'No current conditional zoning findings.' },
@@ -130,6 +130,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const [foundationAllowanceM, setFoundationAllowanceM] = useState<string | null>(null)
   const [heightRevision, setHeightRevision] = useState(0)
   const [mode, setMode] = useState<'live' | 'manual' | 'retained' | 'example'>('live')
+  const [propertyReset, setPropertyReset] = useState(0)
   const [live, setLive] = useState<Confirmed | null>(null)
   const [manual, setManual] = useState<ManualSiteOutput | null>(null)
   const liveCase = useMemo(() => live ? placementCase(live) : undefined, [live])
@@ -232,7 +233,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       try {
         const response = await fetch('/api/conditional-screening/v1/placement-scenarios', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(scenarioRequest), signal: controller.signal })
         if (!response.ok) throw new Error(`Approximate setback screen unavailable (${response.status}).`)
-        const result = parseScenarioResult(await response.json())
+        const result = parseScenarioResult(await response.json(), scenarioRequest)
         if (result.property_revision !== expectedPropertyRevision(scenarioRequest.assumptions) ||
           result.placement_revision !== scenarioRequest.assumptions.placement_revision ||
           result.model_revision !== scenarioRequest.model_revision) throw new Error('Scenario response did not match current inputs.')
@@ -253,7 +254,11 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   useEffect(() => {
     if (!screeningRequest || !requestKey) { setConditionalBusy(false); return }
     const controller = new AbortController()
-    const timeout = window.setTimeout(() => controller.abort('timeout'), 10000)
+    const timeout = window.setTimeout(() => {
+      controller.abort('timeout')
+      setConditionalError({ key: requestKey, message: 'Conditional screen timed out.' })
+      setConditionalBusy(false)
+    }, 10000)
     setConditionalBusy(true)
     const timer = window.setTimeout(async () => {
       try {
@@ -265,7 +270,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
           result.request.model_revision !== screeningRequest.model_revision) throw new Error('Conditional response did not match the current input revisions.')
         if (!controller.signal.aborted) { setConditionalState({ key: requestKey, result }); setConditionalError(null); setConditionalBusy(false) }
       } catch (error) {
-        if (!controller.signal.aborted || controller.signal.reason === 'timeout') { setConditionalError({ key: requestKey, message: controller.signal.reason === 'timeout' ? 'Conditional screen timed out.' : error instanceof Error ? error.message : 'Conditional screen unavailable.' }); setConditionalBusy(false) }
+        if (!controller.signal.aborted) { setConditionalError({ key: requestKey, message: error instanceof Error ? error.message : 'Conditional screen unavailable.' }); setConditionalBusy(false) }
       } finally {
         window.clearTimeout(timeout)
       }
@@ -294,11 +299,26 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   }, [])
   const currentMeasurement = measurementResult?.result ?? manual?.assessment
   const summary = zoningCase ? homeownerSummary({ geometry: measurementResult?.result ?? null,
-    geometryComplete: !!measurementResult && overlapFinding(zoningCase, measurementResult.result).complete,
+    geometryComplete: (!live || live.observation.buildingsState === 'available') && !!measurementResult && overlapFinding(zoningCase, measurementResult.result).complete,
     scenario: currentScenario, screening: currentScreening,
     assumptions: currentAssumptions, settings: effectiveSettings, mapped: mappedZoning, lookup: currentZoning, zoningBusy, zoningError: currentZoningError,
     scenarioError: currentScenarioError, screeningError: currentScreeningError, onRetryAvailable: !!zoningKey }) : null
+  const summaryPanel = summary && <HomeownerSummary summary={summary} onNavigate={navigateFlag} />
+  function changeProperty() {
+    if (mode === 'live') { siteEdited(); setLive(null); setPropertyReset(value => value + 1) }
+    else changeMode('live')
+    setExpanded({ property: true, placement: false, next: false })
+    requestAnimationFrame(() => focusSummaryTarget(document, 'sd-address'))
+  }
+  function openProgress(step: 'property' | 'placement' | 'checks' | 'enquiry') {
+    setExpanded(previous => ({ ...previous, ...(step === 'property' ? { property: true } : step === 'enquiry' ? { next: true } : { placement: true }) }))
+    requestAnimationFrame(() => {
+      const target = step === 'property' ? 'builder-site-mode' : step === 'enquiry' ? 'builder-question' : step === 'checks' ? 'builder-quick-checks' : 'placement-map'
+      if (!focusSummaryTarget(document, target)) document.getElementById('builder-placement-title')?.scrollIntoView({ block: 'start' })
+    })
+  }
   function navigateFlag(target: string) {
+    if (target === 'placement-map') setBoundaryMode('place')
     if (target === 'zoning-retry') { setZoningRetry(value => value + 1); return }
     if (target === 'retry-scenario') { setScenarioRetry(value => value + 1); return }
     if (target === 'retry-screening') { setConditionalRetry(value => value + 1); return }
@@ -352,7 +372,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     <section className="builder-hero" id="builder-model" aria-labelledby="builder-title">
       <p className="eyebrow">Independent sample journey · aux box</p>
       <h1 id="builder-title">Explore Model 300 on your site</h1>
-      <p>Start with a site lead or the facts you know. Find and confirm a Victoria property, or sketch your own approximate lot, then test one placement and take away an unsent enquiry.</p>
+      <p>Start with a site lead or the facts you know. Find a Victoria property, or sketch your own approximate lot, then test one placement and take away an unsent enquiry.</p>
       <p className="notice">This ShovelReady demonstration is independent of aux box. It offers limited conditional Victoria checks when you supply assumptions; it does not establish legal compatibility, confirm provider service, or contact the company.</p>
       <p><strong>Model 300</strong> · {original('nominal_exterior_width')} × {original('nominal_exterior_depth')} · advertised height {original('advertised_overall_height')}. Provider dimensions are unreviewed.</p>
       <ModelImage />
@@ -370,7 +390,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     </section>
     <section className="builder-stage" id="builder-property" aria-labelledby="builder-property-title">
     <p className="eyebrow">Property</p><h2 id="builder-property-title">Start with what you know</h2>
-    <p>{propertyComplete ? (mode === 'example' ? 'Saved Victoria example selected.' : `${live?.address.label || manual?.facts.address || selection?.candidate?.address.value || selection?.manual.address.value || 'Site description'} · confirmed for this enquiry; unverified.`) : 'Choose a property or enter the facts you know.'}</p>
+    <p>{propertyComplete ? (mode === 'example' ? 'Saved Victoria example selected.' : `${live?.address.label || manual?.facts.address || selection?.candidate?.address.value || selection?.manual.address.value || 'Site description'} · ${live ? 'source-selected; identity and ownership unverified' : 'user-supplied; unverified'}.`) : 'Choose a property or enter the facts you know.'}</p>
     <button type="button" aria-expanded={expanded.property} aria-controls="builder-property-content" onClick={() => toggleStep('property')}>{expanded.property ? 'Collapse property' : 'Review or change property'}</button>
     <div id="builder-property-content" hidden={!expanded.property}>
     <div className="builder-entry-choices"><div><strong>Use my own property</strong><p>Search a Victoria address or enter known facts.</p><button type="button" onClick={() => changeMode('live')}>Use my own property</button></div>
@@ -380,27 +400,32 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     <select id="builder-site-mode" value={mode} onChange={event => changeMode(event.target.value as typeof mode)}>
       <option value="live">Search a Victoria address</option><option value="manual">Enter facts or sketch manually</option><option value="retained">Use the retained example workflow</option><option value="example">Example property / saved data</option>
     </select>
-    {mode === 'live' && <SiteDiscovery onConfirm={next => { setLive(next); setMeasurementResult(null); setSiteAssumptions(null); setProjectSettings(initialProjectSettings()); setReadyFor(null); setRevision(value => value + 1) }} onManual={() => changeMode('manual')} />}
+    {mode === 'live' && <SiteDiscovery autoProceed resetKey={propertyReset} onConfirm={next => { siteEdited(); setLive(next) }} onManual={() => changeMode('manual')} />}
     {mode === 'retained' && <SitePreparation draft={draft} onDraftChange={next => { setDraft(next); setReadyFor(null) }} selection={selection}
       onEdit={siteEdited} onConfirm={next => { setSelection(next); setImported(false); setMeasurementResult(null); setReadyFor(null); setRevision(value => value + 1) }} />}
       {mode === 'manual' && <ManualSiteInput onChange={value => { if (JSON.stringify(value) !== JSON.stringify(manual)) { setManual(value); setReadyFor(null) } }} footprint={{ widthM: Number(measurement('nominal_exterior_width')?.quantity?.value) || null, depthM: Number(measurement('nominal_exterior_depth')?.quantity?.value) || null, label: 'aux box Model 300 · unreviewed nominal dimensions' }} />}
       {mode === 'manual' && hasSite && <button type="button" onClick={() => setManualConfirmedFor(manualSignature)} disabled={propertyComplete}>Confirm my site description</button>}
     </div>
     </section>
+    <nav className="builder-progress" aria-label="Edit journey steps"><ol>
+      <li><button type="button" onClick={() => openProgress('property')}><strong>1 · Property</strong><span>{propertyComplete ? 'Selected' : 'Choose property'}</span></button></li>
+      <li><button type="button" disabled={!propertyComplete} onClick={() => openProgress('placement')}><strong>2 · Placement</strong><span>{placementComplete ? 'Measured' : 'Explore position'}</span></button></li>
+      <li><button type="button" disabled={!summary} onClick={() => openProgress('checks')}><strong>3 · Quick checks</strong><span>Review findings</span></button></li>
+      <li><button type="button" disabled={!hasSite} onClick={() => openProgress('enquiry')}><strong>4 · Enquiry</strong><span>{enquiryReady ? 'Draft ready' : 'Prepare draft'}</span></button></li>
+    </ol></nav>
+    {propertyComplete && <div className="builder-selected-property"><strong>Property: {mode === 'example' ? 'Saved Victoria example · not your property' : live?.address.label || manual?.facts.address || 'User-supplied site'}</strong><span>{live ? `${live.parcel.label} · source match, identity and ownership unverified` : 'Approximate and unreviewed'}</span><button type="button" onClick={changeProperty}>Wrong property? Change</button></div>}
     <section className="builder-stage" id="builder-placement" aria-labelledby="builder-placement-title">
       <p className="eyebrow">Placement</p><h2 id="builder-placement-title">Explore one approximate placement</h2>
-      <p>{propertyComplete ? zoningCase ? 'Explore the placement, then review the summary and next actions below.' : placementSummary : 'Choose and confirm a property to explore placement.'}</p>
+      <p>{propertyComplete ? zoningCase ? 'Explore the placement, then review the summary and next actions below.' : placementSummary : 'Choose a property to explore placement.'}</p>
       <button type="button" aria-expanded={expanded.placement && propertyComplete} aria-controls="builder-placement-content" disabled={!propertyComplete} onClick={() => toggleStep('placement')}>{expanded.placement ? 'Collapse placement' : 'Explore placement'}</button>
       <div id="builder-placement-content" hidden={!expanded.placement || !propertyComplete}>
       {mode === 'manual' && <p>Your manual sketch and placement controls are in Property. Reopen that step to adjust them.</p>}
-      {mode === 'example' && <ExampleProperty key={revision} boundaryInteraction={boundaryInteraction} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} />}
-      {mode === 'live' && (liveCase ? <OccupiedLots key={revision} compactPlacement suppliedCase={liveCase} boundaryInteraction={boundaryInteraction} allowedModelIds={[MODEL_ID]} initialModelId={MODEL_ID} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} showHandoff={false} /> : <p>Confirm a Victoria property above to open its captured parcel sketch. Available geometry is approximate and unreviewed.</p>)}
+      {mode === 'example' && <ExampleProperty key={revision} placementSummary={summaryPanel} boundaryInteraction={boundaryInteraction} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} />}
+      {mode === 'live' && (liveCase ? <OccupiedLots key={revision} placementSummary={summaryPanel} compactPlacement suppliedCase={liveCase} boundaryInteraction={boundaryInteraction} allowedModelIds={[MODEL_ID]} initialModelId={MODEL_ID} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} showHandoff={false} /> : <p>Select a Victoria property above to open its captured parcel sketch. Available geometry is approximate and unreviewed.</p>)}
 
     {zoningCase && <><section className="builder-placement-results" aria-label="Current placement results">
-      {summary && <HomeownerSummary summary={summary} onNavigate={navigateFlag} />}
       <details className="builder-how-checked"><summary>How we checked · sources, assumptions and exact evidence</summary>
-        <PlacementScenarios assumptions={currentAssumptions} request={scenarioRequest} result={currentScenario} busy={!!scenarioKey && scenarioBusy && !currentScenario} error={currentScenarioError} frontEdge={streetEdge} rearEdge={rearEdge} boundaryMode={boundaryMode} onBoundaryMode={setBoundaryMode} />
-        <ConditionalScreen compact result={currentScreening} busy={!!requestKey && conditionalBusy && !currentScreening} error={currentScreeningError} />
+        <ConditionalScreen compact result={currentScreening} busy={!!requestKey && conditionalBusy && !currentScreening} error={currentScreeningError} onRetry={() => setConditionalRetry(value => value + 1)} boundaryEvidence={<PlacementScenarios assumptions={currentAssumptions} request={scenarioRequest} result={currentScenario} legalResult={currentScreening} busy={!!scenarioKey && scenarioBusy && !currentScenario} error={currentScenarioError} frontEdge={streetEdge} rearEdge={rearEdge} boundaryMode={boundaryMode} onBoundaryMode={setBoundaryMode} onRetry={() => setScenarioRetry(value => value + 1)} />} />
       </details></section>
       <ProjectDetails settings={effectiveSettings} mapped={mappedZoning} lookup={currentZoning} busy={!!zoningKey && zoningBusy && !currentZoning} error={currentZoningError} onRetry={() => setZoningRetry(value => value + 1)} onChange={next => { setProjectSettings(next); setReadyFor(null) }} />
       <details className="builder-optional"><summary>Optional assumptions and user measurements</summary>
