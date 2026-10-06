@@ -3,7 +3,7 @@ import type { Case } from '../occupied_lots/contract'
 import { MeasurementInput } from '../MeasurementInput'
 import { assumptionsKey, initialAssumptions, suiteCountFact, suggestedBoundaryRoles, withPlacementRevision, type EdgeRole, type SiteAssumptions, type UserMeasurement } from './model'
 
-type Props = { sharedMode?: 'place' | 'front' | 'rear'; selectedBoundary?: string | null; onBoundarySelect?: (id: string) => void; homeownerDefaults?: boolean; site: Case; geometryRevision: string; placementRevision: string; frontEdge?: string | null; rearEdge?: string | null; streetPattern?: 'unknown' | 'single' | 'corner_or_multiple'; onChange: (value: SiteAssumptions | null) => void }
+type Props = { markingRole?: EdgeRole | null; onMarkingRoleChange?: (role: EdgeRole) => void; boundaryMark?: { id: string; role: EdgeRole } | null; sharedMode?: 'place' | 'front' | 'rear'; selectedBoundary?: string | null; onBoundarySelect?: (id: string) => void; homeownerDefaults?: boolean; site: Case; geometryRevision: string; placementRevision: string; frontEdge?: string | null; rearEdge?: string | null; streetPattern?: 'unknown' | 'single' | 'corner_or_multiple'; onChange: (value: SiteAssumptions | null) => void }
 const roleNames: Record<EdgeRole, string> = { unknown: 'Unknown', front: 'Front', rear: 'Rear', side: 'Side', flanking_street: 'Flanking street' }
 
 function measure(raw: string, basis: UserMeasurement['basis'], placementRevision: string): UserMeasurement | null {
@@ -12,7 +12,7 @@ function measure(raw: string, basis: UserMeasurement['basis'], placementRevision
   return Number.isFinite(number) && number >= 0 ? { value: number, unit: basis === 'regulatory_floor_area' || basis === 'rough_floor_area_estimate' ? 'm2' : 'm', basis, origin: 'user', note: null, placement_revision: placementRevision } : null
 }
 
-function Editor({ site, geometryRevision, placementRevision, frontEdge = null, rearEdge = null, streetPattern = 'unknown', sharedMode, selectedBoundary, onBoundarySelect, homeownerDefaults = false, onChange }: Props) {
+function Editor({ site, geometryRevision, placementRevision, frontEdge = null, rearEdge = null, streetPattern = 'unknown', markingRole, onMarkingRoleChange, boundaryMark, sharedMode, selectedBoundary, onBoundarySelect, homeownerDefaults = false, onChange }: Props) {
   useEffect(() => { void import('./site-assumptions.css') }, [])
   const notify = useRef(onChange)
   notify.current = onChange
@@ -35,9 +35,13 @@ function Editor({ site, geometryRevision, placementRevision, frontEdge = null, r
     }
   }, [placementRevision, value.placement_revision])
 
+  useEffect(() => {
+    if (boundaryMark) setValue(previous => ({ ...previous, edges: previous.edges.map(edge => edge.id === boundaryMark.id ? { ...edge, role: { value: boundaryMark.role, origin: 'user', note: null } } : edge) }))
+  }, [boundaryMark])
+
   const activeEdge = sharedMode !== undefined ? selectedBoundary ?? value.edges[0]?.id : selectedEdge
   const suggested = suggestedBoundaryRoles(value.edges, frontEdge, rearEdge, streetPattern)
-  const edgeLabel = (edge: SiteAssumptions['edges'][number]) => `Edge ${edge.segment + 1}`
+  const edgeLabel = (edge: SiteAssumptions['edges'][number]) => edge.ring ? `Inner ring ${edge.ring}, edge ${edge.segment + 1}` : `Edge ${edge.segment + 1}`
   const setRole = (id: string, role: EdgeRole) => setValue(previous => ({ ...previous, edges: previous.edges.map(edge => edge.id === id ? { ...edge, role: { value: role, origin: 'user', note: null } } : edge) }))
   const setFact = <K extends 'building_type' | 'existing_garden_suites' | 'principal_building_id' | 'waterfront'>(key: K, raw: SiteAssumptions[K]['value']) =>
     setValue(previous => ({ ...previous, [key]: key === 'existing_garden_suites' ? suiteCountFact(raw as 0 | 1 | 'two_or_more' | null) : { value: raw, origin: 'user', note: null } }))
@@ -62,7 +66,7 @@ function Editor({ site, geometryRevision, placementRevision, frontEdge = null, r
       floor_area: measure(areaDraft, basis, placementRevision) } }))
   }
 
-  return <section className="zsa" aria-label="Property assumptions">
+  return <section className={`zsa${sharedMode === 'rear' ? ' zsa--marking' : ''}`} aria-label="Property assumptions">
     {sharedMode === undefined && <h3>Property details for a preliminary check</h3>}
     <p hidden={sharedMode !== undefined}>These are your assumptions. Unknown is fine. The captured parcel and rooflines have not been checked against legal survey or building walls.</p>
     <details><summary>Source and geometry details</summary><p>{value.property.source.provider} · {value.property.source.record_label} · captured {value.property.source.capture_date ?? 'date unknown'} · {value.property.source.review_status}. Geometry revision: {geometryRevision}. Rooflines are mapped outlines, not walls.</p></details>
@@ -76,15 +80,22 @@ function Editor({ site, geometryRevision, placementRevision, frontEdge = null, r
       <p className="zsa__hint">Selecting a mapped roofline identifies a possible main building; it does not turn that roofline into wall geometry.</p>
     </fieldset>
     </details>
-    <fieldset hidden={sharedMode !== undefined && sharedMode !== 'rear'}><legend>Parcel edge roles</legend>
-      <p>Choose each edge’s role only if you know it. Street access and legal lot lines can change the answer, especially at corners and through lots.</p>
+    <fieldset className="zsa__boundaries" hidden={sharedMode !== undefined && sharedMode !== 'rear'}><legend>Parcel edge roles</legend>
+      <p hidden={sharedMode !== undefined}>Choose each edge’s role only if you know it. Street access and legal lot lines can change the answer, especially at corners and through lots.</p>
       {Object.keys(suggested).length > 0 && <p role="status">For this ordinary four-edge single-street sketch, the selected edge suggests an opposite rear and two sides. These are editable assumptions, not verified legal roles.</p>}
       {value.edges.length === 0 && <p role="status">This parcel outline cannot be divided into supported edges. Record roles as unknown and use a reviewed plan.</p>}
       {value.edges.some(edge => edge.ring > 0) && <p role="status">This outline has inner rings. Their roles need manual review.</p>}
-      {sharedMode !== undefined && <div className="boundary-map-buttons">{value.edges.map(edge => <button key={edge.id} type="button" aria-pressed={activeEdge === edge.id} onClick={() => onBoundarySelect?.(edge.id)}>{edgeLabel(edge)}</button>)}</div>}
+      {sharedMode !== undefined && <div id="boundary-roles" tabIndex={-1} role="group" aria-label="Mark a boundary">
+        <strong>Mark an edge as</strong>
+        <div className="zsa__mark-buttons">{(['side', 'rear', 'front', 'flanking_street'] as const).map(role => <button key={role} type="button" aria-label={`Mark ${role === 'flanking_street' ? 'flanking' : role}`} aria-pressed={markingRole === role} onClick={() => onMarkingRoleChange?.(role)}>{role === 'flanking_street' ? 'Flanking' : roleNames[role]}</button>)}</div>
+        <p role="status">{markingRole ? `Click an edge on the map to mark it ${markingRole === 'flanking_street' ? 'flanking' : markingRole}.` : 'Choose a mark, then click an edge on the map.'}</p>
+        <details><summary>Mark with keyboard</summary><label>Edge to mark <select aria-label="Edge to mark" value={activeEdge ?? ''} onChange={event => onBoundarySelect?.(event.target.value)}>{value.edges.map(edge => <option key={edge.id} value={edge.id}>{edgeLabel(edge)} · {roleNames[edge.role.value ?? 'unknown']}</option>)}</select></label>
+        <button type="button" disabled={!markingRole || !activeEdge} onClick={() => { if (activeEdge) onBoundarySelect?.(activeEdge) }}>Mark selected edge</button></details>
+      </div>}
       <div className="zsa__edge-list">{value.edges.map(edge => <div key={edge.id} hidden={sharedMode !== undefined && activeEdge !== edge.id} className={activeEdge === edge.id ? 'zsa__edge-row zsa__edge-row--selected' : 'zsa__edge-row'}>
         {sharedMode === undefined ? <button type="button" onClick={() => setSelectedEdge(edge.id)} aria-pressed={activeEdge === edge.id}>{edge.ring === 0 ? edgeLabel(edge) : `Inner ring ${edge.ring}, edge ${edge.segment + 1}`}</button> : <strong>{edgeLabel(edge)}</strong>}
-        <label>Role <select id={activeEdge ? edge.id === activeEdge ? 'boundary-roles' : undefined : edge === value.edges[0] ? 'boundary-roles' : undefined} aria-label={`${edgeLabel(edge)} role`} value={edge.role.value ?? 'unknown'} onChange={event => setRole(edge.id, event.target.value as EdgeRole)}>{Object.entries(roleNames).map(([id, name]) => <option key={id} value={id}>{name}</option>)}</select></label>
+        {sharedMode === undefined && <label>Role <select id={activeEdge ? edge.id === activeEdge ? 'boundary-roles' : undefined : edge === value.edges[0] ? 'boundary-roles' : undefined} aria-label={`${edgeLabel(edge)} role`} value={edge.role.value ?? 'unknown'} onChange={event => setRole(edge.id, event.target.value as EdgeRole)}>{Object.entries(roleNames).map(([id, name]) => <option key={id} value={id}>{name}</option>)}</select></label>}
+        {sharedMode !== undefined && <><span role="status">{edgeLabel(edge)} · {roleNames[edge.role.value ?? 'unknown']} · your assumption</span><button type="button" onClick={() => setRole(edge.id, 'unknown')}>Clear this mark</button></>}
         {suggested[edge.id] && <span>Suggested: {roleNames[suggested[edge.id]]}; choose a role above only if you can support it.</span>}
         <details><summary>Use my measurement</summary><label>Wall to legal lot line (m), if measured <MeasurementInput dimension="length" type="number" min="0" step="any" aria-label={`${edgeLabel(edge)} wall to lot line in metres`} value={distanceDraft[edge.id] ?? ''} onChange={event => setBoundaryDistance(edge.id, event.target.value)} placeholder="Unknown" /></label><p>Your wall-based value replaces this edge’s approximate comparison only. It is unverified and stays distinct from the captured edge-to-nominal-rectangle distance.</p>{distanceDraft[edge.id] && !value.measurements.boundary[edge.id] && <span className="zsa__error">Enter a nonnegative number or leave blank.</span>}</details>
       </div>)}</div>

@@ -319,3 +319,10 @@ The map-adjacent summary leads with the decision and next action. A worthwhile
 provider enquiry requires supporting coverage beyond containment and checked
 counts, including height and siting checks; incomplete coverage remains visible.
 This UI does not publish accepted zoning data or establish site applicability.
+
+Boundary adjustment now uses a right-hand marking panel: choose Side, Rear, Front
+or Flanking, then click an edge to apply an explicit user assumption. Visible edge
+labels echo the stored role; keyboard users can select an edge and apply the same
+mark. Clear removes a mark without deriving a replacement. Irregular outlines still
+need manual review. Next-action and journey-step information buttons expose nearby
+explanations by click/tap/keyboard without changing inputs or advancing the journey.

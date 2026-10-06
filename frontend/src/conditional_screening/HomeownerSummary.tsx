@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { StepInfo } from '../StepInfo'
 export type SummaryCheck = { label: string; status: 'checked' | 'conflict' | 'unknown' | 'unsupported'; detail: string; action?: { label: string; target: string } }
 export type Summary = { conclusion: string; next: string; checks: SummaryCheck[] }
 const statusLabels = { checked: 'Checked', conflict: 'Conflicts', unknown: 'Missing information', unsupported: 'Not covered' }
@@ -8,17 +9,18 @@ export function StatusIcon({ status }: { status: SummaryCheck['status'] }) {
 
 export function HomeownerSummary({ summary, onNavigate }: { summary: Summary; onNavigate: (target: string) => void }) {
   React.useEffect(() => { void import('./homeowner-summary.css') }, [])
-  const nextAction = summary.checks.find(check => check.status === 'conflict' && check.action)?.action
-    ?? summary.checks.find(check => check.status === 'unknown' && check.action)?.action
+  const nextCheck = summary.checks.find(check => check.status === 'conflict' && check.action)
+    ?? summary.checks.find(check => check.status === 'unknown' && check.action)
+  const nextAction = nextCheck?.action
   return <section className="homeowner-summary" id="builder-quick-checks" tabIndex={-1} aria-label="Placement summary">
     <h3>{summary.conclusion}</h3><p>{summary.next}</p>
     <div className="homeowner-summary__counts" aria-label="Named check counts">{(['checked', 'unknown', 'conflict', 'unsupported'] as const).map(status => <span key={status} className={`homeowner-summary__${status}`}><StatusIcon status={status} /><strong>{summary.checks.filter(check => check.status === status).length} {statusLabels[status]}</strong></span>)}</div>
-    {nextAction && <button className="homeowner-summary__next" type="button" onClick={() => onNavigate(nextAction.target)}>Next: {nextAction.label}</button>}
+    {nextAction && <div className="step-action"><button className="homeowner-summary__next" type="button" onClick={() => onNavigate(nextAction.target)}>Next: {nextAction.label}</button><StepInfo label={nextAction.label}>{nextCheck?.detail} This opens the relevant control so you can review or correct the current input.</StepInfo></div>}
     <p className="homeowner-summary__scope">Preliminary screening of this placement · limited checks. Open questions and requirements not covered are listed below.</p>
     <details className="homeowner-summary__checks"><summary>Review individual checks</summary><ul>{summary.checks.map(check => <li key={check.label} className={`homeowner-summary__${check.status}`}>
       <StatusIcon status={check.status} />
       <div><strong>{check.label} · {statusLabels[check.status]}</strong><p>{check.detail}</p>
-        {check.action && <button type="button" onClick={() => onNavigate(check.action!.target)}>{check.action.label}</button>}
+        {check.action && <div className="step-action"><button type="button" onClick={() => onNavigate(check.action!.target)}>{check.action.label}</button><StepInfo label={check.action.label}>{check.detail} Review the current input; leave it unknown when you cannot support an answer.</StepInfo></div>}
       </div>
     </li>)}</ul></details>
   </section>

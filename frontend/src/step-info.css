@@ -1,0 +1,8 @@
+.step-info { display: inline-flex; align-items: center; flex-wrap: wrap; gap: .4rem; }
+.step-info__button { width: 44px; min-width: 44px; min-height: 44px; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); background: var(--surface); color: var(--primary); font: inherit; font-weight: 700; }
+.step-info__button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.step-info__text { display: block; flex-basis: 100%; padding: .65rem; border-left: 3px solid var(--primary); background: var(--surface-subtle); color: var(--ink); font-size: .9rem; }
+.step-info__text[hidden] { display: none; }
+.step-action { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; }
+.builder-progress li { display: flex; flex-direction: column; }
+.builder-progress .step-info__button { width: 44px; flex: none; align-self: flex-start; }

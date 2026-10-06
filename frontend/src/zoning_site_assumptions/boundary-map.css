@@ -8,5 +8,5 @@
 .boundary-map-edge { stroke: var(--copper); stroke-width: 3; vector-effect: non-scaling-stroke; pointer-events: none; }
 .boundary-map-edge--selected { stroke: var(--primary); stroke-width: 5; }
 .boundary-map-edge-hit { stroke: transparent; stroke-width: 22; vector-effect: non-scaling-stroke; pointer-events: stroke; cursor: pointer; }
-.boundary-map-edge-label { fill: var(--ink); font-weight: 700; font-size: 3px; paint-order: stroke; stroke: var(--surface); stroke-width: 1px; pointer-events: none; }
+.boundary-map-edge-label { fill: var(--ink); font-weight: 700; font-size: 1.8px; paint-order: stroke; stroke: var(--surface); stroke-width: .3px; pointer-events: none; }
 @media (max-width: 540px) { .boundary-map-modes button, .boundary-map-buttons button { flex: 1 1 9rem; } }

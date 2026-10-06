@@ -152,7 +152,7 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
   const document = dom.window.document
   const root = createRoot(document.getElementById('root')!)
   const settle = async (ms = 350) => act(async () => { await new Promise(resolve => setTimeout(resolve, ms)) })
-  const click = async (label: string) => { const node = [...document.querySelectorAll<HTMLElement>('button, summary')].find(node => node.textContent === label); assert.ok(node, label); await act(async () => node.click()) }
+  const click = async (label: string) => { const node = [...document.querySelectorAll<HTMLElement>('button, summary')].find(node => node.textContent === label || node.getAttribute('aria-label') === label); assert.ok(node, label); await act(async () => node.click()) }
   const change = async (node: HTMLInputElement | HTMLSelectElement, value: string) => { await act(async () => { node.focus(); Object.getOwnPropertyDescriptor(node instanceof dom.window.HTMLSelectElement ? dom.window.HTMLSelectElement.prototype : dom.window.HTMLInputElement.prototype, 'value')!.set!.call(node, value); node.dispatchEvent(node instanceof dom.window.HTMLSelectElement ? new dom.window.Event('change', { bubbles: true }) : new dom.window.KeyboardEvent('keyup', { key: '5', bubbles: true })) }) }
   try {
     await act(async () => root.render(createElement(BuilderDemo)))
@@ -183,12 +183,24 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
     const placement = document.querySelector('#placement-map svg g[transform]')!.getAttribute('transform')
     await act(async () => document.querySelector('#placement-map svg')!.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true })))
     assert.equal(document.querySelector('#placement-map svg g[transform]')!.getAttribute('transform'), placement)
-    await click('Adjust boundaries'); await click('Edge 2')
-    assert.equal(document.activeElement?.id, 'boundary-roles')
-    assert.equal(document.activeElement?.getAttribute('aria-label'), 'Edge 2 role')
+    await click('Adjust boundaries'); await click('Mark side')
+    const edgeHit = document.querySelectorAll<SVGElement>('.boundary-map-edge-hit')[1]
+    await act(async () => edgeHit.dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true })))
+    assert.match(document.querySelector('.zsa__edge-row--selected')!.textContent!, /Edge 2 · Side · your assumption/)
+    assert.equal(document.querySelectorAll('[aria-label="Edge 2 role"]').length, 0)
+    for (const [label, role] of [['rear', 'rear'], ['front', 'front'], ['flanking', 'flanking_street'], ['side', 'side']]) {
+      await click(`Mark ${label}`); await click('Mark selected edge'); await settle()
+      assert.equal(latest.assumptions.edges[1].role.value, role)
+      assert.equal(latest.assumptions.edges[1].role.origin, 'user')
+    }
+    const info = document.querySelector<HTMLButtonElement>('.homeowner-summary .step-info__button')!
+    await act(async () => info.click())
+    assert.equal(info.getAttribute('aria-expanded'), 'true')
+    assert.equal(document.getElementById(info.getAttribute('aria-controls')!)?.hidden, false)
+    await act(async () => info.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'Escape', bubbles: true })))
+    assert.equal(info.getAttribute('aria-expanded'), 'false')
     assert.equal(document.querySelector('#placement-map svg')!.getAttribute('viewBox'), mapView)
     assert.equal(document.querySelector('#placement-map svg g[transform]')!.getAttribute('transform'), placement)
-    await change(document.querySelector<HTMLSelectElement>('[aria-label="Edge 2 role"]')!, 'side')
     await change(document.querySelector<HTMLInputElement>('[aria-label="Edge 2 wall to lot line in metres"]')!, '.75')
     await settle()
     assert.match(document.querySelector('.placement-scenarios')!.textContent!, /Your wall-to-legal-line entry: 0.75 m/)
