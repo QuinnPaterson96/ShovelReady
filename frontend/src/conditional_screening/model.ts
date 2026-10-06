@@ -4,7 +4,7 @@ import type { ProposalEvidence } from './projectSettings'
 export type Pathway = {
   proposed_use: 'garden_suite' | 'other' | null
   foundation_attached: boolean | null
-  confirmed_zone: 'GRD-1' | 'other' | null
+  confirmed_zone: 'GRD-1' | 'GRD-1 (PGA)' | 'other' | null
   confirmed_instrument: 'Zoning Bylaw 2018' | 'other' | null
   legal_lot_confirmed: boolean | null
   floor_area_definition_acknowledged: boolean | null

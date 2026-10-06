@@ -2,6 +2,7 @@
 
 from copy import deepcopy
 
+import pytest
 from fastapi.testclient import TestClient
 
 from app.main import create_app
@@ -76,11 +77,14 @@ def post(value):
     return client.post("/api/conditional-screening/v1/evaluate", json=value)
 
 
-def test_constructed_mixed_comparison_preserves_candidate_source_and_scope():
-    response = post(payload())
+@pytest.mark.parametrize("zone", ["GRD-1", "GRD-1 (PGA)"])
+def test_constructed_mixed_comparison_preserves_candidate_source_and_scope(zone):
+    body = payload()
+    body["proposal"]["confirmed_zone"] = zone
+    response = post(body)
     assert response.status_code == 200, response.text
     data = response.json()
-    assert data["request"]["packet_revision"] == "candidate-2026-10-05-1"
+    assert data["request"]["packet_revision"] == "candidate-2026-10-06-1"
     assert data["request"]["model_revision"] == "constructed-model-v1"
     assert data["request"]["site_assumptions"]["property"]["source"]["provider"] == (
         "Constructed example"

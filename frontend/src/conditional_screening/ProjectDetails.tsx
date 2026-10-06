@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { readableDate, TechnicalDetails } from '../ReadableProvenance'
 import { formatMeasurement } from '../measurements'
-import { changeProjectSetting, type MappedZoning, type ProjectSettings, type SettingEvidence } from './projectSettings'
+import { changeProjectSetting, supportedGardenSuiteZone, type MappedZoning, type ProjectSettings, type SettingEvidence } from './projectSettings'
 import type { Pathway } from './model'
 import type { ZoningLookup } from './victoriaZoning'
 
@@ -16,7 +16,7 @@ export function ProjectDetails({ settings, mapped, lookup, busy, error, onRetry,
   useEffect(() => { void import('./project-details.css') }, [])
   const proposal = settings.proposal
   const change = <K extends keyof Pathway>(key: K, value: Pathway[K]) => onChange(changeProjectSetting(settings, key, value))
-  const mappedZoneChoice = mapped?.zone === 'GRD-1' ? 'GRD-1' : 'other'
+  const mappedZoneChoice = supportedGardenSuiteZone(mapped?.zone) ? mapped.zone : 'other'
   const mappedBylawChoice = mapped?.instrument === 'Zoning Bylaw 2018 (No. 18-072)' ? 'Zoning Bylaw 2018' : 'other'
   const manualConflict = mapped?.status === 'single' && (
     settings.evidence.confirmed_zone.origin === 'user' && proposal.confirmed_zone !== null && proposal.confirmed_zone !== mappedZoneChoice ||
@@ -43,7 +43,7 @@ export function ProjectDetails({ settings, mapped, lookup, busy, error, onRetry,
         {(error || lookup?.status === 'unavailable') && <button id="zoning-retry" type="button" onClick={onRetry}>Retry zoning lookup</button>}
         {mapped?.source && <p>{mapped.source.provider} · {mapped.source.record_label} · {mapped.source.locator} · captured {readableDate(mapped.source.capture_date)} · {mapped.source.review_status.replace(/_/g, ' ')}. <a href={mapped.source.url} target="_blank" rel="noreferrer">Municipal source</a></p>}
       </div>
-      <label>Zone, if you have verified it <select id="zoning-settings" value={proposal.confirmed_zone ?? ''} onChange={event => change('confirmed_zone', event.target.value === '' ? null : event.target.value as Pathway['confirmed_zone'])}><option value="">Unknown</option><option value="GRD-1">Enter GRD-1 for this lot</option><option value="other">Another zone or mixed zoning</option></select></label>
+      <label>Zone, if you have verified it <select id="zoning-settings" value={proposal.confirmed_zone ?? ''} onChange={event => change('confirmed_zone', event.target.value === '' ? null : event.target.value as Pathway['confirmed_zone'])}><option value="">Unknown</option><option value="GRD-1">Enter GRD-1 for this lot</option><option value="GRD-1 (PGA)">GRD-1 within Priority Growth Area</option><option value="other">Another zone or mixed zoning</option></select></label>
       <label>Applicable bylaw, if verified <select value={proposal.confirmed_instrument ?? ''} onChange={event => change('confirmed_instrument', event.target.value === '' ? null : event.target.value as Pathway['confirmed_instrument'])}><option value="">Unknown</option><option value="Zoning Bylaw 2018">Enter Victoria Zoning Bylaw 2018</option><option value="other">Another or uncertain bylaw</option></select></label>
       <details><summary>Legal boundary and projections</summary>
         <p>The captured parcel is already used for the approximate screen. Legal lot identity and roof projections are separate questions; leave them unknown if unsupported.</p>

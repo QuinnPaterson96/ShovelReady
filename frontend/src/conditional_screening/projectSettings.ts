@@ -5,6 +5,8 @@ export type MunicipalSource = { provider: string; record_label: string; url: str
 export type SettingEvidence = { value: string | boolean | null; origin: SettingOrigin; source: MunicipalSource | null; note: string | null }
 export type ProposalEvidence = { [K in keyof Pathway]: SettingEvidence }
 export type ProjectSettings = { proposal: Pathway; evidence: ProposalEvidence }
+// Exact supported map labels: never strip arbitrary suffixes or site-specific codes.
+export const supportedGardenSuiteZone = (zone: string | null | undefined): zone is 'GRD-1' | 'GRD-1 (PGA)' => zone === 'GRD-1' || zone === 'GRD-1 (PGA)'
 
 const unknown = (): SettingEvidence => ({ value: null, origin: 'unknown', source: null, note: null })
 export function initialProjectSettings(): ProjectSettings {
@@ -39,7 +41,7 @@ export function applyMappedZoning(settings: ProjectSettings, mapped: MappedZonin
     evidence: { ...settings.evidence, confirmed_zone: reset('confirmed_zone'), confirmed_instrument: reset('confirmed_instrument') } }
   if (!mapped || mapped.property_revision !== propertyRevision || mapped.status !== 'single' || !mapped.source) return cleared
   // A mapped source never silently replaces an explicit manual fallback.
-  const zone = mapped.zone === 'GRD-1' ? 'GRD-1' : 'other'
+  const zone = supportedGardenSuiteZone(mapped.zone) ? mapped.zone : 'other'
   const instrument = mapped.instrument === 'Zoning Bylaw 2018 (No. 18-072)' ? 'Zoning Bylaw 2018' : 'other'
   let next = cleared
   for (const [key, value] of [['confirmed_zone', zone], ['confirmed_instrument', instrument]] as const) {

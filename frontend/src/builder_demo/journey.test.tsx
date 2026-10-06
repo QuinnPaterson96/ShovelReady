@@ -176,7 +176,8 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
     const exportRecord = JSON.parse(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value)
     assert.equal(exportRecord.zoning_site_assumptions.edges[1].role.origin, 'user')
     assert.equal(exportRecord.placement_scenario_result.status, 'clarify')
-    assert.match(document.querySelector('#builder-enquiry-content')!.textContent!, /Front setback, rear-yard, height/)
+    assert.match(document.querySelector('#builder-enquiry-content')!.textContent!, /additional scouting checks for front distance, approximate rear yard and user-entered height/)
+    assert.match(document.querySelector('#builder-enquiry-content')!.textContent!, /Site-specific rules, current applicability and legal boundary measurements remain unresolved/)
   } finally {
     await act(async () => root.unmount())
     for (const [name, descriptor] of originals) { if (descriptor) Object.defineProperty(globalThis, name, descriptor); else Reflect.deleteProperty(globalThis, name) }

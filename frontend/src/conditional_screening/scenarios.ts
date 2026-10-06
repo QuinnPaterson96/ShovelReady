@@ -13,6 +13,12 @@ export type ScenarioRequest = {
   street_edge_id: string | null
   rear_edge_id: string | null
   street_pattern: 'unknown' | 'single' | 'corner_or_multiple'
+  additional_inputs?: { height_from_average_grade_m: number | null }
+}
+export type AdditionalCheck = {
+  id: string; label: string; status: 'checked' | 'conflict' | 'unknown' | 'unsupported'; detail: string;
+  action_target: string | null; observed: number | null; threshold: number | null; unit: string | null;
+  basis: string; source: { provider: string; record_label: string; url: string; locator: string; review_status: string }
 }
 export type ScenarioResult = {
   schema_version: 'placement-scenarios.result.v1'
@@ -33,6 +39,8 @@ export type ScenarioResult = {
   sources: { provider: string; record_label: string; capture_date: string | null; review_status: string; url: string; locator: string }[]
   limitations: string[]
   proposal_evidence?: ProposalEvidence | null
+  additional_checks?: AdditionalCheck[]
+  additional_revision?: string | null
 }
 
 export function parseScenarioResult(raw: unknown, request?: ScenarioRequest): ScenarioResult {
@@ -41,6 +49,16 @@ export function parseScenarioResult(raw: unknown, request?: ScenarioRequest): Sc
   const record = (value: unknown): value is Record<string, unknown> => !!value && typeof value === 'object' && !Array.isArray(value)
   const nonempty = (value: unknown) => typeof value === 'string' && value.trim().length > 0
   const finiteNonnegative = (value: unknown) => typeof value === 'number' && Number.isFinite(value) && value >= 0
+  if (result.additional_checks !== undefined && (!Array.isArray(result.additional_checks) ||
+    result.additional_revision !== 'candidate-scouting-2026-10-06-1' || result.additional_checks.length !== 5 ||
+    new Set(result.additional_checks.map(check => check?.id)).size !== 5 ||
+    !result.additional_checks.every(check => record(check) && ['separation', 'front', 'rear_location', 'rear_occupancy', 'height'].includes(check.id) &&
+      ['checked', 'conflict', 'unknown', 'unsupported'].includes(check.status) && nonempty(check.label) && nonempty(check.detail) && nonempty(check.basis) &&
+      (check.observed === null || finiteNonnegative(check.observed)) && (check.threshold === null || finiteNonnegative(check.threshold)) &&
+      (check.unit === null || typeof check.unit === 'string') &&
+      (check.action_target === null || ['principal-building', 'boundary-roles', 'scouting-height', 'waterfront-lot'].includes(check.action_target)) &&
+      record(check.source) && nonempty(check.source.locator) && nonempty(check.source.provider) &&
+      check.source.url === 'https://www.victoria.ca/media/file/zoning-bylaw-2018'))) throw new Error('Additional scouting response is malformed.')
   if (result.schema_version !== 'placement-scenarios.result.v1' ||
     !['bounded_pass', 'clarify', 'apparent_conflict', 'unresolved'].includes(result.status) ||
     !nonempty(result.reason) || !nonempty(result.property_revision) ||

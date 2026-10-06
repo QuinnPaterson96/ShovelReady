@@ -9,6 +9,7 @@ from shapely.geometry import LineString, shape
 from app.scouting_geometry.core import assess
 from app.scouting_geometry.payloads import Request as GeometryRequest
 
+from .additional import AdditionalCheck, AdditionalInputs, additional_checks
 from .api import Assumptions, Proposal, ProposalEvidence, _packet, _source
 
 
@@ -26,6 +27,7 @@ class ScenarioRequest(Strict):
     street_edge_id: str | None = None
     rear_edge_id: str | None = None
     street_pattern: Literal["unknown", "single", "corner_or_multiple"] = "unknown"
+    additional_inputs: AdditionalInputs = AdditionalInputs()
 
     @model_validator(mode="after")
     def matching_evidence(self):
@@ -66,9 +68,20 @@ class ScenarioResult(Strict):
     sources: tuple[dict, ...] = ()
     limitations: tuple[str, ...]
     proposal_evidence: dict | None = None
+    additional_checks: tuple[AdditionalCheck, ...] = ()
+    additional_revision: str | None = None
 
 
 def screen(body: ScenarioRequest) -> ScenarioResult:
+    result = _boundary_screen(body)
+    packet = _packet()
+    return result.model_copy(update={
+        "additional_checks": additional_checks(body, result, packet, _source),
+        "additional_revision": packet["additional_scouting_revision"],
+    })
+
+
+def _boundary_screen(body: ScenarioRequest) -> ScenarioResult:
     """Enumerate complete role assignments; uncertainty never becomes a vacuous pass."""
     packet = _packet()
     by_id = {rule["logical_rule_id"]: rule for rule in packet["rules"]}
@@ -100,8 +113,9 @@ def screen(body: ScenarioRequest) -> ScenarioResult:
             "captured nominal geometry observations.",
             "Street-facing choice is a scenario assumption, not a legal front lot line "
             "classification.",
-            "Front setback, rear-yard location/occupancy, height, site-specific provisions, "
-            "projections and other applicable checks are outside this screen.",
+            "Front setback, rear-yard location/occupancy and height are outside this boundary "
+            "scenario status; see the separately scoped additional checks. Site-specific "
+            "provisions, projections and other applicable checks remain unreviewed.",
             "Current zoning, legal lot, pathway and waterfront applicability remain unknown. "
             "Candidate rules are unreviewed and unpublished.",
         ),

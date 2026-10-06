@@ -1,7 +1,16 @@
 {
   "schema_version": "victoria-garden-suite-scouting.candidate.v1",
   "packet_id": "victoria-zb2018-grd1-ordinary-garden-suite-scouting",
-  "packet_revision": "candidate-2026-10-05-1",
+  "packet_revision": "candidate-2026-10-06-1",
+  "additional_scouting_revision": "candidate-scouting-2026-10-06-1",
+  "supported_map_labels": ["GRD-1", "GRD-1 (PGA)"],
+  "additional_scouting": {
+    "separation": {"threshold": 2.4, "unit": "m", "source_locators": ["Part 3.1(28)(h), PDF p28; approximate roofline-to-nominal comparison only; legal endpoints unresolved"]},
+    "front": {"threshold": 4.0, "unit": "m", "source_locators": ["Part 4.1(4)(a), PDF p31, buildings with less than three dwelling units; Part 2.1 Setback, PDF p19"]},
+    "rear_location": {"source_locators": ["Part 3.1(28)(a), PDF p27; Part 2.1 Rear Yard, PDF p19; approximate parallel rear-face construction only"]},
+    "rear_occupancy": {"threshold": 0.25, "unit": "ratio_of_rear_yard", "source_locators": ["Part 3.1(28)(i), PDF p28; nominal footprint divided by approximate rear-yard area, not lot area"]},
+    "height": {"threshold": 4.2, "unit": "m", "source_locators": ["Part 3.1(28)(e), PDF p27; Part 2.1 Height, PDF p17; Average Grade, PDF p12"]}
+  },
   "status": "agent_mapped_unreviewed_unpublished",
   "assessment_dimensions": {
     "rule_text": "agent_mapped_against_matching_official_pdf_bytes; independent interpretation review pending",
