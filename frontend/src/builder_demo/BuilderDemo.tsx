@@ -1,3 +1,4 @@
+import { AdditionalInputs } from '../conditional_screening/AdditionalInputs'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { SiteDiscovery } from '../site_discovery/SiteDiscovery'
 import type { Confirmed } from '../site_discovery/flow'
@@ -71,7 +72,7 @@ export function enquiryDocument(selection: SitePreparationSelection | null, inpu
     ? `Candidate Victoria garden-suite comparison for this supplied placement: ${conditional.coverage.meets_under_assumptions} checks meet under stated assumptions; ${conditional.coverage.apparent_conflict_under_assumptions} apparent conflicts; ${conditional.coverage.needs_information} need information; ${conditional.coverage.unsupported} outside scope. Candidate source/currentness and site facts remain unreviewed; no approval or complete bylaw review.`
     : 'Conditional zoning findings are not current for these inputs. No legal compatibility conclusion is available.'
   const scenarioSummary = scenarios
-    ? `Approximate candidate Victoria setback scenario for this nominal placement: ${scenarios.reason} ${scenarios.scenarios.length} coherent edge assignments tested for side, rear and possible flanking street distances. ${Object.keys(siteAssumptions?.measurements.boundary ?? {}).length} user wall-to-line measurements replaced approximate edge comparisons; these values are unverified and the captured distances remain in technical evidence. Front setback, rear-yard, height, site-specific rules, current applicability and legal boundary measurements remain unresolved. Source: ${scenarios.sources.map(item => `${item.provider}, ${item.record_label}, ${item.locator}, captured ${item.capture_date ?? 'date unknown'}, ${item.review_status}; ${item.url}`).join(' ')}`
+    ? `Approximate candidate Victoria setback scenario for this nominal placement: ${scenarios.reason} ${scenarios.scenarios.length} coherent edge assignments tested for side, rear and possible flanking street distances. ${Object.keys(siteAssumptions?.measurements.boundary ?? {}).length} user wall-to-line measurements replaced approximate edge comparisons; these values are unverified and the captured distances remain in technical evidence. See the additional scouting checks for front distance, approximate rear yard and user-entered height. Site-specific rules, current applicability and legal boundary measurements remain unresolved. Source: ${scenarios.sources.map(item => `${item.provider}, ${item.record_label}, ${item.locator}, captured ${item.capture_date ?? 'date unknown'}, ${item.review_status}; ${item.url}`).join(' ')}`
     : 'No current approximate setback scenario finding for this placement.'
   const conditionalCheckDetails = conditional?.checks.map(check => `${screeningCheckTitle(check)}: ${check.status.replace(/_/g, ' ')}${check.normalized_observed !== null && check.normalized_threshold !== null ? `; supplied ${check.normalized_observed} ${check.normalized_unit ?? ''}, candidate threshold ${check.normalized_threshold} ${check.normalized_unit ?? ''}` : ''}. ${check.reasons.join(' ')} Source: ${check.rule.source.provider}, ${check.rule.source.record_label}, ${check.rule.source.locator}, captured ${check.rule.source.capture_date ?? 'date unknown'}, ${check.rule.source.review_status}; ${check.rule.source.url}.`) ?? []
   const sourceCaveat = conditional?.checks[0]?.rule.source.currentness_limitations.join(' ') ?? ''
@@ -109,6 +110,7 @@ export function enquiryDocument(selection: SitePreparationSelection | null, inpu
     question,
     example: savedExample,
     sections: [
+      ...(scenarios?.additional_checks?.length ? [{ heading: 'Additional scouting checks', paragraphs: scenarios.additional_checks.map(check => `${check.label}: ${check.status}. ${check.detail} Basis: ${check.basis}. Source: ${check.source.url} (${check.source.locator}).`), emailSummary: scenarios.additional_checks.map(check => `${check.label}: ${check.status}. ${check.detail}`).join(' ') }] : []),
       { heading: 'Price & timing', paragraphs: priceTimingParagraphs(model), emailSummary: priceTimingParagraphs(model).join(' ') },
       { heading: 'Model', paragraphs: [lines[1], lines[2], lines[8 + offset]], emailSummary: `aux box Model 300; nominal exterior ${original('nominal_exterior_width')} × ${original('nominal_exterior_depth')}; source ${model.provider_url}; current controlled revision and installed height unknown.` },
       { heading: 'Property', paragraphs: [lines[3], ...(candidate ? [lines[4]] : []), lines[4 + offset], lines[5 + offset]], emailSummary: savedExample ? 'Saved City of Victoria example only; this is not my property.' : live ? `Selected Victoria source lead: ${live.address.label}. Identity, ownership and legal boundaries remain unverified.` : manual ? `User-supplied site: ${field(manual.facts.address)}; facts and sketch unverified.` : `Site lead: ${candidate ? fact(candidate.address.value) : fact(selection?.manual.address.value ?? null)}; identity and dimensions unverified.` },
@@ -156,6 +158,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const [scenarioError, setScenarioError] = useState<{ key: string; message: string } | null>(null)
   const [scenarioBusy, setScenarioBusy] = useState(false)
   const [scenarioRetry, setScenarioRetry] = useState(0)
+  const [scoutingHeight, setScoutingHeight] = useState<{ key: string; value: number | null } | null>(null)
   const [revision, setRevision] = useState(0)
   const [use, setUse] = useState('')
   const [timing, setTiming] = useState('')
@@ -213,10 +216,12 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     onSelect: id => { if (boundaryMode === 'front') setStreetEdge(id); else if (boundaryMode === 'rear') setRearEdge(id) },
     onStreetPattern: setStreetPattern,
   } : undefined
+  const additionalKey = JSON.stringify([geometryRevision, placementRevision, revision])
   const scenarioRequest: ScenarioRequest | null = measurementResult && currentAssumptions && zoningCase && measurementResult.site.site.parcel.id === zoningCase.site.parcel.id
     ? { schema_version: 'placement-scenarios.request.v1', geometry: measurementResult.result.input, assumptions: currentAssumptions,
       model_revision: `catalogue-record:${model.model_id}@${bundledCatalogue.snapshot_id}`, proposal: pathway, proposal_evidence: effectiveSettings.evidence,
-      street_edge_id: streetEdge, rear_edge_id: rearEdge, street_pattern: streetPattern } : null
+      street_edge_id: streetEdge, rear_edge_id: rearEdge, street_pattern: streetPattern,
+      additional_inputs: { height_from_average_grade_m: scoutingHeight?.key === additionalKey ? scoutingHeight.value : null } } : null
   const scenarioKey = scenarioRequest ? JSON.stringify([scenarioRequest, scenarioRetry]) : null
   const currentScenario = scenarioKey && scenarioState?.key === scenarioKey ? scenarioState.result : null
   const currentScenarioError = scenarioKey && scenarioError?.key === scenarioKey ? scenarioError.message : ''
@@ -427,6 +432,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       <details className="builder-how-checked"><summary>How we checked · sources, assumptions and exact evidence</summary>
         <ConditionalScreen compact result={currentScreening} busy={!!requestKey && conditionalBusy && !currentScreening} error={currentScreeningError} onRetry={() => setConditionalRetry(value => value + 1)} boundaryEvidence={<PlacementScenarios assumptions={currentAssumptions} request={scenarioRequest} result={currentScenario} legalResult={currentScreening} busy={!!scenarioKey && scenarioBusy && !currentScenario} error={currentScenarioError} frontEdge={streetEdge} rearEdge={rearEdge} boundaryMode={boundaryMode} onBoundaryMode={setBoundaryMode} onRetry={() => setScenarioRetry(value => value + 1)} />} />
       </details></section>
+      <AdditionalInputs key={additionalKey} onHeight={value => { setScoutingHeight({ key: additionalKey, value }); setReadyFor(null) }} result={currentScenario} />
       <ProjectDetails settings={effectiveSettings} mapped={mappedZoning} lookup={currentZoning} busy={!!zoningKey && zoningBusy && !currentZoning} error={currentZoningError} onRetry={() => setZoningRetry(value => value + 1)} onChange={next => { setProjectSettings(next); setReadyFor(null) }} />
       <details className="builder-optional"><summary>Optional assumptions and user measurements</summary>
       <p>Use the current placement with explicitly stated lot and building assumptions. Candidate rules are sourced, but their currentness and site applicability still need review.</p>
@@ -440,7 +446,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
           <OccupiedLots key={revision} allowedModelIds={[MODEL_ID]} initialModelId={MODEL_ID} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} showHandoff={false} /></>}
     </section>}
     {mode === 'retained' && !selection && <p>Confirm a site lead above to consider a separate retained placement example. An example is never matched to your site lead.</p>}
-      <details className="builder-optional"><summary>Height and foundation context · not checked</summary><HeightView key={`height-${heightRevision}`} model={model} onFoundationAllowanceChange={value => { setFoundationAllowanceM(value); setReadyFor(null) }} /></details>
+      <details className="builder-optional"><summary>Illustrate model height and foundation</summary><p>This illustration is separate from the installed-height comparison above. A foundation allowance does not establish average grade.</p><HeightView key={`height-${heightRevision}`} model={model} onFoundationAllowanceChange={value => { setFoundationAllowanceM(value); setReadyFor(null) }} /></details>
       </div>
       {propertyComplete && <button className="builder-continue" type="button" onClick={() => { setExpanded({ property: false, placement: false, next: true }); requestAnimationFrame(() => document.getElementById('builder-next')?.scrollIntoView({ block: 'start' })) }}>Prepare enquiry{placementComplete ? '' : ' with placement unknown'}</button>}
     </section>

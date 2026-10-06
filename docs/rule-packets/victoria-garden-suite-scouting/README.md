@@ -4,6 +4,23 @@ This is an **agent-mapped, unreviewed, unpublished** candidate packet for select
 
 Schema replay: `python -m uv run --with jsonschema python -c "import json,pathlib,jsonschema; p=pathlib.Path('docs/rule-packets/victoria-garden-suite-scouting'); jsonschema.validate(json.loads((p/'packet.json').read_text()), json.loads((p/'schema.json').read_text()))"`. This validates structure, not source interpretation.
 
+## Supplemental scouting coverage (October 6, 2026)
+
+The original proposal below records the initial subset and its reasoning. The application now consumes this candidate packet; it remains unreviewed and unpublished. Supplement `candidate-scouting-2026-10-06-1` adds approximate observations separately from the legal-basis evaluator. A fresh October 6 PDF retrieval matches the hash below. This is a software/source-mapping update, not independent source approval or accepted publication.
+
+- Exact map labels `GRD-1` and `GRD-1 (PGA)` support the ordinary garden-suite subset. Priority Growth Area is defined in Part 2.1 (PDF pp18–19) and Schedule D; it is not a separate blanket exclusion of the garden-suite provisions in Part 3.1(28). Arbitrary GRD-1 suffixes, mixed zoning and other instruments remain unsupported. The mapped label and unreviewed provenance are preserved.
+- Side/rear/flanking comparisons remain coherent boundary scenarios. The supplement checks the **4 m front distance** for a building containing fewer than three units (Part 4.1(4)(a), PDF p31), using captured boundary to nominal footprint distances. It does not establish surveyed building faces or permitted projections.
+- Separation compares the selected principal-building outline to the nominal footprint against **2.4 m**. Rooflines remain rooflines; legal endpoint interpretation remains unresolved in the legal-basis evaluator.
+- Rear-yard location and **25% occupancy** use an explicitly approximate yard: the parcel clipped at the rearmost selected principal-building outline, parallel to the chosen rear line. Only a single coherent rear line, single-street scenario and contained valid principal polygon are supported. The denominator is this rear-yard area, never parcel area. This construction is a scouting proxy, not a determination of the legal yard.
+- **4.2 m height** uses a separate user-entered installed height following Part 2.1 Height and Average Grade (PDF pp17 and 12). Catalogue exterior height and foundation allowance are not silently converted into regulatory height. Missing grade/design inputs remain actionable unknowns.
+- Count and floor-area comparisons are enabled for the exact PGA label, but still need user facts and the existing evaluator prerequisites. A roof outline cannot establish an existing dwelling's use or the model's interior floor area.
+
+The supplement is keyed to the current property/model/placement and included in enquiry evidence. It does not close site-specific approvals, heritage/variance/transition conditions, servicing, projections or other unimplemented provisions. Waterfront scenarios require separate review. The original outstanding-check list below still describes gaps in accepted legal evaluation, not a claim that approximate observations are unavailable.
+
+Verification: API integration tests use an independently calculable 20 m square lot, 200 m² approximate rear yard, 4 m² footprint and 5 m building gap; they exercise the exact height threshold and an exceedance. Frontend tests distinguish the supported PGA label from arbitrary suffixes. A local browser run using the live 419 Cecelia lookup verified the PGA mapping, automatic parcel selection, height result and checklist-to-input navigation. Entered property facts during this run are test assumptions, not evidence about 419 Cecelia.
+
+Remaining owners: the implementation owner should add irregular/corner-lot scouting only after an explicit geometry convention; a source reviewer must resolve currentness and legal measurement conventions before accepted evaluation; a site reviewer/homeowner must supply actual use, suite count, design area and installed-height facts.
+
 ## Evidence and currentness
 
 I retrieved the [City's 133-page Zoning Bylaw 2018 PDF](https://www.victoria.ca/media/file/zoning-bylaw-2018) on October 5, 2026 (October 6 01:44 UTC). Its 4,600,202 bytes match the September 24 repository capture SHA-256 `6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33`. The source rights audit withholds the PDF from this repository. PDF page numbers below are **one-based file pages**; printed page numbers differ by five. This matching hash verifies the same public bytes, not complete currentness or legal interpretation.

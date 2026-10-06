@@ -2,6 +2,7 @@ import type { Result as GeometryResult } from '../occupied_lots/contract'
 import type { ScreeningResult } from './model'
 import type { ScenarioResult } from './scenarios'
 import type { MappedZoning, ProjectSettings } from './projectSettings'
+import { supportedGardenSuiteZone } from './projectSettings'
 import type { ZoningLookup } from './victoriaZoning'
 import type { SiteAssumptions } from '../zoning_site_assumptions/model'
 
@@ -15,7 +16,7 @@ export function homeownerSummary(input: {
 }): Summary {
   const { geometry, geometryComplete, scenario, screening, assumptions, settings, mapped, lookup, zoningBusy, zoningError, scenarioError, screeningError, onRetryAvailable } = input
   const checks: SummaryCheck[] = []
-  const mappedOutside = mapped?.status === 'single' && (mapped.zone !== 'GRD-1' || mapped.instrument !== 'Zoning Bylaw 2018 (No. 18-072)')
+  const mappedOutside = mapped?.status === 'single' && (!supportedGardenSuiteZone(mapped.zone) || mapped.instrument !== 'Zoning Bylaw 2018 (No. 18-072)')
   const enteredOutside = settings.evidence.confirmed_zone.origin === 'user' && settings.proposal.confirmed_zone === 'other' ||
     settings.evidence.confirmed_instrument.origin === 'user' && settings.proposal.confirmed_instrument === 'other'
   const outsideScope = mappedOutside || enteredOutside
@@ -46,7 +47,7 @@ export function homeownerSummary(input: {
     : suiteCount === null || suiteCount === undefined
       ? { label: 'Existing garden suite', status: 'unknown', detail: 'Tell us if there is already a garden suite on the property.', action: { label: 'Enter suite count', target: 'existing-suites' } }
       : countChecked ? { label: 'Existing garden suite', status: 'checked', detail: 'Your stated count meets this candidate check under its assumptions.' }
-        : { label: 'Existing garden suite', status: 'unknown', detail: 'Your stated count is recorded; a supported comparison is not available for these inputs.' })
+        : { label: 'Existing garden suite', status: 'unknown', detail: 'Your stated count is recorded. Review the project settings and main-building use to complete this conditional comparison.', action: { label: 'Review project settings', target: 'zoning-settings' } })
 
   for (const [kind, label, target] of [
     ['area_max', 'Floor area', 'zsa-floor-area'],
@@ -77,12 +78,25 @@ export function homeownerSummary(input: {
     : zoningError || lookup?.status === 'unavailable'
       ? { label: 'Zoning coverage', status: 'unknown', detail: 'The municipal zoning source is unavailable. No current zone was verified.', ...(onRetryAvailable ? { action: { label: 'Retry zoning lookup', target: 'zoning-retry' } } : {}) }
       : zoningBusy ? { label: 'Zoning coverage', status: 'unknown', detail: 'Checking the municipal zoning map.' }
-        : mapped?.status === 'single' && mapped.zone === 'GRD-1'
-          ? { label: 'Zoning coverage', status: 'checked', detail: 'The selected parcel maps to GRD-1 in an unreviewed City observation; applicability still needs review.' }
+        : mapped?.status === 'single' && supportedGardenSuiteZone(mapped.zone)
+          ? { label: 'Zoning coverage', status: 'checked', detail: `The selected parcel maps to ${mapped.zone}; the ordinary garden-suite subset is supported. The map observation and site applicability remain unreviewed.` }
           : { label: 'Zoning coverage', status: 'unknown', detail: 'A single supported zone is not established for this property.', action: { label: 'Review zoning', target: 'zoning-settings' } })
 
+  if (!outsideScope && scenario?.additional_checks?.length) {
+    // Replace permanent gaps with sourced scouting outcomes, never legal-basis passes.
+    for (const extra of scenario.additional_checks) {
+      const index = checks.findIndex(check => check.label === extra.label)
+      const row: SummaryCheck = { label: extra.label, status: extra.status, detail: extra.detail,
+        ...(extra.action_target ? { action: { label: extra.action_target === 'scouting-height' ? 'Enter installed height' : extra.action_target === 'waterfront-lot' ? 'Confirm waterfront status' : extra.action_target === 'principal-building' ? 'Review main building' : 'Review boundary roles', target: extra.action_target } } : {}) }
+      if (index >= 0) {
+        if (checks[index].status !== 'conflict') checks[index] = row
+      } else checks.splice(checks.length - 1, 0, row)
+    }
+    const remaining = checks.find(check => check.label === 'Other siting requirements')
+    if (remaining) { remaining.label = 'Site-specific approvals and other requirements'; remaining.detail = 'Variances, heritage/permit conditions, projections, servicing and other provisions still need property-specific review. New front/rear-yard checks cover only the stated approximate subset.' }
+  }
   const supportedConflict = screening?.checks.some(check => check.rule.kind !== 'prerequisite' && check.rule.kind !== 'boundary_min' && check.status === 'apparent_conflict_under_assumptions') ?? false
-  const conflict = geometryConflict || legalDistanceConflict || scenario?.status === 'apparent_conflict' || countConflict || supportedConflict
+  const conflict = geometryConflict || legalDistanceConflict || scenario?.status === 'apparent_conflict' || countConflict || supportedConflict || checks.some(check => check.status === 'conflict')
   return {
     conclusion: conflict ? 'This placement has a problem' : contained && geometryComplete ? 'A promising starting position · limited checks' : geometry ? 'This placement needs a closer look' : 'Insufficient information for a placement answer',
     next: conflict ? 'Review the flagged position or supplied facts, then check the remaining unknowns.' : contained && geometryComplete ? 'No mapped overlap was observed in the checked geometry. Review missing information and arrange a review of requirements this tool does not cover.' : geometry ? 'Some geometry remains unresolved. Review the placement and source coverage before relying on it.' : 'Place the model on a property to start the approximate checks.',

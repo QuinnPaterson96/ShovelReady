@@ -7,7 +7,7 @@ import { HomeownerSummary } from './HomeownerSummary'
 import { homeownerSummary } from './victoriaSummaryAdapter'
 import type { Result } from '../occupied_lots/contract'
 import type { MappedZoning } from './projectSettings'
-import { changeProjectSetting, initialProjectSettings } from './projectSettings'
+import { applyMappedZoning, changeProjectSetting, initialProjectSettings } from './projectSettings'
 import type { ScenarioResult } from './scenarios'
 import type { ScreeningResult } from './model'
 
@@ -17,6 +17,20 @@ const clear = { ...captured, checks: captured.checks.map(check => ({ ...check,
   comparison: check.comparison === 'shortfall' ? null : check.comparison })) }
 const base = { geometry: clear, geometryComplete: true, scenario: null, screening: null, assumptions: null, settings: initialProjectSettings(), mapped: null, lookup: null,
   zoningBusy: false, zoningError: '', scenarioError: '', screeningError: '', onRetryAvailable: true }
+
+test('exact PGA map label retains its identity and restores ordinary garden-suite coverage', () => {
+  const mapped: MappedZoning = { schema_version: 'sr.mapped-zoning.v1', property_revision: 'cecelia', status: 'single', zone: 'GRD-1 (PGA)',
+    instrument: 'Zoning Bylaw 2018 (No. 18-072)', source: { provider: 'City of Victoria', record_label: 'zoning polygon', url: 'https://maps.victoria.ca/', capture_date: '2026-10-06', review_status: 'unreviewed', locator: 'Zoning' }, reason: 'whole captured parcel' }
+  const settings = applyMappedZoning(initialProjectSettings(), mapped, 'cecelia')
+  assert.equal(settings.proposal.confirmed_zone, 'GRD-1 (PGA)')
+  const summary = homeownerSummary({ ...base, settings, mapped })
+  assert.equal(summary.checks.at(-1)?.status, 'checked')
+  for (const label of ['Distance to boundaries', 'Existing garden suite', 'Floor area']) {
+    assert.equal(summary.checks.find(check => check.label === label)?.status, 'unknown')
+    assert.ok(summary.checks.find(check => check.label === label)?.action)
+  }
+  assert.equal(applyMappedZoning(initialProjectSettings(), { ...mapped, zone: 'GRD-1 - Site Specific' }, 'cecelia').proposal.confirmed_zone, 'other')
+})
 
 test('observed geometry conflict wins over any apparently clear subset', () => {
   const conflict = { ...captured, checks: captured.checks.map(check => check.kind === 'containment' ? { ...check, relation: 'outside' } : check) }

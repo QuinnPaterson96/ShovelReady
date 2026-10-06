@@ -138,7 +138,7 @@ class Assumptions(Strict):
 class Proposal(Strict):
     proposed_use: Literal["garden_suite", "other"] | None = None
     foundation_attached: bool | None = None
-    confirmed_zone: Literal["GRD-1", "other"] | None = None
+    confirmed_zone: Literal["GRD-1", "GRD-1 (PGA)", "other"] | None = None
     confirmed_instrument: Literal["Zoning Bylaw 2018", "other"] | None = None
     legal_lot_confirmed: bool | None = None
     floor_area_definition_acknowledged: bool | None = None
@@ -301,7 +301,8 @@ def _assemble(body: ApiRequest) -> Request:
 
     assertions = {
         "legal_lot": proposal.legal_lot_confirmed,
-        "zone": None if proposal.confirmed_zone is None else proposal.confirmed_zone == "GRD-1",
+        "zone": (None if proposal.confirmed_zone is None
+                 else proposal.confirmed_zone in ("GRD-1", "GRD-1 (PGA)")),
         "instrument": (
             None
             if proposal.confirmed_instrument is None

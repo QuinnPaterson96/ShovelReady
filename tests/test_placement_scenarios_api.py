@@ -57,6 +57,49 @@ def screen(body):
     return response.json()
 
 
+def test_pga_additional_checks_use_rear_yard_denominator_and_keep_roofline_basis():
+    # Independent geometry: 20x20 lot, house rear y=10, yard area 200;
+    # proposed 2x2 box spans y=15..17: gap 5m, rear-yard share 4/200.
+    body = request((10, 16))
+    body["proposal"] = {"confirmed_zone": "GRD-1 (PGA)",
+                        "confirmed_instrument": "Zoning Bylaw 2018"}
+    body["additional_inputs"] = {"height_from_average_grade_m": 4.2}
+    body["street_pattern"] = "single"
+    body["street_edge_id"] = "geom:ring-0:segment-0"
+    house = {"id": "house", "basis": "roofline", "source": SOURCE,
+             "shape": {"crs": "EPSG:3157", "geometry": {"type": "Polygon", "coordinates": [
+                 [[5, 5], [15, 5], [15, 10], [5, 10], [5, 5]]]}}}
+    body["geometry"]["buildings"] = [house]
+    for key, value in (("waterfront", False), ("building_type", "single_detached"),
+                       ("principal_building_id", "house")):
+        body["assumptions"][key]["value"] = value
+    result = screen(body)
+    checks = {check["id"]: check for check in result["additional_checks"]}
+    assert checks["separation"]["observed"] == 5
+    assert "roofline" in checks["separation"]["basis"]
+    assert checks["rear_occupancy"]["observed"] == .02
+    assert checks["rear_location"]["status"] == "checked"
+    assert checks["front"]["observed"] == 15
+    assert checks["height"]["status"] == "checked"
+    assert result["additional_revision"] == "candidate-scouting-2026-10-06-1"
+    body["additional_inputs"]["height_from_average_grade_m"] = 4.200001
+    assert next(c for c in screen(body)["additional_checks"]
+                if c["id"] == "height")["status"] == "conflict"
+    body["assumptions"]["principal_building_id"]["value"] = None
+    assert next(c for c in screen(body)["additional_checks"]
+                if c["id"] == "separation")["status"] == "unknown"
+    body["proposal"]["confirmed_zone"] = "other"
+    assert all(c["status"] == "unsupported" for c in screen(body)["additional_checks"])
+
+
+def test_additional_height_rejects_bad_units_and_nonfinite_values():
+    for value in (-1, "4.2", True):
+        body = request()
+        body["additional_inputs"] = {"height_from_average_grade_m": value}
+        assert client.post("/api/conditional-screening/v1/placement-scenarios",
+                           json=body).status_code == 422
+
+
 def test_all_plausible_assignments_pass_only_the_declared_distance_subset():
     result = screen(request())
     assert result["status"] == "bounded_pass"
