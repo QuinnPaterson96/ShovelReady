@@ -323,7 +323,7 @@ This UI does not publish accepted zoning data or establish site applicability.
 Boundary adjustment now uses a right-hand marking panel: choose Side, Rear, Front
 or Flanking, then click an edge to apply an explicit user assumption. Visible edge
 labels echo the stored role; keyboard users can select an edge and apply the same
-mark. Clear removes a mark without deriving a replacement. Irregular outlines still
+mark. Clear removes an explicit mark; an applicable suggestion can reappear. Irregular outlines still
 need manual review. Next-action and journey-step information buttons expose nearby
 explanations by click/tap/keyboard without changing inputs or advancing the journey.
 
@@ -336,3 +336,13 @@ are schematic exterior offsets only for supported convex four-edge geometry; oth
 outlines retain marks without invented road geometry. All modes retain these bands,
 and enquiry/technical exports retain attribution and completeness. Step information
 is a viewport-bounded hover/focus popup with tap pinning and Escape/outside dismissal.
+
+On supported convex four-edge lots, explicit front/rear marks anchor display-only
+suggestions: the opposite edge is rear/front; the remaining marked street edges are
+flanking, and confirmed non-street edges are sides. Without an anchor, one complete
+street edge suggests front. Incomplete non-street edges remain unknown. Explicit
+roles are retained; contradictions are shown and conflicting front/rear anchors
+suspend suggestions. Map labels identify suggested roles and the editor can accept
+one as an explicit user assumption. The optional typed `boundary_role_suggestions`
+record preserves suggestion basis and conflicts in HTTP/evidence exports; it never
+supplies evaluator facts. Irregular outlines continue to require manual review.

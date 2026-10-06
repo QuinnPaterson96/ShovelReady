@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { ordinaryFourEdgeBoundary, type BoundaryEdge, type BoundaryMapMode } from './model'
 
 export type BoundaryMapInteraction = {
+  suggestedRoles?: Record<string, import('./model').EdgeRole>
   streetIds?: string[]
   allStreetsMarked?: boolean
   onStreetComplete?: (complete: boolean) => void
@@ -33,7 +34,7 @@ export function BoundaryOverlay({ interaction }: { interaction: BoundaryMapInter
       <line x1={edge.start[0]} y1={-edge.start[1]} x2={edge.end[0]} y2={-edge.end[1]}
         className="boundary-map-edge-hit" onClick={event => { event.stopPropagation(); if (interaction.mode !== 'front' || edge.ring === 0) interaction.onSelect(edge.id) }} data-edge-id={edge.id} />
       <text transform={`translate(${(edge.start[0] + edge.end[0]) / 2} ${-(edge.start[1] + edge.end[1]) / 2})`} x="0" y="0"
-        textAnchor="middle" dominantBaseline="middle" className="boundary-map-edge-label">{edge.ring ? `Inner ${edge.ring} · ${edge.segment + 1}` : index + 1}{edge.role.value && edge.role.value !== 'unknown' ? ` · ${edge.role.value === 'flanking_street' ? 'Flanking' : edge.role.value[0].toUpperCase() + edge.role.value.slice(1)}` : ''}</text>
+        textAnchor="middle" dominantBaseline="middle" className="boundary-map-edge-label">{edge.ring ? `Inner ${edge.ring} · ${edge.segment + 1}` : index + 1}{edge.role.value && edge.role.value !== 'unknown' ? ` · ${edge.role.value === 'flanking_street' ? 'Flanking' : edge.role.value[0].toUpperCase() + edge.role.value.slice(1)}` : interaction.suggestedRoles?.[edge.id] ? ` · ${interaction.suggestedRoles[edge.id] === 'flanking_street' ? 'Flanking' : interaction.suggestedRoles[edge.id][0].toUpperCase() + interaction.suggestedRoles[edge.id].slice(1)} (suggested)` : ''}</text>
     </g>)}
   </g>
 }
@@ -53,7 +54,7 @@ export function BoundaryMapTools({ interaction }: { interaction: BoundaryMapInte
         <button type="button" onClick={() => onSelect(null)}>Not sure · clear street marks</button>
       </div>
       <label className="boundary-map-single"><input type="checkbox" checked={complete} onChange={event => interaction.onStreetComplete?.(event.target.checked)} /> I've marked all street edges</label>
-      <p role="status">{!complete ? 'Unmarked edges remain uncertain. Changing a mark clears this confirmation.' : marked.length === 1 && supported ? 'For this simple one-street sketch, front, opposite rear and side roles are suggestions only. Adjust boundary facts if you can support them.' : 'Street marks are recorded. Front, rear and flanking classifications still need support from your property plan.'}</p>
+      <p role="status">{!complete ? 'Unmarked edges remain uncertain. Changing a mark clears this confirmation.' : marked.length === 1 && supported ? 'For this simple one-street sketch, front, opposite rear and side roles are suggestions only. Adjust boundary facts if you can support them.' : 'Street marks are recorded. In Adjust boundaries, mark Front or Rear to suggest the other roles; use your property plan to support your choice.'}</p>
       <p>Grey road bands show your street marks only: no measured road width, surveyed location or access point is implied.</p>
     </>}
     {interaction.editor}

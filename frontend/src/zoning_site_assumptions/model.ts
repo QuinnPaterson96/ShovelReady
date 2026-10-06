@@ -6,7 +6,9 @@ export type UserFact<T> = { value: T | null; origin: 'user' | 'journey_default';
 export type BoundaryEdge = { id: string; ring: number; segment: number; start: [number, number]; end: [number, number]; role: UserFact<EdgeRole> }
 export type UserMeasurement = { value: number; unit: 'm' | 'm2'; basis: 'proposed_wall_to_lot_line' | 'principal_wall_to_proposed_wall' | 'regulatory_floor_area' | 'rough_floor_area_estimate'; origin: 'user'; note: string | null; placement_revision: string }
 export type StreetAdjacency = { edge_ids: string[]; all_marked: boolean; origin: 'user' }
+export type BoundaryRoleSuggestions = { roles: Record<string, EdgeRole>; conflicts: string[]; basis: 'user_marks' }
 export type SiteAssumptions = {
+  boundary_role_suggestions?: BoundaryRoleSuggestions
   street_adjacency?: StreetAdjacency
   schema_version: 'sr.zoning-site-assumptions.v1'
   property: { case_id: string; parcel_id: string; geometry_revision: string; crs: string; source: Feature['source']; capture: Site['capture'] }
@@ -83,6 +85,30 @@ export function suggestedBoundaryRoles(edges: BoundaryEdge[], frontId: string | 
   const frontIndex = front >= 0 ? front : (rear + 2) % 4
   return Object.fromEntries(ordered.map((edge, index) => [edge.id,
     index === frontIndex ? 'front' : index === (frontIndex + 2) % 4 ? 'rear' : 'side']))
+}
+
+/** Geometric suggestions preserve every explicit role and never supply evaluation facts. */
+export function inferBoundaryRoles(edges: BoundaryEdge[], streets?: StreetAdjacency): BoundaryRoleSuggestions {
+  const result: BoundaryRoleSuggestions = { roles: {}, conflicts: [], basis: 'user_marks' }
+  if (!ordinaryFourEdgeBoundary(edges)) return result
+  const ordered = [...edges].sort((a, b) => a.segment - b.segment)
+  const fronts = ordered.filter(edge => edge.role.value === 'front'), rears = ordered.filter(edge => edge.role.value === 'rear')
+  if (fronts.length > 1 || rears.length > 1) { result.conflicts.push('More than one front or rear is marked. Review your marks.'); return result }
+  let front = fronts.length ? ordered.indexOf(fronts[0]) : -1
+  const rear = rears.length ? ordered.indexOf(rears[0]) : -1
+  if (front >= 0 && rear >= 0 && (front + 2) % 4 !== rear) { result.conflicts.push('Your front and rear marks are not opposite. Review your marks.'); return result }
+  if (front < 0 && rear >= 0) front = (rear + 2) % 4
+  if (front < 0 && streets?.all_marked && streets.edge_ids.length === 1) front = ordered.findIndex(edge => edge.id === streets.edge_ids[0])
+  if (front < 0) return result
+  if (streets?.all_marked && !streets.edge_ids.includes(ordered[front].id)) { result.conflicts.push('The front implied by your marks does not border a marked street. Review front/rear or street marks.'); return result }
+  ordered.forEach((edge, index) => {
+    const role: EdgeRole = index === front ? 'front' : index === (front + 2) % 4 ? 'rear' : streets?.edge_ids.includes(edge.id) ? 'flanking_street' : streets?.all_marked ? 'side' : 'unknown'
+    const explicit = edge.role.value
+    if (explicit && explicit !== 'unknown') {
+      if (role !== 'unknown' && explicit !== role) result.conflicts.push(`Edge ${edge.segment + 1}: your ${explicit === 'flanking_street' ? 'flanking' : explicit} mark differs from the suggested ${role === 'flanking_street' ? 'flanking' : role}. Your mark is kept.`)
+    } else if (role !== 'unknown') result.roles[edge.id] = role
+  })
+  return result
 }
 
 export function ordinaryFourEdgeBoundary(edges: BoundaryEdge[]): boolean {
