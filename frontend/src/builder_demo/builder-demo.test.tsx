@@ -11,6 +11,8 @@ import { parseResult, parseSites } from '../occupied_lots/contract'
 import { exampleCase, exampleRequest, initialExamplePosition } from './example'
 import { ExampleProperty } from './ExampleProperty'
 import OccupiedLots from '../occupied_lots/OccupiedLots'
+import { bundledCatalogue } from '../model_catalogue/model'
+import { PriceTiming, priceTimingParagraphs } from '../model_catalogue/PriceTiming'
 
 const manualFact = (value: string | number | null): Fact => ({
   value, unit: null, basis: null, unresolved_reason: value === null ? 'unknown' : null,
@@ -30,6 +32,43 @@ test('Model 300 entry uses an explicit single-model catalogue lead and optional 
   assert.match(html, /Try an example property/)
   assert.match(html, /Use my own property/)
   assert.match(html, /What the published height tells us/)
+  assert.match(html, /Starting at CAD 187,000/)
+  assert.match(html, /Contract to delivery: roughly 12–18 weeks · provider-wide/)
+  assert.match(html, /On-site installation: 1 day · provider-wide/)
+  assert.match(html, /<summary>Price &amp; timing details and sources<\/summary>/)
+})
+
+test('sourced commercial information survives all unsent enquiry formats, including private email', () => {
+  const document = enquiryDocument(buildSelection(null, null, manual), questions, null)
+  const section = document.sections.find(item => item.heading === 'Price & timing')!
+  assert.ok(section)
+  const outputs = [enquiryPlainText(document), enquiryMarkdown(document),
+    enquiryEmailBody(document, false), enquiryEmailBody(document, true),
+    renderToStaticMarkup(createElement(EnquiryPreview, { document }))]
+  for (const serialized of outputs) {
+    const output = serialized.replace(/\\([\\`*_{}\[\]()#+.!|~-])/g, '$1')
+    assert.match(output, /CAD 187,000/)
+    assert.match(output, /12–18 weeks/)
+    assert.match(output, /provider-wide/)
+    assert.match(output, /Tax treatment: unknown/)
+    assert.match(output, /Shipping; Installation/)
+    assert.match(output, /Production lead time: unknown/)
+    assert.match(output, /Delivery transit: unknown/)
+    assert.match(output, /not total project cost/)
+    assert.match(output, /not the full project timeline/)
+    assert.match(output, /Purchase contract/)
+    assert.match(output, /Production schedule/)
+    assert.match(output, /Permitting requirements/)
+    assert.match(output, /2026/)
+    assert.match(output, /unreviewed/)
+    assert.match(output, /https:\/\/www.auxbox.ca\/faqs/)
+  }
+  assert.deepEqual(section.paragraphs, priceTimingParagraphs(bundledCatalogue.models[2]))
+  const older = { ...bundledCatalogue.models[2], prices: undefined, timings: undefined }
+  const unknown = renderToStaticMarkup(createElement(PriceTiming, { model: older }))
+  assert.match(unknown, /Price unknown/)
+  assert.match(unknown, /On-site installation: unknown/)
+  assert.doesNotMatch(unknown, /CAD 0|instant|free/i)
 })
 
 test('saved example retains the licensed packet and an explicit measurable starting placement', () => {

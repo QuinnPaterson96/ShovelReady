@@ -6,6 +6,7 @@ import { ManualSiteInput } from '../manual_site/ManualSiteInput'
 import type { ManualSiteOutput } from '../manual_site/model'
 import { measurementWithUnit } from '../measurements'
 import { bundledCatalogue } from '../model_catalogue/model'
+import { PriceTiming, priceTimingParagraphs } from '../model_catalogue/PriceTiming'
 import { CopyableRecord, publicSourceUrl, readableDate, TechnicalDetails } from '../ReadableProvenance'
 import { SitePreparation } from '../site_preparations/SitePreparation'
 import { emptySiteInput, type SiteInputDraft, type SitePreparationSelection } from '../site_preparations/types'
@@ -108,6 +109,7 @@ export function enquiryDocument(selection: SitePreparationSelection | null, inpu
     question,
     example: savedExample,
     sections: [
+      { heading: 'Price & timing', paragraphs: priceTimingParagraphs(model), emailSummary: priceTimingParagraphs(model).join(' ') },
       { heading: 'Model', paragraphs: [lines[1], lines[2], lines[8 + offset]], emailSummary: `aux box Model 300; nominal exterior ${original('nominal_exterior_width')} × ${original('nominal_exterior_depth')}; source ${model.provider_url}; current controlled revision and installed height unknown.` },
       { heading: 'Property', paragraphs: [lines[3], ...(candidate ? [lines[4]] : []), lines[4 + offset], lines[5 + offset]], emailSummary: savedExample ? 'Saved City of Victoria example only; this is not my property.' : live ? `Confirmed Victoria lead: ${live.address.label}. Captured observation remains unreviewed.` : manual ? `User-supplied site: ${field(manual.facts.address)}; facts and sketch unverified.` : `Site lead: ${candidate ? fact(candidate.address.value) : fact(selection?.manual.address.value ?? null)}; identity and dimensions unverified.` },
       { heading: 'Placement', paragraphs: [lines[6 + offset], lines[7 + offset], ...(clearanceText ? [clearanceText] : [])], emailSummary: measured ? `Approximate measured rectangle ${measurementWithUnit(p?.width_m, 'length')} × ${measurementWithUnit(p?.depth_m, 'length')}; ${measured.widthOrigin === 'user' || measured.depthOrigin === 'user' ? 'custom size, provider availability unknown; ' : ''}geometry observations recorded; ${conditional ? 'see separate conditional zoning checks' : 'zoning comparison unresolved'}. ${clearanceText}` : manual?.assessment ? `User sketch measured at ${measurementWithUnit(manual.assessment.input.placement.width_m, 'length')} × ${measurementWithUnit(manual.assessment.input.placement.depth_m, 'length')}; unverified geometry; zoning unassessed.` : 'No current placement measurement; geometry and zoning unassessed.' },
@@ -354,6 +356,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       <p className="notice">This ShovelReady demonstration is independent of aux box. It offers limited conditional Victoria checks when you supply assumptions; it does not establish legal compatibility, confirm provider service, or contact the company.</p>
       <p><strong>Model 300</strong> · {original('nominal_exterior_width')} × {original('nominal_exterior_depth')} · advertised height {original('advertised_overall_height')}. Provider dimensions are unreviewed.</p>
       <ModelImage />
+      <PriceTiming model={model} />
       <details className="builder-model-details"><summary>Model photos, specifications and sources</summary>
       <div className="builder-specs" aria-label="Captured model information">
         <div><strong>{original('nominal_exterior_width')} × {original('nominal_exterior_depth')}</strong><span>Provider nominal exterior rectangle · {metres('nominal_exterior_width')} × {metres('nominal_exterior_depth')}</span></div>

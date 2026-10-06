@@ -6,7 +6,54 @@ from typing import Literal
 
 from pydantic import model_validator
 
-from app.contracts.common import Contract, Quantity, Text
+from app.contracts.common import Contract, Nonnegative, Quantity, Text
+
+
+class ValueRange(Contract):
+    minimum: Nonnegative
+    maximum: Nonnegative | None = None
+
+    @model_validator(mode="after")
+    def ordered(self):
+        if self.maximum is not None and self.maximum < self.minimum:
+            raise ValueError("range maximum must be at least minimum")
+        return self
+
+
+class CommercialClaim(Contract):
+    source_id: Text
+    wording: Text
+    scope: Literal["model", "provider"]
+    configuration: Text | None = None
+    region: Text | None = None
+    qualifications: tuple[Text, ...] = ()
+
+
+class Price(CommercialClaim):
+    amount: ValueRange | None = None
+    currency: Literal["CAD", "USD", "EUR", "GBP", "AUD", "NZD"] | None = None
+    basis: Literal["starting", "fixed", "estimated"]
+    inclusions: tuple[Text, ...] = ()
+    exclusions: tuple[Text, ...] = ()
+    tax_treatment: Text | None = None
+
+
+class Timing(CommercialClaim):
+    stage: Literal[
+        "production_lead_time", "delivery", "on_site_installation", "contract_to_delivery"
+    ]
+    duration: ValueRange | None = None
+    unit: Literal["hours", "days", "weeks", "months"] | None = None
+    basis: Literal["estimated", "provider_claim"]
+    clock_start: Text | None = None
+    prerequisites: tuple[Text, ...] = ()
+
+    @model_validator(mode="after")
+    def duration_units(self):
+        if (self.duration is None) != (self.unit is None):
+            raise ValueError("duration and unit must be supplied together")
+        return self
+
 
 SNAPSHOT = Path(__file__).with_name("catalogue.json")
 
@@ -19,6 +66,7 @@ class Source(Contract):
     sha256: Text | None
     artifact_status: Literal["private_capture", "capture_gap"]
     upstream_revision: Text | None = None
+    updated_at: Text | None = None
 
 
 class Measure(Contract):
@@ -70,6 +118,8 @@ class Model(Contract):
     sources: tuple[Source, ...]
     measurements: tuple[Measure, ...]
     review_status: Literal["unreviewed"]
+    prices: tuple[Price, ...] = ()
+    timings: tuple[Timing, ...] = ()
 
     @model_validator(mode="after")
     def identities(self):
@@ -83,6 +133,8 @@ class Model(Contract):
             raise ValueError("unknown measurement source")
         if "roof_height" not in names:
             raise ValueError("building height must be explicitly known or missing")
+        if any(claim.source_id not in ids for claim in (*self.prices, *self.timings)):
+            raise ValueError("unknown price/timing source")
         return self
 
 

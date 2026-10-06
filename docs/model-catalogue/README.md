@@ -1,5 +1,11 @@
 # SR-40 prefab candidates and component handoff
 
+October 6 additive commercial information: [price and timing handoff](../integration-model-price-timing.md).
+The existing v1 contract now accepts optional `prices` and `timings` lists and source
+`updated_at`; absent lists mean unknown, and older snapshots need no migration.
+The snapshot exporter remains the single authoring path; research intake remains
+validation/staging only. No accepted data release is published by this extension.
+
 Ticket: [SR-40 / #88](https://github.com/QuinnPaterson96/ShovelReady/issues/88). Planning base: `6c14d9f4f4dc43c297b341a212dd8174585d1880` on `main` (includes PR #85). This packet is an **unreviewed input aid**. It is not an accepted design revision, Victoria service confirmation, regulatory measurement or site fit.
 
 ## Source and acquisition decision
