@@ -2,7 +2,7 @@ import type { Case, Feature, Site } from '../occupied_lots/contract'
 
 export type EdgeRole = 'unknown' | 'front' | 'rear' | 'side' | 'flanking_street'
 export type BoundaryMapMode = 'place' | 'front' | 'rear'
-export type UserFact<T> = { value: T | null; origin: 'user'; note: string | null }
+export type UserFact<T> = { value: T | null; origin: 'user' | 'journey_default'; note: string | null; evidence_state?: 'assumed' | 'user_confirmed' | 'unknown' }
 export type BoundaryEdge = { id: string; ring: number; segment: number; start: [number, number]; end: [number, number]; role: UserFact<EdgeRole> }
 export type UserMeasurement = { value: number; unit: 'm' | 'm2'; basis: 'proposed_wall_to_lot_line' | 'principal_wall_to_proposed_wall' | 'regulatory_floor_area' | 'rough_floor_area_estimate'; origin: 'user'; note: string | null; placement_revision: string }
 export type SiteAssumptions = {
@@ -41,7 +41,7 @@ export function parcelEdges(site: Case, geometryRevision: string): BoundaryEdge[
   return result
 }
 
-export function initialAssumptions(site: Case, geometryRevision: string, placementRevision: string): SiteAssumptions {
+export function initialAssumptions(site: Case, geometryRevision: string, placementRevision: string, homeownerDefaults = false): SiteAssumptions {
   const edges = parcelEdges(site, geometryRevision)
   const exterior = edges.filter(edge => edge.ring === 0)
   return {
@@ -49,7 +49,7 @@ export function initialAssumptions(site: Case, geometryRevision: string, placeme
     property: { case_id: site.case_id, parcel_id: site.site.parcel.id, geometry_revision: geometryRevision,
       crs: site.site.projected_metre_crs, source: site.site.parcel.source, capture: site.site.capture },
     observed_buildings: site.site.buildings.map(building => ({ id: building.id, basis: building.basis, source: building.source })),
-    edges, building_type: fact(), existing_garden_suites: fact(), principal_building_id: fact(), waterfront: fact(),
+    edges, building_type: fact(), existing_garden_suites: homeownerDefaults ? { value: 0, origin: 'journey_default', evidence_state: 'assumed', note: 'Assuming none already exist; editable homeowner scenario, not independently verified.' } : fact(), principal_building_id: fact(), waterfront: fact(),
     measurements: { boundary: {}, principal_separation: null, floor_area: null }, placement_revision: placementRevision,
     limitations: [
       'Edge roles are user assumptions, not surveyed legal lot-line classifications.',
@@ -95,4 +95,10 @@ export function ordinaryFourEdgeBoundary(edges: BoundaryEdge[]): boolean {
       (edge.end[1] - edge.start[1]) * (next.end[0] - next.start[0])
   })
   return turns.every(turn => turn > 0) || turns.every(turn => turn < 0)
+}
+
+/** Selection is still an assumption until the optional confirmation is checked. */
+export function suiteCountFact(value: 0 | 1 | 'two_or_more' | null, confirmed = false): SiteAssumptions['existing_garden_suites'] {
+  return { value, origin: 'user', evidence_state: value === null ? 'unknown' : confirmed ? 'user_confirmed' : 'assumed',
+    note: value === null ? null : confirmed ? 'User-confirmed; not independently verified.' : 'User-selected assumption; not independently verified.' }
 }

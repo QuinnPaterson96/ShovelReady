@@ -8,7 +8,7 @@ import type { OccupiedMeasurement } from '../occupied_lots/OccupiedLots'
 import type { Result } from '../occupied_lots/contract'
 import { emptyExampleAssumptions, exampleCase, exampleOrientation, exampleObservation, exampleRequest, initialExamplePosition, parseExampleResult } from './example'
 import type { ExampleAssumptions, ExamplePosition } from './example'
-import { BoundaryMapTools, BoundaryOverlay, type BoundaryMapInteraction } from '../zoning_site_assumptions/BoundaryMapTools'
+import { BoundaryActionTabs, BoundaryMapTools, BoundaryOverlay, type BoundaryMapInteraction } from '../zoning_site_assumptions/BoundaryMapTools'
 
 const source = exampleCase.site.parcel.source
 const roofSource = exampleCase.site.buildings[0]?.source
@@ -133,7 +133,8 @@ export function ExampleProperty({ onMeasurement, boundaryInteraction, placementS
 
   return <section className="builder-example" aria-label="Saved example property">
     <p className="builder-example-summary"><strong>Model 300 · {show(Number(position.width), 'length')} wide × {show(Number(position.depth), 'length')} long</strong><span>Nominal exterior rectangle · saved Victoria example · {source.provider}, {source.record_label} · captured {readableDate(source.capture_date)} · {source.review_status} · <a href={publicSourceUrl(source.reference) ?? '#builder-example-evidence'} target="_blank" rel="noreferrer">Parcel source</a></span></p>
-    <div className="builder-example-layout">
+    {boundaryInteraction && <BoundaryActionTabs interaction={boundaryInteraction} />}
+    <div className="builder-example-layout" id="placement-action-panel" role={boundaryInteraction ? 'tabpanel' : undefined} aria-labelledby={boundaryInteraction ? `placement-action-${boundaryInteraction.mode}` : undefined}>
       <figure className="builder-example-map" id="placement-map">
         <svg ref={map} viewBox={viewBox} role="img" tabIndex={0} aria-label={boundaryInteraction?.mode !== 'place' && boundaryInteraction ? 'Saved parcel boundary selection map. Choose a numbered edge here or use the buttons above. The model cannot move in this mode.' : `Saved City of Victoria parcel and roofline with an illustrative Model 300 nominal rectangle. Click to move its centre or drag the rectangle. Arrow keys move it ${step} ${step === 1 ? 'metre' : 'metres'}; north is up.`}
         onClick={event => { if (boundaryInteraction && boundaryInteraction.mode !== 'place') return; if (suppressClick.current) { suppressClick.current = false; return }; moveFromPointer(event.clientX, event.clientY) }}
@@ -149,7 +150,8 @@ export function ExampleProperty({ onMeasurement, boundaryInteraction, placementS
         </g>}
         {boundaryInteraction && <BoundaryOverlay interaction={boundaryInteraction} />}
       </svg><figcaption>Teal: captured parcel · Purple: captured roofline, not walls · Red dashed outline: observed conflict in current measurement · Copper: illustrative nominal rectangle · North ↑ · EPSG:3157 metres. Diagram is approximate.</figcaption></figure>
-      <div className="builder-example-controls">{boundaryInteraction && <details><summary>Boundary roles and map tools</summary><BoundaryMapTools interaction={boundaryInteraction} /></details>}<h3>Adjust the footprint</h3>
+      {placementSummary && <div className="builder-map-summary">{placementSummary}</div>}
+      <div className="builder-example-controls">{boundaryInteraction && <BoundaryMapTools interaction={boundaryInteraction} />}<div hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}><h3>Adjust the footprint</h3>
         <p>Click the map or drag the rectangle. Arrow keys move it when the map has focus. Checks update automatically after movement settles.</p>
         <div className="builder-example-main-actions"><div><label htmlFor="builder-example-angle">Rotation (degrees)</label><input id="builder-example-angle" type="number" step="any" value={rotationFocused || !position.angle.trim() || !Number.isFinite(Number(position.angle)) ? position.angle : String(Number(Number(position.angle).toFixed(2)))} onFocus={() => setRotationFocused(true)} onBlur={() => setRotationFocused(false)} onChange={event => edit('angle', event.target.value)} /></div>
         <button type="button" disabled={exampleOrientation.status !== 'suggested'} onClick={() => { if (exampleOrientation.status === 'suggested') edit('angle', String(exampleOrientation.angle_degrees)) }}>Align to lot</button>
@@ -171,12 +173,11 @@ export function ExampleProperty({ onMeasurement, boundaryInteraction, placementS
           <label htmlFor="builder-example-roofline-minimum">Minimum to captured roofline (m)</label><MeasurementInput id="builder-example-roofline-minimum" dimension="length" type="number" min="0" step="any" value={assumptions.roofline} onChange={event => editAssumption('roofline', event.target.value)} />
         </fieldset></details>
         <button type="button" disabled={busy || !request} onClick={() => void measure(position, assumptions)}>{busy ? 'Checking…' : phase === 'unresolved' ? 'Retry placement check' : 'Recheck placement'}</button>
-      </div>
-      {placementSummary && <div className="builder-map-summary">{placementSummary}</div>}
+      </div></div>
     </div>
     {checkWarning && <div className={`builder-example-outcome builder-example-outcome--${conflict ? 'conflict' : 'unknown'}`} role="alert">
       <strong>{phase === 'unresolved' || unresolved && !conflict ? 'Placement could not be fully checked' : 'Conflict at this position'}</strong>
-      <p>{phase === 'unresolved' ? `${message} ${request ? 'Try again or edit the placement.' : 'Correct the placement inputs to check again.'}` : conflict ? `${crossesParcel ? 'The unit crosses or touches the mapped parcel boundary. ' : ''}${overlapsRoof ? 'The unit overlaps or touches a mapped roofline. ' : ''}Move the unit on the map and recheck. This finding applies to this position only.${unresolved ? ' Some measurements also remain unresolved; review How we checked.' : ''}` : 'Some mapped geometry or your comparison could not be checked. Review How we checked and try another position.'} Approximate map; legal siting remains unassessed.</p>
+      <p>{phase === 'unresolved' ? `${message} ${request ? 'Try again or edit the placement.' : 'Correct the placement inputs to check again.'}` : conflict ? `${crossesParcel ? 'The unit crosses or touches the mapped parcel boundary. ' : ''}${overlapsRoof ? 'The unit overlaps or touches a mapped roofline. ' : ''}Move the unit on the map and recheck. This finding applies to this position only.${unresolved ? ' Some measurements also remain unresolved; review How we checked.' : ''}` : 'Some mapped geometry or your comparison could not be checked. Review How we checked and try another position.'}</p>
     </div>}
     {result && (editedDimensions.width || editedDimensions.depth) && <p className="notice builder-example-custom-size"><strong>Custom size scenario.</strong> You changed the model dimensions. These measurements describe your edited rectangle; availability of this product size is unconfirmed.</p>}
     {result && <details className="builder-example-result"><summary>How we checked · geometry measurements and evidence</summary>

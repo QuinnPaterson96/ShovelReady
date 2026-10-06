@@ -13,9 +13,8 @@ export function HomeownerSummary({ summary, onNavigate }: { summary: Summary; on
   return <section className="homeowner-summary" id="builder-quick-checks" tabIndex={-1} aria-label="Placement summary">
     <h3>{summary.conclusion}</h3><p>{summary.next}</p>
     <div className="homeowner-summary__counts" aria-label="Named check counts">{(['checked', 'unknown', 'conflict', 'unsupported'] as const).map(status => <span key={status} className={`homeowner-summary__${status}`}><StatusIcon status={status} /><strong>{summary.checks.filter(check => check.status === status).length} {statusLabels[status]}</strong></span>)}</div>
-    <p className="metadata">Counts describe the checks below, not the chance of approval.</p>
     {nextAction && <button className="homeowner-summary__next" type="button" onClick={() => onNavigate(nextAction.target)}>Next: {nextAction.label}</button>}
-    <p className="homeowner-summary__scope">Preliminary Model 300 scouting on the selected property. Captured geometry and candidate checks do not establish permit eligibility.</p>
+    <p className="homeowner-summary__scope">Preliminary screening of this placement · limited checks. Open questions and requirements not covered are listed below.</p>
     <details className="homeowner-summary__checks"><summary>Review individual checks</summary><ul>{summary.checks.map(check => <li key={check.label} className={`homeowner-summary__${check.status}`}>
       <StatusIcon status={check.status} />
       <div><strong>{check.label} · {statusLabels[check.status]}</strong><p>{check.detail}</p>

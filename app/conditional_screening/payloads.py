@@ -84,7 +84,7 @@ class Fact(Boundary):
     geometry_basis: Literal["wall", "roofline", "nominal", "unknown"] | None = None
     origin: Literal[
         "source", "user_assumption", "user_measurement", "model", "journey_default",
-        "municipal_observation", "derived_assumption",
+        "municipal_observation", "derived_assumption", "user_confirmed",
     ]
     source: Source | None = None
     note: str | None = None

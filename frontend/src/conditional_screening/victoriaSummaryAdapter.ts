@@ -35,7 +35,7 @@ export function homeownerSummary(input: {
     : scenarioError ? { label: 'Distance to boundaries', status: 'unknown', detail: 'The distance comparison could not be loaded. The captured geometry remains separate.', action: { label: 'Retry distance check', target: 'retry-scenario' } }
     : scenario?.status === 'bounded_pass'
       ? { label: 'Distance to boundaries', status: 'checked', detail: 'Tested side and rear distances pass in coherent approximate scenarios. Front and legal-line distances remain unchecked.' }
-      : { label: 'Distance to boundaries', status: 'unknown', detail: scenario?.status === 'clarify' ? 'The possible boundary roles change the result.' : 'A useful boundary comparison needs a current placement and boundary context.', action: { label: 'Review boundary roles', target: 'boundary-roles' } })
+      : { label: 'Distance to boundaries', status: 'unknown', detail: scenario?.status === 'clarify' ? 'The possible boundary roles change the result.' : 'A useful boundary comparison needs a current placement and boundary context.', action: { label: 'Mark street side', target: 'street-side' } })
 
   const suiteCount = assumptions?.existing_garden_suites.value
   const countConflict = screening?.checks.some(check => check.rule.kind === 'count_max' && check.status === 'apparent_conflict_under_assumptions') ?? false
@@ -46,8 +46,8 @@ export function homeownerSummary(input: {
     ? { label: 'Existing garden suite', status: 'conflict', detail: 'The supplied suite count conflicts with the candidate count check.', action: { label: 'Review suite count', target: 'existing-suites' } }
     : suiteCount === null || suiteCount === undefined
       ? { label: 'Existing garden suite', status: 'unknown', detail: 'Tell us if there is already a garden suite on the property.', action: { label: 'Enter suite count', target: 'existing-suites' } }
-      : countChecked ? { label: 'Existing garden suite', status: 'checked', detail: 'Your stated count meets this candidate check under its assumptions.' }
-        : { label: 'Existing garden suite', status: 'unknown', detail: 'Your stated count is recorded. Review the project settings and main-building use to complete this conditional comparison.', action: { label: 'Review project settings', target: 'zoning-settings' } })
+      : countChecked ? { label: 'Existing garden suite', status: 'checked', detail: assumptions?.existing_garden_suites.evidence_state === 'user_confirmed' ? 'Meets count limit · user-confirmed count, not independently verified.' : suiteCount === 0 ? 'Meets count limit · assuming none existing.' : 'Meets count limit under supplied assumptions.', action: { label: 'Review suite count', target: 'existing-suites' } }
+        : { label: 'Existing garden suite', status: 'unknown', detail: `${assumptions?.existing_garden_suites.origin === 'journey_default' ? 'Assuming none already exist' : assumptions?.existing_garden_suites.evidence_state === 'user_confirmed' ? 'User-confirmed count recorded' : 'Assumed count recorded'}. Other prerequisites remain unresolved; no count pass is established.`, action: { label: 'Review suite count', target: 'existing-suites' } })
 
   for (const [kind, label, target] of [
     ['area_max', 'Floor area', 'zsa-floor-area'],
@@ -97,9 +97,11 @@ export function homeownerSummary(input: {
   }
   const supportedConflict = screening?.checks.some(check => check.rule.kind !== 'prerequisite' && check.rule.kind !== 'boundary_min' && check.status === 'apparent_conflict_under_assumptions') ?? false
   const conflict = geometryConflict || legalDistanceConflict || scenario?.status === 'apparent_conflict' || countConflict || supportedConflict || checks.some(check => check.status === 'conflict')
+  const supportingCoverage = ['separation', 'front', 'rear_location', 'rear_occupancy', 'height'].every(id => scenario?.additional_checks?.some(check => check.id === id && check.status === 'checked'))
+  const readyToExplore = supportingCoverage && contained && geometryComplete && !outsideScope && scenario?.status === 'bounded_pass' && checks.every(check => check.status === 'checked' || check.status === 'unsupported')
   return {
-    conclusion: conflict ? 'This placement has a problem' : contained && geometryComplete ? 'A promising starting position · limited checks' : geometry ? 'This placement needs a closer look' : 'Insufficient information for a placement answer',
-    next: conflict ? 'Review the flagged position or supplied facts, then check the remaining unknowns.' : contained && geometryComplete ? 'No mapped overlap was observed in the checked geometry. Review missing information and arrange a review of requirements this tool does not cover.' : geometry ? 'Some geometry remains unresolved. Review the placement and source coverage before relying on it.' : 'Place the model on a property to start the approximate checks.',
+    conclusion: conflict ? 'This placement has a conflict' : readyToExplore ? 'Worth exploring with the provider' : geometry ? 'Resolve this question first' : 'Place the unit to explore the possibilities',
+    next: conflict ? 'Review the flagged position or supplied facts, then check the remaining unknowns.' : readyToExplore ? 'The supported checks look plausible under the stated assumptions. Ask the provider about the requirements this tool does not cover.' : geometry ? 'Resolve the highlighted question to see whether this placement is worth pursuing. You can take these questions to the provider.' : 'Place the model on a property to start the approximate checks.',
     checks,
   }
 }

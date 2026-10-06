@@ -1,6 +1,9 @@
+import type { ReactNode } from 'react'
 import { ordinaryFourEdgeBoundary, type BoundaryEdge, type BoundaryMapMode } from './model'
 
 export type BoundaryMapInteraction = {
+  editor?: ReactNode
+  selectedId?: string | null
   edges: BoundaryEdge[]
   mode: BoundaryMapMode
   frontId: string | null
@@ -16,7 +19,7 @@ export function BoundaryOverlay({ interaction }: { interaction: BoundaryMapInter
   return <g className="boundary-map-overlay" aria-hidden="true">
     {interaction.edges.filter(edge => edge.ring === 0).map((edge, index) => <g key={edge.id}>
       <line x1={edge.start[0]} y1={-edge.start[1]} x2={edge.end[0]} y2={-edge.end[1]}
-        className={interaction.frontId === edge.id || interaction.rearId === edge.id ? 'boundary-map-edge boundary-map-edge--selected' : 'boundary-map-edge'} />
+        className={(interaction.mode === 'front' ? interaction.frontId === edge.id : interaction.selectedId === edge.id) ? 'boundary-map-edge boundary-map-edge--selected' : 'boundary-map-edge'} />
       <line x1={edge.start[0]} y1={-edge.start[1]} x2={edge.end[0]} y2={-edge.end[1]}
         className="boundary-map-edge-hit" onClick={event => { event.stopPropagation(); interaction.onSelect(edge.id) }} />
       <text x={(edge.start[0] + edge.end[0]) / 2} y={-(edge.start[1] + edge.end[1]) / 2}
@@ -26,28 +29,40 @@ export function BoundaryOverlay({ interaction }: { interaction: BoundaryMapInter
 }
 
 export function BoundaryMapTools({ interaction }: { interaction: BoundaryMapInteraction }) {
-  const { mode, frontId, rearId, edges, streetPattern, onModeChange, onSelect, onStreetPattern } = interaction
+  const { mode, frontId, edges, streetPattern, onSelect, onStreetPattern } = interaction
   const exterior = edges.filter(edge => edge.ring === 0)
   const supported = ordinaryFourEdgeBoundary(edges)
   return <div className="boundary-map-tools" aria-label="Boundary selection controls">
     {!supported && <p>Boundary roles for this irregular or incomplete parcel remain unknown. Review a legal plan; this map cannot resolve frontage.</p>}
-    <div className="boundary-map-modes">
-      <button type="button" aria-pressed={mode === 'place'} onClick={() => onModeChange('place')}>Move model</button>
-      {supported && <><button type="button" aria-pressed={mode === 'front'} onClick={() => onModeChange('front')}>Choose street-facing edge</button>
-      <button type="button" aria-pressed={mode === 'rear'} onClick={() => onModeChange('rear')}>Choose rear edge</button></>}
-    </div>
-    {supported && mode !== 'place' && <>
-      <p role="status">Boundary selection is on. Clicking an edge or its numbered button selects it; clicking elsewhere cannot move the model. Use <strong>Move model</strong> to reposition it.</p>
+    {supported && mode === 'front' && <>
+      <p role="status">Boundary selection is on. Clicking an edge or its numbered button selects it; clicking elsewhere cannot move the model. Use <strong>Move unit</strong> to reposition it.</p>
       <div className="boundary-map-buttons">{exterior.map((edge, index) => <button type="button" key={edge.id}
-        aria-pressed={(mode === 'front' ? frontId : rearId) === edge.id} onClick={() => onSelect(edge.id)}>
-        Edge {index + 1}{mode === 'front' ? ' faces street' : ' is rear'}
+        aria-pressed={frontId === edge.id} onClick={() => onSelect(edge.id)}>
+        Edge {index + 1} faces street
       </button>)}
         <button type="button" onClick={() => onSelect(null)}>Not sure</button>
         <button type="button" aria-pressed={streetPattern === 'corner_or_multiple'} onClick={() => onStreetPattern('corner_or_multiple')}>Corner or multiple streets</button>
       </div>
       <label className="boundary-map-single"><input type="checkbox" checked={streetPattern === 'single'}
         onChange={event => onStreetPattern(event.target.checked ? 'single' : 'unknown')} /> I know this parcel has only one street-facing edge</label>
+      {frontId && streetPattern === 'single' && <p>For this simple one-street sketch, the opposite edge suggests the rear and the other two suggest sides. Adjust boundaries to enter any roles you can support.</p>}
       {streetPattern !== 'single' && <p>Street-facing and rear clues alone do not settle legal frontage. Corner, multiple-street and unusual lot roles need review.</p>}
     </>}
+    {interaction.editor}
+  </div>
+}
+
+export function BoundaryActionTabs({ interaction }: { interaction: BoundaryMapInteraction }) {
+  const actions = [['place', 'Move unit'], ['front', 'Mark street side'], ['rear', 'Adjust boundaries']] as const
+  return <div className="boundary-map-modes" role="tablist" aria-label="Placement actions" onKeyDown={event => {
+    const index = actions.findIndex(([mode]) => mode === interaction.mode)
+    const next = event.key === 'ArrowRight' ? (index + 1) % 3 : event.key === 'ArrowLeft' ? (index + 2) % 3 : event.key === 'Home' ? 0 : event.key === 'End' ? 2 : null
+    if (next === null) return
+    event.preventDefault(); interaction.onModeChange(actions[next][0])
+    document.getElementById(`placement-action-${actions[next][0]}`)?.focus()
+  }}>
+    {actions.map(([mode, label]) => <button key={mode} id={`placement-action-${mode}`} type="button" role="tab"
+      aria-selected={interaction.mode === mode} aria-controls="placement-action-panel" tabIndex={interaction.mode === mode ? 0 : -1}
+      onClick={() => interaction.onModeChange(mode)}>{label}</button>)}
   </div>
 }

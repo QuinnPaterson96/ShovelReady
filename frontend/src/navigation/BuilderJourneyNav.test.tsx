@@ -15,7 +15,7 @@ test('completed workflow steps have a visible and accessible label; pending step
   assert.match(html, /Property<\/span><span class="builder-journey-state">To do<\/span>/)
   assert.match(html, /Placement<\/span><span class="builder-journey-state is-complete"><span class="builder-journey-check" aria-hidden="true">✓<\/span>Complete<\/span>/)
   assert.match(html, /Next steps<\/span><span class="builder-journey-state">To do<\/span>/)
-  assert.match(html, /not site feasibility or permit approval/)
+  assert.match(html, /Ticks show completed steps/)
   assert.equal((html.match(/aria-hidden="true">✓/g) ?? []).length, 2)
 })
 

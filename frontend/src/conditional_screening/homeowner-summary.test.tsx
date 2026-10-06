@@ -35,20 +35,20 @@ test('exact PGA map label retains its identity and restores ordinary garden-suit
 test('observed geometry conflict wins over any apparently clear subset', () => {
   const conflict = { ...captured, checks: captured.checks.map(check => check.kind === 'containment' ? { ...check, relation: 'outside' } : check) }
   const summary = homeownerSummary({ ...base, geometry: conflict, scenario: { status: 'bounded_pass' } as ScenarioResult })
-  assert.equal(summary.conclusion, 'This placement has a problem')
+  assert.equal(summary.conclusion, 'This placement has a conflict')
   assert.equal(summary.checks[0].status, 'conflict')
   assert.equal(summary.checks.find(check => check.label === 'Height')?.status, 'unsupported')
 })
 
 test('clear captured geometry with missing rules remains a closer look', () => {
   const summary = homeownerSummary(base)
-  assert.equal(summary.conclusion, 'A promising starting position · limited checks')
+  assert.equal(summary.conclusion, 'Resolve this question first')
   assert.equal(summary.checks[0].status, 'checked')
   assert.notEqual(summary.checks.find(check => check.label === 'Distance to boundaries')?.status, 'checked')
   const html = renderToStaticMarkup(createElement(HomeownerSummary, { summary, onNavigate: () => {} }))
   assert.match(html, /Height · Not covered/)
   assert.match(html, /Enter suite count/)
-  assert.match(html, /Review boundary roles/)
+  assert.match(html, /Mark street side/)
 })
 
 test('zoning outage offers retry while an unsupported mapped zone stays outside scope', () => {
@@ -69,7 +69,7 @@ test('zoning outage offers retry while an unsupported mapped zone stays outside 
 test('a supplied area conflict has a visible actionable row rather than only changing the headline', () => {
   const screening = { checks: [{ rule: { kind: 'area_max' }, status: 'apparent_conflict_under_assumptions' }] } as ScreeningResult
   const summary = homeownerSummary({ ...base, screening })
-  assert.equal(summary.conclusion, 'This placement has a problem')
+  assert.equal(summary.conclusion, 'This placement has a conflict')
   assert.equal(summary.checks.find(check => check.label === 'Floor area')?.status, 'conflict')
   assert.equal(summary.checks.find(check => check.label === 'Floor area')?.action?.target, 'zsa-floor-area')
 })
@@ -94,6 +94,26 @@ test('mixed summary counts named statuses and gives conflict action priority wit
 test('incomplete captured geometry cannot become a promising or checked space finding', () => {
   const summary = homeownerSummary({ ...base, geometryComplete: false })
   assert.equal(summary.checks[0].status, 'unknown')
-  assert.equal(summary.conclusion, 'This placement needs a closer look')
+  assert.equal(summary.conclusion, 'Resolve this question first')
   assert.doesNotMatch(summary.next, /No mapped overlap/)
+})
+
+
+test('provider exploration needs supported comparisons, not geometry or a majority of green rows', () => {
+  const mapped: MappedZoning = { schema_version: 'sr.mapped-zoning.v1', property_revision: 'test', status: 'single', zone: 'GRD-1', instrument: 'Zoning Bylaw 2018 (No. 18-072)', source: null, reason: 'constructed' }
+  const screening = { checks: [
+    { rule: { kind: 'count_max' }, status: 'meets_under_assumptions' },
+    { rule: { kind: 'area_max' }, status: 'meets_under_assumptions' },
+    { rule: { kind: 'separation_min', applicability: 'unknown', measurement_definition: null }, status: 'needs_information' },
+  ] } as ScreeningResult
+  const scenario = { status: 'bounded_pass', additional_checks: [['height', 'Height'], ['separation', 'Distance from the main building'], ['front', 'Front boundary distance'], ['rear_location', 'Located behind the main building'], ['rear_occupancy', 'Share of the rear yard']].map(([id, label]) => ({ id, label, status: 'checked', detail: 'Constructed supported comparison.' })) } as ScenarioResult
+  const assumptions = { existing_garden_suites: { value: 0, origin: 'journey_default', evidence_state: 'assumed' } } as import('../zoning_site_assumptions/model').SiteAssumptions
+  const input = { ...base, mapped, screening, scenario, assumptions }
+  const summary = homeownerSummary(input)
+  assert.equal(summary.conclusion, 'Worth exploring with the provider')
+  assert.match(summary.checks.find(check => check.label === 'Existing garden suite')!.detail, /assuming none existing/)
+  assert.ok(summary.checks.some(check => check.status === 'unsupported'))
+  assert.equal(homeownerSummary({ ...input, scenario: { ...scenario, status: 'clarify' } }).conclusion, 'Resolve this question first')
+  assert.equal(homeownerSummary({ ...input, screening: { ...screening, checks: screening.checks.map(check => check.rule.kind === 'count_max' ? { ...check, status: 'needs_information' } : check) } }).conclusion, 'Resolve this question first')
+  assert.equal(homeownerSummary({ ...input, geometryComplete: false }).conclusion, 'Resolve this question first')
 })
