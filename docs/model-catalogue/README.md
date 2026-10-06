@@ -1,5 +1,9 @@
 # SR-40 prefab candidates and component handoff
 
+For new model research and catalogue refreshes, use the
+[model-gathering checklist](gathering-checklist.md) and existing
+[research intake](research-intake/README.md).
+
 October 6 additive commercial information: [price and timing handoff](../integration-model-price-timing.md).
 The existing v1 contract now accepts optional `prices` and `timings` lists and source
 `updated_at`; absent lists mean unknown, and older snapshots need no migration.
