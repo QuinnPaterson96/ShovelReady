@@ -1,5 +1,13 @@
 # Architecture direction
 
+## Zoning lookup checkpoint — October 6, 2026
+
+The stateless app now includes a bounded City of Victoria parcel-polygon zoning
+lookup. It returns attributed map observations and explicit coverage/ambiguity
+states, separately from accepted rule publication. Project details UI consumption
+is a follow-up under #238; no new service or database is needed. See the
+[combined integration record](integration-map-zoning.md).
+
 ## Hosting checkpoint - October 2, 2026
 
 The owner selected Railway and GoDaddy DNS for a stateless public observational demo.

@@ -1,6 +1,6 @@
 # ShovelReady
 
-Latest demo integration: [compact property selection, automatic placement scenarios and zoning checklist](docs/integration-placement-checklist.md).
+Latest demo integration: [clearer address suggestions, compact placement and Victoria zoning lookup API](docs/integration-map-zoning.md). Project details UI wiring remains in progress under #238.
 
 ShovelReady explores a practical question: **given a prefabricated building design, where could it plausibly be built?**
 
