@@ -1,6 +1,7 @@
 import type { Result as GeometryResult } from '../occupied_lots/contract'
 import type { SiteAssumptions } from '../zoning_site_assumptions/model'
 import type { Pathway } from './model'
+import type { ProposalEvidence } from './projectSettings'
 
 export type ScenarioRequest = {
   schema_version: 'placement-scenarios.request.v1'
@@ -8,6 +9,7 @@ export type ScenarioRequest = {
   assumptions: SiteAssumptions
   model_revision: string
   proposal: Pathway
+  proposal_evidence?: ProposalEvidence
   street_edge_id: string | null
   rear_edge_id: string | null
   street_pattern: 'unknown' | 'single' | 'corner_or_multiple'
@@ -30,6 +32,7 @@ export type ScenarioResult = {
   }[] }[]
   sources: { provider: string; record_label: string; capture_date: string | null; review_status: string; url: string; locator: string }[]
   limitations: string[]
+  proposal_evidence?: ProposalEvidence | null
 }
 
 export function parseScenarioResult(raw: unknown): ScenarioResult {

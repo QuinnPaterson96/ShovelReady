@@ -3,13 +3,13 @@
 from itertools import product
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 from shapely.geometry import LineString, shape
 
 from app.scouting_geometry.core import assess
 from app.scouting_geometry.payloads import Request as GeometryRequest
 
-from .api import Assumptions, Proposal, _packet, _source
+from .api import Assumptions, Proposal, ProposalEvidence, _packet, _source
 
 
 class Strict(BaseModel):
@@ -22,9 +22,16 @@ class ScenarioRequest(Strict):
     assumptions: Assumptions
     model_revision: str = Field(min_length=1)
     proposal: Proposal = Proposal()
+    proposal_evidence: ProposalEvidence | None = None
     street_edge_id: str | None = None
     rear_edge_id: str | None = None
     street_pattern: Literal["unknown", "single", "corner_or_multiple"] = "unknown"
+
+    @model_validator(mode="after")
+    def matching_evidence(self):
+        if self.proposal_evidence is not None:
+            self.proposal_evidence.matches(self.proposal)
+        return self
 
 
 class EdgeCheck(Strict):
@@ -58,6 +65,7 @@ class ScenarioResult(Strict):
     thresholds_m: dict[str, float]
     sources: tuple[dict, ...] = ()
     limitations: tuple[str, ...]
+    proposal_evidence: dict | None = None
 
 
 def screen(body: ScenarioRequest) -> ScenarioResult:
@@ -97,6 +105,8 @@ def screen(body: ScenarioRequest) -> ScenarioResult:
             "Current zoning, legal lot, pathway and waterfront applicability remain unknown. "
             "Candidate rules are unreviewed and unpublished.",
         ),
+        proposal_evidence=(body.proposal_evidence.model_dump(mode="json")
+                           if body.proposal_evidence else None),
     )
 
     def unresolved(reason: str) -> ScenarioResult:

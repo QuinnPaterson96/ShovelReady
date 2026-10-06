@@ -4,8 +4,9 @@
 
 The stateless app now includes a bounded City of Victoria parcel-polygon zoning
 lookup. It returns attributed map observations and explicit coverage/ambiguity
-states, separately from accepted rule publication. Project details UI consumption
-is a follow-up under #238; no new service or database is needed. See the
+states, separately from accepted rule publication. Project details now consumes
+this lookup under #238, retaining separate municipal, default and user origins;
+no new service or database is needed. See the
 [combined integration record](integration-map-zoning.md).
 
 ## Hosting checkpoint - October 2, 2026

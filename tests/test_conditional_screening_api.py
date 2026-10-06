@@ -139,6 +139,36 @@ def test_unknown_real_style_input_does_not_gain_false_matches():
     assert any("waterfront" in reason for reason in data["outstanding_prerequisites"])
 
 
+def test_project_setting_origins_and_rough_area_remain_explicit():
+    body = payload()
+    body["proposal"]["confirmed_zone"] = None
+    body["proposal"]["confirmed_instrument"] = None
+    body["proposal"]["floor_area_definition_acknowledged"] = None
+    body["assumptions"]["measurements"]["floor_area"] = measured(
+        54, "rough_floor_area_estimate", "m2"
+    )
+    body["proposal_evidence"] = {
+        name: {"value": value, "origin": (
+            "unknown" if value is None else "journey_default"
+            if name in ("proposed_use", "foundation_attached") else "user"
+        ), "source": None, "note": "Explicit scenario setting"}
+        for name, value in body["proposal"].items()
+    }
+    response = post(body)
+    assert response.status_code == 200, response.text
+    data = response.json()
+    facts = {fact["id"]: fact for fact in data["request"]["facts"]}
+    assert facts["proposed_use"]["origin"] == "journey_default"
+    assert facts["foundation"]["origin"] == "journey_default"
+    assert facts["zone"]["status"] == "unknown"
+    assert facts["floor_area_definition"]["status"] == "unknown"
+    floor = next(check for check in data["checks"] if check["rule"]["fact_id"] == "floor_area")
+    assert floor["status"] == "needs_information"
+    assert data["request"]["proposal_evidence"]["proposed_use"]["origin"] == "journey_default"
+    body["proposal_evidence"]["confirmed_zone"]["value"] = "GRD-1"
+    assert post(body).status_code == 422
+
+
 def test_stale_measurement_and_client_rules_are_rejected():
     body = payload()
     stale = deepcopy(body)
