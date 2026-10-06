@@ -319,3 +319,20 @@ The map-adjacent summary leads with the decision and next action. A worthwhile
 provider enquiry requires supporting coverage beyond containment and checked
 counts, including height and siting checks; incomplete coverage remains visible.
 This UI does not publish accepted zoning data or establish site applicability.
+
+
+## Read-only MCP developer demo (#258)
+
+The opt-in `/mcp` route uses the official Python SDK's stateless Streamable HTTP
+manager within the existing FastAPI lifespan. `app/mcp_demo` owns typed model lookup,
+staged address/parcel lookup and explicitly selected-input screening; calculations
+reuse the geometry, placement-scenario and conditional services without new rules,
+database state or an LLM. Full service results retain evidence and revisions; compact
+responses preserve material assumptions and next actions. The adapter was reconciled
+with the homeowner default/user-confirmed contracts merged in #259.
+
+MCP is disabled by default, loopback-only and request/rate/concurrency bounded.
+Public hosting is not enabled. A private ChatGPT Secure MCP Tunnel setup is prepared
+but requires the owner's account permissions and connection verification. The map
+link opens the existing app and needs manual re-entry; no URL/private-scenario
+resume contract is invented. See [setup, verification and gaps](mcp-demo.md).
