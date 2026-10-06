@@ -1,0 +1,150 @@
+{
+  "schema_version": "victoria-garden-suite-scouting.candidate.v1",
+  "packet_id": "victoria-zb2018-grd1-ordinary-garden-suite-scouting",
+  "packet_revision": "candidate-2026-10-05-1",
+  "status": "agent_mapped_unreviewed_unpublished",
+  "assessment_dimensions": {
+    "rule_text": "agent_mapped_against_matching_official_pdf_bytes; independent interpretation review pending",
+    "applicability": "unknown_until_instrument_zone_exception_and_pathway_facts_are_supplied",
+    "site_input_quality": "per_input_origin_and_geometry_revision_required; no_site_facts_in_packet"
+  },
+  "source": {
+    "provider": "City of Victoria",
+    "instrument": "Zoning Bylaw 2018, No. 18-072",
+    "url": "https://www.victoria.ca/media/file/zoning-bylaw-2018",
+    "captured_at_utc": "2026-10-06T01:44:33Z",
+    "sha256": "6c9e35a8de4eeeb8d0c4e0dda05d8b3908c0d76a2353c9cb23001d3ebcb9da33",
+    "bytes": 4600202,
+    "pages": 133,
+    "revision_evidence": [
+      "PDF p1 publishing note: consolidated through No. 22-048, June 9, 2022",
+      "PDF p4 amendment list: through No. 26-060, July 30, 2026",
+      "City 2018 bylaw page describes 2025 modernization; its September wording differs from the PDF's October 2 adoption entry"
+    ],
+    "effective_from": null,
+    "effective_to": null,
+    "independent_source_review": "pending",
+    "accepted_release_id": null
+  },
+  "scope": {
+    "jurisdiction": "City of Victoria, British Columbia",
+    "pathway": "ordinary new garden suite on a confirmed GRD-1 legal lot governed by Zoning Bylaw 2018",
+    "not_complete_by_law_review": true,
+    "excluded_alternative": "Zoning Regulation Bylaw 80-159 Schedule M",
+    "required_applicability_inputs": [
+      "legal_lot_identity_and_registered_boundary",
+      "current_zoning_instrument_and_whole_lot_zone",
+      "grd1_site_specific_provisions_and_variances",
+      "principal_building_use_and_identity",
+      "existing_garden_suite_count",
+      "proposed_use_and_new_build_or_conversion",
+      "building_attached_to_foundation",
+      "waterfront_lot_status_and_waterfront_relative_placement",
+      "front_rear_side_flanking_lot_line_roles"
+    ],
+    "unsupported_exception_codes": [
+      "waterfront_override_unresolved",
+      "conversion_age_exception_unresolved",
+      "site_specific_or_variance_unresolved",
+      "transition_permit_unresolved",
+      "projection_treatment_unresolved"
+    ]
+  },
+  "definitions": {
+    "legal_lot": {"locator": "Part 2.1 Lot and Lot Line, PDF p18", "basis": "registered lot and registered lot line; GIS parcel polygon alone is not proof"},
+    "floor_area": {"locator": "Part 2.1 Floor Area, PDF p16", "basis": "measured to interior surface of exterior walls; includes mezzanine, exterior hallway, exterior staircase, loft and partial storey; excludes listed balcony/veranda/deck/patio/roof, crawlspace/basement, rooftop structures and specified parking areas"},
+    "setback": {"locator": "Part 2.1 Setback, PDF p19", "basis": "shortest horizontal distance between classified lot line and building face; listed exclusions include cornices, retaining walls, fences, and up to 0.13 m of exterior wall treatment, insulation or rainscreen"},
+    "front_line": {"locator": "Part 2.1 Front Lot Line, PDF p16", "basis": "street, easement, corner-lot and multiple-street branches; long axis does not determine frontage"},
+    "rear_line_and_yard": {"locator": "Part 2.1 Rear Lot Line and Rear Yard, PDF p19", "basis": "rear line opposite front line, triangular point case; rear yard lies between principal building and rear line across lot width"},
+    "flanking_line": {"locator": "Part 2.1 Flanking Street Lot Line, PDF pp15-16", "basis": "street-adjacent lot line other than front or rear line"},
+    "waterfront_lot": {"locator": "Part 2.1 Waterfront Lot, PDF p19", "basis": "lot abutting tidal water body at any boundary portion"}
+  },
+  "rules": [
+    {
+      "logical_rule_id": "victoria-zb2018-garden-suite-use-pathway",
+      "proposed_revision_id": "candidate-2026-10-05-1",
+      "kind": "prerequisite",
+      "source_locators": ["Part 4.1(1)(h),(1.1)(b), PDF p30", "Part 2.2 Residential and Garden Suite, PDF pp21-22"],
+      "operator": "all_true",
+      "original": "GRD-1 permits Residential; Garden Suite is a building attached to a foundation, used or designed as a dwelling unit on a lot with a single-detached dwelling or duplex",
+      "normalized": {"required_values": {"zone": "GRD-1", "use": "garden_suite", "principal_building_type": ["single_detached", "duplex"], "building_attached_to_foundation": true}},
+      "measurement_basis": "actual legal lot, use and controlled proposed foundation configuration",
+      "required_inputs": ["current_zoning_instrument_and_whole_lot_zone", "principal_building_use_and_identity", "proposed_use_and_new_build_or_conversion", "building_attached_to_foundation"],
+      "explanation": "Check that this lot and proposed building fit the ordinary GRD-1 garden-suite pathway.",
+      "support": "conditional_comparison_only"
+    },
+    {
+      "logical_rule_id": "victoria-zb2018-garden-suite-count",
+      "proposed_revision_id": "candidate-2026-10-05-1",
+      "kind": "scalar_bound",
+      "source_locators": ["Part 3.1(28)(b), PDF p27"],
+      "operator": "<=",
+      "original": {"value": "one", "unit": "garden suite per Lot"},
+      "normalized": {"value": "1", "unit": "count", "dimension": "count"},
+      "measurement_basis": "existing garden suites plus this proposed suite on one legal lot",
+      "required_inputs": ["legal_lot_identity_and_registered_boundary", "existing_garden_suite_count"],
+      "explanation": "A lot may have no more than one garden suite.",
+      "support": "conditional_comparison_only"
+    },
+    {
+      "logical_rule_id": "victoria-zb2018-garden-suite-side-rear-setback",
+      "proposed_revision_id": "candidate-2026-10-05-1",
+      "kind": "minimum_distance_per_edge",
+      "source_locators": ["Part 3.1(28)(f), PDF pp27-28", "Part 2.1 Setback and Side Lot Line, PDF p19"],
+      "operator": ">=",
+      "original": {"value": "0.6", "unit": "m"},
+      "normalized": {"value": "0.6", "unit": "m", "dimension": "length"},
+      "measurement_basis": "shortest horizontal distance from each classified side or rear registered lot line to the proposed building face, with only applicable feature exclusions",
+      "required_inputs": ["front_rear_side_flanking_lot_line_roles", "registered_lot_line_geometry", "proposed_wall_face_geometry_and_revision", "waterfront_lot_status_and_waterfront_relative_placement"],
+      "explanation": "Compare each identified side and rear lot line with the garden suite's building face.",
+      "support": "conditional_comparison_only",
+      "exception_codes": ["waterfront_override_unresolved", "projection_treatment_unresolved"]
+    },
+    {
+      "logical_rule_id": "victoria-zb2018-garden-suite-flanking-setback",
+      "proposed_revision_id": "candidate-2026-10-05-1",
+      "kind": "minimum_distance_per_edge",
+      "source_locators": ["Part 3.1(28)(g), PDF pp27-28", "Part 2.1 Flanking Street Lot Line and Setback, PDF pp15-16 and p19"],
+      "operator": ">=",
+      "original": {"value": "3.5", "unit": "m"},
+      "normalized": {"value": "3.5", "unit": "m", "dimension": "length"},
+      "measurement_basis": "shortest horizontal distance from classified flanking street registered lot line to proposed building face",
+      "required_inputs": ["front_rear_side_flanking_lot_line_roles", "street_adjacency_and_front_line_basis", "registered_lot_line_geometry", "proposed_wall_face_geometry_and_revision", "waterfront_lot_status_and_waterfront_relative_placement"],
+      "explanation": "If the lot has a flanking street line, check its separate setback.",
+      "support": "conditional_comparison_only",
+      "exception_codes": ["waterfront_override_unresolved", "projection_treatment_unresolved"]
+    },
+    {
+      "logical_rule_id": "victoria-zb2018-garden-suite-principal-separation",
+      "proposed_revision_id": "candidate-2026-10-05-1",
+      "kind": "minimum_distance",
+      "source_locators": ["Part 3.1(28)(h), PDF p28"],
+      "operator": ">=",
+      "original": {"value": "2.4", "unit": "m"},
+      "normalized": {"value": "2.4", "unit": "m", "dimension": "length"},
+      "measurement_basis": "separation space between proposed garden suite and identified principal building; exact endpoints are not defined in this clause and require City/source interpretation",
+      "required_inputs": ["principal_building_use_and_identity", "principal_building_face_geometry_and_revision", "proposed_wall_face_geometry_and_revision", "reviewed_separation_endpoint_convention"],
+      "explanation": "Check space between the garden suite and the principal building when both measured faces are known.",
+      "support": "conditional_comparison_after_measurement_review"
+    },
+    {
+      "logical_rule_id": "victoria-zb2018-garden-suite-floor-area",
+      "proposed_revision_id": "candidate-2026-10-05-1",
+      "kind": "scalar_bound",
+      "source_locators": ["Part 3.1(28)(d), PDF p27", "Part 2.1 Floor Area, PDF p16"],
+      "operator": "<=",
+      "original": {"value": "56", "unit": "m2"},
+      "normalized": {"value": "56", "unit": "m2", "dimension": "area"},
+      "measurement_basis": "Part 2.1 Floor Area; interior surface of exterior walls and specified included/excluded areas, summed over applicable levels",
+      "required_inputs": ["controlled_design_revision", "floor_area_measurement_matching_part_2_1", "floor_area_inclusion_exclusion_schedule"],
+      "explanation": "Compare the design's bylaw floor area with the 56 m² limit.",
+      "support": "conditional_comparison_only"
+    }
+  ],
+  "outstanding_checks": [
+    {"id": "rear_yard_location", "locator": "Part 3.1(28)(a), PDF p27; Part 2.1 Rear Yard, PDF p19", "reason": "requires classified registered front/rear lines and a reviewed rear-yard polygon using principal building geometry", "next_action": "site and source reviewers establish polygon, then add a containment check"},
+    {"id": "rear_yard_occupancy", "locator": "Part 3.1(28)(i), PDF p28", "original": "25% of rear yard", "normalized": {"operator": "<=", "value": "0.25", "unit": "fraction", "numerator": "garden-suite occupied rear-yard area", "denominator": "legally defined rear-yard area"}, "reason": "rear-yard denominator and projection treatment remain unresolved; parcel area is not a substitute", "next_action": "review area convention and measure both areas"},
+    {"id": "height", "locator": "Part 3.1(28)(e), PDF p27; Part 2.1 Height, PDF p17", "reason": "outside this bounded packet; controlled design and average grade are absent", "next_action": "add separately after design/grade review"},
+    {"id": "other_applicable_provisions", "locator": "Parts 1.1, 3.1, 4.1 and 5", "reason": "this packet is a selected-check screen, not a complete bylaw review", "next_action": "qualified reviewer expands coverage where material"}
+  ]
+}
