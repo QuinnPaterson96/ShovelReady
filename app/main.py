@@ -9,6 +9,7 @@ from fastapi.staticfiles import StaticFiles
 
 from app.address_search.api import router as address_search_router
 from app.case_preparations.api import router as case_preparations_router
+from app.conditional_screening.api import router as conditional_screening_router
 from app.draft_evaluations.api import router as draft_evaluations_router
 from app.identity import AppIdentity, capture_identity
 from app.investigation import router
@@ -40,6 +41,7 @@ def create_app(*, frontend_dist: Path = FRONTEND_DIST) -> FastAPI:
     application.include_router(address_search_router)
     application.include_router(municipal_sites_router)
     application.include_router(case_preparations_router)
+    application.include_router(conditional_screening_router)
     application.include_router(router)
     application.include_router(draft_evaluations_router)
     application.include_router(reference_cases_router)

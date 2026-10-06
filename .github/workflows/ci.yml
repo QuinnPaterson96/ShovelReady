@@ -143,4 +143,26 @@ jobs:
           assert len(data['cases']) == 10
           assert data['first_case_id'] in {case['case_id'] for case in data['cases']}
           assert all(case['review_status'] == 'provisional' and case['benchmark_eligible'] is False for case in data['cases'])
+          # Exercise the packaged candidate packet, not just API startup.
+          from urllib.request import Request, urlopen
+          unknown = {"value": None, "origin": "user", "note": None}
+          payload = {
+              "schema_version": "conditional-screening.api.v1", "model_revision": "ci-model",
+              "proposal": {}, "assumptions": {
+                  "schema_version": "sr.zoning-site-assumptions.v1",
+                  "property": {"case_id": "ci", "parcel_id": "ci", "geometry_revision": "ci",
+                               "crs": "EPSG:3157", "source": {}, "capture": {}},
+                  "observed_buildings": [], "edges": [], "building_type": unknown,
+                  "existing_garden_suites": unknown, "principal_building_id": unknown,
+                  "waterfront": unknown, "measurements": {"boundary": {},
+                      "principal_separation": None, "floor_area": None},
+                  "placement_revision": "ci-placement", "limitations": []}}
+          request = Request('http://127.0.0.1:18080/api/conditional-screening/v1/evaluate',
+                            data=json.dumps(payload).encode(), headers={'Content-Type': 'application/json'})
+          with urlopen(request) as response:
+              result = json.load(response)
+          assert result['mode'] == 'candidate_assumption_comparison'
+          assert result['coverage']['meets_under_assumptions'] == 0
+          assert result['coverage']['not_applicable'] == 0
+          assert result['coverage']['needs_information'] > 0
           PY

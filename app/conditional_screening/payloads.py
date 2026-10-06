@@ -35,7 +35,7 @@ class Source(Boundary):
 class Rule(Boundary):
     logical_id: str = Field(min_length=1)
     revision_id: str = Field(min_length=1)
-    kind: Literal["prerequisite", "boundary_min", "separation_min", "area_max"]
+    kind: Literal["prerequisite", "boundary_min", "separation_min", "area_max", "count_max"]
     fact_id: str = Field(min_length=1)
     expected: bool | None = None
     threshold: Quantity | None = None
@@ -67,6 +67,8 @@ class Rule(Boundary):
             raise ValueError("distance rule needs length threshold")
         if self.kind == "area_max" and self.threshold.unit not in ("m2", "ft2"):
             raise ValueError("area rule needs area threshold")
+        if self.kind == "count_max" and self.threshold.unit != "count":
+            raise ValueError("count rule needs count threshold")
         return self
 
 
@@ -103,6 +105,9 @@ class Request(Boundary):
     rules: tuple[Rule, ...]
     facts: tuple[Fact, ...]
     scope_limitations: tuple[str, ...] = ()
+    # Validated by the API adapter before echoing; preserves source metadata,
+    # exact edge role assumptions and capture context for enquiries/evidence export.
+    site_assumptions: dict | None = None
 
     @model_validator(mode="after")
     def unique(self):
@@ -129,7 +134,7 @@ class Check(Boundary):
     reasons: tuple[str, ...]
     normalized_observed: Decimal | None = None
     normalized_threshold: Decimal | None = None
-    normalized_unit: Literal["m", "m2"] | None = None
+    normalized_unit: Literal["m", "m2", "count"] | None = None
 
 
 class Coverage(Boundary):
