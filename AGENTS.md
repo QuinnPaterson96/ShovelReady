@@ -43,6 +43,11 @@ Read README.md, docs/architecture.md, and docs/quality.md before consequential c
 - Use the [PR handoff template](.github/pull_request_template.md), scaled to the change, and the [integration checklist](docs/quality.md#integration-handoff). Declare shared-file ownership before parallel work. Keep implemented, verified, proposed and blocked work distinct; software checks, source review, publication and user validation are separate evidence categories.
 - At every integration handoff, explicitly list remaining gaps in the user-facing summary: what is missing, its practical impact, and the next action/owner or ticket. Distinguish demo usability gaps from blockers to accepted real evaluation; do not hide them behind a generic caveat or document link.
 
+## Model gathering
+
+- For prefab model research, catalogue additions or refreshes, follow the [model-gathering checklist](docs/model-catalogue/gathering-checklist.md), wherever the research or implementation files live. Inspect existing contracts and consumers, populate supported fields with their source qualifications, and record the inspected scope for each remaining gap.
+- Do not turn "not found in the inspected sources" into "the manufacturer does not publish it", or a contract-valid candidate into reviewed or accepted data. Use the existing intake/export workflow and verify useful source facts and unknowns through affected displays and enquiry outputs.
+
 ## Homeowner findings and municipality boundaries
 
 - Default checks to a short finding and useful next action, not a dump of evaluator prose. Distinguish supported conflict, missing user information, unavailable source and unsupported coverage. Actionable flags must expand and focus the relevant input or offer a real retry; missing implemented coverage must not masquerade as a question the homeowner can answer. Keep calculations, exact evidence and source reasoning in accessible details, with decisive uncertainty visible. Quiet successful geometry checks must not hide failures or imply overall suitability.

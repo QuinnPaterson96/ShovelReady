@@ -101,10 +101,10 @@ def build():
         "Regulatory floor area and occupancy footprint",
         "Victoria site delivery and installation confirmation",
     )
-    return dict(
+    payload = dict(
         schema_version="sr-40.catalogue.v1",
-        snapshot_id="sr-40.2026-09-25.provider-pages.v1",
-        captured_at=DATE,
+        snapshot_id="sr-40.2026-10-06.provider-pages.v2",
+        captured_at="2026-10-06",
         provenance="manual_transcription_of_public_provider_specs",
         review_status="unreviewed",
         models=[
@@ -309,6 +309,41 @@ def build():
             ),
         ],
     )
+    model = payload["models"][2]
+    # Separate October commercial captures: do not redate September geometry.
+    for source_id, url, locator in (
+        ("aux-300-commercial", "https://www.auxbox.ca/model-300", "Starting price; Layout & Specs > Materials, Upgrades, Site Prep, Delivery + Installation"),
+        ("aux-faq-timing", "https://www.auxbox.ca/faqs", "How long does it take?"),
+        ("aux-process-timing", "https://www.auxbox.ca/how-it-works", "Installed in one day; How it works steps 1–6"),
+    ):
+        model["sources"].append(dict(source_id=source_id, url=url, locator=locator,
+            captured_at="2026-10-06", sha256=None, artifact_status="capture_gap",
+            upstream_revision=None, updated_at=None))
+    model["prices"] = [dict(
+        source_id="aux-300-commercial", wording="Starting at $187,000 CAD. On-site prep including permitting, foundations, site services, shipping, and install at additional cost",
+        scope="model", configuration="Public Model 300 one-bedroom page; upgrades not fixed",
+        region=None, amount=dict(minimum="187000", maximum=None), currency="CAD", basis="starting",
+        inclusions=["Full bathroom and complete kitchen described on the model page"],
+        exclusions=["Permitting", "Foundations", "Site services", "Shipping", "Installation"],
+        tax_treatment=None,
+        qualifications=["Model starting price, not total project cost.", "Upgrades are listed separately; their prices and a fixed configuration are not supplied.", "The page lists North America delivery; regional pricing is not stated."],
+    )]
+    model["timings"] = [dict(
+        source_id="aux-faq-timing", scope="provider", configuration=None, region=None,
+        wording="Roughly 12-18 weeks from purchase contract to delivery, depending on the model you choose, our production schedule and the permitting requirements. Smaller models can have shorter lead times. Larger models can have longer lead times.",
+        stage="contract_to_delivery", duration=dict(minimum="12", maximum="18"), unit="weeks",
+        basis="estimated", clock_start="Purchase contract",
+        prerequisites=["Model choice", "Production schedule", "Permitting requirements"],
+        qualifications=["Provider-wide estimate; not a Model 300 or property-specific schedule.", "Does not separately quantify factory production or delivery transit time."],
+    ), dict(
+        source_id="aux-process-timing", scope="provider", configuration=None, region=None,
+        wording="Your aux box is delivered by truck and placed on-site by crane, all in one day",
+        stage="on_site_installation", duration=dict(minimum="1", maximum=None), unit="days",
+        basis="provider_claim", clock_start=None,
+        prerequisites=["Site qualification", "Permits where required", "Design confirmation", "Foundation and services preparation", "Crane access"],
+        qualifications=["Provider-wide delivery/placement-day claim; not the full project timeline or a Model 300 installation guarantee.", "Foundation preparation is a separate process step; no standalone transit duration is supplied."],
+    )]
+    return payload
 
 
 def main():

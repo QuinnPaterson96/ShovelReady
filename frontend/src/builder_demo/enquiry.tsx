@@ -44,7 +44,7 @@ export function enquiryMarkdown(document: EnquiryDocument) {
 }
 
 export function enquiryEmailBody(document: EnquiryDocument, includeSiteDetails: boolean) {
-  const sections = document.sections.filter(section => includeSiteDetails || section.heading === 'Model')
+  const sections = document.sections.filter(section => includeSiteDetails || section.heading === 'Model' || section.heading === 'Price & timing')
   return [document.example ? 'SAVED EXAMPLE ONLY — not my property.' : 'Preliminary Model 300 enquiry.',
     document.question,
     ...sections.map(section => `${section.heading}: ${section.emailSummary}`),

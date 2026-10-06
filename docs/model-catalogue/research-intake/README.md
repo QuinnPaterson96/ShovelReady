@@ -1,5 +1,9 @@
 # SR-53: offline prefab research intake
 
+Before gathering or mapping model facts, follow the
+[model-gathering checklist](../gathering-checklist.md). The live contract files are
+authoritative; the mapping below is a guide, not an alternative schema.
+
 This stages **structured, explicitly supplied** candidate JSON for review. It does not fetch a report, extract prose, change either active catalogue copy, or publish a model. The current `Catalogue`, `Model`, `Measure`, `Source`, and `Quantity` contracts define the input. The output remains `unreviewed`, even when validation succeeds.
 
 ## Run and inspect
@@ -22,6 +26,9 @@ Use a fresh input JSON in the exact `Catalogue` shape. Copy structural keys from
 |---|---|---|
 | File/page URL or supplied document location, capture date, retained bytes | `sources[]`: `url`, `locator`, `captured_at`, `sha256`, `artifact_status` | Use a stable locator. `capture_gap` and a null hash remain visible gaps; do not fabricate a digest. |
 | Provider's controlled drawing/version, if stated | `sources[].upstream_revision` | Keep separate from capture date and file hash. Null means unknown. |
+| Explicit source update date, if stated | `sources[].updated_at` | Do not substitute capture date or an unrelated footer copyright year. |
+| Model or provider price claim | `prices[]` | Preserve amount/range, currency, basis, configuration/region, inclusions/exclusions, tax treatment, wording, qualifications and source ID. Missing amount/currency/tax remain unknown. |
+| Production, transit, installation or combined contract-to-delivery claim | `timings[]` | Preserve stage, duration/range/unit, basis, clock start, prerequisites, scope, wording, qualifications and source ID. Do not split a combined interval into invented component durations. |
 | Exact model configuration/revision, if established | `configuration`, `source_revision` | This is the model-level revision. Null when the report does not establish it. |
 | Exterior width/depth with stated reference faces | `nominal_exterior_width`, `nominal_exterior_depth` | Attach each known value to its `source_id`; say whether projections are included. |
 | Labelled living/interior area | `manufacturer_interior_area` | Never interpret as regulatory floor area. |

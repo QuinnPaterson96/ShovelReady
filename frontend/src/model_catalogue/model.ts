@@ -1,6 +1,20 @@
 import snapshot from './catalogue.json'
 
 export type Field = 'width' | 'depth' | 'height' | 'area'
+export type ValueRange = { minimum: string; maximum: string | null }
+export type CommercialClaim = {
+  source_id: string; wording: string; scope: 'model' | 'provider'
+  configuration: string | null; region: string | null; qualifications: string[]
+}
+export type Price = CommercialClaim & {
+  amount: ValueRange | null; currency: 'CAD' | 'USD' | 'EUR' | 'GBP' | 'AUD' | 'NZD' | null
+  basis: 'starting' | 'fixed' | 'estimated'; inclusions: string[]; exclusions: string[]; tax_treatment: string | null
+}
+export type Timing = CommercialClaim & {
+  stage: 'production_lead_time' | 'delivery' | 'on_site_installation' | 'contract_to_delivery'
+  duration: ValueRange | null; unit: 'hours' | 'days' | 'weeks' | 'months' | null
+  basis: 'estimated' | 'provider_claim'; clock_start: string | null; prerequisites: string[]
+}
 export type SourceMeasure = {
   name: string; status: 'known' | 'missing'; definition: string
   quantity: null | { original_text: string; original_value: string; original_unit: string; dimension: string; value: string; unit: string; basis: null }
@@ -12,8 +26,9 @@ export type CatalogueModel = {
   service_area_status: 'unknown' | 'provider_claim' | 'excluded_by_provider'
   service_area_note: string; installation_note: string; footprint_note: string; height_note: string
   missing_facts: string[]; review_status: 'unreviewed'
-  sources: Array<{ source_id: string; url: string; locator: string; captured_at: string; sha256: string | null; artifact_status: string; upstream_revision: string | null }>
+  sources: Array<{ source_id: string; url: string; locator: string; captured_at: string; sha256: string | null; artifact_status: string; upstream_revision: string | null; updated_at?: string | null }>
   measurements: SourceMeasure[]
+  prices?: Price[]; timings?: Timing[]
 }
 export type Catalogue = { schema_version: 'sr-40.catalogue.v1'; snapshot_id: string; captured_at: string; review_status: 'unreviewed'; models: CatalogueModel[] }
 export const bundledCatalogue = snapshot as Catalogue
