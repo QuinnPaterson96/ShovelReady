@@ -1,3 +1,4 @@
+import { suggestPlacementOrientation } from '../placement_orientation'
 import { useEffect, useRef, useState } from 'react'
 import { bundledCatalogue } from '../model_catalogue/model'
 import { PublishedDimensions } from '../model_catalogue/PublishedDimensions'
@@ -113,11 +114,15 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
   const [result, setResult] = useState<Result | null>(null)
   const [assessing, setAssessing] = useState(false)
   const [assessmentError, setAssessmentError] = useState('')
+  const [rotationFocused, setRotationFocused] = useState(false)
+  const activeCheck = useRef<AbortController | null>(null)
   const version = useRef(0)
   const selected = cases.find(c => c.case_id === caseId) ?? null
+  const orientation = selected ? suggestPlacementOrientation(selected.site) : null
+  const startingAngle = (site: Case) => { const suggestion = suggestPlacementOrientation(site.site); return suggestion.status === 'suggested' ? String(suggestion.angle_degrees) : '0' }
   const allowedModels = bundledCatalogue.models.filter(m => !allowedModelIds || allowedModelIds.includes(m.model_id))
   const model = allowedModels.find(m => m.model_id === modelId)
-  function invalidate() { version.current++; setResult(null); onMeasurement?.(null); setAssessmentError(''); setAssessing(false) }
+  function invalidate() { activeCheck.current?.abort(); version.current++; setResult(null); onMeasurement?.(null); setAssessmentError(''); setAssessing(false) }
   function changePlacement(patch: Partial<Placement>) { invalidate(); setPlacement(p => ({ ...p, ...patch })) }
   function changeAssumption(key: 'parcel' | 'building', value: string) { invalidate(); setAssumptions(p => ({ ...p, [key]: value })) }
   useEffect(() => {
@@ -127,7 +132,7 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
     setLoading(true); setError(''); setCases([]); setCaseId(''); setResult(null); onMeasurement?.(null)
     if (suppliedCase) {
       setCases([suppliedCase]); setCaseId(suppliedCase.case_id); setLoading(false)
-      setPlacement(current => ({ ...current, x: '', y: '' }))
+      setPlacement(current => ({ ...current, x: '', y: '', angle: startingAngle(suppliedCase) }))
       return () => { active = false; version.current++ }
     }
     const timer = setTimeout(() => controller.abort(), 10000)
@@ -138,7 +143,7 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
         const found = parseSites(await response.json())
         if (!active) return
         setCases(found); setCaseId(found[0].case_id)
-        setPlacement(current => ({ ...current, x: '', y: '' }))
+        setPlacement(current => ({ ...current, x: '', y: '', angle: startingAngle(found[0]) }))
       } catch (e) { if (!active) return; if (!controller.signal.aborted) setError(e instanceof Error ? e.message : 'Retained sites unavailable.')
         else setError('Retained site request timed out.') }
       finally { clearTimeout(timer); if (active) setLoading(false) }
@@ -147,7 +152,8 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
   }, [reload, suppliedCase])
   function chooseCase(id: string) {
     invalidate(); setCaseId(id)
-    setPlacement(current => ({ ...current, x: '', y: '' }))
+    const next = cases.find(item => item.case_id === id)
+    setPlacement(current => ({ ...current, x: '', y: '', angle: next ? startingAngle(next) : '0' }))
   }
   function placeAtCentre() {
     if (!selected) return
@@ -192,6 +198,7 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
         ...(buildingMinimum === null ? [] : [{ id: 'user-building-minimum', target: 'nearest_building', minimum_m: buildingMinimum, status: 'user_assumption' }]),
       ] }
     const controller = new AbortController(), timer = setTimeout(() => controller.abort(), 10000)
+    activeCheck.current = controller
     try {
       const response = await fetch('/api/scouting-geometry/assess', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(request), signal: controller.signal })
       if (!response.ok) throw new Error(`Geometry service unavailable (${response.status}).`)
@@ -206,6 +213,12 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
     } catch (e) { if (version.current === requestVersion) setAssessmentError(controller.signal.aborted ? 'Assessment timed out. Try again.' : e instanceof Error ? e.message : 'Assessment failed.') }
     finally { clearTimeout(timer); if (version.current === requestVersion) setAssessing(false) }
   }
+  useEffect(() => {
+    const timer = setTimeout(() => { if (valid && assumptionsValid) void assess() }, 450)
+    return () => { clearTimeout(timer); version.current++; activeCheck.current?.abort() }
+    // Geometry edits trigger checks; results and callback identity do not.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [placement, assumptions, selected])
   const source = selected?.site.parcel.source
   const overlap = result && selected ? overlapFinding(selected, result) : null
   const observedConflicts = overlap?.conflicts ?? []
@@ -213,6 +226,7 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
   const comparisons = result?.checks.filter(c => c.kind === 'requirement') ?? []
   const otherChecks = result?.checks.filter(c => !['containment', 'building_overlap', 'parcel_boundary_distance', 'nearest_building_distance', 'building_distance', 'named_boundary_distance', 'requirement'].includes(c.kind) || c.status !== 'observed' && c.kind !== 'requirement') ?? []
   const observationIncomplete = otherChecks.length > 0 || overlap?.complete === false
+  const geometryTone = observedConflicts.length ? 'conflict' : observationIncomplete || comparisons.some(c => c.comparison !== 'meets') ? 'unknown' : 'clear'
   const summary = result && selected ? [
     `Site: ${selected.label}. ${source?.provider} parcel and roofline observations; ${source?.review_status}; captured ${readableDate(source?.capture_date)}.`,
     `Nominal rectangle: ${show(width)} wide (${dimensionOrigin('width')}) × ${show(depth)} deep (${dimensionOrigin('depth')}); centre ${x}, ${y} in ${selected.site.projected_metre_crs}; rotation ${angle}°. ${model ? `${model.provider} ${model.name}, unreviewed provider lead; provider measurements captured ${readableDate(model.sources[0]?.captured_at)}; source ${model.provider_url}; manufacturer revision ${model.source_revision ?? 'not supplied'}. ${model.service_area_note} ${model.footprint_note}` : 'Dimensions supplied manually by user.'}`,
@@ -224,7 +238,7 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
   ].join('\n') : ''
   return <section className="occupied-lots" aria-labelledby="occupied-title">
     <p className="eyebrow">Occupied-lot workspace</p><h2 id="occupied-title">See what this footprint meets on a captured lot</h2>
-    <p className="occupied-intro">{suppliedCase ? 'Use your confirmed property observation and set the nominal footprint.' : 'Choose a retained Victoria parcel and set the nominal footprint.'} Click to place it, then measure observed overlaps and distances for that one position.</p>
+    <p className="occupied-intro">{suppliedCase ? 'Use your confirmed property observation and set the nominal footprint.' : 'Choose a retained Victoria parcel and set the nominal footprint.'} Click to place it. Observed overlaps and distances are checked automatically after edits settle.</p>
     <p className="notice">Approximate, parcel-intersecting captures only. Rooflines are not walls; no observed overlap does not certify clear space. Legal boundaries, setbacks, other obstructions and provider dimensions need separate review. This does not establish site fit or permit eligibility.</p>
     {loading && <p role="status">Loading retained sites…</p>}
     {error && <p role="alert">{error} No site sketch is available. <button onClick={() => setReload(n => n + 1)}>Retry</button></p>}
@@ -262,7 +276,9 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
                 <button disabled={x === null || y === null} onClick={() => nudge(1, 0)} aria-label={`Move east ${nudgeMetres} ${nudgeMetres === 1 ? 'metre' : 'metres'}`}>East →</button>
                 <button disabled={x === null || y === null} onClick={() => nudge(0, -1)} aria-label={`Move south ${nudgeMetres} ${nudgeMetres === 1 ? 'metre' : 'metres'}`}>↓ South</button></div>
               <p className="metadata">Focus the map and use arrow keys for the same metre increments.</p></div>
-            <label htmlFor="occupied-angle">Rotation (degrees)</label><input id="occupied-angle" type="number" step="any" value={placement.angle} onChange={e => changePlacement({ angle: e.target.value })} />
+            <button type="button" disabled={orientation?.status !== 'suggested'} onClick={() => { if (orientation?.status === 'suggested') changePlacement({ angle: String(orientation.angle_degrees) }) }}>Align to lot</button>
+            <p className="metadata">{orientation?.status === 'suggested' ? 'Starting rotation follows the approximate long direction of this lot. Alignment does not choose a clear position or establish legal frontage.' : orientation?.reason}</p>
+            <label htmlFor="occupied-angle">Rotation (degrees)</label><input id="occupied-angle" type="number" step="any" value={rotationFocused || !placement.angle.trim() || !Number.isFinite(Number(placement.angle)) ? placement.angle : String(Number(Number(placement.angle).toFixed(2)))} onFocus={() => setRotationFocused(true)} onBlur={() => setRotationFocused(false)} onChange={e => changePlacement({ angle: e.target.value })} />
             <details><summary>Advanced position · projected XY</summary><p className="metadata">Centre coordinates in {selected.site.projected_metre_crs}, metres.</p>
               <div className="occupied-fields">{(['x', 'y'] as const).map(key => <div key={key}><label htmlFor={`occupied-${key}`}>Centre {key.toUpperCase()} (m)</label>
                 <input id={`occupied-${key}`} type="number" step="any" value={placement[key]} onChange={e => changePlacement({ [key]: e.target.value })} /></div>)}</div></details>
@@ -276,6 +292,10 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
             {(!valid || !assumptionsValid) && <p role="status">Place the rectangle, enter positive width and depth, a finite rotation, and nonnegative optional minimums to measure.</p>}
             <button className="sr-primary" disabled={!valid || !assumptionsValid || assessing} onClick={() => void assess()}>{assessing ? 'Measuring…' : 'Measure this placement'}</button>
             {assessmentError && <p role="alert">{assessmentError} Edit the sketch or try again; no result is shown.</p>}
+          </div>
+          <div className={`placement-check placement-check--${result ? geometryTone : 'unknown'}`} role="status">
+            <strong><span aria-hidden="true">{result ? geometryTone === 'conflict' ? '✕ ' : geometryTone === 'clear' ? '✓ ' : '… ' : '… '}</span>{result ? geometryTone === 'conflict' ? 'Observed geometry conflict' : geometryTone === 'clear' ? 'No observed geometry conflict' : 'Clearance or geometry needs review' : assessing ? 'Checking placement…' : assessmentError ? 'Check unavailable' : 'Place or edit the rectangle for an automatic check'}</strong>
+            <p>Approximate captured geometry only. Zoning legality, other obstructions and permit eligibility remain unassessed.</p>
           </div>
           {result && <section className="occupied-results" aria-labelledby="occupied-results"><p className="eyebrow">Measured position only</p><h3 id="occupied-results">{observedConflicts.length ? 'Observed conflicts at this position' : observationIncomplete ? 'Some measurements unresolved' : 'No overlap observed at this position'}</h3>
             <p>These observations cover the supplied rectangle and mapped features only. Another position could differ.</p>

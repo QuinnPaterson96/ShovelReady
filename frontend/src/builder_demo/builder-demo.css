@@ -67,3 +67,7 @@
 .builder-demo .builder-email-primary:hover, .builder-demo .builder-continue:hover { background: var(--primary-hover); }
 .builder-demo .builder-email-primary:disabled { opacity: .55; }
 .builder-demo .builder-email { padding: 1.25rem; border: 2px solid var(--primary); border-radius: var(--radius-card); background: var(--primary-soft); }
+
+.builder-example-outcome--clear, .placement-check--clear { color: #205536 !important; background: #edf7ef !important; border-left: 5px solid #36834f !important; }
+.placement-check { padding: 1rem; margin: 1rem 0; background: var(--neutral-soft); border-left: 5px solid var(--neutral-edge); }
+.placement-check--conflict { color: var(--danger-ink); background: var(--danger-soft); border-color: var(--danger); }

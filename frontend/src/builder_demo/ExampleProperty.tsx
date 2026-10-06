@@ -26,6 +26,7 @@ export function ExampleProperty({ onMeasurement }: { onMeasurement: (value: Occu
   const [editedDimensions, setEditedDimensions] = useState({ width: false, depth: false })
   const [step, setStep] = useState(1)
   const [rotationFocused, setRotationFocused] = useState(false)
+  const activeCheck = useRef<AbortController | null>(null)
   const version = useRef(0)
   const map = useRef<SVGSVGElement>(null)
   const dragging = useRef(false)
@@ -33,10 +34,11 @@ export function ExampleProperty({ onMeasurement }: { onMeasurement: (value: Occu
   const request = exampleRequest(position, assumptions)
 
   function invalidate() {
+    activeCheck.current?.abort()
     version.current += 1
     setResult(null); onMeasurement(null); setBusy(false)
     setPhase('stale')
-    setMessage('Placement changed. Measure again for a current result.')
+    setMessage('Placement changed. Automatic check pending…')
   }
 
   function edit(key: keyof ExamplePosition, value: string) {
@@ -73,7 +75,7 @@ export function ExampleProperty({ onMeasurement }: { onMeasurement: (value: Occu
     setAssumptions(emptyExampleAssumptions())
     setEditedDimensions({ width: false, depth: false })
     invalidate()
-    setMessage('Illustrative starting position restored. Measure again for a current result.')
+    setMessage('Illustrative starting position restored. Automatic check pending…')
   }
 
   async function measure(next: ExamplePosition, minima: ExampleAssumptions) {
@@ -82,7 +84,9 @@ export function ExampleProperty({ onMeasurement }: { onMeasurement: (value: Occu
     const sequence = ++version.current
     setResult(null); onMeasurement(null); setPhase('measuring')
     setBusy(true); setMessage('Measuring the saved example placement…')
+    activeCheck.current?.abort()
     const controller = new AbortController()
+    activeCheck.current = controller
     const timer = setTimeout(() => controller.abort(), 10000)
     try {
       const response = await fetch('/api/scouting-geometry/assess', { method: 'POST',
@@ -100,11 +104,11 @@ export function ExampleProperty({ onMeasurement }: { onMeasurement: (value: Occu
   }
 
   useEffect(() => {
-    void measure(initialExamplePosition(), emptyExampleAssumptions())
-    return () => { version.current += 1 }
-    // The initial illustrative placement is measured once; subsequent edits require the button.
+    const timer = setTimeout(() => void measure(position, assumptions), 450)
+    return () => { clearTimeout(timer); version.current += 1; activeCheck.current?.abort() }
+    // Recheck only when geometry/assumptions change, not when parent callbacks rerender.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [position, assumptions])
 
   const all = [exampleCase.site.parcel, ...exampleCase.site.buildings].flatMap(points)
   const xs = all.map(point => point[0]), ys = all.map(point => point[1])
@@ -122,7 +126,7 @@ export function ExampleProperty({ onMeasurement }: { onMeasurement: (value: Occu
   const conflict = observation?.conflict ?? false
   const unresolved = observation?.unresolved ?? false
   const shortfall = observation?.shortfall ?? false
-  const status = phase === 'stale' ? 'Placement or assumption changed — measure again' :
+  const status = phase === 'stale' ? 'Placement changed — check pending' :
     phase === 'measuring' ? 'Measuring this placement' : phase === 'unresolved' ? 'Measurement unresolved' :
       conflict ? 'Observed placement conflict' : unresolved ? 'Measurement unresolved' :
         shortfall ? 'Your clearance target has a shortfall' : 'No observed conflict at this position'
@@ -135,7 +139,7 @@ export function ExampleProperty({ onMeasurement }: { onMeasurement: (value: Occu
       <p>Unknown: legal lot lines, building walls and roles, other obstructions, zoning and setbacks, installed height and datum, current controlled provider dimensions, access and services.</p>
     </div>
     <div className={`builder-example-outcome builder-example-outcome--${statusTone}`} role="status" aria-live="polite">
-      <strong>{status}</strong><p>{phase === 'stale' ? 'The previous observation no longer describes these inputs.' : phase === 'measuring' ? 'Checking the supplied rectangle against captured geometry.' : phase === 'unresolved' ? `${message} No current geometry conclusion is available.` : conflict ? 'The supplied rectangle crosses or touches a captured parcel or roofline outline. This does not test other positions.' : unresolved ? 'Some captured geometry or assumption comparisons could not be resolved. Inspect the details below.' : shortfall ? 'The observed distance falls below a minimum you entered. This is not a legal setback comparison.' : 'No parcel crossing or captured roofline overlap was observed for this supplied position. Other obstructions and legal conditions remain unknown.'}</p>
+      <strong><span aria-hidden="true">{statusTone === 'conflict' ? '✕ ' : statusTone === 'clear' ? '✓ ' : '… '}</span>{status}</strong><p>{phase === 'stale' ? 'The previous observation no longer describes these inputs.' : phase === 'measuring' ? 'Checking the supplied rectangle against captured geometry.' : phase === 'unresolved' ? `${message} No current geometry conclusion is available.` : conflict ? 'The supplied rectangle crosses or touches a captured parcel or roofline outline. This does not test other positions.' : unresolved ? 'Some captured geometry or assumption comparisons could not be resolved. Inspect the details below.' : shortfall ? 'The observed distance falls below a minimum you entered. This is not a legal setback comparison.' : 'No parcel crossing or captured roofline overlap was observed for this supplied position. Other obstructions and legal conditions remain unknown.'}</p>
     </div>
     <div className="builder-example-layout">
       <figure className="builder-example-map"><svg ref={map} viewBox={viewBox} role="img" tabIndex={0} aria-label={`Saved City of Victoria parcel and roofline with an illustrative Model 300 nominal rectangle. Click to move its centre or drag the rectangle. Arrow keys move it ${step} ${step === 1 ? 'metre' : 'metres'}; north is up.`}
@@ -152,7 +156,7 @@ export function ExampleProperty({ onMeasurement }: { onMeasurement: (value: Occu
         </g>}
       </svg><figcaption>Teal: captured parcel · Purple: captured roofline, not walls · Red dashed outline: observed conflict in current measurement · Copper: illustrative nominal rectangle · North ↑ · EPSG:3157 metres. Diagram is approximate.</figcaption></figure>
       <div className="builder-example-controls"><h3>Edit the illustrative placement</h3>
-        <p>The nominal rectangle starts at Model 300's unreviewed provider dimensions. Current width {show(Number(position.width), 'length')} × length {show(Number(position.depth), 'length')}. Click the map to move its centre or drag the copper rectangle. North is up; movement changes the example only. Edits need a new measurement.</p>
+        <p>The nominal rectangle starts at Model 300's unreviewed provider dimensions. Current width {show(Number(position.width), 'length')} × length {show(Number(position.depth), 'length')}. Click the map to move its centre or drag the copper rectangle. North is up; movement changes the example only. Changes are checked automatically after a short pause. Zoning legality is not assessed.</p>
         <div className="builder-example-movement" aria-label="Move the illustrative placement">
           <label htmlFor="builder-example-step">Movement step</label><select id="builder-example-step" value={step} onChange={event => setStep(Number(event.target.value))}><option value="0.25">0.25 m</option><option value="1">1 m</option><option value="5">5 m</option></select>
           <div className="builder-example-directions"><button type="button" onClick={() => nudge(0, 1)}>North ↑</button><button type="button" onClick={() => nudge(-1, 0)}>West ←</button><button type="button" onClick={() => nudge(1, 0)}>East →</button><button type="button" onClick={() => nudge(0, -1)}>South ↓</button></div>
