@@ -15,6 +15,8 @@ import { bundledCatalogue } from '../model_catalogue/model'
 import { manufacturerDocument, additionalObservation, boundaryObservations } from './manufacturer'
 import { reviewAddress, reviewInput, reviewConditional, reviewScenarios, reviewScan, reviewAssumptions, reviewSettings } from './manufacturer-review.fixture'
 import { PriceTiming, priceTimingParagraphs } from '../model_catalogue/PriceTiming'
+import { placementDrawing, attachedEmail } from './placementExport'
+import { preparationChecklist } from './manufacturer'
 
 const manualFact = (value: string | number | null): Fact => ({
   value, unit: null, basis: null, unresolved_reason: value === null ? 'unknown' : null,
@@ -153,7 +155,7 @@ test('one structured enquiry drives accessible preview, plain copy, Markdown and
   const markdown = enquiryMarkdown(doc)
   const emailWithoutSite = enquiryEmailBody(doc, false)
   const emailWithSite = enquiryEmailBody(doc, true)
-  for (const heading of ['Project', 'Questions for aux box', 'Site preparation']) {
+  for (const heading of ['Project', 'Questions for aux box', 'Site information']) {
     assert.match(html, new RegExp(`>${heading}<`))
     assert.ok(plain.includes(heading))
     assert.ok(markdown.includes(`## ${heading}`))
@@ -195,22 +197,29 @@ test('manufacturer brief and supporting report reconcile two rear-yard concerns 
   const markdown = enquiryMarkdown(brief)
   const html = renderToStaticMarkup(createElement(EnquiryPreview, { document: brief }))
   for (const output of [plain, email, markdown, html]) {
-    assert.match(output, /not wholly inside/)
+    assert.match(output, /extends beyond the assumed rear-yard boundary/)
     assert.match(output, /59.1%/)
     assert.match(output, /25%/)
-    assert.match(output, /intended use is not yet specified/)
+    assert.doesNotMatch(output, /intended use is not yet specified|still deciding|The sender must|Not yet supplied|Excess:|record names not supplied/)
     assert.doesNotMatch(output, /0 apparent conflicts|journey_default|legal_lot|principal_separation|acknowledged by the user/i)
-    assert.ok(output.indexOf('not wholly inside') < output.indexOf('1. Can you provide'))
-    assert.match(output, /Development permit areas/)
-    assert.match(output, /record names not supplied/)
+    assert.ok(output.indexOf('extends beyond') < output.indexOf('1. Can you share'))
+    assert.doesNotMatch(output, /Development permit areas/)
+    assert.match(output, /standard Model 300/)
   }
+  const namedScan = { ...reviewScan, findings: [{ ...reviewScan.findings[0], records: [{ Name: 'DPA 1 General Urban Design' }] }] }
+  assert.match(enquiryPlainText(manufacturerDocument(reviewInput, reviewAddress, false, null, null, null, namedScan, true)), /Development permit areas: DPA 1 General Urban Design/)
   const defaultUse = enquiryPlainText(enquiryDocument(null, reviewInput, null, false, null, null, false, null, null, null, reviewSettings.proposal, null, reviewSettings))
-  assert.match(defaultUse, /intended use is not yet specified/)
+  assert.doesNotMatch(defaultUse, /intended use is not yet specified|still deciding/)
   const confirmedSettings = { ...reviewSettings, evidence: { ...reviewSettings.evidence, proposed_use: { ...reviewSettings.evidence.proposed_use, origin: 'user_confirmed' as const } } }
   const confirmedUse = enquiryPlainText(enquiryDocument(null, reviewInput, null, false, null, null, false, null, null, null, confirmedSettings.proposal, null, confirmedSettings))
-  assert.match(confirmedUse, /garden suite \(confirmed by the user/)
+  assert.doesNotMatch(confirmedUse, /for a garden suite/)
   const explicitUse = enquiryPlainText(enquiryDocument(null, { ...reviewInput, intendedUse: 'art studio' }, null, false, null, null, false, null, null, null, confirmedSettings.proposal, null, confirmedSettings))
   assert.match(explicitUse, /for art studio/)
+  const deciding = enquiryPlainText(manufacturerDocument({ ...reviewInput, intendedUse: 'Still deciding' }, null, false, null, null, null, null, false))
+  assert.match(deciding, /still deciding how I would use it/)
+  const withheld = enquiryPlainText(manufacturerDocument({ ...reviewInput, intendedUse: 'Prefer not to say', relationship: 'Unknown', nextStep: 'Unknown' }, null, false, null, null, null, null, false))
+  assert.doesNotMatch(withheld, /for Prefer not to say|Relationship to the property: Unknown|still deciding/)
+  assert.ok(preparationChecklist(reviewInput).some(item => item.includes('intended use')))
   const report = screeningDocument(null, reviewInput, null, false, null, null, false, null, reviewConditional, reviewAssumptions, reviewSettings.proposal, reviewScenarios, reviewSettings, reviewScan)
   const reportText = enquiryPlainText(report)
   assert.match(reportText, /Unresolved concerns are present/)
@@ -234,11 +243,37 @@ test('manufacturer brief and supporting report reconcile two rear-yard concerns 
   assert.match(gaps, /Separate user planning allowance: 1 m/)
 })
 
+test('placement export retains source geometry and an unsent MIME attachment preserves exact UTF-8 enquiry bytes', () => {
+  // A 10 × 10 parcel with a 2 × 4 rectangle centred at (5,5) rotated 90°
+  // independently has corners (7,4), (7,6), (3,6), (3,4). Export scales all
+  // coordinates together and preserves holes. This is drawing/MIME integrity,
+  // not source interpretation or email-client compatibility.
+  const source = { provider: 'User <script>', record_label: 'Local sketch', capture_date: null, review_status: 'unverified', reference: null }
+  const parcel = { id: 'parcel', shape: { crs: 'LOCAL:METRE', geometry: { type: 'Polygon' as const, coordinates: [[[0,0],[10,0],[10,10],[0,10],[0,0]], [[1,1],[2,1],[2,2],[1,2],[1,1]]] } }, source }
+  const result = { schema_version: 'scouting-geometry.v1' as const, conclusion: 'tested_placement_observations_only' as const, input: { parcel, projected_metre_crs: 'LOCAL:METRE', placement: { centre_xy: [5,5] as [number,number], width_m: 2, depth_m: 4, angle_degrees: 90 } }, checks: [], limitations: [] }
+  const drawing = placementDrawing({ site: { case_id: 'local', label: 'Local test', site: { projected_metre_crs: 'LOCAL:METRE', parcel, buildings: [], named_boundaries: [], capture: { completeness: 'partial', scope: 'local', limitations: [] } } }, model: null, result, widthOrigin: 'user', depthOrigin: 'user' }, null, null, false, { ink: '#203238', danger: '#9a3e35', parcelFill: '#ddd', parcelStroke: '#245b68', roofFill: '#ddd', roofStroke: '#564881', zoneFill: '#ddd', zoneStroke: '#91602f' })
+  assert.match(drawing.svg, /M610 530 L610 410 L370 410 L370 530 Z/)
+  assert.match(drawing.svg, /fill-rule="evenodd"/)
+  assert.match(drawing.svg, /north unknown|User &lt;script&gt;/)
+  assert.doesNotMatch(drawing.svg, /<script>/)
+  const body = 'I’m exploring a home — 3.05 m × 9.14 m.\nNo automatic transmission.'
+  const png = Uint8Array.from([137,80,78,71,13,10,26,10])
+  const mime = attachedEmail('person@example.com', 'Model 300\r\nBcc: ignored', body, png)
+  assert.match(mime, /^X-Unsent: 1\r\nTo: person@example.com/)
+  assert.doesNotMatch(mime, /\r\nBcc:/)
+  const parts = mime.split('Content-Transfer-Encoding: base64\r\n\r\n').slice(1).map(part => part.split('\r\n--')[0].replace(/\r\n/g, ''))
+  assert.equal(Buffer.from(parts[0], 'base64').toString('utf8'), body)
+  assert.deepEqual(new Uint8Array(Buffer.from(parts[1], 'base64')), png)
+  assert.match(mime, /Content-Disposition: attachment; filename="model-300-placement.png"/)
+  assert.doesNotMatch(attachedEmail('', 'Model 300', body), /Content-Disposition: attachment/)
+  assert.throws(() => attachedEmail('a@example.com\r\nBcc:evil@example.com', 'subject', body), /Invalid recipient/)
+})
+
 test('near-threshold concerns and arbitrary evidence text retain their exact meaning', () => {
   // Values independently stipulated just outside thresholds; rounding cannot
   // convert a conflict to equality. Full values survive the technical export.
   const ratio = { ...reviewScenarios.additional_checks![1], observed: .250000001 }
-  assert.match(additionalObservation(ratio), /Excess: < 0.1 percentage points/)
+  assert.match(additionalObservation(ratio), /exact estimate exceeds.*rounded equality/)
   const height = { ...ratio, id: 'height', label: 'Height', unit: 'm', observed: 4.200001, threshold: 4.2 }
   assert.match(additionalObservation(height), /Difference.*< 0.01 m/)
   const record = { height, ratio, sourceText: '```\n# source text <script> & raw' }
@@ -248,7 +283,7 @@ test('near-threshold concerns and arbitrary evidence text retain their exact mea
   const document = enquiryDocument(null, { ...questions, question: '# <script> test & 1.7 m' }, null)
   const markdown = enquiryMarkdown(document)
   assert.doesNotMatch(markdown, /1\\.7|&amp;/)
-  assert.match(markdown, /^1\. Can you provide/m, 'manufacturer questions must render as normal numbered Markdown items')
+  assert.match(markdown, /^1\. Can you share/m, 'manufacturer questions must render as normal numbered Markdown items')
   assert.match(markdown, /&lt;script&gt;/)
 })
 

@@ -388,7 +388,7 @@ test('Model 300 sole parcel proceeds with selected provenance; alternatives stil
   assert.equal(selected.identity_attestation, 'not_confirmed')
   assert.deepEqual(selected.observation, observation)
   const draft = enquiry(null, { intendedUse: '', timing: '', budget: '', access: '', services: '' }, null, false, selected)
-  assert.match(draft, /must establish property identity, permission to proceed/)
+  assert.doesNotMatch(draft, /The sender must/)
   assert.doesNotMatch(draft, /User-confirmed/)
   assert.match(placementCase(selected).site.capture.limitations.join(' '), /identity, ownership and legal boundaries are not confirmed/)
   flow.reject()

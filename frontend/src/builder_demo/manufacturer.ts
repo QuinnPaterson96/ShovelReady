@@ -47,16 +47,15 @@ export function assumptionsDescription(input: EnquiryInput, assumptions: SiteAss
 const section = (heading: string, paragraphs: string[], siteDetails = false): EnquirySection =>
   ({ heading, paragraphs, emailSummary: paragraphs.join('\n\n'), siteDetails })
 const pct = (value: number) => `${Number((value * 100).toFixed(1))}%`
-const percentageExcess = (value: number) => value > 0 && value * 100 < .05 ? '< 0.1 percentage points' : `${Number((value * 100).toFixed(1))} percentage points`
 
 // Present structured observations; do not parse diagnostic prose into facts or change comparisons.
 export function additionalObservation(check: AdditionalCheck): string {
   if (check.status === 'unknown' || check.status === 'unsupported' || check.status === 'review') return `${check.label}: ${check.status === 'unsupported' ? 'outside the supported comparison' : check.status === 'review' ? 'needs review of measurements and applicability' : 'missing information or unresolved applicability'}. No positive finding is established; the property contact and City/professional review must establish the relevant facts.`
   if (check.id === 'rear_location') return check.status === 'conflict'
-    ? 'The proposed rectangle is not wholly inside the approximate rear yard behind the assumed main building. The amount extending outside was not supplied.'
+    ? 'The sketch suggests part of the unit extends beyond the assumed rear-yard boundary behind the main building.'
     : 'The rectangle is inside the approximate rear yard under the supplied scenario. The yard definition and main-building identification still need confirmation.'
   if (check.id === 'rear_occupancy' && check.observed !== null && check.threshold !== null)
-    return `The nominal footprint is approximately ${pct(check.observed)} of the estimated rear-yard area, compared with a candidate ${pct(check.threshold)} limit.${check.status === 'conflict' && check.observed > check.threshold ? ` Excess: ${percentageExcess(check.observed - check.threshold)}.` : ''} The yard estimate, building identification, projections and rule applicability need review.`
+    return `The nominal footprint is approximately ${pct(check.observed)} of the estimated rear-yard area, compared with a possible ${pct(check.threshold)} limit.${check.status === 'conflict' && check.observed > check.threshold && pct(check.observed) === pct(check.threshold) ? ' The exact estimate exceeds that limit despite rounded equality.' : ''} The yard estimate, building identification, projections and rule applicability need checking.`
   const quantity = (value: number) => check.unit === 'm' ? measurementWithUnit(value, 'length')
     : check.unit === 'm2' ? measurementWithUnit(value, 'area') : String(value)
   const values = check.observed !== null && check.threshold !== null
@@ -106,46 +105,56 @@ export function boundaryObservations(scenarios: ScenarioResult | null, assumptio
 }
 
 export function positivePropertyFindings(scan: PropertyScanResult | null): string[] {
-  return (scan?.findings ?? []).filter(row => row.status === 'review' || row.records.length > 0).map(row => {
+  return (scan?.findings ?? []).filter(row => row.records.length > 0).map(row => {
     const names = row.records.map(record => record.Name ?? record.SUBJECT ?? record.Heritage ?? record.AppType)
       .filter((value): value is string => typeof value === 'string' && !!value.trim())
-    return `${row.label}: ${names.length ? [...new Set(names)].join('; ') : 'mapped records found; record names not supplied'}. Relevance and conditions need City or professional review.`
-  })
+    return names.length ? `${row.label}: ${[...new Set(names)].join('; ')}. Relevance and conditions need City or professional review.` : ''
+  }).filter(Boolean)
+}
+
+export function preparationChecklist(input: EnquiryInput): string[] {
+  return [
+    ...(!input.intendedUse.trim() ? ['Choose an intended use, or explicitly select Unknown, Still deciding or Prefer not to say.'] : []),
+    ...(!input.relationship?.trim() ? ['State your relationship to the property, or choose Unknown or Prefer not to say.'] : []),
+    ...(!input.nextStep?.trim() ? ['Choose the response you want, or select Unknown or Prefer not to say.'] : []),
+    'Confirm the property identity and permission to proceed with the property owner.',
+    'Check the main home, existing suites and waterfront answers before relying on the comparisons.',
+    'Add access photos, known obstructions and an entrance location when available; the sketch does not establish delivery access.',
+    'Ask City staff or a qualified local professional to check applicable planning rules, title restrictions and permit conditions. The sketch is not a survey.',
+    'Review your contact details and any attachments before sending. Share the supporting report if detailed calculations are needed.',
+  ]
 }
 
 export function manufacturerDocument(input: EnquiryInput, address: string | null, example: boolean,
   measured: OccupiedMeasurement | null, conditional: ScreeningResult | null, scenarios: ScenarioResult | null, scan: PropertyScanResult | null,
-  linkedPlacement: boolean): EnquiryDocument {
+  linkedPlacement: boolean, sketchAvailable = false): EnquiryDocument {
   const concerns = placementConcerns(measured, conditional, scenarios)
   const facts = [input.relationship?.trim() && `Relationship to the property: ${input.relationship.trim()}.`,
     input.stage?.trim() && `Project stage: ${input.stage.trim()}.`,
     input.configuration?.trim() && `Desired configuration: ${input.configuration.trim()}.`,
     input.timing.trim() && `Target timing: ${input.timing.trim()}.`, input.budget.trim() && `Budget range: ${input.budget.trim()}.`,
     input.access.trim() && `Access information/questions: ${input.access.trim()}.`, input.services.trim() && `Utility information/questions: ${input.services.trim()}.`].filter((v): v is string => !!v)
-  const missing = [!input.intendedUse.trim() && 'intended use', !input.relationship?.trim() && 'relationship to the property',
-    !input.stage?.trim() && 'project stage', !input.configuration?.trim() && 'configuration', !input.timing.trim() && 'target timing',
-    !input.access.trim() && 'access information/photos', !input.services.trim() && 'known utility connections'].filter(Boolean)
   const placement = measured && linkedPlacement ? [`The preliminary rectangle is ${measurementWithUnit(measured.result.input.placement.width_m, 'length')} × ${measurementWithUnit(measured.result.input.placement.depth_m, 'length')}${measured.widthOrigin === 'user' || measured.depthOrigin === 'user' ? '; dimensions have been edited and availability needs your confirmation' : ' using published nominal dimensions'}. It excludes unconfirmed overhangs and installation space.`] : []
-  const next = input.nextStep?.trim() || 'Please let me know what information you need for an initial site discussion and whether a preliminary call is the appropriate next step.'
+  const withheld = (value?: string) => !value?.trim() || ['unknown', 'prefer not to say'].includes(value.trim().toLowerCase())
+  const use = input.intendedUse.trim().toLowerCase() === 'still deciding' ? ' I’m still deciding how I would use it.' : withheld(input.intendedUse) ? '' : ` I would use it for ${input.intendedUse.trim()}.`
+  const next = withheld(input.nextStep) ? '' : input.nextStep!.trim()
   return {
     title: `Model 300 feasibility enquiry${address ? ` — ${address}` : ''}`,
     example,
     question: input.question?.trim() || 'Could you help establish whether Model 300 is worth investigating for this project?',
     sections: [
-      section('Project', [`I’m exploring aux box Model 300${address ? ` at ${address}` : ' for a possible site'}${input.intendedUse.trim() ? ` for ${input.intendedUse.trim()}` : '. My intended use is not yet specified'}.`, ...facts, ...(input.nextStep?.trim() ? [input.nextStep.trim()] : [])], true),
+      section('Project', [`I’m exploring aux box Model 300${address ? ` at ${address}` : ' for a possible site'}.${use}`, ...facts.filter(fact => !/Relationship to the property: (Unknown|Prefer not to say)\./i.test(fact))], true),
       ...(concerns.length ? [section('Preliminary concerns', [linkedPlacement ? 'The preliminary placement raises the following unresolved concerns.' : 'The following findings concern a separate retained example, not the proposed property.', ...concerns,
-        'These are preliminary comparisons with uncertain applicability, not established legal violations. The garden-suite scenario may not apply to the intended use. Could you advise on relocation, rotation or a smaller model if the concerns persist?'], true)] : []),
+        'These preliminary comparisons assume a garden suite; their applicability needs checking. They are not established legal violations. Could relocation, rotation or a smaller model help address these concerns?'], true)] : []),
       section('Questions for aux box', [
-        '1. Can you provide current dimensioned plans with drawing date/version, overall dimensions including overhangs, interior floor area, and a section showing where height is measured from and the foundation interface?',
+        '1. Can you share current dimensioned plans with their date/version, overhangs, interior floor area, height measurement reference and foundation requirements?',
         `2. Do you service ${address ? 'this locality' : 'the proposed locality once identified'}, and what truck access, crane setup space, lifting clearances and site photos or measurements do you need?`,
-        '3. Which foundation and utility interfaces do you support? Who supplies or coordinates site preparation, foundations, connections and permitting, and what planning or permit assistance do you offer?',
-        '4. What is the current price for the requested configuration? Please distinguish tax, upgrades, transport, crane, installation, foundations, services and permits from included work.',
+        '3. What foundation requirements and utility connections are needed? Who coordinates site preparation, foundations, connections and permits, and what assistance do you offer?',
+        `4. What is the current ${input.configuration?.trim() ? 'price for the options described above' : 'starting price for the standard Model 300'}, and what is included? Please identify additional costs for tax, upgrades, transport, crane, installation, foundations, utility connections and permits.`,
         '5. What is the current lead time, when does it start, and what decisions, permits and site preparation must be complete before booking or delivery?',
       ]),
-      section('Site preparation', [...placement, ...(!measured && !scenarios ? ['No current placement measurements are supplied; siting remains unassessed.'] : []), ...positivePropertyFindings(scan),
-        'A marked site plan is not included in this enquiry. The next preparation step is to identify the main house, front/rear/side boundaries, proposed entrance, approximate gaps and known obstructions on a property plan, with access photos. Any map sketch is approximate and is not a survey. A separate screening report can be shared; it is not attached here.',
-        ...(missing.length ? [`Not yet supplied: ${missing.join(', ')}. Please advise which details you need first; detailed studies can follow the initial discussion.`] : []),
-        'The sender must establish property identity, permission to proceed, existing dwellings/suites, waterfront status and services. City staff or a qualified local professional must confirm planning applicability and any required approvals; mapped outlines and scenario defaults do not establish those facts.',
+      section('Site information', [...placement, ...positivePropertyFindings(scan),
+        ...(sketchAvailable ? ['I have an approximate proposed placement sketch available. Please let me know the best way to share it.'] : []),
       ], true),
     ],
     closing: `${next}${input.contact?.trim() ? `\n\n${input.contact.trim()}` : ''}`,

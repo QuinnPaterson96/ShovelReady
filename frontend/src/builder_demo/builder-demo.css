@@ -136,4 +136,6 @@
 .builder-demo .builder-footprint-controls[hidden], .occupied-placement-controls[hidden] { display: none; }
 .builder-demo .builder-footprint-controls h3 { margin: .2rem 0; }
 .builder-demo .builder-placement-next { order: 3; }
+.builder-preparation, .builder-drawing-export { margin: 1rem 0; padding: 1rem; border: 1px solid var(--border); border-radius: var(--radius-card); background: var(--surface); }
+.builder-export-preview { width: 100%; max-height: 520px; object-fit: contain; object-position: top; border: 1px solid var(--border); background: var(--surface); }
 .builder-demo .builder-example-layout > .builder-example-controls { order: 4; }
