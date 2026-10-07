@@ -9,6 +9,7 @@ export type BuilderJourneyCompletion = Readonly<{
   boundaries?: boolean
   details?: boolean
   checks?: boolean
+  handoff?: 'website' | 'email'
   email?: boolean
   current?: JourneyStep
   mapAvailable?: boolean
@@ -33,7 +34,7 @@ const steps: readonly Step[] = [
   { key: 'details', label: 'Property details', anchor: 'builder-property-details' },
   { key: 'checks', label: 'Quick checks', anchor: 'builder-quick-checks' },
   { key: 'enquiry', label: 'Prepare enquiry', anchor: 'builder-next' },
-  { key: 'email', label: 'Email enquiry', anchor: 'builder-email' },
+  { key: 'email', label: 'Contact provider', anchor: 'builder-email' },
 ]
 
 /** Keep this inside the builder workspace's hidden-but-mounted wrapper. */
@@ -50,11 +51,11 @@ export function BuilderJourneyNav({ completion }: { completion: BuilderJourneyCo
           <span className="builder-journey-label">{label}</span>
           <span className={`builder-journey-state${done ? ' is-complete' : ''}`}>
             {done && <span className="builder-journey-check" aria-hidden="true">✓</span>}
-            {unavailable ? 'Map unavailable' : done ? key === 'email' ? 'Draft requested' : key === 'checks' || key === 'boundaries' || key === 'details' ? 'Reviewed' : 'Complete' : current ? 'Current step' : 'To do'}
+            {unavailable ? 'Map unavailable' : done ? key === 'email' ? completion.handoff === 'website' ? 'Website requested' : 'Draft requested' : key === 'checks' || key === 'boundaries' || key === 'details' ? 'Reviewed' : 'Complete' : current ? 'Current step' : 'To do'}
           </span>
         </a>
       })}
-      <small>Ticks show workflow progress, not passing checks. Email opens a draft; only you can send it.</small>
+      <small>Ticks show workflow progress, not passing checks. You submit the provider form or send the email yourself.</small>
       {completion.mapAvailable === false && <small>Map steps need a captured parcel. You can prepare an enquiry with the facts you know.</small>}
       {completion.reviewReadiness && <section className={`builder-review-readiness${completion.reviewReadiness.ready ? ' is-ready' : ''}`} key={completion.reviewReadiness.ready ? 'ready' : 'pending'} aria-label="Review readiness">
         {completion.reviewReadiness.ready ? <>
