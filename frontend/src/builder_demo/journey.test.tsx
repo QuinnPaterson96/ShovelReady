@@ -74,6 +74,9 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     assert.equal(document.activeElement?.id, 'builder-property-details')
     assert.equal(document.querySelector<HTMLDetailsElement>('#builder-property-details > details')!.open, true)
     assert.equal(document.querySelector('.builder-placement-next'), null)
+    assert.ok(document.querySelector('#builder-property-details #scouting-height'))
+    assert.ok(document.querySelector('#builder-property-details #scouting-area-buffer'))
+    assert.doesNotMatch(document.body.textContent!, /Complete the remaining checks/)
     assert.equal(document.getElementById('builder-property-details')!.hidden, false)
     await click('Next: Review quick checks →')
     assert.equal(document.activeElement?.id, 'builder-quick-checks')
@@ -262,10 +265,25 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
     assert.match(document.querySelector('#builder-quick-checks')!.textContent!, /Distance to boundaries · Conflicts/)
     assert.match(document.querySelector('#builder-enquiry-content')!.textContent!, /Acknowledged conflicts for discussion.*City agreement or an exception is not established/s)
     assert.equal(JSON.parse(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value).acknowledged_conflicts_for_discussion.length, 1)
+    assert.ok(document.querySelector('.homeowner-summary__acknowledged-conflict'))
     await click('Remove acknowledgement'); await settle()
     assert.doesNotMatch(document.querySelector('#builder-enquiry-content')!.textContent!, /Acknowledged conflicts for discussion/)
     await click('Acknowledge and include in enquiry'); await settle()
+    // Review readiness counts leaf findings, including unknown and uncovered items;
+    // discussing them never changes their status or establishes an answer.
+    for (let attempts = 0; attempts < 30; attempts++) {
+      const next = [...document.querySelectorAll<HTMLButtonElement>('.homeowner-summary button')].find(node => node.textContent === 'Include as an open question in enquiry' || node.textContent === 'Acknowledge and include in enquiry')
+      if (!next) break
+      await act(async () => next.click())
+    }
+    await settle()
+    assert.equal(completion.reviewReadiness!.ready, true)
+    assert.equal(completion.reviewReadiness!.addressed, completion.reviewReadiness!.total)
+    assert.match(document.querySelector('#builder-enquiry-content')!.textContent!, /Open questions included for discussion.*no answer or clearance is established/s)
+    assert.match(document.querySelector('#builder-quick-checks')!.textContent!, /Other requirements · Not covered/)
+    assert.match(document.querySelector('#builder-quick-checks')!.textContent!, /Distance to boundaries · Conflicts/)
     await change(measuredOffset, ''); await settle()
+    assert.equal(completion.reviewReadiness!.ready, false)
     assert.doesNotMatch(document.querySelector('#builder-enquiry-content')!.textContent!, /Acknowledged conflicts for discussion/)
 
 

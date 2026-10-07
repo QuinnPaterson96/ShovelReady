@@ -1,5 +1,6 @@
 /** Workflow milestones supplied by BuilderDemo, not assessment outcomes. */
 export type BuilderJourneyCompletion = Readonly<{
+  reviewReadiness?: { total: number; addressed: number; busy: boolean; ready: boolean; targetId?: string }
   model: boolean
   property: boolean
   placement: boolean
@@ -55,6 +56,12 @@ export function BuilderJourneyNav({ completion }: { completion: BuilderJourneyCo
       })}
       <small>Ticks show workflow progress, not passing checks. Email opens a draft; only you can send it.</small>
       {completion.mapAvailable === false && <small>Map steps need a captured parcel. You can prepare an enquiry with the facts you know.</small>}
+      {completion.reviewReadiness && <section className="builder-review-readiness" aria-label="Review readiness">
+        <strong>Review readiness · {completion.reviewReadiness.addressed} of {completion.reviewReadiness.total} addressed</strong>
+        <p role="status">{completion.reviewReadiness.busy ? 'Checks updating…' : completion.reviewReadiness.ready ? 'Ready to discuss with the provider' : `${completion.reviewReadiness.total - completion.reviewReadiness.addressed} items still need your attention`}</p>
+        {completion.reviewReadiness.ready ? <a href="#builder-next">Prepare enquiry →</a> : completion.reviewReadiness.targetId && <a href={`#${completion.reviewReadiness.targetId}`}>Review outstanding items →</a>}
+        <small>Review completion only. Findings and open questions stay in your enquiry; unresolved conflicts remain conflicts.</small>
+      </section>}
     </nav>
   </aside>
 }

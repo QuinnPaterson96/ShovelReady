@@ -8,8 +8,8 @@ export function AdditionalInputs({ onHeight, result, buffers, onBuffers, foundat
   foundation: string | null; onFoundation: (value: string | null) => void
 }) {
   const [height, setHeight] = useState('')
-  return <section className="project-details" aria-label="Additional site checks">
-    <h3>Complete the remaining checks</h3>
+  return <section className="project-details" aria-label="Measurement allowances and installed height">
+    <h3>Measurement allowances &amp; installed height</h3>
     <div id="scouting-area-buffer" tabIndex={-1}>
       <h4>Preliminary measurement allowances</h4>
       <p>Floor area uses the nominal footprint or your rough area estimate plus a buffer. Height uses advertised height plus a buffer and foundation allowance. These estimates do not establish legal measurements.</p>
