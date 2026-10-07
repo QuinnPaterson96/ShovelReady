@@ -28,5 +28,5 @@ test('a stale completion disappears when host state invalidates it', () => {
   }} />)
   assert.equal((complete.match(/>Complete<\/span>/g) ?? []).length, 4)
   assert.equal((edited.match(/>Complete<\/span>/g) ?? []).length, 2)
-  assert.equal((edited.match(/>To do<\/span>/g) ?? []).length, 6)
+  assert.equal((edited.match(/>To do<\/span>/g) ?? []).length, 7)
 })

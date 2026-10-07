@@ -6,12 +6,13 @@ export type BuilderJourneyCompletion = Readonly<{
   enquiry: boolean
   streets?: boolean
   boundaries?: boolean
+  details?: boolean
   checks?: boolean
   email?: boolean
   current?: JourneyStep
   mapAvailable?: boolean
 }>
-export type JourneyStep = 'model' | 'property' | 'placement' | 'streets' | 'boundaries' | 'checks' | 'enquiry' | 'email'
+export type JourneyStep = 'model' | 'property' | 'placement' | 'streets' | 'boundaries' | 'details' | 'checks' | 'enquiry' | 'email'
 
 export const emptyBuilderJourneyCompletion: BuilderJourneyCompletion = {
   model: false,
@@ -28,6 +29,7 @@ const steps: readonly Step[] = [
   { key: 'placement', label: 'Placement', anchor: 'builder-placement' },
   { key: 'streets', label: 'Street edges', anchor: 'placement-action-front' },
   { key: 'boundaries', label: 'Boundaries', anchor: 'placement-action-rear' },
+  { key: 'details', label: 'Property details', anchor: 'builder-property-details' },
   { key: 'checks', label: 'Quick checks', anchor: 'builder-quick-checks' },
   { key: 'enquiry', label: 'Prepare enquiry', anchor: 'builder-next' },
   { key: 'email', label: 'Email enquiry', anchor: 'builder-email' },
@@ -41,13 +43,13 @@ export function BuilderJourneyNav({ completion }: { completion: BuilderJourneyCo
       {steps.map(({ key, label, anchor }, index) => {
         const done = completion[key]
         const current = completion.current === key
-        const unavailable = completion.mapAvailable === false && (key === 'streets' || key === 'boundaries' || key === 'checks')
+        const unavailable = completion.mapAvailable === false && (key === 'streets' || key === 'boundaries' || key === 'checks' || key === 'details')
         return <a key={key} href={`#${anchor}`} aria-current={current ? 'step' : undefined} aria-disabled={unavailable || undefined} onClick={event => { if (unavailable) event.preventDefault() }}>
           <span className="builder-journey-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
           <span className="builder-journey-label">{label}</span>
           <span className={`builder-journey-state${done ? ' is-complete' : ''}`}>
             {done && <span className="builder-journey-check" aria-hidden="true">✓</span>}
-            {unavailable ? 'Map unavailable' : done ? key === 'email' ? 'Draft requested' : key === 'checks' || key === 'boundaries' ? 'Reviewed' : 'Complete' : current ? 'Current step' : 'To do'}
+            {unavailable ? 'Map unavailable' : done ? key === 'email' ? 'Draft requested' : key === 'checks' || key === 'boundaries' || key === 'details' ? 'Reviewed' : 'Complete' : current ? 'Current step' : 'To do'}
           </span>
         </a>
       })}

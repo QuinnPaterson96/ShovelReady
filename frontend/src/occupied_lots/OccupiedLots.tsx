@@ -87,8 +87,8 @@ function Map({ selected, placement, onMove, nudgeMetres, conflictIds, boundaryIn
       {boundaryInteraction && <BoundaryOverlay interaction={boundaryInteraction} />}
     </svg>
     <p className="occupied-map-legend"><span>Teal · captured parcel</span><span>Purple · captured rooflines, not walls</span>{conflictIds && <span>Red dashed outline · current conflict</span>}<span>Copper · your nominal footprint</span><span>North ↑ · {site.projected_metre_crs}</span>{!!boundaryInteraction?.streetIds?.length && <span>Grey road bands · your marks, diagram only</span>}</p>
-    {showBoundaryTools && boundaryInteraction && <BoundaryMapTools interaction={boundaryInteraction} />}
     {placementContinuation && <div className="builder-placement-next">{placementContinuation}</div>}
+    {showBoundaryTools && boundaryInteraction && <BoundaryMapTools interaction={boundaryInteraction} />}
     {placementSummary && <div className="builder-map-summary">{placementSummary}</div>}
     </div>
   </div>

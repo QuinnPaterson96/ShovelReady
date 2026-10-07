@@ -47,7 +47,7 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     const map = document.querySelector('#placement-map svg')!
     const summary = document.querySelector('#builder-quick-checks')!
     assert.ok(map.compareDocumentPosition(summary) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING)
-    assert.ok(document.querySelector('.builder-example-controls')!.compareDocumentPosition(document.querySelector('.builder-placement-next')!) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING)
+    assert.ok(document.querySelector('.builder-placement-next')!.compareDocumentPosition(document.querySelector('.builder-example-controls')!) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING)
     assert.ok(document.querySelector('.builder-placement-next')!.compareDocumentPosition(summary) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING)
     assert.equal(document.querySelector<HTMLDetailsElement>('.homeowner-summary__checks')!.open, true)
     await act(async () => document.querySelector<HTMLButtonElement>('.homeowner-summary__counts .homeowner-summary__unknown')!.click())
@@ -66,6 +66,9 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     await click('Next: Review boundaries →')
     assert.equal(document.activeElement?.id, 'placement-action-rear')
     assert.equal(JSON.parse(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value).zoning_site_assumptions.street_adjacency.all_marked, true)
+    await click('Next: Review property details →')
+    assert.equal(document.activeElement?.id, 'builder-property-details')
+    assert.equal(document.getElementById('builder-property-details')!.hidden, false)
     await click('Next: Review quick checks →')
     assert.equal(document.activeElement?.id, 'builder-quick-checks')
     assert.equal(document.querySelector<HTMLDetailsElement>('.homeowner-summary__checks')!.open, true)
@@ -214,6 +217,15 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
     await click('Adjust boundaries'); await settle()
     assert.equal(latest.assumptions.street_adjacency?.all_marked, true)
     assert.equal(latest.assumptions.street_adjacency?.completion_method, 'advance')
+    assert.equal(document.querySelector<HTMLElement>('.zsa__boundaries')!.hidden, true)
+    const savedBefore = JSON.parse(JSON.stringify(latest.assumptions))
+    await click('Yes, use suggestions'); await settle()
+    assert.deepEqual(latest.assumptions.edges.map(edge => edge.role.value), ['front', 'side', 'rear', 'side'])
+    assert.ok(latest.assumptions.edges.every(edge => edge.role.evidence_state === 'assumed' && edge.role.note === 'Suggested · accepted for planning'))
+    assert.deepEqual(latest.assumptions.measurements, savedBefore.measurements)
+    assert.deepEqual(latest.assumptions.planning_buffers_m, savedBefore.planning_buffers_m)
+    assert.match(document.querySelector('.zsa__defaults')!.textContent!, /accepted for planning/)
+
     assert.equal(document.querySelectorAll('#boundary-offsets input').length, 4)
     await click('Mark street edges'); await settle()
     assert.equal(latest.assumptions.street_adjacency?.all_marked, false)
@@ -226,7 +238,8 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
     assert.ok(latest.assumptions.edges.every(edge => edge.role.value === 'unknown'))
     assert.equal(latest.assumptions.boundary_role_suggestions!.roles[latest.assumptions.edges[0].id], 'front')
     assert.match(document.querySelector('.boundary-map-overlay')!.textContent!, /Front \(suggested\)/)
-    await click('Adjust boundaries')
+    await click('Adjust boundaries'); await click('No, adjust them')
+    assert.equal(document.querySelector<HTMLElement>('.zsa__boundaries')!.hidden, false)
     const rearChoice = document.querySelector<HTMLSelectElement>('[aria-label="Edge to mark"]')!
     await change(rearChoice, latest.assumptions.edges[2].id)
     await click('Use suggested rear'); await settle()
@@ -270,7 +283,6 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
     assert.equal([...document.querySelectorAll<HTMLButtonElement>('button')].find(node => node.textContent === 'Save planning buffers')!.disabled, true)
     assert.equal(latest.assumptions.planning_buffers_m![latest.assumptions.edges[1].id], 2)
     await change(bufferInput, '1'); await click('Save planning buffers'); await settle()
-
     assert.match(document.querySelector('#builder-quick-checks')!.textContent!, /Needs review/)
     const info = document.querySelector<HTMLButtonElement>('.homeowner-summary .step-info__button')!
     await act(async () => info.dispatchEvent(new dom.window.MouseEvent('mouseover', { bubbles: true })))

@@ -2,9 +2,9 @@ import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import type { Case } from '../occupied_lots/contract'
 import { MeasurementInput } from '../MeasurementInput'
 import { StepInfo } from '../StepInfo'
-import { assumptionsKey, initialAssumptions, suiteCountFact, inferBoundaryRoles, suggestedBoundaryRoles, withPlacementRevision, type EdgeRole, type SiteAssumptions, type UserMeasurement } from './model'
+import { assumptionsKey, initialAssumptions, suiteCountFact, ordinaryFourEdgeBoundary, inferBoundaryRoles, suggestedBoundaryRoles, withPlacementRevision, type EdgeRole, type SiteAssumptions, type UserMeasurement } from './model'
 
-type Props = { onPlanningBuffersPending?: (pending: boolean) => void; onWaterfrontChange?: (value: boolean | null) => void; waterfrontMarks?: string[]; onBoundaryDismiss?: () => void; edgeDistances?: Record<string, number>; streetAdjacency?: import('./model').StreetAdjacency; markingRole?: EdgeRole | null; onMarkingRoleChange?: (role: EdgeRole) => void; boundaryMark?: { id: string; role: EdgeRole } | null; sharedMode?: import('./model').BoundaryMapMode; selectedBoundary?: string | null; onBoundarySelect?: (id: string) => void; homeownerDefaults?: boolean; site: Case; geometryRevision: string; placementRevision: string; frontEdge?: string | null; rearEdge?: string | null; streetPattern?: 'unknown' | 'single' | 'corner_or_multiple'; onChange: (value: SiteAssumptions | null) => void }
+type Props = { detailsStep?: boolean; forceBoundaryEditor?: boolean; onPlanningBuffersPending?: (pending: boolean) => void; onWaterfrontChange?: (value: boolean | null) => void; waterfrontMarks?: string[]; onBoundaryDismiss?: () => void; edgeDistances?: Record<string, number>; streetAdjacency?: import('./model').StreetAdjacency; markingRole?: EdgeRole | null; onMarkingRoleChange?: (role: EdgeRole) => void; boundaryMark?: { id: string; role: EdgeRole } | null; sharedMode?: import('./model').BoundaryMapMode; selectedBoundary?: string | null; onBoundarySelect?: (id: string) => void; homeownerDefaults?: boolean; site: Case; geometryRevision: string; placementRevision: string; frontEdge?: string | null; rearEdge?: string | null; streetPattern?: 'unknown' | 'single' | 'corner_or_multiple'; onChange: (value: SiteAssumptions | null) => void }
 const roleNames: Record<EdgeRole, string> = { unknown: 'Unknown', front: 'Front', rear: 'Rear', side: 'Side', flanking_street: 'Flanking street' }
 function AnswerChoices({ id, label, value, onChange }: { id: string; label: string; value: 'yes' | 'no' | 'maybe'; onChange: (value: 'yes' | 'no' | 'maybe') => void }) {
   return <div className="zsa__answer" id={id} tabIndex={-1} role="group" aria-label={label}><strong>{label}</strong><div className="zsa__answer-buttons">{(['yes', 'no', 'maybe'] as const).map(choice => <button type="button" key={choice} aria-pressed={value === choice} onClick={() => onChange(choice)}>{choice === 'maybe' ? 'Not sure' : choice === 'yes' ? 'Yes' : 'No'}</button>)}</div></div>
@@ -16,7 +16,7 @@ function measure(raw: string, basis: UserMeasurement['basis'], placementRevision
   return Number.isFinite(number) && number >= 0 ? { value: number, unit: basis === 'regulatory_floor_area' || basis === 'rough_floor_area_estimate' ? 'm2' : 'm', basis, origin: 'user', note: null, placement_revision: placementRevision } : null
 }
 
-function Editor({ onPlanningBuffersPending, onWaterfrontChange, waterfrontMarks, onBoundaryDismiss, edgeDistances, streetAdjacency, site, geometryRevision, placementRevision, frontEdge = null, rearEdge = null, streetPattern = 'unknown', markingRole, onMarkingRoleChange, boundaryMark, sharedMode, selectedBoundary, onBoundarySelect, homeownerDefaults = false, onChange }: Props) {
+function Editor({ detailsStep, forceBoundaryEditor, onPlanningBuffersPending, onWaterfrontChange, waterfrontMarks, onBoundaryDismiss, edgeDistances, streetAdjacency, site, geometryRevision, placementRevision, frontEdge = null, rearEdge = null, streetPattern = 'unknown', markingRole, onMarkingRoleChange, boundaryMark, sharedMode, selectedBoundary, onBoundarySelect, homeownerDefaults = false, onChange }: Props) {
   useEffect(() => { void import('./site-assumptions.css') }, [])
   const notify = useRef(onChange)
   notify.current = onChange
@@ -61,6 +61,16 @@ function Editor({ onPlanningBuffersPending, onWaterfrontChange, waterfrontMarks,
 
   useEffect(() => { if (waterfrontMarks) setValue(previous => JSON.stringify(previous.waterfront_edge_ids) === JSON.stringify(waterfrontMarks) ? previous : ({ ...previous, waterfront_edge_ids: waterfrontMarks })) }, [waterfrontMarks])
 
+  const [boundaryChoice, setBoundaryChoice] = useState<'accepted' | 'adjust' | null>(null)
+  const streetKey = JSON.stringify(streetAdjacency)
+  useEffect(() => { setBoundaryChoice(null); setValue(previous => ({ ...previous, edges: previous.edges.map(edge => edge.role.note === 'Suggested · accepted for planning' ? { ...edge, role: { value: 'unknown', origin: 'user', note: null } } : edge) })) }, [streetKey])
+  const canAccept = ordinaryFourEdgeBoundary(value.edges) && !!streetAdjacency?.all_marked && !inference.conflicts.length && value.edges.every(edge => edge.role.value && edge.role.value !== 'unknown' || inference.roles[edge.id])
+  const showBoundaryEditor = !canAccept || boundaryChoice === 'adjust' || forceBoundaryEditor
+  const acceptSuggestions = () => {
+    if (!canAccept || buffersPending) return
+    setValue(previous => ({ ...previous, edges: previous.edges.map(edge => edge.role.value && edge.role.value !== 'unknown' ? edge : { ...edge, role: { value: inference.roles[edge.id], origin: 'user', evidence_state: 'assumed', note: 'Suggested · accepted for planning' } }) }))
+    setBuffersSaved(true); setBoundaryChoice('accepted')
+  }
   const activeEdge = sharedMode !== undefined ? selectedBoundary : selectedEdge
   const suggested = inference.roles
   const edgeLabel = (edge: SiteAssumptions['edges'][number]) => edge.ring ? `Inner ring ${edge.ring}, edge ${edge.segment + 1}` : `Edge ${edge.segment + 1}`
@@ -91,8 +101,9 @@ function Editor({ onPlanningBuffersPending, onWaterfrontChange, waterfrontMarks,
   return <section className={`zsa${sharedMode === 'rear' ? ' zsa--marking' : ''}`} aria-label="Property assumptions">
     {sharedMode === undefined && <h3>Property details for a preliminary check</h3>}
     <p hidden={sharedMode !== undefined}>These are your assumptions. Unknown is fine. The captured parcel and rooflines have not been checked against legal survey or building walls.</p>
+    <div id="builder-property-details" tabIndex={-1} hidden={detailsStep === false}><h3>Property details</h3><p>Answer what you know; you can leave the rest unknown and change it later.</p>
     <details><summary>Source and geometry details</summary><p>{value.property.source.provider} · {value.property.source.record_label} · captured {value.property.source.capture_date ?? 'date unknown'} · {value.property.source.review_status}. Geometry revision: {geometryRevision}. Rooflines are mapped outlines, not walls.</p></details>
-    <details><summary>Property facts · {value.existing_garden_suites.value === null ? 'existing suite count unknown' : value.existing_garden_suites.evidence_state === 'user_confirmed' ? 'suite count user-confirmed' : value.existing_garden_suites.value === 0 ? 'assuming none already exist' : 'assuming one or more existing'}</summary><fieldset><legend>Existing property</legend>
+    <details open={detailsStep}><summary>Property facts · {value.existing_garden_suites.value === null ? 'existing suite count unknown' : value.existing_garden_suites.evidence_state === 'user_confirmed' ? 'suite count user-confirmed' : value.existing_garden_suites.value === 0 ? 'assuming none already exist' : 'assuming one or more existing'}</summary><fieldset><legend>Existing property</legend>
       <AnswerChoices id="building-type" label="Is the main home single-family (detached)?" value={value.building_type.value === null ? 'maybe' : value.building_type.value === 'single_detached' ? 'yes' : 'no'} onChange={answer => setFact('building_type', answer === 'maybe' ? null : answer === 'yes' ? 'single_detached' : value.building_type.value === 'duplex' ? 'duplex' : 'other')} />
       {value.building_type.value !== null && value.building_type.value !== 'single_detached' && <label>Other main home type <select value={value.building_type.value} onChange={event => setFact('building_type', event.target.value as 'duplex' | 'other')}><option value="duplex">Duplex</option><option value="other">Other</option></select></label>}
       <p className="zsa__hint">Your answer applies immediately and can be changed. A mapped roofline does not establish home type.</p>
@@ -106,7 +117,9 @@ function Editor({ onPlanningBuffersPending, onWaterfrontChange, waterfrontMarks,
       <p className="zsa__hint">Selecting a mapped roofline identifies a possible main building; it does not turn that roofline into wall geometry.</p>
     </fieldset>
     </details>
-    <fieldset className="zsa__boundaries" hidden={sharedMode !== undefined && sharedMode !== 'rear'}><legend>Parcel edge roles</legend>
+    </div>
+    {sharedMode === 'rear' && canAccept && <section className="zsa__defaults" aria-label="Suggested boundary plan"><h3>Use these suggested boundaries and buffers?</h3><p>Based on your street marks. Existing roles, measured offsets and saved buffers are kept.</p><ul>{value.edges.map(edge => <li key={edge.id}>{edgeLabel(edge)} · {roleNames[edge.role.value && edge.role.value !== 'unknown' ? edge.role.value : inference.roles[edge.id]]} · {value.planning_buffers_m?.[edge.id] ?? 0} m buffer{value.measurements.boundary[edge.id] ? ' · measured override kept' : ''}</li>)}</ul><div className="zsa__answer-buttons"><button type="button" disabled={buffersPending} onClick={acceptSuggestions}>Yes, use suggestions</button><button type="button" onClick={() => setBoundaryChoice('adjust')}>No, adjust them</button></div>{boundaryChoice === 'accepted' && <p role="status">Suggested · accepted for planning. Saved for this property; you can continue or adjust them later.</p>}<p>Planning assumptions, not verified legal boundaries.</p></section>}
+    <fieldset className="zsa__boundaries" hidden={sharedMode !== undefined && (sharedMode !== 'rear' || !showBoundaryEditor)}><legend>Parcel edge roles</legend>
       <p hidden={sharedMode !== undefined}>Choose each edge’s role only if you know it. Street access and legal lot lines can change the answer, especially at corners and through lots.</p>
       {Object.keys(suggested).length > 0 && <p role="status">Roles suggested from your street/front/rear marks. Review or override below.</p>}
       {inference.conflicts.map(message => <p role="status" key={message}>{message}</p>)}
@@ -128,13 +141,13 @@ function Editor({ onPlanningBuffersPending, onWaterfrontChange, waterfrontMarks,
       <div className="zsa__edge-list">{value.edges.map(edge => <div key={edge.id} hidden={sharedMode !== undefined && activeEdge !== edge.id} className={activeEdge === edge.id ? 'zsa__edge-row zsa__edge-row--selected' : 'zsa__edge-row'}>
         {sharedMode === undefined ? <button type="button" onClick={() => setSelectedEdge(edge.id)} aria-pressed={activeEdge === edge.id}>{edge.ring === 0 ? edgeLabel(edge) : `Inner ring ${edge.ring}, edge ${edge.segment + 1}`}</button> : <div className="zsa__edge-heading"><strong>{edgeLabel(edge)}</strong><button type="button" aria-label="Close edge details" onClick={() => { onBoundaryDismiss?.(); setSelectedEdge(null) }}>× Close</button></div>}
         {sharedMode === undefined && <label>Role <select id={activeEdge ? edge.id === activeEdge ? 'boundary-roles' : undefined : edge === value.edges[0] ? 'boundary-roles' : undefined} aria-label={`${edgeLabel(edge)} role`} value={edge.role.value ?? 'unknown'} onChange={event => setRole(edge.id, event.target.value as EdgeRole)}>{Object.entries(roleNames).map(([id, name]) => <option key={id} value={id}>{name}</option>)}</select></label>}
-        {sharedMode !== undefined && <><span role="status">{edgeLabel(edge)} · {roleNames[edge.role.value ?? 'unknown']} · your assumption</span><button type="button" onClick={() => setRole(edge.id, 'unknown')}>Clear this mark</button></>}
+        {sharedMode !== undefined && <><span role="status">{edgeLabel(edge)} · {roleNames[edge.role.value ?? 'unknown']} · {edge.role.note === 'Suggested · accepted for planning' ? edge.role.note : 'your assumption'}</span><button type="button" onClick={() => setRole(edge.id, 'unknown')}>Clear this mark</button></>}
         {suggested[edge.id] && <><span>Suggested: {roleNames[suggested[edge.id]]} · from your marks</span><button type="button" onClick={() => setRole(edge.id, suggested[edge.id])}>Use suggested {roleNames[suggested[edge.id]].toLowerCase()}</button></>}
         <details><summary>Use my measurement</summary><label>Wall to legal lot line (m), if measured <MeasurementInput dimension="length" type="number" min="0" step="any" aria-label={`${edgeLabel(edge)} wall to lot line in metres`} value={distanceDraft[edge.id] ?? ''} onChange={event => setBoundaryDistance(edge.id, event.target.value)} placeholder="Unknown" /></label><p>Your wall-based value replaces this edge’s approximate comparison only. It is unverified and stays distinct from the captured edge-to-nominal-rectangle distance.</p>{distanceDraft[edge.id] && !value.measurements.boundary[edge.id] && <span className="zsa__error">Enter a nonnegative number or leave blank.</span>}</details>
       </div>)}</div>
       <details><summary>How should I identify edges?</summary><p>Use a survey or reliable property plan and identify street edges first. A long edge is not automatically the front. If a corner, through lot, triangle, easement or unusual boundary makes the roles unclear, leave them unknown for review.</p></details>
     </fieldset>
-    <details><summary>Detailed measurements</summary><fieldset><legend>Measurements you can supply</legend>
+    <div hidden={detailsStep === false}><details><summary>Detailed measurements</summary><fieldset><legend>Measurements you can supply</legend>
       <label className="zsa__check"><input id="separation-measurement-choice" type="checkbox" checked={manualBasis} onChange={event => { setManualBasis(event.target.checked); if (!event.target.checked) { setSeparationDraft(''); setValue(previous => ({ ...previous, measurements: { ...previous.measurements, principal_separation: null } })) } }} /> I have a wall-to-wall separation measurement</label>
       {manualBasis && <><label>Wall to wall separation (m) <input inputMode="decimal" value={separationDraft} onChange={event => setSpecialMeasurement('principal_separation', event.target.value)} placeholder="Unknown" /></label><p className="zsa__hint">Roofline gaps are not surveyed wall-to-wall separation. The candidate clause's endpoints still need source review.</p></>}
       <div className="zsa__field-label"><label htmlFor="zsa-floor-area">Floor area (m²)</label><button type="button" className="zsa__info" aria-label="About City of Victoria floor area measurement" aria-expanded={floorHelpOpen} aria-controls={floorHelpId} onClick={() => setFloorHelpOpen(open => !open)}>i</button></div>
@@ -145,6 +158,7 @@ function Editor({ onPlanningBuffersPending, onWaterfrontChange, waterfrontMarks,
       {((separationDraft && !value.measurements.principal_separation) || (areaDraft && !value.measurements.floor_area)) && <p className="zsa__error">Measurements must be nonnegative numbers; invalid entries remain unknown.</p>}
     </fieldset>
     </details>
+    </div>
     <p hidden={sharedMode !== undefined} className="zsa__hint">Changing the property, geometry or placement requires fresh measurements. No zoning result is produced here.</p>
   </section>
 }
