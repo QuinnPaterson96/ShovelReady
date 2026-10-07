@@ -1,0 +1,41 @@
+# Model 300 feasibility enquiry — 419 Cecelia Rd, Victoria, BC
+
+Could you help establish whether Model 300 is worth investigating for this project?
+
+## Project
+
+I’m exploring aux box Model 300 at 419 Cecelia Rd, Victoria, BC. My intended use is not yet specified.
+
+## Preliminary concerns
+
+The preliminary placement raises the following unresolved concerns.
+
+The proposed rectangle is not wholly inside the approximate rear yard behind the assumed main building. The amount extending outside was not supplied.
+
+The nominal footprint is approximately 59.1% of the estimated rear-yard area, compared with a candidate 25% limit. Excess: 34.1 percentage points. The yard estimate, building identification, projections and rule applicability need review.
+
+These are preliminary comparisons with uncertain applicability, not established legal violations. The garden-suite scenario may not apply to the intended use. Could you advise on relocation, rotation or a smaller model if the concerns persist?
+
+## Questions for aux box
+
+\1. Can you provide current dimensioned plans with drawing date/version, overall dimensions including overhangs, interior floor area, and a section showing where height is measured from and the foundation interface?
+
+\2. Do you service this locality, and what truck access, crane setup space, lifting clearances and site photos or measurements do you need?
+
+\3. Which foundation and utility interfaces do you support? Who supplies or coordinates site preparation, foundations, connections and permitting, and what planning or permit assistance do you offer?
+
+\4. What is the current price for the requested configuration? Please distinguish tax, upgrades, transport, crane, installation, foundations, services and permits from included work.
+
+\5. What is the current lead time, when does it start, and what decisions, permits and site preparation must be complete before booking or delivery?
+
+## Site preparation
+
+Development permit areas: mapped records found; record names not supplied. Relevance and conditions need City or professional review.
+
+A marked site plan is not included in this enquiry. The next preparation step is to identify the main house, front/rear/side boundaries, proposed entrance, approximate gaps and known obstructions on a property plan, with access photos. Any map sketch is approximate and is not a survey. A separate screening report can be shared; it is not attached here.
+
+Not yet supplied: intended use, relationship to the property, project stage, configuration, target timing, access information/photos, known utility connections. Please advise which details you need first; detailed studies can follow the initial discussion.
+
+The sender must establish property identity, permission to proceed, existing dwellings/suites, waterfront status and services. City staff or a qualified local professional must confirm planning applicability and any required approvals; mapped outlines and scenario defaults do not establish those facts.
+
+Please let me know what information you need for an initial site discussion and whether a preliminary call is the appropriate next step.

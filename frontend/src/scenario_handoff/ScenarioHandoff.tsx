@@ -84,7 +84,7 @@ function isCurrentSite(site: Case, assessment: Result) {
     JSON.stringify(record(assessment.input)?.capture) === JSON.stringify(site.site.capture)
 }
 
-export function providerEnquiry({ site, model, assessment }: ScenarioHandoffProps) {
+export function providerScreeningReport({ site, model, assessment }: ScenarioHandoffProps) {
   if (!assessment || !isCurrentSite(site, assessment)) return null
   const p = assessment.input.placement
   const source = site.site.parcel.source
@@ -93,7 +93,7 @@ export function providerEnquiry({ site, model, assessment }: ScenarioHandoffProp
   const modelSource = modelSources[0]
   const links = [cleanUrl(source.reference), cleanUrl(modelSource?.url ?? data?.provider_url)].filter(Boolean)
   const lines = [
-    'UNSENT DRAFT — provider enquiry for preliminary investigation',
+    'Supporting geometry screening report — retained example',
     `Property/example: ${site.label}. This is a retained scouting example; property identity and legal boundaries require confirmation.`,
     modelDescription(model, p),
     ...(label(data?.service_area_status) || label(data?.service_area_note) ? [`Provider service coverage in captured catalogue: ${label(data?.service_area_status)?.replace(/_/g, ' ') ?? 'status unknown'}; ${label(data?.service_area_note) ?? 'details not supplied'}. Confirm current coverage with the provider.`] : []),
@@ -114,6 +114,24 @@ export function providerEnquiry({ site, model, assessment }: ScenarioHandoffProp
   return lines.join('\n')
 }
 
+export function providerEnquiry(props: ScenarioHandoffProps) {
+  const { site, model, assessment } = props
+  if (!scenarioRecord(props) || !assessment) return null
+  const data = record(model)
+  const name = `${label(data?.provider) ?? 'Provider'} ${label(data?.name) ?? label(data?.modelName) ?? 'model'}`
+  const concerns = assessment.checks.filter(check => check.comparison === 'shortfall' ||
+    check.status === 'observed' && (check.kind === 'containment' && ['outside', 'touches'].includes(check.relation ?? '') ||
+      check.kind === 'building_overlap' && ['positive_area_overlap', 'touches'].includes(check.relation ?? '')))
+  return [
+    `Subject: ${name} — preliminary site discussion`,
+    `SAVED EXAMPLE ONLY — not my property. I am exploring ${name} using the retained example ${site.label}. Intended use and relationship to the property have not been supplied.`,
+    ...(concerns.length ? ['Preliminary concerns for this supplied rectangle:', ...concerns.map(check => checkDescription(check, site, assessment)), 'These concerns remain unresolved; a different placement or smaller model may be worth discussing.'] : ['Planning feasibility remains unconfirmed; the geometry checks do not establish approval.']),
+    'Could you supply current dimensioned plans including overhangs, height reference points and foundation interfaces; confirm service to the locality and delivery/crane requirements; explain responsibilities for site works, utilities and permitting assistance; and provide configuration-specific pricing, exclusions, lead time and prerequisites?',
+    'No marked site plan is included. The next preparation step is a labelled property plan showing structures, boundaries, approximate gaps and access photos. The sender must confirm intended use, property permission, configuration and timing; City or professional review must establish planning applicability.',
+    'Please advise what information you need for an initial discussion. Detailed measurements and sources are available in the separate supporting report and scenario JSON; these files are not automatically attached.',
+  ].join('\n\n')
+}
+
 function download(name: string, content: string, type: string) {
   const url = URL.createObjectURL(new Blob([content], { type }))
   const anchor = document.createElement('a')
@@ -126,6 +144,7 @@ function download(name: string, content: string, type: string) {
 export default function ScenarioHandoff(props: ScenarioHandoffProps) {
   const scenario = scenarioRecord(props)
   const enquiry = providerEnquiry(props)
+  const report = providerScreeningReport(props)
   return <section className="scenario-handoff" aria-labelledby="scenario-handoff-title">
     <p className="eyebrow">Keep investigating</p><h3 id="scenario-handoff-title">Save this scenario or prepare an enquiry</h3>
     {!scenario || !enquiry ? <p className="scenario-handoff-notice" role="status">Measure the current site and footprint placement before exporting. A changed site or missing assessment needs a new measurement; no earlier result is exported.</p> : <>
@@ -135,6 +154,7 @@ export default function ScenarioHandoff(props: ScenarioHandoffProps) {
       <p>Review and edit the text after copying it. ShovelReady does not contact a provider.</p>
       <CopyableRecord id="scenario-provider-enquiry" label="Copyable unsent provider enquiry" value={enquiry} />
       <button type="button" onClick={() => download('shovelready-provider-enquiry-draft.txt', enquiry, 'text/plain')}>Download draft text</button>
+      <details><summary>Supporting geometry report and sources</summary><CopyableRecord id="scenario-supporting-report" label="Copyable supporting geometry report" value={report ?? ''} /><button type="button" onClick={() => download('shovelready-geometry-report.txt', report ?? '', 'text/plain')}>Download supporting report</button></details>
       <TechnicalDetails title="Full technical scenario and source identifiers · copyable"><CopyableRecord id="scenario-technical-record" label="Complete JSON record" value={JSON.stringify(scenario, null, 2)} /></TechnicalDetails>
     </>}
   </section>
