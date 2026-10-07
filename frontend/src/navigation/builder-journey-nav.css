@@ -1,18 +1,21 @@
-.builder-journey-rail a {
+.sr-workspace-rail.builder-journey-rail a {
   flex-wrap: wrap;
   column-gap: .45rem;
   row-gap: .1rem;
 }
-.builder-journey-rail .builder-journey-number { flex: 0 0 1.55rem; color: var(--ink-muted); }
-.builder-journey-rail .builder-journey-label { flex: 1 1 auto; min-width: 5rem; }
-.builder-journey-rail .builder-journey-state {
+.sr-workspace-rail.builder-journey-rail .builder-journey-number { flex: 0 0 1.55rem; color: var(--ink-muted); }
+.sr-workspace-rail.builder-journey-rail .builder-journey-label { flex: 1 1 auto; min-width: 5rem; }
+.sr-workspace-rail.builder-journey-rail .builder-journey-state {
   flex: 0 0 100%;
   padding-left: 2rem;
   color: var(--ink-muted);
   font-size: .75rem;
   font-weight: 600;
 }
-.builder-journey-rail .builder-journey-state.is-complete { color: var(--candidate-ink); }
+.sr-workspace-rail.builder-journey-rail .builder-journey-state.is-complete { color: var(--candidate-ink); }
+.sr-workspace-rail.builder-journey-rail a[aria-current="step"] { background: var(--primary-soft); color: var(--primary-hover); box-shadow: inset 3px 0 var(--primary); }
+.sr-workspace-rail.builder-journey-rail a:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.sr-workspace-rail.builder-journey-rail a[aria-disabled="true"] { opacity: .65; cursor: default; }
 .builder-journey-check {
   display: inline-flex;
   align-items: center;
@@ -27,8 +30,10 @@
   line-height: 1;
 }
 @media (max-width: 850px) {
-  .builder-journey-rail nav { min-width: 0; width: max-content; max-width: none; }
-  .builder-journey-rail a { flex: 0 0 auto; min-width: 7.75rem; }
-  .builder-journey-rail .builder-journey-label { min-width: 0; }
-  .builder-journey-rail small { max-width: 12rem; align-self: center; }
+  .sr-workspace-rail.builder-journey-rail { overflow: visible; }
+  .sr-workspace-rail.builder-journey-rail nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); min-width: 0; width: 100%; }
+  .sr-workspace-rail.builder-journey-rail nav > p, .sr-workspace-rail.builder-journey-rail small { grid-column: 1 / -1; }
+  .sr-workspace-rail.builder-journey-rail a { min-width: 0; }
+  .sr-workspace-rail.builder-journey-rail .builder-journey-label { min-width: 0; }
+  .sr-workspace-rail.builder-journey-rail small { max-width: none; }
 }

@@ -43,7 +43,7 @@ test('observed geometry conflict wins over any apparently clear subset', () => {
 
 test('clear captured geometry with missing rules remains a closer look', () => {
   const summary = homeownerSummary(base)
-  assert.equal(summary.conclusion, 'Resolve this question first')
+  assert.equal(summary.conclusion, 'Review this placement')
   assert.equal(summary.checks[0].status, 'checked')
   assert.notEqual(summary.checks.find(check => check.label === 'Distance to boundaries')?.status, 'checked')
   const html = renderToStaticMarkup(createElement(HomeownerSummary, { summary, onNavigate: () => {} }))
@@ -95,7 +95,7 @@ test('mixed summary counts named statuses and gives conflict action priority wit
 test('incomplete captured geometry cannot become a promising or checked space finding', () => {
   const summary = homeownerSummary({ ...base, geometryComplete: false })
   assert.equal(summary.checks[0].status, 'unknown')
-  assert.equal(summary.conclusion, 'Resolve this question first')
+  assert.equal(summary.conclusion, 'Review this placement')
   assert.doesNotMatch(summary.next, /No mapped overlap/)
 })
 
@@ -114,9 +114,9 @@ test('provider exploration needs supported comparisons, not geometry or a majori
   assert.equal(summary.conclusion, 'Worth exploring with the provider')
   assert.match(summary.checks.find(check => check.label === 'Existing garden suite')!.detail, /assuming none existing/)
   assert.ok(summary.checks.some(check => check.status === 'unsupported'))
-  assert.equal(homeownerSummary({ ...input, scenario: { ...scenario, status: 'clarify' } }).conclusion, 'Resolve this question first')
+  assert.equal(homeownerSummary({ ...input, scenario: { ...scenario, status: 'clarify' } }).conclusion, 'Review this placement')
   assert.equal(homeownerSummary({ ...input, screening: { ...screening, checks: screening.checks.map(check => check.rule.kind === 'count_max' ? { ...check, status: 'needs_information' } : check) } }).conclusion, 'Worth exploring with the provider')
-  assert.equal(homeownerSummary({ ...input, geometryComplete: false }).conclusion, 'Resolve this question first')
+  assert.equal(homeownerSummary({ ...input, geometryComplete: false }).conclusion, 'Review this placement')
 })
 
 

@@ -7,7 +7,7 @@ export function StatusIcon({ status }: { status: SummaryCheck['status'] }) {
   return <svg className="homeowner-summary__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" />{status === 'checked' || status === 'probable' ? <path d="m7 12 3 3 7-7" /> : status === 'unsupported' ? <path d="M7 12h10" /> : <><path d={status === 'conflict' ? 'M12 6v8' : 'M9 9a3 3 0 0 1 6 0c0 2-3 2-3 5'} /><circle cx="12" cy="18" r=".5" /></>}</svg>
 }
 
-export function HomeownerSummary({ summary, onNavigate }: { summary: Summary; onNavigate: (target: string) => void }) {
+export function HomeownerSummary({ summary, onNavigate, continuation }: { summary: Summary; onNavigate: (target: string) => void; continuation?: { label: string; hint: string; onContinue: () => void } }) {
   React.useEffect(() => { void import('./homeowner-summary.css') }, [])
   const nextCheck = summary.checks.find(check => check.status === 'conflict' && check.action)
     ?? summary.checks.find(check => check.status === 'review' && check.action)
@@ -15,8 +15,9 @@ export function HomeownerSummary({ summary, onNavigate }: { summary: Summary; on
   const nextAction = nextCheck?.action
   return <section className="homeowner-summary" id="builder-quick-checks" tabIndex={-1} aria-label="Placement summary">
     <h3>{summary.conclusion}</h3><p>{summary.next}</p>
+    {continuation && <div className="homeowner-summary__continue"><p>{continuation.hint}</p><div className="step-action"><button className="homeowner-summary__primary" type="button" onClick={continuation.onContinue}>Next: {continuation.label}<span aria-hidden="true"> →</span></button><StepInfo label={continuation.label}>{continuation.hint} This opens the next step. Existing findings and unanswered questions remain in your enquiry.</StepInfo></div><p className="homeowner-summary__continue-note">You can continue with open questions. Your placement and findings stay with your enquiry.</p></div>}
     <div className="homeowner-summary__counts" aria-label="Named check counts">{(['checked', 'probable', 'review', 'unknown', 'conflict', 'unsupported'] as const).map(status => <span key={status} className={`homeowner-summary__${status}`}><StatusIcon status={status} /><strong>{summary.checks.filter(check => check.status === status).length} {statusLabels[status]}</strong></span>)}</div>
-    {nextAction && <div className="step-action"><button className="homeowner-summary__next" type="button" onClick={() => onNavigate(nextAction.target)}>Next: {nextAction.label}</button><StepInfo label={nextAction.label}>{nextCheck?.detail} This opens the relevant control so you can review or correct the current input.</StepInfo></div>}
+    {nextAction && <div className="step-action"><button className="homeowner-summary__next" type="button" onClick={() => onNavigate(nextAction.target)}>{continuation ? '' : 'Next: '}{nextAction.label}</button><StepInfo label={nextAction.label}>{nextCheck?.detail} This opens the relevant control so you can review or correct the current input.</StepInfo></div>}
     <p className="homeowner-summary__scope">Preliminary screening of this placement · limited checks. Open questions and requirements not covered are listed below.</p>
     <details className="homeowner-summary__checks"><summary>Review individual checks</summary><ul>{summary.checks.map(check => <li key={check.label} className={`homeowner-summary__${check.status}`}>
       <StatusIcon status={check.status} />

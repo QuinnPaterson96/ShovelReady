@@ -77,6 +77,11 @@ puts counts and the next action after compact adjustment controls and before det
 rule packet or persistence change is involved. The #231/#233 follow-up groups derived scenario roles and optional legal-basis entries in one boundary checklist, retaining separate origins and exact exports. See the
 [verification and remaining gaps](integration-homeowner-summary.md).
 
+The guided continuation adds ordered street, boundary, check, enquiry and email
+steps to the existing rail. Review milestones are local and revision-scoped;
+Draft requested records only a browser compose request, never delivery. See the
+[guided journey evidence](integration-homeowner-summary.md#guided-continuation-and-expanded-journey--october-6-2026).
+
 ## Live property discovery checkpoint - September 29, 2026
 
 The existing app mounts bounded synchronous BC geocoder and Victoria municipal
