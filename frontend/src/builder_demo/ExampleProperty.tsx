@@ -19,8 +19,15 @@ const directions: Record<string, [number, number]> = {
   ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1],
 }
 
-export function ExampleProperty({ onMeasurement, boundaryInteraction, placementSummary, placementContinuation, evidenceTargetId }: { onMeasurement: (value: OccupiedMeasurement | null) => void; boundaryInteraction?: BoundaryMapInteraction; placementSummary?: ReactNode; placementContinuation?: ReactNode; evidenceTargetId?: string }) {
+export function ExampleProperty({ onMeasurement, boundaryInteraction, placementSummary, placementContinuation, evidenceTargetId, moveSuggestion }: { onMeasurement: (value: OccupiedMeasurement | null) => void; boundaryInteraction?: BoundaryMapInteraction; placementSummary?: ReactNode; placementContinuation?: ReactNode; evidenceTargetId?: string; moveSuggestion?: { dx: number; dy: number; token: number } }) {
   const [position, setPosition] = useState(initialExamplePosition)
+  const appliedMove = useRef<number | null>(null)
+  useEffect(() => {
+    if (!moveSuggestion || appliedMove.current === moveSuggestion.token) return
+    appliedMove.current = moveSuggestion.token
+    invalidate()
+    setPosition(current => ({ ...current, x: String(Number(current.x) + moveSuggestion.dx), y: String(Number(current.y) + moveSuggestion.dy) }))
+  }, [moveSuggestion])
   const [assumptions, setAssumptions] = useState(emptyExampleAssumptions)
   const [result, setResult] = useState<Result | null>(null)
   const [phase, setPhase] = useState<'measuring' | 'stale' | 'unresolved' | 'current'>('measuring')

@@ -161,6 +161,6 @@ test('buffer guidance retains review and separates assumption changes from measu
   const assumptions = { edges: [{ id: 'side' }], existing_garden_suites: { value: null } } as import('../zoning_site_assumptions/model').SiteAssumptions
   const row = homeownerSummary({ ...base, scenario, assumptions }).checks.find(row => row.label === 'Distance to boundaries')!
   assert.equal(row.status, 'review')
-  assert.match(row.resolutions!.join(' '), /at least 2 m.*approximately 0.46 m.*buffer of 0.54 m.*only your assumption/)
+  assert.match(row.resolutions!.map(item => item.detail).join(' '), /at least 2 m.*approximately 0.46 m.*buffer of 0.54 m.*only your assumption/)
   assert.equal(homeownerSummary({ ...base, scenario: { ...scenario, scenarios: [...scenario.scenarios, ...scenario.scenarios] }, assumptions }).checks.find(row => row.label === 'Distance to boundaries')!.resolutions, undefined)
 })
