@@ -11,6 +11,12 @@ export type EnquiryDocument = {
   closing: string
 }
 
+export function withPlacementSketch(document: EnquiryDocument, note: string | null): EnquiryDocument {
+  const sections = document.sections.filter(section => section.heading !== 'Placement sketch')
+  if (note) sections.push({ heading: 'Placement sketch', paragraphs: [note], emailSummary: note, siteDetails: true })
+  return { ...document, sections }
+}
+
 const urlPattern = /https:\/\/[^\s<>]+/g
 const safeParts = (text: string): { text: string; url?: string }[] => {
   const parts: { text: string; url?: string }[] = []

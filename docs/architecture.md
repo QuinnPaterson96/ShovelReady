@@ -1,5 +1,13 @@
 # Architecture direction
 
+## Enquiry export checkpoint - October 7, 2026
+
+Model 300 enquiries now request explicit context and separate the recipient message
+from the sender's preparation checklist. Current measured geometry produces local
+PNG/PDF, Markdown/ZIP and unsent MIME email exports in the browser. No storage,
+contact API or automatic provider transmission is added. See the
+[integration record](integration-enquiry-placement-export.md) for evidence and remaining gates.
+
 ## Municipality-aware homeowner flow
 
 Decision: October 6, 2026. This is the implementation direction, not a claim that

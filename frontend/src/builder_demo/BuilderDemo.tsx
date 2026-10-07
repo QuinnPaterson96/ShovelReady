@@ -36,7 +36,9 @@ import { homeownerSummary } from '../conditional_screening/victoriaSummaryAdapte
 import { focusSummaryTarget } from '../conditional_screening/summaryNavigation'
 import { parseScenarioResult, type ScenarioRequest, type ScenarioResult } from '../conditional_screening/scenarios'
 import { currentPlacementRevision, expectedPropertyRevision, parseScreeningResult, propertyGeometryRevision, screeningIdentity, type Pathway, type ScreeningRequest, type ScreeningResult } from '../conditional_screening/model'
-import { EnquiryPreview, emailDraftUrl, enquiryEmailBody, enquiryMarkdown, enquiryPlainText, technicalEvidenceMarkdown, validRecipient, type EnquiryDocument } from './enquiry'
+import { EnquiryPreview, withPlacementSketch, emailDraftUrl, enquiryEmailBody, enquiryMarkdown, enquiryPlainText, technicalEvidenceMarkdown, validRecipient, type EnquiryDocument } from './enquiry'
+import { preparationChecklist } from './manufacturer'
+import { placementDrawing, renderDrawing, downloadFile, attachedEmail, type DrawingAssets } from './placementExport'
 
 const MODEL_ID = 'aux-300' as const
 const foundModel = bundledCatalogue.models.find(item => item.model_id === MODEL_ID)
@@ -130,18 +132,16 @@ export function screeningDocument(selection: SitePreparationSelection | null, in
 }
 
 export function enquiryDocument(...args: Parameters<typeof screeningDocument>) {
-  const [selection, input, measured, , live, manual, savedExample, , conditional, , , scenarios, settings, scan] = args
+  const [selection, input, measured, , live, manual, savedExample, , conditional, , , scenarios, , scan] = args
   const address = savedExample ? null : live?.address.label || manual?.facts.address || selection?.candidate?.address.value || selection?.manual.address.value || null
-  const confirmedUse = settings?.evidence.proposed_use.origin === 'user_confirmed' && settings.proposal.proposed_use === 'garden_suite'
-  const resolvedInput = !input.intendedUse.trim() && confirmedUse ? { ...input, intendedUse: 'a garden suite (confirmed by the user for this scenario)' } : input
-  return manufacturerDocument(resolvedInput, address === null ? null : String(address), !!savedExample, measured, conditional ?? null, scenarios ?? null, scan ?? null, !!(savedExample || live || manual?.assessment))
+  return manufacturerDocument(input, address === null ? null : String(address), !!savedExample, measured, conditional ?? null, scenarios ?? null, scan ?? null, !!(savedExample || live || manual?.assessment))
 }
 
 export function enquiry(...args: Parameters<typeof enquiryDocument>) { return enquiryPlainText(enquiryDocument(...args)) }
 
 export type BuilderProgress = import('../navigation/BuilderJourneyNav').BuilderJourneyCompletion
 type JourneyStep = import('../navigation/BuilderJourneyNav').JourneyStep
-const suggestedQuestion = 'Could Model 300 work on this property? Please explain the next steps, likely additional costs, and what information you need from me.'
+const suggestedQuestion = 'Could Model 300 be suitable for this property?'
 
 export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (progress: BuilderProgress) => void } = {}) {
   const [expanded, setExpanded] = useState({ property: true, placement: false, next: false, email: false })
@@ -199,11 +199,15 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const [access, setAccess] = useState('')
   const [services, setServices] = useState('')
   const [projectContext, setProjectContext] = useState({ relationship: '', stage: '', configuration: '', nextStep: '', contact: '' })
+  const [drawingExport, setDrawingExport] = useState<{ key: string; assets: DrawingAssets } | null>(null)
+  const [exportBusy, setExportBusy] = useState(false)
+  const [exportMessage, setExportMessage] = useState('')
+  const drawingRevision = useRef('')
   const [question, setQuestion] = useState(suggestedQuestion)
   const [readyFor, setReadyFor] = useState<string | null>(null)
   const [manualConfirmedFor, setManualConfirmedFor] = useState<string | null>(null)
   const [recipient, setRecipient] = useState('')
-  const [includeSiteDetails, setIncludeSiteDetails] = useState(false)
+  const [includeSiteDetails, setIncludeSiteDetails] = useState(true)
   const [emailMessage, setEmailMessage] = useState('')
   function siteEdited() { setBufferSuggestion(undefined); setMoveSuggestion(undefined); setAcknowledgedConflicts([]); setSelection(null); setImported(false); setMeasurementResult(null); setSiteAssumptions(null); setProjectSettings(initialProjectSettings()); setStreetMarks({ revision: null, data: { edge_ids: [], all_marked: false, origin: 'user' } }); setRearEdge(null); setSelectedBoundary(null); setBoundaryMark(null); setMarkingRole(null); setBoundaryMode('place'); setReadyFor(null); setRevision(value => value + 1) }
   function changeMode(next: typeof mode) {
@@ -211,8 +215,8 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     setExpanded({ property: next !== 'example', placement: next === 'example', next: false, email: false })
     setMode(next); siteEdited(); setLive(null); setManual(null)
     setDraft({ ...emptySiteInput, kind: 'address' })
-    setQuestion(suggestedQuestion); setUse(''); setTiming(''); setBudget(''); setAccess(''); setServices('')
-    setReadyFor(null); setManualConfirmedFor(null); setIncludeSiteDetails(false); setEmailMessage('')
+    setQuestion(suggestedQuestion); setUse(''); setTiming(''); setBudget(''); setAccess(''); setServices(''); setProjectContext({ relationship: '', stage: '', configuration: '', nextStep: '', contact: '' }); setDrawingExport(null)
+    setReadyFor(null); setManualConfirmedFor(null); setIncludeSiteDetails(true); setEmailMessage('')
   }
   const hasSite = mode === 'example' || !!(selection || live || manual && (manual.site || Object.values(manual.facts).some(value => value.trim())))
   const zoningCase = mode === 'example' ? exampleCase : mode === 'live' ? liveCase ?? null : null
@@ -397,15 +401,42 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const readinessBusy = !measurementResult || !!scenarioKey && !currentScenario && scenarioBusy || !!requestKey && !currentScreening && conditionalBusy || propertyScan.busy || !!zoningKey && !currentZoning && zoningBusy
   const reviewReadiness = summary ? { total: findings.length, addressed: findings.length - outstandingFindings.length, busy: readinessBusy, ready: findings.length > 0 && outstandingFindings.length === 0 && !readinessBusy, targetId: outstandingFindings[0]?.targetId } : undefined
   const readinessSignature = JSON.stringify(reviewReadiness)
-  const enquiryDoc = makeEnquiryDoc()
+  const contextComplete = !!(use.trim() && projectContext.relationship.trim() && projectContext.nextStep.trim())
+  const enquiryDoc = contextComplete ? makeEnquiryDoc() : null
+  const exportMeasurement: OccupiedMeasurement | null = measurementResult ?? (manual?.assessment && manual.site ? {
+    site: { case_id: 'manual', label: manual.facts.address || 'User-entered local sketch', site: manual.site }, model,
+    widthOrigin: 'user', depthOrigin: 'user', result: { ...manual.assessment, checks: manual.assessment.checks.map(check => ({ ...check, source_feature_ids: [], margin_m: null, comparison: null })) },
+  } : null)
+  const drawingKey = exportMeasurement ? JSON.stringify([exportMeasurement, currentAssumptions, currentScenario, mode]) : ''
+  drawingRevision.current = drawingKey
+  const drawingAssets = drawingExport?.key === drawingKey ? drawingExport.assets : null
+  function generateDrawing(measured: OccupiedMeasurement) {
+    const style = getComputedStyle(document.documentElement)
+    const token = (name: string, fallback: string) => style.getPropertyValue(name).trim() || fallback
+    return renderDrawing(placementDrawing(measured, currentAssumptions, currentScenario, mode === 'example', {
+      ink: token('--ink', '#203238'), danger: token('--danger', '#9a3e35'), parcelFill: token('--map-parcel-fill', '#245b6833'), parcelStroke: token('--map-parcel-stroke', '#245b68'), roofFill: token('--map-roof-fill', '#665a9a55'), roofStroke: token('--map-roof-stroke', '#564881'), zoneFill: token('--map-zone-fill', '#c58a4a33'), zoneStroke: token('--map-zone-stroke', '#91602f'),
+    }))
+  }
+  useEffect(() => {
+    // Render only after explicit context answers and a current measurement exist.
+    // This prepares a local artifact for website handoff without downloading or sending it.
+    if (!contextComplete || !exportMeasurement || drawingAssets || typeof Image === 'undefined') return
+    let cancelled = false
+    setExportBusy(true); setExportMessage('Preparing your approximate placement sketch…')
+    const timer = setTimeout(() => { void generateDrawing(exportMeasurement).then(assets => {
+      if (!cancelled && drawingRevision.current === drawingKey) { setDrawingExport({ key: drawingKey, assets }); setExportMessage('Placement sketch ready to download or share.') }
+    }).catch(error => { if (!cancelled) setExportMessage(error instanceof Error ? error.message : 'Could not prepare drawing. Use the download buttons to retry.') })
+      .finally(() => { if (!cancelled) setExportBusy(false) }) }, 300)
+    return () => { cancelled = true; clearTimeout(timer); setExportBusy(false) }
+  }, [drawingKey, contextComplete])
+  if (enquiryDoc && drawingAssets) {
+    const paragraphs = ['I have an approximate proposed placement sketch available. Please let me know the best way to share it.']
+    enquiryDoc.sections.push({ heading: 'Placement sketch', paragraphs, emailSummary: paragraphs[0], siteDetails: true })
+  }
   const reportDoc = hasSite ? screeningDocument(selection, { question, intendedUse: use, timing, budget, access, services, ...projectContext }, measurementResult, imported, live, manual, mode === 'example', foundationAllowanceM, currentScreening, currentAssumptions, pathway, currentScenario, effectiveSettings, propertyScan.result) : null
   if (reportDoc && currentAcknowledgements.length) {
     const paragraphs = currentAcknowledgements.map(check => `${check.label}: ${check.detail} Acknowledged by the user for discussion with the City/provider. The conflict remains unresolved; City agreement or an exception is not established.`)
     reportDoc.sections.push({ heading: 'Acknowledged conflicts for discussion', paragraphs, emailSummary: paragraphs.join(' ') })
-  }
-  if (enquiryDoc && currentOpenQuestions.length) {
-    const paragraphs = [`I would also like guidance on these unresolved topics: ${currentOpenQuestions.map(check => `${check.label} (${statusLabels[check.status].toLowerCase()})`).join('; ')}.`, 'Please advise which topics you can help with and which need City or professional review. No answer or clearance is established; detailed findings are available in the supporting report.']
-    enquiryDoc.sections.push({ heading: 'Open questions included for discussion', paragraphs, emailSummary: paragraphs.join(' '), siteDetails: true })
   }
   if (reportDoc && currentOpenQuestions.length) {
     const paragraphs = currentOpenQuestions.map(check => `${check.label}: ${statusLabels[check.status]}. ${check.detail} Included by the user as an open question for City/provider discussion; no answer or clearance is established.`)
@@ -461,7 +492,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     if (step === 'boundaries') changeBoundaryMode('rear')
     if (step === 'placement' || step === 'details') setBoundaryMode('place')
     setExpanded(previous => ({ ...previous, ...(step === 'property' ? { property: true } : step === 'email' ? { next: false, email: true } : step === 'enquiry' ? { next: true, email: false } : { placement: true }) }))
-    const targets: Record<JourneyStep, string> = { model: 'builder-title', property: 'builder-site-mode', placement: 'placement-map', streets: 'placement-action-front', boundaries: 'placement-action-rear', details: 'builder-property-details', checks: 'builder-quick-checks', enquiry: 'builder-question', email: 'builder-provider-website' }
+    const targets: Record<JourneyStep, string> = { model: 'builder-title', property: 'builder-site-mode', placement: 'placement-map', streets: 'placement-action-front', boundaries: 'placement-action-rear', details: 'builder-property-details', checks: 'builder-quick-checks', enquiry: 'builder-use', email: contextComplete ? 'builder-provider-website' : 'builder-contact-context' }
     requestAnimationFrame(() => {
       focusSummaryTarget(document, step === 'details' ? 'building-type' : targets[step], step === 'details' ? 'start' : 'center')
       if (step === 'checks') { const details = document.querySelector<HTMLDetailsElement>('.homeowner-summary__checks'); if (details) details.open = true }
@@ -521,12 +552,46 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   }
   const technicalEvidence = { schema_version: 'builder-evidence.v1', enquiry_inputs: { question, intendedUse: use, timing, budget, access, services, ...projectContext }, model_catalogue: { snapshot_id: bundledCatalogue.snapshot_id, model }, acknowledged_conflicts_for_discussion: currentAcknowledgements, open_questions_for_discussion: currentOpenQuestions, review_readiness: reviewReadiness, foundation_scenario: { allowance_m: foundationAllowanceM, basis: 'planning_assumption', used_in_preliminary_height: currentScenario?.additional_checks?.some(check => check.id === 'height' && check.basis.startsWith('advertised height')) ?? false }, selection, live, manual, example: mode === 'example' ? exampleCase : null, measurement: measurementResult, zoning_site_assumptions: currentAssumptions, project_settings: zoningCase ? effectiveSettings : null, municipal_zoning_lookup: currentZoning, municipal_zoning_error: currentZoningError || null, property_scan: propertyScan.result, property_scan_error: propertyScan.error || null, placement_scenario_request: scenarioRequest, placement_scenario_result: currentScenario, conditional_screening: currentScreening }
   function downloadMarkdown(report = false) {
-    const exportDoc = report ? reportDoc : enquiryDoc
-    if (!exportDoc) return
-    const objectUrl = URL.createObjectURL(new Blob([enquiryMarkdown(exportDoc) + (report ? '\n## Complete technical evidence\n\n' + technicalEvidenceMarkdown(technicalEvidence) : '')], { type: 'text/markdown;charset=utf-8' }))
-    const anchor = document.createElement('a')
-    anchor.href = objectUrl; anchor.download = report ? 'model-300-screening-report.md' : 'model-300-enquiry.md'; anchor.click()
-    setTimeout(() => URL.revokeObjectURL(objectUrl), 1000)
+    if (!report) { void exportPlacement('markdown'); return }
+    if (!reportDoc) return
+    downloadFile('model-300-screening-report.md', enquiryMarkdown(reportDoc) + '\n## Complete technical evidence\n\n' + technicalEvidenceMarkdown(technicalEvidence), 'text/markdown;charset=utf-8')
+  }
+  async function exportPlacement(kind: 'png' | 'pdf' | 'package' | 'email' | 'markdown') {
+    if (!contextComplete || !enquiryDoc || exportBusy) return
+    if (kind === 'email' && !validRecipient(recipient)) { setExportMessage('Enter a valid recipient email.'); return }
+    const capturedKey = drawingKey
+    setExportBusy(true); setExportMessage('Preparing export…')
+    try {
+      let assets = drawingAssets
+      const attach = kind !== 'email' || includeSiteDetails
+      if (exportMeasurement && attach && !assets) {
+        assets = await generateDrawing(exportMeasurement)
+        if (drawingRevision.current !== capturedKey) throw new Error('Placement changed during export. Generate the current sketch again.')
+        setDrawingExport({ key: capturedKey, assets })
+      }
+      if (kind === 'png' || kind === 'pdf') {
+        if (!assets) throw new Error('Measure a current placement first.')
+        downloadFile(`model-300-placement.${kind}`, new Uint8Array(assets[kind]).buffer, kind === 'png' ? 'image/png' : 'application/pdf')
+      } else if (kind === 'markdown') {
+        downloadFile('model-300-enquiry.md', enquiryMarkdown(withPlacementSketch(enquiryDoc, assets ? 'An approximate proposed placement sketch is included below; it is not a survey or approved site plan.' : null)) + (assets ? `\n## Approximate proposed placement\n\n![Approximate proposed placement](${assets.pngUrl})\n` : ''), 'text/markdown;charset=utf-8')
+      } else if (kind === 'email') {
+        const attachedDoc = withPlacementSketch(enquiryDoc, assets && includeSiteDetails ? 'I’ve attached an approximate proposed placement sketch for discussion. It is not a survey or approved site plan.' : null)
+        const body = enquiryEmailBody(attachedDoc, includeSiteDetails)
+        downloadFile('model-300-enquiry.eml', attachedEmail(recipient, emailSubject, body, assets && includeSiteDetails ? assets.png : undefined), 'message/rfc822')
+        setEmailRequestedFor(JSON.stringify([draftText, recipient, includeSiteDetails])); setWebsiteRequestedFor(null)
+      } else {
+        const { zipSync, strToU8 } = await import('fflate')
+        const files: Record<string, Uint8Array> = {
+          'model-300-enquiry.md': strToU8(enquiryMarkdown(withPlacementSketch(enquiryDoc, assets ? 'An approximate proposed placement sketch is included with this enquiry; it is not a survey or approved site plan.' : null)) + (assets ? '\n## Approximate proposed placement\n\n![Approximate proposed placement](model-300-placement.png)\n' : '')),
+          'your-preparation-checklist.txt': strToU8([...preparationChecklist({ intendedUse: use, timing, budget, access, services, ...projectContext }), ...currentOpenQuestions.map(item => `${item.label}: ${item.detail}`)].join('\n\n')),
+          'model-300-supporting-report.md': strToU8((reportDoc ? enquiryMarkdown(reportDoc) : '') + '\n## Complete technical evidence\n\n' + technicalEvidenceMarkdown(technicalEvidence)),
+        }
+        if (assets) { files['model-300-placement.png'] = assets.png; files['model-300-placement.pdf'] = assets.pdf }
+        downloadFile('model-300-enquiry-package.zip', new Uint8Array(zipSync(files)).buffer, 'application/zip')
+      }
+      setExportMessage(kind === 'email' ? 'Unsent .eml draft downloaded. Open it in your email app and check the recipient, body and attachment before sending. Some clients open .eml as a message rather than an editable draft; use the text and drawing downloads if needed.' : 'Export downloaded. Review the approximate drawing and enquiry before sharing.')
+    } catch (error) { setExportMessage(error instanceof Error ? error.message : 'Export failed. Please try again.') }
+    finally { setExportBusy(false) }
   }
   return <div className="builder-demo">
     <section className="builder-hero" id="builder-model" aria-labelledby="builder-title">
@@ -610,10 +675,15 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       <button type="button" aria-expanded={expanded.next} aria-controls="builder-enquiry-content" onClick={() => toggleStep('next')}>{expanded.next ? 'Collapse enquiry' : enquiryReady ? 'Edit enquiry' : 'Review enquiry'}</button>
       <div id="builder-enquiry-content" hidden={!expanded.next}>
       {!hasSite && <p>Add a property or your known site facts above to prepare an unsent enquiry. Your answers stay local to this journey.</p>}
-      {hasSite && <><p>Leave unknown answers blank. This text stays in your browser until you copy it; no provider request or contact record is created.</p>
+      {hasSite && <><p>First, share three useful facts. Choose Unknown or Prefer not to say if appropriate. These answers stay local until you share the enquiry.</p>
       <div className="builder-questions">
-        <label htmlFor="builder-question">What would you like to ask the builder?</label><textarea id="builder-question" value={question} onChange={event => setQuestion(event.target.value)} placeholder="Ask about suitability, next steps or additional costs." />
-        <label htmlFor="builder-use">Intended use</label><input id="builder-use" value={use} onChange={event => setUse(event.target.value)} placeholder="e.g. family accommodation; unknown is fine" />
+        <label htmlFor="builder-use">How would you use Model 300?</label><input id="builder-use" list="builder-use-options" value={use} onChange={event => setUse(event.target.value)} placeholder="Choose a suggestion or type your answer" />
+        <datalist id="builder-use-options">{['a home for myself', 'family accommodation', 'a rental suite', 'an office', 'Still deciding', 'Unknown', 'Prefer not to say'].map(value => <option key={value} value={value} />)}</datalist>
+        <label htmlFor="builder-relationship">Relationship to the property</label><input id="builder-relationship" list="builder-relationship-options" value={projectContext.relationship} onChange={event => setProjectContext(previous => ({ ...previous, relationship: event.target.value }))} placeholder="Choose a suggestion or type your answer" />
+        <datalist id="builder-relationship-options">{['I own the property', 'I am considering buying it', 'I am helping the owner', 'Unknown', 'Prefer not to say'].map(value => <option key={value} value={value} />)}</datalist>
+        <label htmlFor="builder-nextStep">What response would be most useful?</label><input id="builder-nextStep" list="builder-response-options" value={projectContext.nextStep} onChange={event => setProjectContext(previous => ({ ...previous, nextStep: event.target.value }))} placeholder="Choose a suggestion or type your answer" />
+        <datalist id="builder-response-options">{['Please advise whether this is worth investigating further.', 'I would like to arrange an initial call.', 'Please share standard pricing and inclusions.', 'Unknown', 'Prefer not to say'].map(value => <option key={value} value={value} />)}</datalist>
+        <label htmlFor="builder-question">Your question for the builder</label><textarea id="builder-question" value={question} onChange={event => setQuestion(event.target.value)} placeholder="Ask about suitability, next steps or additional costs." />
         <label htmlFor="builder-timing">Possible timing</label><input id="builder-timing" value={timing} onChange={event => setTiming(event.target.value)} placeholder="e.g. next year; unknown is fine" />
         <label htmlFor="builder-budget">Budget range, optional</label><input id="builder-budget" value={budget} onChange={event => setBudget(event.target.value)} placeholder="Leave blank if unknown" />
       </div>
@@ -625,18 +695,26 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
         </div>
       </details>
       <details><summary>Optional project context and closing</summary><div className="builder-questions">
-        {([['relationship', 'Relationship to the property'], ['stage', 'Project stage'], ['configuration', 'Configuration or upgrades'], ['nextStep', 'Requested next step'], ['contact', 'Sender name and contact details']] as const).map(([key, label]) => <Fragment key={key}><label htmlFor={`builder-${key}`}>{label}</label><input id={`builder-${key}`} value={projectContext[key]} onChange={event => setProjectContext(previous => ({ ...previous, [key]: event.target.value }))} /></Fragment>)}
+        {([['stage', 'Project stage'], ['configuration', 'Configuration or upgrades'], ['contact', 'Sender name and contact details']] as const).map(([key, label]) => <Fragment key={key}><label htmlFor={`builder-${key}`}>{label}</label><input id={`builder-${key}`} value={projectContext[key]} onChange={event => setProjectContext(previous => ({ ...previous, [key]: event.target.value }))} /></Fragment>)}
       </div></details>
+      {!contextComplete && <p role="status">Answer intended use, relationship to the property and the response wanted to generate your enquiry. Unknown and Prefer not to say are accepted answers.</p>}
+      <section className="builder-preparation" aria-label="Your preparation checklist"><h3>Your preparation checklist</h3><p>For you to work through; these prompts are kept out of the provider message.</p><ul>{preparationChecklist({ intendedUse: use, timing, budget, access, services, ...projectContext }).map(item => <li key={item}>{item}</li>)}</ul>{currentOpenQuestions.length > 0 && <><h4>Questions you included for later review</h4><ul>{currentOpenQuestions.map(item => <li key={item.label}><strong>{item.label}</strong>: {item.detail}</li>)}</ul></>}</section>
       {enquiryDoc && <EnquiryPreview document={enquiryDoc} />}
       {reportDoc && <details><summary>Supporting screening report · calculations, sources and uncertainty</summary><EnquiryPreview document={reportDoc} /><button type="button" onClick={() => downloadMarkdown(true)}>Download supporting report with complete evidence</button></details>}
-      <p className="metadata">Before sending: add your name/contact details and a marked property plan with access photos where available. Downloads do not attach themselves to email drafts.</p>
+      {enquiryDoc && <section className="builder-drawing-export" aria-label="Placement drawing and enquiry exports"><h3>Share your proposed placement</h3><p>Approximate proposed placement—not a survey or approved site plan. The drawing includes captured outlines, marked edges, gaps, buffers and sources. Access and entrance locations are not established.</p>
+        {drawingAssets && <img className="builder-export-preview" src={drawingAssets.pngUrl} alt="Approximate proposed placement with measurements, assumptions and sources" />}
+        {!exportMeasurement && <p>No current measured placement is available. Add or recheck a placement to include a drawing.</p>}
+        <div className="builder-email-buttons"><button type="button" disabled={!exportMeasurement || exportBusy} onClick={() => void exportPlacement('png')}>Download placement PNG</button><button type="button" disabled={!exportMeasurement || exportBusy} onClick={() => void exportPlacement('pdf')}>Download placement PDF</button><button type="button" disabled={exportBusy} onClick={() => void exportPlacement('package')}>Download enquiry package</button></div>
+        <p className="metadata">The package keeps the Markdown enquiry and its image together, plus a PDF, supporting evidence and your separate preparation checklist. Standalone Markdown embeds a generated drawing; some Markdown readers do not display embedded images.</p>
+        <p role="status">{exportMessage}</p></section>}
       <div className="builder-enquiry-actions">
+        {enquiryDoc && <>
         <CopyableRecord id="builder-enquiry-text" label="Plain-text enquiry to copy" value={draftText} />
-        <button type="button" onClick={() => downloadMarkdown()}>Download Markdown enquiry</button>
+        <button type="button" onClick={() => downloadMarkdown()}>Download Markdown enquiry</button></>}
       </div>
       <div className="builder-enquiry-confirm">
         <h3>Happy with your enquiry?</h3><p>You can edit it again later.</p>
-        <button className="builder-continue" type="button" onClick={() => { setReadyFor(draftText); openJourneyStep('email') }}>Confirm enquiry &amp; continue →</button>
+        <button className="builder-continue" type="button" disabled={!contextComplete || exportBusy} onClick={() => { setReadyFor(draftText); openJourneyStep('email') }}>Confirm enquiry &amp; continue →</button>
         <p role="status">{enquiryReady ? 'Enquiry confirmed. No message has been sent.' : 'Draft in progress. Review before continuing.'}</p>
       </div>
       <TechnicalDetails title="Complete site selection, sources and measurements"><CopyableRecord id="builder-technical-record" label="Complete technical evidence export" value={JSON.stringify(technicalEvidence, null, 2)} /></TechnicalDetails>
@@ -648,6 +726,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
         <p className="eyebrow">Contact provider · unsent enquiry</p><h2 id="builder-email-title">Contact aux box</h2>
         <button type="button" aria-expanded={expanded.email} aria-controls="builder-email-content" onClick={() => toggleStep('email')}>{expanded.email ? 'Collapse provider contact' : 'Review provider contact'}</button>
         <div id="builder-email-content" hidden={!expanded.email}>
+        {!contextComplete ? <><p>Provide the three context answers before preparing your provider message.</p><button id="builder-contact-context" type="button" onClick={() => openJourneyStep('enquiry')}>Add enquiry context</button></> : <>
         <p>aux box uses a central enquiry form on its website. Copy your prepared enquiry, then paste it into the form. Checked October 7, 2026.</p>
         <p className="metadata">Opening the website does not send your enquiry or attach your report. This independent demonstration has no affiliation with aux box.</p>
         <label htmlFor="builder-provider-text">Your enquiry to paste into the form</label><textarea id="builder-provider-text" readOnly rows={8} value={draftText} />
@@ -667,12 +746,15 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
         <label htmlFor="builder-email-body">Exact email body to share</label><textarea id="builder-email-body" readOnly rows={12} value={emailBody} />
         {emailTooLong && <p role="status">The full email is too long for a reliable draft link. The buttons request a short placeholder draft. Copy the complete text above and paste it into your email app before sending; no content is silently shortened.</p>}
         <div className="builder-email-buttons">
+          <button className="builder-email-primary" type="button" disabled={!validRecipient(recipient) || exportBusy} onClick={() => void exportPlacement('email')}>Download email draft{includeSiteDetails && exportMeasurement ? ' with placement attachment' : ''}</button>
           <button type="button" disabled={!validRecipient(recipient)} onClick={() => openDraft('mailto')}><span aria-hidden="true">✉ </span>Create email draft</button>
           <button type="button" disabled={!validRecipient(recipient)} onClick={() => openDraft('gmail')}>Open in Gmail</button>
           <button type="button" onClick={() => void copyEmailBody()}>Copy email body</button>
         </div>
+        <p className="metadata">The downloaded .eml includes the placement PNG when site details are selected and a current placement exists. Ordinary email/Gmail links cannot attach files; download the drawing and attach it yourself. Check your email client’s handling of the unsent draft before sending.</p><p role="status">{exportMessage}</p>
         <p className="metadata">If no compose window opens, use Copy email body and paste the exact text shown above into a new message. Check the recipient and subject there before sending.</p>
         </details>
+        </>}
         </div>
       </section>
     </>}
