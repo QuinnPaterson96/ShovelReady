@@ -1,3 +1,4 @@
+.sr-workspace-rail.builder-journey-rail { max-height: calc(100dvh - 2rem); overflow-y: auto; }
 .sr-workspace-rail.builder-journey-rail a {
   flex-wrap: wrap;
   column-gap: .45rem;
@@ -30,10 +31,11 @@
   line-height: 1;
 }
 @media (max-width: 850px) {
-  .sr-workspace-rail.builder-journey-rail { overflow: visible; }
+  .sr-workspace-rail.builder-journey-rail { max-height: none; overflow: visible; }
   .sr-workspace-rail.builder-journey-rail nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); min-width: 0; width: 100%; }
   .sr-workspace-rail.builder-journey-rail nav > p, .sr-workspace-rail.builder-journey-rail small { grid-column: 1 / -1; }
   .sr-workspace-rail.builder-journey-rail a { min-width: 0; }
   .sr-workspace-rail.builder-journey-rail .builder-journey-label { min-width: 0; }
   .sr-workspace-rail.builder-journey-rail small { max-width: none; }
+  .builder-review-readiness { grid-column: 1 / -1; }
 }

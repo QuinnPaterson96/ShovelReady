@@ -144,3 +144,7 @@ details > :not(summary) { margin-left: .35rem; margin-right: .35rem; }
 .technical-evidence pre { white-space: pre-wrap; overflow-wrap: anywhere; }
 .copyable-record textarea { display: block; width: 100%; max-width: 100%; box-sizing: border-box; white-space: pre-wrap; overflow-wrap: anywhere; }
 .copyable-record button { margin: .5rem .5rem .5rem 0; }
+
+.builder-review-readiness { border-top: 1px solid var(--border); margin-top: 1rem; padding-top: .8rem; font-size: .85rem; }
+.sr-workspace-rail .builder-review-readiness p { margin: .5rem 0; text-transform: none; letter-spacing: normal; }
+.builder-review-readiness a { min-height: 44px; display: flex; align-items: center; font-weight: 650; }

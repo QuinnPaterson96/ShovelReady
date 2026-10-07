@@ -74,6 +74,9 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     assert.equal(document.activeElement?.id, 'builder-property-details')
     assert.equal(document.querySelector<HTMLDetailsElement>('#builder-property-details > details')!.open, true)
     assert.equal(document.querySelector('.builder-placement-next'), null)
+    assert.ok(document.querySelector('#builder-property-details #scouting-height'))
+    assert.ok(document.querySelector('#builder-property-details #scouting-area-buffer'))
+    assert.doesNotMatch(document.body.textContent!, /Complete the remaining checks/)
     assert.equal(document.getElementById('builder-property-details')!.hidden, false)
     await click('Next: Review quick checks →')
     assert.equal(document.activeElement?.id, 'builder-quick-checks')
@@ -245,6 +248,10 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
     assert.deepEqual(latest.assumptions.measurements, savedBefore.measurements)
     const suggestedBuffer = document.querySelector<HTMLInputElement>('[aria-label="Edge 2 planning buffer in metres"]')!
     await change(suggestedBuffer, '1'); await click('Save planning buffers'); await settle()
+    await click('Yes, use suggestions'); await settle()
+    assert.equal(completion.boundaries, true)
+    const beforeMoveAssumptions = JSON.parse(JSON.stringify(latest.assumptions))
+    await change(document.querySelector<HTMLInputElement>('#scouting-height')!, '3.9'); await settle()
     await click('Move 0.35 m away from this edge & recheck'); await settle(700)
     const moved = JSON.parse(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value)
     const beforePosition = beforeApply.measurement.result.input.placement
@@ -253,6 +260,12 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
     assert.ok(Math.abs(Math.hypot(afterPosition.centre_xy[0] - beforePosition.centre_xy[0], afterPosition.centre_xy[1] - beforePosition.centre_xy[1]) - .35) < 1e-7)
     assert.equal(afterPosition.width_m, beforePosition.width_m)
     assert.equal(afterPosition.depth_m, beforePosition.depth_m)
+    assert.equal(completion.boundaries, true, 'movement preserves reviewed boundary context')
+    assert.equal(completion.streets, true, 'movement preserves complete street marks')
+    assert.deepEqual(latest.assumptions.edges, beforeMoveAssumptions.edges)
+    assert.deepEqual(latest.assumptions.street_adjacency, beforeMoveAssumptions.street_adjacency)
+    assert.deepEqual(latest.assumptions.planning_buffers_m, beforeMoveAssumptions.planning_buffers_m)
+    assert.equal(document.querySelector<HTMLInputElement>('#scouting-height')!.value, '3.9')
     await click('Adjust boundaries'); await click('No, adjust them')
     await change(document.querySelector<HTMLSelectElement>('[aria-label="Edge to mark"]')!, latest.assumptions.edges[1].id)
     const measuredOffset = document.querySelector<HTMLInputElement>('.zsa__edge-row--selected input')!
@@ -265,11 +278,30 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
     assert.match(recipientText(), /not established legal violations/)
     assert.doesNotMatch(recipientText(), /Acknowledged conflicts|acknowledged by the user/i)
     assert.equal(JSON.parse(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value).acknowledged_conflicts_for_discussion.length, 1)
+    assert.ok(document.querySelector('.homeowner-summary__acknowledged-conflict'))
     await click('Remove acknowledgement'); await settle()
     assert.match(recipientText(), /falls short/, 'removing acknowledgement must not remove the unresolved placement concern')
     await click('Acknowledge and include in enquiry'); await settle()
+    // Review readiness counts leaf findings, including unknown and uncovered items;
+    // discussing them never changes their status or establishes an answer.
+    for (let attempts = 0; attempts < 30; attempts++) {
+      const next = [...document.querySelectorAll<HTMLButtonElement>('.homeowner-summary button')].find(node => node.textContent === 'Include as an open question in enquiry' || node.textContent === 'Acknowledge and include in enquiry')
+      if (!next) break
+      await act(async () => next.click())
+    }
+    await settle()
+    assert.equal(completion.reviewReadiness!.ready, true)
+    assert.equal(completion.reviewReadiness!.addressed, completion.reviewReadiness!.total)
+    assert.match(recipientText(), /Open questions included for discussion.*No answer or clearance is established/s)
+    const reviewEvidence = JSON.parse(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value)
+    assert.ok(reviewEvidence.open_questions_for_discussion.length > 0)
+    assert.equal(reviewEvidence.review_readiness.ready, true)
+    assert.match(document.querySelector('#builder-enquiry-content')!.textContent!, /Open questions included for discussion.*no answer or clearance is established/s)
+    assert.match(document.querySelector('#builder-quick-checks')!.textContent!, /Other requirements · Not covered/)
+    assert.match(document.querySelector('#builder-quick-checks')!.textContent!, /Distance to boundaries · Conflicts/)
     await change(measuredOffset, ''); await settle()
     assert.doesNotMatch(recipientText(), /gap of 0.1 m falls short/, 'editing the measurement must invalidate this concern')
+    assert.equal(completion.reviewReadiness!.ready, false)
 
 
     assert.equal(document.querySelectorAll('#boundary-offsets input').length, 4)

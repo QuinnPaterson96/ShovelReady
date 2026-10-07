@@ -298,3 +298,66 @@ measurements before accepted evaluation; homeowner/provider needs permit/title/
 projection/servicing records. Product owner/#147 owns real-user and touch validation.
 Platform owner/SR14-SR15 owns persistence/recovery and rollback evidence; refresh
 loses answers. Conflict discussion cannot establish a viable approval route.
+
+## Review readiness and earlier property inputs — October 7, 2026
+
+Implemented: optional measurements, planning allowances and installed height now
+sit inside Property details, after boundary review and before Quick checks. The
+section's bottom Next follows these inputs. Existing correction links open the
+same fields, including their source help.
+
+Acknowledged conflicts use pale yellow with a red border and retain their conflict
+icon, status and count. Other unresolved findings can be included as open questions
+in the unsent enquiry. Grouped mapped records and unsearched requirements remain
+separate findings with their original statuses. Both types of inclusion can be
+removed, are included in enquiry/export evidence, and expire when relevant inputs
+or findings change.
+
+Review readiness beneath the journey counts Checked, Likely fine and explicitly
+included findings as addressed. Its outstanding-items link opens/focuses the first
+unaddressed finding. All addressed with no pending checks means Ready to discuss
+with the provider, not an evaluation pass or approval. Workflow ticks stay separate.
+The desktop rail scrolls within short viewports; the mobile readiness card spans
+the full width beneath the step grid.
+
+Verification: 136 frontend tests and production build/typecheck passed. The mounted
+journey verifies relocated inputs, acknowledged styling, all-addressed readiness,
+preserved unresolved statuses, enquiry inclusion and reopening after changed inputs.
+Desktop preview confirmed all 14 findings can be addressed without changing their
+statuses. A 390 x 844 preview confirmed readable navigation/readiness and targeted
+keyboard focus. Final CI and deployed evidence are recorded in the PR. No physical
+touch or source-applicability validation was performed.
+
+Gaps: source owner/#104 needs reviewed property/rule applicability and installed
+measurements before accepted evaluation; homeowner/provider needs permit/title/
+projection/servicing records. Product owner/#147 owns real-user and touch validation.
+Platform owner/SR14-SR15 owns persistence/recovery and rollback evidence; refresh
+loses answers. Review readiness measures whether findings have been addressed for
+discussion, including open questions; it does not resolve those questions.
+
+## Map controls and movement continuity — October 7, 2026
+
+Implemented: saved-example and captured-property journeys put rotation, alignment,
+fine movement and recheck controls directly below the map, before Next and findings.
+The captured-property reset/clear controls stay with this panel. Boundary editing
+still uses the right-hand map panel; movement controls hide in marking modes.
+
+A changed unit position carries forward reviewed boundary context on the same
+captured property, alongside street marks, roles and saved planning buffers. This
+supersedes the earlier placement-change reset of the boundary workflow milestone.
+Installed-height input is scoped to the property, so movement does not clear it.
+Changing boundary inputs still reopens boundary review. Position-specific measured
+offsets/separation are cleared and calculated findings/acknowledgements are refreshed;
+the retained boundary tick is workflow progress, not a pass at the new position.
+
+Verification: production build/typecheck and all 136 frontend tests passed. Existing
+mounted journey now verifies suggested movement preserves street/boundary completion,
+roles, street selection, buffers and installed height while triggering a new geometry
+assessment. Desktop and 390 x 844 previews confirmed map-adjacent controls and bounded
+layout. CI and deployed evidence are recorded in the PR. Physical touch and source
+validation remain unperformed.
+
+Gaps: source owner/#104 needs reviewed applicability and installed measurements;
+homeowner/provider needs permit/title/projection/servicing evidence. Product owner/#147
+owns real-user/touch validation. Platform owner/SR14-SR15 owns persistence/recovery and
+rollback evidence; refresh still loses answers.

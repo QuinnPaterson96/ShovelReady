@@ -58,6 +58,10 @@ Unrelated reporting and the backend contracts/evaluator are unchanged.
   the separate owner's uncommitted reporting-standard documentation were preserved.
 - Interfaces: frontend presentation/export functions only; no HTTP contracts,
   migrations, credentials, deployment or data publication changed.
+- Integration base: merged `origin/main` at `b9a4893` (PRs #276 and #277).
+  Review readiness and map controls are preserved. User-selected open questions
+  appear as concise named topics in the enquiry, with detailed findings in the
+  supporting report; acknowledgement, open questions and readiness remain in JSON.
 - Decisions: retain the existing evidence/report structure rather than shorten all
   evidence; assemble recipient prose from structured statuses and quantities rather
   than infer facts from diagnostic strings. Reconsider the missing-plan wording when
@@ -76,13 +80,10 @@ $env:TSX_TSCONFIG_PATH = 'tsconfig.app.json'
 node --import tsx tools/generate_manufacturer_sample.tsx
 ```
 
-The full frontend suite passed all 140 tests. After final label/grammar polish and a Markdown numbering repair, the
-16 focused builder/reporting and conditional-screen tests, typecheck and production
-build passed again. That focused command was `node --import tsx --test
-src/builder_demo/builder-demo.test.tsx
-src/conditional_screening/conditional-screen.test.ts` with the TSX configuration
-above. These final focused checks cover the delivered tree; the full-suite result
-precedes those presentation-only refinements. The build
+The full frontend suite passed all 140 tests, including after integration with
+`b9a4893`; typecheck and production build passed on that combined implementation.
+The existing journey also verifies selected open questions and review readiness
+in the brief and technical evidence. The build
 retains its existing large-chunk warning. No backend/database tests were run because
 no backend behavior changed; no live model/source calls occurred. Remote CI has not
 been run for this local work. Integration still requires review and final-head CI.
