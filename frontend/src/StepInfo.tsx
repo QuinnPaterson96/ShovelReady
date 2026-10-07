@@ -2,7 +2,7 @@ import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 
 /** Hover/focus help, with pinned tap support and no journey mutation. */
-export function StepInfo({ label, children, symbol = 'i' }: { symbol?: 'i' | '?'; label: string; children: React.ReactNode }) {
+export function StepInfo({ label, children, symbol = 'i', trigger, className = '' }: { symbol?: 'i' | '?'; trigger?: React.ReactNode; className?: string; label: string; children: React.ReactNode }) {
   useEffect(() => { void import('./step-info.css') }, [])
   const [open, setOpen] = useState(false)
   const [position, setPosition] = useState({ left: 12, top: 12 })
@@ -28,9 +28,9 @@ export function StepInfo({ label, children, symbol = 'i' }: { symbol?: 'i' | '?'
     if (open) { document.addEventListener('pointerdown', outside); document.addEventListener('keydown', escape) }
     return () => { cancelClose(); document.removeEventListener('pointerdown', outside); document.removeEventListener('keydown', escape) }
   }, [open])
-  return <span className="step-info"><button ref={button} type="button" className="step-info__button" aria-label={`About ${label}`} aria-expanded={open} aria-controls={open ? id : undefined} aria-describedby={open ? id : undefined}
+  return <span className={`step-info ${className}`}><button ref={button} type="button" className="step-info__button" aria-label={`About ${label}`} aria-expanded={open} aria-controls={open ? id : undefined} aria-describedby={open ? id : undefined}
     onMouseEnter={show} onMouseLeave={leave} onFocus={show} onBlur={dismiss}
-    onClick={() => { cancelClose(); pinned.current = !pinned.current; setOpen(pinned.current) }} onKeyDown={event => { if (event.key === 'Escape') dismiss() }}>{symbol}</button>
+    onClick={() => { cancelClose(); pinned.current = !pinned.current; setOpen(pinned.current) }} onKeyDown={event => { if (event.key === 'Escape') dismiss() }}>{trigger ?? symbol}</button>
     {open && createPortal(<span ref={popup} id={id} role="tooltip" className="step-info__text" style={position} onMouseEnter={show} onMouseLeave={leave}>{children}</span>, document.body)}
   </span>
 }

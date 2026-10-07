@@ -64,3 +64,10 @@
 .zsa__answer-buttons button[aria-pressed="true"] { color: var(--surface); background: var(--primary); border-color: var(--primary); }
 .zsa__answer:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 .zsa #existing-suites .zsa__answer-buttons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+.boundary-action-panel[data-mode="rear"] > .builder-placement-next { grid-column: 1 / -1; grid-row: 4; }
+.boundary-action-panel[data-mode="rear"] > .builder-map-summary { grid-row: 5; }
+.builder-example-layout.boundary-action-panel[data-mode="rear"] > .builder-placement-next { grid-row: 2; }
+.builder-example-layout.boundary-action-panel[data-mode="rear"] > .builder-map-summary { grid-row: 3; }
+.zsa .zsa__save-buffers { background: var(--primary); color: var(--surface); font-weight: 700; width: 100%; }
+@media (max-width: 760px) { .boundary-action-panel[data-mode="rear"] > :is(.builder-placement-next, .builder-map-summary), .builder-example-layout.boundary-action-panel[data-mode="rear"] > :is(.builder-placement-next, .builder-map-summary) { grid-row: auto; } }

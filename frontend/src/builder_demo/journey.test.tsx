@@ -47,7 +47,16 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     const map = document.querySelector('#placement-map svg')!
     const summary = document.querySelector('#builder-quick-checks')!
     assert.ok(map.compareDocumentPosition(summary) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING)
-    assert.ok(summary.compareDocumentPosition(document.querySelector('.builder-example-controls')!) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING)
+    assert.ok(document.querySelector('.builder-example-controls')!.compareDocumentPosition(document.querySelector('.builder-placement-next')!) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING)
+    assert.ok(document.querySelector('.builder-placement-next')!.compareDocumentPosition(summary) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING)
+    assert.equal(document.querySelector<HTMLDetailsElement>('.homeowner-summary__checks')!.open, true)
+    await act(async () => document.querySelector<HTMLButtonElement>('.homeowner-summary__counts .homeowner-summary__unknown')!.click())
+    assert.equal(document.activeElement, document.querySelector('.homeowner-summary__checks li.homeowner-summary__unknown'))
+    const titleHelp = document.querySelector<HTMLButtonElement>('[aria-label="About Title restrictions"]')!
+    await act(async () => titleHelp.focus())
+    assert.match(document.querySelector('[role=tooltip]')!.textContent!, /current title.*LTSA/)
+    await act(async () => titleHelp.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'Escape', bubbles: true })))
+    assert.equal(titleHelp.getAttribute('aria-expanded'), 'false')
     // Guided progression preserves an approximate placement and unknowns rather
     // than requiring every assessment row to pass before an unsent enquiry.
     const initialMeasurement = document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value
@@ -247,6 +256,21 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
     await act(async () => edgeHit.dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true }))); await settle()
     assert.match(document.querySelector('.zsa__edge-row--selected')!.textContent!, /Edge 2/)
     assert.equal(latest.assumptions.planning_buffers_m![latest.assumptions.edges[1].id], 1)
+    // Buffer edits must not reach evaluation/export until explicitly saved.
+    const bufferInput = document.querySelector<HTMLInputElement>('[aria-label="Edge 2 planning buffer in metres"]')!
+    await change(bufferInput, '2'); await settle()
+    assert.equal(latest.assumptions.planning_buffers_m![latest.assumptions.edges[1].id], 1)
+    assert.match(document.querySelector('#boundary-offsets')!.textContent!, /Unsaved buffers/)
+    assert.equal(document.querySelector<HTMLButtonElement>('.builder-placement-next .builder-continue')!.disabled, true)
+    await click('Save planning buffers'); await settle()
+    assert.equal(latest.assumptions.planning_buffers_m![latest.assumptions.edges[1].id], 2)
+    assert.match(document.querySelector('#boundary-offsets')!.textContent!, /saved for this property/)
+    assert.equal(document.querySelector<HTMLButtonElement>('.builder-placement-next .builder-continue')!.disabled, false)
+    await change(bufferInput, '-1'); await settle()
+    assert.equal([...document.querySelectorAll<HTMLButtonElement>('button')].find(node => node.textContent === 'Save planning buffers')!.disabled, true)
+    assert.equal(latest.assumptions.planning_buffers_m![latest.assumptions.edges[1].id], 2)
+    await change(bufferInput, '1'); await click('Save planning buffers'); await settle()
+
     assert.match(document.querySelector('#builder-quick-checks')!.textContent!, /Needs review/)
     const info = document.querySelector<HTMLButtonElement>('.homeowner-summary .step-info__button')!
     await act(async () => info.dispatchEvent(new dom.window.MouseEvent('mouseover', { bubbles: true })))

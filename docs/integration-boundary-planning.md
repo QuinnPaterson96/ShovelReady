@@ -135,3 +135,42 @@ plans and property applicability before accepted real evaluation; homeowner/prov
 must obtain the unsearched property-specific records. Platform owner / SR-14/SR-15
 still owns persistence, recovery and rollback operating evidence. This public demo
 remains stateless; reload loses the local answers and enquiry.
+
+
+## Placement continuation and card help — October 7, 2026
+
+Implemented: a full-width Next action below the map and editing area, before findings,
+in both saved-example and live-parcel workspaces. Status-count buttons reveal and
+focus the first matching checklist row; zero-count buttons are disabled. The individual
+checklist starts expanded but can be collapsed. These controls advance the journey,
+not a legal submission or an email send.
+
+Planning buffer inputs now hold drafts until **Save planning buffers**. Saved values
+continue to drive evaluations and exports while drafts are pending. Invalid/negative
+entries disable Save; the main Next action waits for a valid save. A visible status
+acknowledges the save, which is local to the open property journey, not durable storage.
+Movement retains buffers; a changed property remounts the editor with its own defaults.
+
+Every preliminary-scan card opens the existing accessible help popup on hover, focus
+or click/tap, with Escape dismissal. Captured rows show returned record labels, current
+finding detail and readable source/date/review status. Unknown and unsearched cards
+explain the concept and next record/provider to consult; none becomes a clearance.
+General guidance does not establish legal applicability. The title/permit guidance links
+to [LTSA title information](https://ltsa.ca/property-owners/how-can-i/find-information-on-a-title/)
+and [City permit records](https://www.victoria.ca/building-business/permits-development-construction/building-renovating/accessing-permit-records).
+These official help sources were checked October 7, 2026; the scan's underlying sources,
+contracts and accepted-publication status are unchanged.
+
+Verification: 135 frontend tests passed, including extensions to the mounted journey
+for first-status focus, expanded defaults, draft/save/invalid buffer behavior and card
+help. Production build/typecheck and whitespace checks passed. Desktop preview verified
+Next position and saved/pending states; 390 × 844 keyboard preview showed a bounded
+popup with real returned permit-area names and no page overflow. This is agent inspection,
+not physical-touch or homeowner comprehension evidence. Final-head CI and live version
+verification remain integration gates.
+
+Remaining gaps: source owner / #104 needs reviewed site/rule applicability and installed
+measurements before accepted evaluation; homeowner/provider needs permit/title/projection/
+servicing records; product owner / #147 needs homeowner and physical-touch validation;
+platform owner / SR14/SR15 owns persistence/recovery and rollback evidence. Refresh loses
+the draft. None is resolved by the new navigation or help text.
