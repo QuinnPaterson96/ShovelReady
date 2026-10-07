@@ -140,9 +140,9 @@ Official sources fetched October 6, 2026:
 [official Python SDK v1](https://py.sdk.modelcontextprotocol.io/v1/).
 The lock uses stable SDK 1.30.0 (`mcp>=1.28,<2`); v2 main-branch APIs differ.
 
-Prepared remote option: an outbound Secure MCP Tunnel to the same loopback HTTP
-endpoint, without a public listener or paid hosting. No tunnel or connection was
-created. Marketplace submission and organic discovery are deferred; MCP does not
+Remote option: an outbound Secure MCP Tunnel to the same loopback HTTP
+endpoint, without a public listener or paid hosting. A personal demo connection was
+verified October 7, 2026 as recorded below. Marketplace submission and organic discovery are deferred; MCP does not
 promise ChatGPT discovery.
 
 Owner steps:
@@ -167,12 +167,62 @@ Owner steps:
 5. Select the custom plugin in a new conversation, run the five scenarios and record
    actual tool choices/results. Refresh metadata after schema changes.
 
-These are documentation-grounded owner steps, **not a verified remote connection**.
-The available browser showed ChatGPT signed out. Tunnel account permissions, runtime
-credentials/profile and end-to-end behavior remain unverified. For public HTTPS,
+These owner steps require the selected account's permissions and a running client.
+The initial October 6 attempt stopped at sign-in; the October 7 follow-up verified
+the personal demo connection described below. For public HTTPS,
 review/implement proxy authentication/authorization, TLS, deployment-wide rate limits
 and safe logs before changing loopback restrictions; the current service cannot be
 used as an unauthenticated public MCP endpoint.
+
+### Personal ChatGPT verification, October 7, 2026
+
+Quinn signed in and privately supplied a one-day runtime key restricted to Tunnels
+Read + Use. The tunnel was associated with the personal Platform organization and
+personal ChatGPT workspace. Official `tunnel-client` 0.0.16 was downloaded from the
+vendor release and checked against its published SHA256 checksum. The local service
+ran at port 18758; tunnel `/readyz` returned ready. ChatGPT installed and connected
+**ShovelReady Demo** through the tunnel, with no additional app authentication.
+Neither a public listener nor a deployment was created. Keep both processes running;
+the runtime credential expires after one day. No secret is stored in this repository.
+
+Observed conversation checks used synthetic property inputs only:
+
+- `supported_models` returned Model 300 dimensions, source capture/review status and
+  unknown legal/installed-height bases. The `aux-500` request returned unsupported;
+  ChatGPT preserved the Victoria-only coverage limitation for Vancouver.
+- With no selected property/placement, ChatGPT requested missing facts and made no
+  screening call. With two invented unselected candidates, it refused rank-based
+  selection and explicitly labelled its expected result as conversational behavior,
+  not an actual tool response. Live address/parcel lookup was not tested here.
+- `property_candidates` was called with Vancouver and a synthetic query; it returned
+  `unsupported`, with no address/parcel/observation results. This exercised the third
+  tool's remote transport and coverage guard, not the supported live lookup pathway.
+- `screen_selected_inputs` returned `partial` with boundary `bounded_pass` for the
+  synthetic packet. The explicitly modified centre `[0,26]` returned
+  `placement_conflict`, with 13.935455999999999 square metres outside the parcel.
+  Unknown main-building/height/floor-area facts and unreviewed legal evidence remained
+  visible in both cases. The local official SDK smoke was rerun and passed.
+- **Observed host limitation:** ChatGPT changed one edge endpoint while transcribing
+  the first packet. The evaluator safely returned `needs_input` for the mismatch;
+  after inspecting the submitted arguments and correcting the transcription, the
+  repeat matched the SDK result. Pasted JSON is not a lossless scenario handoff.
+  Exact tool arguments/results must be checked. Initial catalogue formatting also
+  used excess ordinary display precision; a follow-up precision instruction produced
+  the intended rounded display with exact evidence separate. Host prose is not fully
+  controlled by this adapter.
+
+For Windows profile resolution trouble, use an explicit `--profile-file` path in
+both `doctor` and `run`, and check that file before prompting for a key. The successful
+owner run used direct `run` flags for the tunnel ID, `env:CONTROL_PLANE_API_KEY`,
+`--mcp.server-url 'url=http://127.0.0.1:18758/mcp,channel=main'` and loopback health
+port 8080, bypassing the profile lookup. The private prompt kept the key out of the
+command text, with environment cleanup when the foreground process exits.
+
+This verifies a personal connection and the observed calls, not a deterministic
+five-scenario ChatGPT replay, live municipal data accuracy or user validation. The
+five captured scenarios remain the reproducible SDK/integration evidence. A scoped
+scenario import/reference and conversational presentation guidance are follow-ups
+for the UI/MCP owner before treating ChatGPT as a reliable exact-input workflow.
 
 ## Verification and integration gaps
 
@@ -210,8 +260,11 @@ interpretation, source currency, accepted publication or homeowner usefulness.
 
 Remaining gaps:
 
-- **ChatGPT demo blocker:** Quinn must sign in, configure/associate a permitted tunnel
-  and verify the connected conversation. Local SDK tests are separate evidence.
+- **ChatGPT demo continuity:** the personal tunnel connection is verified, but Quinn
+  must keep the local server/client running and renew the short-lived runtime key.
+  Exact JSON transcription and host presentation remain usability gaps; the UI/MCP
+  owner should design a scoped scenario handoff before relying on exact-input replay.
+  Live address/parcel lookup and the full captured replay remain separate evidence.
 - **Map usability gap:** manual re-entry is required. Quinn/UI owner can decide whether
   a scoped import is needed after trying the demo; no one-click resume is delivered.
 - **Accepted real evaluation blockers:** source/data owners still need reviewed rule
