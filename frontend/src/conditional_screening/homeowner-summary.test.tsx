@@ -139,7 +139,7 @@ test('scan failures and malformed empty results cannot become probable clearance
   const labels = ['Heritage properties', 'Heritage conservation areas', 'Development permit areas', 'Mapped special restrictions', 'Mapped development applications', 'Development application history']
   const scan: PropertyScanResult = { schema_version: 'victoria-property-scan.v1', parcel_ref, parcel_source: null, limitations: ['Permit documents remain unsearched.'], findings: labels.map((label, index) => ({ label, status: 'probably_clear', records: [], detail: 'No mapped records in this searched scope.', source: { provider: 'City of Victoria Open Data', record_label: label, review_status: 'unreviewed_live_observation', captured_at_utc: '2026-10-06T00:00:00Z', sha256: 'a'.repeat(64), source_url: `https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/${[10,14,11,1,3,18][index]}/query?f=json` } })) }
   assert.equal(parsePropertyScan(scan, parcel_ref), scan)
-  assert.equal(homeownerSummary({ ...base, propertyScan: scan }).checks.find(row => row.label === 'Mapped heritage and planning flags')?.status, 'probable')
+  assert.equal(homeownerSummary({ ...base, propertyScan: scan }).checks.flatMap(row => row.parts ?? [row]).find(row => row.label === 'Mapped records')?.status, 'probable')
   const checklist = (result: PropertyScanResult | null) => renderToStaticMarkup(createElement(PropertyScan, { scan: { result, available: true, busy: false, error: '', retry() {} } }))
   assert.match(checklist(scan), /No · Likely fine in searched scope/)
   assert.match(checklist(scan), /Service capacity<\/strong><span>Maybe · Not checked/)
@@ -148,8 +148,19 @@ test('scan failures and malformed empty results cannot become probable clearance
   assert.match(checklist(flagged), /Retained heritage lead/)
   assert.doesNotMatch(checklist(null), /No · Likely fine/)
   const partial = { ...scan, findings: scan.findings.map((row, index) => index === 0 ? { ...row, status: 'unknown' as const, source: null } : row) }
-  assert.equal(homeownerSummary({ ...base, propertyScan: partial }).checks.find(row => row.label === 'Mapped heritage and planning flags')?.status, 'unknown')
+  assert.equal(homeownerSummary({ ...base, propertyScan: partial }).checks.flatMap(row => row.parts ?? [row]).find(row => row.label === 'Mapped records')?.status, 'unknown')
   assert.throws(() => parsePropertyScan({ ...scan, findings: scan.findings.slice(1) }, parcel_ref))
   assert.throws(() => parsePropertyScan({ ...scan, findings: scan.findings.map(row => ({ ...row, source: null })) }, parcel_ref))
   assert.throws(() => parsePropertyScan(scan, { ...parcel_ref, object_id: 88 }))
+})
+
+// Independent subtraction: 2.54 - 2 = .54 m available allowance;
+// retaining a 1 m buffer requires .46 m extra gap. No overall viability claim.
+test('buffer guidance retains review and separates assumption changes from measured clearance', () => {
+  const scenario = { status: 'bounded_pass', scenarios: [{ checks: [{ edge_id: 'side', role: 'side', distance_m: 2.54, minimum_m: 2, planning_buffer_m: 1, planning_distance_m: 1.54, planning_meets: false, meets: true, basis: 'captured_nominal' }] }] } as ScenarioResult
+  const assumptions = { edges: [{ id: 'side' }], existing_garden_suites: { value: null } } as import('../zoning_site_assumptions/model').SiteAssumptions
+  const row = homeownerSummary({ ...base, scenario, assumptions }).checks.find(row => row.label === 'Distance to boundaries')!
+  assert.equal(row.status, 'review')
+  assert.match(row.resolutions!.join(' '), /at least 2 m.*approximately 0.46 m.*buffer of 0.54 m.*only your assumption/)
+  assert.equal(homeownerSummary({ ...base, scenario: { ...scenario, scenarios: [...scenario.scenarios, ...scenario.scenarios] }, assumptions }).checks.find(row => row.label === 'Distance to boundaries')!.resolutions, undefined)
 })

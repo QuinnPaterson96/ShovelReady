@@ -1,3 +1,4 @@
+import { EvidenceAtFooter } from '../EvidenceAtFooter'
 import { MapSourceHelp } from '../zoning_site_assumptions/MapSourceHelp'
 import { suggestPlacementOrientation } from '../placement_orientation'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
@@ -100,6 +101,7 @@ export type OccupiedMeasurement = { site: Case; model: (typeof bundledCatalogue.
 export type OccupiedLotsProps = {
   placementSummary?: ReactNode
   placementContinuation?: ReactNode
+  evidenceTargetId?: string
   compactPlacement?: boolean
   allowedModelIds?: readonly string[]
   initialModelId?: string
@@ -109,7 +111,7 @@ export type OccupiedLotsProps = {
   boundaryInteraction?: BoundaryMapInteraction
 }
 
-export default function OccupiedLots({ allowedModelIds, initialModelId = '', onMeasurement, showHandoff = true, suppliedCase, boundaryInteraction, compactPlacement = false, placementSummary, placementContinuation }: OccupiedLotsProps) {
+export default function OccupiedLots({ allowedModelIds, initialModelId = '', onMeasurement, showHandoff = true, suppliedCase, boundaryInteraction, compactPlacement = false, evidenceTargetId, placementSummary, placementContinuation }: OccupiedLotsProps) {
   const initialModel = bundledCatalogue.models.find(m => m.model_id === initialModelId && (!allowedModelIds || allowedModelIds.includes(m.model_id)))
   const initialDimension = (name: string) => {
     const quantity = initialModel?.measurements.find(m => m.name === name)?.quantity
@@ -317,12 +319,12 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
           </div>
           {compactPlacement ? result && (observedConflicts.length > 0 || observationIncomplete || comparisons.some(c => c.comparison === null)) && <div className={`placement-check placement-check--${observedConflicts.length ? 'conflict' : 'unknown'}`} role="alert">
             <strong>{observedConflicts.length ? 'Conflict at this position' : 'Placement could not be fully checked'}</strong>
-            <p>{observedConflicts.length ? `${crossesParcel ? 'The unit crosses or touches the mapped parcel boundary. ' : ''}${overlapsRoof ? 'The unit overlaps or touches a mapped roofline. ' : ''}Move the unit on the map and recheck. This finding applies to this position only.` : 'Some mapped geometry or your comparison could not be checked. Review How we checked and try another position.'}</p>
+            <p>{observedConflicts.length ? `${crossesParcel ? 'The unit crosses or touches the mapped parcel boundary. ' : ''}${overlapsRoof ? 'The unit overlaps or touches a mapped roofline. ' : ''}Move the unit on the map and recheck. This finding applies to this position only.` : 'Some mapped geometry or your comparison could not be checked. Review Sources & technical evidence and try another position.'}</p>
           </div> : <div className={`placement-check placement-check--${result ? geometryTone : 'unknown'}`} role="status">
             <strong><span aria-hidden="true">{result ? geometryTone === 'conflict' ? '✕ ' : geometryTone === 'clear' ? '✓ ' : '… ' : '… '}</span>{result ? geometryTone === 'conflict' ? 'Observed geometry conflict' : geometryTone === 'clear' ? 'No observed geometry conflict' : 'Clearance or geometry needs review' : assessing ? 'Checking placement…' : assessmentError ? 'Check unavailable' : 'Place or edit the rectangle for an automatic check'}</strong>
             <p>Approximate captured geometry only. Zoning legality, other obstructions and permit eligibility remain unassessed.</p>
           </div>}
-          {result && <details className="occupied-results" open={!compactPlacement}><summary>{compactPlacement ? 'How we checked · geometry measurements and evidence' : 'Geometry observations and exact evidence'}</summary><section aria-labelledby="occupied-results"><p className="eyebrow">Measured position only</p><h3 id="occupied-results">{observedConflicts.length ? 'Observed conflicts at this position' : observationIncomplete ? 'Some measurements unresolved' : 'No overlap observed at this position'}</h3>
+          <EvidenceAtFooter targetId={evidenceTargetId}>{result && <details className="occupied-results" open={!compactPlacement}><summary>{compactPlacement ? 'Geometry measurements and evidence' : 'Geometry observations and exact evidence'}</summary><section aria-labelledby="occupied-results"><p className="eyebrow">Measured position only</p><h3 id="occupied-results">{observedConflicts.length ? 'Observed conflicts at this position' : observationIncomplete ? 'Some measurements unresolved' : 'No overlap observed at this position'}</h3>
             <p>These observations cover the supplied rectangle and mapped features only. Another position could differ.</p>
             <h4>Observed conflicts</h4>{observedConflicts.length ? <ul>{observedConflicts.map(c => <li key={c.id}>{checkText(c, selected)}</li>)}</ul> : <p>{observationIncomplete ? 'Some measurements are unresolved; inspect them below before drawing an overlap conclusion.' : 'No parcel crossing or captured roofline overlap was observed for this placement. This does not establish clear space.'}</p>}
             <h4>Measured clearances</h4><ul>{clearances.map(c => <li key={c.id}>{checkText(c, selected)}</li>)}</ul>
@@ -335,7 +337,7 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
             <p className="metadata">Capture: {selected.site.capture.scope}; {selected.site.capture.completeness.replace(/_/g, ' ')}. {selected.site.capture.limitations.join(' ')}</p>
             <CopyableRecord id="occupied-summary" label="Copyable plain-language summary" value={summary} />
             <TechnicalDetails title="Exact sources, IDs, placement and assessment · copyable"><textarea readOnly aria-label="Complete geometry evidence record" value={JSON.stringify({ site: selected, model, assessment: result }, null, 2)} rows={14} /></TechnicalDetails>
-          </section></details>}
+          </section></details>}</EvidenceAtFooter>
           {showHandoff && <ScenarioHandoff site={selected} model={model ?? null} assessment={result} />}
         </div>
       </div>

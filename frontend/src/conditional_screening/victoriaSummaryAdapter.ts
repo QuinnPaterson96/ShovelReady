@@ -112,10 +112,29 @@ export function homeownerSummary(input: {
     const remaining = checks.find(check => check.label === 'Other siting requirements')
     if (remaining) { remaining.label = 'Site-specific approvals and other requirements'; remaining.detail = 'Variances, heritage/permit conditions, projections, servicing and other provisions still need property-specific review. New front/rear-yard checks cover only the stated approximate subset.' }
   }
+  const distance = checks.find(check => check.label === 'Distance to boundaries')
+  if (distance?.status === 'review' && scenario?.status === 'bounded_pass' && scenario.scenarios.length === 1) {
+    distance.resolutions = scenario.scenarios[0].checks.filter(check => check.planning_meets === false && check.basis === 'captured_nominal').map(check => {
+      const edge = assumptions?.edges.findIndex(edge => edge.id === check.edge_id) ?? -1
+      const metres = (value: number) => value > 0 && value < .01 ? '<0.01 m' : `${Number(value.toFixed(2))} m`
+      const buffer = check.planning_buffer_m ?? 0
+      const gap = check.distance_m - check.minimum_m
+      const movement = Math.ceil(Math.max(0, buffer - gap) * 100) / 100
+      const ceiling = Math.floor(Math.max(0, gap) * 100) / 100
+      return `${edge >= 0 ? `Edge ${edge + 1}` : 'Boundary'} · ${check.role === 'flanking_street' ? 'Flanking' : check.role}: mapped gap ${metres(check.distance_m)} − ${metres(buffer)} planning buffer = ${metres(check.planning_distance_m ?? Math.max(0, check.distance_m - buffer))}; candidate minimum ${metres(check.minimum_m)}. A measured wall-to-legal-line gap of at least ${metres(check.minimum_m)} would clear this distance check under the stated roles. Moving approximately ${metres(movement)} farther from this edge would clear its current buffered estimate; recheck every boundary and building gap after moving. A buffer of ${metres(ceiling)} or less clears this edge's estimate, but reducing it changes only your assumption. Exact evidence is available below.`
+    })
+  }
+  const propertyParts = checks.filter(check => ['Other siting requirements', 'Site-specific approvals and other requirements', 'Mapped heritage and planning flags'].includes(check.label))
+  const propertyIndex = checks.findIndex(check => propertyParts.includes(check))
+  if (propertyIndex >= 0) {
+    for (const part of propertyParts) checks.splice(checks.indexOf(part), 1)
+    checks.splice(propertyIndex, 0, { label: 'Property flags & other requirements', status: propertyParts.some(part => part.status === 'review') ? 'review' : propertyParts.some(part => part.status === 'unknown') ? 'unknown' : 'unsupported', detail: 'Review searched records and requirements that still need property-specific investigation.', parts: [...propertyParts].sort((a, b) => Number(b.label === 'Mapped heritage and planning flags') - Number(a.label === 'Mapped heritage and planning flags')).map(part => ({ ...part, label: part.label === 'Mapped heritage and planning flags' ? 'Mapped records' : 'Other requirements' })) })
+  }
+  const supportingChecks = checks.flatMap(check => check.parts ?? [check])
   const supportedConflict = screening?.checks.some(check => check.rule.kind !== 'prerequisite' && check.rule.kind !== 'boundary_min' && check.status === 'apparent_conflict_under_assumptions') ?? false
   const conflict = geometryConflict || legalDistanceConflict || scenario?.status === 'apparent_conflict' || countConflict || supportedConflict || checks.some(check => check.status === 'conflict')
   const supportingCoverage = ['separation', 'front', 'rear_location', 'rear_occupancy', 'height'].every(id => scenario?.additional_checks?.some(check => check.id === id && (check.status === 'checked' || check.status === 'probable')))
-  const readyToExplore = supportingCoverage && contained && geometryComplete && !outsideScope && scenario?.status === 'bounded_pass' && checks.every(check => check.status === 'checked' || check.status === 'probable' || check.status === 'unsupported')
+  const readyToExplore = supportingCoverage && contained && geometryComplete && !outsideScope && scenario?.status === 'bounded_pass' && supportingChecks.every(check => check.status === 'checked' || check.status === 'probable' || check.status === 'unsupported')
   return {
     conclusion: conflict ? 'This placement has a conflict' : readyToExplore ? 'Worth exploring with the provider' : geometry ? 'Review this placement' : 'Place the unit to explore the possibilities',
     next: conflict ? 'Review the flagged position or supplied facts, then check the remaining unknowns.' : readyToExplore ? 'The supported checks look plausible under the stated assumptions. Ask the provider about the requirements this tool does not cover.' : geometry ? 'Follow the next steps to review the property and prepare an enquiry. Unresolved questions stay visible.' : 'Place the model on a property to start the approximate checks.',
