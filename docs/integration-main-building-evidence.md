@@ -59,6 +59,27 @@ only because the underlying comparisons changed.
   2,100 words / approximately 18 KB; the 297 KB technical JSON was separate. Recipient Markdown was
   about 316 words including the sketch reference. The final reproduction refreshes both API comparisons and clears prior acknowledgements/readiness after changing the main-building assumption; it does not invent a renewed user review. No enquiry was transmitted.
 
+## Release verification
+
+[PR #283](https://github.com/QuinnPaterson96/ShovelReady/pull/283) merged the implementation.
+Its exact tested head `a8591b94fe44c131d7d38f83799ecb939e9da871` passed frontend,
+backend, native Windows database lifecycle, container startup and security checks.
+The supplied-placement reproduction also refreshed the legal-basis API request;
+its selected outline agrees with the scenario request. Previous acknowledgements
+and readiness were cleared because the main-building assumption changed. They are
+not evidence of a renewed homeowner review.
+
+The corrected reproduction retains six separate files, with all three PDF pages
+rendered and inspected. Final readable report: approximately 2,113 words; recipient
+Markdown: approximately 316 words including its sketch reference. This was an agent
+inspection of the assembled documents, not a manufacturer comprehension test.
+
+The first merge updated main but did not start its expected push CI or deploy the
+new revision. This verification record is published through the ordinary reviewed
+PR path to trigger a fresh main run. CI gating remains enabled; verify application
+and frontend commit identity plus the stateless comparison after deployment. No
+Railway settings, branch protections, source publication or credentials are changed.
+
 ## Remaining gaps
 
 - Homeowner/source reviewer must confirm which outline is the actual principal home,
