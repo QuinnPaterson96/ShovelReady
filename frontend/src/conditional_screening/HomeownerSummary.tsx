@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { focusSummaryTarget } from './summaryNavigation'
 import { StepInfo } from '../StepInfo'
-export type SummaryCheck = { label: string; status: 'checked' | 'probable' | 'review' | 'conflict' | 'unknown' | 'unsupported'; detail: string; action?: { label: string; target: string } }
+export type SummaryCheck = { label: string; status: 'checked' | 'probable' | 'review' | 'conflict' | 'unknown' | 'unsupported'; detail: string; resolutions?: string[]; parts?: SummaryCheck[]; action?: { label: string; target: string } }
 export type Summary = { conclusion: string; next: string; checks: SummaryCheck[] }
 export const statusLabels = { checked: 'Checked', probable: 'Likely fine', review: 'Needs review', conflict: 'Conflicts', unknown: 'Missing information', unsupported: 'Not covered' }
 export function StatusIcon({ status }: { status: SummaryCheck['status'] }) {
@@ -10,26 +10,27 @@ export function StatusIcon({ status }: { status: SummaryCheck['status'] }) {
 
 export function HomeownerSummary({ summary, onNavigate, continuation }: { summary: Summary; onNavigate: (target: string) => void; continuation?: { label: string; hint: string; onContinue: () => void } }) {
   React.useEffect(() => { void import('./homeowner-summary.css') }, [])
-  const nextCheck = summary.checks.find(check => check.status === 'conflict' && check.action)
-    ?? summary.checks.find(check => check.status === 'review' && check.action)
-    ?? summary.checks.find(check => check.status === 'unknown' && check.action)
+  const counted = summary.checks.flatMap((check, index) => check.parts ? check.parts.map((part, partIndex) => ({ ...part, targetId: `summary-check-${index}-part-${partIndex}` })) : [{ ...check, targetId: `summary-check-${index}` }])
+  const nextCheck = counted.find(check => check.status === 'conflict' && check.action)
+    ?? counted.find(check => check.status === 'review' && check.action)
+    ?? counted.find(check => check.status === 'unknown' && check.action)
   const nextAction = nextCheck?.action
   const checklist = React.useRef<HTMLDetailsElement>(null)
   const jumpToStatus = (status: SummaryCheck['status']) => {
-    const index = summary.checks.findIndex(check => check.status === status)
-    if (index < 0) return
+    const found = counted.find(check => check.status === status)
+    if (!found) return
     if (checklist.current) checklist.current.open = true
-    focusSummaryTarget(document, `summary-check-${index}`)
+    focusSummaryTarget(document, found.targetId)
   }
   return <section className="homeowner-summary" id="builder-quick-checks" tabIndex={-1} aria-label="Placement summary">
     <h3>{summary.conclusion}</h3><p>{summary.next}</p>
 
-    <div className="homeowner-summary__counts" aria-label="Named check counts">{(['checked', 'probable', 'review', 'unknown', 'conflict', 'unsupported'] as const).map(status => <button type="button" disabled={!summary.checks.some(check => check.status === status)} onClick={() => jumpToStatus(status)} key={status} className={`homeowner-summary__${status}`}><StatusIcon status={status} /><strong>{summary.checks.filter(check => check.status === status).length} {statusLabels[status]}</strong></button>)}</div>
+    <div className="homeowner-summary__counts" aria-label="Named check counts">{(['checked', 'probable', 'review', 'unknown', 'conflict', 'unsupported'] as const).map(status => <button type="button" disabled={!counted.some(check => check.status === status)} onClick={() => jumpToStatus(status)} key={status} className={`homeowner-summary__${status}`}><StatusIcon status={status} /><strong>{counted.filter(check => check.status === status).length} {statusLabels[status]}</strong></button>)}</div>
     {nextAction && <div className="step-action"><button className="homeowner-summary__next" type="button" onClick={() => onNavigate(nextAction.target)}>{continuation ? '' : 'Next: '}{nextAction.label}</button><StepInfo label={nextAction.label}>{nextCheck?.detail} This opens the relevant control so you can review or correct the current input.</StepInfo></div>}
     <p className="homeowner-summary__scope">Preliminary screening of this placement · limited checks. Open questions and requirements not covered are listed below.</p>
     <details ref={checklist} open className="homeowner-summary__checks"><summary>Review individual checks</summary><ul>{summary.checks.map((check, index) => <li id={`summary-check-${index}`} tabIndex={-1} key={check.label} className={`homeowner-summary__${check.status}`}>
       <StatusIcon status={check.status} />
-      <div><strong>{check.label} · {statusLabels[check.status]}</strong><p>{check.detail}</p>
+      <div><strong>{check.label} · {statusLabels[check.status]}</strong><p>{check.detail}</p>{check.resolutions && <ul>{check.resolutions.map(detail => <li key={detail}>{detail}</li>)}</ul>}{check.parts && <ul>{check.parts.map((part, partIndex) => <li id={`summary-check-${index}-part-${partIndex}`} tabIndex={-1} key={part.label} className={`homeowner-summary__${part.status}`}><div><strong>{part.label} · {statusLabels[part.status]}</strong><p>{part.detail}</p>{part.action && <button type="button" onClick={() => onNavigate(part.action!.target)}>{part.action.label}</button>}</div></li>)}</ul>}
         {check.status === 'probable' && <StepInfo symbol="?" label={`${check.label} assumption`}>{check.detail} This is a preliminary assumption-based finding; review the inputs before relying on it.</StepInfo>}
         {check.action && <div className="step-action"><button type="button" onClick={() => onNavigate(check.action!.target)}>{check.action.label}</button><StepInfo label={check.action.label}>{check.detail} Review the current input; leave it unknown when you cannot support an answer.</StepInfo></div>}
       </div>

@@ -229,3 +229,34 @@ measurements before accepted evaluation; homeowner/provider needs permit/title/
 projection/servicing records. Product owner/#147 owns real-user and touch validation.
 Platform owner/SR14-SR15 owns persistence/recovery and rollback evidence; refresh
 loses answers. This change supplies navigation and disclosure, not those validations.
+
+## Actionable boundary review and consolidated evidence — October 7, 2026
+
+Implemented: a single supported boundary scenario with captured gaps clearing the
+candidate minima but failing saved buffers now identifies each affected edge. It
+shows gap/buffer/minimum, a measured-gap threshold, approximate extra gap to clear
+that edge's buffered estimate, and a conservative buffer ceiling. Movement is
+rounded upward to centimetres and the ceiling downward; changing a buffer changes
+an assumption, not viability. Recheck all boundaries and building gaps after moving.
+Ambiguous alternative scenarios receive no numerical movement recommendation.
+
+Property flags & other requirements combines mapped scan status and unsearched
+requirements as separately labelled sub-findings. Counts and status navigation
+continue to count/focus those sub-findings, preserving Not covered when a scan is
+clear. Review individual checks remains the expanded primary checklist. Geometry
+and candidate-rule evidence is disclosed in a collapsed Sources & technical evidence
+footer; unique candidate checks, source records and exact export values are retained.
+The earlier Current placement checklist heading is replaced by a technical evidence
+heading inside that disclosure, rather than a second homeowner checklist.
+
+Verification: 136 frontend checks passed including independent .54 m buffer/.46 m
+extra-gap arithmetic, suppression for multiple scenarios, preserved scan failure
+states and mounted footer evidence. Production build/typecheck and whitespace
+checks passed. Desktop preview verified grouped review navigation and expandable
+footer. CI, live version and narrow-screen evidence are recorded in the PR.
+
+Gaps: source owner/#104 still needs reviewed property/rule applicability and installed
+measurements before accepted evaluation; homeowner/provider needs permit/title/
+projection/servicing records. Product owner/#147 owns real-user and touch validation.
+Platform owner/SR14-SR15 owns persistence/recovery and rollback evidence; refresh
+loses answers. Numerical guidance clears only the stated preliminary distance check.

@@ -68,7 +68,7 @@ export function ConditionalScreen({ result, busy, error, compact = false, bounda
   const outstanding = typeof packetId === 'string' && typeof packetRevision === 'string' ? packetOutstanding[`${packetId}@${packetRevision}`] : undefined
   const source = result?.checks[0]?.rule.source
   return <section className="cs-results" aria-label="Conditional zoning checklist">
-    <h3>{boundaryEvidence ? 'Current placement checklist' : 'Legal-basis candidate checklist'}</h3>
+    <h3>{boundaryEvidence ? 'Candidate rules & boundary evidence' : 'Legal-basis candidate checklist'}</h3>
     <p className="cs-note">{boundaryEvidence ? 'Each boundary row separates approximate scenario evidence from your optional wall/legal-line entries. Derived roles are never copied into legal facts. Candidate checks cover this placement only; source review and omitted rules remain unresolved.' : 'This checklist uses only your explicit property and wall/legal-line entries for regulatory comparisons. Derived roles and approximate map distances are separate scenario evidence, never legal facts.'}</p>
     {busy && <p role="status">Checking the current assumptions and placement…</p>}
     {error && <p role="status">{error} Geometry measurements remain available above. {onRetry && <button type="button" onClick={onRetry}>Retry candidate checks</button>}</p>}
