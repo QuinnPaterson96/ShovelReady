@@ -1,5 +1,5 @@
 /** Reveal the actual input behind a summary action without changing its value. */
-export function focusSummaryTarget(document: Document, target: string): boolean {
+export function focusSummaryTarget(document: Document, target: string, block: ScrollLogicalPosition = 'center'): boolean {
   const control = target === 'placement-map'
     ? document.querySelector<HTMLElement>('#placement-map svg, .occupied-lots svg[tabindex]')
     : document.getElementById(target)
@@ -9,7 +9,7 @@ export function focusSummaryTarget(document: Document, target: string): boolean 
     if (parent.tagName === 'DETAILS') (parent as HTMLDetailsElement).open = true
     parent = parent.parentElement
   }
-  control.scrollIntoView?.({ block: 'center', behavior: 'smooth' })
+  control.scrollIntoView?.({ block, behavior: 'smooth' })
   control.focus({ preventScroll: true })
   return true
 }

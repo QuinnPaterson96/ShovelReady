@@ -1,6 +1,6 @@
 .zsa { color: var(--ink); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-card); padding: 1rem; }
 .zsa p { max-width: 72ch; }
-.zsa fieldset { border: 1px solid var(--border); border-radius: var(--radius-sm); margin: 1rem 0; padding: 1rem; }
+.zsa fieldset { min-width: 0; border: 1px solid var(--border); border-radius: var(--radius-sm); margin: 1rem 0; padding: 1rem; }
 .zsa legend { font-weight: 700; padding: 0 .3rem; }
 .zsa label { display: flex; flex-direction: column; gap: .35rem; margin: .6rem 0; }
 .zsa select, .zsa input:not([type="checkbox"]), .zsa button { color: var(--ink); background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); min-height: 44px; padding: .45rem .6rem; font: inherit; }
@@ -58,7 +58,7 @@
 .zsa__edge-heading button { min-height: 44px; }
 .waterfront-mark { pointer-events: none; }
 .main-building-mark { pointer-events: none; }
-.zsa__answer { margin: .8rem 0; }
+.zsa__answer { margin: .8rem 0; scroll-margin-top: 1rem; }
 .zsa__answer-buttons { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .4rem; }
 .zsa__answer-buttons button { flex: 1; min-width: 3.5rem; min-height: 44px; padding: .5rem; }
 .zsa__answer-buttons button[aria-pressed="true"] { color: var(--surface); background: var(--primary); border-color: var(--primary); }

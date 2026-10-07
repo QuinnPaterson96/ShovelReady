@@ -1,5 +1,6 @@
 import { manufacturerDocument, placementConcerns, boundaryObservations, additionalObservation, conditionalObservation, assumptionsDescription, type EnquiryInput } from './manufacturer'
 import { EvidenceAtFooter } from '../EvidenceAtFooter'
+import { EnquiryRecovery } from './EnquiryRecovery'
 import { PropertyScan, usePropertyScan, type PropertyScanResult } from '../conditional_screening/PropertyScan'
 import { StepInfo } from '../StepInfo'
 import { AdditionalInputs } from '../conditional_screening/AdditionalInputs'
@@ -461,7 +462,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     setExpanded(previous => ({ ...previous, ...(step === 'property' ? { property: true } : step === 'email' ? { next: false, email: true } : step === 'enquiry' ? { next: true, email: false } : { placement: true }) }))
     const targets: Record<JourneyStep, string> = { model: 'builder-title', property: 'builder-site-mode', placement: 'placement-map', streets: 'placement-action-front', boundaries: 'placement-action-rear', details: 'builder-property-details', checks: 'builder-quick-checks', enquiry: 'builder-question', email: 'builder-email-recipient' }
     requestAnimationFrame(() => {
-      focusSummaryTarget(document, targets[step])
+      focusSummaryTarget(document, step === 'details' ? 'building-type' : targets[step], step === 'details' ? 'start' : 'center')
       if (step === 'checks') { const details = document.querySelector<HTMLDetailsElement>('.homeowner-summary__checks'); if (details) details.open = true }
     })
   }
@@ -545,6 +546,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       <TechnicalDetails title="Catalogue source and exact model record"><pre>{JSON.stringify({ snapshot_id: bundledCatalogue.snapshot_id, model }, null, 2)}</pre></TechnicalDetails>
       </details>
     </section>
+    <EnquiryRecovery enquiry={expanded.next || enquiryReady ? draftText : null} report={reportDoc ? enquiryPlainText(reportDoc) + '\n\nComplete historical technical evidence\n\n' + technicalEvidenceMarkdown(technicalEvidence) : null} />
     <section className="builder-stage" id="builder-property" aria-labelledby="builder-property-title">
     <p className="eyebrow">Property</p><h2 id="builder-property-title">Start with what you know</h2>
     <p>{propertyComplete ? (mode === 'example' ? 'Saved Victoria example selected.' : `${live?.address.label || manual?.facts.address || selection?.candidate?.address.value || selection?.manual.address.value || 'Site description'} · ${live ? 'source-selected; identity and ownership unverified' : 'user-supplied; unverified'}.`) : 'Choose a property or enter the facts you know.'}</p>

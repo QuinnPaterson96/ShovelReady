@@ -56,3 +56,19 @@ must be recorded after remote deployment; configuration files alone do not prove
 Remaining: accepted zoning publication, independently reviewed inputs, durable saved
 assessments, human builder validation and production operating controls. This is a
 public observational demonstration, not a complete professional assessment service.
+
+## Browser-tab recovery (October 7, 2026)
+
+Preparing an enquiry now retains its text, supporting report and complete historical
+technical evidence in versioned `sessionStorage`. On refresh, reopen Model 300 and
+use Recover your previous enquiry. Old findings are displayed as a historical
+snapshot; no geometry, answers, acknowledgements or review ticks are restored as
+current. Storage denial/corruption must not block the journey. Storage is limited
+to 2,000,000 characters; a failed save directs the user to copy/download. A clear
+control removes the stored copy, and future prepared edits can create another.
+
+This is a bounded text-recovery improvement, not durable saved assessments or full
+editable-journey recovery. Closing the tab, browser storage policy or data clearing
+may remove it. SR-14 still needs a complete typed input checkpoint, source/revision
+compatibility checks, fresh evaluation on restore, and the hosted backup/isolated
+restore evidence for any persistent pilot. SR-15 remains open as described above.
