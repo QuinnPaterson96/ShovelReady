@@ -58,3 +58,9 @@
 .zsa__edge-heading button { min-height: 44px; }
 .waterfront-mark { pointer-events: none; }
 .main-building-mark { pointer-events: none; }
+.zsa__answer { margin: .8rem 0; }
+.zsa__answer-buttons { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .4rem; }
+.zsa__answer-buttons button { flex: 1; min-width: 3.5rem; min-height: 44px; padding: .5rem; }
+.zsa__answer-buttons button[aria-pressed="true"] { color: var(--surface); background: var(--primary); border-color: var(--primary); }
+.zsa__answer:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.zsa #existing-suites .zsa__answer-buttons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }

@@ -82,6 +82,11 @@ steps to the existing rail. Review milestones are local and revision-scoped;
 Draft requested records only a browser compose request, never delivery. See the
 [guided journey evidence](integration-homeowner-summary.md#guided-continuation-and-expanded-journey--october-6-2026).
 
+The October 7 property update makes explicit answers atomic user confirmations and
+adds a source-scoped scan checklist. A labelled non-waterfront default stays unknown
+in legal evaluation and only supports probable geometric scouting. See the
+[property answer integration](integration-boundary-planning.md#property-answers-and-scan-checklist--october-7-2026).
+
 ## Live property discovery checkpoint - September 29, 2026
 
 The existing app mounts bounded synchronous BC geocoder and Victoria municipal

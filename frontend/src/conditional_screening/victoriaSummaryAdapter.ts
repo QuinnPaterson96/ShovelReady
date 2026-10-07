@@ -44,6 +44,9 @@ export function homeownerSummary(input: {
 
   const suiteCount = assumptions?.existing_garden_suites.value
   const countConflict = screening?.checks.some(check => check.rule.kind === 'count_max' && check.status === 'apparent_conflict_under_assumptions') ?? false
+  if (assumptions?.waterfront) checks.push({ label: 'Waterfront rules', status: outsideScope ? 'unsupported' : assumptions.waterfront.value === null ? 'unknown' : assumptions.waterfront.value ? 'review' : assumptions.waterfront.origin === 'journey_default' ? 'probable' : 'checked',
+    detail: outsideScope ? 'Waterfront rules for this zoning are not covered.' : assumptions.waterfront.origin === 'journey_default' ? 'Assuming not waterfront for preliminary scouting. If your property adjoins water, choose Yes and mark those edges. Legal waterfront status and special rules are not established by this default.' : assumptions.waterfront.value === null ? 'Waterfront status is unknown. Choose the answer you know, or keep Not sure.' : assumptions.waterfront.value ? 'You selected waterfront. Mark water-adjoining edges; legal front-line classification and special siting rules need a reviewed property plan.' : 'You selected not waterfront. This records your answer, not independently verified legal waterfront status.',
+    ...(!outsideScope ? { action: { label: 'Review waterfront status', target: 'waterfront-lot' } } : {}) })
   const countChecked = screening?.checks.some(check => check.rule.kind === 'count_max' && check.status === 'meets_under_assumptions') ?? false
   checks.push(outsideScope
     ? { label: 'Existing garden suite', status: 'unsupported', detail: 'Suite count rules for this zoning are not covered.' }

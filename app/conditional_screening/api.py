@@ -134,10 +134,12 @@ class Assumptions(Strict):
     def references(self):
         if self.building_type.value not in (None, "single_detached", "duplex", "other"):
             raise ValueError("invalid building type")
-        other_facts = (self.building_type, self.waterfront,
+        other_facts = (self.building_type,
                        *(edge.role for edge in self.edges))
         if any(fact.origin == "journey_default" for fact in other_facts):
-            raise ValueError("only suite count and main outline support homeowner defaults")
+            raise ValueError("only suite count, main outline and non-waterfront support defaults")
+        if self.waterfront.origin == "journey_default" and self.waterfront.value is not False:
+            raise ValueError("only non-waterfront supports a labelled planning default")
         count = self.existing_garden_suites.value
         if not (count is None or type(count) is int and count in (0, 1)
                 or count == "two_or_more"):
@@ -385,7 +387,8 @@ def _assemble(body: ApiRequest) -> Request:
         in {building.id for building in assumptions.observed_buildings},
         "floor_area_definition": proposal.floor_area_definition_acknowledged,
         "no_relevant_projections": proposal.no_relevant_projections,
-        "waterfront": assumptions.waterfront.value,
+        "waterfront": None if assumptions.waterfront.origin == "journey_default"
+        else assumptions.waterfront.value,
     }
     notes = {
         "building_type": assumptions.building_type.note,
@@ -400,6 +403,16 @@ def _assemble(body: ApiRequest) -> Request:
     for name, value in assertions.items():
         evidence = (getattr(body.proposal_evidence, proposal_names[name])
                     if body.proposal_evidence and name in proposal_names else None)
+        if name in ("building_type", "principal_building", "waterfront"):
+            user_fact = getattr(assumptions, "principal_building_id"
+                                if name == "principal_building" else name)
+            evidence = SettingEvidence(
+                value=user_fact.value,
+                origin="journey_default" if user_fact.origin == "journey_default"
+                else "user_confirmed" if user_fact.evidence_state == "user_confirmed"
+                else "user",
+                note=user_fact.note,
+            )
         facts.append(_fact(name, value, notes.get(name), evidence))
     for name in (
         "legal_lot",

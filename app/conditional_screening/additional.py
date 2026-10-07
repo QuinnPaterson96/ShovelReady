@@ -182,6 +182,8 @@ def additional_checks(body, boundary_result, packet, source_factory):
             checks[-1].action_target = "waterfront-lot"
         return tuple(checks)
 
+    waterfront_assumed = assumptions.waterfront.origin == "journey_default"
+
     # Existing boundary validation establishes parcel/placement/edge correspondence.
     if not boundary_result.scenarios:
         for key in ("separation", "front", "rear_location", "rear_occupancy"):
@@ -213,7 +215,7 @@ def additional_checks(body, boundary_result, packet, source_factory):
     add(
         "front",
         "review" if buffer_review
-        else "probable" if all(outcomes) and buffered
+        else "probable" if all(outcomes) and (buffered or waterfront_assumed)
         else "checked"
         if all(outcomes) and assumptions.waterfront.value is False
         else "probable"
@@ -228,7 +230,8 @@ def additional_checks(body, boundary_result, packet, source_factory):
               if buffer_review else "Planning allowance; see the raw comparison above. ")
            if buffered else "")
         + (
-            "Assuming this is not a waterfront lot." if assumptions.waterfront.value is None else ""
+            "Assuming this is not a waterfront lot."
+            if assumptions.waterfront.value is None or waterfront_assumed else ""
         ),
         observed=min(front_distances),
         basis="captured parcel to nominal rectangle with user wall-to-line overrides; "
@@ -303,8 +306,7 @@ def additional_checks(body, boundary_result, packet, source_factory):
     )
 
     if (
-        inferred
-        or assumptions.building_type.value not in ("single_detached", "duplex")
+        assumptions.building_type.value not in ("single_detached", "duplex")
         or assumptions.waterfront.value is not False
     ):
         for key in ("rear_location", "rear_occupancy"):
@@ -369,21 +371,27 @@ def additional_checks(body, boundary_result, packet, source_factory):
     inside = yard.covers(footprint)
     add(
         "rear_location",
-        "checked" if inside else "conflict",
+        "probable" if inside and (waterfront_assumed or inferred)
+        else "checked" if inside else "conflict",
         "The nominal footprint is "
         + ("inside" if inside else "not wholly inside")
-        + " the approximate rear yard. Building faces and legal yard boundaries need review.",
+        + " the approximate rear yard. Building faces and legal yard boundaries need review."
+        + (" Assuming not waterfront." if waterfront_assumed else "")
+        + (" Using the assumed main outline." if inferred else ""),
         basis="parcel clipped at rear-most principal outline, parallel to chosen rear line",
     )
     ratio = footprint.area / yard.area
     limit = rules["rear_occupancy"]["threshold"]
     add(
         "rear_occupancy",
-        "checked" if ratio <= limit else "conflict",
+        "probable" if ratio <= limit and (waterfront_assumed or inferred)
+        else "checked" if ratio <= limit else "conflict",
         "The nominal footprint "
         + ("meets" if ratio <= limit else "exceeds")
         + " the 25% candidate share of the approximate rear yard. "
-        "Projections and legal occupied area remain unreviewed.",
+        "Projections and legal occupied area remain unreviewed."
+        + (" Assuming not waterfront." if waterfront_assumed else "")
+        + (" Using the assumed main outline." if inferred else ""),
         observed=ratio,
         basis=f"nominal footprint {footprint.area!r} m2 / approximate rear yard {yard.area!r} m2",
     )

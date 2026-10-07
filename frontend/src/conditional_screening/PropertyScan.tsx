@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
 import { TechnicalDetails, CopyableRecord, readableDate } from '../ReadableProvenance'
 import type { ParcelRef } from './victoriaZoning'
+import { StatusIcon } from './HomeownerSummary'
+
+const scanLabels = ['Heritage properties', 'Heritage conservation areas', 'Development permit areas', 'Mapped special restrictions', 'Mapped development applications', 'Development application history']
 
 export type PropertyScanResult = {
   schema_version: 'victoria-property-scan.v1'; parcel_ref: ParcelRef
@@ -56,11 +59,18 @@ export function usePropertyScan(request: { parcel_ref: ParcelRef; expected_pid?:
 }
 
 export function PropertyScan({ scan }: { scan: ReturnType<typeof usePropertyScan> }) {
+  useEffect(() => { void import('./property-scan.css') }, [])
   return <section className="project-details" id="property-scan" tabIndex={-1} aria-label="Preliminary property scan">
     <h3>Preliminary property scan</h3>
     <p>City map flags and linked application history. Issued permit conditions, title covenants, projections and service capacity still need review.</p>
     {scan.busy ? <p role="status">Scanning City records…</p> : scan.error ? <p role="status">{scan.error} Unsearched records remain unknown.</p> : !scan.available ? <p>A selected City parcel is needed for this scan. Manual sketches cannot establish property records.</p> : null}
     {scan.available && <button type="button" onClick={scan.retry}>Refresh property scan</button>}
+    <p className="property-scan__legend">Yes: City records found. No: none found in the searched City sources. Maybe: unknown or not checked.</p>
+    <ul className="property-scan__list" aria-label="Property review checklist">{scanLabels.map(label => {
+      const row = scan.result?.findings.find(finding => finding.label === label)
+      const status = row?.status === 'probably_clear' ? 'probable' : row?.status === 'review' ? 'review' : 'unknown'
+      return <li key={label} className={`property-scan__${status}`}><StatusIcon status={status} /><div><strong>{label}</strong><span>{status === 'probable' ? 'No · Likely fine in searched scope' : status === 'review' ? 'Yes · Needs review' : `Maybe · ${scan.busy ? 'Scanning…' : 'Not established'}`}</span>{row?.source && <small>City records · {readableDate(row.source.captured_at_utc)} · unreviewed</small>}</div></li>
+    })}{['Permit conditions', 'Title restrictions', 'Projections', 'Service capacity'].map(label => <li key={label} className="property-scan__unknown"><StatusIcon status="unknown" /><div><strong>{label}</strong><span>Maybe · Not checked</span><small>Property-specific records needed</small></div></li>)}</ul>
     {scan.result && <details><summary>Scan findings and sources</summary>{scan.result.findings.map(row => <div key={row.label}><strong>{row.label} · {row.status === 'probably_clear' ? 'Likely fine in searched scope' : row.status === 'review' ? 'Needs review' : 'Unknown'}</strong><p>{row.detail}</p>{row.source && <p>{row.source.provider} · {row.source.record_label} · captured {readableDate(row.source.captured_at_utc)} · unreviewed. <a href={row.source.source_url} target="_blank" rel="noreferrer">City source</a></p>}{row.records.length > 0 && <ul>{row.records.map((record, index) => <li key={index}>{String(record.Name ?? record.SUBJECT ?? record.Heritage ?? record.AppType ?? 'City record requiring review')}{record.STATUS ? ` (${String(record.STATUS)})` : ''}</li>)}</ul>}{row.records.length > 0 && <TechnicalDetails title={`${row.label}: returned records`}><CopyableRecord id={`scan-${row.label.replace(/ /g, "-")}`} label="Source records" value={JSON.stringify(row.records, null, 2)} /></TechnicalDetails>}</div>)}</details>}
     <p><a href="https://www.victoria.ca/building-business/permits-development-construction/development-tracker" target="_blank" rel="noreferrer">Development Tracker</a> · <a href="https://tender.victoria.ca/WebApps/PIP/Pages/Search.aspx" target="_blank" rel="noreferrer">Property Information Portal</a></p>
   </section>
