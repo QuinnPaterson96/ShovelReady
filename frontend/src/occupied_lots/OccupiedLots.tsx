@@ -36,7 +36,7 @@ const checkText = (check: Check, selected?: Case) => {
     default: return `${check.kind.replace(/_/g, ' ')}: ${check.relation ?? check.status}`
   }
 }
-function Map({ selected, placement, onMove, nudgeMetres, conflictIds, boundaryInteraction, placementSummary, placementContinuation, showBoundaryTools = true }: { placementSummary?: ReactNode; placementContinuation?: ReactNode; showBoundaryTools?: boolean; selected: Case; placement: Placement; onMove: (x: number, y: number) => void; nudgeMetres: number; conflictIds?: Set<string>; boundaryInteraction?: BoundaryMapInteraction }) {
+function Map({ selected, placement, onMove, nudgeMetres, conflictIds, boundaryInteraction, placementSummary, placementContinuation, placementControls, showBoundaryTools = true }: { placementControls?: ReactNode; placementSummary?: ReactNode; placementContinuation?: ReactNode; showBoundaryTools?: boolean; selected: Case; placement: Placement; onMove: (x: number, y: number) => void; nudgeMetres: number; conflictIds?: Set<string>; boundaryInteraction?: BoundaryMapInteraction }) {
   const svg = useRef<SVGSVGElement>(null)
   const drag = useRef(false)
   const suppressClick = useRef(false)
@@ -90,6 +90,7 @@ function Map({ selected, placement, onMove, nudgeMetres, conflictIds, boundaryIn
     </svg>
     <p className="occupied-map-legend"><span>Teal · captured parcel</span><span>Purple · captured rooflines, not walls</span>{conflictIds && <span>Red dashed outline · current conflict</span>}<span>Copper · your nominal footprint</span><span>North ↑ · {site.projected_metre_crs}</span>{!!boundaryInteraction?.streetIds?.length && <span>Grey road bands · your marks, diagram only</span>}</p>
     <MapSourceHelp site={selected} />
+    {placementControls}
     {placementContinuation && <div className="builder-placement-next">{placementContinuation}</div>}
     {showBoundaryTools && boundaryInteraction && <BoundaryMapTools interaction={boundaryInteraction} />}
     {placementSummary && <div className="builder-map-summary">{placementSummary}</div>}
@@ -263,27 +264,10 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
     `Coverage: ${selected.site.capture.scope}; ${selected.site.capture.completeness.replace(/_/g, ' ')}. Captured rooflines are not walls; unmapped obstructions and legal conditions remain unknown. This tests only the supplied placement.`,
     `Next: verify legal parcel lines, building walls and roles, siting pathway, provider dimensions and other site constraints.`,
   ].join('\n') : ''
-  return <section className={`occupied-lots${compactPlacement ? ' occupied-lots--compact' : ''}`} aria-labelledby={compactPlacement ? undefined : 'occupied-title'} aria-label={compactPlacement ? 'Model 300 placement map' : undefined}>
-    {!compactPlacement && <><p className="eyebrow">Occupied-lot workspace</p><h2 id="occupied-title">See what this footprint meets on a captured lot</h2></>}
-    <p className="occupied-intro">{compactPlacement ? 'Click the map or drag the rectangle. Captured geometry is checked after edits settle.' : `${suppliedCase ? 'Use your selected property observation and set the nominal footprint.' : 'Choose a retained Victoria parcel and set the nominal footprint.'} Click to place it. Observed overlaps and distances are checked automatically after edits settle.`}</p>
-    {compactPlacement ? <details><summary>Map scope and limitations</summary><p className="notice">Approximate, parcel-intersecting captures only. Rooflines are not walls; no observed overlap does not certify clear space. Legal boundaries, setbacks, other obstructions and provider dimensions need separate review. This does not establish site fit or permit eligibility.</p></details> : <p className="notice">Approximate, parcel-intersecting captures only. Rooflines are not walls; no observed overlap does not certify clear space. Legal boundaries, setbacks, other obstructions and provider dimensions need separate review. This does not establish site fit or permit eligibility.</p>}
-    {loading && <p role="status">Loading retained sites…</p>}
-    {error && <p role="alert">{error} No site sketch is available. <button onClick={() => setReload(n => n + 1)}>Retry</button></p>}
-    {selected && <>
-      {(!compactPlacement || !suppliedCase) && <div className="occupied-site-select"><label htmlFor="occupied-site">Captured parcel</label><select id="occupied-site" value={caseId} onChange={e => chooseCase(e.target.value)}>
-        {cases.map(c => <option key={c.case_id} value={c.case_id}>{c.label}</option>)}</select>
-        <p className="metadata">{source?.provider} · {source?.record_label} · captured {readableDate(source?.capture_date)} · {source?.review_status}.
-          {publicSourceUrl(source?.reference) && <> {' '}<a href={publicSourceUrl(source?.reference)!} target="_blank" rel="noreferrer">Parcel source</a></>}</p></div>}
-      {compactPlacement && <div className="occupied-compact-summary"><strong>{model ? `${model.name} · ` : 'Manual footprint · '}{show(width)} wide × {show(depth)} long</strong><span>Nominal exterior rectangle · {dimensionOrigin('width').toLowerCase()} width, {dimensionOrigin('depth').toLowerCase()} length.</span><span>{source?.provider} · {source?.record_label} · captured {readableDate(source?.capture_date)} · {source?.review_status}. {publicSourceUrl(source?.reference) && <a href={publicSourceUrl(source?.reference)!} target="_blank" rel="noreferrer">Parcel source</a>}</span></div>}
-      <div className="occupied-workspace">
-        <div className="occupied-map-column">
-          <Map placementContinuation={placementContinuation} placementSummary={placementSummary} showBoundaryTools selected={selected} placement={placement} nudgeMetres={nudgeMetres} conflictIds={compactPlacement ? conflictIds : undefined} onMove={(x, y) => changePlacement({ x: String(x), y: String(y) })} boundaryInteraction={boundaryInteraction} />
-          <div className="occupied-map-actions" hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}><button onClick={placeAtCentre}>{compactPlacement ? 'Place or reset at parcel centre' : 'Recenter rectangle on parcel'}</button>
+  const startingPositionControls = <><div className="occupied-map-actions" hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}><button onClick={placeAtCentre}>{compactPlacement ? 'Place or reset at parcel centre' : 'Recenter rectangle on parcel'}</button>
             <button disabled={number(placement.x) === null && number(placement.y) === null} onClick={() => changePlacement({ x: '', y: '' })}>Clear placement</button></div>
-          <details><summary>About the starting position</summary><p>Recenter uses the parcel drawing's bounding-box centre as a sketch starting point. It does not search for a suitable location.</p></details>
-        </div>
-        <div className="occupied-side">
-          <div className="occupied-controls" hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}>
+          <details><summary>About the starting position</summary><p>Recenter uses the parcel drawing's bounding-box centre as a sketch starting point. It does not search for a suitable location.</p></details></>
+  const footprintControls = selected && <div className="occupied-controls" hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}>
             <details className="occupied-model-settings" open={!compactPlacement ? true : undefined}><summary>{compactPlacement ? 'Details and edit dimensions' : 'Set the nominal footprint'}</summary>
             <label htmlFor="occupied-model">Prefab model or manual dimensions</label><select id="occupied-model" value={modelId} onChange={e => chooseModel(e.target.value)}>
               {!allowedModelIds && <option value="">Manual nominal footprint</option>}{allowedModels.map(m => <option key={m.model_id} value={m.model_id}>{m.provider} · {m.name}</option>)}</select>
@@ -325,6 +309,25 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
             <button className="sr-primary" disabled={!valid || !assumptionsValid || assessing} onClick={() => void assess()}>{assessing ? 'Checking…' : assessmentError ? 'Retry placement check' : 'Recheck placement'}</button>
             {assessmentError && <p role="alert">{assessmentError} Edit the sketch or try again; no result is shown.</p>}
           </div>
+  return <section className={`occupied-lots${compactPlacement ? ' occupied-lots--compact' : ''}`} aria-labelledby={compactPlacement ? undefined : 'occupied-title'} aria-label={compactPlacement ? 'Model 300 placement map' : undefined}>
+    {!compactPlacement && <><p className="eyebrow">Occupied-lot workspace</p><h2 id="occupied-title">See what this footprint meets on a captured lot</h2></>}
+    <p className="occupied-intro">{compactPlacement ? 'Click the map or drag the rectangle. Captured geometry is checked after edits settle.' : `${suppliedCase ? 'Use your selected property observation and set the nominal footprint.' : 'Choose a retained Victoria parcel and set the nominal footprint.'} Click to place it. Observed overlaps and distances are checked automatically after edits settle.`}</p>
+    {compactPlacement ? <details><summary>Map scope and limitations</summary><p className="notice">Approximate, parcel-intersecting captures only. Rooflines are not walls; no observed overlap does not certify clear space. Legal boundaries, setbacks, other obstructions and provider dimensions need separate review. This does not establish site fit or permit eligibility.</p></details> : <p className="notice">Approximate, parcel-intersecting captures only. Rooflines are not walls; no observed overlap does not certify clear space. Legal boundaries, setbacks, other obstructions and provider dimensions need separate review. This does not establish site fit or permit eligibility.</p>}
+    {loading && <p role="status">Loading retained sites…</p>}
+    {error && <p role="alert">{error} No site sketch is available. <button onClick={() => setReload(n => n + 1)}>Retry</button></p>}
+    {selected && <>
+      {(!compactPlacement || !suppliedCase) && <div className="occupied-site-select"><label htmlFor="occupied-site">Captured parcel</label><select id="occupied-site" value={caseId} onChange={e => chooseCase(e.target.value)}>
+        {cases.map(c => <option key={c.case_id} value={c.case_id}>{c.label}</option>)}</select>
+        <p className="metadata">{source?.provider} · {source?.record_label} · captured {readableDate(source?.capture_date)} · {source?.review_status}.
+          {publicSourceUrl(source?.reference) && <> {' '}<a href={publicSourceUrl(source?.reference)!} target="_blank" rel="noreferrer">Parcel source</a></>}</p></div>}
+      {compactPlacement && <div className="occupied-compact-summary"><strong>{model ? `${model.name} · ` : 'Manual footprint · '}{show(width)} wide × {show(depth)} long</strong><span>Nominal exterior rectangle · {dimensionOrigin('width').toLowerCase()} width, {dimensionOrigin('depth').toLowerCase()} length.</span><span>{source?.provider} · {source?.record_label} · captured {readableDate(source?.capture_date)} · {source?.review_status}. {publicSourceUrl(source?.reference) && <a href={publicSourceUrl(source?.reference)!} target="_blank" rel="noreferrer">Parcel source</a>}</span></div>}
+      <div className="occupied-workspace">
+        <div className="occupied-map-column">
+          <Map placementControls={compactPlacement ? <div className="occupied-placement-controls" hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}>{footprintControls}{startingPositionControls}</div> : undefined} placementContinuation={placementContinuation} placementSummary={placementSummary} showBoundaryTools selected={selected} placement={placement} nudgeMetres={nudgeMetres} conflictIds={compactPlacement ? conflictIds : undefined} onMove={(x, y) => changePlacement({ x: String(x), y: String(y) })} boundaryInteraction={boundaryInteraction} />
+          {!compactPlacement && startingPositionControls}
+        </div>
+        <div className="occupied-side">
+          {!compactPlacement && footprintControls}
           {compactPlacement ? result && (observedConflicts.length > 0 || observationIncomplete || comparisons.some(c => c.comparison === null)) && <div className={`placement-check placement-check--${observedConflicts.length ? 'conflict' : 'unknown'}`} role="alert">
             <strong>{observedConflicts.length ? 'Conflict at this position' : 'Placement could not be fully checked'}</strong>
             <p>{observedConflicts.length ? `${crossesParcel ? 'The unit crosses or touches the mapped parcel boundary. ' : ''}${overlapsRoof ? 'The unit overlaps or touches a mapped roofline. ' : ''}Move the unit on the map and recheck. This finding applies to this position only.` : 'Some mapped geometry or your comparison could not be checked. Review Sources & technical evidence and try another position.'}</p>

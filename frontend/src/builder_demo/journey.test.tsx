@@ -248,6 +248,10 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
     assert.deepEqual(latest.assumptions.measurements, savedBefore.measurements)
     const suggestedBuffer = document.querySelector<HTMLInputElement>('[aria-label="Edge 2 planning buffer in metres"]')!
     await change(suggestedBuffer, '1'); await click('Save planning buffers'); await settle()
+    await click('Yes, use suggestions'); await settle()
+    assert.equal(completion.boundaries, true)
+    const beforeMoveAssumptions = JSON.parse(JSON.stringify(latest.assumptions))
+    await change(document.querySelector<HTMLInputElement>('#scouting-height')!, '3.9'); await settle()
     await click('Move 0.35 m away from this edge & recheck'); await settle(700)
     const moved = JSON.parse(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value)
     const beforePosition = beforeApply.measurement.result.input.placement
@@ -256,6 +260,12 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
     assert.ok(Math.abs(Math.hypot(afterPosition.centre_xy[0] - beforePosition.centre_xy[0], afterPosition.centre_xy[1] - beforePosition.centre_xy[1]) - .35) < 1e-7)
     assert.equal(afterPosition.width_m, beforePosition.width_m)
     assert.equal(afterPosition.depth_m, beforePosition.depth_m)
+    assert.equal(completion.boundaries, true, 'movement preserves reviewed boundary context')
+    assert.equal(completion.streets, true, 'movement preserves complete street marks')
+    assert.deepEqual(latest.assumptions.edges, beforeMoveAssumptions.edges)
+    assert.deepEqual(latest.assumptions.street_adjacency, beforeMoveAssumptions.street_adjacency)
+    assert.deepEqual(latest.assumptions.planning_buffers_m, beforeMoveAssumptions.planning_buffers_m)
+    assert.equal(document.querySelector<HTMLInputElement>('#scouting-height')!.value, '3.9')
     await click('Adjust boundaries'); await click('No, adjust them')
     await change(document.querySelector<HTMLSelectElement>('[aria-label="Edge to mark"]')!, latest.assumptions.edges[1].id)
     const measuredOffset = document.querySelector<HTMLInputElement>('.zsa__edge-row--selected input')!

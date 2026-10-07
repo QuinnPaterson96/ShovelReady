@@ -160,8 +160,7 @@ export function ExampleProperty({ onMeasurement, boundaryInteraction, placementS
         {boundaryInteraction && <BoundaryOverlay interaction={boundaryInteraction} />}
       </svg><figcaption>Teal: captured parcel · Purple: captured roofline, not walls · Red dashed outline: observed conflict in current measurement · Copper: illustrative nominal rectangle · North ↑ · EPSG:3157 metres. Diagram is approximate.{!!boundaryInteraction?.streetIds?.length && <> Grey road bands · your marks, diagram only.</>}<MapSourceHelp site={exampleCase} /></figcaption></figure>
 
-      {placementContinuation && <div className="builder-placement-next">{placementContinuation}</div>}
-      <div className="builder-example-controls">{boundaryInteraction && <BoundaryMapTools interaction={boundaryInteraction} />}<div hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}><h3>Adjust the footprint</h3>
+      <div className="builder-footprint-controls" hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}><h3>Adjust the footprint</h3>
         <p>Click the map or drag the rectangle. Arrow keys move it when the map has focus. Checks update automatically after movement settles.</p>
         <div className="builder-example-main-actions"><div><label htmlFor="builder-example-angle">Rotation (degrees)</label><input id="builder-example-angle" type="number" step="any" value={rotationFocused || !position.angle.trim() || !Number.isFinite(Number(position.angle)) ? position.angle : String(Number(Number(position.angle).toFixed(2)))} onFocus={() => setRotationFocused(true)} onBlur={() => setRotationFocused(false)} onChange={event => edit('angle', event.target.value)} /></div>
         <button type="button" disabled={exampleOrientation.status !== 'suggested'} onClick={() => { if (exampleOrientation.status === 'suggested') edit('angle', String(exampleOrientation.angle_degrees)) }}>Align to lot</button>
@@ -183,7 +182,9 @@ export function ExampleProperty({ onMeasurement, boundaryInteraction, placementS
           <label htmlFor="builder-example-roofline-minimum">Minimum to captured roofline (m)</label><MeasurementInput id="builder-example-roofline-minimum" dimension="length" type="number" min="0" step="any" value={assumptions.roofline} onChange={event => editAssumption('roofline', event.target.value)} />
         </fieldset></details>
         <button type="button" disabled={busy || !request} onClick={() => void measure(position, assumptions)}>{busy ? 'Checking…' : phase === 'unresolved' ? 'Retry placement check' : 'Recheck placement'}</button>
-      </div></div>
+      </div>
+      {placementContinuation && <div className="builder-placement-next">{placementContinuation}</div>}
+      {boundaryInteraction && <div className="builder-example-controls"><BoundaryMapTools interaction={boundaryInteraction} /></div>}
       {placementSummary && <div className="builder-map-summary">{placementSummary}</div>}
     </div>
     {checkWarning && <div className={`builder-example-outcome builder-example-outcome--${conflict ? 'conflict' : 'unknown'}`} role="alert">
