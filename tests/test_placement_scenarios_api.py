@@ -309,8 +309,9 @@ def test_front_buffer_review_does_not_claim_an_observed_conflict():
     assert next(c for c in screen(body)["additional_checks"]
                 if c["id"] == "front")["status"] == "probable"
     body["geometry"]["placement"]["centre_xy"] = [10, 4.9]
-    assert next(c for c in screen(body)["additional_checks"]
-                if c["id"] == "front")["status"] == "conflict"
+    front = next(c for c in screen(body)["additional_checks"] if c["id"] == "front")
+    assert front["status"] == "conflict"
+    assert "Buffer shortfall only" not in front["detail"]
 
 
 def test_assumed_main_outline_is_revalidated_and_not_silently_reapplied():

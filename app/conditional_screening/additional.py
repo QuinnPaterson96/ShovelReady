@@ -207,11 +207,12 @@ def additional_checks(body, boundary_result, packet, source_factory):
     buffered = any(distance < raw for distance, raw in zip(
         planning_fronts, front_distances, strict=True))
     outcome = "meets" if all(outcomes) else "falls below" if not any(outcomes) else "may meet"
-    if all(outcomes) and not all(distance >= limit for distance in planning_fronts):
+    buffer_review = all(outcomes) and not all(distance >= limit for distance in planning_fronts)
+    if buffer_review:
         targets["front"] = "boundary-offsets"
     add(
         "front",
-        "review" if all(outcomes) and not all(distance >= limit for distance in planning_fronts)
+        "review" if buffer_review
         else "probable" if all(outcomes) and buffered
         else "checked"
         if all(outcomes) and assumptions.waterfront.value is False
@@ -223,7 +224,9 @@ def additional_checks(body, boundary_result, packet, source_factory):
         f"Approximate front distance {outcome} {limit:g} m across tested front-edge choices. "
         "Building faces and projections need review. "
         + (f"Planning clearance after the edge buffers: {max(0, min(planning_fronts)):.2f} m. "
-           "A buffer shortfall needs review; it is not an observed conflict. " if buffered else "")
+           + ("Buffer shortfall only: needs review, not an observed distance conflict. "
+              if buffer_review else "Planning allowance; see the raw comparison above. ")
+           if buffered else "")
         + (
             "Assuming this is not a waterfront lot." if assumptions.waterfront.value is None else ""
         ),

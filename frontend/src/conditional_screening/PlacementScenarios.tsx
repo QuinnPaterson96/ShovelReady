@@ -21,7 +21,7 @@ type Props = {
 
 export function PlacementScenarios({ assumptions, request, result, busy, error, boundaryMode, onBoundaryMode, legalResult, onRetry }: Props) {
   const edges = assumptions?.edges ?? []
-  const title = result?.status === 'bounded_pass' ? 'Supported distances pass under every tested edge scenario'
+  const title = result?.status === 'bounded_pass' ? result.scenarios.some(s => s.checks.some(c => c.planning_meets === false)) ? 'Captured distances pass · planning buffers need review' : 'Supported distances pass under every tested edge scenario'
     : result?.status === 'apparent_conflict' ? 'Apparent distance conflict at this position'
       : result?.status === 'clarify' ? 'Boundary clarification could change the result'
         : 'Approximate setback screen unresolved'

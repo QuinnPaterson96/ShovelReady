@@ -59,6 +59,11 @@ This is not a calibrated 90% confidence estimate.
   marking inspected. At 390×844 the controls wrap without horizontal page overflow.
   Physical touchscreen use and independent homeowner validation remain untested.
 
+Full local suites above cover `f756fbfb34d1535b44d86d5cdd7808917a25aab4`.
+A final wording follow-up makes raw-pass/buffer-review evidence explicit and limits
+the buffer-only explanation to that state. Its focused 33 HTTP tests, lint and
+production build passed; required CI must cover the final PR head before integration.
+
 ## Remaining gaps and owners
 
 - Source-review owner / #104: review effective bylaw version, waterfront legal front
