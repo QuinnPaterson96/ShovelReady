@@ -15,7 +15,8 @@ import type { ScenarioRequest, ScenarioResult } from '../conditional_screening/s
 // retained boundary fixture; this verifies workflow, not distance arithmetic.
 test('saved journey puts results below map, focuses facts, invalidates late measurements and changes property', async () => {
   const dom = new JSDOM('<div id="root"></div>', { url: 'http://localhost' })
-  dom.window.HTMLElement.prototype.scrollIntoView = () => {}
+  let lastScroll: { id: string; options: ScrollIntoViewOptions } | null = null
+  dom.window.HTMLElement.prototype.scrollIntoView = function(options) { lastScroll = { id: this.id, options: options as ScrollIntoViewOptions } }
   Object.assign(dom.window.HTMLElement.prototype, { attachEvent: () => {}, detachEvent: () => {} })
   const originals = new Map<string, PropertyDescriptor | undefined>()
   const expose = (name: string, value: unknown) => { originals.set(name, Object.getOwnPropertyDescriptor(globalThis, name)); Object.defineProperty(globalThis, name, { configurable: true, writable: true, value }) }
@@ -71,7 +72,8 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     assert.equal(document.activeElement?.id, 'placement-action-rear')
     assert.equal(JSON.parse(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value).zoning_site_assumptions.street_adjacency.all_marked, true)
     await click('Next: Review property details →')
-    assert.equal(document.activeElement?.id, 'builder-property-details')
+    assert.equal(document.activeElement?.id, 'building-type')
+    assert.deepEqual(lastScroll, { id: 'building-type', options: { block: 'start', behavior: 'smooth' } })
     assert.equal(document.querySelector<HTMLDetailsElement>('#builder-property-details > details')!.open, true)
     assert.equal(document.querySelector('.builder-placement-next'), null)
     assert.ok(document.querySelector('#builder-property-details #scouting-height'))
@@ -142,6 +144,20 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     assert.equal(document.getElementById('builder-quick-checks'), null)
     assert.equal(document.querySelector('#placement-map'), null)
     assert.match(document.getElementById('builder-property-content')!.textContent!, /Street address in British Columbia/)
+    // A page remount must recover the enquiry text, while old geometry and
+    // acknowledged findings must not become an active assessment.
+    const saved = JSON.parse(dom.window.sessionStorage.getItem('shovelready.enquiry-recovery.v1')!)
+    assert.match(saved.enquiry, /Could Model 300 work/)
+    assert.match(saved.report, /supporting screening report/)
+    assert.match(saved.report, /builder-evidence.v1/)
+    await act(async () => { root.render(null) })
+    await act(async () => { root.render(createElement(Journey)) })
+    assert.equal(document.querySelector<HTMLTextAreaElement>('#recovered-enquiry')!.value, saved.enquiry)
+    assert.equal(document.getElementById('builder-quick-checks'), null)
+    assert.match(document.querySelector('[aria-label="Enquiry recovery"]')!.textContent!, /not restored as current/)
+    await click('Clear recovery copy')
+    assert.equal(dom.window.sessionStorage.getItem('shovelready.enquiry-recovery.v1'), null)
+    assert.equal(document.getElementById('recovered-enquiry'), null)
   } finally {
     await act(async () => { root.unmount() })
     for (const [name, descriptor] of originals) { if (descriptor) Object.defineProperty(globalThis, name, descriptor); else Reflect.deleteProperty(globalThis, name) }

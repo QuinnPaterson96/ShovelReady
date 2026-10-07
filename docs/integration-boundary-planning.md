@@ -396,3 +396,31 @@ Gaps: source owner/#104 needs reviewed applicability and installed measurements;
 homeowner/provider needs permit/title/projection/servicing evidence. Product owner/#147
 owns real-user/touch validation. Platform owner/SR14-SR15 owns persistence/recovery and
 rollback evidence; refresh still loses answers.
+
+## Property-details entry and text recovery — October 7, 2026
+
+Property details now opens at the single-family-home question, focused and aligned
+near the top with a small scroll margin. Specific review links still target their
+individual question. Preparing an enquiry saves its text, supporting report and
+full historical technical evidence in the browser tab. Refresh recovery displays
+that snapshot without restoring stale checks, acknowledgements or review ticks.
+Invalid/blocked storage does not prevent using the journey; copy/download remains
+the fallback. Closing a tab is not durable storage. See docs/hosting.md.
+
+Local verification: 141 frontend tests passed; build passed. The mounted journey
+checks first-question focus/scroll and a page remount recovering text with no active
+assessment. Storage corruption/denial coverage protects the recovery boundary.
+Real local-browser refresh recovered a saved example enquiry and report. The initial
+500,000-character limit was insufficient for complete evidence; the bounded limit
+was increased to 2,000,000 and successful browser saving/recovery was verified.
+CI, responsive layout and deployed evidence are recorded in the PR.
+
+The targeted 419 Cecelia review is in docs/evidence-gaps/victoria/419-cecelia.md.
+Source owner/#104 still needs controlled bylaws/drawings and independent review;
+homeowner/provider needs survey, title, permit, projection and servicing evidence.
+Product owner/#147 still needs real participants and physical-touch validation.
+Platform owner/SR14-SR15 still owns full editable journey restoration, durable saved
+assessments, budget/account/backup decisions, tested-image promotion and isolated
+rollback evidence. Text recovery reduces loss of the enquiry; refresh still resets
+editable geometry, answers and workflow progress. No source acceptance, external
+contact, paid provisioning or disruptive live rollback was performed.
