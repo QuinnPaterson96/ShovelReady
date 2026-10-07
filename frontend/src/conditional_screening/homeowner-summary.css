@@ -28,3 +28,5 @@
 
 .homeowner-summary__probable { color: var(--candidate-ink); background: var(--candidate-soft); }
 .homeowner-summary__probable > .homeowner-summary__icon { color: var(--assumption-icon); background: var(--assumption-soft); }
+
+.homeowner-summary__review { color: var(--copper); background: var(--copper-soft); }

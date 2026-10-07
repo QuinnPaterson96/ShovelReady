@@ -379,3 +379,17 @@ Issued permit documents, title covenants, projections and servicing are not scan
 The UI retains these as separate review gaps and links the City's records portals.
 No new dataset release or accepted source interpretation is published. Saved Parcel
 87 also receives the current zoning lookup; manual sketches receive no invented zone.
+
+
+## Attributed boundary planning defaults
+
+October 6, 2026: [boundary planning integration](integration-boundary-planning.md)
+adds optional edge-keyed buffers in metres, independent waterfront-edge observations,
+and an explicit switch disabling main-outline inference after Not sure. These are
+compatible additions to the site-assumptions v1 payload. A default main outline uses
+journey_default evidence, is independently revalidated for scouting and remains
+unknown for the legal principal-building prerequisite. Planning evidence extends
+scenario edge checks without changing their raw distance/outcome; buffered-only
+shortfalls use review in the separately scoped findings and homeowner summary.
+Measured overrides remain distinct and unbuffered. No schema migration or accepted
+rule publication is involved; old requests retain their zero-buffer behavior.

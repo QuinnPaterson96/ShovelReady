@@ -19,7 +19,7 @@ class AdditionalInputs(BaseModel):
 class AdditionalCheck(BaseModel):
     id: str
     label: str
-    status: Literal["checked", "probable", "conflict", "unknown", "unsupported"]
+    status: Literal["checked", "probable", "review", "conflict", "unknown", "unsupported"]
     detail: str
     action_target: str | None = None
     observed: float | None = None
@@ -76,7 +76,7 @@ def additional_checks(body, boundary_result, packet, source_factory):
                 status=status,
                 detail=detail,
                 action_target=targets[key]
-                if status in ("unknown", "conflict", "probable")
+                if status in ("unknown", "conflict", "probable", "review")
                 else None,
                 observed=observed,
                 threshold=rule.get("threshold"),
@@ -171,6 +171,17 @@ def additional_checks(body, boundary_result, packet, source_factory):
             "or supply the planning estimate inputs.",
         )
 
+    if assumptions.waterfront.value is True:
+        for key in ("separation", "front", "rear_location", "rear_occupancy"):
+            add(
+                key,
+                "unknown",
+                f"{len(assumptions.waterfront_edge_ids)} waterfront edges recorded. "
+                "Waterfront front-line classification and siting need a reviewed property plan.",
+            )
+            checks[-1].action_target = "waterfront-lot"
+        return tuple(checks)
+
     # Existing boundary validation establishes parcel/placement/edge correspondence.
     if not boundary_result.scenarios:
         for key in ("separation", "front", "rear_location", "rear_occupancy"):
@@ -180,16 +191,6 @@ def additional_checks(body, boundary_result, packet, source_factory):
                 "Review placement and boundary roles; a valid contained placement is needed.",
             )
         return tuple(checks)
-    if assumptions.waterfront.value is True:
-        for key in ("separation", "front", "rear_location", "rear_occupancy"):
-            add(
-                key,
-                "unknown",
-                "Confirm waterfront status. Waterfront siting needs separate review.",
-            )
-            checks[-1].action_target = "waterfront-lot"
-        return tuple(checks)
-
     front_distances = [
         assumptions.measurements.boundary[s.front_edge_id].value
         if s.front_edge_id in assumptions.measurements.boundary
@@ -198,10 +199,21 @@ def additional_checks(body, boundary_result, packet, source_factory):
     ]
     limit = rules["front"]["threshold"]
     outcomes = [distance >= limit for distance in front_distances]
+    planning_fronts = [distance - (assumptions.planning_buffers_m.get(s.front_edge_id, 0)
+                                  if s.front_edge_id not in assumptions.measurements.boundary
+                                  else 0)
+                      for distance, s in zip(
+                          front_distances, boundary_result.scenarios, strict=True)]
+    buffered = any(distance < raw for distance, raw in zip(
+        planning_fronts, front_distances, strict=True))
     outcome = "meets" if all(outcomes) else "falls below" if not any(outcomes) else "may meet"
+    if all(outcomes) and not all(distance >= limit for distance in planning_fronts):
+        targets["front"] = "boundary-offsets"
     add(
         "front",
-        "checked"
+        "review" if all(outcomes) and not all(distance >= limit for distance in planning_fronts)
+        else "probable" if all(outcomes) and buffered
+        else "checked"
         if all(outcomes) and assumptions.waterfront.value is False
         else "probable"
         if all(outcomes)
@@ -210,6 +222,8 @@ def additional_checks(body, boundary_result, packet, source_factory):
         else "unknown",
         f"Approximate front distance {outcome} {limit:g} m across tested front-edge choices. "
         "Building faces and projections need review. "
+        + (f"Planning clearance after the edge buffers: {max(0, min(planning_fronts)):.2f} m. "
+           "A buffer shortfall needs review; it is not an observed conflict. " if buffered else "")
         + (
             "Assuming this is not a waterfront lot." if assumptions.waterfront.value is None else ""
         ),
@@ -220,8 +234,10 @@ def additional_checks(body, boundary_result, packet, source_factory):
 
     building_id = assumptions.principal_building_id.value
     building = next((b for b in body.geometry.buildings if b.id == building_id), None)
-    inferred = False
-    if building_id is None:
+    inferred = assumptions.principal_building_id.origin == "journey_default"
+    if inferred:
+        building = None
+    if (building_id is None and assumptions.infer_principal_building) or inferred:
         parcel = shape(body.geometry.parcel.shape.geometry)
         candidates = []
         for item in body.geometry.buildings:
@@ -237,8 +253,9 @@ def additional_checks(body, boundary_result, packet, source_factory):
                 candidates.append((outline.area, item))
         candidates.sort(key=lambda item: item[0], reverse=True)
         if candidates and (len(candidates) == 1 or candidates[0][0] > candidates[1][0]):
-            building = candidates[0][1]
-            inferred = True
+            if building_id is None or candidates[0][1].id == building_id:
+                building = candidates[0][1]
+                inferred = True
     if building is None:
         for key in ("separation", "rear_location", "rear_occupancy"):
             add(

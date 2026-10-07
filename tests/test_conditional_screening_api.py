@@ -282,3 +282,17 @@ def test_boundary_suggestions_are_exported_without_supplying_legal_facts():
     assert checks["flanking_presence"]["status"] == "needs_information"
     body["assumptions"]["boundary_role_suggestions"]["roles"] = {"absent": "front"}
     assert post(body).status_code == 422
+
+
+def test_main_outline_default_does_not_satisfy_legal_principal_building_prerequisite():
+    body = payload()
+    body["assumptions"]["principal_building_id"] = {
+        "value": "house-1", "origin": "journey_default", "evidence_state": "assumed",
+        "note": "Largest usable captured outline; assumed main building.",
+    }
+    response = client.post("/api/conditional-screening/v1/evaluate", json=body)
+    assert response.status_code == 200, response.text
+    principal = next(c for c in response.json()["checks"]
+                     if c["rule"]["fact_id"] == "principal_building")
+    assert principal["fact"]["status"] == "unknown"
+    assert principal["status"] == "needs_information"

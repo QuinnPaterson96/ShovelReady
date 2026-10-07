@@ -17,6 +17,10 @@ journey is implemented as a local demonstration; the history below records its s
 
 ## Status
 
+The [boundary planning update](docs/integration-boundary-planning.md) adds an attributed
+main-outline default, separate waterfront marks, dismissible edge details and explicit
+1 m planning buffers with Likely fine / Needs review findings.
+
 The header now separates primary journeys from research tools and provides
 contextual assessment navigation. Model 300 inputs survive switching pages within
 the open app. See the [navigation and identity review](docs/navigation-refresh-qa.md)

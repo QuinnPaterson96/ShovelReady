@@ -1,13 +1,16 @@
 import type { Case, Feature, Site } from '../occupied_lots/contract'
 
 export type EdgeRole = 'unknown' | 'front' | 'rear' | 'side' | 'flanking_street'
-export type BoundaryMapMode = 'place' | 'front' | 'rear'
+export type BoundaryMapMode = 'place' | 'front' | 'rear' | 'waterfront'
 export type UserFact<T> = { value: T | null; origin: 'user' | 'journey_default'; note: string | null; evidence_state?: 'assumed' | 'user_confirmed' | 'unknown' }
 export type BoundaryEdge = { id: string; ring: number; segment: number; start: [number, number]; end: [number, number]; role: UserFact<EdgeRole> }
 export type UserMeasurement = { value: number; unit: 'm' | 'm2'; basis: 'proposed_wall_to_lot_line' | 'principal_wall_to_proposed_wall' | 'regulatory_floor_area' | 'rough_floor_area_estimate'; origin: 'user'; note: string | null; placement_revision: string }
 export type StreetAdjacency = { edge_ids: string[]; all_marked: boolean; completion_method?: 'explicit_confirmation' | 'advance'; origin: 'user' }
 export type BoundaryRoleSuggestions = { roles: Record<string, EdgeRole>; conflicts: string[]; basis: 'user_marks' }
 export type SiteAssumptions = {
+  planning_buffers_m?: Record<string, number>
+  waterfront_edge_ids?: string[]
+  infer_principal_building?: boolean
   boundary_role_suggestions?: BoundaryRoleSuggestions
   street_adjacency?: StreetAdjacency
   schema_version: 'sr.zoning-site-assumptions.v1'
@@ -48,12 +51,15 @@ export function parcelEdges(site: Case, geometryRevision: string): BoundaryEdge[
 export function initialAssumptions(site: Case, geometryRevision: string, placementRevision: string, homeownerDefaults = false): SiteAssumptions {
   const edges = parcelEdges(site, geometryRevision)
   const exterior = edges.filter(edge => edge.ring === 0)
+  const main = homeownerDefaults ? assumedMainBuilding(site) : null
   return {
     schema_version: 'sr.zoning-site-assumptions.v1',
     property: { case_id: site.case_id, parcel_id: site.site.parcel.id, geometry_revision: geometryRevision,
       crs: site.site.projected_metre_crs, source: site.site.parcel.source, capture: site.site.capture },
     observed_buildings: site.site.buildings.map(building => ({ id: building.id, basis: building.basis, source: building.source })),
-    edges, building_type: fact(), existing_garden_suites: homeownerDefaults ? { value: 0, origin: 'journey_default', evidence_state: 'assumed', note: 'Assuming none already exist; editable homeowner scenario, not independently verified.' } : fact(), principal_building_id: fact(), waterfront: fact(),
+    planning_buffers_m: Object.fromEntries(edges.map(edge => [edge.id, homeownerDefaults ? 1 : 0])),
+    waterfront_edge_ids: [], infer_principal_building: true,
+    edges, building_type: fact(), existing_garden_suites: homeownerDefaults ? { value: 0, origin: 'journey_default', evidence_state: 'assumed', note: 'Assuming none already exist; editable homeowner scenario, not independently verified.' } : fact(), principal_building_id: main ? { value: main, origin: 'journey_default', evidence_state: 'assumed', note: 'Unique largest usable mapped outline; assumed main building, not confirmed use or walls.' } : fact(), waterfront: fact(),
     measurements: { boundary: {}, principal_separation: null, floor_area: null }, placement_revision: placementRevision,
     limitations: [
       'Edge roles are user assumptions, not surveyed legal lot-line classifications.',
@@ -62,6 +68,35 @@ export function initialAssumptions(site: Case, geometryRevision: string, placeme
       ...(exterior.length < 3 || edges.some(edge => edge.ring > 0) ? ['Complex or unsupported parcel boundary: use manual/unknown roles until reviewed.'] : []),
     ],
   }
+}
+
+/** Restrict automatic selection to simple outlines wholly inside a convex parcel.
+ * The API independently validates the selected default with full polygon geometry. */
+export function assumedMainBuilding(site: Case): string | null {
+  const geometry = site.site.parcel.shape.geometry
+  if (geometry.type !== 'Polygon') return null
+  const parcelRing = (geometry.coordinates as number[][][])[0]
+  if (!parcelRing?.length || !parcelRing.every(finitePoint) || parcelRing[0][0] !== parcelRing.at(-1)![0] || parcelRing[0][1] !== parcelRing.at(-1)![1]) return null
+  const edges = parcelEdges(site, 'selection')
+  if (edges.length < 3 || edges.some(edge => edge.ring !== 0)) return null
+  const cross = (a: number[], b: number[], c: number[]) => (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0])
+  const orientation = Math.sign(cross(edges[0].start, edges[0].end, edges[1].end))
+  if (!orientation || !edges.every((edge, i) => orientation * cross(edge.start, edge.end, edges[(i + 1) % edges.length].end) > 0)) return null
+  const candidates = site.site.buildings.flatMap(building => {
+    if (building.basis === 'unknown' || building.shape.crs !== site.site.projected_metre_crs || building.shape.geometry.type !== 'Polygon') return []
+    const rings = building.shape.geometry.coordinates as number[][][]
+    if (rings.length !== 1 || rings[0].length < 4 || !rings[0].every(finitePoint)) return []
+    const ring = rings[0], n = ring.length - 1
+    if (ring[0][0] !== ring[n][0] || ring[0][1] !== ring[n][1] || !ring.every(point => edges.every(edge => orientation * cross(edge.start, edge.end, point) >= 0))) return []
+    for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) {
+      if (j === i + 1 || i === 0 && j === n - 1) continue
+      const a = ring[i], b = ring[i + 1], c = ring[j], d = ring[j + 1]
+      if (cross(a, b, c) * cross(a, b, d) <= 0 && cross(c, d, a) * cross(c, d, b) <= 0) return []
+    }
+    const area = Math.abs(ring.slice(0, n).reduce((sum, point, i) => sum + (point[0] - ring[0][0]) * (ring[i + 1][1] - ring[0][1]) - (ring[i + 1][0] - ring[0][0]) * (point[1] - ring[0][1]), 0)) / 2
+    return area > 0 ? [{ id: building.id, area }] : []
+  }).sort((a, b) => b.area - a.area)
+  return candidates.length && (candidates.length === 1 || candidates[0].area > candidates[1].area) ? candidates[0].id : null
 }
 
 export function assumptionsKey(site: Case, geometryRevision: string, placementRevision: string): string {

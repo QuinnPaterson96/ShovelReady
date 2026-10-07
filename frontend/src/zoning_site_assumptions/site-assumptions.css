@@ -50,6 +50,11 @@
 .boundary-action-panel[data-mode="rear"] .zsa__boundaries { padding: .6rem; }
 .boundary-action-panel[data-mode="rear"] .zsa__edge-row { padding: .4rem; }
 
-.zsa__offset-grid label { display: grid; grid-template-columns: minmax(0, 1fr) minmax(4rem, 6rem); gap: .5rem; align-items: center; }
+.zsa__offset-grid label { display: grid; grid-template-columns: minmax(0, 1fr) minmax(4rem, 5rem); gap: .5rem; align-items: center; }
 .zsa__offset-grid input { width: 100%; min-width: 0; box-sizing: border-box; }
-.zsa__offset-grid small { display: block; color: var(--ink-muted); }
+.zsa__offset-grid small { display: block; color: var(--ink-muted); font-weight: 400; font-size: .8rem; }
+
+.zsa__edge-heading { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+.zsa__edge-heading button { min-height: 44px; }
+.waterfront-mark { pointer-events: none; }
+.main-building-mark { pointer-events: none; }

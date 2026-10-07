@@ -113,6 +113,9 @@ class BoundaryRoleSuggestions(Strict):
 
 
 class Assumptions(Strict):
+    planning_buffers_m: dict[str, float] = Field(default_factory=dict, max_length=64)
+    waterfront_edge_ids: tuple[str, ...] = Field(default=(), max_length=64)
+    infer_principal_building: bool = True
     boundary_role_suggestions: BoundaryRoleSuggestions | None = None
     street_adjacency: StreetAdjacency | None = None
     schema_version: Literal["sr.zoning-site-assumptions.v1"]
@@ -131,10 +134,10 @@ class Assumptions(Strict):
     def references(self):
         if self.building_type.value not in (None, "single_detached", "duplex", "other"):
             raise ValueError("invalid building type")
-        other_facts = (self.building_type, self.principal_building_id, self.waterfront,
+        other_facts = (self.building_type, self.waterfront,
                        *(edge.role for edge in self.edges))
         if any(fact.origin == "journey_default" for fact in other_facts):
-            raise ValueError("only existing suite count supports a homeowner default")
+            raise ValueError("only suite count and main outline support homeowner defaults")
         count = self.existing_garden_suites.value
         if not (count is None or type(count) is int and count in (0, 1)
                 or count == "two_or_more"):
@@ -157,6 +160,16 @@ class Assumptions(Strict):
             raise ValueError("edge does not reference supplied geometry revision")
         if not self.measurements.boundary.keys() <= set(ids):
             raise ValueError("boundary measurement references absent edge")
+        if not self.planning_buffers_m.keys() <= set(ids) or any(
+            not math.isfinite(value) or value < 0 for value in self.planning_buffers_m.values()
+        ):
+            raise ValueError("planning buffers need existing edges and finite nonnegative metres")
+        exterior_ids = {edge.id for edge in self.edges if edge.ring == 0}
+        if (len(self.waterfront_edge_ids) != len(set(self.waterfront_edge_ids))
+                or not set(self.waterfront_edge_ids) <= exterior_ids):
+            raise ValueError("waterfront marks must reference distinct exterior edges")
+        if self.waterfront.value is False and self.waterfront_edge_ids:
+            raise ValueError("a non-waterfront lot cannot have water-adjoining edge marks")
         if self.street_adjacency:
             street_ids = self.street_adjacency.edge_ids
             exterior_ids = {edge.id for edge in self.edges if edge.ring == 0}
@@ -366,7 +379,8 @@ def _assemble(body: ApiRequest) -> Request:
         if assumptions.building_type.value is None
         else assumptions.building_type.value in ("single_detached", "duplex"),
         "principal_building": None
-        if assumptions.principal_building_id.value is None
+        if (assumptions.principal_building_id.value is None
+            or assumptions.principal_building_id.origin == "journey_default")
         else assumptions.principal_building_id.value
         in {building.id for building in assumptions.observed_buildings},
         "floor_area_definition": proposal.floor_area_definition_acknowledged,

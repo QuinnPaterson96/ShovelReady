@@ -265,3 +265,93 @@ def test_completed_corner_marks_limit_coherent_front_and_flanking_choices():
         assert sum(c["role"] == "flanking_street" for c in scenario["checks"]) == 1
     body["assumptions"]["street_adjacency"]["all_marked"] = False
     assert len(screen(body)["scenarios"]) == 16
+
+
+def test_planning_buffer_keeps_raw_clearance_and_manual_conflict_separate():
+    # 2m square at x=2: western clearance is 1m. The 0.6m side limit
+    # clears geometrically, while 1m less the 1m buffer needs review.
+    body = request((2, 10))
+    body["street_pattern"] = "single"
+    body["street_edge_id"] = "geom:ring-0:segment-0"
+    edge = "geom:ring-0:segment-3"
+    body["assumptions"]["planning_buffers_m"] = {edge: 1}
+    result = screen(body)
+    check = next(c for c in result["scenarios"][0]["checks"] if c["edge_id"] == edge)
+    assert result["status"] == "bounded_pass"  # raw geometry status is preserved
+    assert check["distance_m"] == 1 and check["meets"] is True
+    assert check["planning_distance_m"] == 0 and check["planning_meets"] is False
+    body["assumptions"]["measurements"]["boundary"][edge] = {
+        "value": .59, "unit": "m", "basis": "proposed_wall_to_lot_line",
+        "origin": "user", "note": None, "placement_revision": "place-1",
+    }
+    result = screen(body)
+    check = next(c for c in result["scenarios"][0]["checks"] if c["edge_id"] == edge)
+    assert result["status"] == "apparent_conflict"
+    assert check["distance_m"] == .59 and check["planning_buffer_m"] == 0
+    body["geometry"]["placement"]["centre_xy"] = [-2, 10]
+    assert screen(body)["status"] == "unresolved"
+
+
+def test_front_buffer_review_does_not_claim_an_observed_conflict():
+    # Southern edge y=0; box spans y=4..6, so raw front gap equals 4m.
+    # Default buffer lowers planning clearance to 3m, below the 4m limit.
+    body = request((10, 5))
+    body["proposal"] = {"confirmed_zone": "GRD-1",
+                        "confirmed_instrument": "Zoning Bylaw 2018"}
+    body["street_pattern"] = "single"
+    body["street_edge_id"] = "geom:ring-0:segment-0"
+    body["assumptions"]["planning_buffers_m"] = {body["street_edge_id"]: 1}
+    front = next(c for c in screen(body)["additional_checks"] if c["id"] == "front")
+    assert front["status"] == "review" and front["observed"] == 4
+    assert "3.00 m" in front["detail"]
+    assert front["action_target"] == "boundary-offsets"
+    body["geometry"]["placement"]["centre_xy"] = [10, 6]
+    assert next(c for c in screen(body)["additional_checks"]
+                if c["id"] == "front")["status"] == "probable"
+    body["geometry"]["placement"]["centre_xy"] = [10, 4.9]
+    assert next(c for c in screen(body)["additional_checks"]
+                if c["id"] == "front")["status"] == "conflict"
+
+
+def test_assumed_main_outline_is_revalidated_and_not_silently_reapplied():
+    body = request((10, 16))
+    body["proposal"] = {"confirmed_zone": "GRD-1",
+                        "confirmed_instrument": "Zoning Bylaw 2018"}
+    house = {"id": "house", "basis": "roofline", "source": SOURCE,
+             "shape": {"crs": "EPSG:3157", "geometry": {"type": "Polygon", "coordinates": [
+                 [[5, 5], [15, 5], [15, 10], [5, 10], [5, 5]]]}}}
+    body["geometry"]["buildings"] = [house]
+    body["assumptions"]["principal_building_id"] = {
+        "value": "house", "origin": "journey_default", "evidence_state": "assumed",
+    }
+    assert next(c for c in screen(body)["additional_checks"]
+                if c["id"] == "separation")["status"] == "probable"
+    body["assumptions"]["principal_building_id"] = {"value": None, "origin": "user"}
+    body["assumptions"]["infer_principal_building"] = False
+    assert next(c for c in screen(body)["additional_checks"]
+                if c["id"] == "separation")["status"] == "unknown"
+    body["assumptions"]["principal_building_id"] = {
+        "value": "house", "origin": "journey_default", "evidence_state": "assumed",
+    }
+    body["geometry"]["buildings"].append({**deepcopy(house), "id": "same-size"})
+    assert next(c for c in screen(body)["additional_checks"]
+                if c["id"] == "separation")["status"] == "unknown"
+
+
+def test_waterfront_marks_and_buffers_reject_absent_edges_and_bad_values():
+    body = request()
+    body["assumptions"]["waterfront_edge_ids"] = ["geom:ring-0:segment-0"]
+    assert screen(body)["status"] == "bounded_pass"  # water mark never becomes a role
+    contradictory = deepcopy(body)
+    contradictory["assumptions"]["waterfront"]["value"] = False
+    assert client.post("/api/conditional-screening/v1/placement-scenarios",
+                       json=contradictory).status_code == 422
+    for field, value in (("waterfront_edge_ids", ["missing"]),
+                         ("waterfront_edge_ids", ["geom:ring-0:segment-0"] * 2),
+                         ("planning_buffers_m", {"missing": 1}),
+                         ("planning_buffers_m", {"geom:ring-0:segment-0": -1}),
+                         ("planning_buffers_m", {"geom:ring-0:segment-0": True})):
+        invalid = deepcopy(body)
+        invalid["assumptions"][field] = value
+        assert client.post("/api/conditional-screening/v1/placement-scenarios",
+                           json=invalid).status_code == 422

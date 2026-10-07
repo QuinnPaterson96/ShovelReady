@@ -121,7 +121,8 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
           const role = edgeIndex === (index + 2) % 4 ? 'rear' as const : (flanking & (edgeIndex === (index + 1) % 4 ? 1 : 2)) ? 'flanking_street' as const : 'side' as const
           const manual = request.assumptions.measurements.boundary[edge.id]
           const distance_m = manual?.value ?? 1.25, minimum_m = role === 'flanking_street' ? 3.5 : .6
-          return { edge_id: edge.id, role, distance_m, minimum_m, basis: manual ? 'user_wall_to_lot_line' as const : 'captured_nominal' as const, meets: distance_m >= minimum_m, rule_id: 'fixture-distance-rule' }
+          const planning_buffer_m = manual ? 0 : request.assumptions.planning_buffers_m?.[edge.id] ?? 0
+          return { planning_buffer_m, planning_distance_m: Math.max(0, distance_m - planning_buffer_m), planning_meets: distance_m - planning_buffer_m >= minimum_m, edge_id: edge.id, role, distance_m, minimum_m, basis: manual ? 'user_wall_to_lot_line' as const : 'captured_nominal' as const, meets: distance_m >= minimum_m, rule_id: 'fixture-distance-rule' }
         })
         if (edges.some(edge => edge.role.value !== 'unknown' && edge.role.value !== null && edge.role.value !== (edge === front ? 'front' : checks.find(check => check.edge_id === edge.id)?.role))) continue
         scenarios.push({ front_edge_id: front.id, outcome: checks.every(check => check.meets) ? 'pass' : 'fail', checks })
@@ -193,7 +194,7 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
     await click('Use suggested rear'); await settle()
     assert.equal(latest.assumptions.edges[2].role.value, 'rear')
     assert.equal(latest.assumptions.boundary_role_suggestions!.roles[latest.assumptions.edges[2].id], undefined)
-    await act(async () => document.querySelector<HTMLButtonElement>('.zsa__edge-row--selected button')!.click()); await settle()
+    await act(async () => [...document.querySelectorAll<HTMLButtonElement>('.zsa__edge-row--selected button')].find(button => button.textContent === 'Clear this mark')!.click()); await settle()
     assert.equal(latest.assumptions.edges[2].role.value, 'unknown')
     assert.equal(latest.assumptions.boundary_role_suggestions!.roles[latest.assumptions.edges[2].id], 'rear')
     const mapView = document.querySelector('#placement-map svg')!.getAttribute('viewBox')
@@ -210,6 +211,14 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
       assert.equal(latest.assumptions.edges[1].role.value, role)
       assert.equal(latest.assumptions.edges[1].role.origin, 'user')
     }
+    const markedRole = latest.assumptions.edges[1].role.value
+    await click('Close edge details'); await settle()
+    assert.equal(document.querySelector('.zsa__edge-row--selected'), null)
+    assert.equal(latest.assumptions.edges[1].role.value, markedRole)
+    await act(async () => edgeHit.dispatchEvent(new dom.window.MouseEvent('click', { bubbles: true }))); await settle()
+    assert.match(document.querySelector('.zsa__edge-row--selected')!.textContent!, /Edge 2/)
+    assert.equal(latest.assumptions.planning_buffers_m![latest.assumptions.edges[1].id], 1)
+    assert.match(document.querySelector('#builder-quick-checks')!.textContent!, /Needs review/)
     const info = document.querySelector<HTMLButtonElement>('.homeowner-summary .step-info__button')!
     await act(async () => info.dispatchEvent(new dom.window.MouseEvent('mouseover', { bubbles: true })))
     assert.equal(info.getAttribute('aria-expanded'), 'true')
@@ -243,8 +252,27 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
     assert.equal(exportRecord.zoning_site_assumptions.street_adjacency.all_marked, true)
     assert.equal(exportRecord.zoning_site_assumptions.edges[1].role.origin, 'user')
     assert.equal(exportRecord.placement_scenario_result.status, 'clarify')
+    assert.match(document.querySelector('#builder-enquiry-content')!.textContent!, /assumed buffer 1 m/)
+    assert.match(document.querySelector('#builder-enquiry-content')!.textContent!, /Main outline: Outline 1 · assumed/)
     assert.match(document.querySelector('#builder-enquiry-content')!.textContent!, /additional scouting checks for front distance, approximate rear yard, and measured or estimated height/)
     assert.match(document.querySelector('#builder-enquiry-content')!.textContent!, /Site-specific rules, current applicability and legal boundary measurements remain unresolved/)
+    assert.equal(latest.assumptions.principal_building_id.origin, 'journey_default')
+    assert.match(document.querySelector('.main-building-mark')!.textContent!, /Main building · assumed/)
+    await change(document.querySelector<HTMLSelectElement>('#principal-building')!, ''); await settle()
+    assert.equal(latest.assumptions.infer_principal_building, false)
+    assert.equal(document.querySelector('.main-building-mark'), null)
+    await change(document.querySelector<HTMLSelectElement>('#waterfront-lot')!, 'true'); await settle()
+    assert.equal(document.querySelector('[role="tab"][aria-selected="true"]')!.textContent, 'Mark waterfront')
+    await click('Edge 1 adjoins water'); await settle()
+    assert.deepEqual(latest.assumptions.waterfront_edge_ids, [latest.assumptions.edges[0].id])
+    assert.equal(latest.assumptions.edges[0].role.value, 'unknown')
+    assert.match(document.querySelector('.waterfront-mark')!.textContent!, /Waterfront · your mark/)
+    await act(async () => document.querySelector('[role="tab"][aria-selected="true"]')!.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }))); await settle()
+    assert.equal(document.querySelector('[role="tab"][aria-selected="true"]')!.textContent, 'Adjust boundaries')
+    await change(document.querySelector<HTMLSelectElement>('#waterfront-lot')!, 'false'); await settle()
+    assert.equal([...document.querySelectorAll('[role="tab"]')].some(tab => tab.textContent === 'Mark waterfront'), false)
+    assert.deepEqual(latest.assumptions.waterfront_edge_ids, [])
+
   } finally {
     await act(async () => root.unmount())
     for (const [name, descriptor] of originals) { if (descriptor) Object.defineProperty(globalThis, name, descriptor); else Reflect.deleteProperty(globalThis, name) }

@@ -44,6 +44,9 @@ class EdgeCheck(Strict):
     minimum_m: float
     meets: bool
     rule_id: str
+    planning_buffer_m: float = 0
+    planning_distance_m: float = 0
+    planning_meets: bool = False
 
 
 class Scenario(Strict):
@@ -204,6 +207,12 @@ def _boundary_screen(body: ScenarioRequest) -> ScenarioResult:
                 rule_id=(flank_rule if assignment[index] == "flanking_street" else side_rule)[
                     "logical_rule_id"],
             ) for index in range(4) if index != front)
+            checks = tuple(check.model_copy(update={
+                "planning_buffer_m": (buffer := assumptions.planning_buffers_m.get(check.edge_id, 0)
+                                      if check.basis == "captured_nominal" else 0),
+                "planning_distance_m": max(0, check.distance_m - buffer),
+                "planning_meets": check.distance_m - buffer >= check.minimum_m,
+            }) for check in checks)
             scenarios.append(Scenario(front_edge_id=edges[front].id, checks=checks,
                                       outcome="pass" if all(check.meets for check in checks)
                                       else "fail"))
