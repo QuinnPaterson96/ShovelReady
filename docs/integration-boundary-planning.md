@@ -174,3 +174,33 @@ measurements before accepted evaluation; homeowner/provider needs permit/title/p
 servicing records; product owner / #147 needs homeowner and physical-touch validation;
 platform owner / SR14/SR15 owns persistence/recovery and rollback evidence. Refresh loses
 the draft. None is resolved by the new navigation or help text.
+
+
+## Property details step and boundary acceptance — October 7, 2026
+
+Implemented: Next now precedes the details/optional controls in both placement
+workspaces. Property details is a separate rail milestone between Boundaries and
+Quick checks; entering it reveals the shared editor's property questions. Facts
+remain mounted and correction links reveal this step rather than duplicating inputs.
+Workflow review never establishes passing legal checks.
+
+A complete, non-conflicting suggestion for a supported simple four-edge lot shows
+its role/buffer preview before the editor, with Yes, use suggestions / No, adjust them.
+Yes fills only unknown roles, with user origin, assumed evidence and the note
+Suggested · accepted for planning. It acknowledges the existing saved buffers;
+measured offsets and explicit roles are kept. No reveals the original editor.
+Complex shapes, missing street/front context or conflicting marks use the editor
+directly. Revisiting/changing street marks clears accepted suggestions while keeping
+manual roles and measurements. Flag-to-buffer navigation explicitly reveals the editor.
+These are local planning selections, not legal classifications or durable saves.
+
+Verification: mounted journey checks cover acceptance, role order from the retained
+single-street fixture, preserved measurements/buffers, No revealing the editor,
+new details progression and correction navigation. Final-head frontend/build/CI
+and live deployment evidence are recorded in the PR. Source review/publication
+remains separate.
+
+Gaps: source owner/#104 still needs reviewed property/rule applicability and installed
+measurements for accepted evaluation; homeowner/provider needs permit/title/servicing
+records. Product owner/#147 owns real-user and physical-touch validation. Platform
+owner/SR14-SR15 owns persistence/recovery and rollback evidence; refresh loses answers.

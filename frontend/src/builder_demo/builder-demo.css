@@ -117,3 +117,8 @@
 .builder-placement-next .homeowner-summary__continue-note { color: var(--ink-muted); font-size: .85rem; }
 
 .builder-placement-next .builder-continue:disabled { opacity: .55; cursor: default; }
+
+.builder-demo .builder-placement-next { order: 2; }
+.builder-demo .builder-example-layout > .builder-example-controls { order: 3; }
+.zsa__defaults { padding: .75rem; border: 1px solid var(--border); background: var(--primary-soft); border-radius: var(--radius-sm); }
+.zsa__defaults ul { padding-left: 1.2rem; }

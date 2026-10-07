@@ -143,7 +143,9 @@ type JourneyStep = import('../navigation/BuilderJourneyNav').JourneyStep
 export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (progress: BuilderProgress) => void } = {}) {
   const [expanded, setExpanded] = useState({ property: true, placement: false, next: false })
   const [journeyStep, setJourneyStep] = useState<JourneyStep>('property')
+  const [boundaryEditorOverride, setBoundaryEditorOverride] = useState(false)
   const [reviewedBoundariesFor, setReviewedBoundariesFor] = useState<string | null>(null)
+  const [reviewedDetailsFor, setReviewedDetailsFor] = useState<string | null>(null)
   const [reviewedChecksFor, setReviewedChecksFor] = useState<string | null>(null)
   const [emailRequestedFor, setEmailRequestedFor] = useState<string | null>(null)
   const toggleStep = (step: keyof typeof expanded) => setExpanded(value => ({ ...value, [step]: !value[step] }))
@@ -243,6 +245,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   }
   function completeStreetMarks() { setStreetMarks({ revision: geometryRevision, data: { ...streetAdjacency, all_marked: true, completion_method: 'advance' } }); setReadyFor(null) }
   function changeBoundaryMode(next: BoundaryMapMode) {
+    setBoundaryEditorOverride(false)
     setJourneyStep(next === 'front' ? 'streets' : next === 'place' ? 'placement' : 'boundaries')
     if (next === 'front') setStreetMarks({ revision: geometryRevision, data: { ...streetAdjacency, all_marked: false } })
     else if (next === 'rear' || boundaryMode === 'front') completeStreetMarks()
@@ -263,7 +266,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const currentScenario = scenarioKey && scenarioState?.key === scenarioKey ? scenarioState.result : null
   const currentScenarioError = scenarioKey && scenarioError?.key === scenarioKey ? scenarioError.message : ''
   const boundaryInteraction: BoundaryMapInteraction | undefined = zoningCase ? {
-    editor: <SiteAssumptionsEditor onPlanningBuffersPending={setBuffersPending} waterfrontMarks={waterfrontMarks.revision === geometryRevision ? waterfrontMarks.ids : []} onWaterfrontChange={yes => { if (yes) changeBoundaryMode('waterfront'); else { if (boundaryMode === 'waterfront') changeBoundaryMode('place'); setWaterfrontMarks({ revision: geometryRevision, ids: [] }) } }} onBoundaryDismiss={() => { setSelectedBoundary(null); setMarkingRole(null); document.getElementById('boundary-roles')?.focus() }} edgeDistances={currentScenario?.edge_distances_m} homeownerDefaults streetAdjacency={streetAdjacency} markingRole={markingRole} onMarkingRoleChange={setMarkingRole} boundaryMark={boundaryMark} sharedMode={boundaryMode} selectedBoundary={selectedBoundary} onBoundarySelect={selectBoundary} site={zoningCase} geometryRevision={geometryRevision!} placementRevision={placementRevision} frontEdge={streetEdge} rearEdge={rearEdge} streetPattern={streetPattern} onChange={next => { setSiteAssumptions(next); setReadyFor(null) }} />,
+    editor: <SiteAssumptionsEditor detailsStep={journeyStep === 'details'} forceBoundaryEditor={boundaryEditorOverride || selectedBoundary !== null} onPlanningBuffersPending={setBuffersPending} waterfrontMarks={waterfrontMarks.revision === geometryRevision ? waterfrontMarks.ids : []} onWaterfrontChange={yes => { if (yes) changeBoundaryMode('waterfront'); else { if (boundaryMode === 'waterfront') changeBoundaryMode('place'); setWaterfrontMarks({ revision: geometryRevision, ids: [] }) } }} onBoundaryDismiss={() => { setSelectedBoundary(null); setMarkingRole(null); document.getElementById('boundary-roles')?.focus() }} edgeDistances={currentScenario?.edge_distances_m} homeownerDefaults streetAdjacency={streetAdjacency} markingRole={markingRole} onMarkingRoleChange={setMarkingRole} boundaryMark={boundaryMark} sharedMode={boundaryMode} selectedBoundary={selectedBoundary} onBoundarySelect={selectBoundary} site={zoningCase} geometryRevision={geometryRevision!} placementRevision={placementRevision} frontEdge={streetEdge} rearEdge={rearEdge} streetPattern={streetPattern} onChange={next => { setSiteAssumptions(next); setReadyFor(null) }} />,
     mainBuilding: zoningCase.site.buildings.find(b => b.id === currentAssumptions?.principal_building_id.value), mainBuildingAssumed: currentAssumptions?.principal_building_id.origin === 'journey_default', waterfront: currentAssumptions?.waterfront.value === true, waterfrontIds: currentAssumptions?.waterfront_edge_ids,
     suggestedRoles: currentAssumptions?.boundary_role_suggestions?.roles, streetIds: streetAdjacency.edge_ids, allStreetsMarked: streetAdjacency.all_marked, onStreetComplete: all_marked => { setStreetMarks({ revision: geometryRevision, data: { ...streetAdjacency, all_marked, completion_method: 'explicit_confirmation' } }); setReadyFor(null) }, selectedId: selectedBoundary, edges: currentAssumptions?.edges ?? [], mode: boundaryMode, frontId: streetEdge, rearId: rearEdge,
     streetPattern, onModeChange: changeBoundaryMode,
@@ -341,7 +344,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     function revealStep(event: MouseEvent) {
       const anchor = event.target instanceof Element ? event.target.closest('a') : null
       if (event.defaultPrevented || !anchor?.closest('.builder-journey-rail') || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return
-      const routes: Record<string, JourneyStep> = { '#builder-model': 'model', '#builder-property': 'property', '#builder-placement': 'placement', '#placement-action-front': 'streets', '#placement-action-rear': 'boundaries', '#builder-quick-checks': 'checks', '#builder-next': 'enquiry', '#builder-email': 'email' }
+      const routes: Record<string, JourneyStep> = { '#builder-model': 'model', '#builder-property': 'property', '#builder-placement': 'placement', '#placement-action-front': 'streets', '#placement-action-rear': 'boundaries', '#builder-property-details': 'details', '#builder-quick-checks': 'checks', '#builder-next': 'enquiry', '#builder-email': 'email' }
       const step = routes[anchor.getAttribute('href') ?? '']
       if (step) { event.preventDefault(); openJourneyStep(step) }
     }
@@ -357,10 +360,11 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     scenario: currentScenario, screening: currentScreening,
     assumptions: currentAssumptions, settings: effectiveSettings, mapped: mappedZoning, lookup: currentZoning, zoningBusy, zoningError: currentZoningError,
     propertyScan: propertyScan.result, propertyScanBusy: propertyScan.busy, propertyScanError: propertyScan.error, scenarioError: currentScenarioError, screeningError: currentScreeningError, onRetryAvailable: !!zoningKey }) : null
-  const nextJourneyStep: JourneyStep = !placementComplete ? 'placement' : journeyStep === 'checks' ? 'enquiry' : boundaryMode === 'front' ? 'boundaries' : boundaryMode === 'waterfront' ? 'boundaries' : boundaryMode === 'rear' ? 'checks' : streetAdjacency.all_marked ? 'boundaries' : 'streets'
+  const nextJourneyStep: JourneyStep = !placementComplete ? 'placement' : journeyStep === 'checks' ? 'enquiry' : journeyStep === 'details' ? 'checks' : boundaryMode === 'front' ? 'boundaries' : boundaryMode === 'waterfront' ? 'boundaries' : boundaryMode === 'rear' ? 'details' : streetAdjacency.all_marked ? 'boundaries' : 'streets'
   const continuation = nextJourneyStep === 'placement' ? { label: 'Place model', hint: 'Choose an approximate position on the map.' }
     : nextJourneyStep === 'streets' ? { label: 'Mark street edges', hint: 'Happy with this position? Next, mark every edge adjoining a street.' }
     : nextJourneyStep === 'boundaries' ? { label: 'Review boundaries', hint: 'Next, review the suggested front, rear and side edges and the planning buffers.' }
+    : nextJourneyStep === 'details' ? { label: 'Review property details', hint: 'Next, answer the property questions you know. You can leave the rest unknown.' }
     : nextJourneyStep === 'enquiry' ? { label: 'Prepare enquiry', hint: 'Next, turn these findings and open questions into an editable enquiry.' }
     : { label: 'Review quick checks', hint: 'Next, review what looks promising and which questions to include in your enquiry.' }
   const summaryPanel = summary && <HomeownerSummary summary={summary} onNavigate={navigateFlag} continuation={{ ...continuation, onContinue: () => openJourneyStep(nextJourneyStep) }} />
@@ -376,26 +380,28 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   }
   function openJourneyStep(step: JourneyStep) {
     if (!propertyComplete && step !== 'model' && step !== 'property') step = 'property'
-    if (!zoningCase && (step === 'streets' || step === 'boundaries')) step = 'placement'
+    if (!zoningCase && (step === 'streets' || step === 'boundaries' || step === 'details')) step = 'placement'
     if (boundaryMode === 'front' && step !== 'streets' && step !== 'property') completeStreetMarks()
-    if (boundaryMode === 'rear' && (step === 'checks' || step === 'enquiry' || step === 'email')) setReviewedBoundariesFor(reviewRevision)
+    if (boundaryMode === 'rear' && (step === 'details' || step === 'checks' || step === 'enquiry' || step === 'email')) setReviewedBoundariesFor(reviewRevision)
     if (journeyStep === 'checks' && (step === 'enquiry' || step === 'email')) setReviewedChecksFor(reviewRevision)
+    if (journeyStep === 'details' && (step === 'checks' || step === 'enquiry' || step === 'email')) setReviewedDetailsFor(reviewRevision)
     setJourneyStep(step)
     if (step === 'streets') changeBoundaryMode('front')
     if (step === 'boundaries') changeBoundaryMode('rear')
-    if (step === 'placement') setBoundaryMode('place')
+    if (step === 'placement' || step === 'details') setBoundaryMode('place')
     setExpanded(previous => ({ ...previous, ...(step === 'property' ? { property: true } : step === 'enquiry' || step === 'email' ? { next: true } : { placement: true }) }))
-    const targets: Record<JourneyStep, string> = { model: 'builder-title', property: 'builder-site-mode', placement: 'placement-map', streets: 'placement-action-front', boundaries: 'placement-action-rear', checks: 'builder-quick-checks', enquiry: 'builder-question', email: 'builder-email-recipient' }
+    const targets: Record<JourneyStep, string> = { model: 'builder-title', property: 'builder-site-mode', placement: 'placement-map', streets: 'placement-action-front', boundaries: 'placement-action-rear', details: 'builder-property-details', checks: 'builder-quick-checks', enquiry: 'builder-question', email: 'builder-email-recipient' }
     requestAnimationFrame(() => {
       focusSummaryTarget(document, targets[step])
       if (step === 'checks') { const details = document.querySelector<HTMLDetailsElement>('.homeowner-summary__checks'); if (details) details.open = true }
     })
   }
   function navigateFlag(target: string) {
-    setJourneyStep(target === 'street-side' ? 'streets' : target === 'boundary-roles' || target === 'boundary-offsets' ? 'boundaries' : target === 'placement-map' ? 'placement' : 'checks')
+    const propertyFact = ['building-type', 'existing-suites', 'principal-building', 'waterfront-lot', 'zsa-floor-area', 'separation-measurement-choice'].includes(target)
+    setJourneyStep(propertyFact ? 'details' : target === 'street-side' ? 'streets' : target === 'boundary-roles' || target === 'boundary-offsets' ? 'boundaries' : target === 'placement-map' ? 'placement' : 'checks')
     if (boundaryMode === 'front' && target !== 'street-side') completeStreetMarks()
-    if (target === 'placement-map') setBoundaryMode('place')
-    if (target === 'boundary-roles' || target === 'boundary-offsets') changeBoundaryMode('rear')
+    if (propertyFact || target === 'placement-map') setBoundaryMode('place')
+    if (target === 'boundary-roles' || target === 'boundary-offsets') { changeBoundaryMode('rear'); setBoundaryEditorOverride(true) }
     if (target === 'street-side') { changeBoundaryMode('front'); target = 'placement-action-front' }
     if (target === 'zoning-retry') { setZoningRetry(value => value + 1); return }
     if (target === 'retry-scenario') { setScenarioRetry(value => value + 1); return }
@@ -410,7 +416,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const enquiryReady = !!enquiryDoc && readyFor === draftText
   const progressCallback = useRef(onProgressChange)
   progressCallback.current = onProgressChange
-  useEffect(() => { progressCallback.current?.({ model: true, property: propertyComplete, placement: placementComplete, streets: !!geometryRevision && streetAdjacency.all_marked, boundaries: reviewedBoundariesFor === reviewRevision, checks: reviewedChecksFor === reviewRevision, enquiry: enquiryReady, email: emailRequestedFor === JSON.stringify([draftText, recipient, includeSiteDetails]), current: journeyStep, mapAvailable: propertyComplete ? !!zoningCase : undefined }) }, [zoningCase, propertyComplete, placementComplete, enquiryReady, geometryRevision, streetAdjacency.all_marked, reviewedBoundariesFor, reviewedChecksFor, reviewRevision, emailRequestedFor, draftText, recipient, includeSiteDetails, journeyStep])
+  useEffect(() => { progressCallback.current?.({ model: true, property: propertyComplete, placement: placementComplete, streets: !!geometryRevision && streetAdjacency.all_marked, boundaries: reviewedBoundariesFor === reviewRevision, details: reviewedDetailsFor === reviewRevision, checks: reviewedChecksFor === reviewRevision, enquiry: enquiryReady, email: emailRequestedFor === JSON.stringify([draftText, recipient, includeSiteDetails]), current: journeyStep, mapAvailable: propertyComplete ? !!zoningCase : undefined }) }, [zoningCase, propertyComplete, placementComplete, enquiryReady, geometryRevision, streetAdjacency.all_marked, reviewedBoundariesFor, reviewedDetailsFor, reviewedChecksFor, reviewRevision, emailRequestedFor, draftText, recipient, includeSiteDetails, journeyStep])
   useEffect(() => { setReadyFor(null) }, [draftText])
   const emailBody = enquiryDoc ? enquiryEmailBody(enquiryDoc, includeSiteDetails) : ''
   const emailSubject = enquiryDoc?.example ? 'Saved example only — Model 300 question' : 'Model 300 preliminary enquiry'

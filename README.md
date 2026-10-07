@@ -20,7 +20,8 @@ journey is implemented as a local demonstration; the history below records its s
 The [boundary planning update](docs/integration-boundary-planning.md) adds an attributed
 main-outline default, separate waterfront marks, dismissible edge details and explicit
 1 m planning buffers with Likely fine / Needs review findings. The shared workspace
-now places Next below the editing area, expands the review checklist, makes status
+now places Next directly below the map, gives property details their own step,
+offers acceptance of boundary suggestions before editing, expands the review checklist, makes status
 counts navigable, and adds explicit buffer saving and accessible scan-card help.
 
 The header now separates primary journeys from research tools and provides
