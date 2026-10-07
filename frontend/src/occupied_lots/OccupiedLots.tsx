@@ -101,6 +101,7 @@ export type OccupiedMeasurement = { site: Case; model: (typeof bundledCatalogue.
 export type OccupiedLotsProps = {
   placementSummary?: ReactNode
   placementContinuation?: ReactNode
+  moveSuggestion?: { dx: number; dy: number; token: number }
   evidenceTargetId?: string
   compactPlacement?: boolean
   allowedModelIds?: readonly string[]
@@ -111,7 +112,7 @@ export type OccupiedLotsProps = {
   boundaryInteraction?: BoundaryMapInteraction
 }
 
-export default function OccupiedLots({ allowedModelIds, initialModelId = '', onMeasurement, showHandoff = true, suppliedCase, boundaryInteraction, compactPlacement = false, evidenceTargetId, placementSummary, placementContinuation }: OccupiedLotsProps) {
+export default function OccupiedLots({ allowedModelIds, initialModelId = '', onMeasurement, showHandoff = true, suppliedCase, boundaryInteraction, compactPlacement = false, evidenceTargetId, moveSuggestion, placementSummary, placementContinuation }: OccupiedLotsProps) {
   const initialModel = bundledCatalogue.models.find(m => m.model_id === initialModelId && (!allowedModelIds || allowedModelIds.includes(m.model_id)))
   const initialDimension = (name: string) => {
     const quantity = initialModel?.measurements.find(m => m.name === name)?.quantity
@@ -139,6 +140,13 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
   const allowedModels = bundledCatalogue.models.filter(m => !allowedModelIds || allowedModelIds.includes(m.model_id))
   const model = allowedModels.find(m => m.model_id === modelId)
   function invalidate() { activeCheck.current?.abort(); version.current++; setResult(null); onMeasurement?.(null); setAssessmentError(''); setAssessing(false) }
+  const appliedMove = useRef<number | null>(null)
+  useEffect(() => {
+    if (!moveSuggestion || appliedMove.current === moveSuggestion.token) return
+    appliedMove.current = moveSuggestion.token
+    if (!placement.x.trim() || !placement.y.trim()) return
+    changePlacement({ x: String(Number(placement.x) + moveSuggestion.dx), y: String(Number(placement.y) + moveSuggestion.dy) })
+  }, [moveSuggestion])
   function changePlacement(patch: Partial<Placement>) { invalidate(); setPlacement(p => ({ ...p, ...patch })) }
   function changeAssumption(key: 'parcel' | 'building', value: string) { invalidate(); setAssumptions(p => ({ ...p, [key]: value })) }
   useEffect(() => {

@@ -260,3 +260,41 @@ measurements before accepted evaluation; homeowner/provider needs permit/title/
 projection/servicing records. Product owner/#147 owns real-user and touch validation.
 Platform owner/SR14-SR15 owns persistence/recovery and rollback evidence; refresh
 loses answers. Numerical guidance clears only the stated preliminary distance check.
+
+## Applied suggestions and conflict acknowledgement — October 7, 2026
+
+Implemented: accepting boundary defaults immediately marks the Boundaries workflow
+milestone reviewed for the accepted roles, saved buffers and measurements. Other
+property answers do not clear this boundary-specific milestone; changing its inputs
+or placement does. It remains workflow review, not a legal classification/pass.
+
+Single-scenario buffer guidance now offers separate Apply buffer and Move away from
+this edge & recheck actions. Applying saves only that edge's suggested conservative
+buffer; it does not invent a measured offset. Moving translates the unchanged nominal
+rectangle along the boundary's inward normal and triggers the existing reassessment.
+Both actions use structured suggestion values, reject stale/unavailable suggestions,
+and are disabled with unsaved buffers. Other gaps must still be rechecked. Source
+observations and measured overrides are retained, and ambiguous scenarios have no
+automatic suggestion. Returned scan record names are bold in accessible popup and
+expanded findings.
+
+Conflicts can be acknowledged for City/provider discussion and included in the unsent
+enquiry and technical export. Conflict status/counts remain unchanged. Acknowledgement
+can be removed and is valid only for the current placement, assumptions and finding;
+changed relevant inputs require acknowledgement again. City agreement or availability
+of an exception is never established by this action.
+
+Verification: 136 frontend checks and build/typecheck passed. Mounted journey covers
+immediate boundary completion, applying one buffer while retaining other values and
+measurements, normal movement with unchanged dimensions and a fresh assessment,
+conflict acknowledgement/removal/export, and invalidation on input changes. Desktop
+preview confirmed the boundary milestone and enquiry inclusion; 390 x 844 preview
+confirmed bold permit-area names and bounded help with no horizontal overflow.
+Final CI and live evidence are recorded in the PR; no physical-touch/source validation
+was performed.
+
+Gaps: source owner/#104 needs reviewed property/rule applicability and installed
+measurements before accepted evaluation; homeowner/provider needs permit/title/
+projection/servicing records. Product owner/#147 owns real-user and touch validation.
+Platform owner/SR14-SR15 owns persistence/recovery and rollback evidence; refresh
+loses answers. Conflict discussion cannot establish a viable approval route.

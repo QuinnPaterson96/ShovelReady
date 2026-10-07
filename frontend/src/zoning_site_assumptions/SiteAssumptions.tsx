@@ -4,7 +4,7 @@ import { MeasurementInput } from '../MeasurementInput'
 import { StepInfo } from '../StepInfo'
 import { assumptionsKey, initialAssumptions, suiteCountFact, ordinaryFourEdgeBoundary, inferBoundaryRoles, suggestedBoundaryRoles, withPlacementRevision, type EdgeRole, type SiteAssumptions, type UserMeasurement } from './model'
 
-type Props = { onFactsNext?: () => void; factsNextDisabled?: boolean; detailsStep?: boolean; forceBoundaryEditor?: boolean; onPlanningBuffersPending?: (pending: boolean) => void; onWaterfrontChange?: (value: boolean | null) => void; waterfrontMarks?: string[]; onBoundaryDismiss?: () => void; edgeDistances?: Record<string, number>; streetAdjacency?: import('./model').StreetAdjacency; markingRole?: EdgeRole | null; onMarkingRoleChange?: (role: EdgeRole) => void; boundaryMark?: { id: string; role: EdgeRole } | null; sharedMode?: import('./model').BoundaryMapMode; selectedBoundary?: string | null; onBoundarySelect?: (id: string) => void; homeownerDefaults?: boolean; site: Case; geometryRevision: string; placementRevision: string; frontEdge?: string | null; rearEdge?: string | null; streetPattern?: 'unknown' | 'single' | 'corner_or_multiple'; onChange: (value: SiteAssumptions | null) => void }
+type Props = { onBoundaryAccepted?: (value: SiteAssumptions) => void; bufferSuggestion?: { edgeId: string; value: number; token: number; geometryRevision: string; placementRevision: string };  onFactsNext?: () => void; factsNextDisabled?: boolean; detailsStep?: boolean; forceBoundaryEditor?: boolean; onPlanningBuffersPending?: (pending: boolean) => void; onWaterfrontChange?: (value: boolean | null) => void; waterfrontMarks?: string[]; onBoundaryDismiss?: () => void; edgeDistances?: Record<string, number>; streetAdjacency?: import('./model').StreetAdjacency; markingRole?: EdgeRole | null; onMarkingRoleChange?: (role: EdgeRole) => void; boundaryMark?: { id: string; role: EdgeRole } | null; sharedMode?: import('./model').BoundaryMapMode; selectedBoundary?: string | null; onBoundarySelect?: (id: string) => void; homeownerDefaults?: boolean; site: Case; geometryRevision: string; placementRevision: string; frontEdge?: string | null; rearEdge?: string | null; streetPattern?: 'unknown' | 'single' | 'corner_or_multiple'; onChange: (value: SiteAssumptions | null) => void }
 const roleNames: Record<EdgeRole, string> = { unknown: 'Unknown', front: 'Front', rear: 'Rear', side: 'Side', flanking_street: 'Flanking street' }
 function AnswerChoices({ id, label, value, onChange }: { id: string; label: string; value: 'yes' | 'no' | 'maybe'; onChange: (value: 'yes' | 'no' | 'maybe') => void }) {
   return <div className="zsa__answer" id={id} tabIndex={-1} role="group" aria-label={label}><strong>{label}</strong><div className="zsa__answer-buttons">{(['yes', 'no', 'maybe'] as const).map(choice => <button type="button" key={choice} aria-pressed={value === choice} onClick={() => onChange(choice)}>{choice === 'maybe' ? 'Not sure' : choice === 'yes' ? 'Yes' : 'No'}</button>)}</div></div>
@@ -16,7 +16,7 @@ function measure(raw: string, basis: UserMeasurement['basis'], placementRevision
   return Number.isFinite(number) && number >= 0 ? { value: number, unit: basis === 'regulatory_floor_area' || basis === 'rough_floor_area_estimate' ? 'm2' : 'm', basis, origin: 'user', note: null, placement_revision: placementRevision } : null
 }
 
-function Editor({ onFactsNext, factsNextDisabled, detailsStep, forceBoundaryEditor, onPlanningBuffersPending, onWaterfrontChange, waterfrontMarks, onBoundaryDismiss, edgeDistances, streetAdjacency, site, geometryRevision, placementRevision, frontEdge = null, rearEdge = null, streetPattern = 'unknown', markingRole, onMarkingRoleChange, boundaryMark, sharedMode, selectedBoundary, onBoundarySelect, homeownerDefaults = false, onChange }: Props) {
+function Editor({ onBoundaryAccepted, bufferSuggestion, onFactsNext, factsNextDisabled, detailsStep, forceBoundaryEditor, onPlanningBuffersPending, onWaterfrontChange, waterfrontMarks, onBoundaryDismiss, edgeDistances, streetAdjacency, site, geometryRevision, placementRevision, frontEdge = null, rearEdge = null, streetPattern = 'unknown', markingRole, onMarkingRoleChange, boundaryMark, sharedMode, selectedBoundary, onBoundarySelect, homeownerDefaults = false, onChange }: Props) {
   useEffect(() => { void import('./site-assumptions.css') }, [])
   const notify = useRef(onChange)
   notify.current = onChange
@@ -32,6 +32,12 @@ function Editor({ onFactsNext, factsNextDisabled, detailsStep, forceBoundaryEdit
     setValue(previous => ({ ...previous, planning_buffers_m: { ...previous.planning_buffers_m, ...Object.fromEntries(Object.entries(bufferDraft).map(([id, raw]) => [id, Number(raw)])) } }))
     setBufferDraft({}); setBuffersSaved(true)
   }
+  useEffect(() => {
+    if (buffersPending || !bufferSuggestion || bufferSuggestion.geometryRevision !== geometryRevision || bufferSuggestion.placementRevision !== placementRevision || !Number.isFinite(bufferSuggestion.value) || bufferSuggestion.value < 0) return
+    if (!value.edges.some(edge => edge.id === bufferSuggestion.edgeId) || value.measurements.boundary[bufferSuggestion.edgeId]) return
+    setValue(previous => ({ ...previous, planning_buffers_m: { ...previous.planning_buffers_m, [bufferSuggestion.edgeId]: bufferSuggestion.value } }))
+    setBufferDraft({}); setBuffersSaved(true)
+  }, [bufferSuggestion])
   const [selectedEdge, setSelectedEdge] = useState<string | null>(null)
   const [distanceDraft, setDistanceDraft] = useState<Record<string, string>>({})
   const [separationDraft, setSeparationDraft] = useState('')
@@ -69,7 +75,8 @@ function Editor({ onFactsNext, factsNextDisabled, detailsStep, forceBoundaryEdit
   const showBoundaryEditor = !canAccept || boundaryChoice === 'adjust' || forceBoundaryEditor
   const acceptSuggestions = () => {
     if (!canAccept || buffersPending) return
-    setValue(previous => ({ ...previous, edges: previous.edges.map(edge => edge.role.value && edge.role.value !== 'unknown' ? edge : { ...edge, role: { value: inference.roles[edge.id], origin: 'user', evidence_state: 'assumed', note: 'Suggested · accepted for planning' } }) }))
+    const accepted: SiteAssumptions = { ...value, edges: value.edges.map(edge => edge.role.value && edge.role.value !== 'unknown' ? edge : { ...edge, role: { value: inference.roles[edge.id], origin: 'user', evidence_state: 'assumed', note: 'Suggested · accepted for planning' } }) }
+    setValue(accepted); onBoundaryAccepted?.(accepted)
     setBuffersSaved(true); setBoundaryChoice('accepted')
   }
   const activeEdge = sharedMode !== undefined ? selectedBoundary : selectedEdge

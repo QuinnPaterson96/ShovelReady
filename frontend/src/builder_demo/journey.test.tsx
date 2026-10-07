@@ -208,7 +208,8 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
   const click = async (label: string) => { const node = [...document.querySelectorAll<HTMLElement>('button, summary')].find(node => node.textContent === label || node.getAttribute('aria-label') === label); assert.ok(node, label); await act(async () => node.click()) }
   const change = async (node: HTMLInputElement | HTMLSelectElement, value: string) => { await act(async () => { node.focus(); Object.getOwnPropertyDescriptor(node instanceof dom.window.HTMLSelectElement ? dom.window.HTMLSelectElement.prototype : dom.window.HTMLInputElement.prototype, 'value')!.set!.call(node, value); node.dispatchEvent(node instanceof dom.window.HTMLSelectElement ? new dom.window.Event('change', { bubbles: true }) : new dom.window.KeyboardEvent('keyup', { key: '5', bubbles: true })) }) }
   try {
-    await act(async () => root.render(createElement(BuilderDemo)))
+    let completion = emptyBuilderJourneyCompletion
+    await act(async () => root.render(createElement<{ onProgressChange?: (next: typeof emptyBuilderJourneyCompletion) => void }>(BuilderDemo, { onProgressChange: next => { completion = next } })))
     await click('Try an example property'); await settle(550); await settle(1150)
     assert.match(document.querySelector('.builder-placement-results')!.textContent!, /timed out/)
     assert.doesNotMatch(document.querySelector('.builder-placement-results')!.textContent!, /Checking plausible/)
@@ -236,6 +237,37 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
     assert.deepEqual(latest.assumptions.measurements, savedBefore.measurements)
     assert.deepEqual(latest.assumptions.planning_buffers_m, savedBefore.planning_buffers_m)
     assert.match(document.querySelector('.zsa__defaults')!.textContent!, /accepted for planning/)
+    assert.equal(completion.boundaries, true)
+    const beforeApply = JSON.parse(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value)
+    await click('Apply 0.65 m planning buffer'); await settle()
+    assert.equal(latest.assumptions.planning_buffers_m![latest.assumptions.edges[1].id], .65)
+    assert.equal(latest.assumptions.planning_buffers_m![latest.assumptions.edges[2].id], 1)
+    assert.deepEqual(latest.assumptions.measurements, savedBefore.measurements)
+    const suggestedBuffer = document.querySelector<HTMLInputElement>('[aria-label="Edge 2 planning buffer in metres"]')!
+    await change(suggestedBuffer, '1'); await click('Save planning buffers'); await settle()
+    await click('Move 0.35 m away from this edge & recheck'); await settle(700)
+    const moved = JSON.parse(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value)
+    const beforePosition = beforeApply.measurement.result.input.placement
+    const afterPosition = moved.measurement.result.input.placement
+    // A normal translation has exactly the requested norm; dimensions stay fixed.
+    assert.ok(Math.abs(Math.hypot(afterPosition.centre_xy[0] - beforePosition.centre_xy[0], afterPosition.centre_xy[1] - beforePosition.centre_xy[1]) - .35) < 1e-7)
+    assert.equal(afterPosition.width_m, beforePosition.width_m)
+    assert.equal(afterPosition.depth_m, beforePosition.depth_m)
+    await click('Adjust boundaries'); await click('No, adjust them')
+    await change(document.querySelector<HTMLSelectElement>('[aria-label="Edge to mark"]')!, latest.assumptions.edges[1].id)
+    const measuredOffset = document.querySelector<HTMLInputElement>('.zsa__edge-row--selected input')!
+    await change(measuredOffset, '.1'); await settle()
+    assert.match(document.querySelector('#builder-quick-checks')!.textContent!, /Distance to boundaries · Conflicts/)
+    await click('Acknowledge and include in enquiry'); await settle()
+    assert.match(document.querySelector('#builder-quick-checks')!.textContent!, /Distance to boundaries · Conflicts/)
+    assert.match(document.querySelector('#builder-enquiry-content')!.textContent!, /Acknowledged conflicts for discussion.*City agreement or an exception is not established/s)
+    assert.equal(JSON.parse(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value).acknowledged_conflicts_for_discussion.length, 1)
+    await click('Remove acknowledgement'); await settle()
+    assert.doesNotMatch(document.querySelector('#builder-enquiry-content')!.textContent!, /Acknowledged conflicts for discussion/)
+    await click('Acknowledge and include in enquiry'); await settle()
+    await change(measuredOffset, ''); await settle()
+    assert.doesNotMatch(document.querySelector('#builder-enquiry-content')!.textContent!, /Acknowledged conflicts for discussion/)
+
 
     assert.equal(document.querySelectorAll('#boundary-offsets input').length, 4)
     await click('Mark street edges'); await settle()
