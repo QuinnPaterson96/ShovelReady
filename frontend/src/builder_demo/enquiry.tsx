@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react'
 import { publicSourceUrl } from '../ReadableProvenance'
 
-export type EnquirySection = { heading: string; paragraphs: string[]; emailSummary: string }
+export type EnquirySection = { heading: string; paragraphs: string[]; emailSummary: string; siteDetails?: boolean }
 export type EnquiryDocument = {
+  kind?: 'enquiry' | 'screening'
   title: string
   question: string
   example: boolean
@@ -26,38 +27,43 @@ const safeParts = (text: string): { text: string; url?: string }[] => {
   return parts
 }
 
-const markdownEscape = (value: string) => value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-  .replace(/[\\`*_{}\[\]()#+.!|~-]/g, '\\$&')
+const markdownEscape = (value: string) => value.replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  .replace(/[\\`*_{}\[\]|]/g, '\\$&').replace(/^(\s*)([>#-])/gm, '$1\\$2')
 const markdownParagraph = (value: string) => safeParts(value).map(part => part.url
   ? `[${markdownEscape(part.text)}](${part.url.replace(/\(/g, '%28').replace(/\)/g, '%29')})` : markdownEscape(part.text)).join('')
 
 export function enquiryPlainText(document: EnquiryDocument) {
-  return [document.title, document.question,
+  return [document.example ? 'SAVED EXAMPLE ONLY — not my property.' : '', document.title, document.question,
     ...document.sections.flatMap(section => [section.heading, ...section.paragraphs]),
-    document.closing].join('\n\n')
+    document.closing].filter(Boolean).join('\n\n')
 }
 
 export function enquiryMarkdown(document: EnquiryDocument) {
-  return [`# ${markdownEscape(document.title)}`, markdownParagraph(document.question),
+  return [`# ${markdownEscape(document.title)}`, ...(document.example ? ['SAVED EXAMPLE ONLY — not my property.'] : []), markdownParagraph(document.question),
     ...document.sections.map(section => `## ${markdownEscape(section.heading)}\n\n${section.paragraphs.map(markdownParagraph).join('\n\n')}`),
     markdownParagraph(document.closing)].join('\n\n') + '\n'
 }
 
+// Keep arbitrary source text inside a fence it cannot close, without altering evidence bytes.
+export function technicalEvidenceMarkdown(record: unknown) {
+  const json = JSON.stringify(record, null, 2)
+  const fence = '`'.repeat(Math.max(3, ...[...json.matchAll(/`+/g)].map(match => match[0].length + 1)))
+  return `${fence}json\n${json}\n${fence}\n`
+}
+
 export function enquiryEmailBody(document: EnquiryDocument, includeSiteDetails: boolean) {
-  const sections = document.sections.filter(section => includeSiteDetails || section.heading === 'Model' || section.heading === 'Price & timing')
-  return [document.example ? 'SAVED EXAMPLE ONLY — not my property.' : 'Preliminary Model 300 enquiry.',
-    document.question,
-    ...sections.map(section => `${section.heading}: ${section.emailSummary}`),
-    ...(!includeSiteDetails ? ['The automatic property summary and placement observations are withheld; the question above is included as written. I can share them after reviewing the recipient.'] : []),
-    document.closing,
-    'Prepared independently with ShovelReady. Please review and edit before sending.'].join('\n\n')
+  const sections = document.sections.filter(section => includeSiteDetails || !section.siteDetails)
+  return [document.example ? 'SAVED EXAMPLE ONLY — not my property.' : '', document.question,
+    ...sections.flatMap(section => [section.heading, ...section.paragraphs]),
+    ...(!includeSiteDetails ? ['Property details and placement findings are withheld. Planning feasibility is unconfirmed; the question above is included as written.'] : []),
+    document.closing].filter(Boolean).join('\n\n')
 }
 
 export function EnquiryPreview({ document }: { document: EnquiryDocument }) {
   const links = (value: string): ReactNode[] => safeParts(value).map((part, index) => part.url
     ? <a key={index} href={part.url} target="_blank" rel="noreferrer">{part.text}</a> : part.text)
-  return <article className="enquiry-preview" aria-label="Unsent enquiry preview">
-    <h3>{document.title}</h3>
+  return <article className="enquiry-preview" aria-label={document.kind === 'screening' ? 'Supporting screening report' : 'Unsent enquiry preview'}>
+    <h3>{document.title}</h3>{document.example && <p>SAVED EXAMPLE ONLY — not my property.</p>}
     <p className="enquiry-question">{links(document.question)}</p>
     {document.sections.map(section => <section key={section.heading} aria-label={section.heading}>
       <h4>{section.heading}</h4>{section.paragraphs.map((paragraph, index) => <p key={index}>{links(paragraph)}</p>)}

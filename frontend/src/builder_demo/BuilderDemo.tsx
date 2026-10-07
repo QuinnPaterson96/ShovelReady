@@ -1,8 +1,9 @@
+import { manufacturerDocument, placementConcerns, boundaryObservations, additionalObservation, conditionalObservation, assumptionsDescription, type EnquiryInput } from './manufacturer'
 import { EvidenceAtFooter } from '../EvidenceAtFooter'
 import { PropertyScan, usePropertyScan, type PropertyScanResult } from '../conditional_screening/PropertyScan'
 import { StepInfo } from '../StepInfo'
 import { AdditionalInputs } from '../conditional_screening/AdditionalInputs'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { SiteDiscovery } from '../site_discovery/SiteDiscovery'
 import type { Confirmed } from '../site_discovery/flow'
 import { placementCase } from '../site_discovery/placement'
@@ -33,8 +34,8 @@ import { HomeownerSummary, statusLabels, summaryFindings } from '../conditional_
 import { homeownerSummary } from '../conditional_screening/victoriaSummaryAdapter'
 import { focusSummaryTarget } from '../conditional_screening/summaryNavigation'
 import { parseScenarioResult, type ScenarioRequest, type ScenarioResult } from '../conditional_screening/scenarios'
-import { currentPlacementRevision, expectedPropertyRevision, parseScreeningResult, propertyGeometryRevision, screeningCheckTitle, screeningIdentity, type Pathway, type ScreeningRequest, type ScreeningResult } from '../conditional_screening/model'
-import { EnquiryPreview, emailDraftUrl, enquiryEmailBody, enquiryMarkdown, enquiryPlainText, validRecipient, type EnquiryDocument } from './enquiry'
+import { currentPlacementRevision, expectedPropertyRevision, parseScreeningResult, propertyGeometryRevision, screeningIdentity, type Pathway, type ScreeningRequest, type ScreeningResult } from '../conditional_screening/model'
+import { EnquiryPreview, emailDraftUrl, enquiryEmailBody, enquiryMarkdown, enquiryPlainText, technicalEvidenceMarkdown, validRecipient, type EnquiryDocument } from './enquiry'
 
 const MODEL_ID = 'aux-300' as const
 const foundModel = bundledCatalogue.models.find(item => item.model_id === MODEL_ID)
@@ -48,9 +49,7 @@ const metres = (name: string) => measurement(name)?.quantity?.unit === 'm'
 const fact = (value: string | number | null) => value === null || value === '' ? 'unknown' : String(value)
 const field = (value: string) => value.trim() || 'unknown'
 
-export function enquiryDocument(selection: SitePreparationSelection | null, input: {
-  question?: string; intendedUse: string; timing: string; budget: string; access: string; services: string
-}, measured: OccupiedMeasurement | null, exampleImported = false, live: Confirmed | null = null, manual: ManualSiteOutput | null = null, savedExample = false, foundationAllowanceM: string | null = null,
+export function screeningDocument(selection: SitePreparationSelection | null, input: EnquiryInput, measured: OccupiedMeasurement | null, exampleImported = false, live: Confirmed | null = null, manual: ManualSiteOutput | null = null, savedExample = false, foundationAllowanceM: string | null = null,
   conditional: ScreeningResult | null = null, siteAssumptions: SiteAssumptions | null = null, pathway: Pathway | null = null, scenarios: ScenarioResult | null = null, settings: ProjectSettings | null = null, scan: PropertyScanResult | null = null) {
   const source = model.sources[0]
   const candidate = selection?.candidate
@@ -71,28 +70,19 @@ export function enquiryDocument(selection: SitePreparationSelection | null, inpu
     const outcome = check.comparison === 'shortfall' && check.margin_m !== null ? `shortfall ${measurementWithUnit(Math.abs(check.margin_m), 'length')}` : check.comparison === 'meets' ? 'meets the supplied target' : 'comparison unresolved'
     return `${label}: ${outcome}; measured ${measurementWithUnit(check.distance_m, 'length')}. ${check.id.startsWith('requirement:user-') ? 'User assumption, not a legal setback.' : 'Source-derived comparison; applicability requires review.'}`
   }).join(' ')
+  const subsetCount = (status: import('../conditional_screening/model').ScreeningStatus) => conditional?.checks.filter(check => check.status === status).length ?? 0
   const conditionalSummary = conditional
-    ? `Candidate Victoria garden-suite comparison for this supplied placement: ${conditional.coverage.meets_under_assumptions} checks meet under stated assumptions; ${conditional.coverage.apparent_conflict_under_assumptions} apparent conflicts; ${conditional.coverage.needs_information} need information; ${conditional.coverage.unsupported} outside scope. Candidate source/currentness and site facts remain unreviewed; no approval or complete bylaw review.`
+    ? `Candidate Victoria garden-suite comparison for this supplied placement: ${subsetCount('meets_under_assumptions')} checks meet under stated assumptions; ${subsetCount('apparent_conflict_under_assumptions') ? `${subsetCount('apparent_conflict_under_assumptions')} concern${subsetCount('apparent_conflict_under_assumptions') === 1 ? '' : 's'} in this subset;` : `no concerns identified in this strict-input subset; this excludes approximate rear-yard checks;`} ${subsetCount('needs_information')} need information; ${subsetCount('unsupported')} outside scope. Candidate source/currentness and site facts remain unreviewed; no approval or complete bylaw review.`
     : 'Conditional zoning findings are not current for these inputs. No legal compatibility conclusion is available.'
   const scenarioSummary = scenarios
-    ? `Approximate candidate Victoria setback scenario for this nominal placement: ${scenarios.reason} ${scenarios.scenarios.length} coherent edge assignments tested for side, rear and possible flanking street distances. ${Object.keys(siteAssumptions?.measurements.boundary ?? {}).length} user wall-to-line measurements replaced approximate edge comparisons; these values are unverified and the captured distances remain in technical evidence. See the additional scouting checks for front distance, approximate rear yard, and measured or estimated height/area. Site-specific rules, current applicability and legal boundary measurements remain unresolved. Source: ${scenarios.sources.map(item => `${item.provider}, ${item.record_label}, ${item.locator}, captured ${item.capture_date ?? 'date unknown'}, ${item.review_status}; ${item.url}`).join(' ')}`
-    : 'No current approximate setback scenario finding for this placement.'
-  const conditionalCheckDetails = conditional?.checks.map(check => `${screeningCheckTitle(check)}: ${check.status.replace(/_/g, ' ')}${check.normalized_observed !== null && check.normalized_threshold !== null ? `; supplied ${check.normalized_observed} ${check.normalized_unit ?? ''}, candidate threshold ${check.normalized_threshold} ${check.normalized_unit ?? ''}` : ''}. ${check.reasons.join(' ')} Source: ${check.rule.source.provider}, ${check.rule.source.record_label}, ${check.rule.source.locator}, captured ${check.rule.source.capture_date ?? 'date unknown'}, ${check.rule.source.review_status}; ${check.rule.source.url}.`) ?? []
+    ? `Approximate side, rear and possible street-side distances only: ${scenarios.status === 'bounded_pass' ? 'the tested boundary classifications meet the candidate distance thresholds' : scenarios.status === 'apparent_conflict' ? 'candidate distance concerns remain under all tested boundary classifications' : scenarios.status === 'clarify' ? 'the outcome depends on unresolved boundary classification' : 'boundary comparisons are unresolved'}. This subset excludes front distance, rear-yard location/share and height/area. See those separate observations and the overall account. Mapped distances, user measurements and planning allowances are distinguished above. Source: ${scenarios.sources.map(item => `${item.provider}, ${item.record_label}, ${item.locator}, captured ${readableDate(item.capture_date)}, ${item.review_status}; ${item.url}`).join(' ')}`
+    : 'No current approximate setback finding for this placement.'
+  const conditionalCheckDetails = conditional?.checks.map(check => `${conditionalObservation(check)} Source: ${check.rule.source.provider}, ${check.rule.source.record_label}, ${check.rule.source.locator}, captured ${readableDate(check.rule.source.capture_date)}, ${check.rule.source.review_status}; ${check.rule.source.url}.`) ?? []
   const sourceCaveat = conditional?.checks[0]?.rule.source.currentness_limitations.join(' ') ?? ''
   const mappedSource = settings?.evidence.confirmed_zone.source
   const settingSourceSummary = mappedSource ? ` Mapped zoning observation: ${mappedSource.provider}, ${mappedSource.record_label}, ${mappedSource.locator}, captured ${readableDate(mappedSource.capture_date)}, ${mappedSource.review_status}; ${mappedSource.url}.` : ''
-  const streetSummary = siteAssumptions?.street_adjacency ? ` Street-adjacent edges: ${siteAssumptions.street_adjacency.edge_ids.length} marked by the user; ${siteAssumptions.street_adjacency.all_marked ? 'user says all street edges are marked' : 'remaining street adjacency unknown'}. Road bands are diagrammatic, not surveyed road locations or access points. Boundary suggestions are inferred from your marks; review them against your property plan.` : ''
-  const mapAssumptions = siteAssumptions ? ` Main outline: ${siteAssumptions.principal_building_id.value ? `Outline ${siteAssumptions.observed_buildings.findIndex(b => b.id === siteAssumptions.principal_building_id.value) + 1} · ${siteAssumptions.principal_building_id.origin === 'journey_default' ? 'assumed from largest usable outline' : 'your selection'}` : 'unknown'}. Waterfront edges: ${(siteAssumptions.waterfront_edge_ids ?? []).map(id => `Edge ${siteAssumptions.edges.findIndex(edge => edge.id === id) + 1}`).join(', ') || 'not marked'}; physical observations, not legal frontage.` : ''
-  const planningSummary = siteAssumptions && scenarios ? siteAssumptions.edges.map((edge, i) => {
-    const manual = siteAssumptions.measurements.boundary[edge.id]
-    const distance = scenarios.edge_distances_m[edge.id]
-    const buffer = siteAssumptions.planning_buffers_m?.[edge.id] ?? 0
-    const checks = scenarios.scenarios.flatMap(s => s.checks.filter(c => c.edge_id === edge.id))
-    return `Edge ${i + 1}: ${manual ? `measured override ${measurementWithUnit(manual.value, 'length')}; planning buffer not applied` : distance === undefined ? 'distance unavailable' : `captured ${measurementWithUnit(distance, 'length')}; assumed buffer ${measurementWithUnit(buffer, 'length')}; planning clearance ${measurementWithUnit(Math.max(0, distance - buffer), 'length')}`}. ${checks.some(c => !c.meets) ? 'See raw scenario conflicts/uncertainty.' : checks.some(c => c.planning_meets === false) ? 'Needs review: buffer shortfall only, no observed conflict.' : checks.length ? 'Likely fine under the tested planning assumptions.' : 'See the separate front-distance check.'}`
-  }) : []
-  const assumptionsSummary = siteAssumptions
-    ? `Property assumptions: main building ${(siteAssumptions.building_type.value === null ? 'unknown' : { single_detached: 'single-family detached home', duplex: 'duplex', other: 'other' }[siteAssumptions.building_type.value] + ' (your answer)')}; existing garden suites ${siteAssumptions.existing_garden_suites.value ?? 'unknown'} (${siteAssumptions.existing_garden_suites.value === null ? 'unknown' : siteAssumptions.existing_garden_suites.evidence_state === 'user_confirmed' ? 'user-confirmed, not independently verified' : siteAssumptions.existing_garden_suites.origin === 'journey_default' ? 'default assumption' : 'your assumption'}); waterfront ${siteAssumptions.waterfront.value === null ? 'unknown' : siteAssumptions.waterfront.origin === 'journey_default' ? 'assuming not waterfront (planning default)' : siteAssumptions.waterfront.value ? 'yes (your answer)' : 'no (your answer)'}; ${siteAssumptions.edges.filter(edge => edge.role.value && edge.role.value !== 'unknown').length} parcel edges classified by the user. Project settings: use ${pathway?.proposed_use ?? 'unknown'} (${settings?.evidence.proposed_use.origin ?? 'unattributed'}), foundation ${pathway?.foundation_attached === null || pathway?.foundation_attached === undefined ? 'unknown' : pathway.foundation_attached ? 'scenario attached' : 'scenario unattached'} (${settings?.evidence.foundation_attached.origin ?? 'unattributed'}), lot/zone/instrument ${pathway?.legal_lot_confirmed ? 'assumed legal lot' : 'unknown or incompatible'} / ${pathway?.confirmed_zone ?? 'unknown'} (${settings?.evidence.confirmed_zone.origin ?? 'unattributed'}) / ${pathway?.confirmed_instrument ?? 'unknown'} (${settings?.evidence.confirmed_instrument.origin ?? 'unattributed'}).${settingSourceSummary}${streetSummary}${mapAssumptions} Assumptions and user confirmations remain distinct from source observations.`
-    : 'Property boundary roles and zoning pathway facts remain unknown.'
+  const planningSummary = boundaryObservations(scenarios, siteAssumptions)
+  const assumptionsSummary = assumptionsDescription(input, siteAssumptions, pathway, settings) + settingSourceSummary
   const lines = [
     'UNSENT DRAFT · Model 300 enquiry for preliminary investigation',
     'Prepared independently with ShovelReady; no affiliation with or contact to aux box.',
@@ -113,18 +103,19 @@ export function enquiryDocument(selection: SitePreparationSelection | null, inpu
     `Provider service/installation: ${model.service_area_note} ${model.installation_note}`,
     'Questions: Please confirm the current controlled Model 300 drawing/revision, installed envelope and height datum; roof projections and site clearances; local delivery/crane access, foundation and utility requirements; and what site information you need before discussing this property.',
     'Legal lot lines, building walls and roles, other obstructions, zoning and setbacks, installed height and datum, current controlled provider dimensions, access and services remain unresolved.',
-    'Preliminary screening · limited checks. Ask the provider about the open questions and requirements not covered.',
+    'Planning feasibility remains unconfirmed. Manufacturer drawings, property confirmation and City or professional review are separate next steps.',
   ]
   const offset = candidate ? 1 : 0
-  const question = input.question?.trim() || `I’m exploring aux box Model 300${input.intendedUse.trim() ? ` for ${input.intendedUse.trim()}` : ''}. Could you confirm the current design, installation requirements, and what you would need to discuss a possible site?`
   return {
-    title: savedExample ? 'UNSENT DRAFT · SAVED EXAMPLE ONLY · Model 300' : 'UNSENT DRAFT · Model 300 enquiry',
-    question,
+    kind: 'screening',
+    title: 'Model 300 supporting screening report',
+    question: 'Preliminary supplied-placement screening; source observations and candidate rules remain unreviewed. Exact values and complete identifiers are retained in the accompanying technical evidence.',
     example: savedExample,
     sections: [
+      { heading: 'Overall account', paragraphs: [placementConcerns(measured, conditional, scenarios).length ? 'Unresolved concerns are present across the included checks; see the concerns below. Passing a narrower subset does not resolve them.' : !measured && !conditional && !scenarios ? 'No current geometry or screening results supplied; no placement conclusion is available.' : 'No concerns identified in the included checks; missing information and unsupported conditions remain unresolved.', ...placementConcerns(measured, conditional, scenarios), 'Approximate geometry, boundary scenarios, additional scouting and strict-input comparisons have different bases. None establishes legal feasibility.'], emailSummary: '' },
       ...(planningSummary.length ? [{ heading: 'Boundary planning assumptions', paragraphs: planningSummary, emailSummary: planningSummary.join(' ') }] : []),
-      ...(scenarios?.additional_checks?.length ? [{ heading: 'Additional scouting checks', paragraphs: scenarios.additional_checks.map(check => `${check.label}: ${statusLabels[check.status]}. ${check.detail} Basis: ${check.basis}. Source: ${check.source.url} (${check.source.locator}).`), emailSummary: scenarios.additional_checks.map(check => `${check.label}: ${statusLabels[check.status]}. ${check.detail}`).join(' ') }] : []),
-      ...(scan ? [{ heading: 'Preliminary property scan', paragraphs: [...scan.findings.map(row => `${row.label}: ${row.status === 'probably_clear' ? 'likely fine in searched scope' : row.status === 'review' ? 'records need review' : 'unknown'}. ${row.detail}${row.source ? ` Source: ${row.source.provider}, ${row.source.record_label}, captured ${row.source.captured_at_utc.slice(0, 10)}, unreviewed; ${row.source.source_url.split('?')[0]}.` : ''}`), ...scan.limitations], emailSummary: scan.findings.map(row => `${row.label}: ${row.status === 'probably_clear' ? 'Likely fine in searched scope' : row.status === 'review' ? 'Needs review' : 'Unknown'}.`).join(' ') + ' Permit documents, title, projections and servicing remain unsearched.' }] : []),
+      ...(scenarios?.additional_checks?.length ? [{ heading: 'Additional scouting checks', paragraphs: scenarios.additional_checks.map(check => `${additionalObservation(check)} Exact measurement basis and calculation retained in technical evidence. Source: ${check.source.provider}, ${check.source.record_label}, ${check.source.review_status}; ${check.source.url} (${check.source.locator}).`), emailSummary: scenarios.additional_checks.map(check => `${check.label}: ${statusLabels[check.status]}. ${check.detail}`).join(' ') }] : []),
+      ...(scan ? [{ heading: 'Preliminary property scan', paragraphs: [...scan.findings.map(row => `${row.label}: ${row.status === 'probably_clear' ? 'no matching records found in this searched dataset' : row.status === 'review' ? 'records need review' : 'unknown'}. ${row.status === 'probably_clear' ? 'This does not establish absence of restrictions.' : row.detail}${row.source ? ` Source: ${row.source.provider}, ${row.source.record_label}, captured ${row.source.captured_at_utc.slice(0, 10)}, unreviewed; ${row.source.source_url.split('?')[0]}.` : ''}`), ...scan.limitations], emailSummary: scan.findings.map(row => `${row.label}: ${row.status === 'probably_clear' ? 'Likely fine in searched scope' : row.status === 'review' ? 'Needs review' : 'Unknown'}.`).join(' ') + ' Permit documents, title, projections and servicing remain unsearched.' }] : []),
       { heading: 'Price & timing', paragraphs: priceTimingParagraphs(model), emailSummary: priceTimingParagraphs(model).join(' ') },
       { heading: 'Model', paragraphs: [lines[1], lines[2], lines[8 + offset]], emailSummary: `aux box Model 300; nominal exterior ${original('nominal_exterior_width')} × ${original('nominal_exterior_depth')}; source ${model.provider_url}; current controlled revision and installed height unknown.` },
       { heading: 'Property', paragraphs: [lines[3], ...(candidate ? [lines[4]] : []), lines[4 + offset], lines[5 + offset]], emailSummary: savedExample ? 'Saved City of Victoria example only; this is not my property.' : live ? `Selected Victoria source lead: ${live.address.label}. Identity, ownership and legal boundaries remain unverified.` : manual ? `User-supplied site: ${field(manual.facts.address)}; facts and sketch unverified.` : `Site lead: ${candidate ? fact(candidate.address.value) : fact(selection?.manual.address.value ?? null)}; identity and dimensions unverified.` },
@@ -135,6 +126,14 @@ export function enquiryDocument(selection: SitePreparationSelection | null, inpu
     ],
     closing: lines[11 + offset],
   } satisfies EnquiryDocument
+}
+
+export function enquiryDocument(...args: Parameters<typeof screeningDocument>) {
+  const [selection, input, measured, , live, manual, savedExample, , conditional, , , scenarios, settings, scan] = args
+  const address = savedExample ? null : live?.address.label || manual?.facts.address || selection?.candidate?.address.value || selection?.manual.address.value || null
+  const confirmedUse = settings?.evidence.proposed_use.origin === 'user_confirmed' && settings.proposal.proposed_use === 'garden_suite'
+  const resolvedInput = !input.intendedUse.trim() && confirmedUse ? { ...input, intendedUse: 'a garden suite (confirmed by the user for this scenario)' } : input
+  return manufacturerDocument(resolvedInput, address === null ? null : String(address), !!savedExample, measured, conditional ?? null, scenarios ?? null, scan ?? null, !!(savedExample || live || manual?.assessment))
 }
 
 export function enquiry(...args: Parameters<typeof enquiryDocument>) { return enquiryPlainText(enquiryDocument(...args)) }
@@ -195,6 +194,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const [budget, setBudget] = useState('')
   const [access, setAccess] = useState('')
   const [services, setServices] = useState('')
+  const [projectContext, setProjectContext] = useState({ relationship: '', stage: '', configuration: '', nextStep: '', contact: '' })
   const [question, setQuestion] = useState('')
   const [readyFor, setReadyFor] = useState<string | null>(null)
   const [manualConfirmedFor, setManualConfirmedFor] = useState<string | null>(null)
@@ -341,7 +341,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     }, 300)
     return () => { controller.abort(); window.clearTimeout(timer); window.clearTimeout(timeout) }
   }, [requestKey])
-  const makeEnquiryDoc = () => hasSite ? enquiryDocument(selection, { question, intendedUse: use, timing, budget, access, services }, measurementResult, imported, live, manual, mode === 'example', foundationAllowanceM, currentScreening, currentAssumptions, pathway, currentScenario, effectiveSettings, propertyScan.result) : null
+  const makeEnquiryDoc = () => hasSite ? enquiryDocument(selection, { question, intendedUse: use, timing, budget, access, services, ...projectContext }, measurementResult, imported, live, manual, mode === 'example', foundationAllowanceM, currentScreening, currentAssumptions, pathway, currentScenario, effectiveSettings, propertyScan.result) : null
   const manualSignature = JSON.stringify({ facts: manual?.facts ?? null, site: manual?.site ?? null })
   const propertyComplete = mode === 'example' || !!(live || selection || mode === 'manual' && manual && manualConfirmedFor === manualSignature)
   const placementComplete = !!(measurementResult || mode === 'manual' && manual?.assessment)
@@ -394,13 +394,18 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const reviewReadiness = summary ? { total: findings.length, addressed: findings.length - outstandingFindings.length, busy: readinessBusy, ready: findings.length > 0 && outstandingFindings.length === 0 && !readinessBusy, targetId: outstandingFindings[0]?.targetId } : undefined
   const readinessSignature = JSON.stringify(reviewReadiness)
   const enquiryDoc = makeEnquiryDoc()
-  if (enquiryDoc && currentAcknowledgements.length) {
+  const reportDoc = hasSite ? screeningDocument(selection, { question, intendedUse: use, timing, budget, access, services, ...projectContext }, measurementResult, imported, live, manual, mode === 'example', foundationAllowanceM, currentScreening, currentAssumptions, pathway, currentScenario, effectiveSettings, propertyScan.result) : null
+  if (reportDoc && currentAcknowledgements.length) {
     const paragraphs = currentAcknowledgements.map(check => `${check.label}: ${check.detail} Acknowledged by the user for discussion with the City/provider. The conflict remains unresolved; City agreement or an exception is not established.`)
-    enquiryDoc.sections.push({ heading: 'Acknowledged conflicts for discussion', paragraphs, emailSummary: paragraphs.join(' ') })
+    reportDoc.sections.push({ heading: 'Acknowledged conflicts for discussion', paragraphs, emailSummary: paragraphs.join(' ') })
   }
   if (enquiryDoc && currentOpenQuestions.length) {
+    const paragraphs = [`I would also like guidance on these unresolved topics: ${currentOpenQuestions.map(check => `${check.label} (${statusLabels[check.status].toLowerCase()})`).join('; ')}.`, 'Please advise which topics you can help with and which need City or professional review. No answer or clearance is established; detailed findings are available in the supporting report.']
+    enquiryDoc.sections.push({ heading: 'Open questions included for discussion', paragraphs, emailSummary: paragraphs.join(' '), siteDetails: true })
+  }
+  if (reportDoc && currentOpenQuestions.length) {
     const paragraphs = currentOpenQuestions.map(check => `${check.label}: ${statusLabels[check.status]}. ${check.detail} Included by the user as an open question for City/provider discussion; no answer or clearance is established.`)
-    enquiryDoc.sections.push({ heading: 'Open questions included for discussion', paragraphs, emailSummary: paragraphs.join(' ') })
+    reportDoc.sections.push({ heading: 'Open questions included for discussion', paragraphs, emailSummary: paragraphs.join(' ') })
   }
   const draftText = enquiryDoc ? enquiryPlainText(enquiryDoc) : ''
   function applyBuffer(edgeId: string, value: number) {
@@ -481,7 +486,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   useEffect(() => { progressCallback.current?.({ reviewReadiness, model: true, property: propertyComplete, placement: placementComplete, streets: !!geometryRevision && streetAdjacency.all_marked, boundaries: reviewedBoundariesFor === boundaryReviewRevision, details: reviewedDetailsFor === reviewRevision, checks: reviewedChecksFor === reviewRevision, enquiry: enquiryReady, email: emailRequestedFor === JSON.stringify([draftText, recipient, includeSiteDetails]), current: journeyStep, mapAvailable: propertyComplete ? !!zoningCase : undefined }) }, [zoningCase, propertyComplete, placementComplete, enquiryReady, geometryRevision, streetAdjacency.all_marked, reviewedBoundariesFor, reviewedDetailsFor, reviewedChecksFor, reviewRevision, boundaryReviewRevision, emailRequestedFor, draftText, recipient, includeSiteDetails, journeyStep, readinessSignature])
   useEffect(() => { setReadyFor(null) }, [draftText])
   const emailBody = enquiryDoc ? enquiryEmailBody(enquiryDoc, includeSiteDetails) : ''
-  const emailSubject = enquiryDoc?.example ? 'Saved example only — Model 300 question' : 'Model 300 preliminary enquiry'
+  const emailSubject = enquiryDoc?.example ? 'Saved example only — Model 300 question' : includeSiteDetails ? enquiryDoc?.title ?? 'Model 300 feasibility enquiry' : 'Model 300 feasibility enquiry'
   useEffect(() => { setEmailMessage('') }, [emailBody, emailSubject])
   const emailTooLong = !!enquiryDoc && (!emailDraftUrl('mailto', recipient, emailSubject, emailBody) || !emailDraftUrl('gmail', recipient, emailSubject, emailBody)) && validRecipient(recipient)
   const shortEmailBody = enquiryDoc?.example
@@ -509,11 +514,13 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       setEmailMessage('Full email body copied.')
     } catch { setEmailMessage('Clipboard unavailable. Select and copy the email body above.') }
   }
-  function downloadMarkdown() {
-    if (!enquiryDoc) return
-    const objectUrl = URL.createObjectURL(new Blob([enquiryMarkdown(enquiryDoc)], { type: 'text/markdown;charset=utf-8' }))
+  const technicalEvidence = { schema_version: 'builder-evidence.v1', enquiry_inputs: { question, intendedUse: use, timing, budget, access, services, ...projectContext }, model_catalogue: { snapshot_id: bundledCatalogue.snapshot_id, model }, acknowledged_conflicts_for_discussion: currentAcknowledgements, open_questions_for_discussion: currentOpenQuestions, review_readiness: reviewReadiness, foundation_scenario: { allowance_m: foundationAllowanceM, basis: 'planning_assumption', used_in_preliminary_height: currentScenario?.additional_checks?.some(check => check.id === 'height' && check.basis.startsWith('advertised height')) ?? false }, selection, live, manual, example: mode === 'example' ? exampleCase : null, measurement: measurementResult, zoning_site_assumptions: currentAssumptions, project_settings: zoningCase ? effectiveSettings : null, municipal_zoning_lookup: currentZoning, municipal_zoning_error: currentZoningError || null, property_scan: propertyScan.result, property_scan_error: propertyScan.error || null, placement_scenario_request: scenarioRequest, placement_scenario_result: currentScenario, conditional_screening: currentScreening }
+  function downloadMarkdown(report = false) {
+    const exportDoc = report ? reportDoc : enquiryDoc
+    if (!exportDoc) return
+    const objectUrl = URL.createObjectURL(new Blob([enquiryMarkdown(exportDoc) + (report ? '\n## Complete technical evidence\n\n' + technicalEvidenceMarkdown(technicalEvidence) : '')], { type: 'text/markdown;charset=utf-8' }))
     const anchor = document.createElement('a')
-    anchor.href = objectUrl; anchor.download = 'model-300-enquiry.md'; anchor.click()
+    anchor.href = objectUrl; anchor.download = report ? 'model-300-screening-report.md' : 'model-300-enquiry.md'; anchor.click()
     setTimeout(() => URL.revokeObjectURL(objectUrl), 1000)
   }
   return <div className="builder-demo">
@@ -605,10 +612,15 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
         <label htmlFor="builder-access">Access or crane questions</label><input id="builder-access" value={access} onChange={event => setAccess(event.target.value)} placeholder="Known access facts or questions" />
         <label htmlFor="builder-services">Services or utility questions</label><input id="builder-services" value={services} onChange={event => setServices(event.target.value)} placeholder="Known services or questions" />
       </div>
+      <details><summary>Optional project context and closing</summary><div className="builder-questions">
+        {([['relationship', 'Relationship to the property'], ['stage', 'Project stage'], ['configuration', 'Configuration or upgrades'], ['nextStep', 'Requested next step'], ['contact', 'Sender name and contact details']] as const).map(([key, label]) => <Fragment key={key}><label htmlFor={`builder-${key}`}>{label}</label><input id={`builder-${key}`} value={projectContext[key]} onChange={event => setProjectContext(previous => ({ ...previous, [key]: event.target.value }))} /></Fragment>)}
+      </div></details>
       {enquiryDoc && <EnquiryPreview document={enquiryDoc} />}
+      {reportDoc && <details><summary>Supporting screening report · calculations, sources and uncertainty</summary><EnquiryPreview document={reportDoc} /><button type="button" onClick={() => downloadMarkdown(true)}>Download supporting report with complete evidence</button></details>}
+      <p className="metadata">Before sending: add your name/contact details and a marked property plan with access photos where available. Downloads do not attach themselves to email drafts.</p>
       <div className="builder-enquiry-actions">
         <CopyableRecord id="builder-enquiry-text" label="Plain-text enquiry to copy" value={draftText} />
-        <button type="button" onClick={downloadMarkdown}>Download Markdown enquiry</button>
+        <button type="button" onClick={() => downloadMarkdown()}>Download Markdown enquiry</button>
         <button type="button" onClick={() => setReadyFor(draftText)} disabled={enquiryReady}>Mark enquiry ready</button>
         <span role="status">{enquiryReady ? 'Ready for your review and optional handoff. No message has been sent.' : 'Draft in progress. Review before marking ready.'}</span>
       </div>
@@ -633,7 +645,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
         <p className="metadata">If no compose window opens, use Copy email body and paste the exact text shown above into a new message. Check the recipient and subject there before sending.</p>
         <p role="status">{emailMessage}</p>
       </section>
-      <TechnicalDetails title="Complete site selection, sources and measurements"><CopyableRecord id="builder-technical-record" label="Complete technical evidence export" value={JSON.stringify({ schema_version: 'builder-evidence.v1', acknowledged_conflicts_for_discussion: currentAcknowledgements, open_questions_for_discussion: currentOpenQuestions, review_readiness: reviewReadiness, foundation_scenario: { allowance_m: foundationAllowanceM, basis: 'planning_assumption', used_in_preliminary_height: currentScenario?.additional_checks?.some(check => check.id === 'height' && check.basis.startsWith('advertised height')) ?? false }, selection, live, manual, example: mode === 'example' ? exampleCase : null, measurement: measurementResult, zoning_site_assumptions: currentAssumptions, project_settings: zoningCase ? effectiveSettings : null, municipal_zoning_lookup: currentZoning, municipal_zoning_error: currentZoningError || null, property_scan: propertyScan.result, property_scan_error: propertyScan.error || null, placement_scenario_request: scenarioRequest, placement_scenario_result: currentScenario, conditional_screening: currentScreening }, null, 2)} /></TechnicalDetails>
+      <TechnicalDetails title="Complete site selection, sources and measurements"><CopyableRecord id="builder-technical-record" label="Complete technical evidence export" value={JSON.stringify(technicalEvidence, null, 2)} /></TechnicalDetails>
       </>}
       </div>
     </section>

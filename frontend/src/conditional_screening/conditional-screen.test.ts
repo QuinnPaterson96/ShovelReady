@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import response from './api-response.fixture.json'
 import { currentPlacementRevision, expectedPropertyRevision, parseScreeningResult, screeningCheckTitle, screeningIdentity, type ScreeningRequest } from './model'
 import type { SiteAssumptions } from '../zoning_site_assumptions/model'
-import { enquiryDocument } from '../builder_demo/BuilderDemo'
+import { screeningDocument as enquiryDocument } from '../builder_demo/BuilderDemo'
 
 test('actual API producer fixture parses and echoes the exact site identity', () => {
   // Captured from the FastAPI route with tests/test_conditional_screening_api.py payload().
@@ -36,7 +36,7 @@ test('placement and proposal edits have different request identities before a re
   assert.notEqual(identity, screeningIdentity({ ...base, proposal: { ...base.proposal, confirmed_zone: null } }))
 })
 
-test('enquiry carries each current candidate check and citation, while stale findings can be omitted', () => {
+test('supporting report carries each current candidate check and citation, while stale findings can be omitted', () => {
   const result = parseScreeningResult(response)
   const assumptions = result.request.site_assumptions as SiteAssumptions
   const input = { intendedUse: '', timing: '', budget: '', access: '', services: '' }
@@ -45,7 +45,7 @@ test('enquiry carries each current candidate check and citation, while stale fin
   assert.equal(conditional.paragraphs.length, result.checks.length + 3)
   assert.match(conditional.paragraphs.join(' '), /Part 3\.1\(28\)/)
   assert.match(conditional.paragraphs.join(' '), /https:\/\/www\.victoria\.ca/)
-  assert.match(conditional.paragraphs.join(' '), /apparent conflict under assumptions/)
+  assert.match(conditional.paragraphs.join(' '), /unresolved preliminary concern under the supplied assumptions/)
   const stale = enquiryDocument(null, input, null, false, null, null, false, null, null, assumptions)
-  assert.doesNotMatch(stale.sections.find(section => section.heading === 'Conditional zoning')!.paragraphs.join(' '), /apparent conflict under assumptions/)
+  assert.doesNotMatch(stale.sections.find(section => section.heading === 'Conditional zoning')!.paragraphs.join(' '), /unresolved preliminary concern under the supplied assumptions/)
 })
