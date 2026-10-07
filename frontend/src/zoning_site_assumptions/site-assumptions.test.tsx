@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs'
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
 import { createElement } from 'react'
@@ -105,4 +106,18 @@ test('main-building and planning defaults remain correctable assumptions', () =>
   example.site.buildings.pop()
   example.site.buildings[1].basis = 'unknown'
   assert.equal(assumedMainBuilding(example), 'roof-1')
+})
+
+
+test('the Cecelia roofline crossing cannot demote the largest house to the contained shed', () => {
+  // Independent review: 122.3 m2 house vs 12.7 m2 shed; house crosses parcel by .0231 m2.
+  const fixture = JSON.parse(readFileSync('src/builder_demo/cecelia-geometry.fixture.json', 'utf8'))
+  const site = fixture.measurement.site
+  assert.equal(assumedMainBuilding(site), 'live-roof:81666')
+  site.site.buildings.reverse()
+  assert.equal(assumedMainBuilding(site), 'live-roof:81666')
+  site.site.buildings.forEach((b: typeof site.site.buildings[number]) => b.shape.geometry.coordinates[0].reverse())
+  assert.equal(assumedMainBuilding(site), 'live-roof:81666')
+  site.site.buildings.find((b: { id: string }) => b.id === 'live-roof:81666').shape.geometry.coordinates[0].forEach((p: number[]) => { p[0] += 100 })
+  assert.equal(assumedMainBuilding(site), null, 'Do not fall back to the shed if the largest outline belongs elsewhere')
 })

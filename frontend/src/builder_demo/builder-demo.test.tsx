@@ -15,7 +15,7 @@ import { bundledCatalogue } from '../model_catalogue/model'
 import { manufacturerDocument, additionalObservation, boundaryObservations } from './manufacturer'
 import { reviewAddress, reviewInput, reviewConditional, reviewScenarios, reviewScan, reviewAssumptions, reviewSettings } from './manufacturer-review.fixture'
 import { PriceTiming, priceTimingParagraphs } from '../model_catalogue/PriceTiming'
-import { placementDrawing, attachedEmail } from './placementExport'
+import { placementDrawing, attachedEmail, enquiryPackageFiles } from './placementExport'
 import { preparationChecklist } from './manufacturer'
 
 const manualFact = (value: string | number | null): Fact => ({
@@ -223,7 +223,7 @@ test('manufacturer brief and supporting report reconcile two rear-yard concerns 
   const report = screeningDocument(null, reviewInput, null, false, null, null, false, null, reviewConditional, reviewAssumptions, reviewSettings.proposal, reviewScenarios, reviewSettings, reviewScan)
   const reportText = enquiryPlainText(report)
   assert.match(reportText, /Unresolved concerns are present/)
-  assert.match(reportText, /no concerns identified in this strict-input subset; this excludes approximate rear-yard checks/)
+  assert.match(reportText, /no concerns identified in the supplied-facts comparisons/)
   assert.match(reportText, /default scenario, not confirmed intended use/)
   assert.match(reportText, /assumed from the largest mapped outline, not verified/)
   assert.match(reportText, /Existing garden suites: 0 \(default assumption, unconfirmed\)/)
@@ -300,4 +300,37 @@ test('a misleading producer count cannot suppress an included strict-input confl
   const unknown = { ...measured, result: { ...result, checks: [{ ...result.checks[0], kind: 'containment', status: 'observed', relation: null }] } }
   const brief = enquiryPlainText(enquiryDocument(null, questions, unknown))
   assert.doesNotMatch(brief, /not wholly inside the mapped parcel/)
+})
+
+
+test('exported comparison geometry draws the assumed yard and concern endpoints, and respects owner context', () => {
+  const fixture = JSON.parse(readFileSync('src/builder_demo/cecelia-geometry.fixture.json', 'utf8'))
+  const main = fixture.measurement.site.site.buildings[0]
+  const v = { schema_version: 'scouting-comparison-geometry.v1' as const, crs: 'EPSG:3157', principal_building_id: main.id, principal_outline_area_m2: 122.2545, principal_crosses_parcel: true,
+    measurement_line: [[471912, 5365825], [471912, 5365826.5]] as [[number, number], [number, number]],
+    rear_yard: fixture.measurement.site.site.parcel.shape.geometry, outside_rear_yard: fixture.measurement.site.site.buildings[1].shape.geometry, rear_yard_area_m2: 168.2579628, outside_rear_yard_area_m2: 1 }
+  const scenarios = { ...reviewScenarios, additional_checks: [
+    { ...reviewScenarios.additional_checks![0], id: 'separation', observed: 1.5, threshold: 2.4, visual_evidence: v },
+    { ...reviewScenarios.additional_checks![1], id: 'rear_occupancy', observed: .16564394, visual_evidence: v },
+  ] }
+  const svg = placementDrawing(fixture.measurement, fixture.request.assumptions, scenarios, false, { ink: '#123', parcelFill: '#abc', parcelStroke: '#123', roofFill: '#abd', roofStroke: '#123', zoneFill: '#bcd', zoneStroke: '#456', danger: '#a00' }).svg
+  assert.match(svg, /Building 1 · main home \(unverified\)/)
+  assert.match(svg, /Estimated rear yard: 168.3 m² \/ unit share 16.6%/)
+  assert.match(svg, /Candidate minimum: 2.4 m \(concern\)/)
+  assert.match(svg, /fill-opacity=".45"/)
+  assert.match(svg, /stroke-dasharray="6 3"/)
+  const owner = preparationChecklist({ ...questions, relationship: 'I own the property' }).join(' ')
+  assert.match(owner, /You have stated that you own the property/)
+  assert.doesNotMatch(owner, /permission to proceed with the property owner/)
+})
+
+test('package keeps complete evidence in JSON without embedding diagnostics in the readable report', () => {
+  const evidence = { source: { coordinates: [471914.6129999999, 5365842.211999999] }, unknown: null }
+  const doc = enquiryDocument(null, questions, null)
+  const files = enquiryPackageFiles(doc, screeningDocument(null, questions, null), ['Owner preparation'], evidence, null)
+  const decode = (name: string) => new TextDecoder().decode(files[name])
+  assert.deepEqual(JSON.parse(decode('model-300-technical-evidence.json')), evidence)
+  assert.doesNotMatch(decode('model-300-supporting-report.md'), /```json|strict-input subset|Parcel containment contained|enter installed height/)
+  assert.match(decode('model-300-supporting-report.md'), /model-300-technical-evidence.json/)
+  assert.doesNotMatch(decode('model-300-enquiry.md'), /Owner preparation/)
 })

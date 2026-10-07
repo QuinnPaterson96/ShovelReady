@@ -1,6 +1,8 @@
 """The expected outcomes follow rectangle-to-edge distances and candidate 0.6/3.5 m limits."""
 
+import json
 from copy import deepcopy
+from pathlib import Path
 
 import pytest
 from fastapi.testclient import TestClient
@@ -382,3 +384,48 @@ def test_waterfront_marks_and_buffers_reject_absent_edges_and_bad_values():
         invalid["assumptions"][field] = value
         assert client.post("/api/conditional-screening/v1/placement-scenarios",
                            json=invalid).status_code == 422
+
+
+def test_cecelia_package_ranks_full_outline_and_recomputes_dependent_findings():
+    # Reproduced package defect: a 122.2545 m2 main roofline crosses the parcel
+    # by 0.0231 m2; the contained shed is 12.7224 m2. Do not discard the house
+    # and claim the shed is largest. Expected areas were independently calculated
+    # from the supplied coordinates in the manufacturer's review.
+    fixture = json.loads(Path(
+        "frontend/src/builder_demo/cecelia-geometry.fixture.json"
+    ).read_text())
+    body = fixture["request"]
+    result = screen(body)
+    checks = {c["id"]: c for c in result["additional_checks"]}
+    assert checks["separation"]["status"] == "conflict"
+    assert checks["separation"]["observed"] == pytest.approx(1.5074461)
+    visual = checks["rear_occupancy"]["visual_evidence"]
+    assert visual["principal_building_id"] == "live-roof:81666"
+    assert visual["principal_outline_area_m2"] == pytest.approx(122.2545)
+    assert visual["principal_crosses_parcel"] is True
+    assert visual["rear_yard_area_m2"] == pytest.approx(168.2579628)
+    assert visual["outside_rear_yard_area_m2"] == 0
+    assert checks["rear_location"]["status"] == "probable"
+    assert checks["rear_occupancy"]["observed"] == pytest.approx(27.870912 / 168.2579628)
+    # The endpoints and polygons exported are the evidence used in the comparison.
+    from shapely.geometry import LineString, shape
+    assert LineString(visual["measurement_line"]).length == pytest.approx(
+        checks["separation"]["observed"])
+    assert shape(visual["rear_yard"]).area == pytest.approx(visual["rear_yard_area_m2"])
+    assert len(result["edge_measurement_lines"]) == 4
+    # A stale default naming the shed is rejected, not silently evaluated as main.
+    body["assumptions"]["principal_building_id"]["value"] = "live-roof:81667"
+    assert next(c for c in screen(body)["additional_checks"]
+                if c["id"] == "separation")["status"] == "unknown"
+    # Explicit house changes remain supported and recompute outside-yard evidence.
+    body["assumptions"]["principal_building_id"]["origin"] = "user"
+    checks = {c["id"]: c for c in screen(body)["additional_checks"]}
+    assert checks["rear_occupancy"]["observed"] == pytest.approx(.5909916371)
+    assert checks["rear_location"]["visual_evidence"]["outside_rear_yard_area_m2"] > 0
+    body["assumptions"]["principal_building_id"] = {
+        "value": None, "origin": "user", "evidence_state": "unknown",
+    }
+    for point in body["geometry"]["buildings"][0]["shape"]["geometry"]["coordinates"][0]:
+        point[0] += 100
+    assert next(c for c in screen(body)["additional_checks"]
+                if c["id"] == "separation")["status"] == "unknown"

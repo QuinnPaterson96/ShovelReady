@@ -110,7 +110,7 @@ export function homeownerSummary(input: {
       } else checks.splice(checks.length - 1, 0, row)
     }
     const remaining = checks.find(check => check.label === 'Other siting requirements')
-    if (remaining) { remaining.label = 'Site-specific approvals and other requirements'; remaining.detail = 'Variances, heritage/permit conditions, projections, servicing and other provisions still need property-specific review. New front/rear-yard checks cover only the stated approximate subset.' }
+    if (remaining) { remaining.label = 'Site-specific approvals and other requirements'; remaining.detail = 'Variances, heritage/permit conditions, projections, servicing and other provisions still need property-specific review. The mapped comparisons cover only the stated scope.' }
   }
   const distance = checks.find(check => check.label === 'Distance to boundaries')
   if (distance?.status === 'review' && scenario?.status === 'bounded_pass' && scenario.scenarios.length === 1) {
@@ -141,4 +141,3 @@ export function homeownerSummary(input: {
     checks,
   }
 }
-

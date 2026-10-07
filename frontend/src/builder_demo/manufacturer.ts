@@ -15,17 +15,24 @@ export type EnquiryInput = {
 }
 
 export function conditionalObservation(check: ScreeningCheck): string {
-  const status = { meets_under_assumptions: 'meets within this strict-input subset under the supplied assumptions',
+  const status = { meets_under_assumptions: 'meets under the supplied facts',
     apparent_conflict_under_assumptions: 'unresolved preliminary concern under the supplied assumptions',
-    needs_information: 'needs compatible measurements or confirmed property facts', not_applicable: 'not applicable under the supplied assumptions',
+    needs_information: 'not assessed: a required measurement or property fact is missing', not_applicable: 'not applicable under the supplied assumptions',
     unsupported: 'outside supported checks' }[check.status]
   const value = (v: string | number | null) => check.normalized_unit === 'm' ? measurementWithUnit(v, 'length')
     : check.normalized_unit === 'm2' ? measurementWithUnit(v, 'area') : String(v)
   const hasValues = check.normalized_observed !== null && check.normalized_threshold !== null
   const difference = check.status === 'apparent_conflict_under_assumptions' && hasValues
     ? ` Difference from the candidate threshold: ${value(Math.abs(Number(check.normalized_observed) - Number(check.normalized_threshold)))}.` : ''
+  const required = check.rule.kind === 'boundary_min' ? 'This comparison needs compatible wall-to-legal-line measurements and review of projections and waterfront conditions; a surveyor and City staff can establish these.'
+    : check.rule.kind === 'separation_min' ? 'The mapped roof gap is reported separately. Legal wall/projection endpoints and their separation need a survey or approved plans and City review.'
+    : check.rule.kind === 'area_max' ? 'The manufacturer’s plans need a compatible floor-area calculation, including the relevant levels and inclusions; the buffered footprint estimate is reported separately.'
+    : check.rule.kind === 'count_max' ? 'Existing suites and the lot’s eligibility need confirmation by the property contact and City staff.'
+    : check.rule.fact_id === 'principal_building' ? 'The mapped main home is an assumption; the property contact can confirm its identity on the plan.'
+    : check.rule.fact_id === 'legal_lot' ? 'The source-selected parcel does not establish legal lot identity; title or survey records and the property contact can confirm it.'
+    : 'The property contact and City staff need to confirm the relevant property fact and its applicability.'
   const scenarioFact = check.rule.kind === 'prerequisite' && ['proposed_use', 'foundation', 'building_type', 'principal_building'].includes(check.rule.fact_id) ? ' This records the screening scenario; it does not confirm the intended project or property fact.' : ''
-  return `${screeningCheckTitle(check)}: ${status}.${scenarioFact}${hasValues ? ` Supplied ${value(check.normalized_observed)}; candidate threshold ${value(check.normalized_threshold)}.` : ''}${difference}`
+  return `${screeningCheckTitle(check)}: ${status}.${check.status === 'needs_information' ? ` ${required}` : ''}${scenarioFact}${hasValues ? ` Supplied ${value(check.normalized_observed)}; candidate threshold ${value(check.normalized_threshold)}.` : ''}${difference}`
 }
 
 export function assumptionsDescription(input: EnquiryInput, assumptions: SiteAssumptions | null, pathway: Pathway | null, settings: ProjectSettings | null): string {
@@ -39,7 +46,7 @@ export function assumptionsDescription(input: EnquiryInput, assumptions: SiteAss
       `Main-building type: ${assumptions.building_type.value === null ? 'not supplied' : { single_detached: 'single-family detached home', duplex: 'duplex', other: 'other' }[assumptions.building_type.value]} (user answer, unverified).`,
       `Existing garden suites: ${assumptions.existing_garden_suites.value === 'two_or_more' ? 'two or more' : assumptions.existing_garden_suites.value ?? 'not supplied'} (${provenance(assumptions.existing_garden_suites)}).`,
       `Waterfront status: ${assumptions.waterfront.value === null ? 'not supplied' : assumptions.waterfront.value ? 'yes' : 'no'} (${provenance(assumptions.waterfront)}).`,
-      `Main outline: ${assumptions.principal_building_id.value ? `Outline ${assumptions.observed_buildings.findIndex(b => b.id === assumptions.principal_building_id.value) + 1}, ${assumptions.principal_building_id.origin === 'journey_default' ? 'assumed from the largest mapped outline, not verified as the main house' : 'selected by the user, not independently verified as the main house'}` : 'not identified'}. The property contact must identify the house and legal boundaries on a plan.`,
+      `Main outline: ${assumptions.principal_building_id.value ? `Outline ${assumptions.observed_buildings.findIndex(b => b.id === assumptions.principal_building_id.value) + 1}, ${assumptions.principal_building_id.origin === 'journey_default' ? 'assumed from the largest mapped outline, not verified as the main house' : 'selected by the user, not independently verified as the main house'}` : 'not identified'}. Main-home identification and legal boundaries remain unverified.`,
     ] : ['Main building, existing suites, waterfront status and boundary roles have not been supplied.']),
     'A planning comparison based on a garden-suite scenario does not establish that it applies to the intended use. The City or a qualified professional must review applicability.'
   ].join(' ')
@@ -49,8 +56,10 @@ const section = (heading: string, paragraphs: string[], siteDetails = false): En
 const pct = (value: number) => `${Number((value * 100).toFixed(1))}%`
 
 // Present structured observations; do not parse diagnostic prose into facts or change comparisons.
+const unresolvedFacts = { separation: 'Main-home identification or usable building geometry is unresolved.', front: 'Front-line classification or waterfront applicability is unresolved.', rear_location: 'The main home, rear boundary or waterfront status is unresolved.', rear_occupancy: 'The main home or rear-yard area is unresolved.', height: 'Installed height, grade and the measurement datum are unresolved.', area: 'Regulatory floor area and its inclusions are unresolved.' }
+
 export function additionalObservation(check: AdditionalCheck): string {
-  if (check.status === 'unknown' || check.status === 'unsupported' || check.status === 'review') return `${check.label}: ${check.status === 'unsupported' ? 'outside the supported comparison' : check.status === 'review' ? 'needs review of measurements and applicability' : 'missing information or unresolved applicability'}. No positive finding is established; the property contact and City/professional review must establish the relevant facts.`
+  if (check.status === 'unknown' || check.status === 'unsupported' || check.status === 'review') return `${check.label}: ${check.status === 'unsupported' ? 'outside the supported comparison' : check.status === 'review' ? 'needs review' : 'not assessed'}. ${ unresolvedFacts[check.id as keyof typeof unresolvedFacts] ?? 'Property-specific applicability is unresolved.' }`
   if (check.id === 'rear_location') return check.status === 'conflict'
     ? 'The sketch suggests part of the unit extends beyond the assumed rear-yard boundary behind the main building.'
     : 'The rectangle is inside the approximate rear yard under the supplied scenario. The yard definition and main-building identification still need confirmation.'
@@ -86,7 +95,7 @@ export function placementConcerns(measured: OccupiedMeasurement | null, conditio
     const hasValues = check.normalized_observed !== null && check.normalized_threshold !== null
     const value = (v: string | number | null) => check.normalized_unit === 'm' ? measurementWithUnit(v, 'length')
       : check.normalized_unit === 'm2' ? measurementWithUnit(v, 'area') : String(v)
-    concerns.push(`${screeningCheckTitle(check)} raises a concern in the separate strict-input comparison${hasValues ? `: supplied ${value(check.normalized_observed)}, candidate threshold ${value(check.normalized_threshold)}` : ''}. Supplied facts and rule applicability need review.`)
+    concerns.push(`${screeningCheckTitle(check)} raises a concern in the separate supplied-facts comparison${hasValues ? `: supplied ${value(check.normalized_observed)}, candidate threshold ${value(check.normalized_threshold)}` : ''}. Supplied facts and rule applicability need review.`)
   }
   return [...new Set(concerns)]
 }
@@ -117,7 +126,7 @@ export function preparationChecklist(input: EnquiryInput): string[] {
     ...(!input.intendedUse.trim() ? ['Choose an intended use, or explicitly select Unknown, Still deciding or Prefer not to say.'] : []),
     ...(!input.relationship?.trim() ? ['State your relationship to the property, or choose Unknown or Prefer not to say.'] : []),
     ...(!input.nextStep?.trim() ? ['Choose the response you want, or select Unknown or Prefer not to say.'] : []),
-    'Confirm the property identity and permission to proceed with the property owner.',
+    /^I own the property\.?$/i.test(input.relationship?.trim() ?? '') ? 'You have stated that you own the property. Check the property identity and any co-owner or title restrictions; ownership has not been independently verified.' : 'Confirm the property identity and permission to proceed with the property owner.',
     'Check the main home, existing suites and waterfront answers before relying on the comparisons.',
     'Add access photos, known obstructions and an entrance location when available; the sketch does not establish delivery access.',
     'Ask City staff or a qualified local professional to check applicable planning rules, title restrictions and permit conditions. The sketch is not a survey.',

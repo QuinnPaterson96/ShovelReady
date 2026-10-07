@@ -1,5 +1,7 @@
 # ShovelReady
 
+Latest correction: [main-building selection and visual enquiry evidence](docs/integration-main-building-evidence.md).
+
 Latest enquiry improvement: [context questions, separate preparation checklist and approximate placement exports](docs/integration-enquiry-placement-export.md).
 
 Latest demo integration: [unified placement checklist and map workspace](docs/integration-homeowner-summary.md#unified-placement-checklist-and-map-workspace-231--233), building on [Project details and mapped zoning](docs/integration-project-details.md).

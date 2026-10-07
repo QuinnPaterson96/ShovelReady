@@ -15,9 +15,18 @@ export type ScenarioRequest = {
   street_pattern: 'unknown' | 'single' | 'corner_or_multiple'
   additional_inputs?: { height_from_average_grade_m: number | null; nominal_footprint_area_m2?: number | null; advertised_height_m?: number | null; area_buffer_percent?: number; height_buffer_percent?: number; foundation_allowance_m?: number | null }
 }
+export type ComparisonGeometry = {
+  schema_version: 'scouting-comparison-geometry.v1'; crs: string; principal_building_id: string;
+  principal_outline_area_m2: number; principal_crosses_parcel: boolean;
+  measurement_line: [[number, number], [number, number]];
+  rear_yard: { type: 'Polygon' | 'MultiPolygon'; coordinates: unknown } | null;
+  outside_rear_yard: { type: 'Polygon' | 'MultiPolygon'; coordinates: unknown } | null;
+  rear_yard_area_m2: number | null; outside_rear_yard_area_m2: number | null;
+}
 export type AdditionalCheck = {
   id: string; label: string; status: 'checked' | 'probable' | 'review' | 'conflict' | 'unknown' | 'unsupported'; detail: string;
   action_target: string | null; observed: number | null; threshold: number | null; unit: string | null;
+  visual_evidence?: ComparisonGeometry | null;
   basis: string; source: { provider: string; record_label: string; url: string; locator: string; review_status: string }
 }
 export type ScenarioResult = {
@@ -31,6 +40,7 @@ export type ScenarioResult = {
   packet_revision: string
   scope: string
   edge_distances_m: Record<string, number>
+  edge_measurement_lines?: Record<string, [[number, number], [number, number]]>
   thresholds_m: { side_rear: number; flanking_street: number }
   scenarios: { front_edge_id: string; outcome: 'pass' | 'fail'; checks: {
     edge_id: string; role: 'side' | 'rear' | 'flanking_street'; distance_m: number; basis: 'captured_nominal' | 'user_wall_to_lot_line';
@@ -49,6 +59,21 @@ export function parseScenarioResult(raw: unknown, request?: ScenarioRequest): Sc
   const record = (value: unknown): value is Record<string, unknown> => !!value && typeof value === 'object' && !Array.isArray(value)
   const nonempty = (value: unknown) => typeof value === 'string' && value.trim().length > 0
   const finiteNonnegative = (value: unknown) => typeof value === 'number' && Number.isFinite(value) && value >= 0
+  const point = (p: unknown) => Array.isArray(p) && p.length === 2 && p.every(n => typeof n === 'number' && Number.isFinite(n))
+  const segment = (v: unknown) => Array.isArray(v) && v.length === 2 && v.every(point)
+  const polygon = (g: unknown) => {
+    if (!record(g) || !['Polygon', 'MultiPolygon'].includes(String(g.type)) || !Array.isArray(g.coordinates)) return false
+    const polys = g.type === 'Polygon' ? [g.coordinates] : g.coordinates
+    return polys.every(poly => Array.isArray(poly) && poly.length > 0 && poly.every(ring => Array.isArray(ring) && ring.length >= 4 && ring.every(point) && JSON.stringify(ring[0]) === JSON.stringify(ring.at(-1))))
+  }
+  if (result.edge_measurement_lines && (!record(result.edge_distances_m) || !record(result.edge_measurement_lines) || !Object.entries(result.edge_measurement_lines).every(([id, line]) => id in result.edge_distances_m && segment(line)))) throw new Error('Measurement endpoints are malformed.')
+  for (const check of Array.isArray(result.additional_checks) ? result.additional_checks : []) {
+    const v = check.visual_evidence
+    if (v && (v.schema_version !== 'scouting-comparison-geometry.v1' || !nonempty(v.crs) || !nonempty(v.principal_building_id) || !finiteNonnegative(v.principal_outline_area_m2) || typeof v.principal_crosses_parcel !== 'boolean' || !segment(v.measurement_line) ||
+      v.rear_yard !== null && !polygon(v.rear_yard) || v.outside_rear_yard !== null && !polygon(v.outside_rear_yard) ||
+      v.rear_yard_area_m2 !== null && !finiteNonnegative(v.rear_yard_area_m2) || v.outside_rear_yard_area_m2 !== null && !finiteNonnegative(v.outside_rear_yard_area_m2) ||
+      request && (v.crs !== request.geometry.projected_metre_crs || !request.assumptions.observed_buildings.some(b => b.id === v.principal_building_id) || request.assumptions.principal_building_id.value !== null && v.principal_building_id !== request.assumptions.principal_building_id.value))) throw new Error('Comparison drawing evidence is malformed or belongs to another building.')
+  }
   if (result.additional_checks !== undefined && (!Array.isArray(result.additional_checks) ||
     result.additional_revision !== 'candidate-scouting-2026-10-06-1' || ![5, 6].includes(result.additional_checks.length) ||
     !['separation', 'front', 'rear_location', 'rear_occupancy', 'height'].every(id => result.additional_checks!.some(check => check?.id === id)) ||
