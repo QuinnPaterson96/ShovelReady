@@ -83,6 +83,32 @@ def test_pga_additional_checks_use_rear_yard_denominator_and_keep_roofline_basis
     assert checks["front"]["observed"] == 15
     assert checks["height"]["status"] == "checked"
     assert result["additional_revision"] == "candidate-scouting-2026-10-06-1"
+    # Same independently calculated 200 m2 rear yard and 4/200 share.
+    # Planning defaults change certainty, never the measured geometry.
+    body["assumptions"]["waterfront"] = {
+        "value": False, "origin": "journey_default", "evidence_state": "assumed",
+        "note": "Assuming not waterfront.",
+    }
+    provisional = {check["id"]: check for check in screen(body)["additional_checks"]}
+    for key in ("front", "rear_location", "rear_occupancy"):
+        assert provisional[key]["status"] == "probable"
+        assert "Assuming" in provisional[key]["detail"]
+    assert provisional["rear_occupancy"]["observed"] == .02
+    body["assumptions"]["principal_building_id"] = {
+        "value": "house", "origin": "journey_default", "evidence_state": "assumed",
+    }
+    provisional = {check["id"]: check for check in screen(body)["additional_checks"]}
+    assert provisional["rear_location"]["status"] == "probable"
+    assert "assumed main outline" in provisional["rear_location"]["detail"]
+    body["assumptions"]["waterfront"] = {"value": True, "origin": "user"}
+    waterfront = {check["id"]: check for check in screen(body)["additional_checks"]}
+    assert all(waterfront[key]["status"] == "unknown"
+               for key in ("front", "rear_location", "rear_occupancy"))
+    body["assumptions"]["waterfront"] = {"value": None, "origin": "user"}
+    assert next(c for c in screen(body)["additional_checks"]
+                if c["id"] == "rear_occupancy")["status"] == "unknown"
+    body["assumptions"]["waterfront"] = {"value": False, "origin": "user"}
+    body["assumptions"]["principal_building_id"] = {"value": "house", "origin": "user"}
     body["additional_inputs"]["height_from_average_grade_m"] = 4.200001
     assert next(c for c in screen(body)["additional_checks"]
                 if c["id"] == "height")["status"] == "conflict"

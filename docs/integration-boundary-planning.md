@@ -86,3 +86,52 @@ journey suite cover the follow-up; final-head CI and live screenshot are the gat
   Software/browser checks establish behavior, not comprehension or a full access audit.
 - Platform owner / SR-14 and SR-15: persistent assessments, recovery and immutable
   rollback operating evidence remain separate work. This change has no persistence.
+
+
+## Property answers and scan checklist — October 7, 2026
+
+Implemented: address Search is the filled primary button; manual entry is a secondary
+underlined action with a short fallback hint. Existing Model 300 address/sole-parcel
+selection continues to open placement directly; source selection does not attest
+ownership or surveyed identity.
+
+Explicit property answers now set user-confirmed evidence immediately. The separate
+suite-count confirmation checkbox is removed. Suite counts remain None, One, Two or
+more, or Not sure to preserve their stored numerical meaning. Main-home type and
+water adjacency have Yes / No / Not sure buttons, with Duplex/Other available after
+No. Main-outline buttons let the user adopt even the preselected suggestion in one
+click. Untouched defaults remain assumed; Not sure restores unknown and outline
+Not sure disables automatic inference. Changing property remounts the assumptions.
+
+The homeowner scenario defaults to assuming not waterfront, with a visible Likely
+fine label and correction/help. The API permits only a labelled false waterfront
+default. It leaves legal waterfront facts unknown and retains default provenance;
+waterfront-true still requires reviewed frontage/siting. Approximate front/rear
+passes depending on a default waterfront or inferred main outline are probable,
+never checked; explicit unknown waterfront blocks rear-yard interpretation and raw
+shortfalls remain conflicts. Selecting No records the user's answer, not independently
+verified legal status. Marking water edges records physical observations separately.
+
+The preliminary scan now shows a read-only graphic checklist: Yes means City records
+found (Needs review), No means none found in the searched sources (Likely fine), Maybe
+means unknown/not checked. Permit conditions, title restrictions, projections and
+service capacity remain visibly unsearched. The original detailed findings, readable
+source/date/review status, full records and technical exports remain available.
+User choices do not overwrite municipal scan results.
+
+Verified locally: 33 targeted HTTP tests for conditional screening and placement
+scenarios; 135 frontend tests, extending mounted journey/checklist behavior;
+production build; Ruff and diff whitespace checks. The rear-yard regression uses an
+independent 20 x 20 lot / 200 m2 yard and 4/200 footprint ratio to show that assumptions
+change certainty without changing arithmetic. API coverage shows default waterfront
+stays legally unknown and default true is rejected. Browser checks demonstrate
+one-action default confirmation, desktop search hierarchy and checklist, and keyboard
+confirmation/narrow layout at 390 x 844 without horizontal page overflow. Final-head
+CI and public deployment/screenshot checks are integration gates, not source acceptance.
+
+Remaining gaps and owners: product owner / #147 still needs real-homeowner and physical
+touch validation; source-review owner / #104 needs current legal rules, waterfront
+plans and property applicability before accepted real evaluation; homeowner/provider
+must obtain the unsearched property-specific records. Platform owner / SR-14/SR-15
+still owns persistence, recovery and rollback operating evidence. This public demo
+remains stateless; reload loses the local answers and enquiry.

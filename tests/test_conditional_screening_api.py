@@ -290,8 +290,19 @@ def test_main_outline_default_does_not_satisfy_legal_principal_building_prerequi
         "value": "house-1", "origin": "journey_default", "evidence_state": "assumed",
         "note": "Largest usable captured outline; assumed main building.",
     }
+    body["assumptions"]["waterfront"] = {
+        "value": False, "origin": "journey_default", "evidence_state": "assumed",
+        "note": "Assuming not waterfront; planning only.",
+    }
     response = client.post("/api/conditional-screening/v1/evaluate", json=body)
     assert response.status_code == 200, response.text
+    waterfront = next(f for f in response.json()["request"]["facts"]
+                      if f["id"] == "waterfront")
+    assert waterfront["status"] == "unknown"
+    assert waterfront["truth"] is None
+    assert waterfront["origin"] == "journey_default"
+    body["assumptions"]["waterfront"]["value"] = True
+    assert post(body).status_code == 422
     principal = next(c for c in response.json()["checks"]
                      if c["rule"]["fact_id"] == "principal_building")
     assert principal["fact"]["status"] == "unknown"

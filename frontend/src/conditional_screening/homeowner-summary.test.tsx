@@ -9,7 +9,7 @@ import type { Result } from '../occupied_lots/contract'
 import type { MappedZoning } from './projectSettings'
 import { applyMappedZoning, changeProjectSetting, initialProjectSettings } from './projectSettings'
 import type { ScenarioResult } from './scenarios'
-import { parsePropertyScan, type PropertyScanResult } from './PropertyScan'
+import { PropertyScan, parsePropertyScan, type PropertyScanResult } from './PropertyScan'
 import type { ScreeningResult } from './model'
 
 const captured = JSON.parse(readFileSync('src/scenario_handoff/retained-assessment.fixture.json', 'utf8')) as Result
@@ -140,6 +140,13 @@ test('scan failures and malformed empty results cannot become probable clearance
   const scan: PropertyScanResult = { schema_version: 'victoria-property-scan.v1', parcel_ref, parcel_source: null, limitations: ['Permit documents remain unsearched.'], findings: labels.map((label, index) => ({ label, status: 'probably_clear', records: [], detail: 'No mapped records in this searched scope.', source: { provider: 'City of Victoria Open Data', record_label: label, review_status: 'unreviewed_live_observation', captured_at_utc: '2026-10-06T00:00:00Z', sha256: 'a'.repeat(64), source_url: `https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/${[10,14,11,1,3,18][index]}/query?f=json` } })) }
   assert.equal(parsePropertyScan(scan, parcel_ref), scan)
   assert.equal(homeownerSummary({ ...base, propertyScan: scan }).checks.find(row => row.label === 'Mapped heritage and planning flags')?.status, 'probable')
+  const checklist = (result: PropertyScanResult | null) => renderToStaticMarkup(createElement(PropertyScan, { scan: { result, available: true, busy: false, error: '', retry() {} } }))
+  assert.match(checklist(scan), /No · Likely fine in searched scope/)
+  assert.match(checklist(scan), /Service capacity<\/strong><span>Maybe · Not checked/)
+  const flagged = { ...scan, findings: scan.findings.map((row, index) => index === 0 ? { ...row, status: 'review' as const, records: [{ OBJECTID: 1, Name: 'Retained heritage lead' }] } : row) }
+  assert.match(checklist(flagged), /Yes · Needs review/)
+  assert.match(checklist(flagged), /Retained heritage lead/)
+  assert.doesNotMatch(checklist(null), /No · Likely fine/)
   const partial = { ...scan, findings: scan.findings.map((row, index) => index === 0 ? { ...row, status: 'unknown' as const, source: null } : row) }
   assert.equal(homeownerSummary({ ...base, propertyScan: partial }).checks.find(row => row.label === 'Mapped heritage and planning flags')?.status, 'unknown')
   assert.throws(() => parsePropertyScan({ ...scan, findings: scan.findings.slice(1) }, parcel_ref))

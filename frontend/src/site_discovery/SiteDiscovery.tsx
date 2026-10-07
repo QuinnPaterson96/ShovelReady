@@ -41,7 +41,7 @@ export function SiteDiscovery({ onConfirm, transport = liveTransport, onManual, 
     {addressOpen && <form onSubmit={event => { event.preventDefault(); setParcelOpen(true); setObservationOpen(true); void flow.search() }}>
       <label htmlFor="sd-address">Street address in British Columbia</label>
       <div className="sd-search"><input id="sd-address" value={query} maxLength={160} onChange={event => { setParcelOpen(true); setObservationOpen(true); flow.edit(event.target.value) }} placeholder="Street address, city" autoComplete="street-address" />
-        <button type="submit" disabled={busy || query.trim().length < 3}>Search</button></div>
+        <button className="sd-search-primary" type="submit" disabled={busy || query.trim().length < 3}>Search</button></div>
     </form>}
     {busy && <p role="status">{state.stage === 'addresses' ? 'Searching addresses…' : state.stage === 'parcels' ? 'Searching Victoria parcels…' : 'Fetching parcel and rooflines…'}</p>}
     {message && <p className="sd-notice" role="status">{message}</p>}
@@ -64,7 +64,7 @@ export function SiteDiscovery({ onConfirm, transport = liveTransport, onManual, 
       <TechnicalDetails title="Complete observation and exact source records"><pre>{JSON.stringify(observation.raw, null, 2)}</pre></TechnicalDetails>
     </section>}
     {parcel && !busy && (!observation || observation.buildingsState === 'partial') && <p><button type="button" onClick={() => void flow.chooseParcel(parcel.id)}>Retry parcel and rooflines</button> Retrying clears the selected property and placement result.</p>}
-    {onManual ? <p className="sd-fallback"><button type="button" onClick={onManual}>Enter property details manually</button> if this search is wrong, outside Victoria or unavailable. A usable selected property opens approximate placement below.</p> :
+    {onManual ? <p className="sd-fallback"><button className="sd-manual-link" type="button" onClick={onManual}>Enter property details manually</button><span>Use this if search is wrong, outside Victoria or unavailable.</span></p> :
       <p className="sd-fallback">You can continue with the retained lookup or <a href="#manual-address">manual site details below</a> if this search is wrong, outside Victoria or unavailable. This demonstration does not fill those fields or affect the prepared summary yet.</p>}
   </section>
 }

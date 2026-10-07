@@ -59,7 +59,7 @@ export function initialAssumptions(site: Case, geometryRevision: string, placeme
     observed_buildings: site.site.buildings.map(building => ({ id: building.id, basis: building.basis, source: building.source })),
     planning_buffers_m: Object.fromEntries(edges.map(edge => [edge.id, homeownerDefaults ? 1 : 0])),
     waterfront_edge_ids: [], infer_principal_building: true,
-    edges, building_type: fact(), existing_garden_suites: homeownerDefaults ? { value: 0, origin: 'journey_default', evidence_state: 'assumed', note: 'Assuming none already exist; editable homeowner scenario, not independently verified.' } : fact(), principal_building_id: main ? { value: main, origin: 'journey_default', evidence_state: 'assumed', note: 'Unique largest usable mapped outline; assumed main building, not confirmed use or walls.' } : fact(), waterfront: fact(),
+    edges, building_type: fact(), existing_garden_suites: homeownerDefaults ? { value: 0, origin: 'journey_default', evidence_state: 'assumed', note: 'Assuming none already exist; editable homeowner scenario, not independently verified.' } : fact(), principal_building_id: main ? { value: main, origin: 'journey_default', evidence_state: 'assumed', note: 'Unique largest usable mapped outline; assumed main building, not confirmed use or walls.' } : fact(), waterfront: homeownerDefaults ? { value: false, origin: 'journey_default', evidence_state: 'assumed', note: 'Assuming not waterfront for preliminary scouting; choose Yes and mark water-adjoining edges if applicable.' } : fact(),
     measurements: { boundary: {}, principal_separation: null, floor_area: null }, placement_revision: placementRevision,
     limitations: [
       'Edge roles are user assumptions, not surveyed legal lot-line classifications.',
@@ -160,8 +160,8 @@ export function ordinaryFourEdgeBoundary(edges: BoundaryEdge[]): boolean {
   return turns.every(turn => turn > 0) || turns.every(turn => turn < 0)
 }
 
-/** Selection is still an assumption until the optional confirmation is checked. */
-export function suiteCountFact(value: 0 | 1 | 'two_or_more' | null, confirmed = false): SiteAssumptions['existing_garden_suites'] {
-  return { value, origin: 'user', evidence_state: value === null ? 'unknown' : confirmed ? 'user_confirmed' : 'assumed',
-    note: value === null ? null : confirmed ? 'User-confirmed; not independently verified.' : 'User-selected assumption; not independently verified.' }
+/** An explicit answer confirms the user's choice, never independent verification. */
+export function suiteCountFact(value: 0 | 1 | 'two_or_more' | null): SiteAssumptions['existing_garden_suites'] {
+  return { value, origin: 'user', evidence_state: value === null ? 'unknown' : 'user_confirmed',
+    note: value === null ? null : 'User-selected answer; not independently verified.' }
 }

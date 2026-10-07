@@ -92,6 +92,8 @@ test('main-building and planning defaults remain correctable assumptions', () =>
   assert.equal(initial.principal_building_id.origin, 'journey_default')
   assert.deepEqual(Object.values(initial.planning_buffers_m!), [1, 1, 1, 1])
   assert.deepEqual(initial.measurements.boundary, {})
+  assert.deepEqual([initial.waterfront.value, initial.waterfront.origin, initial.waterfront.evidence_state], [false, 'journey_default', 'assumed'])
+  initial.waterfront = { value: true, origin: 'user', evidence_state: 'user_confirmed', note: null }
   initial.waterfront_edge_ids = [initial.edges[0].id]
   const moved = withPlacementRevision(initial, 'new-placement')
   assert.deepEqual(moved.planning_buffers_m, initial.planning_buffers_m)
