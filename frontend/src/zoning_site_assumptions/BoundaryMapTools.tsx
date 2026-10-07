@@ -80,7 +80,7 @@ export function BoundaryMapTools({ interaction }: { interaction: BoundaryMapInte
 }
 
 export function BoundaryActionTabs({ interaction }: { interaction: BoundaryMapInteraction }) {
-  const actions: [BoundaryMapMode, string][] = [['place', 'Move unit'], ['front', 'Mark street edges'], ...(interaction.waterfront ? [['waterfront', 'Mark waterfront'] as [BoundaryMapMode, string]] : []), ['rear', 'Adjust boundaries']]
+  const actions: [BoundaryMapMode, string][] = [['place', 'Move unit'], ['front', 'Mark street edges'], ['rear', 'Adjust boundaries'], ...(interaction.waterfront ? [['waterfront', 'Mark waterfront'] as [BoundaryMapMode, string]] : [])]
   return <div className="boundary-map-modes" role="tablist" aria-label="Placement actions" onKeyDown={event => {
     const index = actions.findIndex(([mode]) => mode === interaction.mode)
     const next = event.key === 'ArrowRight' ? (index + 1) % actions.length : event.key === 'ArrowLeft' ? (index + actions.length - 1) % actions.length : event.key === 'Home' ? 0 : event.key === 'End' ? actions.length - 1 : null

@@ -1,3 +1,4 @@
+import { MapSourceHelp } from '../zoning_site_assumptions/MapSourceHelp'
 import { suggestPlacementOrientation } from '../placement_orientation'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { bundledCatalogue } from '../model_catalogue/model'
@@ -87,6 +88,7 @@ function Map({ selected, placement, onMove, nudgeMetres, conflictIds, boundaryIn
       {boundaryInteraction && <BoundaryOverlay interaction={boundaryInteraction} />}
     </svg>
     <p className="occupied-map-legend"><span>Teal · captured parcel</span><span>Purple · captured rooflines, not walls</span>{conflictIds && <span>Red dashed outline · current conflict</span>}<span>Copper · your nominal footprint</span><span>North ↑ · {site.projected_metre_crs}</span>{!!boundaryInteraction?.streetIds?.length && <span>Grey road bands · your marks, diagram only</span>}</p>
+    <MapSourceHelp site={selected} />
     {placementContinuation && <div className="builder-placement-next">{placementContinuation}</div>}
     {showBoundaryTools && boundaryInteraction && <BoundaryMapTools interaction={boundaryInteraction} />}
     {placementSummary && <div className="builder-map-summary">{placementSummary}</div>}

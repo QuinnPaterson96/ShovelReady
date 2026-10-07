@@ -204,3 +204,28 @@ Gaps: source owner/#104 still needs reviewed property/rule applicability and ins
 measurements for accepted evaluation; homeowner/provider needs permit/title/servicing
 records. Product owner/#147 owns real-user and physical-touch validation. Platform
 owner/SR14-SR15 owns persistence/recovery and rollback evidence; refresh loses answers.
+
+## Facts completion, waterfront return and map help — October 7, 2026
+
+Implemented: Property facts opens on entering Property details. Its bottom Next:
+Review quick checks marks workflow review and closes the section; re-entering opens
+it again. Unknown answers remain unknown. Detailed measurements is now Optional
+measurements, with a visible hint to retain preliminary estimates when unavailable.
+Mark waterfront follows Adjust boundaries. Choosing waterfront Yes focuses and
+scrolls to the newly mounted tab; finishing marking returns to Property details.
+Map sources & accuracy uses accessible hover/focus/click help beside the legend,
+with readable provider, record, capture date and review state. The roofline-not-wall
+hint stays visible and full technical evidence remains recoverable elsewhere.
+
+Verification: 135 frontend checks, production build/typecheck and whitespace check
+passed. Desktop browser inspection reproduced and fixed the newly mounted-tab
+focus timing defect, verified facts completion and return navigation. A 390 × 844
+preview showed bounded map help with source/date/review state. Final-head CI and
+live deployment proof are recorded in the PR; physical-touch and homeowner
+comprehension validation were not performed.
+
+Remaining gaps: source owner/#104 needs reviewed applicability and installed
+measurements before accepted evaluation; homeowner/provider needs permit/title/
+projection/servicing records. Product owner/#147 owns real-user and touch validation.
+Platform owner/SR14-SR15 owns persistence/recovery and rollback evidence; refresh
+loses answers. This change supplies navigation and disclosure, not those validations.

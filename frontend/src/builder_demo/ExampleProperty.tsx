@@ -1,3 +1,4 @@
+import { MapSourceHelp } from '../zoning_site_assumptions/MapSourceHelp'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { MeasurementInput } from '../MeasurementInput'
 import { MeasurementLabel } from '../model_catalogue/MeasurementLabel'
@@ -149,7 +150,7 @@ export function ExampleProperty({ onMeasurement, boundaryInteraction, placementS
             onPointerDown={event => { if (boundaryInteraction && boundaryInteraction.mode !== 'place') return; dragging.current = true; suppressClick.current = true; event.currentTarget.ownerSVGElement?.setPointerCapture(event.pointerId) }} />
         </g>}
         {boundaryInteraction && <BoundaryOverlay interaction={boundaryInteraction} />}
-      </svg><figcaption>Teal: captured parcel · Purple: captured roofline, not walls · Red dashed outline: observed conflict in current measurement · Copper: illustrative nominal rectangle · North ↑ · EPSG:3157 metres. Diagram is approximate.{!!boundaryInteraction?.streetIds?.length && <> Grey road bands · your marks, diagram only.</>}</figcaption></figure>
+      </svg><figcaption>Teal: captured parcel · Purple: captured roofline, not walls · Red dashed outline: observed conflict in current measurement · Copper: illustrative nominal rectangle · North ↑ · EPSG:3157 metres. Diagram is approximate.{!!boundaryInteraction?.streetIds?.length && <> Grey road bands · your marks, diagram only.</>}<MapSourceHelp site={exampleCase} /></figcaption></figure>
 
       {placementContinuation && <div className="builder-placement-next">{placementContinuation}</div>}
       <div className="builder-example-controls">{boundaryInteraction && <BoundaryMapTools interaction={boundaryInteraction} />}<div hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}><h3>Adjust the footprint</h3>

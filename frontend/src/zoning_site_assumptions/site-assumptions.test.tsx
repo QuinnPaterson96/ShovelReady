@@ -40,7 +40,7 @@ test('rendered component offers labelled controls without another map', () => {
   assert.match(html, /Edge 1 role/)
   assert.match(html, /Use my measurement/)
   assert.doesNotMatch(html, /<svg/)
-  assert.match(html, /Rooflines are mapped outlines, not walls/)
+  assert.match(html, /does not turn that roofline into wall geometry/)
 })
 
 test('opposite-edge suggestion is display-only and scoped to a simple single-street lot', () => {
