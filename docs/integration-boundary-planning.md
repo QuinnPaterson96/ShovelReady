@@ -424,3 +424,7 @@ assessments, budget/account/backup decisions, tested-image promotion and isolate
 rollback evidence. Text recovery reduces loss of the enquiry; refresh still resets
 editable geometry, answers and workflow progress. No source acceptance, external
 contact, paid provisioning or disruptive live rollback was performed.
+
+Narrow-screen follow-up: visual inspection reproduced the native fieldset's minimum
+content width pushing property-answer controls beyond their panel at 390 px. The
+fieldset now permits shrinking; the first question and its controls fit the panel.
