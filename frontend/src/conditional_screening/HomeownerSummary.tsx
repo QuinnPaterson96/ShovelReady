@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { focusSummaryTarget } from './summaryNavigation'
 import { StepInfo } from '../StepInfo'
 export type SummaryCheck = { label: string; status: 'checked' | 'probable' | 'review' | 'conflict' | 'unknown' | 'unsupported'; detail: string; action?: { label: string; target: string } }
 export type Summary = { conclusion: string; next: string; checks: SummaryCheck[] }
@@ -13,13 +14,20 @@ export function HomeownerSummary({ summary, onNavigate, continuation }: { summar
     ?? summary.checks.find(check => check.status === 'review' && check.action)
     ?? summary.checks.find(check => check.status === 'unknown' && check.action)
   const nextAction = nextCheck?.action
+  const checklist = React.useRef<HTMLDetailsElement>(null)
+  const jumpToStatus = (status: SummaryCheck['status']) => {
+    const index = summary.checks.findIndex(check => check.status === status)
+    if (index < 0) return
+    if (checklist.current) checklist.current.open = true
+    focusSummaryTarget(document, `summary-check-${index}`)
+  }
   return <section className="homeowner-summary" id="builder-quick-checks" tabIndex={-1} aria-label="Placement summary">
     <h3>{summary.conclusion}</h3><p>{summary.next}</p>
-    {continuation && <div className="homeowner-summary__continue"><p>{continuation.hint}</p><div className="step-action"><button className="homeowner-summary__primary" type="button" onClick={continuation.onContinue}>Next: {continuation.label}<span aria-hidden="true"> →</span></button><StepInfo label={continuation.label}>{continuation.hint} This opens the next step. Existing findings and unanswered questions remain in your enquiry.</StepInfo></div><p className="homeowner-summary__continue-note">You can continue with open questions. Your placement and findings stay with your enquiry.</p></div>}
-    <div className="homeowner-summary__counts" aria-label="Named check counts">{(['checked', 'probable', 'review', 'unknown', 'conflict', 'unsupported'] as const).map(status => <span key={status} className={`homeowner-summary__${status}`}><StatusIcon status={status} /><strong>{summary.checks.filter(check => check.status === status).length} {statusLabels[status]}</strong></span>)}</div>
+
+    <div className="homeowner-summary__counts" aria-label="Named check counts">{(['checked', 'probable', 'review', 'unknown', 'conflict', 'unsupported'] as const).map(status => <button type="button" disabled={!summary.checks.some(check => check.status === status)} onClick={() => jumpToStatus(status)} key={status} className={`homeowner-summary__${status}`}><StatusIcon status={status} /><strong>{summary.checks.filter(check => check.status === status).length} {statusLabels[status]}</strong></button>)}</div>
     {nextAction && <div className="step-action"><button className="homeowner-summary__next" type="button" onClick={() => onNavigate(nextAction.target)}>{continuation ? '' : 'Next: '}{nextAction.label}</button><StepInfo label={nextAction.label}>{nextCheck?.detail} This opens the relevant control so you can review or correct the current input.</StepInfo></div>}
     <p className="homeowner-summary__scope">Preliminary screening of this placement · limited checks. Open questions and requirements not covered are listed below.</p>
-    <details className="homeowner-summary__checks"><summary>Review individual checks</summary><ul>{summary.checks.map(check => <li key={check.label} className={`homeowner-summary__${check.status}`}>
+    <details ref={checklist} open className="homeowner-summary__checks"><summary>Review individual checks</summary><ul>{summary.checks.map((check, index) => <li id={`summary-check-${index}`} tabIndex={-1} key={check.label} className={`homeowner-summary__${check.status}`}>
       <StatusIcon status={check.status} />
       <div><strong>{check.label} · {statusLabels[check.status]}</strong><p>{check.detail}</p>
         {check.status === 'probable' && <StepInfo symbol="?" label={`${check.label} assumption`}>{check.detail} This is a preliminary assumption-based finding; review the inputs before relying on it.</StepInfo>}

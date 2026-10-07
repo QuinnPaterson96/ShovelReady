@@ -1,9 +1,30 @@
 import { useEffect, useState } from 'react'
 import { TechnicalDetails, CopyableRecord, readableDate } from '../ReadableProvenance'
 import type { ParcelRef } from './victoriaZoning'
+import { StepInfo } from '../StepInfo'
 import { StatusIcon } from './HomeownerSummary'
 
 const scanLabels = ['Heritage properties', 'Heritage conservation areas', 'Development permit areas', 'Mapped special restrictions', 'Mapped development applications', 'Development application history']
+
+// General guidance only; these descriptions do not establish site applicability.
+const scanHelp: Record<string, string> = {
+  'Heritage properties': 'City-listed heritage property records. Review the returned record and ask City heritage staff whether the proposed work needs heritage review.',
+  'Heritage conservation areas': 'Mapped heritage conservation areas. Ask City planning staff which area guidelines apply to the property and proposed work.',
+  'Development permit areas': 'Mapped areas where development may need additional permit review. Check the returned area name and ask City planning staff about applicable guidelines.',
+  'Mapped special restrictions': 'Restrictions and covenants shown in the searched City map layer. Review any returned records; this map does not replace a land-title search.',
+  'Mapped development applications': 'Development applications shown near or on the parcel by the City map query. Check the application and its location in Development Tracker; a map hit is not an issued approval.',
+  'Development application history': 'Application-history records linked by the City query. Review their status and underlying documents in Development Tracker or the Property Information Portal.',
+  'Permit conditions': 'Requirements attached to an issued permit or approved plans. Obtain the permit and approved drawings through the City Property Information Portal or permit-records request. They have not been reviewed by this scan.',
+  'Title restrictions': 'Registered interests such as covenants, easements or rights of way that may affect how land can be used. Obtain the current title and relevant registered documents from LTSA; ask a qualified professional to interpret their effect. This scan has not searched title records.',
+  'Projections': 'Parts extending beyond the main building walls, such as eaves, balconies or steps. Ask the provider for installed drawings and have the proposed projections checked against the applicable City rules. They are not captured by the nominal rectangle.',
+  'Service capacity': 'Whether water, sewer, drainage and power can support the additional building. Ask City servicing staff and utility providers about the proposed connections and any upgrades. This scan does not assess capacity.',
+}
+function ScanCard({ label, status, answer, source, row }: { label: string; status: 'probable' | 'review' | 'unknown'; answer: string; source: string; row?: PropertyScanResult['findings'][number] }) {
+  return <li className={`property-scan__${status}`}><StepInfo className="property-scan__help" label={label} trigger={<><StatusIcon status={status} /><span className="property-scan__card-content"><strong>{label}</strong><span>{answer}</span><small>{source}</small><small className="property-scan__help-hint">Hover or tap for details</small></span></>}>
+    <strong>{label}</strong><p>{scanHelp[label]}</p>
+    {row ? <><p>{row.detail}</p>{row.records.length > 0 && <p>Returned records: {row.records.map(record => `${String(record.Name ?? record.SUBJECT ?? record.Heritage ?? record.AppType ?? 'City record requiring review')}${record.STATUS ? ` (${String(record.STATUS)})` : ''}`).join('; ')}</p>}{row.source && <p>{row.source.provider} · {row.source.record_label} · {readableDate(row.source.captured_at_utc)} · unreviewed</p>}</> : <p>No property-specific finding is available for this item.</p>}
+  </StepInfo></li>
+}
 
 export type PropertyScanResult = {
   schema_version: 'victoria-property-scan.v1'; parcel_ref: ParcelRef
@@ -69,9 +90,9 @@ export function PropertyScan({ scan }: { scan: ReturnType<typeof usePropertyScan
     <ul className="property-scan__list" aria-label="Property review checklist">{scanLabels.map(label => {
       const row = scan.result?.findings.find(finding => finding.label === label)
       const status = row?.status === 'probably_clear' ? 'probable' : row?.status === 'review' ? 'review' : 'unknown'
-      return <li key={label} className={`property-scan__${status}`}><StatusIcon status={status} /><div><strong>{label}</strong><span>{status === 'probable' ? 'No · Likely fine in searched scope' : status === 'review' ? 'Yes · Needs review' : `Maybe · ${scan.busy ? 'Scanning…' : 'Not established'}`}</span>{row?.source && <small>City records · {readableDate(row.source.captured_at_utc)} · unreviewed</small>}</div></li>
-    })}{['Permit conditions', 'Title restrictions', 'Projections', 'Service capacity'].map(label => <li key={label} className="property-scan__unknown"><StatusIcon status="unknown" /><div><strong>{label}</strong><span>Maybe · Not checked</span><small>Property-specific records needed</small></div></li>)}</ul>
+      return <ScanCard key={label} label={label} row={row} status={status} answer={status === 'probable' ? 'No · Likely fine in searched scope' : status === 'review' ? 'Yes · Needs review' : `Maybe · ${scan.busy ? 'Scanning…' : 'Not established'}`} source={row?.source ? `City records · ${readableDate(row.source.captured_at_utc)} · unreviewed` : 'No source finding established'} />
+    })}{['Permit conditions', 'Title restrictions', 'Projections', 'Service capacity'].map(label => <ScanCard key={label} label={label} status="unknown" answer="Maybe · Not checked" source="Property-specific records needed" />)}</ul>
     {scan.result && <details><summary>Scan findings and sources</summary>{scan.result.findings.map(row => <div key={row.label}><strong>{row.label} · {row.status === 'probably_clear' ? 'Likely fine in searched scope' : row.status === 'review' ? 'Needs review' : 'Unknown'}</strong><p>{row.detail}</p>{row.source && <p>{row.source.provider} · {row.source.record_label} · captured {readableDate(row.source.captured_at_utc)} · unreviewed. <a href={row.source.source_url} target="_blank" rel="noreferrer">City source</a></p>}{row.records.length > 0 && <ul>{row.records.map((record, index) => <li key={index}>{String(record.Name ?? record.SUBJECT ?? record.Heritage ?? record.AppType ?? 'City record requiring review')}{record.STATUS ? ` (${String(record.STATUS)})` : ''}</li>)}</ul>}{row.records.length > 0 && <TechnicalDetails title={`${row.label}: returned records`}><CopyableRecord id={`scan-${row.label.replace(/ /g, "-")}`} label="Source records" value={JSON.stringify(row.records, null, 2)} /></TechnicalDetails>}</div>)}</details>}
-    <p><a href="https://www.victoria.ca/building-business/permits-development-construction/development-tracker" target="_blank" rel="noreferrer">Development Tracker</a> · <a href="https://tender.victoria.ca/WebApps/PIP/Pages/Search.aspx" target="_blank" rel="noreferrer">Property Information Portal</a></p>
+    <p><a href="https://www.victoria.ca/building-business/permits-development-construction/development-tracker" target="_blank" rel="noreferrer">Development Tracker</a> · <a href="https://tender.victoria.ca/WebApps/PIP/Pages/Search.aspx" target="_blank" rel="noreferrer">Property Information Portal</a> · <a href="https://www.victoria.ca/building-business/permits-development-construction/building-renovating/accessing-permit-records" target="_blank" rel="noreferrer">Permit records</a> · <a href="https://ltsa.ca/property-owners/how-can-i/find-information-on-a-title/" target="_blank" rel="noreferrer">LTSA title records</a></p>
   </section>
 }

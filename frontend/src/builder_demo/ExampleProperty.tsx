@@ -17,7 +17,7 @@ const directions: Record<string, [number, number]> = {
   ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1],
 }
 
-export function ExampleProperty({ onMeasurement, boundaryInteraction, placementSummary }: { onMeasurement: (value: OccupiedMeasurement | null) => void; boundaryInteraction?: BoundaryMapInteraction; placementSummary?: ReactNode }) {
+export function ExampleProperty({ onMeasurement, boundaryInteraction, placementSummary, placementContinuation }: { onMeasurement: (value: OccupiedMeasurement | null) => void; boundaryInteraction?: BoundaryMapInteraction; placementSummary?: ReactNode; placementContinuation?: ReactNode }) {
   const [position, setPosition] = useState(initialExamplePosition)
   const [assumptions, setAssumptions] = useState(emptyExampleAssumptions)
   const [result, setResult] = useState<Result | null>(null)
@@ -150,7 +150,7 @@ export function ExampleProperty({ onMeasurement, boundaryInteraction, placementS
         </g>}
         {boundaryInteraction && <BoundaryOverlay interaction={boundaryInteraction} />}
       </svg><figcaption>Teal: captured parcel · Purple: captured roofline, not walls · Red dashed outline: observed conflict in current measurement · Copper: illustrative nominal rectangle · North ↑ · EPSG:3157 metres. Diagram is approximate.{!!boundaryInteraction?.streetIds?.length && <> Grey road bands · your marks, diagram only.</>}</figcaption></figure>
-      {placementSummary && <div className="builder-map-summary">{placementSummary}</div>}
+
       <div className="builder-example-controls">{boundaryInteraction && <BoundaryMapTools interaction={boundaryInteraction} />}<div hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}><h3>Adjust the footprint</h3>
         <p>Click the map or drag the rectangle. Arrow keys move it when the map has focus. Checks update automatically after movement settles.</p>
         <div className="builder-example-main-actions"><div><label htmlFor="builder-example-angle">Rotation (degrees)</label><input id="builder-example-angle" type="number" step="any" value={rotationFocused || !position.angle.trim() || !Number.isFinite(Number(position.angle)) ? position.angle : String(Number(Number(position.angle).toFixed(2)))} onFocus={() => setRotationFocused(true)} onBlur={() => setRotationFocused(false)} onChange={event => edit('angle', event.target.value)} /></div>
@@ -174,6 +174,8 @@ export function ExampleProperty({ onMeasurement, boundaryInteraction, placementS
         </fieldset></details>
         <button type="button" disabled={busy || !request} onClick={() => void measure(position, assumptions)}>{busy ? 'Checking…' : phase === 'unresolved' ? 'Retry placement check' : 'Recheck placement'}</button>
       </div></div>
+      {placementContinuation && <div className="builder-placement-next">{placementContinuation}</div>}
+      {placementSummary && <div className="builder-map-summary">{placementSummary}</div>}
     </div>
     {checkWarning && <div className={`builder-example-outcome builder-example-outcome--${conflict ? 'conflict' : 'unknown'}`} role="alert">
       <strong>{phase === 'unresolved' || unresolved && !conflict ? 'Placement could not be fully checked' : 'Conflict at this position'}</strong>

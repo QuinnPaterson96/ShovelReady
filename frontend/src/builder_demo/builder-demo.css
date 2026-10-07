@@ -109,3 +109,11 @@
 /* Findings precede optional controls in the shared homeowner map workspace. */
 .builder-demo .builder-example-layout > .builder-map-summary { order: 2; }
 .builder-demo .builder-example-layout > .builder-example-controls { order: 3; }
+
+.builder-demo .builder-placement-next { order: 4; min-width: 0; grid-column: 1 / -1; }
+.builder-demo .builder-example-layout > .builder-map-summary { order: 5; }
+.builder-placement-next .step-action { flex-wrap: nowrap; }
+.builder-placement-next .builder-continue { flex: 1; display: flex; justify-content: space-between; gap: .75rem; text-align: left; min-height: 52px; }
+.builder-placement-next .homeowner-summary__continue-note { color: var(--ink-muted); font-size: .85rem; }
+
+.builder-placement-next .builder-continue:disabled { opacity: .55; cursor: default; }

@@ -34,7 +34,7 @@ const checkText = (check: Check, selected?: Case) => {
     default: return `${check.kind.replace(/_/g, ' ')}: ${check.relation ?? check.status}`
   }
 }
-function Map({ selected, placement, onMove, nudgeMetres, conflictIds, boundaryInteraction, placementSummary, showBoundaryTools = true }: { placementSummary?: ReactNode; showBoundaryTools?: boolean; selected: Case; placement: Placement; onMove: (x: number, y: number) => void; nudgeMetres: number; conflictIds?: Set<string>; boundaryInteraction?: BoundaryMapInteraction }) {
+function Map({ selected, placement, onMove, nudgeMetres, conflictIds, boundaryInteraction, placementSummary, placementContinuation, showBoundaryTools = true }: { placementSummary?: ReactNode; placementContinuation?: ReactNode; showBoundaryTools?: boolean; selected: Case; placement: Placement; onMove: (x: number, y: number) => void; nudgeMetres: number; conflictIds?: Set<string>; boundaryInteraction?: BoundaryMapInteraction }) {
   const svg = useRef<SVGSVGElement>(null)
   const drag = useRef(false)
   const suppressClick = useRef(false)
@@ -87,8 +87,9 @@ function Map({ selected, placement, onMove, nudgeMetres, conflictIds, boundaryIn
       {boundaryInteraction && <BoundaryOverlay interaction={boundaryInteraction} />}
     </svg>
     <p className="occupied-map-legend"><span>Teal · captured parcel</span><span>Purple · captured rooflines, not walls</span>{conflictIds && <span>Red dashed outline · current conflict</span>}<span>Copper · your nominal footprint</span><span>North ↑ · {site.projected_metre_crs}</span>{!!boundaryInteraction?.streetIds?.length && <span>Grey road bands · your marks, diagram only</span>}</p>
-    {placementSummary && <div className="builder-map-summary">{placementSummary}</div>}
     {showBoundaryTools && boundaryInteraction && <BoundaryMapTools interaction={boundaryInteraction} />}
+    {placementContinuation && <div className="builder-placement-next">{placementContinuation}</div>}
+    {placementSummary && <div className="builder-map-summary">{placementSummary}</div>}
     </div>
   </div>
 }
@@ -96,6 +97,7 @@ function Map({ selected, placement, onMove, nudgeMetres, conflictIds, boundaryIn
 export type OccupiedMeasurement = { site: Case; model: (typeof bundledCatalogue.models)[number] | null; result: Result; widthOrigin: 'catalogue' | 'user'; depthOrigin: 'catalogue' | 'user' }
 export type OccupiedLotsProps = {
   placementSummary?: ReactNode
+  placementContinuation?: ReactNode
   compactPlacement?: boolean
   allowedModelIds?: readonly string[]
   initialModelId?: string
@@ -105,7 +107,7 @@ export type OccupiedLotsProps = {
   boundaryInteraction?: BoundaryMapInteraction
 }
 
-export default function OccupiedLots({ allowedModelIds, initialModelId = '', onMeasurement, showHandoff = true, suppliedCase, boundaryInteraction, compactPlacement = false, placementSummary }: OccupiedLotsProps) {
+export default function OccupiedLots({ allowedModelIds, initialModelId = '', onMeasurement, showHandoff = true, suppliedCase, boundaryInteraction, compactPlacement = false, placementSummary, placementContinuation }: OccupiedLotsProps) {
   const initialModel = bundledCatalogue.models.find(m => m.model_id === initialModelId && (!allowedModelIds || allowedModelIds.includes(m.model_id)))
   const initialDimension = (name: string) => {
     const quantity = initialModel?.measurements.find(m => m.name === name)?.quantity
@@ -263,7 +265,7 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
       {compactPlacement && <div className="occupied-compact-summary"><strong>{model ? `${model.name} · ` : 'Manual footprint · '}{show(width)} wide × {show(depth)} long</strong><span>Nominal exterior rectangle · {dimensionOrigin('width').toLowerCase()} width, {dimensionOrigin('depth').toLowerCase()} length.</span><span>{source?.provider} · {source?.record_label} · captured {readableDate(source?.capture_date)} · {source?.review_status}. {publicSourceUrl(source?.reference) && <a href={publicSourceUrl(source?.reference)!} target="_blank" rel="noreferrer">Parcel source</a>}</span></div>}
       <div className="occupied-workspace">
         <div className="occupied-map-column">
-          <Map placementSummary={placementSummary} showBoundaryTools selected={selected} placement={placement} nudgeMetres={nudgeMetres} conflictIds={compactPlacement ? conflictIds : undefined} onMove={(x, y) => changePlacement({ x: String(x), y: String(y) })} boundaryInteraction={boundaryInteraction} />
+          <Map placementContinuation={placementContinuation} placementSummary={placementSummary} showBoundaryTools selected={selected} placement={placement} nudgeMetres={nudgeMetres} conflictIds={compactPlacement ? conflictIds : undefined} onMove={(x, y) => changePlacement({ x: String(x), y: String(y) })} boundaryInteraction={boundaryInteraction} />
           <div className="occupied-map-actions" hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}><button onClick={placeAtCentre}>{compactPlacement ? 'Place or reset at parcel centre' : 'Recenter rectangle on parcel'}</button>
             <button disabled={number(placement.x) === null && number(placement.y) === null} onClick={() => changePlacement({ x: '', y: '' })}>Clear placement</button></div>
           <details><summary>About the starting position</summary><p>Recenter uses the parcel drawing's bounding-box centre as a sketch starting point. It does not search for a suitable location.</p></details>
