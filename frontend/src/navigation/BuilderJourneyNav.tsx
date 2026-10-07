@@ -56,11 +56,20 @@ export function BuilderJourneyNav({ completion }: { completion: BuilderJourneyCo
       })}
       <small>Ticks show workflow progress, not passing checks. Email opens a draft; only you can send it.</small>
       {completion.mapAvailable === false && <small>Map steps need a captured parcel. You can prepare an enquiry with the facts you know.</small>}
-      {completion.reviewReadiness && <section className="builder-review-readiness" aria-label="Review readiness">
-        <strong>Review readiness · {completion.reviewReadiness.addressed} of {completion.reviewReadiness.total} addressed</strong>
-        <p role="status">{completion.reviewReadiness.busy ? 'Checks updating…' : completion.reviewReadiness.ready ? 'Ready to discuss with the provider' : `${completion.reviewReadiness.total - completion.reviewReadiness.addressed} items still need your attention`}</p>
-        {completion.reviewReadiness.ready ? <a href="#builder-next">Prepare enquiry →</a> : completion.reviewReadiness.targetId && <a href={`#${completion.reviewReadiness.targetId}`}>Review outstanding items →</a>}
-        <small>Review completion only. Findings and open questions stay in your enquiry; unresolved conflicts remain conflicts.</small>
+      {completion.reviewReadiness && <section className={`builder-review-readiness${completion.reviewReadiness.ready ? ' is-ready' : ''}`} key={completion.reviewReadiness.ready ? 'ready' : 'pending'} aria-label="Review readiness">
+        {completion.reviewReadiness.ready ? <>
+          <strong>✓ Review complete</strong>
+          <p role="status">You’ve addressed all {completion.reviewReadiness.total} items. Your questions and acknowledged risks are included.</p>
+          <a className="builder-readiness-continue" href="#builder-next">Prepare your enquiry →</a>
+          <p>Next: review your draft before sending.</p>
+          <small>Review complete means ready for discussion; unresolved findings remain.</small>
+        </> : <>
+          <strong>Review readiness · {completion.reviewReadiness.addressed} of {completion.reviewReadiness.total} addressed</strong>
+          <p role="status">{completion.reviewReadiness.busy ? 'Checks updating…' : `${completion.reviewReadiness.total - completion.reviewReadiness.addressed} items still need your attention`}</p>
+          {completion.reviewReadiness.targetId && <a href={`#${completion.reviewReadiness.targetId}`}>Review outstanding items →</a>}
+          <small>Review completion only. Findings and open questions stay in your enquiry; unresolved conflicts remain conflicts.</small>
+        </>}
+
       </section>}
     </nav>
   </aside>

@@ -45,8 +45,8 @@
 .builder-demo .builder-enquiry-actions, .builder-demo .builder-email { max-width: 60rem; }
 .builder-demo .builder-enquiry-actions > button { margin: .5rem .5rem .5rem 0; }
 .builder-demo .builder-email { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); }
-.builder-demo .builder-email > label:not(.builder-email-choice), .builder-demo .builder-email > input, .builder-demo .builder-email > textarea { display: block; width: 100%; max-width: 100%; }
-.builder-demo .builder-email > input, .builder-demo .builder-email > textarea { margin: .35rem 0 1rem; padding: .6rem .8rem; }
+.builder-demo .builder-email #builder-email-content > label:not(.builder-email-choice), .builder-demo .builder-email #builder-email-content > input, .builder-demo .builder-email #builder-email-content > textarea { display: block; width: 100%; max-width: 100%; }
+.builder-demo .builder-email #builder-email-content > input, .builder-demo .builder-email #builder-email-content > textarea { margin: .35rem 0 1rem; padding: .6rem .8rem; }
 .builder-demo .builder-email-choice { display: flex; align-items: center; gap: .5rem; }
 .builder-demo .builder-email-buttons { display: flex; flex-wrap: wrap; gap: .5rem; }
 @media (max-width: 680px) {
@@ -122,6 +122,8 @@
 .builder-demo .builder-example-layout > .builder-example-controls { order: 3; }
 .zsa__defaults { padding: .75rem; border: 1px solid var(--border); background: var(--primary-soft); border-radius: var(--radius-sm); }
 .zsa__defaults ul { padding-left: 1.2rem; }
+.builder-enquiry-confirm { margin-top: 1rem; padding: 1rem; border: 1px solid var(--border); border-radius: var(--radius-card); background: var(--primary-soft); }
+.builder-enquiry-confirm .builder-continue { width: 100%; min-height: 52px; }
 
 /* Movement controls stay with the map, before Next and the review checklist. */
 .builder-demo .builder-footprint-controls { order: 2; padding: .8rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-card); min-width: 0; }

@@ -40,4 +40,6 @@
 .homeowner-summary__counts button:disabled { opacity: .65; cursor: default; }
 .homeowner-summary li:focus { outline: 3px solid var(--focus); outline-offset: 2px; }
 
+.homeowner-summary li.homeowner-summary__acknowledged { background: var(--assumption-soft); }
+.homeowner-summary li.homeowner-summary__acknowledged.homeowner-summary__review { border: 2px solid var(--copper); }
 .homeowner-summary li.homeowner-summary__acknowledged-conflict { background: var(--assumption-soft); border: 2px solid var(--danger); color: var(--danger-ink); }

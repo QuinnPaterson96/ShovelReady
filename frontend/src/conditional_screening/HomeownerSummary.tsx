@@ -26,11 +26,12 @@ export function HomeownerSummary({ summary, onNavigate, continuation, onApplyBuf
     focusSummaryTarget(document, found.targetId)
   }
   const renderFinding = (check: SummaryCheck, targetId: string): React.ReactNode => {
-    const included = acknowledged.includes(check.label)
+    const included = check.parts ? check.parts.some(part => !['checked', 'probable'].includes(part.status)) && check.parts.every(part => ['checked', 'probable'].includes(part.status) || acknowledged.includes(part.label)) : acknowledged.includes(check.label)
     const unresolved = !check.parts && !['checked', 'probable'].includes(check.status)
-    return <li id={targetId} tabIndex={-1} key={check.label} className={`homeowner-summary__${check.status}${included && check.status === 'conflict' ? ' homeowner-summary__acknowledged-conflict' : ''}`}>
+    return <li id={targetId} tabIndex={-1} key={check.label} className={`homeowner-summary__${check.status}${included ? ' homeowner-summary__acknowledged' : ''}${included && check.status === 'conflict' ? ' homeowner-summary__acknowledged-conflict' : ''}`}>
       <StatusIcon status={check.status} /><div>
-        <strong>{check.label} · {statusLabels[check.status]}{included && check.status === 'conflict' ? ' · Acknowledged for discussion' : ''}</strong><p>{check.detail}</p>
+        <strong>{check.label} · {statusLabels[check.status]}{included ? ' · Acknowledged for discussion' : ''}</strong><p>{check.detail}</p>
+        {check.parts && included && <p role="status">All open findings in this section are included for discussion. Their original statuses remain.</p>}
         {check.parts && <ul>{check.parts.map((part, index) => renderFinding(part, `${targetId}-part-${index}`))}</ul>}
         {check.resolutions && <ul>{check.resolutions.map(suggestion => <li key={suggestion.edgeId}><div><p>{suggestion.detail}</p>{onApplyBuffer && <button type="button" disabled={actionsDisabled} onClick={() => onApplyBuffer(suggestion.edgeId, suggestion.bufferM)}>Apply {suggestion.bufferM} m planning buffer</button>} {onMove && <button type="button" disabled={actionsDisabled} onClick={() => onMove(suggestion.edgeId, suggestion.moveM)}>Move {suggestion.moveM} m away from this edge &amp; recheck</button>}</div></li>)}</ul>}
         {unresolved && onAcknowledge && <div>{included ? <><p role="status"><strong>{check.status === 'conflict' ? 'Acknowledged · included in enquiry.' : 'Included as an open question in enquiry.'}</strong> {check.status === 'conflict' ? 'The conflict remains unresolved; City agreement or an exception is not established.' : 'This finding remains unresolved; inclusion does not confirm an answer.'}</p><button type="button" onClick={() => onAcknowledge(check)}>Remove {check.status === 'conflict' ? 'acknowledgement' : 'open question'}</button></> : <button type="button" onClick={() => onAcknowledge(check)}>{check.status === 'conflict' ? 'Acknowledge and include in enquiry' : 'Include as an open question in enquiry'}</button>}</div>}
