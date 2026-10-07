@@ -59,6 +59,10 @@ const pct = (value: number) => `${Number((value * 100).toFixed(1))}%`
 const unresolvedFacts = { separation: 'Main-home identification or usable building geometry is unresolved.', front: 'Front-line classification or waterfront applicability is unresolved.', rear_location: 'The main home, rear boundary or waterfront status is unresolved.', rear_occupancy: 'The main home or rear-yard area is unresolved.', height: 'Installed height, grade and the measurement datum are unresolved.', area: 'Regulatory floor area and its inclusions are unresolved.' }
 
 export function additionalObservation(check: AdditionalCheck): string {
+  // Keep editable planning allowances visible; an estimate is not a measured quantity.
+  if (check.status === 'probable' && ['height', 'area'].includes(check.id))
+    return `${check.label}: ${check.detail.replace(/; enter installed height if known\.$/, '.')}`
+
   if (check.status === 'unknown' || check.status === 'unsupported' || check.status === 'review') return `${check.label}: ${check.status === 'unsupported' ? 'outside the supported comparison' : check.status === 'review' ? 'needs review' : 'not assessed'}. ${ unresolvedFacts[check.id as keyof typeof unresolvedFacts] ?? 'Property-specific applicability is unresolved.' }`
   if (check.id === 'rear_location') return check.status === 'conflict'
     ? 'The sketch suggests part of the unit extends beyond the assumed rear-yard boundary behind the main building.'

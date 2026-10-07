@@ -319,6 +319,16 @@ test('exported comparison geometry draws the assumed yard and concern endpoints,
   assert.match(svg, /Candidate minimum: 2.4 m \(concern\)/)
   assert.match(svg, /fill-opacity=".45"/)
   assert.match(svg, /stroke-dasharray="6 3"/)
+  const estimatedHeight = { ...reviewScenarios.additional_checks![0], id: 'height', status: 'probable' as const, detail: 'Advertised height plus 17% and 0.45 m foundation allowance = 3.96 m, below the 4.2 m candidate limit. Grade remains unverified; enter installed height if known.' }
+  const estimatedArea = { ...estimatedHeight, id: 'area', detail: 'Nominal footprint plus 17% = 32.6 m², below the 56 m² candidate limit. Planning estimate, not measured regulatory floor area.' }
+  const estimates = { ...scenarios, additional_checks: [estimatedHeight, estimatedArea] }
+  for (const output of [enquiryPlainText(screeningDocument(null, questions, fixture.measurement, false, null, null, false, null, null, fixture.request.assumptions, null, estimates)), placementDrawing(fixture.measurement, fixture.request.assumptions, estimates, false, { ink: '#123', parcelFill: '#abc', parcelStroke: '#123', roofFill: '#abd', roofStroke: '#123', zoneFill: '#bcd', zoneStroke: '#456', danger: '#a00' }).svg]) {
+    assert.match(output, /17%/)
+    assert.match(output, /0.45 m foundation allowance/)
+    assert.match(output, /not measured regulatory floor area/)
+    assert.doesNotMatch(output, /enter installed height if known/)
+  }
+
   const owner = preparationChecklist({ ...questions, relationship: 'I own the property' }).join(' ')
   assert.match(owner, /You have stated that you own the property/)
   assert.doesNotMatch(owner, /permission to proceed with the property owner/)
