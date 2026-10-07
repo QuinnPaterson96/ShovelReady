@@ -1,10 +1,11 @@
 import { useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'react'
 import type { Case } from '../occupied_lots/contract'
+import { measurementWithUnit } from '../measurements'
 import { MeasurementInput } from '../MeasurementInput'
 import { StepInfo } from '../StepInfo'
 import { assumptionsKey, initialAssumptions, suiteCountFact, ordinaryFourEdgeBoundary, inferBoundaryRoles, suggestedBoundaryRoles, withPlacementRevision, type EdgeRole, type SiteAssumptions, type UserMeasurement } from './model'
 
-type Props = { detailsInputs?: ReactNode; onBoundaryAccepted?: (value: SiteAssumptions) => void; bufferSuggestion?: { edgeId: string; value: number; token: number; geometryRevision: string; placementRevision: string };  onFactsNext?: () => void; factsNextDisabled?: boolean; detailsStep?: boolean; forceBoundaryEditor?: boolean; onPlanningBuffersPending?: (pending: boolean) => void; onWaterfrontChange?: (value: boolean | null) => void; waterfrontMarks?: string[]; onBoundaryDismiss?: () => void; edgeDistances?: Record<string, number>; streetAdjacency?: import('./model').StreetAdjacency; markingRole?: EdgeRole | null; onMarkingRoleChange?: (role: EdgeRole) => void; boundaryMark?: { id: string; role: EdgeRole } | null; sharedMode?: import('./model').BoundaryMapMode; selectedBoundary?: string | null; onBoundarySelect?: (id: string) => void; homeownerDefaults?: boolean; site: Case; geometryRevision: string; placementRevision: string; frontEdge?: string | null; rearEdge?: string | null; streetPattern?: 'unknown' | 'single' | 'corner_or_multiple'; onChange: (value: SiteAssumptions | null) => void }
+type Props = { detailsSummary?: ReactNode; detailsInputs?: ReactNode; onBoundaryAccepted?: (value: SiteAssumptions) => void; bufferSuggestion?: { edgeId: string; value: number; token: number; geometryRevision: string; placementRevision: string };  onFactsNext?: () => void; factsNextDisabled?: boolean; detailsStep?: boolean; forceBoundaryEditor?: boolean; onPlanningBuffersPending?: (pending: boolean) => void; onWaterfrontChange?: (value: boolean | null) => void; waterfrontMarks?: string[]; onBoundaryDismiss?: () => void; edgeDistances?: Record<string, number>; streetAdjacency?: import('./model').StreetAdjacency; markingRole?: EdgeRole | null; onMarkingRoleChange?: (role: EdgeRole) => void; boundaryMark?: { id: string; role: EdgeRole } | null; sharedMode?: import('./model').BoundaryMapMode; selectedBoundary?: string | null; onBoundarySelect?: (id: string) => void; homeownerDefaults?: boolean; site: Case; geometryRevision: string; placementRevision: string; frontEdge?: string | null; rearEdge?: string | null; streetPattern?: 'unknown' | 'single' | 'corner_or_multiple'; onChange: (value: SiteAssumptions | null) => void }
 const roleNames: Record<EdgeRole, string> = { unknown: 'Unknown', front: 'Front', rear: 'Rear', side: 'Side', flanking_street: 'Flanking street' }
 function AnswerChoices({ id, label, value, onChange }: { id: string; label: string; value: 'yes' | 'no' | 'maybe'; onChange: (value: 'yes' | 'no' | 'maybe') => void }) {
   return <div className="zsa__answer" id={id} tabIndex={-1} role="group" aria-label={label}><strong>{label}</strong><div className="zsa__answer-buttons">{(['yes', 'no', 'maybe'] as const).map(choice => <button type="button" key={choice} aria-pressed={value === choice} onClick={() => onChange(choice)}>{choice === 'maybe' ? 'Not sure' : choice === 'yes' ? 'Yes' : 'No'}</button>)}</div></div>
@@ -16,7 +17,7 @@ function measure(raw: string, basis: UserMeasurement['basis'], placementRevision
   return Number.isFinite(number) && number >= 0 ? { value: number, unit: basis === 'regulatory_floor_area' || basis === 'rough_floor_area_estimate' ? 'm2' : 'm', basis, origin: 'user', note: null, placement_revision: placementRevision } : null
 }
 
-function Editor({ detailsInputs, onBoundaryAccepted, bufferSuggestion, onFactsNext, factsNextDisabled, detailsStep, forceBoundaryEditor, onPlanningBuffersPending, onWaterfrontChange, waterfrontMarks, onBoundaryDismiss, edgeDistances, streetAdjacency, site, geometryRevision, placementRevision, frontEdge = null, rearEdge = null, streetPattern = 'unknown', markingRole, onMarkingRoleChange, boundaryMark, sharedMode, selectedBoundary, onBoundarySelect, homeownerDefaults = false, onChange }: Props) {
+function Editor({ detailsSummary, detailsInputs, onBoundaryAccepted, bufferSuggestion, onFactsNext, factsNextDisabled, detailsStep, forceBoundaryEditor, onPlanningBuffersPending, onWaterfrontChange, waterfrontMarks, onBoundaryDismiss, edgeDistances, streetAdjacency, site, geometryRevision, placementRevision, frontEdge = null, rearEdge = null, streetPattern = 'unknown', markingRole, onMarkingRoleChange, boundaryMark, sharedMode, selectedBoundary, onBoundarySelect, homeownerDefaults = false, onChange }: Props) {
   useEffect(() => { void import('./site-assumptions.css') }, [])
   const notify = useRef(onChange)
   notify.current = onChange
@@ -79,6 +80,8 @@ function Editor({ detailsInputs, onBoundaryAccepted, bufferSuggestion, onFactsNe
     setValue(accepted); onBoundaryAccepted?.(accepted)
     setBuffersSaved(true); setBoundaryChoice('accepted')
   }
+  const buffers = value.edges.map(edge => value.planning_buffers_m?.[edge.id])
+  const boundaryBufferSummary = !buffers.length || buffers.some(buffer => buffer === undefined) ? 'unknown' : new Set(buffers).size === 1 ? `${measurementWithUnit(buffers[0]!, 'length')} per edge` : value.edges.map((edge, index) => `edge ${edge.segment + 1}: ${measurementWithUnit(buffers[index]!, 'length')}`).join('; ')
   const activeEdge = sharedMode !== undefined ? selectedBoundary : selectedEdge
   const suggested = inference.roles
   const edgeLabel = (edge: SiteAssumptions['edges'][number]) => edge.ring ? `Inner ring ${edge.ring}, edge ${edge.segment + 1}` : `Edge ${edge.segment + 1}`
@@ -123,6 +126,7 @@ function Editor({ detailsInputs, onBoundaryAccepted, bufferSuggestion, onFactsNe
       <p role="status">{value.waterfront.origin === 'journey_default' ? 'Assuming not waterfront · Likely fine' : value.waterfront.value === null ? 'Waterfront status unknown' : value.waterfront.value ? 'Your answer: waterfront' : 'Your answer: not waterfront'}</p>
       <div className="step-action"><p className="zsa__hint">If it adjoins water, choose Yes and mark those edges.</p><StepInfo symbol="?" label="Waterfront assumption">The default No is an editable planning assumption. Choosing an answer confirms your observation, not legal waterfront status. Waterfront front-line classification and special rules need a reviewed property plan.</StepInfo></div>
       <p className="zsa__hint">Selecting a mapped roofline identifies a possible main building; it does not turn that roofline into wall geometry.</p>
+<p className="metadata" id="planning-assumptions-summary">Boundary planning buffers: {boundaryBufferSummary}. {detailsSummary} These are editable planning assumptions; supplied measurements override the applicable estimates.</p>
 <details><summary>Optional measurements</summary><p>Add measurements if you have them; otherwise keep the preliminary estimates.</p><fieldset><legend>Measurements you can supply</legend>
       <label className="zsa__check"><input id="separation-measurement-choice" type="checkbox" checked={manualBasis} onChange={event => { setManualBasis(event.target.checked); if (!event.target.checked) { setSeparationDraft(''); setValue(previous => ({ ...previous, measurements: { ...previous.measurements, principal_separation: null } })) } }} /> I have a wall-to-wall separation measurement</label>
       {manualBasis && <><label>Wall to wall separation (m) <input inputMode="decimal" value={separationDraft} onChange={event => setSpecialMeasurement('principal_separation', event.target.value)} placeholder="Unknown" /></label><p className="zsa__hint">Roofline gaps are not surveyed wall-to-wall separation. The candidate clause's endpoints still need source review.</p></>}
@@ -133,8 +137,8 @@ function Editor({ detailsInputs, onBoundaryAccepted, bufferSuggestion, onFactsNe
       {areaDraft.trim() && <fieldset className="zsa__area-basis"><legend>What is this number based on?</legend><label><input type="radio" name="zsa-area-basis" checked={areaBasis === 'rough_floor_area_estimate'} onChange={() => changeAreaBasis('rough_floor_area_estimate')} /> Rough interior estimate · not used for candidate area check</label><label><input type="radio" name="zsa-area-basis" checked={areaBasis === 'regulatory_floor_area'} onChange={() => changeAreaBasis('regulatory_floor_area')} /> Measured to the candidate Victoria definition above · unverified</label></fieldset>}
       {((separationDraft && !value.measurements.principal_separation) || (areaDraft && !value.measurements.floor_area)) && <p className="zsa__error">Measurements must be nonnegative numbers; invalid entries remain unknown.</p>}
     </fieldset>
-    </details>
       {detailsInputs}
+    </details>
       {onFactsNext && <div className="homeowner-summary__continue"><p>Ready to review the findings? Unanswered questions can stay unknown.</p><div className="step-action"><button className="builder-continue" type="button" disabled={factsNextDisabled} onClick={() => { if (factsSection.current) factsSection.current.open = false; onFactsNext() }}>Next: Review quick checks<span aria-hidden="true"> →</span></button><StepInfo label="Review quick checks">Marks Property details reviewed and opens the current findings. Your answers remain editable and unknown answers stay unknown.</StepInfo></div>{factsNextDisabled && <p>Save your pending planning buffers before continuing.</p>}</div>}
 
     </fieldset>

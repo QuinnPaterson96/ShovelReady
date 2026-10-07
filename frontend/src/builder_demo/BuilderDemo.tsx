@@ -150,6 +150,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const [reviewedBoundariesFor, setReviewedBoundariesFor] = useState<string | null>(null)
   const [reviewedDetailsFor, setReviewedDetailsFor] = useState<string | null>(null)
   const [reviewedChecksFor, setReviewedChecksFor] = useState<string | null>(null)
+  const [websiteRequestedFor, setWebsiteRequestedFor] = useState<string | null>(null)
   const [emailRequestedFor, setEmailRequestedFor] = useState<string | null>(null)
   const toggleStep = (step: keyof typeof expanded) => setExpanded(value => ({ ...value, [step]: !value[step] }))
   const [foundationAllowanceM, setFoundationAllowanceM] = useState<string | null>('0.30')
@@ -281,7 +282,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const currentScenario = scenarioKey && scenarioState?.key === scenarioKey ? scenarioState.result : null
   const currentScenarioError = scenarioKey && scenarioError?.key === scenarioKey ? scenarioError.message : ''
   const boundaryInteraction: BoundaryMapInteraction | undefined = zoningCase ? {
-    editor: <SiteAssumptionsEditor detailsInputs={<AdditionalInputs key={additionalKey} buffers={estimateBuffers} onBuffers={setEstimateBuffers} foundation={foundationAllowanceM} onFoundation={setFoundationAllowanceM} onHeight={value => { setScoutingHeight({ key: additionalKey, value }); setReadyFor(null) }} result={currentScenario} />} bufferSuggestion={bufferSuggestion} onBoundaryAccepted={accepted => setReviewedBoundariesFor(boundaryReviewKey(accepted))} onFactsNext={() => openJourneyStep('checks')} factsNextDisabled={buffersPending} detailsStep={journeyStep === 'details'} forceBoundaryEditor={boundaryEditorOverride || selectedBoundary !== null} onPlanningBuffersPending={setBuffersPending} waterfrontMarks={waterfrontMarks.revision === geometryRevision ? waterfrontMarks.ids : []} onWaterfrontChange={yes => { if (yes) { waterfrontFocusPending.current = true; changeBoundaryMode('waterfront') } else { if (boundaryMode === 'waterfront') changeBoundaryMode('place'); setWaterfrontMarks({ revision: geometryRevision, ids: [] }) } }} onBoundaryDismiss={() => { setSelectedBoundary(null); setMarkingRole(null); document.getElementById('boundary-roles')?.focus() }} edgeDistances={currentScenario?.edge_distances_m} homeownerDefaults streetAdjacency={streetAdjacency} markingRole={markingRole} onMarkingRoleChange={setMarkingRole} boundaryMark={boundaryMark} sharedMode={boundaryMode} selectedBoundary={selectedBoundary} onBoundarySelect={selectBoundary} site={zoningCase} geometryRevision={geometryRevision!} placementRevision={placementRevision} frontEdge={streetEdge} rearEdge={rearEdge} streetPattern={streetPattern} onChange={assumptionsChanged} />,
+    editor: <SiteAssumptionsEditor detailsSummary={<>Floor area buffer: +{estimateBuffers.area}%. {scoutingHeight?.key === additionalKey && scoutingHeight.value !== null ? `Supplied installed height: ${measurementWithUnit(scoutingHeight.value, 'length')}.` : `Advertised height buffer: +${estimateBuffers.height}%; foundation allowance: ${foundationAllowanceM === null ? 'unknown' : measurementWithUnit(foundationAllowanceM, 'length')}.`}</>} detailsInputs={<AdditionalInputs key={additionalKey} buffers={estimateBuffers} onBuffers={setEstimateBuffers} foundation={foundationAllowanceM} onFoundation={setFoundationAllowanceM} onHeight={value => { setScoutingHeight({ key: additionalKey, value }); setReadyFor(null) }} result={currentScenario} />} bufferSuggestion={bufferSuggestion} onBoundaryAccepted={accepted => setReviewedBoundariesFor(boundaryReviewKey(accepted))} onFactsNext={() => openJourneyStep('checks')} factsNextDisabled={buffersPending} detailsStep={journeyStep === 'details'} forceBoundaryEditor={boundaryEditorOverride || selectedBoundary !== null} onPlanningBuffersPending={setBuffersPending} waterfrontMarks={waterfrontMarks.revision === geometryRevision ? waterfrontMarks.ids : []} onWaterfrontChange={yes => { if (yes) { waterfrontFocusPending.current = true; changeBoundaryMode('waterfront') } else { if (boundaryMode === 'waterfront') changeBoundaryMode('place'); setWaterfrontMarks({ revision: geometryRevision, ids: [] }) } }} onBoundaryDismiss={() => { setSelectedBoundary(null); setMarkingRole(null); document.getElementById('boundary-roles')?.focus() }} edgeDistances={currentScenario?.edge_distances_m} homeownerDefaults streetAdjacency={streetAdjacency} markingRole={markingRole} onMarkingRoleChange={setMarkingRole} boundaryMark={boundaryMark} sharedMode={boundaryMode} selectedBoundary={selectedBoundary} onBoundarySelect={selectBoundary} site={zoningCase} geometryRevision={geometryRevision!} placementRevision={placementRevision} frontEdge={streetEdge} rearEdge={rearEdge} streetPattern={streetPattern} onChange={assumptionsChanged} />,
     mainBuilding: zoningCase.site.buildings.find(b => b.id === currentAssumptions?.principal_building_id.value), mainBuildingAssumed: currentAssumptions?.principal_building_id.origin === 'journey_default', waterfront: currentAssumptions?.waterfront.value === true, waterfrontIds: currentAssumptions?.waterfront_edge_ids,
     suggestedRoles: currentAssumptions?.boundary_role_suggestions?.roles, streetIds: streetAdjacency.edge_ids, allStreetsMarked: streetAdjacency.all_marked, onStreetComplete: all_marked => { setStreetMarks({ revision: geometryRevision, data: { ...streetAdjacency, all_marked, completion_method: 'explicit_confirmation' } }); setReadyFor(null) }, selectedId: selectedBoundary, edges: currentAssumptions?.edges ?? [], mode: boundaryMode, frontId: streetEdge, rearId: rearEdge,
     streetPattern, onModeChange: changeBoundaryMode,
@@ -460,7 +461,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     if (step === 'boundaries') changeBoundaryMode('rear')
     if (step === 'placement' || step === 'details') setBoundaryMode('place')
     setExpanded(previous => ({ ...previous, ...(step === 'property' ? { property: true } : step === 'email' ? { next: false, email: true } : step === 'enquiry' ? { next: true, email: false } : { placement: true }) }))
-    const targets: Record<JourneyStep, string> = { model: 'builder-title', property: 'builder-site-mode', placement: 'placement-map', streets: 'placement-action-front', boundaries: 'placement-action-rear', details: 'builder-property-details', checks: 'builder-quick-checks', enquiry: 'builder-question', email: 'builder-email-recipient' }
+    const targets: Record<JourneyStep, string> = { model: 'builder-title', property: 'builder-site-mode', placement: 'placement-map', streets: 'placement-action-front', boundaries: 'placement-action-rear', details: 'builder-property-details', checks: 'builder-quick-checks', enquiry: 'builder-question', email: 'builder-provider-website' }
     requestAnimationFrame(() => {
       focusSummaryTarget(document, step === 'details' ? 'building-type' : targets[step], step === 'details' ? 'start' : 'center')
       if (step === 'checks') { const details = document.querySelector<HTMLDetailsElement>('.homeowner-summary__checks'); if (details) details.open = true }
@@ -486,7 +487,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const enquiryReady = !!enquiryDoc && readyFor === draftText
   const progressCallback = useRef(onProgressChange)
   progressCallback.current = onProgressChange
-  useEffect(() => { progressCallback.current?.({ reviewReadiness, model: true, property: propertyComplete, placement: placementComplete, streets: !!geometryRevision && streetAdjacency.all_marked, boundaries: reviewedBoundariesFor === boundaryReviewRevision, details: reviewedDetailsFor === reviewRevision, checks: reviewedChecksFor === reviewRevision, enquiry: enquiryReady, email: emailRequestedFor === JSON.stringify([draftText, recipient, includeSiteDetails]), current: journeyStep, mapAvailable: propertyComplete ? !!zoningCase : undefined }) }, [zoningCase, propertyComplete, placementComplete, enquiryReady, geometryRevision, streetAdjacency.all_marked, reviewedBoundariesFor, reviewedDetailsFor, reviewedChecksFor, reviewRevision, boundaryReviewRevision, emailRequestedFor, draftText, recipient, includeSiteDetails, journeyStep, readinessSignature])
+  useEffect(() => { progressCallback.current?.({ reviewReadiness, model: true, property: propertyComplete, placement: placementComplete, streets: !!geometryRevision && streetAdjacency.all_marked, boundaries: reviewedBoundariesFor === boundaryReviewRevision, details: reviewedDetailsFor === reviewRevision, checks: reviewedChecksFor === reviewRevision, enquiry: enquiryReady, email: !!draftText && (websiteRequestedFor === draftText || emailRequestedFor === JSON.stringify([draftText, recipient, includeSiteDetails])), handoff: websiteRequestedFor === draftText ? 'website' : 'email', current: journeyStep, mapAvailable: propertyComplete ? !!zoningCase : undefined }) }, [zoningCase, propertyComplete, placementComplete, enquiryReady, geometryRevision, streetAdjacency.all_marked, reviewedBoundariesFor, reviewedDetailsFor, reviewedChecksFor, reviewRevision, boundaryReviewRevision, websiteRequestedFor, emailRequestedFor, draftText, recipient, includeSiteDetails, journeyStep, readinessSignature])
   useEffect(() => { setReadyFor(null) }, [draftText])
   const emailBody = enquiryDoc ? enquiryEmailBody(enquiryDoc, includeSiteDetails) : ''
   const emailSubject = enquiryDoc?.example ? 'Saved example only — Model 300 question' : includeSiteDetails ? enquiryDoc?.title ?? 'Model 300 feasibility enquiry' : 'Model 300 feasibility enquiry'
@@ -502,6 +503,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       if (kind === 'mailto') window.location.href = url
       else window.open(url, '_blank', 'noopener,noreferrer')
       setEmailRequestedFor(JSON.stringify([draftText, recipient, includeSiteDetails]))
+      setWebsiteRequestedFor(null)
       setJourneyStep('email')
       setEmailMessage(emailTooLong
         ? 'Short placeholder draft requested. If no compose window opens, copy the full email body above into a new message. Nothing was sent.'
@@ -603,7 +605,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     </section>
     <section className="builder-stage builder-enquiry" id="builder-next" aria-labelledby="builder-enquiry-title">
       <p className="eyebrow">Take away · local draft</p><h2 id="builder-enquiry-title">Prepare a useful question</h2>
-      <p>Review a summary for the builder, then open an editable email draft. Nothing is sent automatically.</p>
+      <p>Review your enquiry, then copy it into the provider’s website form or use an email contact you already have. Nothing is sent automatically.</p>
       {enquiryReady && !expanded.next && <p role="status">Enquiry confirmed. You can edit it again; no message has been sent.</p>}
       <button type="button" aria-expanded={expanded.next} aria-controls="builder-enquiry-content" onClick={() => toggleStep('next')}>{expanded.next ? 'Collapse enquiry' : enquiryReady ? 'Edit enquiry' : 'Review enquiry'}</button>
       <div id="builder-enquiry-content" hidden={!expanded.next}>
@@ -643,12 +645,19 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     </section>
     {hasSite && <>
       <section className="builder-stage builder-email" id="builder-email" aria-labelledby="builder-email-title">
-        <p className="eyebrow">Email enquiry · unsent draft</p><h2 id="builder-email-title">Prepare your email</h2>
-        <button type="button" aria-expanded={expanded.email} aria-controls="builder-email-content" onClick={() => toggleStep('email')}>{expanded.email ? 'Collapse email preparation' : 'Review email draft'}</button>
+        <p className="eyebrow">Contact provider · unsent enquiry</p><h2 id="builder-email-title">Contact aux box</h2>
+        <button type="button" aria-expanded={expanded.email} aria-controls="builder-email-content" onClick={() => toggleStep('email')}>{expanded.email ? 'Collapse provider contact' : 'Review provider contact'}</button>
         <div id="builder-email-content" hidden={!expanded.email}>
-        <p>Nothing is sent until you send it in your email app.</p>
-        <p>Review the recipient and exact text below. These buttons ask your browser to open an editable draft; your browser or email setup may prevent it. Only you can send it. This demonstration has no affiliation with aux box.</p>
-        <p className="metadata">The <a href="https://www.auxbox.ca/contact" target="_blank" rel="noreferrer">official aux box contact page</a> directs general enquiries to a form. Its published email addresses are for privacy, media or careers, so no product enquiry recipient is prefilled. Checked 2026-10-05.</p>
+        <p>aux box uses a central enquiry form on its website. Copy your prepared enquiry, then paste it into the form. Checked October 7, 2026.</p>
+        <p className="metadata">Opening the website does not send your enquiry or attach your report. This independent demonstration has no affiliation with aux box.</p>
+        <label htmlFor="builder-provider-text">Your enquiry to paste into the form</label><textarea id="builder-provider-text" readOnly rows={8} value={draftText} />
+        <div className="builder-email-buttons">
+          <button type="button" onClick={async () => { try { await navigator.clipboard.writeText(draftText); setEmailMessage('Enquiry copied. Paste it into the provider form and review it before submitting.'); } catch { setEmailMessage('Clipboard unavailable. Select and copy the enquiry text above.'); } }}>Copy enquiry for provider</button>
+          <a id="builder-provider-website" className="builder-email-primary" href="https://www.auxbox.ca/contact" target="_blank" rel="noreferrer" onClick={() => { setEmailRequestedFor(null); setWebsiteRequestedFor(draftText) }}>Continue to provider website →</a>
+        </div>
+        <p role="status">{emailMessage}</p>
+        <details className="builder-email-optional"><summary>I already have an email contact</summary>
+        <p>Use an email address you know is appropriate for this enquiry. These buttons open an editable draft; only you can send it.</p>
         <label htmlFor="builder-email-recipient">Recipient email (optional; edit before opening)</label>
         <input id="builder-email-recipient" type="email" autoComplete="email" value={recipient} onChange={event => { setRecipient(event.target.value); setEmailMessage('') }} aria-invalid={!validRecipient(recipient)} />
         {!validRecipient(recipient) && <p role="alert">Enter one valid email address without line breaks.</p>}
@@ -658,12 +667,12 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
         <label htmlFor="builder-email-body">Exact email body to share</label><textarea id="builder-email-body" readOnly rows={12} value={emailBody} />
         {emailTooLong && <p role="status">The full email is too long for a reliable draft link. The buttons request a short placeholder draft. Copy the complete text above and paste it into your email app before sending; no content is silently shortened.</p>}
         <div className="builder-email-buttons">
-          <button className="builder-email-primary" type="button" disabled={!validRecipient(recipient)} onClick={() => openDraft('mailto')}><span aria-hidden="true">✉ </span>Create email draft</button>
+          <button type="button" disabled={!validRecipient(recipient)} onClick={() => openDraft('mailto')}><span aria-hidden="true">✉ </span>Create email draft</button>
           <button type="button" disabled={!validRecipient(recipient)} onClick={() => openDraft('gmail')}>Open in Gmail</button>
           <button type="button" onClick={() => void copyEmailBody()}>Copy email body</button>
         </div>
         <p className="metadata">If no compose window opens, use Copy email body and paste the exact text shown above into a new message. Check the recipient and subject there before sending.</p>
-        <p role="status">{emailMessage}</p>
+        </details>
         </div>
       </section>
     </>}

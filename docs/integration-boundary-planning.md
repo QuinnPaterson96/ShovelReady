@@ -428,3 +428,37 @@ contact, paid provisioning or disruptive live rollback was performed.
 Narrow-screen follow-up: visual inspection reproduced the native fieldset's minimum
 content width pushing property-answer controls beyond their panel at 390 px. The
 fieldset now permits shrinking; the first question and its controls fit the panel.
+
+## Optional measurements and provider-form handoff — October 7, 2026
+
+Planning buffers & installed height now sits inside the closed Optional measurements
+section. The active boundary buffers, area allowance and height/foundation defaults
+remain visible above it. A supplied installed height appears in the summary instead
+of the advertised-height estimate. Controls stay mounted, preserving active estimates;
+review actions open the relevant ancestor disclosure and focus their field.
+
+The Model 300 final step is Contact provider. aux box's official contact page was
+checked October 7 and directs general enquiries to a central form. The primary link
+opens https://www.auxbox.ca/contact with no enquiry/property parameters. A copy
+button supplies the complete prepared enquiry for manual pasting/review/submission.
+Email drafting remains in a collapsed optional section for a known recipient.
+Requesting the website is recorded separately from requesting an email draft; neither
+establishes that the enquiry was sent or that the provider responded. This routing
+is implemented for the existing aux box journey, not an unverified provider directory.
+
+Recipient: aux box intake staff. Purpose: initial site discussion. Context, concerns,
+questions and provenance in the assembled enquiry are unchanged; lengthy calculations
+remain in its supporting report. The homeowner explicitly copies/pastes/submits.
+Local verification: all 141 frontend tests passed; final focused mounted journeys
+passed. The extended journey covers closed Optional measurements, visible assumptions,
+flag-to-field expansion, correct contact link, copied text and request-only progress.
+Production build passed. Desktop/mobile and deployed evidence are recorded in the PR.
+These checks are agent software/visual inspection, not actual recipient validation.
+
+Remaining: source reviewer/#104 and homeowner/provider need controlled bylaw/drawing,
+survey/title/permit/projection/servicing evidence for accepted real evaluation.
+Product owner/#147 owns actual recipient/homeowner and touch validation. Platform
+owner/SR14-SR15 owns editable journey restoration, durable saved assessments and
+isolated rollback/tested-image promotion. Contact-route maintenance must recheck each
+provider's published intake method; no broad provider routing or form auto-fill was
+introduced. No email/form submission, accepted publication or cloud provisioning occurred.
