@@ -64,6 +64,16 @@ A final wording follow-up makes raw-pass/buffer-review evidence explicit and lim
 the buffer-only explanation to that state. Its focused 33 HTTP tests, lint and
 production build passed; required CI must cover the final PR head before integration.
 
+## Projected-coordinate label rendering follow-up
+
+Live screenshot review after #267 found that absolute x/y on the new SVG labels
+produced DOM boxes but unreliable painted glyphs at Victoria's large EPSG:3157
+coordinates. The follow-up uses translated groups with local text coordinates,
+matching the existing edge-label technique; the waterfront label is also separated
+from the edge-role label. A local screenshot now visibly shows both Main building ·
+assumed and Waterfront · your mark. Production build and the existing frontend
+journey suite cover the follow-up; final-head CI and live screenshot are the gates.
+
 ## Remaining gaps and owners
 
 - Source-review owner / #104: review effective bylaw version, waterfront legal front
