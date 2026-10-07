@@ -30,11 +30,11 @@ export function BoundaryOverlay({ interaction }: { interaction: BoundaryMapInter
   return <g className="boundary-map-overlay" aria-hidden="true">
     {interaction.mainBuilding && <g className="main-building-mark">
       <path d={path(interaction.mainBuilding)} fill="var(--primary)" fillOpacity=".12" stroke="var(--primary)" strokeWidth="2" strokeDasharray="2 5" vectorEffect="non-scaling-stroke" />
-      <text x={Math.min(...points(interaction.mainBuilding).map(p => p[0]))} y={-Math.max(...points(interaction.mainBuilding).map(p => p[1])) - 1} className="boundary-map-edge-label">Main building · {interaction.mainBuildingAssumed ? 'assumed' : 'your selection'}</text>
+      <text transform={`translate(${Math.min(...points(interaction.mainBuilding).map(p => p[0]))} ${-Math.max(...points(interaction.mainBuilding).map(p => p[1])) - 1})`} x="0" y="0" className="boundary-map-edge-label">Main building · {interaction.mainBuildingAssumed ? 'assumed' : 'your selection'}</text>
     </g>}
     {interaction.edges.filter(edge => interaction.waterfrontIds?.includes(edge.id)).map(edge => <g key={`water-${edge.id}`} className="waterfront-mark">
       <line x1={edge.start[0]} y1={-edge.start[1]} x2={edge.end[0]} y2={-edge.end[1]} stroke="var(--primary)" strokeWidth="7" strokeDasharray="3 4" vectorEffect="non-scaling-stroke" />
-      <text x={(edge.start[0] + edge.end[0]) / 2} y={-(edge.start[1] + edge.end[1]) / 2 - 1} textAnchor="middle" className="boundary-map-edge-label">Waterfront · your mark</text>
+      <text transform={`translate(${(edge.start[0] + edge.end[0]) / 2} ${-(edge.start[1] + edge.end[1]) / 2 - 2})`} x="0" y="0" textAnchor="middle" className="boundary-map-edge-label">Waterfront · your mark</text>
     </g>)}
     {roads.map(road => <g key={road.id} className="street-road" data-road-edge={road.id}>
       <polygon points={road.corners.map(([x, y]) => `${x},${-y}`).join(' ')} />
