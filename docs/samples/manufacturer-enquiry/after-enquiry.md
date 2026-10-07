@@ -18,15 +18,15 @@ These are preliminary comparisons with uncertain applicability, not established 
 
 ## Questions for aux box
 
-\1. Can you provide current dimensioned plans with drawing date/version, overall dimensions including overhangs, interior floor area, and a section showing where height is measured from and the foundation interface?
+1. Can you provide current dimensioned plans with drawing date/version, overall dimensions including overhangs, interior floor area, and a section showing where height is measured from and the foundation interface?
 
-\2. Do you service this locality, and what truck access, crane setup space, lifting clearances and site photos or measurements do you need?
+2. Do you service this locality, and what truck access, crane setup space, lifting clearances and site photos or measurements do you need?
 
-\3. Which foundation and utility interfaces do you support? Who supplies or coordinates site preparation, foundations, connections and permitting, and what planning or permit assistance do you offer?
+3. Which foundation and utility interfaces do you support? Who supplies or coordinates site preparation, foundations, connections and permitting, and what planning or permit assistance do you offer?
 
-\4. What is the current price for the requested configuration? Please distinguish tax, upgrades, transport, crane, installation, foundations, services and permits from included work.
+4. What is the current price for the requested configuration? Please distinguish tax, upgrades, transport, crane, installation, foundations, services and permits from included work.
 
-\5. What is the current lead time, when does it start, and what decisions, permits and site preparation must be complete before booking or delivery?
+5. What is the current lead time, when does it start, and what decisions, permits and site preparation must be complete before booking or delivery?
 
 ## Site preparation
 

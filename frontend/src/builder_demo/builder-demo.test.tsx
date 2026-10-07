@@ -248,6 +248,7 @@ test('near-threshold concerns and arbitrary evidence text retain their exact mea
   const document = enquiryDocument(null, { ...questions, question: '# <script> test & 1.7 m' }, null)
   const markdown = enquiryMarkdown(document)
   assert.doesNotMatch(markdown, /1\\.7|&amp;/)
+  assert.match(markdown, /^1\. Can you provide/m, 'manufacturer questions must render as normal numbered Markdown items')
   assert.match(markdown, /&lt;script&gt;/)
 })
 

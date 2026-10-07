@@ -76,13 +76,13 @@ $env:TSX_TSCONFIG_PATH = 'tsconfig.app.json'
 node --import tsx tools/generate_manufacturer_sample.tsx
 ```
 
-The full frontend suite passed all 140 tests. After final label/grammar polish, the
+The full frontend suite passed all 140 tests. After final label/grammar polish and a Markdown numbering repair, the
 16 focused builder/reporting and conditional-screen tests, typecheck and production
 build passed again. That focused command was `node --import tsx --test
 src/builder_demo/builder-demo.test.tsx
 src/conditional_screening/conditional-screen.test.ts` with the TSX configuration
 above. These final focused checks cover the delivered tree; the full-suite result
-precedes only that wording polish. The build
+precedes those presentation-only refinements. The build
 retains its existing large-chunk warning. No backend/database tests were run because
 no backend behavior changed; no live model/source calls occurred. Remote CI has not
 been run for this local work. Integration still requires review and final-head CI.

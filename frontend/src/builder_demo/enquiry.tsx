@@ -28,7 +28,7 @@ const safeParts = (text: string): { text: string; url?: string }[] => {
 }
 
 const markdownEscape = (value: string) => value.replace(/</g, '&lt;').replace(/>/g, '&gt;')
-  .replace(/[\\`*_{}\[\]|]/g, '\\$&').replace(/^(\s*)([>#-]|\d+\.)/gm, '$1\\$2')
+  .replace(/[\\`*_{}\[\]|]/g, '\\$&').replace(/^(\s*)([>#-])/gm, '$1\\$2')
 const markdownParagraph = (value: string) => safeParts(value).map(part => part.url
   ? `[${markdownEscape(part.text)}](${part.url.replace(/\(/g, '%28').replace(/\)/g, '%29')})` : markdownEscape(part.text)).join('')
 
