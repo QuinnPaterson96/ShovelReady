@@ -3,7 +3,8 @@
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
-from shapely.geometry import Polygon, shape
+from shapely.geometry import Polygon, mapping, shape
+from shapely.ops import nearest_points
 
 
 class AdditionalInputs(BaseModel):
@@ -14,6 +15,20 @@ class AdditionalInputs(BaseModel):
     area_buffer_percent: float = Field(default=10, ge=0, le=100, allow_inf_nan=False)
     height_buffer_percent: float = Field(default=10, ge=0, le=100, allow_inf_nan=False)
     foundation_allowance_m: float | None = Field(default=0.30, ge=0, allow_inf_nan=False)
+
+
+class VisualEvidence(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+    schema_version: Literal["scouting-comparison-geometry.v1"] = "scouting-comparison-geometry.v1"
+    crs: str
+    principal_building_id: str
+    principal_outline_area_m2: float = Field(ge=0, allow_inf_nan=False)
+    principal_crosses_parcel: bool
+    measurement_line: tuple[tuple[float, float], tuple[float, float]]
+    rear_yard: dict | None = None
+    outside_rear_yard: dict | None = None
+    rear_yard_area_m2: float | None = Field(default=None, ge=0, allow_inf_nan=False)
+    outside_rear_yard_area_m2: float | None = Field(default=None, ge=0, allow_inf_nan=False)
 
 
 class AdditionalCheck(BaseModel):
@@ -27,6 +42,7 @@ class AdditionalCheck(BaseModel):
     unit: str | None = None
     basis: str
     source: dict
+    visual_evidence: VisualEvidence | None = None
 
 
 def additional_checks(body, boundary_result, packet, source_factory):
@@ -158,7 +174,7 @@ def additional_checks(body, boundary_result, packet, source_factory):
             f"{estimates.foundation_allowance_m:g} m foundation allowance = {height:.2f} m, "
             f"{'below' if height <= limit else 'above'} the {limit:g} m candidate limit. "
             "Grade, slope, foundation design and roof datum remain unverified; "
-            "enter installed height if known.",
+            "the estimate is not measured installed height.",
             observed=height,
             basis="advertised height plus planning buffer and foundation allowance; "
             "not installed height",
@@ -254,12 +270,13 @@ def additional_checks(body, boundary_result, packet, source_factory):
                 and outline.geom_type == "Polygon"
                 and outline.is_valid
                 and not outline.is_empty
-                and parcel.covers(outline)
             ):
                 candidates.append((outline.area, item))
         candidates.sort(key=lambda item: item[0], reverse=True)
         if candidates and (len(candidates) == 1 or candidates[0][0] > candidates[1][0]):
-            if building_id is None or candidates[0][1].id == building_id:
+            if (building_id is None or candidates[0][1].id == building_id) and parcel.covers(
+                shape(candidates[0][1].shape.geometry).centroid
+            ):
                 building = candidates[0][1]
                 inferred = True
     if building is None:
@@ -305,6 +322,19 @@ def additional_checks(body, boundary_result, packet, source_factory):
         f"{building.id}: {building.basis} to nominal model; not legal wall separation",
     )
 
+    endpoints = nearest_points(footprint, principal)
+    visual = VisualEvidence(
+        crs=body.geometry.projected_metre_crs, principal_building_id=building.id,
+        principal_outline_area_m2=principal.area,
+        principal_crosses_parcel=not shape(body.geometry.parcel.shape.geometry).covers(principal),
+        measurement_line=tuple((p.x, p.y) for p in endpoints),
+    )
+    checks[-1].visual_evidence = visual
+    if visual.principal_crosses_parcel:
+        checks[-1].detail += (
+            " The mapped main roofline crosses the parcel boundary; confirm both outlines."
+        )
+
     if (
         assumptions.building_type.value not in ("single_detached", "duplex")
         or assumptions.waterfront.value is not False
@@ -330,12 +360,12 @@ def additional_checks(body, boundary_result, packet, source_factory):
             checks[-1].action_target = "boundary-roles"
         return tuple(checks)
     parcel = shape(body.geometry.parcel.shape.geometry)
-    if not parcel.covers(principal) or len(principal.interiors):
+    if len(principal.interiors):
         for key in ("rear_location", "rear_occupancy"):
             add(
                 key,
                 "unknown",
-                "The house outline crosses the parcel or has holes; "
+                "The house outline has holes; "
                 "rear-yard geometry needs review.",
             )
         return tuple(checks)
@@ -368,6 +398,12 @@ def additional_checks(body, boundary_result, packet, source_factory):
                 "A positive rear-yard area could not be derived from these outlines.",
             )
         return tuple(checks)
+    outside = footprint.difference(yard)
+    visual = visual.model_copy(update={
+        "rear_yard": mapping(yard),
+        "outside_rear_yard": None if outside.is_empty else mapping(outside),
+        "rear_yard_area_m2": yard.area, "outside_rear_yard_area_m2": outside.area,
+    })
     inside = yard.covers(footprint)
     add(
         "rear_location",
@@ -380,6 +416,7 @@ def additional_checks(body, boundary_result, packet, source_factory):
         + (" Using the assumed main outline." if inferred else ""),
         basis="parcel clipped at rear-most principal outline, parallel to chosen rear line",
     )
+    checks[-1].visual_evidence = visual
     ratio = footprint.area / yard.area
     limit = rules["rear_occupancy"]["threshold"]
     add(
@@ -395,4 +432,5 @@ def additional_checks(body, boundary_result, packet, source_factory):
         observed=ratio,
         basis=f"nominal footprint {footprint.area!r} m2 / approximate rear yard {yard.area!r} m2",
     )
+    checks[-1].visual_evidence = visual
     return tuple(checks)

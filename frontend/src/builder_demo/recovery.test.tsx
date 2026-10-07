@@ -21,6 +21,12 @@ test('enquiry recovery tolerates corrupt records and reports unavailable storage
       await act(async () => root.render(<EnquiryRecovery key={corrupt} enquiry={null} report={null} />))
       assert.equal(dom.window.document.getElementById('recovered-enquiry'), null)
     }
+    await act(async () => root.render(<EnquiryRecovery key="separate" enquiry="My enquiry" report="Readable findings" technicalEvidence='{"coordinates":[1,2]}' />))
+    const saved = JSON.parse(dom.window.sessionStorage.getItem('shovelready.enquiry-recovery.v1')!)
+    assert.equal(saved.report, 'Readable findings')
+    assert.deepEqual(JSON.parse(saved.technicalEvidence), { coordinates: [1, 2] })
+    await act(async () => root.render(<EnquiryRecovery key="reloaded" enquiry={null} report={null} />))
+    assert.match(dom.window.document.body.textContent!, /Download previous technical evidence JSON/)
     Object.defineProperty(dom.window, 'sessionStorage', { configurable: true, get() { throw new Error('Storage blocked') } })
     await act(async () => root.render(<EnquiryRecovery key="blocked" enquiry="My unsent question" report="Unreviewed findings" />))
     assert.match(dom.window.document.body.textContent!, /could not save.*Download or copy/s)

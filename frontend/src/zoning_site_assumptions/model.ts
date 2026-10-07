@@ -70,7 +70,7 @@ export function initialAssumptions(site: Case, geometryRevision: string, placeme
   }
 }
 
-/** Restrict automatic selection to simple outlines wholly inside a convex parcel.
+/** Restrict automatic selection to simple outlines on a convex parcel; rank before testing location.
  * The API independently validates the selected default with full polygon geometry. */
 export function assumedMainBuilding(site: Case): string | null {
   const geometry = site.site.parcel.shape.geometry
@@ -87,16 +87,23 @@ export function assumedMainBuilding(site: Case): string | null {
     const rings = building.shape.geometry.coordinates as number[][][]
     if (rings.length !== 1 || rings[0].length < 4 || !rings[0].every(finitePoint)) return []
     const ring = rings[0], n = ring.length - 1
-    if (ring[0][0] !== ring[n][0] || ring[0][1] !== ring[n][1] || !ring.every(point => edges.every(edge => orientation * cross(edge.start, edge.end, point) >= 0))) return []
+    if (ring[0][0] !== ring[n][0] || ring[0][1] !== ring[n][1]) return []
     for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) {
       if (j === i + 1 || i === 0 && j === n - 1) continue
       const a = ring[i], b = ring[i + 1], c = ring[j], d = ring[j + 1]
-      if (cross(a, b, c) * cross(a, b, d) <= 0 && cross(c, d, a) * cross(c, d, b) <= 0) return []
+      const on = (a: number[], b: number[], p: number[]) => cross(a, b, p) === 0 && p[0] >= Math.min(a[0], b[0]) && p[0] <= Math.max(a[0], b[0]) && p[1] >= Math.min(a[1], b[1]) && p[1] <= Math.max(a[1], b[1])
+      if (cross(a, b, c) * cross(a, b, d) < 0 && cross(c, d, a) * cross(c, d, b) < 0 || on(a, b, c) || on(a, b, d) || on(c, d, a) || on(c, d, b)) return []
     }
     const area = Math.abs(ring.slice(0, n).reduce((sum, point, i) => sum + (point[0] - ring[0][0]) * (ring[i + 1][1] - ring[0][1]) - (ring[i + 1][0] - ring[0][0]) * (point[1] - ring[0][1]), 0)) / 2
-    return area > 0 ? [{ id: building.id, area }] : []
+    const centroid = ring.slice(0, n).reduce((sum, point, i) => {
+      const next = ring[i + 1], weight = (point[0] - ring[0][0]) * (next[1] - ring[0][1]) - (next[0] - ring[0][0]) * (point[1] - ring[0][1])
+      return [sum[0] + (point[0] + next[0] - 2 * ring[0][0]) * weight, sum[1] + (point[1] + next[1] - 2 * ring[0][1]) * weight]
+    }, [0, 0])
+    const signedArea = ring.slice(0, n).reduce((sum, point, i) => sum + (point[0] - ring[0][0]) * (ring[i + 1][1] - ring[0][1]) - (ring[i + 1][0] - ring[0][0]) * (point[1] - ring[0][1]), 0) / 2
+    const centre = [ring[0][0] + centroid[0] / (6 * signedArea), ring[0][1] + centroid[1] / (6 * signedArea)]
+    return area > 0 ? [{ id: building.id, area, onParcel: edges.every(edge => orientation * cross(edge.start, edge.end, centre) >= 0) }] : []
   }).sort((a, b) => b.area - a.area)
-  return candidates.length && (candidates.length === 1 || candidates[0].area > candidates[1].area) ? candidates[0].id : null
+  return candidates.length && candidates[0].onParcel && (candidates.length === 1 || candidates[0].area > candidates[1].area) ? candidates[0].id : null
 }
 
 export function assumptionsKey(site: Case, geometryRevision: string, placementRevision: string): string {

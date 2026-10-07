@@ -5,6 +5,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 from shapely.geometry import LineString, shape
+from shapely.ops import nearest_points
 
 from app.scouting_geometry.core import assess
 from app.scouting_geometry.payloads import Request as GeometryRequest
@@ -67,6 +68,7 @@ class ScenarioResult(Strict):
     scope: str
     scenarios: tuple[Scenario, ...] = ()
     edge_distances_m: dict[str, float] = {}
+    edge_measurement_lines: dict[str, tuple[tuple[float, float], tuple[float, float]]] = {}
     thresholds_m: dict[str, float]
     sources: tuple[dict, ...] = ()
     limitations: tuple[str, ...]
@@ -78,7 +80,15 @@ class ScenarioResult(Strict):
 def screen(body: ScenarioRequest) -> ScenarioResult:
     result = _boundary_screen(body)
     packet = _packet()
+    lines = {}
+    if result.edge_distances_m:
+        footprint = shape(assess(body.geometry).placement_geometry)
+        for edge in body.assumptions.edges:
+            if edge.id in result.edge_distances_m:
+                endpoints = nearest_points(footprint, LineString([edge.start, edge.end]))
+                lines[edge.id] = tuple((p.x, p.y) for p in endpoints)
     return result.model_copy(update={
+        "edge_measurement_lines": lines,
         "additional_checks": additional_checks(body, result, packet, _source),
         "additional_revision": packet["additional_scouting_revision"],
     })

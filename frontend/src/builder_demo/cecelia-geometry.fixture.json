@@ -1,0 +1,1206 @@
+{
+  "request": {
+    "schema_version": "placement-scenarios.request.v1",
+    "geometry": {
+      "schema_version": "scouting-geometry.v1",
+      "projected_metre_crs": "EPSG:3157",
+      "parcel": {
+        "id": "live-parcel:10573:0",
+        "shape": {
+          "crs": "EPSG:3157",
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [
+                  471925.7468999997,
+                  5365845.4209
+                ],
+                [
+                  471912.3811999997,
+                  5365811.394200001
+                ],
+                [
+                  471901.3491000002,
+                  5365819.451400001
+                ],
+                [
+                  471914.7149,
+                  5365853.4782
+                ],
+                [
+                  471925.7468999997,
+                  5365845.4209
+                ]
+              ]
+            ]
+          }
+        },
+        "source": {
+          "provider": "City of Victoria Open Data",
+          "record_label": "Parcel MapServer response",
+          "capture_date": "2026-10-07T23:01:46.595162+00:00",
+          "review_status": "unreviewed",
+          "reference": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=json&objectIds=10573&outFields=OBJECTID%2CPID%2CVicPID%2CGISLINK%2CParcelType%2CParcelStatus%2CShape_Area&returnGeometry=true&outSR=3157"
+        }
+      },
+      "buildings": [
+        {
+          "id": "live-roof:81666",
+          "shape": {
+            "crs": "EPSG:3157",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    471914.6129999999,
+                    5365842.211999999
+                  ],
+                  [
+                    471917.88800000027,
+                    5365840.585999999
+                  ],
+                  [
+                    471917.1639999999,
+                    5365839.129000001
+                  ],
+                  [
+                    471919.9519999996,
+                    5365837.744999999
+                  ],
+                  [
+                    471915.5329999998,
+                    5365828.8440000005
+                  ],
+                  [
+                    471914.95999999996,
+                    5365829.129000001
+                  ],
+                  [
+                    471914.0449999999,
+                    5365827.286
+                  ],
+                  [
+                    471906.11000000034,
+                    5365831.226
+                  ],
+                  [
+                    471907.07799999975,
+                    5365833.174000001
+                  ],
+                  [
+                    471906.7379999999,
+                    5365833.343
+                  ],
+                  [
+                    471911.0990000004,
+                    5365842.127
+                  ],
+                  [
+                    471913.8839999996,
+                    5365840.744999999
+                  ],
+                  [
+                    471914.6129999999,
+                    5365842.211999999
+                  ]
+                ]
+              ]
+            }
+          },
+          "source": {
+            "provider": "City of Victoria Open Data",
+            "record_label": "Building MapServer response",
+            "capture_date": "2026-10-07T23:01:46.816917+00:00",
+            "review_status": "unreviewed",
+            "reference": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=json&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%2C%22rings%22%3A%5B%5B%5B471925.7468999997%2C5365845.4209%5D%2C%5B471912.3811999997%2C5365811.394200001%5D%2C%5B471901.3491000002%2C5365819.451400001%5D%2C%5B471914.7149%2C5365853.4782%5D%2C%5B471925.7468999997%2C5365845.4209%5D%5D%5D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true"
+          },
+          "basis": "roofline"
+        },
+        {
+          "id": "live-roof:81667",
+          "shape": {
+            "crs": "EPSG:3157",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    471915.2139999997,
+                    5365819.73
+                  ],
+                  [
+                    471913.74700000044,
+                    5365815.692
+                  ],
+                  [
+                    471910.9639999997,
+                    5365816.704
+                  ],
+                  [
+                    471912.43099999987,
+                    5365820.742000001
+                  ],
+                  [
+                    471915.2139999997,
+                    5365819.73
+                  ]
+                ]
+              ]
+            }
+          },
+          "source": {
+            "provider": "City of Victoria Open Data",
+            "record_label": "Building MapServer response",
+            "capture_date": "2026-10-07T23:01:46.816917+00:00",
+            "review_status": "unreviewed",
+            "reference": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=json&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%2C%22rings%22%3A%5B%5B%5B471925.7468999997%2C5365845.4209%5D%2C%5B471912.3811999997%2C5365811.394200001%5D%2C%5B471901.3491000002%2C5365819.451400001%5D%2C%5B471914.7149%2C5365853.4782%5D%2C%5B471925.7468999997%2C5365845.4209%5D%5D%5D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true"
+          },
+          "basis": "roofline"
+        }
+      ],
+      "named_boundaries": [],
+      "capture": {
+        "completeness": "complete_for_declared_scope",
+        "scope": "City rooflines returned by this parcel-intersection query only; not a complete obstruction inventory",
+        "limitations": [
+          "Feature update date and positional accuracy not supplied; rooflines derive from aerial imagery, not surveyed walls.",
+          "Source-selected observation; identity, ownership and legal boundaries are not confirmed. Source join and positional accuracy remain unreviewed.",
+          "Rooflines are not walls. Other obstructions, zoning, setbacks, services and delivery access remain unassessed."
+        ]
+      },
+      "placement": {
+        "id": "user-supplied-placement",
+        "centre_xy": [
+          471906.5401536183,
+          5365824.096762222
+        ],
+        "width_m": 3.048,
+        "depth_m": 9.144,
+        "angle_degrees": -21.445006404314483
+      },
+      "requirements": []
+    },
+    "assumptions": {
+      "schema_version": "sr.zoning-site-assumptions.v1",
+      "property": {
+        "case_id": "live:10573:0",
+        "parcel_id": "live-parcel:10573:0",
+        "geometry_revision": "client-capture-fnv1a32:32fcbdc0",
+        "crs": "EPSG:3157",
+        "source": {
+          "provider": "City of Victoria Open Data",
+          "record_label": "Parcel MapServer response",
+          "capture_date": "2026-10-07T23:01:46.595162+00:00",
+          "review_status": "unreviewed",
+          "reference": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=json&objectIds=10573&outFields=OBJECTID%2CPID%2CVicPID%2CGISLINK%2CParcelType%2CParcelStatus%2CShape_Area&returnGeometry=true&outSR=3157"
+        },
+        "capture": {
+          "completeness": "complete_for_declared_scope",
+          "scope": "City rooflines returned by this parcel-intersection query only; not a complete obstruction inventory",
+          "limitations": [
+            "Feature update date and positional accuracy not supplied; rooflines derive from aerial imagery, not surveyed walls.",
+            "Source-selected observation; identity, ownership and legal boundaries are not confirmed. Source join and positional accuracy remain unreviewed.",
+            "Rooflines are not walls. Other obstructions, zoning, setbacks, services and delivery access remain unassessed."
+          ]
+        }
+      },
+      "observed_buildings": [
+        {
+          "id": "live-roof:81666",
+          "basis": "roofline",
+          "source": {
+            "provider": "City of Victoria Open Data",
+            "record_label": "Building MapServer response",
+            "capture_date": "2026-10-07T23:01:46.816917+00:00",
+            "review_status": "unreviewed",
+            "reference": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=json&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%2C%22rings%22%3A%5B%5B%5B471925.7468999997%2C5365845.4209%5D%2C%5B471912.3811999997%2C5365811.394200001%5D%2C%5B471901.3491000002%2C5365819.451400001%5D%2C%5B471914.7149%2C5365853.4782%5D%2C%5B471925.7468999997%2C5365845.4209%5D%5D%5D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true"
+          }
+        },
+        {
+          "id": "live-roof:81667",
+          "basis": "roofline",
+          "source": {
+            "provider": "City of Victoria Open Data",
+            "record_label": "Building MapServer response",
+            "capture_date": "2026-10-07T23:01:46.816917+00:00",
+            "review_status": "unreviewed",
+            "reference": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=json&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%2C%22rings%22%3A%5B%5B%5B471925.7468999997%2C5365845.4209%5D%2C%5B471912.3811999997%2C5365811.394200001%5D%2C%5B471901.3491000002%2C5365819.451400001%5D%2C%5B471914.7149%2C5365853.4782%5D%2C%5B471925.7468999997%2C5365845.4209%5D%5D%5D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true"
+          }
+        }
+      ],
+      "planning_buffers_m": {
+        "client-capture-fnv1a32:32fcbdc0:ring-0:segment-0": 1,
+        "client-capture-fnv1a32:32fcbdc0:ring-0:segment-1": 1,
+        "client-capture-fnv1a32:32fcbdc0:ring-0:segment-2": 1,
+        "client-capture-fnv1a32:32fcbdc0:ring-0:segment-3": 1
+      },
+      "waterfront_edge_ids": [],
+      "infer_principal_building": true,
+      "edges": [
+        {
+          "id": "client-capture-fnv1a32:32fcbdc0:ring-0:segment-0",
+          "ring": 0,
+          "segment": 0,
+          "start": [
+            471925.7468999997,
+            5365845.4209
+          ],
+          "end": [
+            471912.3811999997,
+            5365811.394200001
+          ],
+          "role": {
+            "value": "side",
+            "origin": "user",
+            "evidence_state": "assumed",
+            "note": "Suggested \u00b7 accepted for planning"
+          }
+        },
+        {
+          "id": "client-capture-fnv1a32:32fcbdc0:ring-0:segment-1",
+          "ring": 0,
+          "segment": 1,
+          "start": [
+            471912.3811999997,
+            5365811.394200001
+          ],
+          "end": [
+            471901.3491000002,
+            5365819.451400001
+          ],
+          "role": {
+            "value": "rear",
+            "origin": "user",
+            "evidence_state": "assumed",
+            "note": "Suggested \u00b7 accepted for planning"
+          }
+        },
+        {
+          "id": "client-capture-fnv1a32:32fcbdc0:ring-0:segment-2",
+          "ring": 0,
+          "segment": 2,
+          "start": [
+            471901.3491000002,
+            5365819.451400001
+          ],
+          "end": [
+            471914.7149,
+            5365853.4782
+          ],
+          "role": {
+            "value": "side",
+            "origin": "user",
+            "evidence_state": "assumed",
+            "note": "Suggested \u00b7 accepted for planning"
+          }
+        },
+        {
+          "id": "client-capture-fnv1a32:32fcbdc0:ring-0:segment-3",
+          "ring": 0,
+          "segment": 3,
+          "start": [
+            471914.7149,
+            5365853.4782
+          ],
+          "end": [
+            471925.7468999997,
+            5365845.4209
+          ],
+          "role": {
+            "value": "front",
+            "origin": "user",
+            "evidence_state": "assumed",
+            "note": "Suggested \u00b7 accepted for planning"
+          }
+        }
+      ],
+      "building_type": {
+        "value": "single_detached",
+        "origin": "user",
+        "evidence_state": "user_confirmed",
+        "note": "Your selected answer; not independently verified."
+      },
+      "existing_garden_suites": {
+        "value": 0,
+        "origin": "journey_default",
+        "evidence_state": "assumed",
+        "note": "Assuming none already exist; editable homeowner scenario, not independently verified."
+      },
+      "principal_building_id": {
+        "value": "live-roof:81666",
+        "origin": "journey_default",
+        "evidence_state": "assumed",
+        "note": "Unique largest usable mapped outline; assumed main building, not confirmed use or walls."
+      },
+      "waterfront": {
+        "value": false,
+        "origin": "journey_default",
+        "evidence_state": "assumed",
+        "note": "Assuming not waterfront for preliminary scouting; choose Yes and mark water-adjoining edges if applicable."
+      },
+      "measurements": {
+        "boundary": {},
+        "principal_separation": null,
+        "floor_area": null
+      },
+      "placement_revision": "client-placement-fnv1a32:490cb4e9",
+      "limitations": [
+        "Edge roles are user assumptions, not surveyed legal lot-line classifications.",
+        "Captured rooflines are not surveyed walls or proof of a principal building."
+      ],
+      "street_adjacency": {
+        "origin": "user",
+        "all_marked": true,
+        "edge_ids": [
+          "client-capture-fnv1a32:32fcbdc0:ring-0:segment-3"
+        ],
+        "completion_method": "advance"
+      },
+      "boundary_role_suggestions": {
+        "roles": {},
+        "conflicts": [],
+        "basis": "user_marks"
+      }
+    },
+    "model_revision": "catalogue-record:aux-300@sr-40.2026-10-06.provider-pages.v2",
+    "proposal": {
+      "proposed_use": "garden_suite",
+      "foundation_attached": true,
+      "confirmed_zone": "GRD-1 (PGA)",
+      "confirmed_instrument": "Zoning Bylaw 2018",
+      "legal_lot_confirmed": null,
+      "floor_area_definition_acknowledged": null,
+      "no_relevant_projections": null
+    },
+    "proposal_evidence": {
+      "proposed_use": {
+        "value": "garden_suite",
+        "origin": "journey_default",
+        "source": null,
+        "note": "Model 300 garden-suite exploration default; editable and not independently verified."
+      },
+      "foundation_attached": {
+        "value": true,
+        "origin": "journey_default",
+        "source": null,
+        "note": "Permanent-foundation scenario default; installation has not been confirmed."
+      },
+      "confirmed_zone": {
+        "value": "GRD-1 (PGA)",
+        "origin": "municipal_lookup",
+        "source": {
+          "provider": "City of Victoria Open Data",
+          "record_label": "City zoning polygons intersecting selected parcel: GRD-1 (PGA) \u00b7 General Residential District-1 Zone Priority Growth Area",
+          "url": "https://www.victoria.ca/building-business/permits-development-construction/zoning/zoning-regulation-bylaw-2018",
+          "locator": "Zoning polygon 83; selected parcel 10573",
+          "capture_date": "2026-10-07T23:01:47.777962+00:00",
+          "review_status": "unreviewed_live_observation",
+          "source_revision": null,
+          "currentness_limitations": [
+            "Feature update date, legal revision and positional accuracy are not supplied."
+          ]
+        },
+        "note": "Mapped GRD-1 (PGA) under Zoning Bylaw 2018 (No. 18-072). single covered mapping; Unreviewed map observation for investigation; check current bylaws, amendments, overlays and parcel identity. No accepted rules were published.; unreviewed site applicability."
+      },
+      "confirmed_instrument": {
+        "value": "Zoning Bylaw 2018",
+        "origin": "municipal_lookup",
+        "source": {
+          "provider": "City of Victoria Open Data",
+          "record_label": "City zoning polygons intersecting selected parcel: GRD-1 (PGA) \u00b7 General Residential District-1 Zone Priority Growth Area",
+          "url": "https://www.victoria.ca/building-business/permits-development-construction/zoning/zoning-regulation-bylaw-2018",
+          "locator": "Zoning polygon 83; selected parcel 10573",
+          "capture_date": "2026-10-07T23:01:47.777962+00:00",
+          "review_status": "unreviewed_live_observation",
+          "source_revision": null,
+          "currentness_limitations": [
+            "Feature update date, legal revision and positional accuracy are not supplied."
+          ]
+        },
+        "note": "Mapped GRD-1 (PGA) under Zoning Bylaw 2018 (No. 18-072). single covered mapping; Unreviewed map observation for investigation; check current bylaws, amendments, overlays and parcel identity. No accepted rules were published.; unreviewed site applicability."
+      },
+      "legal_lot_confirmed": {
+        "value": null,
+        "origin": "unknown",
+        "source": null,
+        "note": null
+      },
+      "floor_area_definition_acknowledged": {
+        "value": null,
+        "origin": "unknown",
+        "source": null,
+        "note": null
+      },
+      "no_relevant_projections": {
+        "value": null,
+        "origin": "unknown",
+        "source": null,
+        "note": null
+      }
+    },
+    "street_edge_id": "client-capture-fnv1a32:32fcbdc0:ring-0:segment-3",
+    "rear_edge_id": null,
+    "street_pattern": "single",
+    "additional_inputs": {
+      "height_from_average_grade_m": null,
+      "nominal_footprint_area_m2": 27.870912,
+      "advertised_height_m": 3.2004,
+      "area_buffer_percent": 10,
+      "height_buffer_percent": 10,
+      "foundation_allowance_m": 0.3
+    }
+  },
+  "measurement": {
+    "site": {
+      "case_id": "live:10573:0",
+      "label": "419 Cecelia Rd, Victoria, BC",
+      "site": {
+        "projected_metre_crs": "EPSG:3157",
+        "parcel": {
+          "id": "live-parcel:10573:0",
+          "shape": {
+            "crs": "EPSG:3157",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    471925.7468999997,
+                    5365845.4209
+                  ],
+                  [
+                    471912.3811999997,
+                    5365811.394200001
+                  ],
+                  [
+                    471901.3491000002,
+                    5365819.451400001
+                  ],
+                  [
+                    471914.7149,
+                    5365853.4782
+                  ],
+                  [
+                    471925.7468999997,
+                    5365845.4209
+                  ]
+                ]
+              ]
+            }
+          },
+          "source": {
+            "provider": "City of Victoria Open Data",
+            "record_label": "Parcel MapServer response",
+            "capture_date": "2026-10-07T23:01:46.595162+00:00",
+            "review_status": "unreviewed",
+            "reference": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=json&objectIds=10573&outFields=OBJECTID%2CPID%2CVicPID%2CGISLINK%2CParcelType%2CParcelStatus%2CShape_Area&returnGeometry=true&outSR=3157"
+          }
+        },
+        "buildings": [
+          {
+            "id": "live-roof:81666",
+            "shape": {
+              "crs": "EPSG:3157",
+              "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                  [
+                    [
+                      471914.6129999999,
+                      5365842.211999999
+                    ],
+                    [
+                      471917.88800000027,
+                      5365840.585999999
+                    ],
+                    [
+                      471917.1639999999,
+                      5365839.129000001
+                    ],
+                    [
+                      471919.9519999996,
+                      5365837.744999999
+                    ],
+                    [
+                      471915.5329999998,
+                      5365828.8440000005
+                    ],
+                    [
+                      471914.95999999996,
+                      5365829.129000001
+                    ],
+                    [
+                      471914.0449999999,
+                      5365827.286
+                    ],
+                    [
+                      471906.11000000034,
+                      5365831.226
+                    ],
+                    [
+                      471907.07799999975,
+                      5365833.174000001
+                    ],
+                    [
+                      471906.7379999999,
+                      5365833.343
+                    ],
+                    [
+                      471911.0990000004,
+                      5365842.127
+                    ],
+                    [
+                      471913.8839999996,
+                      5365840.744999999
+                    ],
+                    [
+                      471914.6129999999,
+                      5365842.211999999
+                    ]
+                  ]
+                ]
+              }
+            },
+            "basis": "roofline",
+            "source": {
+              "provider": "City of Victoria Open Data",
+              "record_label": "Building MapServer response",
+              "capture_date": "2026-10-07T23:01:46.816917+00:00",
+              "review_status": "unreviewed",
+              "reference": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=json&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%2C%22rings%22%3A%5B%5B%5B471925.7468999997%2C5365845.4209%5D%2C%5B471912.3811999997%2C5365811.394200001%5D%2C%5B471901.3491000002%2C5365819.451400001%5D%2C%5B471914.7149%2C5365853.4782%5D%2C%5B471925.7468999997%2C5365845.4209%5D%5D%5D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true"
+            }
+          },
+          {
+            "id": "live-roof:81667",
+            "shape": {
+              "crs": "EPSG:3157",
+              "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                  [
+                    [
+                      471915.2139999997,
+                      5365819.73
+                    ],
+                    [
+                      471913.74700000044,
+                      5365815.692
+                    ],
+                    [
+                      471910.9639999997,
+                      5365816.704
+                    ],
+                    [
+                      471912.43099999987,
+                      5365820.742000001
+                    ],
+                    [
+                      471915.2139999997,
+                      5365819.73
+                    ]
+                  ]
+                ]
+              }
+            },
+            "basis": "roofline",
+            "source": {
+              "provider": "City of Victoria Open Data",
+              "record_label": "Building MapServer response",
+              "capture_date": "2026-10-07T23:01:46.816917+00:00",
+              "review_status": "unreviewed",
+              "reference": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=json&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%2C%22rings%22%3A%5B%5B%5B471925.7468999997%2C5365845.4209%5D%2C%5B471912.3811999997%2C5365811.394200001%5D%2C%5B471901.3491000002%2C5365819.451400001%5D%2C%5B471914.7149%2C5365853.4782%5D%2C%5B471925.7468999997%2C5365845.4209%5D%5D%5D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true"
+            }
+          }
+        ],
+        "named_boundaries": [],
+        "capture": {
+          "completeness": "complete_for_declared_scope",
+          "scope": "City rooflines returned by this parcel-intersection query only; not a complete obstruction inventory",
+          "limitations": [
+            "Feature update date and positional accuracy not supplied; rooflines derive from aerial imagery, not surveyed walls.",
+            "Source-selected observation; identity, ownership and legal boundaries are not confirmed. Source join and positional accuracy remain unreviewed.",
+            "Rooflines are not walls. Other obstructions, zoning, setbacks, services and delivery access remain unassessed."
+          ]
+        }
+      }
+    },
+    "model": {
+      "model_id": "aux-300",
+      "provider": "aux box",
+      "name": "Model 300",
+      "provider_url": "https://www.auxbox.ca/model-300",
+      "source_revision": null,
+      "configuration": "Public one-bedroom product page; upgrades not fixed",
+      "construction_method": "Factory-built structure, per provider",
+      "intended_use_note": "Provider calls it long-term accommodation; Victoria garden-suite use unreviewed",
+      "service_area_status": "provider_claim",
+      "service_area_note": "Provider says delivered anywhere in North America; Victoria project service and site feasibility unconfirmed.",
+      "installation_note": "Provider says crane placement; permitting, foundation, site services, shipping and installation are separate site work/costs.",
+      "footprint_note": "Provider labels 300 ft\u00b2 a footprint, but roof overhangs and other projection treatment are undefined.",
+      "height_note": "Provider exterior height 10 ft 6 in has no stated datum or roof-point definition; cannot populate regulatory building height.",
+      "missing_facts": [
+        "Controlled configuration and drawing revision",
+        "Roof high point and height datum",
+        "Overhang/projection envelope",
+        "Foundation and installed grade relationship",
+        "Regulatory floor area and occupancy footprint",
+        "Victoria site delivery and installation confirmation"
+      ],
+      "sources": [
+        {
+          "source_id": "aux-300-page",
+          "url": "https://www.auxbox.ca/model-300",
+          "locator": "The Specs > Dimensions; Site Prep, Delivery + Installation",
+          "captured_at": "2026-09-25",
+          "sha256": "722369c4af220b4d29984b989d940d3b96c40d98515182c2c4bbc28893184dca",
+          "artifact_status": "capture_gap",
+          "upstream_revision": null,
+          "updated_at": null
+        },
+        {
+          "source_id": "aux-300-commercial",
+          "url": "https://www.auxbox.ca/model-300",
+          "locator": "Starting price; Layout & Specs > Materials, Upgrades, Site Prep, Delivery + Installation",
+          "captured_at": "2026-10-06",
+          "sha256": null,
+          "artifact_status": "capture_gap",
+          "upstream_revision": null,
+          "updated_at": null
+        },
+        {
+          "source_id": "aux-faq-timing",
+          "url": "https://www.auxbox.ca/faqs",
+          "locator": "How long does it take?",
+          "captured_at": "2026-10-06",
+          "sha256": null,
+          "artifact_status": "capture_gap",
+          "upstream_revision": null,
+          "updated_at": null
+        },
+        {
+          "source_id": "aux-process-timing",
+          "url": "https://www.auxbox.ca/how-it-works",
+          "locator": "Installed in one day; How it works steps 1\u20136",
+          "captured_at": "2026-10-06",
+          "sha256": null,
+          "artifact_status": "capture_gap",
+          "upstream_revision": null,
+          "updated_at": null
+        }
+      ],
+      "measurements": [
+        {
+          "name": "nominal_exterior_width",
+          "status": "known",
+          "definition": "Provider exterior width; overhang inclusion unknown",
+          "quantity": {
+            "original_text": "10 ft",
+            "original_value": "10",
+            "original_unit": "ft",
+            "dimension": "length",
+            "value": "3.0480",
+            "unit": "m",
+            "basis": null
+          },
+          "source_id": "aux-300-page",
+          "reason": null
+        },
+        {
+          "name": "nominal_exterior_depth",
+          "status": "known",
+          "definition": "Provider exterior length; overhang inclusion unknown",
+          "quantity": {
+            "original_text": "30 ft",
+            "original_value": "30",
+            "original_unit": "ft",
+            "dimension": "length",
+            "value": "9.1440",
+            "unit": "m",
+            "basis": null
+          },
+          "source_id": "aux-300-page",
+          "reason": null
+        },
+        {
+          "name": "manufacturer_interior_area",
+          "status": "known",
+          "definition": "Provider living space, not regulatory floor area",
+          "quantity": {
+            "original_text": "226 sq ft total living space",
+            "original_value": "226",
+            "original_unit": "ft2",
+            "dimension": "area",
+            "value": "20.99608704",
+            "unit": "m2",
+            "basis": null
+          },
+          "source_id": "aux-300-page",
+          "reason": null
+        },
+        {
+          "name": "manufacturer_footprint",
+          "status": "known",
+          "definition": "Provider footprint; projections/deck basis unknown",
+          "quantity": {
+            "original_text": "300 sq ft footprint",
+            "original_value": "300",
+            "original_unit": "ft2",
+            "dimension": "area",
+            "value": "27.87091200",
+            "unit": "m2",
+            "basis": null
+          },
+          "source_id": "aux-300-page",
+          "reason": null
+        },
+        {
+          "name": "advertised_overall_height",
+          "status": "known",
+          "definition": "Provider exterior height; datum/roof point unspecified",
+          "quantity": {
+            "original_text": "10 ft 6 in",
+            "original_value": "10.5",
+            "original_unit": "ft",
+            "dimension": "length",
+            "value": "3.20040",
+            "unit": "m",
+            "basis": null
+          },
+          "source_id": "aux-300-page",
+          "reason": null
+        },
+        {
+          "name": "roof_height",
+          "status": "missing",
+          "definition": "Roof high point measured from stated foundation datum",
+          "quantity": null,
+          "source_id": null,
+          "reason": "Exterior height has no stated datum or roof-point definition"
+        }
+      ],
+      "review_status": "unreviewed",
+      "prices": [
+        {
+          "source_id": "aux-300-commercial",
+          "wording": "Starting at $187,000 CAD. On-site prep including permitting, foundations, site services, shipping, and install at additional cost",
+          "scope": "model",
+          "configuration": "Public Model 300 one-bedroom page; upgrades not fixed",
+          "region": null,
+          "qualifications": [
+            "Model starting price, not total project cost.",
+            "Upgrades are listed separately; their prices and a fixed configuration are not supplied.",
+            "The page lists North America delivery; regional pricing is not stated."
+          ],
+          "amount": {
+            "minimum": "187000",
+            "maximum": null
+          },
+          "currency": "CAD",
+          "basis": "starting",
+          "inclusions": [
+            "Full bathroom and complete kitchen described on the model page"
+          ],
+          "exclusions": [
+            "Permitting",
+            "Foundations",
+            "Site services",
+            "Shipping",
+            "Installation"
+          ],
+          "tax_treatment": null
+        }
+      ],
+      "timings": [
+        {
+          "source_id": "aux-faq-timing",
+          "wording": "Roughly 12-18 weeks from purchase contract to delivery, depending on the model you choose, our production schedule and the permitting requirements. Smaller models can have shorter lead times. Larger models can have longer lead times.",
+          "scope": "provider",
+          "configuration": null,
+          "region": null,
+          "qualifications": [
+            "Provider-wide estimate; not a Model 300 or property-specific schedule.",
+            "Does not separately quantify factory production or delivery transit time."
+          ],
+          "stage": "contract_to_delivery",
+          "duration": {
+            "minimum": "12",
+            "maximum": "18"
+          },
+          "unit": "weeks",
+          "basis": "estimated",
+          "clock_start": "Purchase contract",
+          "prerequisites": [
+            "Model choice",
+            "Production schedule",
+            "Permitting requirements"
+          ]
+        },
+        {
+          "source_id": "aux-process-timing",
+          "wording": "Your aux box is delivered by truck and placed on-site by crane, all in one day",
+          "scope": "provider",
+          "configuration": null,
+          "region": null,
+          "qualifications": [
+            "Provider-wide delivery/placement-day claim; not the full project timeline or a Model 300 installation guarantee.",
+            "Foundation preparation is a separate process step; no standalone transit duration is supplied."
+          ],
+          "stage": "on_site_installation",
+          "duration": {
+            "minimum": "1",
+            "maximum": null
+          },
+          "unit": "days",
+          "basis": "provider_claim",
+          "clock_start": null,
+          "prerequisites": [
+            "Site qualification",
+            "Permits where required",
+            "Design confirmation",
+            "Foundation and services preparation",
+            "Crane access"
+          ]
+        }
+      ]
+    },
+    "result": {
+      "schema_version": "scouting-geometry.v1",
+      "engine_version": "supplied-rectangle.v1",
+      "input": {
+        "schema_version": "scouting-geometry.v1",
+        "projected_metre_crs": "EPSG:3157",
+        "parcel": {
+          "id": "live-parcel:10573:0",
+          "shape": {
+            "crs": "EPSG:3157",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    471925.7468999997,
+                    5365845.4209
+                  ],
+                  [
+                    471912.3811999997,
+                    5365811.394200001
+                  ],
+                  [
+                    471901.3491000002,
+                    5365819.451400001
+                  ],
+                  [
+                    471914.7149,
+                    5365853.4782
+                  ],
+                  [
+                    471925.7468999997,
+                    5365845.4209
+                  ]
+                ]
+              ]
+            }
+          },
+          "source": {
+            "provider": "City of Victoria Open Data",
+            "record_label": "Parcel MapServer response",
+            "capture_date": "2026-10-07T23:01:46.595162+00:00",
+            "review_status": "unreviewed",
+            "reference": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=json&objectIds=10573&outFields=OBJECTID%2CPID%2CVicPID%2CGISLINK%2CParcelType%2CParcelStatus%2CShape_Area&returnGeometry=true&outSR=3157"
+          }
+        },
+        "buildings": [
+          {
+            "id": "live-roof:81666",
+            "shape": {
+              "crs": "EPSG:3157",
+              "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                  [
+                    [
+                      471914.6129999999,
+                      5365842.211999999
+                    ],
+                    [
+                      471917.88800000027,
+                      5365840.585999999
+                    ],
+                    [
+                      471917.1639999999,
+                      5365839.129000001
+                    ],
+                    [
+                      471919.9519999996,
+                      5365837.744999999
+                    ],
+                    [
+                      471915.5329999998,
+                      5365828.8440000005
+                    ],
+                    [
+                      471914.95999999996,
+                      5365829.129000001
+                    ],
+                    [
+                      471914.0449999999,
+                      5365827.286
+                    ],
+                    [
+                      471906.11000000034,
+                      5365831.226
+                    ],
+                    [
+                      471907.07799999975,
+                      5365833.174000001
+                    ],
+                    [
+                      471906.7379999999,
+                      5365833.343
+                    ],
+                    [
+                      471911.0990000004,
+                      5365842.127
+                    ],
+                    [
+                      471913.8839999996,
+                      5365840.744999999
+                    ],
+                    [
+                      471914.6129999999,
+                      5365842.211999999
+                    ]
+                  ]
+                ]
+              }
+            },
+            "source": {
+              "provider": "City of Victoria Open Data",
+              "record_label": "Building MapServer response",
+              "capture_date": "2026-10-07T23:01:46.816917+00:00",
+              "review_status": "unreviewed",
+              "reference": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=json&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%2C%22rings%22%3A%5B%5B%5B471925.7468999997%2C5365845.4209%5D%2C%5B471912.3811999997%2C5365811.394200001%5D%2C%5B471901.3491000002%2C5365819.451400001%5D%2C%5B471914.7149%2C5365853.4782%5D%2C%5B471925.7468999997%2C5365845.4209%5D%5D%5D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true"
+            },
+            "basis": "roofline"
+          },
+          {
+            "id": "live-roof:81667",
+            "shape": {
+              "crs": "EPSG:3157",
+              "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                  [
+                    [
+                      471915.2139999997,
+                      5365819.73
+                    ],
+                    [
+                      471913.74700000044,
+                      5365815.692
+                    ],
+                    [
+                      471910.9639999997,
+                      5365816.704
+                    ],
+                    [
+                      471912.43099999987,
+                      5365820.742000001
+                    ],
+                    [
+                      471915.2139999997,
+                      5365819.73
+                    ]
+                  ]
+                ]
+              }
+            },
+            "source": {
+              "provider": "City of Victoria Open Data",
+              "record_label": "Building MapServer response",
+              "capture_date": "2026-10-07T23:01:46.816917+00:00",
+              "review_status": "unreviewed",
+              "reference": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=json&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%2C%22rings%22%3A%5B%5B%5B471925.7468999997%2C5365845.4209%5D%2C%5B471912.3811999997%2C5365811.394200001%5D%2C%5B471901.3491000002%2C5365819.451400001%5D%2C%5B471914.7149%2C5365853.4782%5D%2C%5B471925.7468999997%2C5365845.4209%5D%5D%5D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true"
+            },
+            "basis": "roofline"
+          }
+        ],
+        "named_boundaries": [],
+        "capture": {
+          "completeness": "complete_for_declared_scope",
+          "scope": "City rooflines returned by this parcel-intersection query only; not a complete obstruction inventory",
+          "limitations": [
+            "Feature update date and positional accuracy not supplied; rooflines derive from aerial imagery, not surveyed walls.",
+            "Source-selected observation; identity, ownership and legal boundaries are not confirmed. Source join and positional accuracy remain unreviewed.",
+            "Rooflines are not walls. Other obstructions, zoning, setbacks, services and delivery access remain unassessed."
+          ]
+        },
+        "placement": {
+          "id": "user-supplied-placement",
+          "centre_xy": [
+            471906.5401536183,
+            5365824.096762222
+          ],
+          "width_m": 3.048,
+          "depth_m": 9.144,
+          "angle_degrees": -21.445006404314483
+        },
+        "requirements": []
+      },
+      "placement_geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              471903.4501019013,
+              5365820.398473376
+            ],
+            [
+              471906.2870855521,
+              5365819.284100115
+            ],
+            [
+              471909.6302053353,
+              5365827.795051068
+            ],
+            [
+              471906.7932216845,
+              5365828.909424329
+            ],
+            [
+              471903.4501019013,
+              5365820.398473376
+            ]
+          ]
+        ]
+      },
+      "checks": [
+        {
+          "id": "containment",
+          "kind": "containment",
+          "status": "observed",
+          "relation": "contained",
+          "area_m2": 0,
+          "distance_m": null,
+          "margin_m": null,
+          "comparison": null,
+          "requirement_id": null,
+          "requirement_status": null,
+          "source_feature_ids": [
+            "live-parcel:10573:0"
+          ],
+          "reason": null
+        },
+        {
+          "id": "parcel_boundary",
+          "kind": "parcel_boundary_distance",
+          "status": "observed",
+          "relation": null,
+          "area_m2": null,
+          "distance_m": 1.6092896315309058,
+          "margin_m": null,
+          "comparison": null,
+          "requirement_id": null,
+          "requirement_status": null,
+          "source_feature_ids": [
+            "live-parcel:10573:0"
+          ],
+          "reason": null
+        },
+        {
+          "id": "building:live-roof:81666:overlap",
+          "kind": "building_overlap",
+          "status": "observed",
+          "relation": "separate",
+          "area_m2": 0,
+          "distance_m": null,
+          "margin_m": null,
+          "comparison": null,
+          "requirement_id": null,
+          "requirement_status": null,
+          "source_feature_ids": [
+            "live-roof:81666"
+          ],
+          "reason": null
+        },
+        {
+          "id": "building:live-roof:81666:distance",
+          "kind": "building_distance",
+          "status": "observed",
+          "relation": null,
+          "area_m2": null,
+          "distance_m": 1.5074461055639987,
+          "margin_m": null,
+          "comparison": null,
+          "requirement_id": null,
+          "requirement_status": null,
+          "source_feature_ids": [
+            "live-roof:81666"
+          ],
+          "reason": null
+        },
+        {
+          "id": "building:live-roof:81667:overlap",
+          "kind": "building_overlap",
+          "status": "observed",
+          "relation": "separate",
+          "area_m2": 0,
+          "distance_m": null,
+          "margin_m": null,
+          "comparison": null,
+          "requirement_id": null,
+          "requirement_status": null,
+          "source_feature_ids": [
+            "live-roof:81667"
+          ],
+          "reason": null
+        },
+        {
+          "id": "building:live-roof:81667:distance",
+          "kind": "building_distance",
+          "status": "observed",
+          "relation": null,
+          "area_m2": null,
+          "distance_m": 5.185544682081473,
+          "margin_m": null,
+          "comparison": null,
+          "requirement_id": null,
+          "requirement_status": null,
+          "source_feature_ids": [
+            "live-roof:81667"
+          ],
+          "reason": null
+        },
+        {
+          "id": "nearest_building",
+          "kind": "nearest_building_distance",
+          "status": "observed",
+          "relation": null,
+          "area_m2": null,
+          "distance_m": 1.5074461055639987,
+          "margin_m": null,
+          "comparison": null,
+          "requirement_id": null,
+          "requirement_status": null,
+          "source_feature_ids": [
+            "live-roof:81666"
+          ],
+          "reason": null
+        }
+      ],
+      "conclusion": "tested_placement_observations_only",
+      "limitations": [
+        "Observations concern this supplied placement only; no legal or site fit conclusion.",
+        "Building distances use each supplied polygon basis; a roofline is not a wall.",
+        "Unmapped obstructions and positional error are not measured.",
+        "Feature update date and positional accuracy not supplied; rooflines derive from aerial imagery, not surveyed walls.",
+        "Source-selected observation; identity, ownership and legal boundaries are not confirmed. Source join and positional accuracy remain unreviewed.",
+        "Rooflines are not walls. Other obstructions, zoning, setbacks, services and delivery access remain unassessed."
+      ]
+    },
+    "widthOrigin": "catalogue",
+    "depthOrigin": "catalogue"
+  }
+}

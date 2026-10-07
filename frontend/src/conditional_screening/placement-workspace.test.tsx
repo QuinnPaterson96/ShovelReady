@@ -51,4 +51,6 @@ test('malformed nested scenario evidence is rejected before it can be displayed'
     assert.throws(() => parseScenarioResult(changed), /malformed/)
   }
   assert.throws(() => parseScenarioResult({ ...result, status: 'clarify' }), /malformed/)
+  assert.throws(() => parseScenarioResult({ ...result, edge_measurement_lines: { [ids[0]]: [[0, 0], [Infinity, 1]] } }), /malformed/)
+  assert.throws(() => parseScenarioResult({ ...result, edge_measurement_lines: { wrong_edge: [[0, 0], [1, 1]] } }), /malformed/)
 })

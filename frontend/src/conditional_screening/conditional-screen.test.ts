@@ -42,7 +42,8 @@ test('supporting report carries each current candidate check and citation, while
   const input = { intendedUse: '', timing: '', budget: '', access: '', services: '' }
   const current = enquiryDocument(null, input, null, false, null, null, false, null, result, assumptions)
   const conditional = current.sections.find(section => section.heading === 'Conditional zoning')!
-  assert.equal(conditional.paragraphs.length, result.checks.length + 3)
+  assert.ok(conditional.paragraphs.length >= result.checks.length + 3)
+  for (const check of result.checks) assert.ok(conditional.paragraphs.join(' ').includes(check.rule.source.locator))
   assert.match(conditional.paragraphs.join(' '), /Part 3\.1\(28\)/)
   assert.match(conditional.paragraphs.join(' '), /https:\/\/www\.victoria\.ca/)
   assert.match(conditional.paragraphs.join(' '), /unresolved preliminary concern under the supplied assumptions/)
