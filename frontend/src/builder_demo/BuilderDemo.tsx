@@ -140,8 +140,10 @@ export function enquiry(...args: Parameters<typeof enquiryDocument>) { return en
 
 export type BuilderProgress = import('../navigation/BuilderJourneyNav').BuilderJourneyCompletion
 type JourneyStep = import('../navigation/BuilderJourneyNav').JourneyStep
+const suggestedQuestion = 'Could Model 300 work on this property? Please explain the next steps, likely additional costs, and what information you need from me.'
+
 export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (progress: BuilderProgress) => void } = {}) {
-  const [expanded, setExpanded] = useState({ property: true, placement: false, next: false })
+  const [expanded, setExpanded] = useState({ property: true, placement: false, next: false, email: false })
   const [journeyStep, setJourneyStep] = useState<JourneyStep>('property')
   const [boundaryEditorOverride, setBoundaryEditorOverride] = useState(false)
   const [reviewedBoundariesFor, setReviewedBoundariesFor] = useState<string | null>(null)
@@ -195,7 +197,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const [access, setAccess] = useState('')
   const [services, setServices] = useState('')
   const [projectContext, setProjectContext] = useState({ relationship: '', stage: '', configuration: '', nextStep: '', contact: '' })
-  const [question, setQuestion] = useState('')
+  const [question, setQuestion] = useState(suggestedQuestion)
   const [readyFor, setReadyFor] = useState<string | null>(null)
   const [manualConfirmedFor, setManualConfirmedFor] = useState<string | null>(null)
   const [recipient, setRecipient] = useState('')
@@ -204,10 +206,10 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   function siteEdited() { setBufferSuggestion(undefined); setMoveSuggestion(undefined); setAcknowledgedConflicts([]); setSelection(null); setImported(false); setMeasurementResult(null); setSiteAssumptions(null); setProjectSettings(initialProjectSettings()); setStreetMarks({ revision: null, data: { edge_ids: [], all_marked: false, origin: 'user' } }); setRearEdge(null); setSelectedBoundary(null); setBoundaryMark(null); setMarkingRole(null); setBoundaryMode('place'); setReadyFor(null); setRevision(value => value + 1) }
   function changeMode(next: typeof mode) {
     setFoundationAllowanceM('0.30'); setHeightRevision(value => value + 1)
-    setExpanded({ property: next !== 'example', placement: next === 'example', next: false })
+    setExpanded({ property: next !== 'example', placement: next === 'example', next: false, email: false })
     setMode(next); siteEdited(); setLive(null); setManual(null)
     setDraft({ ...emptySiteInput, kind: 'address' })
-    setQuestion(''); setUse(''); setTiming(''); setBudget(''); setAccess(''); setServices('')
+    setQuestion(suggestedQuestion); setUse(''); setTiming(''); setBudget(''); setAccess(''); setServices('')
     setReadyFor(null); setManualConfirmedFor(null); setIncludeSiteDetails(false); setEmailMessage('')
   }
   const hasSite = mode === 'example' || !!(selection || live || manual && (manual.site || Object.values(manual.facts).some(value => value.trim())))
@@ -347,8 +349,8 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const placementComplete = !!(measurementResult || mode === 'manual' && manual?.assessment)
   const previousPropertyComplete = useRef(false)
   useEffect(() => {
-    if (propertyComplete && !previousPropertyComplete.current) { setExpanded({ property: false, placement: true, next: false }); setJourneyStep('placement') }
-    if (!propertyComplete && previousPropertyComplete.current) { setExpanded({ property: true, placement: false, next: false }); setJourneyStep('property') }
+    if (propertyComplete && !previousPropertyComplete.current) { setExpanded({ property: false, placement: true, next: false, email: false }); setJourneyStep('placement') }
+    if (!propertyComplete && previousPropertyComplete.current) { setExpanded({ property: true, placement: false, next: false, email: false }); setJourneyStep('property') }
     previousPropertyComplete.current = propertyComplete
   }, [propertyComplete])
   useEffect(() => {
@@ -439,7 +441,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   function changeProperty() {
     if (mode === 'live') { siteEdited(); setLive(null); setPropertyReset(value => value + 1) }
     else changeMode('live')
-    setExpanded({ property: true, placement: false, next: false })
+    setExpanded({ property: true, placement: false, next: false, email: false })
     requestAnimationFrame(() => focusSummaryTarget(document, 'sd-address'))
   }
   function openProgress(step: 'property' | 'placement' | 'checks' | 'enquiry') {
@@ -456,7 +458,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     if (step === 'streets') changeBoundaryMode('front')
     if (step === 'boundaries') changeBoundaryMode('rear')
     if (step === 'placement' || step === 'details') setBoundaryMode('place')
-    setExpanded(previous => ({ ...previous, ...(step === 'property' ? { property: true } : step === 'enquiry' || step === 'email' ? { next: true } : { placement: true }) }))
+    setExpanded(previous => ({ ...previous, ...(step === 'property' ? { property: true } : step === 'email' ? { next: false, email: true } : step === 'enquiry' ? { next: true, email: false } : { placement: true }) }))
     const targets: Record<JourneyStep, string> = { model: 'builder-title', property: 'builder-site-mode', placement: 'placement-map', streets: 'placement-action-front', boundaries: 'placement-action-rear', details: 'builder-property-details', checks: 'builder-quick-checks', enquiry: 'builder-question', email: 'builder-email-recipient' }
     requestAnimationFrame(() => {
       focusSummaryTarget(document, targets[step])
@@ -600,18 +602,24 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     <section className="builder-stage builder-enquiry" id="builder-next" aria-labelledby="builder-enquiry-title">
       <p className="eyebrow">Take away · local draft</p><h2 id="builder-enquiry-title">Prepare a useful question</h2>
       <p>Review a summary for the builder, then open an editable email draft. Nothing is sent automatically.</p>
-      <button type="button" aria-expanded={expanded.next} aria-controls="builder-enquiry-content" onClick={() => toggleStep('next')}>{expanded.next ? 'Collapse enquiry' : 'Review enquiry'}</button>
+      {enquiryReady && !expanded.next && <p role="status">Enquiry confirmed. You can edit it again; no message has been sent.</p>}
+      <button type="button" aria-expanded={expanded.next} aria-controls="builder-enquiry-content" onClick={() => toggleStep('next')}>{expanded.next ? 'Collapse enquiry' : enquiryReady ? 'Edit enquiry' : 'Review enquiry'}</button>
       <div id="builder-enquiry-content" hidden={!expanded.next}>
       {!hasSite && <p>Add a property or your known site facts above to prepare an unsent enquiry. Your answers stay local to this journey.</p>}
       {hasSite && <><p>Leave unknown answers blank. This text stays in your browser until you copy it; no provider request or contact record is created.</p>
       <div className="builder-questions">
-        <label htmlFor="builder-question">Your question</label><textarea id="builder-question" value={question} onChange={event => setQuestion(event.target.value)} placeholder="What would you like to ask the builder? Leave blank for a suggested question." />
+        <label htmlFor="builder-question">What would you like to ask the builder?</label><textarea id="builder-question" value={question} onChange={event => setQuestion(event.target.value)} placeholder="Ask about suitability, next steps or additional costs." />
         <label htmlFor="builder-use">Intended use</label><input id="builder-use" value={use} onChange={event => setUse(event.target.value)} placeholder="e.g. family accommodation; unknown is fine" />
         <label htmlFor="builder-timing">Possible timing</label><input id="builder-timing" value={timing} onChange={event => setTiming(event.target.value)} placeholder="e.g. next year; unknown is fine" />
         <label htmlFor="builder-budget">Budget range, optional</label><input id="builder-budget" value={budget} onChange={event => setBudget(event.target.value)} placeholder="Leave blank if unknown" />
-        <label htmlFor="builder-access">Access or crane questions</label><input id="builder-access" value={access} onChange={event => setAccess(event.target.value)} placeholder="Known access facts or questions" />
-        <label htmlFor="builder-services">Services or utility questions</label><input id="builder-services" value={services} onChange={event => setServices(event.target.value)} placeholder="Known services or questions" />
       </div>
+      <details className="builder-optional-site"><summary>Optional site details</summary>
+        <p>Leave these blank if you’re unsure—the builder can help identify what’s needed.</p>
+        <div className="builder-questions">
+          <label htmlFor="builder-access">Anything the builder should know about access?</label><input id="builder-access" value={access} onChange={event => setAccess(event.target.value)} placeholder="For example, a narrow driveway, overhead wires or limited space." />
+          <label htmlFor="builder-services">Anything you know about water, sewer or electricity connections?</label><input id="builder-services" value={services} onChange={event => setServices(event.target.value)} placeholder="Share existing connections or questions, if known." />
+        </div>
+      </details>
       <details><summary>Optional project context and closing</summary><div className="builder-questions">
         {([['relationship', 'Relationship to the property'], ['stage', 'Project stage'], ['configuration', 'Configuration or upgrades'], ['nextStep', 'Requested next step'], ['contact', 'Sender name and contact details']] as const).map(([key, label]) => <Fragment key={key}><label htmlFor={`builder-${key}`}>{label}</label><input id={`builder-${key}`} value={projectContext[key]} onChange={event => setProjectContext(previous => ({ ...previous, [key]: event.target.value }))} /></Fragment>)}
       </div></details>
@@ -621,18 +629,28 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       <div className="builder-enquiry-actions">
         <CopyableRecord id="builder-enquiry-text" label="Plain-text enquiry to copy" value={draftText} />
         <button type="button" onClick={() => downloadMarkdown()}>Download Markdown enquiry</button>
-        <button type="button" onClick={() => setReadyFor(draftText)} disabled={enquiryReady}>Mark enquiry ready</button>
-        <span role="status">{enquiryReady ? 'Ready for your review and optional handoff. No message has been sent.' : 'Draft in progress. Review before marking ready.'}</span>
       </div>
-      <div className="step-action"><button className="builder-continue" type="button" onClick={() => { setReadyFor(draftText); openJourneyStep('email') }}>Next: Review email draft →</button><StepInfo label="Review email draft">Review your enquiry first. Next opens the recipient and exact email text for your review; nothing is sent.</StepInfo></div>
-      <section className="builder-email" id="builder-email" aria-labelledby="builder-email-title">
-        <h3 id="builder-email-title">Open an editable email draft</h3>
+      <div className="builder-enquiry-confirm">
+        <h3>Happy with your enquiry?</h3><p>You can edit it again later.</p>
+        <button className="builder-continue" type="button" onClick={() => { setReadyFor(draftText); openJourneyStep('email') }}>Confirm enquiry &amp; continue →</button>
+        <p role="status">{enquiryReady ? 'Enquiry confirmed. No message has been sent.' : 'Draft in progress. Review before continuing.'}</p>
+      </div>
+      <TechnicalDetails title="Complete site selection, sources and measurements"><CopyableRecord id="builder-technical-record" label="Complete technical evidence export" value={JSON.stringify(technicalEvidence, null, 2)} /></TechnicalDetails>
+      </>}
+      </div>
+    </section>
+    {hasSite && <>
+      <section className="builder-stage builder-email" id="builder-email" aria-labelledby="builder-email-title">
+        <p className="eyebrow">Email enquiry · unsent draft</p><h2 id="builder-email-title">Prepare your email</h2>
+        <button type="button" aria-expanded={expanded.email} aria-controls="builder-email-content" onClick={() => toggleStep('email')}>{expanded.email ? 'Collapse email preparation' : 'Review email draft'}</button>
+        <div id="builder-email-content" hidden={!expanded.email}>
+        <p>Nothing is sent until you send it in your email app.</p>
         <p>Review the recipient and exact text below. These buttons ask your browser to open an editable draft; your browser or email setup may prevent it. Only you can send it. This demonstration has no affiliation with aux box.</p>
         <p className="metadata">The <a href="https://www.auxbox.ca/contact" target="_blank" rel="noreferrer">official aux box contact page</a> directs general enquiries to a form. Its published email addresses are for privacy, media or careers, so no product enquiry recipient is prefilled. Checked 2026-10-05.</p>
         <label htmlFor="builder-email-recipient">Recipient email (optional; edit before opening)</label>
-        <input id="builder-email-recipient" type="email" autoComplete="email" value={recipient} onChange={event => { setRecipient(event.target.value); setReadyFor(null); setEmailMessage('') }} aria-invalid={!validRecipient(recipient)} />
+        <input id="builder-email-recipient" type="email" autoComplete="email" value={recipient} onChange={event => { setRecipient(event.target.value); setEmailMessage('') }} aria-invalid={!validRecipient(recipient)} />
         {!validRecipient(recipient) && <p role="alert">Enter one valid email address without line breaks.</p>}
-        <label className="builder-email-choice"><input type="checkbox" checked={includeSiteDetails} onChange={event => { setIncludeSiteDetails(event.target.checked); setReadyFor(null); setEmailMessage('') }} /> Include site details in the email</label>
+        <label className="builder-email-choice"><input type="checkbox" checked={includeSiteDetails} onChange={event => { setIncludeSiteDetails(event.target.checked); setEmailMessage('') }} /> Include site details in the email</label>
         <p className="metadata">{includeSiteDetails ? 'The property summary below may include an address or site description.' : 'The automatic property summary is excluded. Your question is still included; check it for any address or personal details you typed. The full copy and download include property details.'}</p>
         <label htmlFor="builder-email-subject">Subject</label><input id="builder-email-subject" readOnly value={emailSubject} />
         <label htmlFor="builder-email-body">Exact email body to share</label><textarea id="builder-email-body" readOnly rows={12} value={emailBody} />
@@ -644,11 +662,9 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
         </div>
         <p className="metadata">If no compose window opens, use Copy email body and paste the exact text shown above into a new message. Check the recipient and subject there before sending.</p>
         <p role="status">{emailMessage}</p>
+        </div>
       </section>
-      <TechnicalDetails title="Complete site selection, sources and measurements"><CopyableRecord id="builder-technical-record" label="Complete technical evidence export" value={JSON.stringify(technicalEvidence, null, 2)} /></TechnicalDetails>
-      </>}
-      </div>
-    </section>
+    </>}
     {propertyComplete && <footer className="builder-stage"><details><summary>Sources &amp; technical evidence</summary><p>Source records, exact geometry and candidate comparisons for the current placement. Review individual checks above for the main findings.</p><div id="builder-geometry-evidence" /><div id="builder-rule-evidence" /></details></footer>}
   </div>
 }

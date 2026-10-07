@@ -361,3 +361,38 @@ Gaps: source owner/#104 needs reviewed applicability and installed measurements;
 homeowner/provider needs permit/title/projection/servicing evidence. Product owner/#147
 owns real-user/touch validation. Platform owner/SR14-SR15 owns persistence/recovery and
 rollback evidence; refresh still loses answers.
+
+## Completing review and confirming enquiry — October 7, 2026
+
+Acknowledged review findings now use yellow fill and an amber border; missing and
+uncovered findings keep their original border/icon with yellow fill. Conflicts keep
+the red border. Headings identify acknowledgement for discussion. Grouped sections
+adopt this treatment only when all unresolved children are included; counts/statuses
+remain unchanged and changed inputs still reopen review.
+
+Completed review has a Review complete card, a full-width teal Prepare your enquiry
+action and a brief one-time glow. Reduced-motion preference disables the glow. The
+card celebrates addressing findings for discussion, never approval.
+
+Prepare enquiry now offers one Confirm enquiry & continue action after secondary
+copy/download actions. Confirmation completes that workflow step, collapses its
+content and focuses the separate Email enquiry section. Edit enquiry reopens it.
+Email recipient/sharing choices no longer invalidate confirmation of enquiry content;
+editing the enquiry itself still does. Nothing is sent automatically.
+
+The visible question is prefilled and editable: Could Model 300 work on this property?
+Please explain the next steps, likely additional costs, and what information you need
+from me. Access and water/sewer/electricity questions move into collapsed Optional
+site details with examples and an invitation to leave unknown answers blank. The
+concise manufacturer enquiry and separate supporting report from #278 are preserved.
+
+Verification: 140 frontend tests and build/typecheck passed. Mounted journey covers
+confirmation, separate email content/focus, collapsed enquiry, suggested question,
+optional fields and acknowledged grouped findings. Browser preview confirmed the
+new transition. Final desktop/mobile, CI and deployed evidence are recorded in the PR.
+No source or physical-touch validation was performed.
+
+Gaps: source owner/#104 needs reviewed applicability and installed measurements;
+homeowner/provider needs permit/title/projection/servicing evidence. Product owner/#147
+owns real-user/touch validation. Platform owner/SR14-SR15 owns persistence/recovery and
+rollback evidence; refresh still loses answers.

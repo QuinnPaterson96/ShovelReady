@@ -1,4 +1,9 @@
 .sr-workspace-rail.builder-journey-rail { max-height: calc(100dvh - 2rem); overflow-y: auto; }
+.builder-review-readiness.is-ready { padding: .75rem; border-radius: var(--radius-card); background: var(--primary-soft); animation: review-ready-glow 1.8s ease-out 1; }
+.sr-workspace-rail .builder-review-readiness .builder-readiness-continue { display: flex; width: 100%; box-sizing: border-box; justify-content: space-between; background: var(--primary); color: var(--surface); box-shadow: 0 3px 9px #20323826; }
+.sr-workspace-rail .builder-review-readiness .builder-readiness-continue:hover { background: var(--primary-hover); }
+@keyframes review-ready-glow { from { box-shadow: 0 0 0 5px var(--primary-soft), 0 0 20px var(--primary); } to { box-shadow: 0 0 0 0 transparent; } }
+@media (prefers-reduced-motion: reduce) { .builder-review-readiness.is-ready { animation: none; } }
 .sr-workspace-rail.builder-journey-rail a {
   flex-wrap: wrap;
   column-gap: .45rem;
