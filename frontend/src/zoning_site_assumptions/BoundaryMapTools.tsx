@@ -1,8 +1,13 @@
 import { roadBands } from './roads'
 import type { ReactNode } from 'react'
+import { path, points, type Feature } from '../occupied_lots/contract'
 import { ordinaryFourEdgeBoundary, type BoundaryEdge, type BoundaryMapMode } from './model'
 
 export type BoundaryMapInteraction = {
+  mainBuilding?: Feature
+  mainBuildingAssumed?: boolean
+  waterfront?: boolean
+  waterfrontIds?: string[]
   suggestedRoles?: Record<string, import('./model').EdgeRole>
   streetIds?: string[]
   allStreetsMarked?: boolean
@@ -23,6 +28,14 @@ export function BoundaryOverlay({ interaction }: { interaction: BoundaryMapInter
   const marked = interaction.streetIds ?? []
   const roads = roadBands(interaction.edges, marked)
   return <g className="boundary-map-overlay" aria-hidden="true">
+    {interaction.mainBuilding && <g className="main-building-mark">
+      <path d={path(interaction.mainBuilding)} fill="var(--primary)" fillOpacity=".12" stroke="var(--primary)" strokeWidth="2" strokeDasharray="2 5" vectorEffect="non-scaling-stroke" />
+      <text x={Math.min(...points(interaction.mainBuilding).map(p => p[0]))} y={-Math.max(...points(interaction.mainBuilding).map(p => p[1])) - 1} className="boundary-map-edge-label">Main building · {interaction.mainBuildingAssumed ? 'assumed' : 'your selection'}</text>
+    </g>}
+    {interaction.edges.filter(edge => interaction.waterfrontIds?.includes(edge.id)).map(edge => <g key={`water-${edge.id}`} className="waterfront-mark">
+      <line x1={edge.start[0]} y1={-edge.start[1]} x2={edge.end[0]} y2={-edge.end[1]} stroke="var(--primary)" strokeWidth="7" strokeDasharray="3 4" vectorEffect="non-scaling-stroke" />
+      <text x={(edge.start[0] + edge.end[0]) / 2} y={-(edge.start[1] + edge.end[1]) / 2 - 1} textAnchor="middle" className="boundary-map-edge-label">Waterfront · your mark</text>
+    </g>)}
     {roads.map(road => <g key={road.id} className="street-road" data-road-edge={road.id}>
       <polygon points={road.corners.map(([x, y]) => `${x},${-y}`).join(' ')} />
       <line x1={road.centre[0][0]} y1={-road.centre[0][1]} x2={road.centre[1][0]} y2={-road.centre[1][1]} />
@@ -30,9 +43,9 @@ export function BoundaryOverlay({ interaction }: { interaction: BoundaryMapInter
     </g>)}
     {interaction.mode !== 'place' && interaction.edges.map((edge, index) => <g key={edge.id}>
       <line x1={edge.start[0]} y1={-edge.start[1]} x2={edge.end[0]} y2={-edge.end[1]}
-        className={(interaction.mode === 'front' ? marked.includes(edge.id) : interaction.selectedId === edge.id) ? 'boundary-map-edge boundary-map-edge--selected' : 'boundary-map-edge'} />
+        className={(interaction.mode === 'waterfront' ? interaction.waterfrontIds?.includes(edge.id) : interaction.mode === 'front' ? marked.includes(edge.id) : interaction.selectedId === edge.id) ? 'boundary-map-edge boundary-map-edge--selected' : 'boundary-map-edge'} />
       <line x1={edge.start[0]} y1={-edge.start[1]} x2={edge.end[0]} y2={-edge.end[1]}
-        className="boundary-map-edge-hit" onClick={event => { event.stopPropagation(); if (interaction.mode !== 'front' || edge.ring === 0) interaction.onSelect(edge.id) }} data-edge-id={edge.id} />
+        className="boundary-map-edge-hit" onClick={event => { event.stopPropagation(); if (interaction.mode === 'rear' || edge.ring === 0) interaction.onSelect(edge.id) }} data-edge-id={edge.id} />
       <text transform={`translate(${(edge.start[0] + edge.end[0]) / 2} ${-(edge.start[1] + edge.end[1]) / 2})`} x="0" y="0"
         textAnchor="middle" dominantBaseline="middle" className="boundary-map-edge-label">{edge.ring ? `Inner ${edge.ring} · ${edge.segment + 1}` : index + 1}{edge.role.value && edge.role.value !== 'unknown' ? ` · ${edge.role.value === 'flanking_street' ? 'Flanking' : edge.role.value[0].toUpperCase() + edge.role.value.slice(1)}` : interaction.suggestedRoles?.[edge.id] ? ` · ${interaction.suggestedRoles[edge.id] === 'flanking_street' ? 'Flanking' : interaction.suggestedRoles[edge.id][0].toUpperCase() + interaction.suggestedRoles[edge.id].slice(1)} (suggested)` : ''}</text>
     </g>)}
@@ -57,15 +70,20 @@ export function BoundaryMapTools({ interaction }: { interaction: BoundaryMapInte
       <p role="status">{!complete ? 'Unmarked edges remain uncertain. Changing a mark clears this confirmation.' : marked.length === 1 && supported ? 'For this simple one-street sketch, front, opposite rear and side roles are suggestions only. Adjust boundary facts if you can support them.' : 'Street marks are recorded. In Adjust boundaries, mark Front or Rear to suggest the other roles; use your property plan to support your choice.'}</p>
       <p>Grey road bands show your street marks only: no measured road width, surveyed location or access point is implied.</p>
     </>}
+    {mode === 'waterfront' && <>
+      <p>Mark every edge adjoining water. Click again to remove a mark. Waterfront edges are separate from street edges and front/rear roles.</p>
+      <div className="boundary-map-buttons">{exterior.map((edge, index) => <button key={edge.id} type="button" aria-pressed={interaction.waterfrontIds?.includes(edge.id) ?? false} onClick={() => onSelect(edge.id)}>Edge {index + 1} adjoins water</button>)}<button type="button" onClick={() => onSelect(null)}>Not sure · clear waterfront marks</button></div>
+      <p>These marks record your observations. Waterfront front-line classification and special siting provisions still need a reviewed property plan.</p>
+    </>}
     {interaction.editor}
   </div>
 }
 
 export function BoundaryActionTabs({ interaction }: { interaction: BoundaryMapInteraction }) {
-  const actions = [['place', 'Move unit'], ['front', 'Mark street edges'], ['rear', 'Adjust boundaries']] as const
+  const actions: [BoundaryMapMode, string][] = [['place', 'Move unit'], ['front', 'Mark street edges'], ...(interaction.waterfront ? [['waterfront', 'Mark waterfront'] as [BoundaryMapMode, string]] : []), ['rear', 'Adjust boundaries']]
   return <div className="boundary-map-modes" role="tablist" aria-label="Placement actions" onKeyDown={event => {
     const index = actions.findIndex(([mode]) => mode === interaction.mode)
-    const next = event.key === 'ArrowRight' ? (index + 1) % 3 : event.key === 'ArrowLeft' ? (index + 2) % 3 : event.key === 'Home' ? 0 : event.key === 'End' ? 2 : null
+    const next = event.key === 'ArrowRight' ? (index + 1) % actions.length : event.key === 'ArrowLeft' ? (index + actions.length - 1) % actions.length : event.key === 'Home' ? 0 : event.key === 'End' ? actions.length - 1 : null
     if (next === null) return
     event.preventDefault(); interaction.onModeChange(actions[next][0])
     document.getElementById(`placement-action-${actions[next][0]}`)?.focus()

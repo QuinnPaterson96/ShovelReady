@@ -4,7 +4,7 @@ import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import type { Case } from '../occupied_lots/contract'
 import { SiteAssumptionsEditor } from './SiteAssumptions'
-import { assumptionsKey, initialAssumptions, inferBoundaryRoles, ordinaryFourEdgeBoundary, suggestedBoundaryRoles, withPlacementRevision } from './model'
+import { assumedMainBuilding, assumptionsKey, initialAssumptions, inferBoundaryRoles, ordinaryFourEdgeBoundary, suggestedBoundaryRoles, withPlacementRevision } from './model'
 
 const source = { provider: 'Constructed example', record_label: 'Parcel sketch', capture_date: null, review_status: 'unreviewed', reference: null }
 const site = (id: string, coordinates: number[][]): Case => ({ case_id: id, label: id, site: {
@@ -81,4 +81,26 @@ test('front/rear anchors infer editable corner roles without overwriting explici
   b.role.value = c.role.value = 'unknown'
   assert.deepEqual(inferBoundaryRoles(value.edges, { ...streets, edge_ids: [a.id] }).roles, { [a.id]: 'front', [b.id]: 'side', [c.id]: 'rear', [d.id]: 'side' })
   assert.deepEqual(inferBoundaryRoles(value.edges, { ...streets, edge_ids: [a.id], all_marked: false }).roles, {})
+})
+
+
+// Independent 2x2 and 3x3 outlines guard selection by area, ties and provenance.
+test('main-building and planning defaults remain correctable assumptions', () => {
+  const example = site('main', [[0, 0], [10, 0], [10, 20], [0, 20], [0, 0]])
+  const initial = initialAssumptions(example, 'capture', 'placement', true)
+  assert.equal(initial.principal_building_id.value, 'roof-1')
+  assert.equal(initial.principal_building_id.origin, 'journey_default')
+  assert.deepEqual(Object.values(initial.planning_buffers_m!), [1, 1, 1, 1])
+  assert.deepEqual(initial.measurements.boundary, {})
+  initial.waterfront_edge_ids = [initial.edges[0].id]
+  const moved = withPlacementRevision(initial, 'new-placement')
+  assert.deepEqual(moved.planning_buffers_m, initial.planning_buffers_m)
+  assert.deepEqual(moved.waterfront_edge_ids, initial.waterfront_edge_ids)
+  example.site.buildings.push({ ...example.site.buildings[0], id: 'larger', shape: { crs: 'EPSG:3157', geometry: { type: 'Polygon', coordinates: [[[5, 5], [8, 5], [8, 8], [5, 8], [5, 5]]] } } })
+  assert.equal(assumedMainBuilding(example), 'larger')
+  example.site.buildings.push({ ...example.site.buildings[1], id: 'tie' })
+  assert.equal(assumedMainBuilding(example), null)
+  example.site.buildings.pop()
+  example.site.buildings[1].basis = 'unknown'
+  assert.equal(assumedMainBuilding(example), 'roof-1')
 })

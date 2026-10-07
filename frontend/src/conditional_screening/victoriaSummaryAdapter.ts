@@ -37,7 +37,7 @@ export function homeownerSummary(input: {
     : outsideScope ? { label: 'Distance to boundaries', status: 'unsupported', detail: 'Boundary rules for this zoning are not yet covered.' }
     : scenarioError ? { label: 'Distance to boundaries', status: 'unknown', detail: 'The distance comparison could not be loaded. The captured geometry remains separate.', action: { label: 'Retry distance check', target: 'retry-scenario' } }
     : scenario?.status === 'bounded_pass'
-      ? { label: 'Distance to boundaries', status: 'checked', detail: 'Tested side and rear distances pass in coherent approximate scenarios. Front and legal-line distances remain unchecked.' }
+      ? { label: 'Distance to boundaries', status: scenario.scenarios?.some(s => s.checks.some(c => c.planning_meets === false)) ? 'review' : scenario.scenarios?.some(s => s.checks.some(c => (c.planning_buffer_m ?? 0) > 0)) ? 'probable' : 'checked', detail: scenario.scenarios?.some(s => s.checks.some(c => c.planning_meets === false)) ? 'Captured distances clear the candidate minimums, but the planning buffers do not. Review buffers or supply measured offsets; no observed distance conflict is established.' : 'Tested side and rear distances clear the candidate minimums after any stated planning buffers. Approximate geometry; front and legal-line distances remain separate.', action: { label: 'Review planning buffers', target: 'boundary-offsets' } }
       : { label: 'Distance to boundaries', status: 'unknown', detail: scenario?.status === 'clarify' ? 'The possible boundary roles change the result.' : 'A useful boundary comparison needs a current placement and boundary context.', action: { label: 'Review boundary offsets', target: 'boundary-offsets' } })
 
   if (assumptions?.street_adjacency) checks.push({ label: 'Street edges', status: assumptions.street_adjacency.all_marked ? 'checked' : 'unknown', detail: assumptions.street_adjacency.all_marked ? `${assumptions.street_adjacency.completion_method === 'advance' ? 'Advancing treated your street selection as complete' : 'You confirmed all street edges are marked'}. Reopen the street tab to revise it. These are adjacency assumptions, not verified legal roles.` : 'Mark known street edges and confirm whether the selection is complete. Unmarked edges remain uncertain.', action: { label: 'Review street edges', target: 'street-side' } })
@@ -52,7 +52,7 @@ export function homeownerSummary(input: {
     : suiteCount === null || suiteCount === undefined
       ? { label: 'Existing garden suite', status: 'unknown', detail: 'Tell us if there is already a garden suite on the property.', action: { label: 'Enter suite count', target: 'existing-suites' } }
       : countChecked ? { label: 'Existing garden suite', status: assumptions?.existing_garden_suites.origin === 'journey_default' ? 'probable' : 'checked', detail: assumptions?.existing_garden_suites.evidence_state === 'user_confirmed' ? 'Meets count limit · user-confirmed count, not independently verified.' : suiteCount === 0 ? 'Meets count limit · assuming none existing.' : 'Meets count limit under supplied assumptions.', action: { label: 'Review suite count', target: 'existing-suites' } }
-        : { label: 'Existing garden suite', status: suiteCount === 0 ? 'probable' : 'unknown', detail: `${assumptions?.existing_garden_suites.origin === 'journey_default' ? 'Assuming none already exist' : assumptions?.existing_garden_suites.evidence_state === 'user_confirmed' ? 'User-confirmed count recorded' : 'Assumed count recorded'}. ${suiteCount === 0 ? 'Probably fine for this count assumption.' : 'Count prerequisites remain unresolved.'} Other site prerequisites remain open; this is not a verified count pass.`, action: { label: 'Review suite count', target: 'existing-suites' } })
+        : { label: 'Existing garden suite', status: suiteCount === 0 ? 'probable' : 'unknown', detail: `${assumptions?.existing_garden_suites.origin === 'journey_default' ? 'Assuming none already exist' : assumptions?.existing_garden_suites.evidence_state === 'user_confirmed' ? 'User-confirmed count recorded' : 'Assumed count recorded'}. ${suiteCount === 0 ? 'Likely fine for this count assumption.' : 'Count prerequisites remain unresolved.'} Other site prerequisites remain open; this is not a verified count pass.`, action: { label: 'Review suite count', target: 'existing-suites' } })
 
   for (const [kind, label, target] of [
     ['area_max', 'Floor area', 'zsa-floor-area'],
@@ -80,7 +80,7 @@ export function homeownerSummary(input: {
   if (screeningError) checks.push({ label: 'Candidate rule checks', status: 'unknown', detail: 'The rule comparison could not be loaded for the current inputs.', action: { label: 'Retry rule checks', target: 'retry-screening' } })
   if (input.propertyScan || input.propertyScanBusy || input.propertyScanError) {
     const clear = input.propertyScan?.findings.every(row => row.status === 'probably_clear') ?? false
-    checks.push({ label: 'Mapped heritage and planning flags', status: clear ? 'probable' : 'unknown',
+    checks.push({ label: 'Mapped heritage and planning flags', status: input.propertyScan?.findings.some(row => row.status === 'review') ? 'review' : clear ? 'probable' : 'unknown',
       detail: clear ? 'No flags found in the six searched City map/history sources. Permit documents, title, projections and servicing remain unsearched.'
         : input.propertyScanBusy ? 'Scanning City map flags and application history.'
         : input.propertyScanError ? 'The scan could not complete. Unsearched sources remain unknown.'
@@ -101,7 +101,7 @@ export function homeownerSummary(input: {
     for (const extra of scenario.additional_checks) {
       const index = checks.findIndex(check => check.label === extra.label)
       const row: SummaryCheck = { label: extra.label, status: extra.status, detail: extra.detail,
-        ...(extra.action_target ? { action: { label: extra.action_target === 'scouting-height' ? 'Enter installed height' : extra.action_target === 'scouting-area-buffer' ? 'Review area estimate' : extra.action_target === 'zsa-floor-area' ? 'Review floor area' : extra.action_target === 'waterfront-lot' ? 'Confirm waterfront status' : extra.action_target === 'principal-building' ? 'Review main building' : 'Review boundary roles', target: extra.action_target } } : {}) }
+        ...(extra.action_target ? { action: { label: extra.action_target === 'boundary-offsets' ? 'Review planning buffers' : extra.action_target === 'scouting-height' ? 'Enter installed height' : extra.action_target === 'scouting-area-buffer' ? 'Review area estimate' : extra.action_target === 'zsa-floor-area' ? 'Review floor area' : extra.action_target === 'waterfront-lot' ? 'Confirm waterfront status' : extra.action_target === 'principal-building' ? 'Review main building' : 'Review boundary roles', target: extra.action_target } } : {}) }
       if (index >= 0) {
         if (checks[index].status !== 'conflict' && !(extra.id === 'area' && checks[index].status === 'checked')) checks[index] = row
       } else checks.splice(checks.length - 1, 0, row)
