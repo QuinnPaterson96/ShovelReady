@@ -122,3 +122,10 @@
 .builder-demo .builder-example-layout > .builder-example-controls { order: 3; }
 .zsa__defaults { padding: .75rem; border: 1px solid var(--border); background: var(--primary-soft); border-radius: var(--radius-sm); }
 .zsa__defaults ul { padding-left: 1.2rem; }
+
+/* Movement controls stay with the map, before Next and the review checklist. */
+.builder-demo .builder-footprint-controls { order: 2; padding: .8rem 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-card); min-width: 0; }
+.builder-demo .builder-footprint-controls[hidden], .occupied-placement-controls[hidden] { display: none; }
+.builder-demo .builder-footprint-controls h3 { margin: .2rem 0; }
+.builder-demo .builder-placement-next { order: 3; }
+.builder-demo .builder-example-layout > .builder-example-controls { order: 4; }
