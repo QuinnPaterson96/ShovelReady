@@ -138,9 +138,14 @@ export function enquiryDocument(selection: SitePreparationSelection | null, inpu
 
 export function enquiry(...args: Parameters<typeof enquiryDocument>) { return enquiryPlainText(enquiryDocument(...args)) }
 
-export type BuilderProgress = { model: boolean; property: boolean; placement: boolean; enquiry: boolean }
+export type BuilderProgress = import('../navigation/BuilderJourneyNav').BuilderJourneyCompletion
+type JourneyStep = import('../navigation/BuilderJourneyNav').JourneyStep
 export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (progress: BuilderProgress) => void } = {}) {
   const [expanded, setExpanded] = useState({ property: true, placement: false, next: false })
+  const [journeyStep, setJourneyStep] = useState<JourneyStep>('property')
+  const [reviewedBoundariesFor, setReviewedBoundariesFor] = useState<string | null>(null)
+  const [reviewedChecksFor, setReviewedChecksFor] = useState<string | null>(null)
+  const [emailRequestedFor, setEmailRequestedFor] = useState<string | null>(null)
   const toggleStep = (step: keyof typeof expanded) => setExpanded(value => ({ ...value, [step]: !value[step] }))
   const [foundationAllowanceM, setFoundationAllowanceM] = useState<string | null>('0.30')
   const [estimateBuffers, setEstimateBuffers] = useState({ area: 10, height: 10 })
@@ -237,6 +242,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   }
   function completeStreetMarks() { setStreetMarks({ revision: geometryRevision, data: { ...streetAdjacency, all_marked: true, completion_method: 'advance' } }); setReadyFor(null) }
   function changeBoundaryMode(next: BoundaryMapMode) {
+    setJourneyStep(next === 'front' ? 'streets' : next === 'place' ? 'placement' : 'boundaries')
     if (next === 'front') setStreetMarks({ revision: geometryRevision, data: { ...streetAdjacency, all_marked: false } })
     else if (next === 'rear' || boundaryMode === 'front') completeStreetMarks()
     setBoundaryMode(next)
@@ -326,26 +332,37 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const placementComplete = !!(measurementResult || mode === 'manual' && manual?.assessment)
   const previousPropertyComplete = useRef(false)
   useEffect(() => {
-    if (propertyComplete && !previousPropertyComplete.current) setExpanded({ property: false, placement: true, next: false })
-    if (!propertyComplete && previousPropertyComplete.current) setExpanded({ property: true, placement: false, next: false })
+    if (propertyComplete && !previousPropertyComplete.current) { setExpanded({ property: false, placement: true, next: false }); setJourneyStep('placement') }
+    if (!propertyComplete && previousPropertyComplete.current) { setExpanded({ property: true, placement: false, next: false }); setJourneyStep('property') }
     previousPropertyComplete.current = propertyComplete
   }, [propertyComplete])
   useEffect(() => {
     function revealStep(event: MouseEvent) {
       const anchor = event.target instanceof Element ? event.target.closest('a') : null
-      const step = anchor?.getAttribute('href')?.replace('#builder-', '')
-      if (step === 'property' || step === 'placement' || step === 'next') setExpanded(value => ({ ...value, [step]: true }))
+      if (event.defaultPrevented || !anchor?.closest('.builder-journey-rail') || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return
+      const routes: Record<string, JourneyStep> = { '#builder-model': 'model', '#builder-property': 'property', '#builder-placement': 'placement', '#placement-action-front': 'streets', '#placement-action-rear': 'boundaries', '#builder-quick-checks': 'checks', '#builder-next': 'enquiry', '#builder-email': 'email' }
+      const step = routes[anchor.getAttribute('href') ?? '']
+      if (step) { event.preventDefault(); openJourneyStep(step) }
     }
     document.addEventListener('click', revealStep)
     return () => document.removeEventListener('click', revealStep)
-  }, [])
+  })
+  // Review milestones apply to the current placement and editable assumptions;
+  // neither visiting a step nor requesting an email establishes a passing check.
+  const reviewRevision = JSON.stringify([geometryRevision, placementRevision, currentAssumptions, effectiveSettings])
   const currentMeasurement = measurementResult?.result ?? manual?.assessment
   const summary = zoningCase ? homeownerSummary({ geometry: measurementResult?.result ?? null,
     geometryComplete: (!live || live.observation.buildingsState === 'available') && !!measurementResult && overlapFinding(zoningCase, measurementResult.result).complete,
     scenario: currentScenario, screening: currentScreening,
     assumptions: currentAssumptions, settings: effectiveSettings, mapped: mappedZoning, lookup: currentZoning, zoningBusy, zoningError: currentZoningError,
     propertyScan: propertyScan.result, propertyScanBusy: propertyScan.busy, propertyScanError: propertyScan.error, scenarioError: currentScenarioError, screeningError: currentScreeningError, onRetryAvailable: !!zoningKey }) : null
-  const summaryPanel = summary && <HomeownerSummary summary={summary} onNavigate={navigateFlag} />
+  const nextJourneyStep: JourneyStep = !placementComplete ? 'placement' : journeyStep === 'checks' ? 'enquiry' : boundaryMode === 'front' ? 'boundaries' : boundaryMode === 'waterfront' ? 'boundaries' : boundaryMode === 'rear' ? 'checks' : streetAdjacency.all_marked ? 'boundaries' : 'streets'
+  const continuation = nextJourneyStep === 'placement' ? { label: 'Place model', hint: 'Choose an approximate position on the map.' }
+    : nextJourneyStep === 'streets' ? { label: 'Mark street edges', hint: 'Happy with this position? Next, mark every edge adjoining a street.' }
+    : nextJourneyStep === 'boundaries' ? { label: 'Review boundaries', hint: 'Next, review the suggested front, rear and side edges and the planning buffers.' }
+    : nextJourneyStep === 'enquiry' ? { label: 'Prepare enquiry', hint: 'Next, turn these findings and open questions into an editable enquiry.' }
+    : { label: 'Review quick checks', hint: 'Next, review what looks promising and which questions to include in your enquiry.' }
+  const summaryPanel = summary && <HomeownerSummary summary={summary} onNavigate={navigateFlag} continuation={{ ...continuation, onContinue: () => openJourneyStep(nextJourneyStep) }} />
   function changeProperty() {
     if (mode === 'live') { siteEdited(); setLive(null); setPropertyReset(value => value + 1) }
     else changeMode('live')
@@ -353,14 +370,27 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     requestAnimationFrame(() => focusSummaryTarget(document, 'sd-address'))
   }
   function openProgress(step: 'property' | 'placement' | 'checks' | 'enquiry') {
-    if (boundaryMode === 'front' && step !== 'property') completeStreetMarks()
-    setExpanded(previous => ({ ...previous, ...(step === 'property' ? { property: true } : step === 'enquiry' ? { next: true } : { placement: true }) }))
+    openJourneyStep(step)
+  }
+  function openJourneyStep(step: JourneyStep) {
+    if (!propertyComplete && step !== 'model' && step !== 'property') step = 'property'
+    if (!zoningCase && (step === 'streets' || step === 'boundaries')) step = 'placement'
+    if (boundaryMode === 'front' && step !== 'streets' && step !== 'property') completeStreetMarks()
+    if (boundaryMode === 'rear' && (step === 'checks' || step === 'enquiry' || step === 'email')) setReviewedBoundariesFor(reviewRevision)
+    if (journeyStep === 'checks' && (step === 'enquiry' || step === 'email')) setReviewedChecksFor(reviewRevision)
+    setJourneyStep(step)
+    if (step === 'streets') changeBoundaryMode('front')
+    if (step === 'boundaries') changeBoundaryMode('rear')
+    if (step === 'placement') setBoundaryMode('place')
+    setExpanded(previous => ({ ...previous, ...(step === 'property' ? { property: true } : step === 'enquiry' || step === 'email' ? { next: true } : { placement: true }) }))
+    const targets: Record<JourneyStep, string> = { model: 'builder-title', property: 'builder-site-mode', placement: 'placement-map', streets: 'placement-action-front', boundaries: 'placement-action-rear', checks: 'builder-quick-checks', enquiry: 'builder-question', email: 'builder-email-recipient' }
     requestAnimationFrame(() => {
-      const target = step === 'property' ? 'builder-site-mode' : step === 'enquiry' ? 'builder-question' : step === 'checks' ? 'builder-quick-checks' : 'placement-map'
-      if (!focusSummaryTarget(document, target)) document.getElementById('builder-placement-title')?.scrollIntoView({ block: 'start' })
+      focusSummaryTarget(document, targets[step])
+      if (step === 'checks') { const details = document.querySelector<HTMLDetailsElement>('.homeowner-summary__checks'); if (details) details.open = true }
     })
   }
   function navigateFlag(target: string) {
+    setJourneyStep(target === 'street-side' ? 'streets' : target === 'boundary-roles' || target === 'boundary-offsets' ? 'boundaries' : target === 'placement-map' ? 'placement' : 'checks')
     if (boundaryMode === 'front' && target !== 'street-side') completeStreetMarks()
     if (target === 'placement-map') setBoundaryMode('place')
     if (target === 'boundary-roles' || target === 'boundary-offsets') changeBoundaryMode('rear')
@@ -378,7 +408,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const enquiryReady = !!enquiryDoc && readyFor === draftText
   const progressCallback = useRef(onProgressChange)
   progressCallback.current = onProgressChange
-  useEffect(() => { progressCallback.current?.({ model: true, property: propertyComplete, placement: placementComplete, enquiry: enquiryReady }) }, [propertyComplete, placementComplete, enquiryReady])
+  useEffect(() => { progressCallback.current?.({ model: true, property: propertyComplete, placement: placementComplete, streets: !!geometryRevision && streetAdjacency.all_marked, boundaries: reviewedBoundariesFor === reviewRevision, checks: reviewedChecksFor === reviewRevision, enquiry: enquiryReady, email: emailRequestedFor === JSON.stringify([draftText, recipient, includeSiteDetails]), current: journeyStep, mapAvailable: propertyComplete ? !!zoningCase : undefined }) }, [zoningCase, propertyComplete, placementComplete, enquiryReady, geometryRevision, streetAdjacency.all_marked, reviewedBoundariesFor, reviewedChecksFor, reviewRevision, emailRequestedFor, draftText, recipient, includeSiteDetails, journeyStep])
   useEffect(() => { setReadyFor(null) }, [draftText])
   const emailBody = enquiryDoc ? enquiryEmailBody(enquiryDoc, includeSiteDetails) : ''
   const emailSubject = enquiryDoc?.example ? 'Saved example only — Model 300 question' : 'Model 300 preliminary enquiry'
@@ -393,6 +423,8 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     try {
       if (kind === 'mailto') window.location.href = url
       else window.open(url, '_blank', 'noopener,noreferrer')
+      setEmailRequestedFor(JSON.stringify([draftText, recipient, includeSiteDetails]))
+      setJourneyStep('email')
       setEmailMessage(emailTooLong
         ? 'Short placeholder draft requested. If no compose window opens, copy the full email body above into a new message. Nothing was sent.'
         : 'Email draft requested. If no compose window opens, copy the email body above into a new message. Nothing was sent.')
@@ -453,11 +485,11 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       {mode === 'manual' && hasSite && <button type="button" onClick={() => setManualConfirmedFor(manualSignature)} disabled={propertyComplete}>Confirm my site description</button>}
     </div>
     </section>
-    <nav className="builder-progress" aria-label="Edit journey steps"><ol>
-      <li><button type="button" onClick={() => openProgress('property')}><strong>1 · Property</strong><span>{propertyComplete ? 'Selected' : 'Choose property'}</span></button><StepInfo label="Property">Choose the property you want to explore. Source matches are leads; you can correct them or enter your own property facts.</StepInfo></li>
-      <li><button type="button" disabled={!propertyComplete} onClick={() => openProgress('placement')}><strong>2 · Placement</strong><span>{placementComplete ? 'Measured' : 'Explore position'}</span></button><StepInfo label="Placement">Move the unit on the map to test this position against captured outlines. Changing a boundary mark does not move the unit.</StepInfo></li>
-      <li><button type="button" disabled={!summary} onClick={() => openProgress('checks')}><strong>3 · Quick checks</strong><span>Review findings</span></button><StepInfo label="Quick checks">Review conflicts and missing information beside the map. Use the correction actions to supply facts you know.</StepInfo></li>
-      <li><button type="button" disabled={!hasSite} onClick={() => openProgress('enquiry')}><strong>4 · Enquiry</strong><span>{enquiryReady ? 'Draft ready' : 'Prepare draft'}</span></button><StepInfo label="Enquiry">Prepare a useful provider question with the current findings and open questions. The draft stays local until you choose to share it.</StepInfo></li>
+    <nav className="builder-progress" aria-label="Journey quick links"><ol>
+      <li><button type="button" onClick={() => openProgress('property')}><strong>Property</strong><span>{propertyComplete ? 'Selected' : 'Choose property'}</span></button><StepInfo label="Property">Choose the property you want to explore. Source matches are leads; you can correct them or enter your own property facts.</StepInfo></li>
+      <li><button type="button" disabled={!propertyComplete} onClick={() => openProgress('placement')}><strong>Placement</strong><span>{placementComplete ? 'Measured' : 'Explore position'}</span></button><StepInfo label="Placement">Move the unit on the map to test this position against captured outlines. Changing a boundary mark does not move the unit.</StepInfo></li>
+      <li><button type="button" disabled={!summary} onClick={() => openProgress('checks')}><strong>Quick checks</strong><span>Review findings</span></button><StepInfo label="Quick checks">Review conflicts and missing information beside the map. Use the correction actions to supply facts you know.</StepInfo></li>
+      <li><button type="button" disabled={!hasSite} onClick={() => openProgress('enquiry')}><strong>Enquiry</strong><span>{enquiryReady ? 'Draft ready' : 'Prepare draft'}</span></button><StepInfo label="Enquiry">Prepare a useful provider question with the current findings and open questions. The draft stays local until you choose to share it.</StepInfo></li>
     </ol></nav>
     {propertyComplete && <div className="builder-selected-property"><strong>Property: {mode === 'example' ? 'Saved Victoria example · not your property' : live?.address.label || manual?.facts.address || 'User-supplied site'}</strong><span>{live ? `${live.parcel.label} · source match, identity and ownership unverified` : 'Approximate and unreviewed'}</span><button type="button" onClick={changeProperty}>Wrong property? Change</button></div>}
     <section className="builder-stage" id="builder-placement" aria-labelledby="builder-placement-title">
@@ -487,7 +519,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     {mode === 'retained' && !selection && <p>Confirm a site lead above to consider a separate retained placement example. An example is never matched to your site lead.</p>}
       <details className="builder-optional"><summary>Illustrate model height and foundation</summary><p>This illustration is separate from the installed-height comparison above. A foundation allowance does not establish average grade.</p><HeightView key={`height-${heightRevision}`} model={model} foundationAllowanceM={foundationAllowanceM} onFoundationAllowanceChange={value => { setFoundationAllowanceM(value); setReadyFor(null) }} /></details>
       </div>
-      {propertyComplete && <button className="builder-continue" type="button" onClick={() => { if (boundaryMode === 'front') completeStreetMarks(); setExpanded({ property: false, placement: false, next: true }); requestAnimationFrame(() => document.getElementById('builder-next')?.scrollIntoView({ block: 'start' })) }}>Prepare enquiry{placementComplete ? '' : ' with placement unknown'}</button>}
+      {propertyComplete && <button className="builder-continue" type="button" onClick={() => openJourneyStep('enquiry')}>Prepare enquiry{placementComplete ? '' : ' with placement unknown'}</button>}
     </section>
     <section className="builder-stage builder-enquiry" id="builder-next" aria-labelledby="builder-enquiry-title">
       <p className="eyebrow">Take away · local draft</p><h2 id="builder-enquiry-title">Prepare a useful question</h2>
@@ -511,7 +543,8 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
         <button type="button" onClick={() => setReadyFor(draftText)} disabled={enquiryReady}>Mark enquiry ready</button>
         <span role="status">{enquiryReady ? 'Ready for your review and optional handoff. No message has been sent.' : 'Draft in progress. Review before marking ready.'}</span>
       </div>
-      <section className="builder-email" aria-labelledby="builder-email-title">
+      <div className="step-action"><button className="builder-continue" type="button" onClick={() => { setReadyFor(draftText); openJourneyStep('email') }}>Next: Review email draft →</button><StepInfo label="Review email draft">Review your enquiry first. Next opens the recipient and exact email text for your review; nothing is sent.</StepInfo></div>
+      <section className="builder-email" id="builder-email" aria-labelledby="builder-email-title">
         <h3 id="builder-email-title">Open an editable email draft</h3>
         <p>Review the recipient and exact text below. These buttons ask your browser to open an editable draft; your browser or email setup may prevent it. Only you can send it. This demonstration has no affiliation with aux box.</p>
         <p className="metadata">The <a href="https://www.auxbox.ca/contact" target="_blank" rel="noreferrer">official aux box contact page</a> directs general enquiries to a form. Its published email addresses are for privacy, media or careers, so no product enquiry recipient is prefilled. Checked 2026-10-05.</p>

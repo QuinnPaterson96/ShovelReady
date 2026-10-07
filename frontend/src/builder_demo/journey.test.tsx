@@ -4,9 +4,10 @@ import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { readFileSync } from 'node:fs'
 import { JSDOM } from 'jsdom'
-import { act, createElement } from 'react'
+import { act, createElement, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import BuilderDemo from './BuilderDemo'
+import { BuilderJourneyNav, emptyBuilderJourneyCompletion } from '../navigation/BuilderJourneyNav'
 import { expectedPropertyRevision } from '../conditional_screening/model'
 import type { ScenarioRequest, ScenarioResult } from '../conditional_screening/scenarios'
 
@@ -32,17 +33,44 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
   })
   const document = dom.window.document
   const root = createRoot(document.getElementById('root')!)
+  function Journey() {
+    const [completion, setCompletion] = useState(emptyBuilderJourneyCompletion)
+    return <><BuilderJourneyNav completion={completion} /><BuilderDemo onProgressChange={setCompletion} /></>
+  }
   const button = (label: string) => [...document.querySelectorAll<HTMLButtonElement>('button')].find(node => node.textContent === label)!
   const click = async (label: string) => { assert.ok(button(label), label); await act(async () => { button(label).click() }); await act(async () => { await new Promise(resolve => setTimeout(resolve, 20)) }) }
   try {
-    await act(async () => { root.render(createElement(BuilderDemo)) })
+    await act(async () => { root.render(createElement(Journey)) })
     await click('Try an example property')
     await act(async () => { await new Promise(resolve => setTimeout(resolve, 550)) })
-    assert.match(document.querySelector('#builder-quick-checks')!.textContent!, /Resolve this question first/)
+    assert.match(document.querySelector('#builder-quick-checks')!.textContent!, /Review this placement/)
     const map = document.querySelector('#placement-map svg')!
     const summary = document.querySelector('#builder-quick-checks')!
     assert.ok(map.compareDocumentPosition(summary) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING)
     assert.ok(summary.compareDocumentPosition(document.querySelector('.builder-example-controls')!) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING)
+    // Guided progression preserves an approximate placement and unknowns rather
+    // than requiring every assessment row to pass before an unsent enquiry.
+    const initialMeasurement = document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value
+    await click('Next: Mark street edges →')
+    assert.equal(document.activeElement?.id, 'placement-action-front')
+    assert.equal(document.querySelector('.builder-journey-rail [aria-current="step"]')?.getAttribute('href'), '#placement-action-front')
+    await click('Next: Review boundaries →')
+    assert.equal(document.activeElement?.id, 'placement-action-rear')
+    assert.equal(JSON.parse(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value).zoning_site_assumptions.street_adjacency.all_marked, true)
+    await click('Next: Review quick checks →')
+    assert.equal(document.activeElement?.id, 'builder-quick-checks')
+    assert.equal(document.querySelector<HTMLDetailsElement>('.homeowner-summary__checks')!.open, true)
+    assert.match(document.querySelector('.builder-journey-rail')!.textContent!, /Boundaries✓Reviewed/)
+    await click('Next: Prepare enquiry →')
+    assert.equal(document.activeElement?.id, 'builder-question')
+    assert.equal(document.getElementById('builder-enquiry-content')!.hidden, false)
+    assert.match(document.querySelector('.builder-journey-rail')!.textContent!, /Quick checks✓Reviewed/)
+    const afterProgression = JSON.parse(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value)
+    assert.deepEqual(afterProgression.measurement, JSON.parse(initialMeasurement).measurement)
+    assert.match(document.querySelector('.builder-journey-rail')!.textContent!, /Email enquiryTo do/)
+    await act(async () => { document.querySelector<HTMLAnchorElement>('a[href="#builder-email"]')!.click(); await new Promise(resolve => setTimeout(resolve, 20)) })
+    assert.equal(document.activeElement?.id, 'builder-email-recipient')
+    assert.doesNotMatch(document.querySelector('.builder-journey-rail')!.textContent!, /Draft requested/, 'visiting email must not request a draft')
     await click('Review suite count')
     assert.equal(document.activeElement?.id, 'existing-suites')
     assert.ok(document.getElementById('existing-suites')?.closest('details')?.open)
@@ -68,7 +96,7 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     await act(async () => confirm.click())
     await click('Mark enquiry ready')
     assert.match(document.getElementById('builder-enquiry-content')!.textContent!, /Ready for your review/)
-    await click('2 · PlacementMeasured')
+    await click('PlacementMeasured')
     await act(async () => { map.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true })) })
     assert.match(summary.textContent!, /Place the unit to explore the possibilities/)
     assert.match(document.getElementById('builder-enquiry-content')!.textContent!, /Draft in progress/)

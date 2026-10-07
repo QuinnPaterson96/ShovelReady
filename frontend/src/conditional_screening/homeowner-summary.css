@@ -21,6 +21,11 @@
 .homeowner-summary__unknown { color: var(--investigate-ink, var(--ink)); background: var(--copper-soft); }
 .homeowner-summary__unsupported { color: var(--neutral-ink); background: var(--neutral-soft); }
 .homeowner-summary__next { font-weight: 700; }
+.homeowner-summary__continue { margin: 1rem 0; padding: 1rem; background: var(--primary-soft); border-radius: var(--radius-sm); }
+.homeowner-summary__continue .step-action { flex-wrap: nowrap; }
+.homeowner-summary .homeowner-summary__primary { display: flex; flex: 1; min-width: 0; justify-content: space-between; align-items: center; gap: .75rem; padding: .85rem 1rem; min-height: 52px; font-weight: 750; background: var(--primary); border-color: var(--primary); color: var(--surface); text-align: left; }
+.homeowner-summary .homeowner-summary__primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); }
+.homeowner-summary .homeowner-summary__continue-note { font-size: .85rem; color: var(--ink-muted); margin: .65rem 0 0; }
 .homeowner-summary__checks > summary { min-height: 44px; padding: .65rem 0; cursor: pointer; font-weight: 700; }
 @container (max-width: 600px) { .homeowner-summary__counts { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @container (max-width: 340px) { .homeowner-summary__counts { grid-template-columns: 1fr; } }

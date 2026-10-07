@@ -114,8 +114,8 @@ export function homeownerSummary(input: {
   const supportingCoverage = ['separation', 'front', 'rear_location', 'rear_occupancy', 'height'].every(id => scenario?.additional_checks?.some(check => check.id === id && (check.status === 'checked' || check.status === 'probable')))
   const readyToExplore = supportingCoverage && contained && geometryComplete && !outsideScope && scenario?.status === 'bounded_pass' && checks.every(check => check.status === 'checked' || check.status === 'probable' || check.status === 'unsupported')
   return {
-    conclusion: conflict ? 'This placement has a conflict' : readyToExplore ? 'Worth exploring with the provider' : geometry ? 'Resolve this question first' : 'Place the unit to explore the possibilities',
-    next: conflict ? 'Review the flagged position or supplied facts, then check the remaining unknowns.' : readyToExplore ? 'The supported checks look plausible under the stated assumptions. Ask the provider about the requirements this tool does not cover.' : geometry ? 'Resolve the highlighted question to see whether this placement is worth pursuing. You can take these questions to the provider.' : 'Place the model on a property to start the approximate checks.',
+    conclusion: conflict ? 'This placement has a conflict' : readyToExplore ? 'Worth exploring with the provider' : geometry ? 'Review this placement' : 'Place the unit to explore the possibilities',
+    next: conflict ? 'Review the flagged position or supplied facts, then check the remaining unknowns.' : readyToExplore ? 'The supported checks look plausible under the stated assumptions. Ask the provider about the requirements this tool does not cover.' : geometry ? 'Follow the next steps to review the property and prepare an enquiry. Unresolved questions stay visible.' : 'Place the model on a property to start the approximate checks.',
     checks,
   }
 }

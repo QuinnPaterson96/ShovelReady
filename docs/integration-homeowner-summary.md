@@ -211,3 +211,42 @@ Screenshots: [desktop boundary evidence](qa/issue-231-233/desktop-boundary-evide
   Current software remains an unreviewed bounded scouting demonstration.
 - Deployment: PR #255 is for review; production merge/deployment is a separate
   owner action. This work has not published data or deployed code.
+
+
+## Guided continuation and expanded journey — October 6, 2026
+
+Implemented: the map summary now presents a filled, full-width Next button before
+check counts, with a short step-specific prompt and accessible information help.
+The primary action follows placement, street edges, boundary roles/buffers, quick
+checks and enquiry. Flag-to-control review actions remain available separately;
+unknowns and conflicts do not prevent an unsent enquiry or become passing findings.
+The unresolved headline is now Review this placement, avoiding a generic instruction
+to resolve an unspecified question first.
+
+The sidebar continues through Model, Property, Placement, Street edges, Boundaries,
+Quick checks, Prepare enquiry and Email enquiry. It highlights the current step,
+opens the actual tab/section and focuses its control. Boundary/check review milestones
+are scoped to the current placement, assumptions and project settings; edited input
+invalidates them. Opening the email section does not request or send an email.
+A successful browser draft request is labelled Draft requested, because the app
+cannot establish that an email client opened or a message was sent. Manual facts
+without captured map coverage explicitly show unavailable map steps. On small screens
+all steps use a two-column grid. Existing compact quick links have no conflicting
+step numbers.
+
+Verified locally: production frontend build; existing 135-test frontend suite, with
+the mounted journey extended through the Next buttons and sidebar email link.
+The journey checks focus, street-completion-on-advance, unchanged geometry evidence,
+review milestones and an unsent enquiry. Browser screenshots verified desktop CTA,
+390 x 844 controls and the full mobile step grid without page overflow. Screenshot
+review caught and corrected CSS ordering that initially retained a horizontal strip.
+No backend contract, rule evaluation, database, publication or persistence changed.
+Required final-head CI and live screenshot remain integration gates.
+
+Remaining gaps: product owner / #147 should validate comprehension and physical touch
+with real homeowners; browser and software checks establish behavior only. Source
+review owner / #104 still needs effective legal rules and property applicability for
+accepted evaluation; this is preliminary navigation. Platform owner / SR-14/SR-15
+still owns saved sessions/recovery and rollback operating evidence; reload loses the
+local journey. Email-client opening/delivery is outside app control; the homeowner
+reviews and sends the draft or uses the existing copy fallback.
