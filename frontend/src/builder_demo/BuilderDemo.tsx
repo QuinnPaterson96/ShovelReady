@@ -445,8 +445,8 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     !!zoningKey && !currentZoning && !currentZoningError || propertyScan.busy
   const evaluationInputKey = JSON.stringify([geometryPending, placementRevision, currentAssumptions, scenarioKey, requestKey, zoningKey, propertyScan.result, propertyScan.error, estimateBuffers, foundationAllowanceM, use])
   const displayResult = useRetainedResult({ scopeKey: geometryRevision ? JSON.stringify([geometryRevision, model.model_id, modelSnapshot(model)]) : null,
-    inputKey: evaluationInputKey, current: computedSummary, pending: checksPending })
-  const summary = displayResult.result
+    inputKey: evaluationInputKey, current: computedSummary ? { summary: computedSummary, useQualification: enquiryUseQualification(use, pathway.proposed_use) } : null, pending: checksPending })
+  const summary = displayResult.result?.summary ?? null
   const conflictKey = (check: import('../conditional_screening/HomeownerSummary').SummaryCheck) => findingAcknowledgementKey(check, { geometryRevision, measurement: measurementResult, assumptions: currentAssumptions, streets: streetAdjacency, settings: effectiveSettings, buffers: estimateBuffers, foundation: foundationAllowanceM, installedHeight: scoutingHeight?.key === additionalKey ? scoutingHeight.value : null, intendedUse: use, scan: propertyScan.result })
   const findings = summary ? summaryFindings(summary) : []
   useEffect(() => {
@@ -547,7 +547,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     setAcknowledgedConflicts(previous => [...new Set([...previous, ...concerns.map(conflictKey)])])
     advanceJourneyStep(nextJourneyStep)
   }
-  const summaryPanel = summary && <HomeownerSummary updating={displayResult.updating} useQualification={enquiryUseQualification(use, pathway.proposed_use)} onApplyBuffer={applyBuffer} onMove={applyMove} actionsDisabled={buffersPending || checksPending} acknowledged={includedFindings.map(check => check.label)} onAcknowledge={check => { if (checksPending) return; setAcknowledgedConflicts(previous => previous.includes(conflictKey(check)) ? previous.filter(key => key !== conflictKey(check)) : [...previous, conflictKey(check)]); setReadyFor(null) }} summary={summary} onNavigate={navigateFlag} continuation={{ ...continuation, onContinue: () => advanceJourneyStep(nextJourneyStep) }} />
+  const summaryPanel = summary && <HomeownerSummary updating={displayResult.updating} useQualification={displayResult.result?.useQualification} onApplyBuffer={applyBuffer} onMove={applyMove} actionsDisabled={buffersPending || checksPending} acknowledged={includedFindings.map(check => check.label)} onAcknowledge={check => { if (checksPending) return; setAcknowledgedConflicts(previous => previous.includes(conflictKey(check)) ? previous.filter(key => key !== conflictKey(check)) : [...previous, conflictKey(check)]); setReadyFor(null) }} summary={summary} onNavigate={navigateFlag} continuation={{ ...continuation, onContinue: () => advanceJourneyStep(nextJourneyStep) }} />
   const placementContinuation = summary && journeyStep !== 'details' && <div className="homeowner-summary__continue"><p>{buffersPending ? 'Save your planning buffers to apply them before continuing.' : continuation.hint}</p><div className="step-action"><button className="builder-continue" type="button" disabled={buffersPending} onClick={() => advanceJourneyStep(nextJourneyStep)}>Next: {continuation.label}<span aria-hidden="true"> →</span></button><StepInfo label={continuation.label}>{continuation.hint} Existing findings and unanswered questions remain in your enquiry.</StepInfo></div><p className="homeowner-summary__continue-note">You can continue with open questions. Your placement and findings stay with your enquiry.</p></div>
   function changeProperty() {
     if (mode === 'live') { siteEdited(); setLive(null); setPropertyReset(value => value + 1) }
@@ -698,7 +698,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     </section>
     <IntendedUseControl value={use} onChange={changeIntendedUse} />
     {checksPending && <p role="status">Updating checks. Previous findings are shown for reference; copy and save will use the updated results when ready.</p>}
-    <EnquiryRecovery enquiry={expanded.next || enquiryReady ? draftText : null} report={reportDoc ? enquiryPlainText(reportDoc) : null} technicalEvidence={JSON.stringify(technicalEvidence, null, 2)} />
+    <EnquiryRecovery enquiry={!checksPending && (expanded.next || enquiryReady) ? draftText : null} report={reportDoc ? enquiryPlainText(reportDoc) : null} technicalEvidence={JSON.stringify(technicalEvidence, null, 2)} />
     <section className="builder-stage" id="builder-property" aria-labelledby="builder-property-title">
     <p className="eyebrow">Property</p><h2 id="builder-property-title">Start with what you know</h2>
     <p>{propertyComplete ? (mode === 'example' ? 'Saved Victoria example selected.' : `${live?.address.label || manual?.facts.address || selection?.candidate?.address.value || selection?.manual.address.value || 'Site description'} · ${live ? 'source-selected; identity and ownership unverified' : 'user-supplied; unverified'}.`) : 'Choose a property or enter the facts you know.'}</p>
