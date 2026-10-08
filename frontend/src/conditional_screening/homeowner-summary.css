@@ -47,3 +47,6 @@
 .homeowner-summary li.homeowner-summary__acknowledged { background: var(--assumption-soft); }
 .homeowner-summary li.homeowner-summary__acknowledged.homeowner-summary__review { border: 2px solid var(--copper); }
 .homeowner-summary li.homeowner-summary__acknowledged-conflict { background: var(--assumption-soft); border: 2px solid var(--danger); color: var(--danger-ink); }
+
+.homeowner-summary__updating { padding: .75rem; background: var(--primary-soft); border-radius: var(--radius-sm); }
+.homeowner-summary__counts { grid-template-columns: repeat(3, minmax(0, 1fr)); }

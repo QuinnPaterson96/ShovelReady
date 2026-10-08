@@ -120,11 +120,11 @@ export function OccupiedLotPreview({ selected, placement, onMove, nudgeMetres, c
       <p>R labels identify captured rooflines, not building walls. Main building is {boundaryInteraction?.mainBuilding ? boundaryInteraction.mainBuildingAssumed ? 'assumed from mapped geometry' : 'your selection' : 'unconfirmed'}. The copper rectangle shows {modelLabel}. Red dashed outlines identify observed geometry conflicts. North is up; scale is in metres.</p>
       <p>Approximate source geometry only. Review the measurements and candidate requirements separately before relying on this position. Press Escape or Close preview to return to the map.</p>
     </dialog>
-    {placementConcerns}
     <MapSourceHelp site={selected} />
     {placementControls}
-    {placementContinuation && <div className="builder-placement-next">{placementContinuation}</div>}
     {showBoundaryTools && boundaryInteraction && <BoundaryMapTools interaction={boundaryInteraction} />}
+    {placementConcerns && <div className="builder-placement-concerns">{placementConcerns}</div>}
+    {placementContinuation && <div className="builder-placement-next">{placementContinuation}</div>}
     {placementSummary && <div className="builder-map-summary">{placementSummary}</div>}
     </div>
   </div>
@@ -135,6 +135,7 @@ export type OccupiedLotsProps = {
   catalogue?: Pick<Catalogue, 'models'>
   placementSummary?: ReactNode
   placementConcerns?: ReactNode
+  showPlacementConcerns?: boolean
   onContinueUnresolved?: () => void
   placementContinuation?: ReactNode
   moveSuggestion?: { dx: number; dy: number; token: number }
@@ -143,12 +144,13 @@ export type OccupiedLotsProps = {
   allowedModelIds?: readonly string[]
   initialModelId?: string
   onMeasurement?: (measurement: OccupiedMeasurement | null) => void
+  onAssessmentPending?: (pending: boolean) => void
   showHandoff?: boolean
   suppliedCase?: Case
   boundaryInteraction?: BoundaryMapInteraction
 }
 
-export default function OccupiedLots({ catalogue = bundledCatalogue, allowedModelIds, initialModelId = '', onMeasurement, showHandoff = true, suppliedCase, boundaryInteraction, compactPlacement = false, evidenceTargetId, moveSuggestion, placementSummary, placementContinuation, placementConcerns, onContinueUnresolved }: OccupiedLotsProps) {
+export default function OccupiedLots({ catalogue = bundledCatalogue, allowedModelIds, initialModelId = '', onMeasurement, onAssessmentPending, showHandoff = true, suppliedCase, boundaryInteraction, compactPlacement = false, evidenceTargetId, moveSuggestion, placementSummary, placementContinuation, placementConcerns, showPlacementConcerns = true, onContinueUnresolved }: OccupiedLotsProps) {
   const initialModel = catalogue.models.find(m => m.model_id === initialModelId && (!allowedModelIds || allowedModelIds.includes(m.model_id)))
   const initialDimension = (name: string) => {
     const quantity = initialModel?.measurements.find(m => m.name === name)?.quantity
@@ -246,6 +248,8 @@ export default function OccupiedLots({ catalogue = bundledCatalogue, allowedMode
   const buildingMinimum = assumptions.building.trim() ? number(assumptions.building) : null
   const assumptionsValid = (parcelMinimum === null ? !assumptions.parcel.trim() : parcelMinimum >= 0) &&
     (buildingMinimum === null ? !assumptions.building.trim() : buildingMinimum >= 0)
+  const geometryPending = !!valid && assumptionsValid && !result && !assessmentError
+  useEffect(() => { onAssessmentPending?.(geometryPending) }, [geometryPending])
   async function assess() {
     if (!selected || !valid || !assumptionsValid) return
     invalidate()
@@ -288,7 +292,7 @@ export default function OccupiedLots({ catalogue = bundledCatalogue, allowedMode
   const clearances = result?.checks.filter(c => c.status === 'observed' && ['parcel_boundary_distance', 'nearest_building_distance', 'building_distance', 'named_boundary_distance'].includes(c.kind)) ?? []
   const comparisons = result?.checks.filter(c => c.kind === 'requirement') ?? []
   const otherChecks = result?.checks.filter(c => !['containment', 'building_overlap', 'parcel_boundary_distance', 'nearest_building_distance', 'building_distance', 'named_boundary_distance', 'requirement'].includes(c.kind) || c.status !== 'observed' && c.kind !== 'requirement') ?? []
-  const currentConcerns = <PlacementConcerns site={selected} result={result} additional={placementConcerns} onContinueUnresolved={onContinueUnresolved} />
+  const currentConcerns = showPlacementConcerns && <PlacementConcerns site={selected} result={result} additional={placementConcerns} onContinueUnresolved={onContinueUnresolved} />
   const observationIncomplete = otherChecks.length > 0 || overlap?.complete === false
   const geometryTone = observedConflicts.length ? 'conflict' : observationIncomplete || comparisons.some(c => c.comparison !== 'meets') ? 'unknown' : 'clear'
   const summary = result && selected ? [

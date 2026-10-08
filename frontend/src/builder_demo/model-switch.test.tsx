@@ -38,7 +38,7 @@ test('switching models retains the property, resets overrides and exports only t
     input.focus(); Object.getOwnPropertyDescriptor(dom.window.HTMLInputElement.prototype, 'value')!.set!.call(input, text)
     input.dispatchEvent(new dom.window.KeyboardEvent('keyup', { key: '5', bubbles: true }))
   })
-  const settle = async () => act(async () => { await new Promise(resolve => setTimeout(resolve, 650)) })
+  const settle = async () => { await act(async () => { await new Promise(resolve => setTimeout(resolve, 650)) }); await act(async () => { await new Promise(resolve => setTimeout(resolve, 450)) }) }
   const evidence = () => JSON.parse((document.getElementById('builder-technical-record') as HTMLTextAreaElement).value)
   try {
     await act(async () => root.render(createElement(BuilderDemo)))
@@ -49,7 +49,7 @@ test('switching models retains the property, resets overrides and exports only t
       await act(async () => { [...document.querySelectorAll<HTMLButtonElement>(`#${id} button`)].find(button => button.textContent === answer)!.click() })
     }
     const retainedFacts = evidence().zoning_site_assumptions
-    await edit('builder-configuration', 'Model 300 special options')
+    await edit('builder-configuration', 'Model 300 special options'); await settle()
     await edit('builder-email-recipient', 'old-provider@example.com')
     await edit('builder-example-width', '12')
     // Initial source figures / exact conversions from the model sheets; tolerance
@@ -59,10 +59,11 @@ test('switching models retains the property, resets overrides and exports only t
       const reset = evidence()
       assert.equal(reset.measurement, null, 'old result is invalidated synchronously')
       assert.equal(reset.enquiry_inputs.configuration, '')
-      assert.equal((document.getElementById('builder-email-recipient') as HTMLInputElement).value, '')
+      assert.equal(document.getElementById('builder-email-recipient'), null, 'pending model cannot prepare an email')
       assert.equal(reset.enquiry_inputs.intendedUse, 'Unknown')
       assert.equal(reset.enquiry_inputs.relationship, 'I own the property')
       await settle()
+      assert.equal((document.getElementById('builder-email-recipient') as HTMLInputElement).value, '')
       const current = evidence(), model = journeyCatalogue.models.find(item => item.model_id === id)!
       for (const key of ['building_type', 'existing_garden_suites', 'waterfront']) assert.deepEqual(current.zoning_site_assumptions[key], retainedFacts[key])
       assert.equal(current.measurement.site.site.parcel.id, parcel)
@@ -71,7 +72,7 @@ test('switching models retains the property, resets overrides and exports only t
       assert.ok(Math.abs(current.measurement.result.input.placement.depth_m - depth) < 1e-10)
       assert.equal(current.measurement.widthOrigin, 'catalogue')
       assert.equal(current.model_catalogue.snapshot_id, modelSnapshot(model))
-      assert.equal(current.project_settings.proposal.proposed_use, id === 'aux-300' ? 'garden_suite' : null)
+      assert.equal(current.project_settings.proposal.proposed_use, null)
       assert.equal(current.foundation_scenario.allowance_m, null)
       const input = current.enquiry_inputs
       const args = [null, input, current.measurement, false, null, null, true, null, null, null, current.project_settings.proposal, null, null, null, model] as const

@@ -1,6 +1,7 @@
 import { DiscoveryProblem } from './flow'
 import type { Address, Observation, Parcel, Polygon, SearchResult, Source, Transport } from './flow'
 import type { RankedAddress, RelatedParcel } from './CandidateChoices'
+import { compareParcels, parcelIdentityKey } from './parcelComparison'
 
 const addressField: Record<string, string> = {
   PROVINCE: 'Province', LOCALITY: 'City or locality', LOCALITY_GARBAGE: 'City or locality',
@@ -172,7 +173,22 @@ export const liveTransport: Transport = {
     const street = object(address.raw) && object(address.raw.candidate) && object(address.raw.candidate.address) ? address.raw.candidate.address.streetAddress : null
     const query = string(street) ? street : address.label.split(',')[0]
     if (query.length < 3 || query.length > 120) return { status: 'no_match', candidates: [], message: 'Address is too long for the City parcel search. Correct it or continue manually.' }
-    return parseParcels(await post('/api/municipal-sites/search', { schema_version: 'municipal-sites.v1', address: query }, signal, 25000))
+    const result = parseParcels(await post('/api/municipal-sites/search', { schema_version: 'municipal-sites.v1', address: query }, signal, 25000))
+    // Only potentially equivalent identities need geometry fetched before grouping.
+    // Distinct PIDs/types/statuses never collapse merely because labels match.
+    const keys = result.candidates.map(parcelIdentityKey)
+    const observations = new Map<string, Promise<Observation>>()
+    const inspected = await Promise.all(result.candidates.map(async (parcel, i) => {
+      if (!keys[i] || keys.filter(key => key === keys[i]).length < 2) return parcel
+      const ref = (parcel.raw as { candidate: { parcel_ref: { object_id: number } } }).candidate.parcel_ref.object_id
+      const lookup = String(ref)
+      try {
+        if (!observations.has(lookup)) observations.set(lookup, liveTransport.observe(parcel, signal))
+        return { ...parcel, inspection: await observations.get(lookup)! }
+      } catch { return parcel } // Unavailable geometry is not evidence of equivalence.
+    }))
+    if (signal.aborted) throw new DOMException('Aborted', 'AbortError')
+    return { ...result, candidates: compareParcels(inspected) }
   },
   async observe(parcel: Parcel, signal: AbortSignal): Promise<Observation> {
     const candidate = (parcel.raw as { candidate?: { parcel_ref?: unknown; pid?: unknown } })?.candidate

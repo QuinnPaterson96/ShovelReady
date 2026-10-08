@@ -18,7 +18,7 @@ const roofSource = exampleCase.site.buildings[0]?.source
 const show = (value: number | null, dimension: 'length' | 'area') => measurementWithUnit(value, dimension)
 
 
-export function ExampleProperty({ model = defaultJourneyModel, onMeasurement, boundaryInteraction, placementSummary, placementContinuation, evidenceTargetId, moveSuggestion, placementConcerns, onContinueUnresolved }: { model?: CatalogueModel; placementConcerns?: ReactNode; onContinueUnresolved?: () => void; onMeasurement: (value: OccupiedMeasurement | null) => void; boundaryInteraction?: BoundaryMapInteraction; placementSummary?: ReactNode; placementContinuation?: ReactNode; evidenceTargetId?: string; moveSuggestion?: { dx: number; dy: number; token: number } }) {
+export function ExampleProperty({ model = defaultJourneyModel, onMeasurement, onAssessmentPending, boundaryInteraction, placementSummary, placementContinuation, evidenceTargetId, moveSuggestion, placementConcerns, showPlacementConcerns = true, onContinueUnresolved }: { model?: CatalogueModel; onAssessmentPending?: (pending: boolean) => void; placementConcerns?: ReactNode; showPlacementConcerns?: boolean; onContinueUnresolved?: () => void; onMeasurement: (value: OccupiedMeasurement | null) => void; boundaryInteraction?: BoundaryMapInteraction; placementSummary?: ReactNode; placementContinuation?: ReactNode; evidenceTargetId?: string; moveSuggestion?: { dx: number; dy: number; token: number } }) {
   const initialPosition = () => ({ ...initialExamplePosition(),
     width: model.measurements.find(item => item.name === 'nominal_exterior_width')?.quantity?.value ?? '',
     depth: model.measurements.find(item => item.name === 'nominal_exterior_depth')?.quantity?.value ?? '' })
@@ -41,6 +41,8 @@ export function ExampleProperty({ model = defaultJourneyModel, onMeasurement, bo
   const activeCheck = useRef<AbortController | null>(null)
   const version = useRef(0)
   const request = exampleRequest(position, assumptions)
+  const geometryPending = !!request && (phase === 'stale' || phase === 'measuring');
+  useEffect(() => { onAssessmentPending?.(geometryPending) }, [geometryPending])
 
   function invalidate() {
     activeCheck.current?.abort()
@@ -150,7 +152,7 @@ export function ExampleProperty({ model = defaultJourneyModel, onMeasurement, bo
           <label htmlFor="builder-example-roofline-minimum">Minimum to captured roofline (m)</label><MeasurementInput id="builder-example-roofline-minimum" dimension="length" type="number" min="0" step="any" value={assumptions.roofline} onChange={event => editAssumption('roofline', event.target.value)} />
         </fieldset></details>
         <button type="button" disabled={busy || !request} onClick={() => void measure(position, assumptions)}>{busy ? 'Checking…' : phase === 'unresolved' ? 'Retry placement check' : 'Recheck placement'}</button>
-      </div>} placementConcerns={<PlacementConcerns site={exampleCase} result={result} additional={placementConcerns} onContinueUnresolved={onContinueUnresolved} />} />
+      </div>} placementConcerns={showPlacementConcerns && <PlacementConcerns site={exampleCase} result={result} additional={placementConcerns} onContinueUnresolved={onContinueUnresolved} />} />
     {checkWarning && <div className={`builder-example-outcome builder-example-outcome--${conflict ? 'conflict' : 'unknown'}`} role="alert">
       <strong>{phase === 'unresolved' || unresolved && !conflict ? 'Placement could not be fully checked' : 'Conflict at this position'}</strong>
       <p>{phase === 'unresolved' ? `${message} ${request ? 'Try again or edit the placement.' : 'Correct the placement inputs to check again.'}` : conflict ? `${crossesParcel ? 'The unit crosses or touches the mapped parcel boundary. ' : ''}${overlapsRoof ? 'The unit overlaps or touches a mapped roofline. ' : ''}Move the unit on the map and recheck. This finding applies to this position only.${unresolved ? ' Some measurements also remain unresolved; review Sources & technical evidence.' : ''}` : 'Some mapped geometry or your comparison could not be checked. Review Sources & technical evidence and try another position.'}</p>

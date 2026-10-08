@@ -5,7 +5,7 @@ export type BoundaryMapMode = 'place' | 'front' | 'rear' | 'waterfront'
 export type UserFact<T> = { value: T | null; origin: 'user' | 'journey_default'; note: string | null; evidence_state?: 'assumed' | 'user_confirmed' | 'unknown' }
 export type BoundaryEdge = { id: string; ring: number; segment: number; start: [number, number]; end: [number, number]; role: UserFact<EdgeRole> }
 export type UserMeasurement = { value: number; unit: 'm' | 'm2'; basis: 'proposed_wall_to_lot_line' | 'principal_wall_to_proposed_wall' | 'regulatory_floor_area' | 'rough_floor_area_estimate'; origin: 'user'; note: string | null; placement_revision: string }
-export type StreetAdjacency = { edge_ids: string[]; all_marked: boolean; completion_method?: 'explicit_confirmation' | 'advance'; origin: 'user' }
+export type StreetAdjacency = { edge_ids: string[]; all_marked: boolean; completion_method?: 'marking' | 'explicit_confirmation' | 'advance'; origin: 'user' }
 export type BoundaryRoleSuggestions = { roles: Record<string, EdgeRole>; conflicts: string[]; basis: 'user_marks' }
 export type SiteAssumptions = {
   planning_buffers_m?: Record<string, number>

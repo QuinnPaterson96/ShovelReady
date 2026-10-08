@@ -3,7 +3,7 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
-import { HomeownerSummary } from './HomeownerSummary'
+import { HomeownerSummary, summaryFindings } from './HomeownerSummary'
 import { homeownerSummary } from './victoriaSummaryAdapter'
 import type { Result } from '../occupied_lots/contract'
 import type { MappedZoning } from './projectSettings'
@@ -11,6 +11,7 @@ import { applyMappedZoning, changeProjectSetting, initialProjectSettings } from 
 import { parseScenarioResult, type ScenarioResult } from './scenarios'
 import { PropertyScan, parsePropertyScan, type PropertyScanResult } from './PropertyScan'
 import type { ScreeningResult } from './model'
+import { applyIntendedUse } from '../builder_demo/intendedUse'
 
 const captured = JSON.parse(readFileSync('src/scenario_handoff/retained-assessment.fixture.json', 'utf8')) as Result
 const clear = { ...captured, checks: captured.checks.map(check => ({ ...check,
@@ -18,6 +19,19 @@ const clear = { ...captured, checks: captured.checks.map(check => ({ ...check,
   comparison: check.comparison === 'shortfall' ? null : check.comparison })) }
 const base = { geometry: clear, geometryComplete: true, scenario: null, screening: null, assumptions: null, settings: initialProjectSettings(), mapped: null, lookup: null,
   zoningBusy: false, zoningError: '', scenarioError: '', screeningError: '', onRetryAvailable: true }
+
+test('office and unknown uses cannot inherit a previous garden-suite pass or conflict', () => {
+  const scenario = { status: 'apparent_conflict', additional_checks: [{ id: 'area', label: 'Floor area', status: 'checked', detail: 'Garden-suite comparison.' }] } as ScenarioResult
+  const screening = { checks: [{ rule: { kind: 'boundary_min' }, status: 'apparent_conflict_under_assumptions' }, { rule: { kind: 'area_max' }, status: 'meets_under_assumptions' }] } as ScreeningResult
+  for (const answer of ['Home office', 'Not sure']) {
+    const summary = homeownerSummary({ ...base, settings: applyIntendedUse(base.settings, answer), scenario, screening })
+    assert.equal(summary.conclusion, 'Review this placement')
+    assert.equal(summary.checks[0].status, 'checked', 'approximate physical observations remain available')
+    assert.equal(summary.checks.find(check => check.label === 'Distance to boundaries')?.status, 'unsupported')
+    assert.equal(summary.checks.find(check => check.label === 'Floor area')?.status, 'unsupported')
+    assert.equal(summary.checks.find(check => check.label === 'Intended use')?.status, answer === 'Not sure' ? 'unknown' : 'unsupported')
+  }
+})
 
 test('exact PGA map label retains its identity and restores ordinary garden-suite coverage', () => {
   const mapped: MappedZoning = { schema_version: 'sr.mapped-zoning.v1', property_revision: 'cecelia', status: 'single', zone: 'GRD-1 (PGA)',
@@ -81,8 +95,9 @@ test('mixed summary counts named statuses and gives conflict action priority wit
     JSON.parse(readFileSync('src/conditional_screening/api-response.fixture.json', 'utf8')).checks.find((check: {rule: {kind: string}}) => check.rule.kind === 'separation_min'),
   ] } as ScreeningResult })
   const html = renderToStaticMarkup(createElement(HomeownerSummary, { summary, onNavigate() {} }))
-  for (const [status, label] of [['checked', 'Checked'], ['unknown', 'Missing information'], ['conflict', 'Preliminary concern'], ['unsupported', 'Not covered']] as const) {
-    assert.match(html, new RegExp(`${summary.checks.filter(check => check.status === status).length} ${label}`))
+  const findings = summaryFindings(summary)
+  for (const [statuses, label] of [[['checked', 'probable'], 'Checks looking plausible'], [['review', 'unknown', 'unsupported'], 'Questions to resolve'], [['conflict'], 'Placement concerns']] as const) {
+    assert.match(html, new RegExp(`${findings.filter(check => (statuses as readonly string[]).includes(check.status)).length} ${label}`))
   }
   assert.match(html, /Next: Review floor area/)
   const gap = summary.checks.find(check => check.label === 'Distance from the main building')!

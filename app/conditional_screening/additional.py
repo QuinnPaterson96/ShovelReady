@@ -208,7 +208,7 @@ def additional_checks(body, boundary_result, packet, source_factory):
             or assumptions.waterfront.value is None):
         add("front", "unknown",
             "The placement can be measured, but front-line context is unresolved. "
-            "Mark known street edges and explicitly confirm completeness, or keep Not sure; "
+            "Mark known street edges to save your answer, or keep Not sure; "
             "also supply waterfront status if known.")
         checks[-1].action_target = "street-side" if street_context_missing else "boundary-roles"
     else:

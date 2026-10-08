@@ -12,13 +12,13 @@ import { defaultJourneyModel } from '../model_catalogue/demo'
 import type { CatalogueModel } from '../model_catalogue/model'
 
 export type EnquiryInput = {
-  question?: string; intendedUse: string; timing: string; budget: string; access: string; services: string
+  question?: string; propertyConcern?: string; intendedUse: string; timing: string; budget: string; access: string; services: string
   relationship?: string; stage?: string; configuration?: string; nextStep?: string; contact?: string
 }
 
 export function enquiryUseQualification(intendedUse: string, scenarioUse: Pathway['proposed_use'] = 'garden_suite'): string {
   const use = intendedUse.trim().toLowerCase()
-  const unconfirmed = !use || ['unknown', 'still deciding', 'undecided', 'prefer not to say'].includes(use)
+  const unconfirmed = !use || ['unknown', 'not sure', 'still deciding', 'undecided', 'prefer not to say'].includes(use)
   if (scenarioUse !== 'garden_suite') return `${unconfirmed ? 'Intended use is unconfirmed.' : `Intended use supplied: ${intendedUse.trim()}.`} The selected ${scenarioUse === 'other' ? 'other-use' : 'unknown-use'} scenario is outside the supported garden-suite comparisons. Ask City staff or a qualified local professional about applicable rules; physical observations remain approximate.`
   return unconfirmed
     ? 'Intended use is unconfirmed. The planning comparisons assume a garden suite and may not apply to the eventual use. Physical placement observations remain approximate.'
@@ -154,39 +154,48 @@ export function preparationChecklist(input: EnquiryInput): string[] {
 export function manufacturerDocument(input: EnquiryInput, address: string | null, example: boolean,
   measured: OccupiedMeasurement | null, conditional: ScreeningResult | null, scenarios: ScenarioResult | null, scan: PropertyScanResult | null,
   linkedPlacement: boolean, sketchAvailable = false, scenarioUse: Pathway['proposed_use'] = 'garden_suite', model: CatalogueModel = defaultJourneyModel): EnquiryDocument {
-  const concerns = placementConcerns(measured, conditional, scenarios)
-  const facts = [input.relationship?.trim() && `Relationship to the property: ${input.relationship.trim()}.`,
-    input.stage?.trim() && `Project stage: ${input.stage.trim()}.`,
-    input.configuration?.trim() && `Desired configuration: ${input.configuration.trim()}.`,
-    input.timing.trim() && `Target timing: ${input.timing.trim()}.`, input.budget.trim() && `Budget range: ${input.budget.trim()}.`,
-    input.access.trim() && `Access information/questions: ${input.access.trim()}.`, input.services.trim() && `Utility information/questions: ${input.services.trim()}.`].filter((v): v is string => !!v)
+  const placementIssues = placementConcerns(measured, scenarioUse === 'garden_suite' ? conditional : null, scenarioUse === 'garden_suite' ? scenarios : null)
+  const concerns = [...(input.propertyConcern?.trim() ? [input.propertyConcern.trim()] : []), ...placementIssues]
+  const supplied = (value?: string) => !!value?.trim() && !['unknown', 'not sure', 'prefer not to say'].includes(value.trim().toLowerCase())
+  const sentence = (value: string) => /[.!?]$/.test(value.trim()) ? value.trim() : `${value.trim()}.`
+  const facts = [!example && supplied(input.relationship) && sentence(input.relationship!),
+    supplied(input.stage) && sentence(`My project stage is ${input.stage!.trim()}`),
+    supplied(input.configuration) && sentence(`My configuration preference is ${input.configuration!.trim()}`),
+    supplied(input.timing) && sentence(`My preferred timing is ${input.timing.trim()}`),
+    supplied(input.budget) && sentence(`My budget range is ${input.budget.trim()}`),
+    supplied(input.access) && sentence(`The access details or questions I can share are: ${input.access.trim()}`),
+    supplied(input.services) && sentence(`For utilities and connections: ${input.services.trim()}`)].filter((v): v is string => !!v)
   const placement = measured && linkedPlacement ? [`The preliminary rectangle is ${measurementWithUnit(measured.result.input.placement.width_m, 'length')} × ${measurementWithUnit(measured.result.input.placement.depth_m, 'length')}${measured.widthOrigin === 'user' || measured.depthOrigin === 'user' ? '; dimensions have been edited and availability needs your confirmation' : ' using published nominal dimensions'}. It excludes unconfirmed overhangs and installation space.`] : []
-  const withheld = (value?: string) => !value?.trim() || ['unknown', 'prefer not to say'].includes(value.trim().toLowerCase())
+  const withheld = (value?: string) => !value?.trim() || ['unknown', 'not sure', 'prefer not to say'].includes(value.trim().toLowerCase())
   const use = ['still deciding', 'undecided'].includes(input.intendedUse.trim().toLowerCase()) ? ' I’m still deciding how I would use it.' : withheld(input.intendedUse) ? ' My intended use is not yet confirmed.' : ` I would use it for ${input.intendedUse.trim()}.`
   const next = withheld(input.nextStep) ? '' : input.nextStep!.trim()
+  const question = withheld(input.question) ? '' : input.question!.trim()
+  const sameRequest = (a: string, b: string) => a.toLowerCase().replace(/\s+/g, ' ').replace(/[.!?]+$/, '') === b.toLowerCase().replace(/\s+/g, ' ').replace(/[.!?]+$/, '')
+  const additionalQuestion = next && question && !sameRequest(question, next) && !sameRequest(question, `Could ${model.name} be suitable for this property?`) ? question : null
   return {
     title: `${model.name} feasibility enquiry${address ? ` — ${address}` : ''}`,
     example,
-    question: input.question?.trim() || next || `Could you help establish whether ${model.name} is worth investigating for this project, and advise the next useful step?`,
+    question: next || question || `Could you help establish whether ${model.name} is worth investigating for this project, and advise the next useful step?`,
     sections: [
-      section('Project', [`I’m exploring ${model.provider} ${model.name}${address ? ` at ${address}` : ' for a possible site'}.${use}`, ...facts.filter(fact => !/Relationship to the property: (Unknown|Prefer not to say)\./i.test(fact))], true),
-      ...(concerns.length ? [section('Preliminary concerns', [linkedPlacement ? 'The preliminary placement raises the following unresolved concerns.' : 'The following findings concern a separate retained example, not the proposed property.', ...concerns,
-        'These are unresolved comparisons, not established legal violations. Could relocation, rotation or a smaller model help address these concerns?'], true)] : []),
-      section('Planning questions to resolve separately', [enquiryUseQualification(input.intendedUse, scenarioUse),
-        'The property contact needs to confirm the main home, existing suites and waterfront context. City staff or a qualified local professional needs to check the applicable rules, legal measurement basis and any permit or title conditions. Please advise what product information you can provide to support that review.'], true),
+      section('Project', [`I’m exploring ${model.provider} ${model.name}${address ? ` at ${address}` : ' for a possible site'}.${use}`, ...(facts.length ? [facts.join(' ')] : [])], true),
+      ...(concerns.length ? [section('Preliminary concerns', [linkedPlacement ? 'The following matters remain unresolved before relying on this proposal.' : input.propertyConcern?.trim() ? 'The property identity question concerns the proposed site; any placement findings below concern a separate retained example.' : 'The following findings concern a separate retained example, not the proposed property.', ...concerns,
+        placementIssues.length ? 'Could you advise whether relocation, rotation or another configuration is worth exploring? I will resolve the planning questions separately before relying on this position.' : 'What site information would help you advise while I confirm the property details?' ], true)] : []),
       section(`Questions for ${model.provider}`, [
-        ...(model.model_id === 'wcch-ch-studio' ? ['Can you confirm whether this exact configuration supports permanent residential use in this locality? The published pod dimensions do not establish dwelling suitability.'] : []),
+        ...(additionalQuestion ? [additionalQuestion] : []),
+        ...(model.model_id === 'wcch-ch-studio' ? [`${scenarioUse === 'garden_suite' ? 'Can you' : 'If I choose residential use, can you'} confirm whether this exact configuration supports permanent residential use in this locality? The published pod dimensions do not establish dwelling suitability.`] : []),
         '1. Can you share current dimensioned plans with their date/version, overhangs, interior floor area, height measurement reference and foundation requirements?',
         `2. Do you service ${address ? 'this locality' : 'the proposed locality once identified'}, and what truck access, crane setup space, lifting clearances and site photos or measurements do you need?`,
         '3. What foundation requirements and utility connections are needed? Who coordinates site preparation, foundations, connections and permits, and what assistance do you offer?',
-        `4. What is the current ${input.configuration?.trim() ? 'price for the options described above' : `starting price for the standard ${model.name}`}, and what is included? Please confirm currency and identify additional costs for tax, upgrades, transport, crane, installation, foundations, utility connections and permits.`,
+        `4. What is the current ${supplied(input.configuration) ? 'price for the options described above' : `starting price for the standard ${model.name}`}, and what is included? Please confirm currency and identify additional costs for tax, upgrades, transport, crane, installation, foundations, utility connections and permits.`,
         '5. What is the current lead time, when does it start, and what decisions, permits and site preparation must be complete before booking or delivery?',
       ]),
+      section('Planning questions to resolve separately', [enquiryUseQualification(input.intendedUse, scenarioUse),
+        'The property contact needs to confirm the main home, existing suites and waterfront context. City staff or a qualified local professional needs to check the applicable rules, legal measurement basis and any permit or title conditions. Please advise what product information you can provide to support that review.'], true),
       section('Site information', [...placement, ...positivePropertyFindings(scan),
         ...(!measured ? ['No current measured placement is available; the proposed position and delivery access remain to be established.'] : []),
-        ...(sketchAvailable ? ['I have an approximate proposed placement sketch available. Please let me know the best way to share it.'] : []),
       ], true),
+      ...(sketchAvailable ? [section('Placement sketch', ['I have an approximate proposed placement sketch available. Please let me know the best way to share it.'], true)] : []),
     ],
-    closing: `${input.question?.trim() && next ? next : 'Please let me know what information would help you advise on the next step.'}${input.contact?.trim() ? `\n\n${input.contact.trim()}` : ''}`,
+    closing: input.contact?.trim() || 'Thank you.',
   }
 }

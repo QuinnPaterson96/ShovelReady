@@ -243,20 +243,18 @@ def test_evidence_states_cannot_forge_confirmation_or_favourable_legal_defaults(
     assert post(body).status_code == 422
 
 
-@pytest.mark.parametrize("complete", [False, True])
-def test_street_observations_survive_http_without_becoming_boundary_roles(complete):
+@pytest.mark.parametrize("complete,method", [(False, None), (True, None), (True, "marking")])
+def test_street_observations_survive_http_without_becoming_boundary_roles(complete, method):
     body = payload()
     for item in body["assumptions"]["edges"]:
         item["role"] = user("unknown")
     marks = {"edge_ids": [edge(0, "unknown")["id"], edge(1, "unknown")["id"]],
-             "all_marked": complete, "origin": "user"}
+             "all_marked": complete, "origin": "user", "completion_method": method}
     body["assumptions"]["street_adjacency"] = marks
     response = post(body)
     assert response.status_code == 200, response.text
     data = response.json()
-    assert data["request"]["site_assumptions"]["street_adjacency"] == {
-        **marks, "completion_method": None
-    }
+    assert data["request"]["site_assumptions"]["street_adjacency"] == marks
     assert all(item["role"]["value"] == "unknown"
                for item in data["request"]["site_assumptions"]["edges"])
     # Stated physical street adjacency supplies no legal role or flanking permission.
