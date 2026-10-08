@@ -1,0 +1,2662 @@
+{
+  "address": {
+    "schemaVersion": "sr-address-search.v1",
+    "query": "601 SU\u2019IT ST",
+    "status": "candidates",
+    "reason": null,
+    "candidates": [
+      {
+        "locator": "0:34c1f740d2405c60",
+        "fullAddress": "601 Su'it St, Victoria, BC",
+        "address": {
+          "siteName": "",
+          "unitDesignator": "",
+          "unitNumber": "",
+          "unitNumberSuffix": "",
+          "civicNumber": "601",
+          "civicNumberSuffix": "",
+          "streetName": "Su'it",
+          "streetType": "St",
+          "streetDirection": "",
+          "streetQualifier": "",
+          "streetAddress": "601 Su'it St",
+          "localityName": "Victoria",
+          "localityType": "City",
+          "electoralArea": "",
+          "provinceCode": "BC"
+        },
+        "locality": "Victoria",
+        "providerSiteId": "49f235a6-2458-44ff-8525-814ebf963c20",
+        "score": 89.0,
+        "matchPrecision": "CIVIC_NUMBER",
+        "faults": [
+          {
+            "value": "",
+            "element": "LOCALITY",
+            "fault": "missing",
+            "penalty": 10.0
+          },
+          {
+            "value": "",
+            "element": "PROVINCE",
+            "fault": "missing",
+            "penalty": 1.0
+          }
+        ],
+        "locationDescriptor": "parcelPoint",
+        "locationPositionalAccuracy": "high",
+        "point": {
+          "crs": "EPSG:4326",
+          "longitude": -123.3527679,
+          "latitude": 48.4184928
+        },
+        "sourceChangeDate": "2026-07-07"
+      },
+      {
+        "locator": "1:8f596fe94c80b3f7",
+        "fullAddress": "Su'it St, Victoria, BC",
+        "address": {
+          "siteName": "",
+          "unitDesignator": "",
+          "unitNumber": "",
+          "unitNumberSuffix": "",
+          "civicNumber": "",
+          "civicNumberSuffix": "",
+          "streetName": "Su'it",
+          "streetType": "St",
+          "streetDirection": "",
+          "streetQualifier": "",
+          "streetAddress": "Su'it St",
+          "localityName": "Victoria",
+          "localityType": "City",
+          "electoralArea": "",
+          "provinceCode": "BC"
+        },
+        "locality": "Victoria",
+        "providerSiteId": null,
+        "score": 66.0,
+        "matchPrecision": "STREET",
+        "faults": [
+          {
+            "value": "",
+            "element": "LOCALITY",
+            "fault": "missing",
+            "penalty": 10.0
+          },
+          {
+            "value": "601",
+            "element": "CIVIC_NUMBER",
+            "fault": "notInAnyBlock",
+            "penalty": 1.0
+          },
+          {
+            "value": "",
+            "element": "PROVINCE",
+            "fault": "missing",
+            "penalty": 1.0
+          }
+        ],
+        "locationDescriptor": "streetPoint",
+        "locationPositionalAccuracy": "coarse",
+        "point": {
+          "crs": "EPSG:4326",
+          "longitude": -123.3532576,
+          "latitude": 48.418435
+        },
+        "sourceChangeDate": null
+      },
+      {
+        "locator": "2:1c9d88f082b2c457",
+        "fullAddress": "Spit Rd, Squamish, BC",
+        "address": {
+          "siteName": "",
+          "unitDesignator": "",
+          "unitNumber": "",
+          "unitNumberSuffix": "",
+          "civicNumber": "",
+          "civicNumberSuffix": "",
+          "streetName": "Spit",
+          "streetType": "Rd",
+          "streetDirection": "",
+          "streetQualifier": "",
+          "streetAddress": "Spit Rd",
+          "localityName": "Squamish",
+          "localityType": "District Municipality",
+          "electoralArea": "",
+          "provinceCode": "BC"
+        },
+        "locality": "Squamish",
+        "providerSiteId": null,
+        "score": 55.0,
+        "matchPrecision": "STREET",
+        "faults": [
+          {
+            "value": "",
+            "element": "LOCALITY",
+            "fault": "missing",
+            "penalty": 10.0
+          },
+          {
+            "value": "SUIT",
+            "element": "STREET_NAME",
+            "fault": "spelledWrong",
+            "penalty": 2.0
+          },
+          {
+            "value": "ST",
+            "element": "STREET_TYPE",
+            "fault": "notMatched",
+            "penalty": 3.0
+          },
+          {
+            "value": "601",
+            "element": "CIVIC_NUMBER",
+            "fault": "notInAnyBlock",
+            "penalty": 1.0
+          },
+          {
+            "value": "",
+            "element": "PROVINCE",
+            "fault": "missing",
+            "penalty": 1.0
+          },
+          {
+            "value": "",
+            "element": "FAULTS",
+            "fault": "tooMany",
+            "penalty": 6.0
+          }
+        ],
+        "locationDescriptor": "streetPoint",
+        "locationPositionalAccuracy": "coarse",
+        "point": {
+          "crs": "EPSG:4326",
+          "longitude": -123.1704784,
+          "latitude": 49.7073916
+        },
+        "sourceChangeDate": null
+      },
+      {
+        "locator": "3:01618bdeff9d250f",
+        "fullAddress": "Smit Rd, Sayward, BC",
+        "address": {
+          "siteName": "",
+          "unitDesignator": "",
+          "unitNumber": "",
+          "unitNumberSuffix": "",
+          "civicNumber": "",
+          "civicNumberSuffix": "",
+          "streetName": "Smit",
+          "streetType": "Rd",
+          "streetDirection": "",
+          "streetQualifier": "",
+          "streetAddress": "Smit Rd",
+          "localityName": "Sayward",
+          "localityType": "Village",
+          "electoralArea": "",
+          "provinceCode": "BC"
+        },
+        "locality": "Sayward",
+        "providerSiteId": null,
+        "score": 55.0,
+        "matchPrecision": "STREET",
+        "faults": [
+          {
+            "value": "",
+            "element": "LOCALITY",
+            "fault": "missing",
+            "penalty": 10.0
+          },
+          {
+            "value": "SUIT",
+            "element": "STREET_NAME",
+            "fault": "spelledWrong",
+            "penalty": 2.0
+          },
+          {
+            "value": "ST",
+            "element": "STREET_TYPE",
+            "fault": "notMatched",
+            "penalty": 3.0
+          },
+          {
+            "value": "601",
+            "element": "CIVIC_NUMBER",
+            "fault": "notInAnyBlock",
+            "penalty": 1.0
+          },
+          {
+            "value": "",
+            "element": "PROVINCE",
+            "fault": "missing",
+            "penalty": 1.0
+          },
+          {
+            "value": "",
+            "element": "FAULTS",
+            "fault": "tooMany",
+            "penalty": 6.0
+          }
+        ],
+        "locationDescriptor": "streetPoint",
+        "locationPositionalAccuracy": "coarse",
+        "point": {
+          "crs": "EPSG:4326",
+          "longitude": -125.900795,
+          "latitude": 50.3033188
+        },
+        "sourceChangeDate": null
+      },
+      {
+        "locator": "4:711dbae6694bd540",
+        "fullAddress": "Spit Rd, Campbell River, BC",
+        "address": {
+          "siteName": "",
+          "unitDesignator": "",
+          "unitNumber": "",
+          "unitNumberSuffix": "",
+          "civicNumber": "",
+          "civicNumberSuffix": "",
+          "streetName": "Spit",
+          "streetType": "Rd",
+          "streetDirection": "",
+          "streetQualifier": "",
+          "streetAddress": "Spit Rd",
+          "localityName": "Campbell River",
+          "localityType": "City",
+          "electoralArea": "",
+          "provinceCode": "BC"
+        },
+        "locality": "Campbell River",
+        "providerSiteId": null,
+        "score": 55.0,
+        "matchPrecision": "STREET",
+        "faults": [
+          {
+            "value": "",
+            "element": "LOCALITY",
+            "fault": "missing",
+            "penalty": 10.0
+          },
+          {
+            "value": "SUIT",
+            "element": "STREET_NAME",
+            "fault": "spelledWrong",
+            "penalty": 2.0
+          },
+          {
+            "value": "ST",
+            "element": "STREET_TYPE",
+            "fault": "notMatched",
+            "penalty": 3.0
+          },
+          {
+            "value": "601",
+            "element": "CIVIC_NUMBER",
+            "fault": "notInAnyBlock",
+            "penalty": 1.0
+          },
+          {
+            "value": "",
+            "element": "PROVINCE",
+            "fault": "missing",
+            "penalty": 1.0
+          },
+          {
+            "value": "",
+            "element": "FAULTS",
+            "fault": "tooMany",
+            "penalty": 6.0
+          }
+        ],
+        "locationDescriptor": "streetPoint",
+        "locationPositionalAccuracy": "coarse",
+        "point": {
+          "crs": "EPSG:4326",
+          "longitude": -125.2485344,
+          "latitude": 50.0410958
+        },
+        "sourceChangeDate": null
+      }
+    ],
+    "mayBeTruncated": true,
+    "source": {
+      "provider": "BC Address Geocoder",
+      "sourceUrl": "https://geocoder.api.gov.bc.ca/addresses.json?addressString=601+SU%E2%80%99IT+ST&maxResults=5&outputSRS=4326&echo=true&autoComplete=false",
+      "fetchedAt": "2026-10-08T01:22:53.907150Z",
+      "providerSearchTimestamp": "2026-10-07T18:22:53",
+      "providerBaseDataDate": "2026-07-07T20:10:43Z",
+      "providerVersion": "4.5.4",
+      "responseSha256": "f6d977243b63a28ae08f5f155b07b4128d90571a4641bceff9d06179ff3cbe89",
+      "licence": "Open Government Licence - British Columbia",
+      "reviewStatus": "unreviewed",
+      "rawResponse": {
+        "type": "FeatureCollection",
+        "queryAddress": "601 SU\u2019IT ST",
+        "encoding": "ascii",
+        "searchTimestamp": "2026-10-07T18:22:53",
+        "executionTime": 0.562,
+        "version": "4.5.4",
+        "baseDataDate": "2026-07-07T20:10:43Z",
+        "crs": {
+          "type": "EPSG",
+          "properties": {
+            "code": 4326
+          }
+        },
+        "interpolation": "adaptive",
+        "echo": "true",
+        "locationDescriptor": "any",
+        "setBack": 0,
+        "minScore": 0,
+        "maxResults": 5,
+        "disclaimer": "https://www2.gov.bc.ca/gov/content?id=79F93E018712422FBC8E674A67A70535",
+        "privacyStatement": "https://www2.gov.bc.ca/gov/content?id=9E890E16955E4FF4BF3B0E07B4722932",
+        "copyrightNotice": "Copyright \u00a9 2024 Province of British Columbia",
+        "copyrightLicense": "https://www2.gov.bc.ca/gov/content?id=A519A56BC2BF44E4A008B33FCF527F61",
+        "features": [
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Point",
+              "crs": {
+                "type": "EPSG",
+                "properties": {
+                  "code": 4326
+                }
+              },
+              "coordinates": [
+                -123.3527679,
+                48.4184928
+              ]
+            },
+            "properties": {
+              "fullAddress": "601 Su'it St, Victoria, BC",
+              "score": 89,
+              "matchPrecision": "CIVIC_NUMBER",
+              "precisionPoints": 100,
+              "faults": [
+                {
+                  "value": "",
+                  "element": "LOCALITY",
+                  "fault": "missing",
+                  "penalty": 10
+                },
+                {
+                  "value": "",
+                  "element": "PROVINCE",
+                  "fault": "missing",
+                  "penalty": 1
+                }
+              ],
+              "siteName": "",
+              "unitDesignator": "",
+              "unitNumber": "",
+              "unitNumberSuffix": "",
+              "civicNumber": 601,
+              "civicNumberSuffix": "",
+              "streetName": "Su'it",
+              "streetType": "St",
+              "isStreetTypePrefix": "false",
+              "streetDirection": "",
+              "isStreetDirectionPrefix": "false",
+              "streetQualifier": "",
+              "localityName": "Victoria",
+              "streetAddress": "601 Su'it St",
+              "localityType": "City",
+              "electoralArea": "",
+              "provinceCode": "BC",
+              "locationPositionalAccuracy": "high",
+              "locationDescriptor": "parcelPoint",
+              "siteID": "49f235a6-2458-44ff-8525-814ebf963c20",
+              "blockID": 300760,
+              "fullSiteDescriptor": "",
+              "accessNotes": "\"",
+              "siteStatus": "active",
+              "siteRetireDate": "9999-12-31",
+              "changeDate": "2026-07-07",
+              "isOfficial": "true"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Point",
+              "crs": {
+                "type": "EPSG",
+                "properties": {
+                  "code": 4326
+                }
+              },
+              "coordinates": [
+                -123.3532576,
+                48.418435
+              ]
+            },
+            "properties": {
+              "fullAddress": "Su'it St, Victoria, BC",
+              "score": 66,
+              "matchPrecision": "STREET",
+              "precisionPoints": 78,
+              "faults": [
+                {
+                  "value": "",
+                  "element": "LOCALITY",
+                  "fault": "missing",
+                  "penalty": 10
+                },
+                {
+                  "value": 601,
+                  "element": "CIVIC_NUMBER",
+                  "fault": "notInAnyBlock",
+                  "penalty": 1
+                },
+                {
+                  "value": "",
+                  "element": "PROVINCE",
+                  "fault": "missing",
+                  "penalty": 1
+                }
+              ],
+              "siteName": "",
+              "unitDesignator": "",
+              "unitNumber": "",
+              "unitNumberSuffix": "",
+              "civicNumber": "",
+              "civicNumberSuffix": "",
+              "streetName": "Su'it",
+              "streetType": "St",
+              "isStreetTypePrefix": "false",
+              "streetDirection": "",
+              "isStreetDirectionPrefix": "false",
+              "streetQualifier": "",
+              "localityName": "Victoria",
+              "streetAddress": "Su'it St",
+              "localityType": "City",
+              "electoralArea": "",
+              "provinceCode": "BC",
+              "locationPositionalAccuracy": "coarse",
+              "locationDescriptor": "streetPoint",
+              "siteID": "",
+              "blockID": "",
+              "fullSiteDescriptor": "",
+              "accessNotes": "",
+              "siteStatus": "",
+              "siteRetireDate": "",
+              "changeDate": "",
+              "isOfficial": "true"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Point",
+              "crs": {
+                "type": "EPSG",
+                "properties": {
+                  "code": 4326
+                }
+              },
+              "coordinates": [
+                -123.1704784,
+                49.7073916
+              ]
+            },
+            "properties": {
+              "fullAddress": "Spit Rd, Squamish, BC",
+              "score": 55,
+              "matchPrecision": "STREET",
+              "precisionPoints": 78,
+              "faults": [
+                {
+                  "value": "",
+                  "element": "LOCALITY",
+                  "fault": "missing",
+                  "penalty": 10
+                },
+                {
+                  "value": "SUIT",
+                  "element": "STREET_NAME",
+                  "fault": "spelledWrong",
+                  "penalty": 2
+                },
+                {
+                  "value": "ST",
+                  "element": "STREET_TYPE",
+                  "fault": "notMatched",
+                  "penalty": 3
+                },
+                {
+                  "value": 601,
+                  "element": "CIVIC_NUMBER",
+                  "fault": "notInAnyBlock",
+                  "penalty": 1
+                },
+                {
+                  "value": "",
+                  "element": "PROVINCE",
+                  "fault": "missing",
+                  "penalty": 1
+                },
+                {
+                  "value": "",
+                  "element": "FAULTS",
+                  "fault": "tooMany",
+                  "penalty": 6
+                }
+              ],
+              "siteName": "",
+              "unitDesignator": "",
+              "unitNumber": "",
+              "unitNumberSuffix": "",
+              "civicNumber": "",
+              "civicNumberSuffix": "",
+              "streetName": "Spit",
+              "streetType": "Rd",
+              "isStreetTypePrefix": "false",
+              "streetDirection": "",
+              "isStreetDirectionPrefix": "false",
+              "streetQualifier": "",
+              "localityName": "Squamish",
+              "streetAddress": "Spit Rd",
+              "localityType": "District Municipality",
+              "electoralArea": "",
+              "provinceCode": "BC",
+              "locationPositionalAccuracy": "coarse",
+              "locationDescriptor": "streetPoint",
+              "siteID": "",
+              "blockID": "",
+              "fullSiteDescriptor": "",
+              "accessNotes": "",
+              "siteStatus": "",
+              "siteRetireDate": "",
+              "changeDate": "",
+              "isOfficial": "true"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Point",
+              "crs": {
+                "type": "EPSG",
+                "properties": {
+                  "code": 4326
+                }
+              },
+              "coordinates": [
+                -125.900795,
+                50.3033188
+              ]
+            },
+            "properties": {
+              "fullAddress": "Smit Rd, Sayward, BC",
+              "score": 55,
+              "matchPrecision": "STREET",
+              "precisionPoints": 78,
+              "faults": [
+                {
+                  "value": "",
+                  "element": "LOCALITY",
+                  "fault": "missing",
+                  "penalty": 10
+                },
+                {
+                  "value": "SUIT",
+                  "element": "STREET_NAME",
+                  "fault": "spelledWrong",
+                  "penalty": 2
+                },
+                {
+                  "value": "ST",
+                  "element": "STREET_TYPE",
+                  "fault": "notMatched",
+                  "penalty": 3
+                },
+                {
+                  "value": 601,
+                  "element": "CIVIC_NUMBER",
+                  "fault": "notInAnyBlock",
+                  "penalty": 1
+                },
+                {
+                  "value": "",
+                  "element": "PROVINCE",
+                  "fault": "missing",
+                  "penalty": 1
+                },
+                {
+                  "value": "",
+                  "element": "FAULTS",
+                  "fault": "tooMany",
+                  "penalty": 6
+                }
+              ],
+              "siteName": "",
+              "unitDesignator": "",
+              "unitNumber": "",
+              "unitNumberSuffix": "",
+              "civicNumber": "",
+              "civicNumberSuffix": "",
+              "streetName": "Smit",
+              "streetType": "Rd",
+              "isStreetTypePrefix": "false",
+              "streetDirection": "",
+              "isStreetDirectionPrefix": "false",
+              "streetQualifier": "",
+              "localityName": "Sayward",
+              "streetAddress": "Smit Rd",
+              "localityType": "Village",
+              "electoralArea": "",
+              "provinceCode": "BC",
+              "locationPositionalAccuracy": "coarse",
+              "locationDescriptor": "streetPoint",
+              "siteID": "",
+              "blockID": "",
+              "fullSiteDescriptor": "",
+              "accessNotes": "",
+              "siteStatus": "",
+              "siteRetireDate": "",
+              "changeDate": "",
+              "isOfficial": "true"
+            }
+          },
+          {
+            "type": "Feature",
+            "geometry": {
+              "type": "Point",
+              "crs": {
+                "type": "EPSG",
+                "properties": {
+                  "code": 4326
+                }
+              },
+              "coordinates": [
+                -125.2485344,
+                50.0410958
+              ]
+            },
+            "properties": {
+              "fullAddress": "Spit Rd, Campbell River, BC",
+              "score": 55,
+              "matchPrecision": "STREET",
+              "precisionPoints": 78,
+              "faults": [
+                {
+                  "value": "",
+                  "element": "LOCALITY",
+                  "fault": "missing",
+                  "penalty": 10
+                },
+                {
+                  "value": "SUIT",
+                  "element": "STREET_NAME",
+                  "fault": "spelledWrong",
+                  "penalty": 2
+                },
+                {
+                  "value": "ST",
+                  "element": "STREET_TYPE",
+                  "fault": "notMatched",
+                  "penalty": 3
+                },
+                {
+                  "value": 601,
+                  "element": "CIVIC_NUMBER",
+                  "fault": "notInAnyBlock",
+                  "penalty": 1
+                },
+                {
+                  "value": "",
+                  "element": "PROVINCE",
+                  "fault": "missing",
+                  "penalty": 1
+                },
+                {
+                  "value": "",
+                  "element": "FAULTS",
+                  "fault": "tooMany",
+                  "penalty": 6
+                }
+              ],
+              "siteName": "",
+              "unitDesignator": "",
+              "unitNumber": "",
+              "unitNumberSuffix": "",
+              "civicNumber": "",
+              "civicNumberSuffix": "",
+              "streetName": "Spit",
+              "streetType": "Rd",
+              "isStreetTypePrefix": "false",
+              "streetDirection": "",
+              "isStreetDirectionPrefix": "false",
+              "streetQualifier": "",
+              "localityName": "Campbell River",
+              "streetAddress": "Spit Rd",
+              "localityType": "City",
+              "electoralArea": "",
+              "provinceCode": "BC",
+              "locationPositionalAccuracy": "coarse",
+              "locationDescriptor": "streetPoint",
+              "siteID": "",
+              "blockID": "",
+              "fullSiteDescriptor": "",
+              "accessNotes": "",
+              "siteStatus": "",
+              "siteRetireDate": "",
+              "changeDate": "",
+              "isOfficial": "true"
+            }
+          }
+        ]
+      },
+      "rawResponseText": "{\"type\":\"FeatureCollection\",\"queryAddress\":\"601 SU\\u2019IT ST\",\"encoding\":\"ascii\",\"searchTimestamp\":\"2026-10-07T18:22:53\",\"executionTime\":0.562,\"version\":\"4.5.4\",\"baseDataDate\":\"2026-07-07T20:10:43Z\",\"crs\":{\"type\":\"EPSG\",\"properties\":{\"code\":4326}},\"interpolation\":\"adaptive\",\"echo\":\"true\",\"locationDescriptor\":\"any\",\"setBack\":0,\"minScore\":0,\"maxResults\":5,\"disclaimer\":\"https:\\/\\/www2.gov.bc.ca\\/gov\\/content?id=79F93E018712422FBC8E674A67A70535\",\"privacyStatement\":\"https:\\/\\/www2.gov.bc.ca\\/gov\\/content?id=9E890E16955E4FF4BF3B0E07B4722932\",\"copyrightNotice\":\"Copyright \\u00A9 2024 Province of British Columbia\",\"copyrightLicense\":\"https:\\/\\/www2.gov.bc.ca\\/gov\\/content?id=A519A56BC2BF44E4A008B33FCF527F61\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"crs\":{\"type\":\"EPSG\",\"properties\":{\"code\":4326}},\"coordinates\":[-123.3527679,48.4184928]},\"properties\":{\"fullAddress\":\"601 Su'it St, Victoria, BC\",\"score\":89,\"matchPrecision\":\"CIVIC_NUMBER\",\"precisionPoints\":100,\"faults\":[{\"value\":\"\",\"element\":\"LOCALITY\",\"fault\":\"missing\",\"penalty\":10},{\"value\":\"\",\"element\":\"PROVINCE\",\"fault\":\"missing\",\"penalty\":1}],\"siteName\":\"\",\"unitDesignator\":\"\",\"unitNumber\":\"\",\"unitNumberSuffix\":\"\",\"civicNumber\":601,\"civicNumberSuffix\":\"\",\"streetName\":\"Su'it\",\"streetType\":\"St\",\"isStreetTypePrefix\":\"false\",\"streetDirection\":\"\",\"isStreetDirectionPrefix\":\"false\",\"streetQualifier\":\"\",\"localityName\":\"Victoria\",\"streetAddress\":\"601 Su'it St\",\"localityType\":\"City\",\"electoralArea\":\"\",\"provinceCode\":\"BC\",\"locationPositionalAccuracy\":\"high\",\"locationDescriptor\":\"parcelPoint\",\"siteID\":\"49f235a6-2458-44ff-8525-814ebf963c20\",\"blockID\":300760,\"fullSiteDescriptor\":\"\",\"accessNotes\":\"\\\"\",\"siteStatus\":\"active\",\"siteRetireDate\":\"9999-12-31\",\"changeDate\":\"2026-07-07\",\"isOfficial\":\"true\"}},{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"crs\":{\"type\":\"EPSG\",\"properties\":{\"code\":4326}},\"coordinates\":[-123.3532576,48.418435]},\"properties\":{\"fullAddress\":\"Su'it St, Victoria, BC\",\"score\":66,\"matchPrecision\":\"STREET\",\"precisionPoints\":78,\"faults\":[{\"value\":\"\",\"element\":\"LOCALITY\",\"fault\":\"missing\",\"penalty\":10},{\"value\":601,\"element\":\"CIVIC_NUMBER\",\"fault\":\"notInAnyBlock\",\"penalty\":1},{\"value\":\"\",\"element\":\"PROVINCE\",\"fault\":\"missing\",\"penalty\":1}],\"siteName\":\"\",\"unitDesignator\":\"\",\"unitNumber\":\"\",\"unitNumberSuffix\":\"\",\"civicNumber\":\"\",\"civicNumberSuffix\":\"\",\"streetName\":\"Su'it\",\"streetType\":\"St\",\"isStreetTypePrefix\":\"false\",\"streetDirection\":\"\",\"isStreetDirectionPrefix\":\"false\",\"streetQualifier\":\"\",\"localityName\":\"Victoria\",\"streetAddress\":\"Su'it St\",\"localityType\":\"City\",\"electoralArea\":\"\",\"provinceCode\":\"BC\",\"locationPositionalAccuracy\":\"coarse\",\"locationDescriptor\":\"streetPoint\",\"siteID\":\"\",\"blockID\":\"\",\"fullSiteDescriptor\":\"\",\"accessNotes\":\"\",\"siteStatus\":\"\",\"siteRetireDate\":\"\",\"changeDate\":\"\",\"isOfficial\":\"true\"}},{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"crs\":{\"type\":\"EPSG\",\"properties\":{\"code\":4326}},\"coordinates\":[-123.1704784,49.7073916]},\"properties\":{\"fullAddress\":\"Spit Rd, Squamish, BC\",\"score\":55,\"matchPrecision\":\"STREET\",\"precisionPoints\":78,\"faults\":[{\"value\":\"\",\"element\":\"LOCALITY\",\"fault\":\"missing\",\"penalty\":10},{\"value\":\"SUIT\",\"element\":\"STREET_NAME\",\"fault\":\"spelledWrong\",\"penalty\":2},{\"value\":\"ST\",\"element\":\"STREET_TYPE\",\"fault\":\"notMatched\",\"penalty\":3},{\"value\":601,\"element\":\"CIVIC_NUMBER\",\"fault\":\"notInAnyBlock\",\"penalty\":1},{\"value\":\"\",\"element\":\"PROVINCE\",\"fault\":\"missing\",\"penalty\":1},{\"value\":\"\",\"element\":\"FAULTS\",\"fault\":\"tooMany\",\"penalty\":6}],\"siteName\":\"\",\"unitDesignator\":\"\",\"unitNumber\":\"\",\"unitNumberSuffix\":\"\",\"civicNumber\":\"\",\"civicNumberSuffix\":\"\",\"streetName\":\"Spit\",\"streetType\":\"Rd\",\"isStreetTypePrefix\":\"false\",\"streetDirection\":\"\",\"isStreetDirectionPrefix\":\"false\",\"streetQualifier\":\"\",\"localityName\":\"Squamish\",\"streetAddress\":\"Spit Rd\",\"localityType\":\"District Municipality\",\"electoralArea\":\"\",\"provinceCode\":\"BC\",\"locationPositionalAccuracy\":\"coarse\",\"locationDescriptor\":\"streetPoint\",\"siteID\":\"\",\"blockID\":\"\",\"fullSiteDescriptor\":\"\",\"accessNotes\":\"\",\"siteStatus\":\"\",\"siteRetireDate\":\"\",\"changeDate\":\"\",\"isOfficial\":\"true\"}},{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"crs\":{\"type\":\"EPSG\",\"properties\":{\"code\":4326}},\"coordinates\":[-125.900795,50.3033188]},\"properties\":{\"fullAddress\":\"Smit Rd, Sayward, BC\",\"score\":55,\"matchPrecision\":\"STREET\",\"precisionPoints\":78,\"faults\":[{\"value\":\"\",\"element\":\"LOCALITY\",\"fault\":\"missing\",\"penalty\":10},{\"value\":\"SUIT\",\"element\":\"STREET_NAME\",\"fault\":\"spelledWrong\",\"penalty\":2},{\"value\":\"ST\",\"element\":\"STREET_TYPE\",\"fault\":\"notMatched\",\"penalty\":3},{\"value\":601,\"element\":\"CIVIC_NUMBER\",\"fault\":\"notInAnyBlock\",\"penalty\":1},{\"value\":\"\",\"element\":\"PROVINCE\",\"fault\":\"missing\",\"penalty\":1},{\"value\":\"\",\"element\":\"FAULTS\",\"fault\":\"tooMany\",\"penalty\":6}],\"siteName\":\"\",\"unitDesignator\":\"\",\"unitNumber\":\"\",\"unitNumberSuffix\":\"\",\"civicNumber\":\"\",\"civicNumberSuffix\":\"\",\"streetName\":\"Smit\",\"streetType\":\"Rd\",\"isStreetTypePrefix\":\"false\",\"streetDirection\":\"\",\"isStreetDirectionPrefix\":\"false\",\"streetQualifier\":\"\",\"localityName\":\"Sayward\",\"streetAddress\":\"Smit Rd\",\"localityType\":\"Village\",\"electoralArea\":\"\",\"provinceCode\":\"BC\",\"locationPositionalAccuracy\":\"coarse\",\"locationDescriptor\":\"streetPoint\",\"siteID\":\"\",\"blockID\":\"\",\"fullSiteDescriptor\":\"\",\"accessNotes\":\"\",\"siteStatus\":\"\",\"siteRetireDate\":\"\",\"changeDate\":\"\",\"isOfficial\":\"true\"}},{\"type\":\"Feature\",\"geometry\":{\"type\":\"Point\",\"crs\":{\"type\":\"EPSG\",\"properties\":{\"code\":4326}},\"coordinates\":[-125.2485344,50.0410958]},\"properties\":{\"fullAddress\":\"Spit Rd, Campbell River, BC\",\"score\":55,\"matchPrecision\":\"STREET\",\"precisionPoints\":78,\"faults\":[{\"value\":\"\",\"element\":\"LOCALITY\",\"fault\":\"missing\",\"penalty\":10},{\"value\":\"SUIT\",\"element\":\"STREET_NAME\",\"fault\":\"spelledWrong\",\"penalty\":2},{\"value\":\"ST\",\"element\":\"STREET_TYPE\",\"fault\":\"notMatched\",\"penalty\":3},{\"value\":601,\"element\":\"CIVIC_NUMBER\",\"fault\":\"notInAnyBlock\",\"penalty\":1},{\"value\":\"\",\"element\":\"PROVINCE\",\"fault\":\"missing\",\"penalty\":1},{\"value\":\"\",\"element\":\"FAULTS\",\"fault\":\"tooMany\",\"penalty\":6}],\"siteName\":\"\",\"unitDesignator\":\"\",\"unitNumber\":\"\",\"unitNumberSuffix\":\"\",\"civicNumber\":\"\",\"civicNumberSuffix\":\"\",\"streetName\":\"Spit\",\"streetType\":\"Rd\",\"isStreetTypePrefix\":\"false\",\"streetDirection\":\"\",\"isStreetDirectionPrefix\":\"false\",\"streetQualifier\":\"\",\"localityName\":\"Campbell River\",\"streetAddress\":\"Spit Rd\",\"localityType\":\"City\",\"electoralArea\":\"\",\"provinceCode\":\"BC\",\"locationPositionalAccuracy\":\"coarse\",\"locationDescriptor\":\"streetPoint\",\"siteID\":\"\",\"blockID\":\"\",\"fullSiteDescriptor\":\"\",\"accessNotes\":\"\",\"siteStatus\":\"\",\"siteRetireDate\":\"\",\"changeDate\":\"\",\"isOfficial\":\"true\"}}]}"
+    }
+  },
+  "search": {
+    "schema_version": "municipal-sites.v1",
+    "status": "candidates",
+    "candidates": [
+      {
+        "parcel_ref": {
+          "source": "city-of-victoria-pid-parcels",
+          "object_id": 13343
+        },
+        "pid": "008-094-764",
+        "gislink": "03219020",
+        "address": "601 SU'IT ST",
+        "address_object_id": 8675,
+        "relation": "gislink_join",
+        "attributes": {
+          "OBJECTID": 13343,
+          "PID": "008-094-764",
+          "VicPID": "V02191018",
+          "GISLINK": "03219020",
+          "ParcelType": "LA",
+          "ParcelStatus": "ACTIVE",
+          "Shape_Area": 756.0439944180146
+        },
+        "identity_status": "source_join_unreviewed"
+      },
+      {
+        "parcel_ref": {
+          "source": "city-of-victoria-pid-parcels",
+          "object_id": 13344
+        },
+        "pid": "008-094-772",
+        "gislink": "03219020",
+        "address": "601 SU'IT ST",
+        "address_object_id": 8675,
+        "relation": "gislink_join",
+        "attributes": {
+          "OBJECTID": 13344,
+          "PID": "008-094-772",
+          "VicPID": "V02191024",
+          "GISLINK": "03219020",
+          "ParcelType": "LA",
+          "ParcelStatus": "ACTIVE",
+          "Shape_Area": 755.624434726174
+        },
+        "identity_status": "source_join_unreviewed"
+      }
+    ],
+    "evidence": [
+      {
+        "provider": "City of Victoria Open Data",
+        "record_label": "Address MapServer response",
+        "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/0/query?f=json&where=FullAddress%3D%27601+SU%27%27IT+ST%27&outFields=OBJECTID%2CFullAddress%2CGISLINK%2CLegal_Type&returnGeometry=true&outSR=3157",
+        "captured_at_utc": "2026-10-08T01:22:54.173434+00:00",
+        "review_status": "unreviewed_live_observation",
+        "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+        "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+        "source_date_limit": "Feature update date and positional accuracy not supplied; rooflines derive from aerial imagery, not surveyed walls.",
+        "sha256": "ad3973c51ea992a34527c8f772bd2bb07628b7a963ba0f225d082dd1bb9e7b18",
+        "raw_response": {
+          "displayFieldName": "FullAddress",
+          "fieldAliases": {
+            "OBJECTID": "OBJECTID",
+            "FullAddress": "FullAddress",
+            "GISLINK": "GISLINK",
+            "Legal_Type": "Legal_Type"
+          },
+          "geometryType": "esriGeometryPoint",
+          "spatialReference": {
+            "wkid": 3157,
+            "latestWkid": 3157
+          },
+          "fields": [
+            {
+              "name": "OBJECTID",
+              "type": "esriFieldTypeOID",
+              "alias": "OBJECTID"
+            },
+            {
+              "name": "FullAddress",
+              "type": "esriFieldTypeString",
+              "alias": "FullAddress",
+              "length": 200
+            },
+            {
+              "name": "GISLINK",
+              "type": "esriFieldTypeString",
+              "alias": "GISLINK",
+              "length": 16
+            },
+            {
+              "name": "Legal_Type",
+              "type": "esriFieldTypeString",
+              "alias": "Legal_Type",
+              "length": 200
+            }
+          ],
+          "features": [
+            {
+              "attributes": {
+                "OBJECTID": 8675,
+                "FullAddress": "601 SU'IT ST",
+                "GISLINK": "03219020",
+                "Legal_Type": "LAND"
+              },
+              "geometry": {
+                "x": 473899.5712000001,
+                "y": 5362874.698100001
+              }
+            }
+          ]
+        },
+        "raw_response_text": "{\"displayFieldName\":\"FullAddress\",\"fieldAliases\":{\"OBJECTID\":\"OBJECTID\",\"FullAddress\":\"FullAddress\",\"GISLINK\":\"GISLINK\",\"Legal_Type\":\"Legal_Type\"},\"geometryType\":\"esriGeometryPoint\",\"spatialReference\":{\"wkid\":3157,\"latestWkid\":3157},\"fields\":[{\"name\":\"OBJECTID\",\"type\":\"esriFieldTypeOID\",\"alias\":\"OBJECTID\"},{\"name\":\"FullAddress\",\"type\":\"esriFieldTypeString\",\"alias\":\"FullAddress\",\"length\":200},{\"name\":\"GISLINK\",\"type\":\"esriFieldTypeString\",\"alias\":\"GISLINK\",\"length\":16},{\"name\":\"Legal_Type\",\"type\":\"esriFieldTypeString\",\"alias\":\"Legal_Type\",\"length\":200}],\"features\":[{\"attributes\":{\"OBJECTID\":8675,\"FullAddress\":\"601 SU'IT ST\",\"GISLINK\":\"03219020\",\"Legal_Type\":\"LAND\"},\"geometry\":{\"x\":473899.57120000012,\"y\":5362874.6981000006}}]}"
+      },
+      {
+        "provider": "City of Victoria Open Data",
+        "record_label": "Parcel MapServer response",
+        "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=json&where=GISLINK%3D%2703219020%27&outFields=OBJECTID%2CPID%2CVicPID%2CGISLINK%2CParcelType%2CParcelStatus%2CShape_Area&returnGeometry=false&outSR=3157",
+        "captured_at_utc": "2026-10-08T01:22:54.436220+00:00",
+        "review_status": "unreviewed_live_observation",
+        "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+        "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+        "source_date_limit": "Feature update date and positional accuracy not supplied; rooflines derive from aerial imagery, not surveyed walls.",
+        "sha256": "796b3d72061abe1ebfa2d43f7dba9258952c8d9e050d37ff29e7cc24127a45d3",
+        "raw_response": {
+          "displayFieldName": "Name",
+          "fieldAliases": {
+            "OBJECTID": "OBJECTID",
+            "PID": "PID",
+            "VicPID": "VicPID",
+            "GISLINK": "GISLINK",
+            "ParcelType": "ParcelType",
+            "ParcelStatus": "ParcelStatus",
+            "Shape_Area": "Shape_Area"
+          },
+          "fields": [
+            {
+              "name": "OBJECTID",
+              "type": "esriFieldTypeOID",
+              "alias": "OBJECTID"
+            },
+            {
+              "name": "PID",
+              "type": "esriFieldTypeString",
+              "alias": "PID",
+              "length": 50
+            },
+            {
+              "name": "VicPID",
+              "type": "esriFieldTypeString",
+              "alias": "VicPID",
+              "length": 50
+            },
+            {
+              "name": "GISLINK",
+              "type": "esriFieldTypeString",
+              "alias": "GISLINK",
+              "length": 255
+            },
+            {
+              "name": "ParcelType",
+              "type": "esriFieldTypeString",
+              "alias": "ParcelType",
+              "length": 30
+            },
+            {
+              "name": "ParcelStatus",
+              "type": "esriFieldTypeString",
+              "alias": "ParcelStatus",
+              "length": 20
+            },
+            {
+              "name": "Shape_Area",
+              "type": "esriFieldTypeDouble",
+              "alias": "Shape_Area"
+            }
+          ],
+          "features": [
+            {
+              "attributes": {
+                "OBJECTID": 13343,
+                "PID": "008-094-764",
+                "VicPID": "V02191018",
+                "GISLINK": "03219020",
+                "ParcelType": "LA",
+                "ParcelStatus": "ACTIVE",
+                "Shape_Area": 756.0439944180146
+              }
+            },
+            {
+              "attributes": {
+                "OBJECTID": 13344,
+                "PID": "008-094-772",
+                "VicPID": "V02191024",
+                "GISLINK": "03219020",
+                "ParcelType": "LA",
+                "ParcelStatus": "ACTIVE",
+                "Shape_Area": 755.624434726174
+              }
+            }
+          ]
+        },
+        "raw_response_text": "{\"displayFieldName\":\"Name\",\"fieldAliases\":{\"OBJECTID\":\"OBJECTID\",\"PID\":\"PID\",\"VicPID\":\"VicPID\",\"GISLINK\":\"GISLINK\",\"ParcelType\":\"ParcelType\",\"ParcelStatus\":\"ParcelStatus\",\"Shape_Area\":\"Shape_Area\"},\"fields\":[{\"name\":\"OBJECTID\",\"type\":\"esriFieldTypeOID\",\"alias\":\"OBJECTID\"},{\"name\":\"PID\",\"type\":\"esriFieldTypeString\",\"alias\":\"PID\",\"length\":50},{\"name\":\"VicPID\",\"type\":\"esriFieldTypeString\",\"alias\":\"VicPID\",\"length\":50},{\"name\":\"GISLINK\",\"type\":\"esriFieldTypeString\",\"alias\":\"GISLINK\",\"length\":255},{\"name\":\"ParcelType\",\"type\":\"esriFieldTypeString\",\"alias\":\"ParcelType\",\"length\":30},{\"name\":\"ParcelStatus\",\"type\":\"esriFieldTypeString\",\"alias\":\"ParcelStatus\",\"length\":20},{\"name\":\"Shape_Area\",\"type\":\"esriFieldTypeDouble\",\"alias\":\"Shape_Area\"}],\"features\":[{\"attributes\":{\"OBJECTID\":13343,\"PID\":\"008-094-764\",\"VicPID\":\"V02191018\",\"GISLINK\":\"03219020\",\"ParcelType\":\"LA\",\"ParcelStatus\":\"ACTIVE\",\"Shape_Area\":756.04399441801456}},{\"attributes\":{\"OBJECTID\":13344,\"PID\":\"008-094-772\",\"VicPID\":\"V02191024\",\"GISLINK\":\"03219020\",\"ParcelType\":\"LA\",\"ParcelStatus\":\"ACTIVE\",\"Shape_Area\":755.62443472617394}}]}"
+      }
+    ],
+    "note": "Select a parcel explicitly; a source join or point lead is not verified legal identity."
+  },
+  "observations": [
+    {
+      "schema_version": "municipal-sites.v1",
+      "status": "available",
+      "parcel_ref": {
+        "source": "city-of-victoria-pid-parcels",
+        "object_id": 13343
+      },
+      "parcel": {
+        "attributes": {
+          "OBJECTID": 13343,
+          "PID": "008-094-764",
+          "VicPID": "V02191018",
+          "GISLINK": "03219020",
+          "ParcelType": "LA",
+          "ParcelStatus": "ACTIVE",
+          "Shape_Area": 756.0439944180146
+        },
+        "geometry": {
+          "rings": [
+            [
+              [
+                473926.63430000003,
+                5362885.5503
+              ],
+              [
+                473924.1133000003,
+                5362870.578400001
+              ],
+              [
+                473875.0201000003,
+                5362878.810799999
+              ],
+              [
+                473877.51410000026,
+                5362893.7897
+              ],
+              [
+                473926.63430000003,
+                5362885.5503
+              ]
+            ]
+          ]
+        },
+        "planar_geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                473926.63430000003,
+                5362885.5503
+              ],
+              [
+                473924.1133000003,
+                5362870.578400001
+              ],
+              [
+                473875.0201000003,
+                5362878.810799999
+              ],
+              [
+                473877.51410000026,
+                5362893.7897
+              ],
+              [
+                473926.63430000003,
+                5362885.5503
+              ]
+            ]
+          ]
+        },
+        "horizontal_crs": "EPSG:3157",
+        "area_m2": 756.0439944180146,
+        "geometry_issue": null
+      },
+      "rooflines": [
+        {
+          "attributes": {
+            "OBJECTID": 63036,
+            "LAYER": "Residential_2023",
+            "SHAPE_Area": 282.49081836280806
+          },
+          "geometry": {
+            "hasZ": true,
+            "rings": [
+              [
+                [
+                  473924.32469999976,
+                  5362868.366900001,
+                  23.179699999993318
+                ],
+                [
+                  473923.60309999995,
+                  5362863.681700001,
+                  23.179699999993318
+                ],
+                [
+                  473914.7170000002,
+                  5362865.0502,
+                  26.979699999996228
+                ],
+                [
+                  473914.5739000002,
+                  5362864.120999999,
+                  26.32970000000205
+                ],
+                [
+                  473909.9656999996,
+                  5362864.830700001,
+                  26.32970000000205
+                ],
+                [
+                  473909.8269999996,
+                  5362863.93,
+                  26.32970000000205
+                ],
+                [
+                  473906.7123999996,
+                  5362864.409700001,
+                  27.77969999999914
+                ],
+                [
+                  473906.54949999973,
+                  5362863.352,
+                  25.27969999999914
+                ],
+                [
+                  473904.90330000035,
+                  5362863.6055,
+                  25.27969999999914
+                ],
+                [
+                  473905.08669999987,
+                  5362864.796599999,
+                  25.27969999999914
+                ],
+                [
+                  473903.80040000007,
+                  5362864.9947,
+                  27.429699999993318
+                ],
+                [
+                  473903.8104999997,
+                  5362865.0603,
+                  27.32970000000205
+                ],
+                [
+                  473902.176,
+                  5362865.312000001,
+                  26.32970000000205
+                ],
+                [
+                  473902.82299999986,
+                  5362869.513,
+                  26.25470000000496
+                ],
+                [
+                  473900.3409000002,
+                  5362869.895199999,
+                  24.27969999999914
+                ],
+                [
+                  473900.68489999976,
+                  5362872.1285,
+                  27.75470000000496
+                ],
+                [
+                  473899.98620000016,
+                  5362872.236099999,
+                  27.75470000000496
+                ],
+                [
+                  473900.2997000003,
+                  5362874.2719,
+                  29.15469999999914
+                ],
+                [
+                  473899.9177000001,
+                  5362874.330700001,
+                  29.054699999993318
+                ],
+                [
+                  473901.2503000004,
+                  5362882.9838,
+                  22.25470000000496
+                ],
+                [
+                  473904.8980999999,
+                  5362882.422,
+                  26.27969999999914
+                ],
+                [
+                  473905.11510000005,
+                  5362883.8313,
+                  26.27969999999914
+                ],
+                [
+                  473907.2062999997,
+                  5362883.509299999,
+                  27.87970000000496
+                ],
+                [
+                  473907.2542000003,
+                  5362883.820900001,
+                  27.87970000000496
+                ],
+                [
+                  473910.6956000002,
+                  5362883.290899999,
+                  27.75470000000496
+                ],
+                [
+                  473910.6445000004,
+                  5362882.959100001,
+                  27.604699999996228
+                ],
+                [
+                  473912.69629999995,
+                  5362882.643100001,
+                  26.32970000000205
+                ],
+                [
+                  473912.51889999956,
+                  5362881.491,
+                  26.12970000000496
+                ],
+                [
+                  473913.7620000001,
+                  5362881.2996,
+                  24.25470000000496
+                ],
+                [
+                  473913.36290000007,
+                  5362878.7083,
+                  24.50470000000496
+                ],
+                [
+                  473912.0379999997,
+                  5362878.9123,
+                  26.32970000000205
+                ],
+                [
+                  473911.87370000035,
+                  5362877.846000001,
+                  27.604699999996228
+                ],
+                [
+                  473914.0744000003,
+                  5362877.507099999,
+                  27.57970000000205
+                ],
+                [
+                  473912.99179999996,
+                  5362870.477499999,
+                  28.02969999999914
+                ],
+                [
+                  473915.55929999985,
+                  5362870.0821,
+                  26.679699999993318
+                ],
+                [
+                  473915.5044,
+                  5362869.725299999,
+                  26.57970000000205
+                ],
+                [
+                  473924.32469999976,
+                  5362868.366900001,
+                  23.179699999993318
+                ]
+              ]
+            ]
+          },
+          "planar_geometry": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [
+                  473924.32469999976,
+                  5362868.366900001
+                ],
+                [
+                  473923.60309999995,
+                  5362863.681700001
+                ],
+                [
+                  473914.7170000002,
+                  5362865.0502
+                ],
+                [
+                  473914.5739000002,
+                  5362864.120999999
+                ],
+                [
+                  473909.9656999996,
+                  5362864.830700001
+                ],
+                [
+                  473909.8269999996,
+                  5362863.93
+                ],
+                [
+                  473906.7123999996,
+                  5362864.409700001
+                ],
+                [
+                  473906.54949999973,
+                  5362863.352
+                ],
+                [
+                  473904.90330000035,
+                  5362863.6055
+                ],
+                [
+                  473905.08669999987,
+                  5362864.796599999
+                ],
+                [
+                  473903.80040000007,
+                  5362864.9947
+                ],
+                [
+                  473903.8104999997,
+                  5362865.0603
+                ],
+                [
+                  473902.176,
+                  5362865.312000001
+                ],
+                [
+                  473902.82299999986,
+                  5362869.513
+                ],
+                [
+                  473900.3409000002,
+                  5362869.895199999
+                ],
+                [
+                  473900.68489999976,
+                  5362872.1285
+                ],
+                [
+                  473899.98620000016,
+                  5362872.236099999
+                ],
+                [
+                  473900.2997000003,
+                  5362874.2719
+                ],
+                [
+                  473899.9177000001,
+                  5362874.330700001
+                ],
+                [
+                  473901.2503000004,
+                  5362882.9838
+                ],
+                [
+                  473904.8980999999,
+                  5362882.422
+                ],
+                [
+                  473905.11510000005,
+                  5362883.8313
+                ],
+                [
+                  473907.2062999997,
+                  5362883.509299999
+                ],
+                [
+                  473907.2542000003,
+                  5362883.820900001
+                ],
+                [
+                  473910.6956000002,
+                  5362883.290899999
+                ],
+                [
+                  473910.6445000004,
+                  5362882.959100001
+                ],
+                [
+                  473912.69629999995,
+                  5362882.643100001
+                ],
+                [
+                  473912.51889999956,
+                  5362881.491
+                ],
+                [
+                  473913.7620000001,
+                  5362881.2996
+                ],
+                [
+                  473913.36290000007,
+                  5362878.7083
+                ],
+                [
+                  473912.0379999997,
+                  5362878.9123
+                ],
+                [
+                  473911.87370000035,
+                  5362877.846000001
+                ],
+                [
+                  473914.0744000003,
+                  5362877.507099999
+                ],
+                [
+                  473912.99179999996,
+                  5362870.477499999
+                ],
+                [
+                  473915.55929999985,
+                  5362870.0821
+                ],
+                [
+                  473915.5044,
+                  5362869.725299999
+                ],
+                [
+                  473924.32469999976,
+                  5362868.366900001
+                ]
+              ]
+            ]
+          },
+          "horizontal_crs": "EPSG:3157",
+          "area_m2": 282.49081836280817,
+          "intersection_area_m2": 123.20551430936364,
+          "geometry_issue": null,
+          "relationship": "spatial_intersection_not_ownership"
+        }
+      ],
+      "issues": [],
+      "evidence": [
+        {
+          "provider": "City of Victoria Open Data",
+          "record_label": "Parcel MapServer response",
+          "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=json&objectIds=13343&outFields=OBJECTID%2CPID%2CVicPID%2CGISLINK%2CParcelType%2CParcelStatus%2CShape_Area&returnGeometry=true&outSR=3157",
+          "captured_at_utc": "2026-10-08T01:22:54.691820+00:00",
+          "review_status": "unreviewed_live_observation",
+          "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+          "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+          "source_date_limit": "Feature update date and positional accuracy not supplied; rooflines derive from aerial imagery, not surveyed walls.",
+          "sha256": "e020c3a68cba9ba6871dba63d4d38a091d783d24bc8715d0bf13477e22f6a4d6",
+          "raw_response": {
+            "displayFieldName": "Name",
+            "fieldAliases": {
+              "OBJECTID": "OBJECTID",
+              "PID": "PID",
+              "VicPID": "VicPID",
+              "GISLINK": "GISLINK",
+              "ParcelType": "ParcelType",
+              "ParcelStatus": "ParcelStatus",
+              "Shape_Area": "Shape_Area"
+            },
+            "geometryType": "esriGeometryPolygon",
+            "spatialReference": {
+              "wkid": 3157,
+              "latestWkid": 3157
+            },
+            "fields": [
+              {
+                "name": "OBJECTID",
+                "type": "esriFieldTypeOID",
+                "alias": "OBJECTID"
+              },
+              {
+                "name": "PID",
+                "type": "esriFieldTypeString",
+                "alias": "PID",
+                "length": 50
+              },
+              {
+                "name": "VicPID",
+                "type": "esriFieldTypeString",
+                "alias": "VicPID",
+                "length": 50
+              },
+              {
+                "name": "GISLINK",
+                "type": "esriFieldTypeString",
+                "alias": "GISLINK",
+                "length": 255
+              },
+              {
+                "name": "ParcelType",
+                "type": "esriFieldTypeString",
+                "alias": "ParcelType",
+                "length": 30
+              },
+              {
+                "name": "ParcelStatus",
+                "type": "esriFieldTypeString",
+                "alias": "ParcelStatus",
+                "length": 20
+              },
+              {
+                "name": "Shape_Area",
+                "type": "esriFieldTypeDouble",
+                "alias": "Shape_Area"
+              }
+            ],
+            "features": [
+              {
+                "attributes": {
+                  "OBJECTID": 13343,
+                  "PID": "008-094-764",
+                  "VicPID": "V02191018",
+                  "GISLINK": "03219020",
+                  "ParcelType": "LA",
+                  "ParcelStatus": "ACTIVE",
+                  "Shape_Area": 756.0439944180146
+                },
+                "geometry": {
+                  "rings": [
+                    [
+                      [
+                        473926.63430000003,
+                        5362885.5503
+                      ],
+                      [
+                        473924.1133000003,
+                        5362870.578400001
+                      ],
+                      [
+                        473875.0201000003,
+                        5362878.810799999
+                      ],
+                      [
+                        473877.51410000026,
+                        5362893.7897
+                      ],
+                      [
+                        473926.63430000003,
+                        5362885.5503
+                      ]
+                    ]
+                  ]
+                }
+              }
+            ]
+          },
+          "raw_response_text": "{\"displayFieldName\":\"Name\",\"fieldAliases\":{\"OBJECTID\":\"OBJECTID\",\"PID\":\"PID\",\"VicPID\":\"VicPID\",\"GISLINK\":\"GISLINK\",\"ParcelType\":\"ParcelType\",\"ParcelStatus\":\"ParcelStatus\",\"Shape_Area\":\"Shape_Area\"},\"geometryType\":\"esriGeometryPolygon\",\"spatialReference\":{\"wkid\":3157,\"latestWkid\":3157},\"fields\":[{\"name\":\"OBJECTID\",\"type\":\"esriFieldTypeOID\",\"alias\":\"OBJECTID\"},{\"name\":\"PID\",\"type\":\"esriFieldTypeString\",\"alias\":\"PID\",\"length\":50},{\"name\":\"VicPID\",\"type\":\"esriFieldTypeString\",\"alias\":\"VicPID\",\"length\":50},{\"name\":\"GISLINK\",\"type\":\"esriFieldTypeString\",\"alias\":\"GISLINK\",\"length\":255},{\"name\":\"ParcelType\",\"type\":\"esriFieldTypeString\",\"alias\":\"ParcelType\",\"length\":30},{\"name\":\"ParcelStatus\",\"type\":\"esriFieldTypeString\",\"alias\":\"ParcelStatus\",\"length\":20},{\"name\":\"Shape_Area\",\"type\":\"esriFieldTypeDouble\",\"alias\":\"Shape_Area\"}],\"features\":[{\"attributes\":{\"OBJECTID\":13343,\"PID\":\"008-094-764\",\"VicPID\":\"V02191018\",\"GISLINK\":\"03219020\",\"ParcelType\":\"LA\",\"ParcelStatus\":\"ACTIVE\",\"Shape_Area\":756.04399441801456},\"geometry\":{\"rings\":[[[473926.63430000003,5362885.5503000002],[473924.11330000032,5362870.5784000009],[473875.02010000031,5362878.8107999992],[473877.51410000026,5362893.7896999996],[473926.63430000003,5362885.5503000002]]]}}]}"
+        },
+        {
+          "provider": "City of Victoria Open Data",
+          "record_label": "Building MapServer response",
+          "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=json&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%2C%22rings%22%3A%5B%5B%5B473926.63430000003%2C5362885.5503%5D%2C%5B473924.1133000003%2C5362870.578400001%5D%2C%5B473875.0201000003%2C5362878.810799999%5D%2C%5B473877.51410000026%2C5362893.7897%5D%2C%5B473926.63430000003%2C5362885.5503%5D%5D%5D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+          "captured_at_utc": "2026-10-08T01:22:54.947081+00:00",
+          "review_status": "unreviewed_live_observation",
+          "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+          "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+          "source_date_limit": "Feature update date and positional accuracy not supplied; rooflines derive from aerial imagery, not surveyed walls.",
+          "sha256": "4c139b832dfec704a1cd49cb806d41129c7783217ae530f06909eec75bd6b14e",
+          "raw_response": {
+            "displayFieldName": "AUC_Group",
+            "hasZ": true,
+            "fieldAliases": {
+              "OBJECTID": "OBJECTID",
+              "LAYER": "LAYER",
+              "SHAPE_Area": "SHAPE_Area"
+            },
+            "geometryType": "esriGeometryPolygon",
+            "spatialReference": {
+              "wkid": 3157,
+              "latestWkid": 3157
+            },
+            "fields": [
+              {
+                "name": "OBJECTID",
+                "type": "esriFieldTypeOID",
+                "alias": "OBJECTID"
+              },
+              {
+                "name": "LAYER",
+                "type": "esriFieldTypeString",
+                "alias": "LAYER",
+                "length": 255
+              },
+              {
+                "name": "SHAPE_Area",
+                "type": "esriFieldTypeDouble",
+                "alias": "SHAPE_Area"
+              }
+            ],
+            "features": [
+              {
+                "attributes": {
+                  "OBJECTID": 63036,
+                  "LAYER": "Residential_2023",
+                  "SHAPE_Area": 282.49081836280806
+                },
+                "geometry": {
+                  "hasZ": true,
+                  "rings": [
+                    [
+                      [
+                        473924.32469999976,
+                        5362868.366900001,
+                        23.179699999993318
+                      ],
+                      [
+                        473923.60309999995,
+                        5362863.681700001,
+                        23.179699999993318
+                      ],
+                      [
+                        473914.7170000002,
+                        5362865.0502,
+                        26.979699999996228
+                      ],
+                      [
+                        473914.5739000002,
+                        5362864.120999999,
+                        26.32970000000205
+                      ],
+                      [
+                        473909.9656999996,
+                        5362864.830700001,
+                        26.32970000000205
+                      ],
+                      [
+                        473909.8269999996,
+                        5362863.93,
+                        26.32970000000205
+                      ],
+                      [
+                        473906.7123999996,
+                        5362864.409700001,
+                        27.77969999999914
+                      ],
+                      [
+                        473906.54949999973,
+                        5362863.352,
+                        25.27969999999914
+                      ],
+                      [
+                        473904.90330000035,
+                        5362863.6055,
+                        25.27969999999914
+                      ],
+                      [
+                        473905.08669999987,
+                        5362864.796599999,
+                        25.27969999999914
+                      ],
+                      [
+                        473903.80040000007,
+                        5362864.9947,
+                        27.429699999993318
+                      ],
+                      [
+                        473903.8104999997,
+                        5362865.0603,
+                        27.32970000000205
+                      ],
+                      [
+                        473902.176,
+                        5362865.312000001,
+                        26.32970000000205
+                      ],
+                      [
+                        473902.82299999986,
+                        5362869.513,
+                        26.25470000000496
+                      ],
+                      [
+                        473900.3409000002,
+                        5362869.895199999,
+                        24.27969999999914
+                      ],
+                      [
+                        473900.68489999976,
+                        5362872.1285,
+                        27.75470000000496
+                      ],
+                      [
+                        473899.98620000016,
+                        5362872.236099999,
+                        27.75470000000496
+                      ],
+                      [
+                        473900.2997000003,
+                        5362874.2719,
+                        29.15469999999914
+                      ],
+                      [
+                        473899.9177000001,
+                        5362874.330700001,
+                        29.054699999993318
+                      ],
+                      [
+                        473901.2503000004,
+                        5362882.9838,
+                        22.25470000000496
+                      ],
+                      [
+                        473904.8980999999,
+                        5362882.422,
+                        26.27969999999914
+                      ],
+                      [
+                        473905.11510000005,
+                        5362883.8313,
+                        26.27969999999914
+                      ],
+                      [
+                        473907.2062999997,
+                        5362883.509299999,
+                        27.87970000000496
+                      ],
+                      [
+                        473907.2542000003,
+                        5362883.820900001,
+                        27.87970000000496
+                      ],
+                      [
+                        473910.6956000002,
+                        5362883.290899999,
+                        27.75470000000496
+                      ],
+                      [
+                        473910.6445000004,
+                        5362882.959100001,
+                        27.604699999996228
+                      ],
+                      [
+                        473912.69629999995,
+                        5362882.643100001,
+                        26.32970000000205
+                      ],
+                      [
+                        473912.51889999956,
+                        5362881.491,
+                        26.12970000000496
+                      ],
+                      [
+                        473913.7620000001,
+                        5362881.2996,
+                        24.25470000000496
+                      ],
+                      [
+                        473913.36290000007,
+                        5362878.7083,
+                        24.50470000000496
+                      ],
+                      [
+                        473912.0379999997,
+                        5362878.9123,
+                        26.32970000000205
+                      ],
+                      [
+                        473911.87370000035,
+                        5362877.846000001,
+                        27.604699999996228
+                      ],
+                      [
+                        473914.0744000003,
+                        5362877.507099999,
+                        27.57970000000205
+                      ],
+                      [
+                        473912.99179999996,
+                        5362870.477499999,
+                        28.02969999999914
+                      ],
+                      [
+                        473915.55929999985,
+                        5362870.0821,
+                        26.679699999993318
+                      ],
+                      [
+                        473915.5044,
+                        5362869.725299999,
+                        26.57970000000205
+                      ],
+                      [
+                        473924.32469999976,
+                        5362868.366900001,
+                        23.179699999993318
+                      ]
+                    ]
+                  ]
+                }
+              }
+            ]
+          },
+          "raw_response_text": "{\"displayFieldName\":\"AUC_Group\",\"hasZ\":true,\"fieldAliases\":{\"OBJECTID\":\"OBJECTID\",\"LAYER\":\"LAYER\",\"SHAPE_Area\":\"SHAPE_Area\"},\"geometryType\":\"esriGeometryPolygon\",\"spatialReference\":{\"wkid\":3157,\"latestWkid\":3157},\"fields\":[{\"name\":\"OBJECTID\",\"type\":\"esriFieldTypeOID\",\"alias\":\"OBJECTID\"},{\"name\":\"LAYER\",\"type\":\"esriFieldTypeString\",\"alias\":\"LAYER\",\"length\":255},{\"name\":\"SHAPE_Area\",\"type\":\"esriFieldTypeDouble\",\"alias\":\"SHAPE_Area\"}],\"features\":[{\"attributes\":{\"OBJECTID\":63036,\"LAYER\":\"Residential_2023\",\"SHAPE_Area\":282.49081836280806},\"geometry\":{\"hasZ\":true,\"rings\":[[[473924.32469999976,5362868.3669000007,23.179699999993318],[473923.60309999995,5362863.6817000005,23.179699999993318],[473914.71700000018,5362865.0502000004,26.979699999996228],[473914.57390000019,5362864.1209999993,26.329700000002049],[473909.96569999959,5362864.8307000007,26.329700000002049],[473909.82699999958,5362863.9299999997,26.329700000002049],[473906.71239999961,5362864.4097000007,27.779699999999139],[473906.54949999973,5362863.352,25.279699999999139],[473904.90330000035,5362863.6054999996,25.279699999999139],[473905.08669999987,5362864.7965999991,25.279699999999139],[473903.80040000007,5362864.9946999997,27.429699999993318],[473903.81049999967,5362865.0603,27.329700000002049],[473902.17599999998,5362865.3120000008,26.329700000002049],[473902.82299999986,5362869.5130000003,26.254700000004959],[473900.34090000018,5362869.8951999992,24.279699999999139],[473900.68489999976,5362872.1284999996,27.754700000004959],[473899.98620000016,5362872.2360999994,27.754700000004959],[473900.29970000032,5362874.2719000001,29.154699999999139],[473899.91770000011,5362874.3307000007,29.054699999993318],[473901.25030000042,5362882.9837999996,22.254700000004959],[473904.89809999987,5362882.4220000003,26.279699999999139],[473905.11510000005,5362883.8312999997,26.279699999999139],[473907.20629999973,5362883.5092999991,27.879700000004959],[473907.25420000032,5362883.8209000006,27.879700000004959],[473910.69560000021,5362883.2908999994,27.754700000004959],[473910.6445000004,5362882.9591000006,27.604699999996228],[473912.69629999995,5362882.6431000009,26.329700000002049],[473912.51889999956,5362881.4910000004,26.129700000004959],[473913.7620000001,5362881.2995999996,24.254700000004959],[473913.36290000007,5362878.7083000001,24.504700000004959],[473912.03799999971,5362878.9123,26.329700000002049],[473911.87370000035,5362877.8460000008,27.604699999996228],[473914.07440000027,5362877.5070999991,27.579700000002049],[473912.99179999996,5362870.4774999991,28.029699999999139],[473915.55929999985,5362870.0821000002,26.679699999993318],[473915.50439999998,5362869.7252999991,26.579700000002049],[473924.32469999976,5362868.3669000007,23.179699999993318]]]}}]}"
+        }
+      ]
+    },
+    {
+      "schema_version": "municipal-sites.v1",
+      "status": "available",
+      "parcel_ref": {
+        "source": "city-of-victoria-pid-parcels",
+        "object_id": 13344
+      },
+      "parcel": {
+        "attributes": {
+          "OBJECTID": 13344,
+          "PID": "008-094-772",
+          "VicPID": "V02191024",
+          "GISLINK": "03219020",
+          "ParcelType": "LA",
+          "ParcelStatus": "ACTIVE",
+          "Shape_Area": 755.624434726174
+        },
+        "geometry": {
+          "rings": [
+            [
+              [
+                473924.1133000003,
+                5362870.578400001
+              ],
+              [
+                473921.59229999967,
+                5362855.6065
+              ],
+              [
+                473872.52610000037,
+                5362863.831800001
+              ],
+              [
+                473875.0201000003,
+                5362878.810799999
+              ],
+              [
+                473924.1133000003,
+                5362870.578400001
+              ]
+            ]
+          ]
+        },
+        "planar_geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                473924.1133000003,
+                5362870.578400001
+              ],
+              [
+                473921.59229999967,
+                5362855.6065
+              ],
+              [
+                473872.52610000037,
+                5362863.831800001
+              ],
+              [
+                473875.0201000003,
+                5362878.810799999
+              ],
+              [
+                473924.1133000003,
+                5362870.578400001
+              ]
+            ]
+          ]
+        },
+        "horizontal_crs": "EPSG:3157",
+        "area_m2": 755.6244347261741,
+        "geometry_issue": null
+      },
+      "rooflines": [
+        {
+          "attributes": {
+            "OBJECTID": 63036,
+            "LAYER": "Residential_2023",
+            "SHAPE_Area": 282.49081836280806
+          },
+          "geometry": {
+            "hasZ": true,
+            "rings": [
+              [
+                [
+                  473924.32469999976,
+                  5362868.366900001,
+                  23.179699999993318
+                ],
+                [
+                  473923.60309999995,
+                  5362863.681700001,
+                  23.179699999993318
+                ],
+                [
+                  473914.7170000002,
+                  5362865.0502,
+                  26.979699999996228
+                ],
+                [
+                  473914.5739000002,
+                  5362864.120999999,
+                  26.32970000000205
+                ],
+                [
+                  473909.9656999996,
+                  5362864.830700001,
+                  26.32970000000205
+                ],
+                [
+                  473909.8269999996,
+                  5362863.93,
+                  26.32970000000205
+                ],
+                [
+                  473906.7123999996,
+                  5362864.409700001,
+                  27.77969999999914
+                ],
+                [
+                  473906.54949999973,
+                  5362863.352,
+                  25.27969999999914
+                ],
+                [
+                  473904.90330000035,
+                  5362863.6055,
+                  25.27969999999914
+                ],
+                [
+                  473905.08669999987,
+                  5362864.796599999,
+                  25.27969999999914
+                ],
+                [
+                  473903.80040000007,
+                  5362864.9947,
+                  27.429699999993318
+                ],
+                [
+                  473903.8104999997,
+                  5362865.0603,
+                  27.32970000000205
+                ],
+                [
+                  473902.176,
+                  5362865.312000001,
+                  26.32970000000205
+                ],
+                [
+                  473902.82299999986,
+                  5362869.513,
+                  26.25470000000496
+                ],
+                [
+                  473900.3409000002,
+                  5362869.895199999,
+                  24.27969999999914
+                ],
+                [
+                  473900.68489999976,
+                  5362872.1285,
+                  27.75470000000496
+                ],
+                [
+                  473899.98620000016,
+                  5362872.236099999,
+                  27.75470000000496
+                ],
+                [
+                  473900.2997000003,
+                  5362874.2719,
+                  29.15469999999914
+                ],
+                [
+                  473899.9177000001,
+                  5362874.330700001,
+                  29.054699999993318
+                ],
+                [
+                  473901.2503000004,
+                  5362882.9838,
+                  22.25470000000496
+                ],
+                [
+                  473904.8980999999,
+                  5362882.422,
+                  26.27969999999914
+                ],
+                [
+                  473905.11510000005,
+                  5362883.8313,
+                  26.27969999999914
+                ],
+                [
+                  473907.2062999997,
+                  5362883.509299999,
+                  27.87970000000496
+                ],
+                [
+                  473907.2542000003,
+                  5362883.820900001,
+                  27.87970000000496
+                ],
+                [
+                  473910.6956000002,
+                  5362883.290899999,
+                  27.75470000000496
+                ],
+                [
+                  473910.6445000004,
+                  5362882.959100001,
+                  27.604699999996228
+                ],
+                [
+                  473912.69629999995,
+                  5362882.643100001,
+                  26.32970000000205
+                ],
+                [
+                  473912.51889999956,
+                  5362881.491,
+                  26.12970000000496
+                ],
+                [
+                  473913.7620000001,
+                  5362881.2996,
+                  24.25470000000496
+                ],
+                [
+                  473913.36290000007,
+                  5362878.7083,
+                  24.50470000000496
+                ],
+                [
+                  473912.0379999997,
+                  5362878.9123,
+                  26.32970000000205
+                ],
+                [
+                  473911.87370000035,
+                  5362877.846000001,
+                  27.604699999996228
+                ],
+                [
+                  473914.0744000003,
+                  5362877.507099999,
+                  27.57970000000205
+                ],
+                [
+                  473912.99179999996,
+                  5362870.477499999,
+                  28.02969999999914
+                ],
+                [
+                  473915.55929999985,
+                  5362870.0821,
+                  26.679699999993318
+                ],
+                [
+                  473915.5044,
+                  5362869.725299999,
+                  26.57970000000205
+                ],
+                [
+                  473924.32469999976,
+                  5362868.366900001,
+                  23.179699999993318
+                ]
+              ]
+            ]
+          },
+          "planar_geometry": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [
+                  473924.32469999976,
+                  5362868.366900001
+                ],
+                [
+                  473923.60309999995,
+                  5362863.681700001
+                ],
+                [
+                  473914.7170000002,
+                  5362865.0502
+                ],
+                [
+                  473914.5739000002,
+                  5362864.120999999
+                ],
+                [
+                  473909.9656999996,
+                  5362864.830700001
+                ],
+                [
+                  473909.8269999996,
+                  5362863.93
+                ],
+                [
+                  473906.7123999996,
+                  5362864.409700001
+                ],
+                [
+                  473906.54949999973,
+                  5362863.352
+                ],
+                [
+                  473904.90330000035,
+                  5362863.6055
+                ],
+                [
+                  473905.08669999987,
+                  5362864.796599999
+                ],
+                [
+                  473903.80040000007,
+                  5362864.9947
+                ],
+                [
+                  473903.8104999997,
+                  5362865.0603
+                ],
+                [
+                  473902.176,
+                  5362865.312000001
+                ],
+                [
+                  473902.82299999986,
+                  5362869.513
+                ],
+                [
+                  473900.3409000002,
+                  5362869.895199999
+                ],
+                [
+                  473900.68489999976,
+                  5362872.1285
+                ],
+                [
+                  473899.98620000016,
+                  5362872.236099999
+                ],
+                [
+                  473900.2997000003,
+                  5362874.2719
+                ],
+                [
+                  473899.9177000001,
+                  5362874.330700001
+                ],
+                [
+                  473901.2503000004,
+                  5362882.9838
+                ],
+                [
+                  473904.8980999999,
+                  5362882.422
+                ],
+                [
+                  473905.11510000005,
+                  5362883.8313
+                ],
+                [
+                  473907.2062999997,
+                  5362883.509299999
+                ],
+                [
+                  473907.2542000003,
+                  5362883.820900001
+                ],
+                [
+                  473910.6956000002,
+                  5362883.290899999
+                ],
+                [
+                  473910.6445000004,
+                  5362882.959100001
+                ],
+                [
+                  473912.69629999995,
+                  5362882.643100001
+                ],
+                [
+                  473912.51889999956,
+                  5362881.491
+                ],
+                [
+                  473913.7620000001,
+                  5362881.2996
+                ],
+                [
+                  473913.36290000007,
+                  5362878.7083
+                ],
+                [
+                  473912.0379999997,
+                  5362878.9123
+                ],
+                [
+                  473911.87370000035,
+                  5362877.846000001
+                ],
+                [
+                  473914.0744000003,
+                  5362877.507099999
+                ],
+                [
+                  473912.99179999996,
+                  5362870.477499999
+                ],
+                [
+                  473915.55929999985,
+                  5362870.0821
+                ],
+                [
+                  473915.5044,
+                  5362869.725299999
+                ],
+                [
+                  473924.32469999976,
+                  5362868.366900001
+                ]
+              ]
+            ]
+          },
+          "horizontal_crs": "EPSG:3157",
+          "area_m2": 282.49081836280817,
+          "intersection_area_m2": 156.3987633529192,
+          "geometry_issue": null,
+          "relationship": "spatial_intersection_not_ownership"
+        },
+        {
+          "attributes": {
+            "OBJECTID": 70284,
+            "LAYER": "Residential",
+            "SHAPE_Area": 29.406033498403986
+          },
+          "geometry": {
+            "hasZ": true,
+            "rings": [
+              [
+                [
+                  473919.8530000001,
+                  5362860.384,
+                  23.062999999994645
+                ],
+                [
+                  473919.3200000003,
+                  5362856.163000001,
+                  23.187999999994645
+                ],
+                [
+                  473912.4620000003,
+                  5362857.029999999,
+                  23.312999999994645
+                ],
+                [
+                  473912.9950000001,
+                  5362861.25,
+                  23.187999999994645
+                ],
+                [
+                  473919.8530000001,
+                  5362860.384,
+                  23.062999999994645
+                ]
+              ]
+            ]
+          },
+          "planar_geometry": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [
+                  473919.8530000001,
+                  5362860.384
+                ],
+                [
+                  473919.3200000003,
+                  5362856.163000001
+                ],
+                [
+                  473912.4620000003,
+                  5362857.029999999
+                ],
+                [
+                  473912.9950000001,
+                  5362861.25
+                ],
+                [
+                  473919.8530000001,
+                  5362860.384
+                ]
+              ]
+            ]
+          },
+          "horizontal_crs": "EPSG:3157",
+          "area_m2": 29.406033498403986,
+          "intersection_area_m2": 29.267656670320036,
+          "geometry_issue": null,
+          "relationship": "spatial_intersection_not_ownership"
+        }
+      ],
+      "issues": [],
+      "evidence": [
+        {
+          "provider": "City of Victoria Open Data",
+          "record_label": "Parcel MapServer response",
+          "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=json&objectIds=13344&outFields=OBJECTID%2CPID%2CVicPID%2CGISLINK%2CParcelType%2CParcelStatus%2CShape_Area&returnGeometry=true&outSR=3157",
+          "captured_at_utc": "2026-10-08T01:22:55.220975+00:00",
+          "review_status": "unreviewed_live_observation",
+          "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+          "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+          "source_date_limit": "Feature update date and positional accuracy not supplied; rooflines derive from aerial imagery, not surveyed walls.",
+          "sha256": "6ecf607a4cb082a753b228a35b609f7b269a2d44fd1bf43b9a36d3c094973d95",
+          "raw_response": {
+            "displayFieldName": "Name",
+            "fieldAliases": {
+              "OBJECTID": "OBJECTID",
+              "PID": "PID",
+              "VicPID": "VicPID",
+              "GISLINK": "GISLINK",
+              "ParcelType": "ParcelType",
+              "ParcelStatus": "ParcelStatus",
+              "Shape_Area": "Shape_Area"
+            },
+            "geometryType": "esriGeometryPolygon",
+            "spatialReference": {
+              "wkid": 3157,
+              "latestWkid": 3157
+            },
+            "fields": [
+              {
+                "name": "OBJECTID",
+                "type": "esriFieldTypeOID",
+                "alias": "OBJECTID"
+              },
+              {
+                "name": "PID",
+                "type": "esriFieldTypeString",
+                "alias": "PID",
+                "length": 50
+              },
+              {
+                "name": "VicPID",
+                "type": "esriFieldTypeString",
+                "alias": "VicPID",
+                "length": 50
+              },
+              {
+                "name": "GISLINK",
+                "type": "esriFieldTypeString",
+                "alias": "GISLINK",
+                "length": 255
+              },
+              {
+                "name": "ParcelType",
+                "type": "esriFieldTypeString",
+                "alias": "ParcelType",
+                "length": 30
+              },
+              {
+                "name": "ParcelStatus",
+                "type": "esriFieldTypeString",
+                "alias": "ParcelStatus",
+                "length": 20
+              },
+              {
+                "name": "Shape_Area",
+                "type": "esriFieldTypeDouble",
+                "alias": "Shape_Area"
+              }
+            ],
+            "features": [
+              {
+                "attributes": {
+                  "OBJECTID": 13344,
+                  "PID": "008-094-772",
+                  "VicPID": "V02191024",
+                  "GISLINK": "03219020",
+                  "ParcelType": "LA",
+                  "ParcelStatus": "ACTIVE",
+                  "Shape_Area": 755.624434726174
+                },
+                "geometry": {
+                  "rings": [
+                    [
+                      [
+                        473924.1133000003,
+                        5362870.578400001
+                      ],
+                      [
+                        473921.59229999967,
+                        5362855.6065
+                      ],
+                      [
+                        473872.52610000037,
+                        5362863.831800001
+                      ],
+                      [
+                        473875.0201000003,
+                        5362878.810799999
+                      ],
+                      [
+                        473924.1133000003,
+                        5362870.578400001
+                      ]
+                    ]
+                  ]
+                }
+              }
+            ]
+          },
+          "raw_response_text": "{\"displayFieldName\":\"Name\",\"fieldAliases\":{\"OBJECTID\":\"OBJECTID\",\"PID\":\"PID\",\"VicPID\":\"VicPID\",\"GISLINK\":\"GISLINK\",\"ParcelType\":\"ParcelType\",\"ParcelStatus\":\"ParcelStatus\",\"Shape_Area\":\"Shape_Area\"},\"geometryType\":\"esriGeometryPolygon\",\"spatialReference\":{\"wkid\":3157,\"latestWkid\":3157},\"fields\":[{\"name\":\"OBJECTID\",\"type\":\"esriFieldTypeOID\",\"alias\":\"OBJECTID\"},{\"name\":\"PID\",\"type\":\"esriFieldTypeString\",\"alias\":\"PID\",\"length\":50},{\"name\":\"VicPID\",\"type\":\"esriFieldTypeString\",\"alias\":\"VicPID\",\"length\":50},{\"name\":\"GISLINK\",\"type\":\"esriFieldTypeString\",\"alias\":\"GISLINK\",\"length\":255},{\"name\":\"ParcelType\",\"type\":\"esriFieldTypeString\",\"alias\":\"ParcelType\",\"length\":30},{\"name\":\"ParcelStatus\",\"type\":\"esriFieldTypeString\",\"alias\":\"ParcelStatus\",\"length\":20},{\"name\":\"Shape_Area\",\"type\":\"esriFieldTypeDouble\",\"alias\":\"Shape_Area\"}],\"features\":[{\"attributes\":{\"OBJECTID\":13344,\"PID\":\"008-094-772\",\"VicPID\":\"V02191024\",\"GISLINK\":\"03219020\",\"ParcelType\":\"LA\",\"ParcelStatus\":\"ACTIVE\",\"Shape_Area\":755.62443472617394},\"geometry\":{\"rings\":[[[473924.11330000032,5362870.5784000009],[473921.59229999967,5362855.6064999998],[473872.52610000037,5362863.8318000007],[473875.02010000031,5362878.8107999992],[473924.11330000032,5362870.5784000009]]]}}]}"
+        },
+        {
+          "provider": "City of Victoria Open Data",
+          "record_label": "Building MapServer response",
+          "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=json&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%2C%22rings%22%3A%5B%5B%5B473924.1133000003%2C5362870.578400001%5D%2C%5B473921.59229999967%2C5362855.6065%5D%2C%5B473872.52610000037%2C5362863.831800001%5D%2C%5B473875.0201000003%2C5362878.810799999%5D%2C%5B473924.1133000003%2C5362870.578400001%5D%5D%5D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+          "captured_at_utc": "2026-10-08T01:22:55.470709+00:00",
+          "review_status": "unreviewed_live_observation",
+          "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+          "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+          "source_date_limit": "Feature update date and positional accuracy not supplied; rooflines derive from aerial imagery, not surveyed walls.",
+          "sha256": "5f4d12b0fce413e156654b87caf6b29f3fbf3632ca30e9858a72bf39b724ac37",
+          "raw_response": {
+            "displayFieldName": "AUC_Group",
+            "hasZ": true,
+            "fieldAliases": {
+              "OBJECTID": "OBJECTID",
+              "LAYER": "LAYER",
+              "SHAPE_Area": "SHAPE_Area"
+            },
+            "geometryType": "esriGeometryPolygon",
+            "spatialReference": {
+              "wkid": 3157,
+              "latestWkid": 3157
+            },
+            "fields": [
+              {
+                "name": "OBJECTID",
+                "type": "esriFieldTypeOID",
+                "alias": "OBJECTID"
+              },
+              {
+                "name": "LAYER",
+                "type": "esriFieldTypeString",
+                "alias": "LAYER",
+                "length": 255
+              },
+              {
+                "name": "SHAPE_Area",
+                "type": "esriFieldTypeDouble",
+                "alias": "SHAPE_Area"
+              }
+            ],
+            "features": [
+              {
+                "attributes": {
+                  "OBJECTID": 63036,
+                  "LAYER": "Residential_2023",
+                  "SHAPE_Area": 282.49081836280806
+                },
+                "geometry": {
+                  "hasZ": true,
+                  "rings": [
+                    [
+                      [
+                        473924.32469999976,
+                        5362868.366900001,
+                        23.179699999993318
+                      ],
+                      [
+                        473923.60309999995,
+                        5362863.681700001,
+                        23.179699999993318
+                      ],
+                      [
+                        473914.7170000002,
+                        5362865.0502,
+                        26.979699999996228
+                      ],
+                      [
+                        473914.5739000002,
+                        5362864.120999999,
+                        26.32970000000205
+                      ],
+                      [
+                        473909.9656999996,
+                        5362864.830700001,
+                        26.32970000000205
+                      ],
+                      [
+                        473909.8269999996,
+                        5362863.93,
+                        26.32970000000205
+                      ],
+                      [
+                        473906.7123999996,
+                        5362864.409700001,
+                        27.77969999999914
+                      ],
+                      [
+                        473906.54949999973,
+                        5362863.352,
+                        25.27969999999914
+                      ],
+                      [
+                        473904.90330000035,
+                        5362863.6055,
+                        25.27969999999914
+                      ],
+                      [
+                        473905.08669999987,
+                        5362864.796599999,
+                        25.27969999999914
+                      ],
+                      [
+                        473903.80040000007,
+                        5362864.9947,
+                        27.429699999993318
+                      ],
+                      [
+                        473903.8104999997,
+                        5362865.0603,
+                        27.32970000000205
+                      ],
+                      [
+                        473902.176,
+                        5362865.312000001,
+                        26.32970000000205
+                      ],
+                      [
+                        473902.82299999986,
+                        5362869.513,
+                        26.25470000000496
+                      ],
+                      [
+                        473900.3409000002,
+                        5362869.895199999,
+                        24.27969999999914
+                      ],
+                      [
+                        473900.68489999976,
+                        5362872.1285,
+                        27.75470000000496
+                      ],
+                      [
+                        473899.98620000016,
+                        5362872.236099999,
+                        27.75470000000496
+                      ],
+                      [
+                        473900.2997000003,
+                        5362874.2719,
+                        29.15469999999914
+                      ],
+                      [
+                        473899.9177000001,
+                        5362874.330700001,
+                        29.054699999993318
+                      ],
+                      [
+                        473901.2503000004,
+                        5362882.9838,
+                        22.25470000000496
+                      ],
+                      [
+                        473904.8980999999,
+                        5362882.422,
+                        26.27969999999914
+                      ],
+                      [
+                        473905.11510000005,
+                        5362883.8313,
+                        26.27969999999914
+                      ],
+                      [
+                        473907.2062999997,
+                        5362883.509299999,
+                        27.87970000000496
+                      ],
+                      [
+                        473907.2542000003,
+                        5362883.820900001,
+                        27.87970000000496
+                      ],
+                      [
+                        473910.6956000002,
+                        5362883.290899999,
+                        27.75470000000496
+                      ],
+                      [
+                        473910.6445000004,
+                        5362882.959100001,
+                        27.604699999996228
+                      ],
+                      [
+                        473912.69629999995,
+                        5362882.643100001,
+                        26.32970000000205
+                      ],
+                      [
+                        473912.51889999956,
+                        5362881.491,
+                        26.12970000000496
+                      ],
+                      [
+                        473913.7620000001,
+                        5362881.2996,
+                        24.25470000000496
+                      ],
+                      [
+                        473913.36290000007,
+                        5362878.7083,
+                        24.50470000000496
+                      ],
+                      [
+                        473912.0379999997,
+                        5362878.9123,
+                        26.32970000000205
+                      ],
+                      [
+                        473911.87370000035,
+                        5362877.846000001,
+                        27.604699999996228
+                      ],
+                      [
+                        473914.0744000003,
+                        5362877.507099999,
+                        27.57970000000205
+                      ],
+                      [
+                        473912.99179999996,
+                        5362870.477499999,
+                        28.02969999999914
+                      ],
+                      [
+                        473915.55929999985,
+                        5362870.0821,
+                        26.679699999993318
+                      ],
+                      [
+                        473915.5044,
+                        5362869.725299999,
+                        26.57970000000205
+                      ],
+                      [
+                        473924.32469999976,
+                        5362868.366900001,
+                        23.179699999993318
+                      ]
+                    ]
+                  ]
+                }
+              },
+              {
+                "attributes": {
+                  "OBJECTID": 70284,
+                  "LAYER": "Residential",
+                  "SHAPE_Area": 29.406033498403986
+                },
+                "geometry": {
+                  "hasZ": true,
+                  "rings": [
+                    [
+                      [
+                        473919.8530000001,
+                        5362860.384,
+                        23.062999999994645
+                      ],
+                      [
+                        473919.3200000003,
+                        5362856.163000001,
+                        23.187999999994645
+                      ],
+                      [
+                        473912.4620000003,
+                        5362857.029999999,
+                        23.312999999994645
+                      ],
+                      [
+                        473912.9950000001,
+                        5362861.25,
+                        23.187999999994645
+                      ],
+                      [
+                        473919.8530000001,
+                        5362860.384,
+                        23.062999999994645
+                      ]
+                    ]
+                  ]
+                }
+              }
+            ]
+          },
+          "raw_response_text": "{\"displayFieldName\":\"AUC_Group\",\"hasZ\":true,\"fieldAliases\":{\"OBJECTID\":\"OBJECTID\",\"LAYER\":\"LAYER\",\"SHAPE_Area\":\"SHAPE_Area\"},\"geometryType\":\"esriGeometryPolygon\",\"spatialReference\":{\"wkid\":3157,\"latestWkid\":3157},\"fields\":[{\"name\":\"OBJECTID\",\"type\":\"esriFieldTypeOID\",\"alias\":\"OBJECTID\"},{\"name\":\"LAYER\",\"type\":\"esriFieldTypeString\",\"alias\":\"LAYER\",\"length\":255},{\"name\":\"SHAPE_Area\",\"type\":\"esriFieldTypeDouble\",\"alias\":\"SHAPE_Area\"}],\"features\":[{\"attributes\":{\"OBJECTID\":63036,\"LAYER\":\"Residential_2023\",\"SHAPE_Area\":282.49081836280806},\"geometry\":{\"hasZ\":true,\"rings\":[[[473924.32469999976,5362868.3669000007,23.179699999993318],[473923.60309999995,5362863.6817000005,23.179699999993318],[473914.71700000018,5362865.0502000004,26.979699999996228],[473914.57390000019,5362864.1209999993,26.329700000002049],[473909.96569999959,5362864.8307000007,26.329700000002049],[473909.82699999958,5362863.9299999997,26.329700000002049],[473906.71239999961,5362864.4097000007,27.779699999999139],[473906.54949999973,5362863.352,25.279699999999139],[473904.90330000035,5362863.6054999996,25.279699999999139],[473905.08669999987,5362864.7965999991,25.279699999999139],[473903.80040000007,5362864.9946999997,27.429699999993318],[473903.81049999967,5362865.0603,27.329700000002049],[473902.17599999998,5362865.3120000008,26.329700000002049],[473902.82299999986,5362869.5130000003,26.254700000004959],[473900.34090000018,5362869.8951999992,24.279699999999139],[473900.68489999976,5362872.1284999996,27.754700000004959],[473899.98620000016,5362872.2360999994,27.754700000004959],[473900.29970000032,5362874.2719000001,29.154699999999139],[473899.91770000011,5362874.3307000007,29.054699999993318],[473901.25030000042,5362882.9837999996,22.254700000004959],[473904.89809999987,5362882.4220000003,26.279699999999139],[473905.11510000005,5362883.8312999997,26.279699999999139],[473907.20629999973,5362883.5092999991,27.879700000004959],[473907.25420000032,5362883.8209000006,27.879700000004959],[473910.69560000021,5362883.2908999994,27.754700000004959],[473910.6445000004,5362882.9591000006,27.604699999996228],[473912.69629999995,5362882.6431000009,26.329700000002049],[473912.51889999956,5362881.4910000004,26.129700000004959],[473913.7620000001,5362881.2995999996,24.254700000004959],[473913.36290000007,5362878.7083000001,24.504700000004959],[473912.03799999971,5362878.9123,26.329700000002049],[473911.87370000035,5362877.8460000008,27.604699999996228],[473914.07440000027,5362877.5070999991,27.579700000002049],[473912.99179999996,5362870.4774999991,28.029699999999139],[473915.55929999985,5362870.0821000002,26.679699999993318],[473915.50439999998,5362869.7252999991,26.579700000002049],[473924.32469999976,5362868.3669000007,23.179699999993318]]]}},{\"attributes\":{\"OBJECTID\":70284,\"LAYER\":\"Residential\",\"SHAPE_Area\":29.406033498403986},\"geometry\":{\"hasZ\":true,\"rings\":[[[473919.85300000012,5362860.3839999996,23.062999999994645],[473919.3200000003,5362856.1630000006,23.187999999994645],[473912.46200000029,5362857.0299999993,23.312999999994645],[473912.99500000011,5362861.25,23.187999999994645],[473919.85300000012,5362860.3839999996,23.062999999994645]]]}}]}"
+        }
+      ]
+    }
+  ]
+}

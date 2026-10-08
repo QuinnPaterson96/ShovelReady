@@ -1,6 +1,6 @@
 export type Source = { provider: string; record: string; capturedAt: string | null; sourceDate: string | null; url: string | null; review: string }
 export type Address = { id: string; label: string; locality: string | null; precision: string; issues: string[]; point: [number, number] | null; crs: string | null; source: Source; raw: unknown }
-export type Parcel = { id: string; label: string; match: string; source: Source; raw: unknown }
+export type Parcel = { id: string; label: string; match: string; source: Source; raw: unknown; inspection?: Observation; identityConcern?: string }
 export type Polygon = { type: 'Polygon' | 'MultiPolygon'; coordinates: number[][][] | number[][][][] }
 export type Observation = { parcel: { geometry: Polygon; areaM2: number | null }; roofs: { id: string; geometry: Polygon }[]; crs: 'EPSG:3157'; buildingsState: string; issues: string[]; source: Source; roofSource: Source | null; raw: unknown }
 type PropertyObservation = { address: Address; parcel: Parcel; observation: Observation; review: 'unreviewed'; screening: 'not_performed' }
@@ -71,7 +71,7 @@ export class DiscoveryFlow {
         const address = this.state.address
         if (!address) return
         const confirmed: Confirmed = { schema_version: 'site-discovery.selected.v1', selection_basis: this.state.parcels.length === 1 ? 'sole_candidate' : 'user_choice', identity_attestation: 'not_confirmed', address, parcel, observation, review: 'unreviewed', screening: 'not_performed' }
-        this.publish({ confirmed, message: 'Source property selected for approximate placement. Identity, ownership and legal boundaries remain unverified.' })
+        this.publish({ confirmed, message: '' })
         this.onConfirm(confirmed)
       }
     } catch (error) { if (this.current(generation)) this.publish({ busy: false, message: error instanceof DiscoveryProblem ? error.message : 'Parcel response invalid. Retry this parcel or continue manually.' }) }
@@ -83,6 +83,7 @@ export class DiscoveryFlow {
     this.publish({ confirmed, message: 'Property observation confirmed for this demonstration. No fit checks were run.' })
     this.onConfirm(confirmed)
   }
-  reject() { this.invalidate(); this.publish({ ...initial, query: this.state.query, message: 'Observation rejected. Correct the address or continue manually.' }) }
+  changeProperty() { this.invalidate(); this.publish({ ...initial, query: this.state.query, message: 'Choose the property you want to explore.' }) }
+  reject() { this.changeProperty() }
   dispose() { this.generation++; this.controller?.abort(); this.controller = null }
 }
