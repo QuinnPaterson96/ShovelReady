@@ -48,8 +48,8 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
   const click = async (label: string) => { assert.ok(button(label), label); await act(async () => { button(label).click() }); await act(async () => { await new Promise(resolve => setTimeout(resolve, 20)) }) }
   try {
     await act(async () => { root.render(createElement(Journey)) })
-    await act(async () => { const choice = document.getElementById('builder-intended-use') as HTMLSelectElement; choice.value = 'Garden suite'; choice.dispatchEvent(new dom.window.Event('change', { bubbles: true })) })
     await click('Try an example property')
+    await act(async () => { const choice = document.getElementById('builder-intended-use') as HTMLSelectElement; choice.value = 'Garden suite'; choice.dispatchEvent(new dom.window.Event('change', { bubbles: true })) })
     await act(async () => { await new Promise(resolve => setTimeout(resolve, 550)) })
     await act(async () => { await new Promise(resolve => setTimeout(resolve, 450)) })
     assert.match(document.querySelector('#builder-quick-checks')!.textContent!, /Review this placement/)
@@ -113,13 +113,15 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     assert.equal(document.activeElement?.id, 'placement-action-rear')
     assert.equal(JSON.parse(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value).zoning_site_assumptions.street_adjacency.all_marked, false)
     await click('Next: Review property details →')
-    assert.equal(document.activeElement?.id, 'building-type')
-    for (const id of ['building-type', 'principal-building', 'existing-suites', 'waterfront-lot']) {
+    assert.equal(document.activeElement?.id, 'builder-intended-use')
+    for (const id of ['builder-intended-use', 'building-type', 'principal-building', 'existing-suites', 'waterfront-lot']) {
       assert.equal(document.getElementById(id)!.closest('[hidden]'), null, `${id} must not be hidden by a map-controls wrapper during property review`)
     }
-    assert.deepEqual(lastScroll, { id: 'building-type', options: { block: 'start', behavior: 'smooth' } })
+    assert.deepEqual(lastScroll, { id: 'builder-intended-use', options: { block: 'start', behavior: 'smooth' } })
     assert.equal(document.querySelector<HTMLDetailsElement>('#builder-property-details > details')!.open, true)
     assert.equal(document.querySelector('.builder-placement-next'), null)
+    assert.equal(document.querySelector<HTMLSelectElement>('#builder-property-details #builder-intended-use')!.value, 'Garden suite')
+    assert.ok(document.getElementById('builder-intended-use')!.compareDocumentPosition(summary) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING)
     assert.ok(document.querySelector('#builder-property-details #scouting-height'))
     assert.ok(document.querySelector('#builder-property-details #scouting-area-buffer'))
     const optionalMeasurements = document.getElementById('scouting-height')!.closest('details')!
@@ -231,7 +233,7 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     assert.equal(document.activeElement?.id, 'sd-address')
     // Project preferences stay, but old site-specific questions/responses cannot
     // leak into the next property's enquiry.
-    assert.equal(document.querySelector<HTMLSelectElement>('#builder-intended-use')!.value, 'Garden suite')
+    assert.equal(document.querySelector('#builder-intended-use'), null, 'property-details controls wait for a selected property')
     assert.equal(document.querySelector('#builder-enquiry-text'), null, 'the old property enquiry is no longer active')
     await act(async () => { releaseLate() })
     assert.equal(document.getElementById('builder-quick-checks'), null)
@@ -330,8 +332,8 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
   try {
     let completion = emptyBuilderJourneyCompletion
     await act(async () => root.render(createElement<{ onProgressChange?: (next: typeof emptyBuilderJourneyCompletion) => void }>(BuilderDemo, { onProgressChange: next => { completion = next } })))
-    await act(async () => { const choice = document.getElementById('builder-intended-use') as HTMLSelectElement; choice.value = 'Garden suite'; choice.dispatchEvent(new dom.window.Event('change', { bubbles: true })) })
-    await click('Try an example property'); await settle(550); await settle(1150)
+    await click('Try an example property')
+    await act(async () => { const choice = document.getElementById('builder-intended-use') as HTMLSelectElement; choice.value = 'Garden suite'; choice.dispatchEvent(new dom.window.Event('change', { bubbles: true })) }); await settle(550); await settle(1150)
     assert.match(document.querySelector('.builder-placement-results')!.textContent!, /timed out/)
     assert.doesNotMatch(document.querySelector('.builder-placement-results')!.textContent!, /Checking plausible/)
     await click('Retry boundary checks'); await settle()
