@@ -1,25 +1,22 @@
+import { OccupiedLotPreview, PlacementConcerns } from '../occupied_lots/OccupiedLots'
 import { EvidenceAtFooter } from '../EvidenceAtFooter'
-import { MapSourceHelp } from '../zoning_site_assumptions/MapSourceHelp'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { MeasurementInput } from '../MeasurementInput'
 import { MeasurementLabel } from '../model_catalogue/MeasurementLabel'
 import { measurementWithUnit } from '../measurements'
 import { publicSourceUrl, readableDate, TechnicalDetails } from '../ReadableProvenance'
-import { path, points } from '../occupied_lots/contract'
 import type { OccupiedMeasurement } from '../occupied_lots/OccupiedLots'
 import type { Result } from '../occupied_lots/contract'
 import { emptyExampleAssumptions, exampleCase, exampleOrientation, exampleObservation, exampleRequest, initialExamplePosition, parseExampleResult } from './example'
 import type { ExampleAssumptions, ExamplePosition } from './example'
-import { BoundaryActionTabs, BoundaryMapTools, BoundaryOverlay, type BoundaryMapInteraction } from '../zoning_site_assumptions/BoundaryMapTools'
+import { type BoundaryMapInteraction } from '../zoning_site_assumptions/BoundaryMapTools'
 
 const source = exampleCase.site.parcel.source
 const roofSource = exampleCase.site.buildings[0]?.source
 const show = (value: number | null, dimension: 'length' | 'area') => measurementWithUnit(value, dimension)
-const directions: Record<string, [number, number]> = {
-  ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1],
-}
 
-export function ExampleProperty({ onMeasurement, boundaryInteraction, placementSummary, placementContinuation, evidenceTargetId, moveSuggestion }: { onMeasurement: (value: OccupiedMeasurement | null) => void; boundaryInteraction?: BoundaryMapInteraction; placementSummary?: ReactNode; placementContinuation?: ReactNode; evidenceTargetId?: string; moveSuggestion?: { dx: number; dy: number; token: number } }) {
+
+export function ExampleProperty({ onMeasurement, boundaryInteraction, placementSummary, placementContinuation, evidenceTargetId, moveSuggestion, placementConcerns, onContinueUnresolved }: { placementConcerns?: ReactNode; onContinueUnresolved?: () => void; onMeasurement: (value: OccupiedMeasurement | null) => void; boundaryInteraction?: BoundaryMapInteraction; placementSummary?: ReactNode; placementContinuation?: ReactNode; evidenceTargetId?: string; moveSuggestion?: { dx: number; dy: number; token: number } }) {
   const [position, setPosition] = useState(initialExamplePosition)
   const appliedMove = useRef<number | null>(null)
   useEffect(() => {
@@ -38,9 +35,6 @@ export function ExampleProperty({ onMeasurement, boundaryInteraction, placementS
   const [rotationFocused, setRotationFocused] = useState(false)
   const activeCheck = useRef<AbortController | null>(null)
   const version = useRef(0)
-  const map = useRef<SVGSVGElement>(null)
-  const dragging = useRef(false)
-  const suppressClick = useRef(false)
   const request = exampleRequest(position, assumptions)
 
   function invalidate() {
@@ -65,13 +59,6 @@ export function ExampleProperty({ onMeasurement, boundaryInteraction, placementS
   function move(x: number, y: number) {
     setPosition(current => ({ ...current, x: String(x), y: String(y) }))
     invalidate()
-  }
-
-  function moveFromPointer(clientX: number, clientY: number) {
-    const matrix = map.current?.getScreenCTM()?.inverse()
-    if (!matrix) return
-    const point = new DOMPoint(clientX, clientY).matrixTransform(matrix)
-    move(Number(point.x.toFixed(2)), Number((-point.y).toFixed(2)))
   }
 
   function nudge(dx: number, dy: number) {
@@ -120,12 +107,6 @@ export function ExampleProperty({ onMeasurement, boundaryInteraction, placementS
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [position, assumptions])
 
-  const all = [exampleCase.site.parcel, ...exampleCase.site.buildings].flatMap(points)
-  const xs = all.map(point => point[0]), ys = all.map(point => point[1])
-  const minX = Math.min(...xs), maxX = Math.max(...xs), minY = Math.min(...ys), maxY = Math.max(...ys)
-  const pad = Math.max(maxX - minX, maxY - minY) * .16
-  const viewBox = `${minX - pad} ${-maxY - pad} ${maxX - minX + 2 * pad} ${maxY - minY + 2 * pad}`
-  const footprint = request?.placement
   const observation = result ? exampleObservation(result) : null
   const finding = observation?.finding
   const containment = result?.checks.find(check => check.kind === 'containment')
@@ -142,25 +123,7 @@ export function ExampleProperty({ onMeasurement, boundaryInteraction, placementS
 
   return <section className="builder-example" aria-label="Saved example property">
     <p className="builder-example-summary"><strong>Model 300 · {show(Number(position.width), 'length')} wide × {show(Number(position.depth), 'length')} long</strong><span>Nominal exterior rectangle · saved Victoria example · {source.provider}, {source.record_label} · captured {readableDate(source.capture_date)} · {source.review_status} · <a href={publicSourceUrl(source.reference) ?? '#builder-example-evidence'} target="_blank" rel="noreferrer">Parcel source</a></span></p>
-    {boundaryInteraction && <BoundaryActionTabs interaction={boundaryInteraction} />}
-    <div className="builder-example-layout boundary-action-panel" data-mode={boundaryInteraction?.mode} id="placement-action-panel" role={boundaryInteraction ? 'tabpanel' : undefined} aria-labelledby={boundaryInteraction ? `placement-action-${boundaryInteraction.mode}` : undefined}>
-      <figure className="builder-example-map" id="placement-map">
-        <svg ref={map} viewBox={viewBox} role="img" tabIndex={0} aria-label={boundaryInteraction?.mode !== 'place' && boundaryInteraction ? 'Saved parcel boundary selection map. Choose a boundary mark and click an edge, or use Edge to mark in the panel. The model cannot move in this mode.' : `Saved City of Victoria parcel and roofline with an illustrative Model 300 nominal rectangle. Click to move its centre or drag the rectangle. Arrow keys move it ${step} ${step === 1 ? 'metre' : 'metres'}; north is up.`}
-        onClick={event => { if (boundaryInteraction && boundaryInteraction.mode !== 'place') return; if (suppressClick.current) { suppressClick.current = false; return }; moveFromPointer(event.clientX, event.clientY) }}
-        onKeyDown={event => { if (boundaryInteraction && boundaryInteraction.mode !== 'place') return; const direction = directions[event.key]; if (!direction) return; event.preventDefault(); nudge(...direction) }}
-        onPointerMove={event => { if ((!boundaryInteraction || boundaryInteraction.mode === 'place') && dragging.current) moveFromPointer(event.clientX, event.clientY) }}
-        onPointerUp={event => { dragging.current = false; if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId) }}
-        onPointerCancel={() => { dragging.current = false; suppressClick.current = false }}>
-        <path d={path(exampleCase.site.parcel)} fill="var(--map-parcel-fill)" stroke={conflictIds.has(exampleCase.site.parcel.id) ? 'var(--danger)' : 'var(--map-parcel-stroke)'} strokeDasharray={conflictIds.has(exampleCase.site.parcel.id) ? '7 4' : undefined} fillRule="evenodd" strokeWidth={conflictIds.has(exampleCase.site.parcel.id) ? '4' : '2'} vectorEffect="non-scaling-stroke" />
-        {exampleCase.site.buildings.map((roof, index) => <path key={roof.id} d={path(roof)} fill="var(--map-roof-fill)" stroke={conflictIds.has(roof.id) ? 'var(--danger)' : 'var(--map-roof-stroke)'} strokeDasharray={conflictIds.has(roof.id) ? '7 4' : undefined} strokeWidth={conflictIds.has(roof.id) ? '4' : '2'} vectorEffect="non-scaling-stroke"><title>{`Captured roofline ${index + 1}${conflictIds.has(roof.id) ? ': observed conflict' : ''}`}</title></path>)}
-        {footprint && <g transform={`translate(${footprint.centre_xy[0]} ${-footprint.centre_xy[1]}) rotate(${-footprint.angle_degrees})`}>
-          <rect x={-footprint.width_m / 2} y={-footprint.depth_m / 2} width={footprint.width_m} height={footprint.depth_m} fill="var(--map-zone-fill)" stroke="var(--map-zone-stroke)" strokeWidth="3" vectorEffect="non-scaling-stroke" style={{ cursor: 'grab', touchAction: 'none' }}
-            onPointerDown={event => { if (boundaryInteraction && boundaryInteraction.mode !== 'place') return; dragging.current = true; suppressClick.current = true; event.currentTarget.ownerSVGElement?.setPointerCapture(event.pointerId) }} />
-        </g>}
-        {boundaryInteraction && <BoundaryOverlay interaction={boundaryInteraction} />}
-      </svg><figcaption>Teal: captured parcel · Purple: captured roofline, not walls · Red dashed outline: observed conflict in current measurement · Copper: illustrative nominal rectangle · North ↑ · EPSG:3157 metres. Diagram is approximate.{!!boundaryInteraction?.streetIds?.length && <> Grey road bands · your marks, diagram only.</>}<MapSourceHelp site={exampleCase} /></figcaption></figure>
-
-      <div className="builder-footprint-controls" hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}><h3>Adjust the footprint</h3>
+    <OccupiedLotPreview selected={exampleCase} placement={position} modelLabel="Model 300" onMove={move} nudgeMetres={step} conflictIds={conflictIds} boundaryInteraction={boundaryInteraction} placementSummary={placementSummary} placementContinuation={placementContinuation} placementControls={<div className="builder-footprint-controls" hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}><h3>Adjust the footprint</h3>
         <p>Click the map or drag the rectangle. Arrow keys move it when the map has focus. Checks update automatically after movement settles.</p>
         <div className="builder-example-main-actions"><div><label htmlFor="builder-example-angle">Rotation (degrees)</label><input id="builder-example-angle" type="number" step="any" value={rotationFocused || !position.angle.trim() || !Number.isFinite(Number(position.angle)) ? position.angle : String(Number(Number(position.angle).toFixed(2)))} onFocus={() => setRotationFocused(true)} onBlur={() => setRotationFocused(false)} onChange={event => edit('angle', event.target.value)} /></div>
         <button type="button" disabled={exampleOrientation.status !== 'suggested'} onClick={() => { if (exampleOrientation.status === 'suggested') edit('angle', String(exampleOrientation.angle_degrees)) }}>Align to lot</button>
@@ -182,11 +145,7 @@ export function ExampleProperty({ onMeasurement, boundaryInteraction, placementS
           <label htmlFor="builder-example-roofline-minimum">Minimum to captured roofline (m)</label><MeasurementInput id="builder-example-roofline-minimum" dimension="length" type="number" min="0" step="any" value={assumptions.roofline} onChange={event => editAssumption('roofline', event.target.value)} />
         </fieldset></details>
         <button type="button" disabled={busy || !request} onClick={() => void measure(position, assumptions)}>{busy ? 'Checking…' : phase === 'unresolved' ? 'Retry placement check' : 'Recheck placement'}</button>
-      </div>
-      {placementContinuation && <div className="builder-placement-next">{placementContinuation}</div>}
-      {boundaryInteraction && <div className="builder-example-controls"><BoundaryMapTools interaction={boundaryInteraction} /></div>}
-      {placementSummary && <div className="builder-map-summary">{placementSummary}</div>}
-    </div>
+      </div>} placementConcerns={<PlacementConcerns site={exampleCase} result={result} additional={placementConcerns} onContinueUnresolved={onContinueUnresolved} />} />
     {checkWarning && <div className={`builder-example-outcome builder-example-outcome--${conflict ? 'conflict' : 'unknown'}`} role="alert">
       <strong>{phase === 'unresolved' || unresolved && !conflict ? 'Placement could not be fully checked' : 'Conflict at this position'}</strong>
       <p>{phase === 'unresolved' ? `${message} ${request ? 'Try again or edit the placement.' : 'Correct the placement inputs to check again.'}` : conflict ? `${crossesParcel ? 'The unit crosses or touches the mapped parcel boundary. ' : ''}${overlapsRoof ? 'The unit overlaps or touches a mapped roofline. ' : ''}Move the unit on the map and recheck. This finding applies to this position only.${unresolved ? ' Some measurements also remain unresolved; review Sources & technical evidence.' : ''}` : 'Some mapped geometry or your comparison could not be checked. Review Sources & technical evidence and try another position.'}</p>

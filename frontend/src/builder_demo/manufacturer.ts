@@ -14,9 +14,10 @@ export type EnquiryInput = {
   relationship?: string; stage?: string; configuration?: string; nextStep?: string; contact?: string
 }
 
-export function enquiryUseQualification(intendedUse: string): string {
+export function enquiryUseQualification(intendedUse: string, scenarioUse: Pathway['proposed_use'] = 'garden_suite'): string {
   const use = intendedUse.trim().toLowerCase()
   const unconfirmed = !use || ['unknown', 'still deciding', 'undecided', 'prefer not to say'].includes(use)
+  if (scenarioUse !== 'garden_suite') return `${unconfirmed ? 'Intended use is unconfirmed.' : `Intended use supplied: ${intendedUse.trim()}.`} The selected ${scenarioUse === 'other' ? 'other-use' : 'unknown-use'} scenario is outside the supported garden-suite comparisons. Ask City staff or a qualified local professional about applicable rules; physical observations remain approximate.`
   return unconfirmed
     ? 'Intended use is unconfirmed. The planning comparisons assume a garden suite and may not apply to the eventual use. Physical placement observations remain approximate.'
     : `Intended use supplied: ${intendedUse.trim()}. The planning comparisons use a garden-suite scenario; City or professional review must establish whether that scenario applies.`
@@ -56,7 +57,7 @@ export function assumptionsDescription(input: EnquiryInput, assumptions: SiteAss
       `Waterfront status: ${assumptions.waterfront.value === null ? 'not supplied' : assumptions.waterfront.value ? 'yes' : 'no'} (${provenance(assumptions.waterfront)}).`,
       `Main outline: ${assumptions.principal_building_id.value ? `Outline ${assumptions.observed_buildings.findIndex(b => b.id === assumptions.principal_building_id.value) + 1}, ${assumptions.principal_building_id.origin === 'journey_default' ? 'assumed from the largest mapped outline, not verified as the main house' : 'selected by the user, not independently verified as the main house'}` : 'not identified'}. Main-home identification and legal boundaries remain unverified.`,
     ] : ['Main building, existing suites, waterfront status and boundary roles have not been supplied.']),
-    enquiryUseQualification(input.intendedUse)
+    enquiryUseQualification(input.intendedUse, pathway?.proposed_use)
   ].join(' ')
 }
 const section = (heading: string, paragraphs: string[], siteDetails = false): EnquirySection =>
@@ -150,7 +151,7 @@ export function preparationChecklist(input: EnquiryInput): string[] {
 
 export function manufacturerDocument(input: EnquiryInput, address: string | null, example: boolean,
   measured: OccupiedMeasurement | null, conditional: ScreeningResult | null, scenarios: ScenarioResult | null, scan: PropertyScanResult | null,
-  linkedPlacement: boolean, sketchAvailable = false): EnquiryDocument {
+  linkedPlacement: boolean, sketchAvailable = false, scenarioUse: Pathway['proposed_use'] = 'garden_suite'): EnquiryDocument {
   const concerns = placementConcerns(measured, conditional, scenarios)
   const facts = [input.relationship?.trim() && `Relationship to the property: ${input.relationship.trim()}.`,
     input.stage?.trim() && `Project stage: ${input.stage.trim()}.`,
@@ -169,7 +170,7 @@ export function manufacturerDocument(input: EnquiryInput, address: string | null
       section('Project', [`I’m exploring aux box Model 300${address ? ` at ${address}` : ' for a possible site'}.${use}`, ...facts.filter(fact => !/Relationship to the property: (Unknown|Prefer not to say)\./i.test(fact))], true),
       ...(concerns.length ? [section('Preliminary concerns', [linkedPlacement ? 'The preliminary placement raises the following unresolved concerns.' : 'The following findings concern a separate retained example, not the proposed property.', ...concerns,
         'These are unresolved comparisons, not established legal violations. Could relocation, rotation or a smaller model help address these concerns?'], true)] : []),
-      section('Planning questions to resolve separately', [enquiryUseQualification(input.intendedUse),
+      section('Planning questions to resolve separately', [enquiryUseQualification(input.intendedUse, scenarioUse),
         'The property contact needs to confirm the main home, existing suites and waterfront context. City staff or a qualified local professional needs to check the applicable rules, legal measurement basis and any permit or title conditions. Please advise what product information you can provide to support that review.'], true),
       section('Questions for aux box', [
         '1. Can you share current dimensioned plans with their date/version, overhangs, interior floor area, height measurement reference and foundation requirements?',
