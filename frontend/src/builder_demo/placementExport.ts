@@ -5,12 +5,12 @@ import type { ScenarioResult } from '../conditional_screening/scenarios'
 import { additionalObservation, boundaryObservations, placementConcerns } from './manufacturer'
 import { measurementWithUnit } from '../measurements'
 import { roadBands } from '../zoning_site_assumptions/roads'
-import { readableDate } from '../ReadableProvenance'
+import { readableDate, publicSourceUrl } from '../ReadableProvenance'
 import { enquiryMarkdown, withPlacementSketch, type EnquiryDocument } from './enquiry'
 
 const escape = (value: string) => value.replace(/[<>&"']/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&apos;' }[c]!))
-export type PlacementDrawing = { svg: string; width: number; height: number; breaks: number[] }
-export type DrawingAssets = { png: Uint8Array; pngUrl: string; pdf: Uint8Array }
+export type PlacementDrawing = { svg: string; width: number; height: number; breaks: number[]; mapNotes?: string[] }
+export type DrawingAssets = { png: Uint8Array; pngUrl: string; pdf: Uint8Array; mapPngUrl?: string; mapNotes?: string[] }
 
 /** Export the measured snapshot, never the interactive DOM or a stale placement. */
 export function placementDrawing(measured: OccupiedMeasurement, assumptions: SiteAssumptions | null, scenarios: ScenarioResult | null, example: boolean, colours: Record<string, string>, useQualification: string | null = null): PlacementDrawing {
@@ -83,7 +83,7 @@ export function placementDrawing(measured: OccupiedMeasurement, assumptions: Sit
     return `${road ? `<path d="${line(road.corners)} Z" fill="#bec9cb" stroke="#81979b"/>` : ''}${water ? `<path d="${line([edge.start, edge.end])}" stroke="${escape(colours.parcelStroke)}" stroke-width="7" fill="none" opacity=".8"/>` : ''}<text x="${px}" y="${py - 10}" font-size="15" text-anchor="middle" paint-order="stroke" stroke="white" stroke-width="4" fill="${escape(colours.ink)}">${escape(`${i + 1} · ${role.replace('flanking_street', 'street-side')}${role === 'unclassified' ? '' : ' (assumed)'}${street ? ' · street mark' : ''}${water ? ' · waterfront mark' : ''}`)}</text>`
   }).join('')
   const scaleM = (maxX - minX) < 50 ? 5 : 10
-  return { width: 1000, height, breaks: [880, ...rows.flatMap((row, i) => row === '' ? [946 + i * 24] : [])], svg: `<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="${height}" viewBox="0 0 1000 ${height}"><rect width="100%" height="100%" fill="white"/><g font-family="Segoe UI, Arial, sans-serif" fill="${escape(colours.ink)}">${text('Approximate proposed placement', 40, 45, 28, true)}${text('Not a survey or approved site plan · preliminary discussion only', 40, 76)}${text(example ? 'SAVED EXAMPLE ONLY — not the sender’s property' : measured.site.label.slice(0, 85), 40, 106, 18, true)}<rect x="40" y="130" width="920" height="690" fill="#f0f5f4" stroke="${escape(colours.parcelStroke)}"/>${featurePath(site.parcel, colours.parcelFill, colours.parcelStroke)}${yardLayer}${site.buildings.map((b, i) => {
+  return { width: 1000, height, mapNotes: details.filter(value => /^(Parcel source:|Building source:|Candidate comparison source:)/.test(value)), breaks: [880, ...rows.flatMap((row, i) => row === '' ? [946 + i * 24] : [])], svg: `<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="${height}" viewBox="0 0 1000 ${height}"><rect width="100%" height="100%" fill="white"/><g font-family="Segoe UI, Arial, sans-serif" fill="${escape(colours.ink)}">${text('Approximate proposed placement', 40, 45, 28, true)}${text('Not a survey or approved site plan · preliminary discussion only', 40, 76)}${text(example ? 'SAVED EXAMPLE ONLY — not the sender’s property' : measured.site.label.slice(0, 85), 40, 106, 18, true)}<rect x="40" y="130" width="920" height="690" fill="#f0f5f4" stroke="${escape(colours.parcelStroke)}"/>${featurePath(site.parcel, colours.parcelFill, colours.parcelStroke)}${yardLayer}${site.buildings.map((b, i) => {
     const coords = points(b), bx = Math.min(...coords.map(p => p[0])), by = Math.max(...coords.map(p => p[1]))
     return featurePath(b, colours.roofFill, colours.roofStroke) + text(b.id === mainId ? `Building ${i + 1} · main home (unverified)` : `Building ${i + 1} · ${b.basis}`, x(bx), y(by) - 8, 15, true)
   }).join('')}${site.named_boundaries.map(b => featurePath(b, 'none', colours.zoneStroke)).join('')}${edges}<path d="${line(corners)} Z" fill="${escape(colours.zoneFill)}" stroke="${escape(colours.zoneStroke)}" stroke-width="3"/>${outsideLayer}${gaps}${yardLabel}${text(`Proposed ${measured.model?.name ?? 'model'}`,  x(placement.centre_xy[0]) + 15, y(placement.centre_xy[1]), 16, true)}${text(site.projected_metre_crs === 'LOCAL:METRE' ? 'Local sketch · north unknown' : 'Grid north ↑', 60, 160, 15)}<path d="M60 790 h${scaleM * factor} M60 782 v16 M${60 + scaleM * factor} 782 v16" stroke="${escape(colours.ink)}"/>${text(`${scaleM} m · indicative scale`, 60, 775, 14)}${text('Teal: parcel / Purple: buildings / Copper: unit / Yellow dashed: estimated rear yard', 40, 850, 16)}${text('Red: comparison concern / outside yard · Grey: street marks, not road widths. All gaps approximate.', 40, 875, 16)}${text('Measurements, assumptions & sources', 40, 912, 21, true)}${rows.map((row, i) => text(row, 40, 946 + i * 24, 16)).join('')}</g></svg>` }
@@ -101,6 +101,9 @@ export async function renderDrawing(drawing: PlacementDrawing): Promise<DrawingA
     const context = canvas.getContext('2d'); if (!context) throw new Error('Drawing export is unavailable in this browser.')
     context.drawImage(image, 0, 0, canvas.width, canvas.height)
     const pngUrl = canvas.toDataURL('image/png'), png = Uint8Array.from(atob(pngUrl.split(',')[1]), c => c.charCodeAt(0))
+    const mapCanvas = document.createElement('canvas'); mapCanvas.width = canvas.width; mapCanvas.height = Math.min(canvas.height, 1760)
+    mapCanvas.getContext('2d')!.drawImage(canvas, 0, 0)
+    const mapPngUrl = mapCanvas.toDataURL('image/png')
     const { jsPDF } = await import('jspdf')
     const pdf = new jsPDF({ unit: 'mm', format: 'a4', compress: true })
     // Page one contains the whole map; supporting rows continue at readable size.
@@ -118,13 +121,106 @@ export async function renderDrawing(drawing: PlacementDrawing): Promise<DrawingA
       if (!index) pdf.text('Measurements, assumptions and sources follow on the next page.', 15, 195)
       offset = end
     }
-    return { png, pngUrl, pdf: new Uint8Array(pdf.output('arraybuffer')) }
+    return { png, pngUrl, mapPngUrl, mapNotes: drawing.mapNotes, pdf: new Uint8Array(pdf.output('arraybuffer')) }
   } finally { URL.revokeObjectURL(url) }
 }
 
 export function downloadFile(name: string, bytes: BlobPart, type: string) {
   const url = URL.createObjectURL(new Blob([bytes], { type })), anchor = document.createElement('a')
   anchor.href = url; anchor.download = name; anchor.click(); setTimeout(() => URL.revokeObjectURL(url), 1000)
+}
+
+/** Compose the same recipient document as copy/email; no findings are recomputed.
+ * Browser-rendered system text preserves Unicode names and free answers without
+ * substituting the limited built-in PDF font. Markdown remains the editable copy. */
+export async function renderEnquiryPdf(enquiry: EnquiryDocument, assets: DrawingAssets | null): Promise<Uint8Array> {
+  const { jsPDF } = await import('jspdf')
+  const pdf = new jsPDF({ unit: 'mm', format: 'a4', compress: true })
+  pdf.setProperties({ title: enquiry.title, subject: 'Unsent preliminary prefab enquiry' })
+  const canvas = document.createElement('canvas'); canvas.width = 1240; canvas.height = 1754
+  const context = canvas.getContext('2d')
+  if (!context) throw new Error('PDF export is unavailable in this browser.')
+  const left = 94, right = 1146, bottom = 1615
+  let cursor = 100, pageNumber = 0
+  let links: { y: number; url: string }[] = []
+  const reset = () => { context.fillStyle = '#ffffff'; context.fillRect(0, 0, canvas.width, canvas.height); cursor = 100 }
+  const finish = () => {
+    context.font = '20px Arial, sans-serif'; context.fillStyle = '#496268'
+    context.fillText(`Unsent preliminary enquiry | Page ${++pageNumber}`, left, 1685)
+    if (pageNumber > 1) pdf.addPage()
+    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, 210, 297)
+    for (const link of links) pdf.link(left * 210 / canvas.width, (link.y - 26) * 297 / canvas.height, (right - left) * 210 / canvas.width, 35 * 297 / canvas.height, { url: link.url })
+    links = []
+    reset()
+  }
+  const wrap = (text: string): string[] => {
+    const lines: string[] = []
+    for (const paragraph of text.split('\n')) {
+      let line = ''
+      for (const word of paragraph.split(/\s+/)) {
+        if (!word) continue
+        const next = `${line}${line ? ' ' : ''}${word}`
+        if (context.measureText(next).width <= right - left) { line = next; continue }
+        if (line) { lines.push(line); line = '' }
+        // URLs and long user text must wrap rather than overflow the paper.
+        for (const character of word) {
+          if (context.measureText(line + character).width > right - left && line) { lines.push(line); line = '' }
+          line += character
+        }
+      }
+      lines.push(line)
+    }
+    return lines
+  }
+  const write = (text: string, heading = false, title = false) => {
+    const size = title ? 38 : heading ? 28 : 22, lineHeight = title ? 50 : heading ? 40 : 32
+    context.font = `${heading || title ? '700 ' : ''}${size}px Arial, sans-serif`
+    const lines = wrap(text.replace(/[\u2010-\u2015]/g, '-'))
+    const url = publicSourceUrl(text.match(/https:\/\/[^\s<>]+/)?.[0]?.replace(/[.,;:)]+$/, ''))
+    // Keep a heading with at least two lines of its following paragraph.
+    if (cursor + lineHeight * (lines.length + (heading || title ? 2 : 0)) + 18 > bottom && lineHeight * lines.length < bottom - 100) finish()
+    for (const line of lines) {
+      if (cursor + lineHeight > bottom) finish()
+      context.font = `${heading || title ? '700 ' : ''}${size}px Arial, sans-serif`
+      context.fillStyle = heading || title ? '#245b68' : '#203238'
+      context.fillText(line, left, cursor)
+      if (url) links.push({ y: cursor, url })
+      cursor += lineHeight
+    }
+    cursor += heading || title ? 10 : 18
+  }
+  reset()
+  write(enquiry.title, false, true)
+  if (enquiry.example) write('SAVED EXAMPLE ONLY - not my property.', true)
+  write(enquiry.question)
+  for (const section of enquiry.sections.filter(section => section.heading !== 'Placement sketch')) {
+    if (!section.paragraphs.length) continue
+    write(section.heading, true)
+    for (const paragraph of section.paragraphs) write(paragraph)
+  }
+  write(enquiry.closing)
+  if (!assets && !enquiry.sections.some(section => section.paragraphs.some(paragraph => /No current measured placement/.test(paragraph)))) write('No current placement plan is included. The proposed position remains to be established.')
+  finish()
+  if (assets) {
+    write('Approximate proposed placement', false, true)
+    // Old assets have only the complete drawing; crop its map rather than shrink
+    // the notes into an unreadable thumbnail. New renderDrawing assets keep it.
+    const image = new Image()
+    await new Promise<void>((resolve, reject) => {
+      const timeout = setTimeout(() => reject(new Error('Placement image timed out. Try the PDF download again.')), 15000)
+      image.onload = () => { clearTimeout(timeout); resolve() }
+      image.onerror = () => { clearTimeout(timeout); reject(new Error('Could not include the current placement plan.')) }
+      image.src = assets.mapPngUrl ?? assets.pngUrl
+    })
+    const sourceHeight = assets.mapPngUrl ? image.height : Math.min(image.height, image.width * .88)
+    const height = (right - left) * sourceHeight / image.width
+    context.drawImage(image, 0, 0, image.width, sourceHeight, left, cursor, right - left, height)
+    cursor += height + 45
+    write('Approximate mapped outlines and a nominal unit rectangle. This is a discussion sketch, not a survey or approved site plan.')
+    for (const note of assets.mapNotes ?? []) write(note)
+    finish()
+  }
+  return new Uint8Array(pdf.output('arraybuffer'))
 }
 
 const base64 = (bytes: Uint8Array) => {
