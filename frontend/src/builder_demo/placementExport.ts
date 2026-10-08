@@ -197,13 +197,14 @@ export async function renderEnquiryPdf(enquiry: EnquiryDocument, assets: Drawing
       if (url) links.push({ y: cursor, url })
       cursor += lineHeight
     }
-    cursor += heading || title ? 10 : 18
+    cursor += heading || title ? 10 : 14
   }
   reset()
   write(enquiry.title, false, true)
   if (enquiry.example) write('SAVED EXAMPLE ONLY - not my property.', true)
   write(enquiry.question)
-  const recipient = withPlacementSketch(enquiry, assets ? 'An approximate proposed placement plan follows in this PDF. It is a discussion sketch, not a survey or approved site plan.' : null)
+  // The plan page carries its own inclusion note; keep it out of message pagination.
+  const recipient = withPlacementSketch(enquiry, null)
   for (const section of recipient.sections) {
     if (!section.paragraphs.length) continue
     write(section.heading, true)
@@ -213,7 +214,7 @@ export async function renderEnquiryPdf(enquiry: EnquiryDocument, assets: Drawing
   if (!assets && !enquiry.sections.some(section => section.paragraphs.some(paragraph => /No current measured placement/.test(paragraph)))) write('No current placement plan is included. The proposed position remains to be established.')
   finish()
   if (assets) {
-    write('Approximate proposed placement', false, true)
+    // The exported drawing already contains its title and preliminary scope.
     // Old assets have only the complete drawing; crop its map rather than shrink
     // the notes into an unreadable thumbnail. New renderDrawing assets keep it.
     const image = new Image()
