@@ -82,7 +82,7 @@ export function parseScenarioResult(raw: unknown, request?: ScenarioRequest): Sc
       ['checked', 'probable', 'review', 'conflict', 'unknown', 'unsupported'].includes(check.status) && nonempty(check.label) && nonempty(check.detail) && nonempty(check.basis) &&
       (check.observed === null || finiteNonnegative(check.observed)) && (check.threshold === null || finiteNonnegative(check.threshold)) &&
       (check.unit === null || typeof check.unit === 'string') &&
-      (check.action_target === null || ['principal-building', 'boundary-roles', 'boundary-offsets', 'scouting-height', 'scouting-area-buffer', 'zsa-floor-area', 'waterfront-lot'].includes(check.action_target)) &&
+      (check.action_target === null || ['principal-building', 'boundary-roles', 'boundary-offsets', 'street-side', 'scouting-height', 'scouting-area-buffer', 'zsa-floor-area', 'waterfront-lot'].includes(check.action_target)) &&
       record(check.source) && nonempty(check.source.locator) && nonempty(check.source.provider) &&
       check.source.url === 'https://www.victoria.ca/media/file/zoning-bylaw-2018'))) throw new Error('Additional scouting response is malformed.')
   if (result.schema_version !== 'placement-scenarios.result.v1' ||
@@ -121,7 +121,10 @@ export function parseScenarioResult(raw: unknown, request?: ScenarioRequest): Sc
   })
   const status = !result.scenarios.length ? 'unresolved' : result.scenarios.every(scenario => scenario.outcome === 'pass') ? 'bounded_pass'
     : result.scenarios.every(scenario => scenario.outcome === 'fail') ? 'apparent_conflict' : 'clarify'
-  if (!valid || result.status !== status || !result.sources.length || !result.sources.every(source => /^https?:\/\//i.test(source.url)))
+  // Incomplete street context can retain hypothetical alternatives without an
+  // applicable aggregate result. Never turn that explicit unresolved status into a pass.
+  const unresolvedStreetContext = result.status === 'unresolved' && (!request || request.assumptions.street_adjacency?.all_marked === false)
+  if (!valid || (result.status !== status && !unresolvedStreetContext) || !result.sources.length || !result.sources.every(source => /^https?:\/\//i.test(source.url)))
     throw new Error('Scenario response is malformed.')
   if (request) {
     const edges = request.assumptions.edges

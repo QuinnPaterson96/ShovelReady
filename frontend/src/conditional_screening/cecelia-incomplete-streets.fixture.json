@@ -1,0 +1,1458 @@
+{
+  "request": {
+    "additional_inputs": {
+      "advertised_height_m": 3.2004,
+      "area_buffer_percent": 10,
+      "foundation_allowance_m": 0.3,
+      "height_buffer_percent": 10,
+      "height_from_average_grade_m": null,
+      "nominal_footprint_area_m2": 27.870912
+    },
+    "assumptions": {
+      "boundary_role_suggestions": {
+        "basis": "user_marks",
+        "conflicts": [],
+        "roles": {}
+      },
+      "building_type": {
+        "note": null,
+        "origin": "user",
+        "value": null
+      },
+      "edges": [
+        {
+          "end": [
+            471912.3811999997,
+            5365811.394200001
+          ],
+          "id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-0",
+          "ring": 0,
+          "role": {
+            "note": null,
+            "origin": "user",
+            "value": "unknown"
+          },
+          "segment": 0,
+          "start": [
+            471925.7468999997,
+            5365845.4209
+          ]
+        },
+        {
+          "end": [
+            471901.3491000002,
+            5365819.451400001
+          ],
+          "id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-1",
+          "ring": 0,
+          "role": {
+            "note": null,
+            "origin": "user",
+            "value": "unknown"
+          },
+          "segment": 1,
+          "start": [
+            471912.3811999997,
+            5365811.394200001
+          ]
+        },
+        {
+          "end": [
+            471914.7149,
+            5365853.4782
+          ],
+          "id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-2",
+          "ring": 0,
+          "role": {
+            "note": null,
+            "origin": "user",
+            "value": "unknown"
+          },
+          "segment": 2,
+          "start": [
+            471901.3491000002,
+            5365819.451400001
+          ]
+        },
+        {
+          "end": [
+            471925.7468999997,
+            5365845.4209
+          ],
+          "id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-3",
+          "ring": 0,
+          "role": {
+            "note": null,
+            "origin": "user",
+            "value": "unknown"
+          },
+          "segment": 3,
+          "start": [
+            471914.7149,
+            5365853.4782
+          ]
+        }
+      ],
+      "existing_garden_suites": {
+        "evidence_state": "assumed",
+        "note": "Assuming none already exist; editable homeowner scenario, not independently verified.",
+        "origin": "journey_default",
+        "value": 0
+      },
+      "infer_principal_building": true,
+      "limitations": [
+        "Edge roles are user assumptions, not surveyed legal lot-line classifications.",
+        "Captured rooflines are not surveyed walls or proof of a principal building."
+      ],
+      "measurements": {
+        "boundary": {},
+        "floor_area": null,
+        "principal_separation": null
+      },
+      "observed_buildings": [
+        {
+          "basis": "roofline",
+          "id": "live-roof:81666",
+          "source": {
+            "capture_date": "2026-10-08T00:47:52.032615+00:00",
+            "provider": "City of Victoria Open Data",
+            "record_label": "Building MapServer response",
+            "reference": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=json&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%2C%22rings%22%3A%5B%5B%5B471925.7468999997%2C5365845.4209%5D%2C%5B471912.3811999997%2C5365811.394200001%5D%2C%5B471901.3491000002%2C5365819.451400001%5D%2C%5B471914.7149%2C5365853.4782%5D%2C%5B471925.7468999997%2C5365845.4209%5D%5D%5D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+            "review_status": "unreviewed"
+          }
+        },
+        {
+          "basis": "roofline",
+          "id": "live-roof:81667",
+          "source": {
+            "capture_date": "2026-10-08T00:47:52.032615+00:00",
+            "provider": "City of Victoria Open Data",
+            "record_label": "Building MapServer response",
+            "reference": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=json&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%2C%22rings%22%3A%5B%5B%5B471925.7468999997%2C5365845.4209%5D%2C%5B471912.3811999997%2C5365811.394200001%5D%2C%5B471901.3491000002%2C5365819.451400001%5D%2C%5B471914.7149%2C5365853.4782%5D%2C%5B471925.7468999997%2C5365845.4209%5D%5D%5D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+            "review_status": "unreviewed"
+          }
+        }
+      ],
+      "placement_revision": "client-placement-fnv1a32:c4b79b50",
+      "planning_buffers_m": {
+        "client-capture-fnv1a32:86efaaa2:ring-0:segment-0": 1,
+        "client-capture-fnv1a32:86efaaa2:ring-0:segment-1": 1,
+        "client-capture-fnv1a32:86efaaa2:ring-0:segment-2": 1,
+        "client-capture-fnv1a32:86efaaa2:ring-0:segment-3": 1
+      },
+      "principal_building_id": {
+        "evidence_state": "assumed",
+        "note": "Unique largest usable mapped outline; assumed main building, not confirmed use or walls.",
+        "origin": "journey_default",
+        "value": "live-roof:81666"
+      },
+      "property": {
+        "capture": {
+          "completeness": "complete_for_declared_scope",
+          "limitations": [
+            "Feature update date and positional accuracy not supplied; rooflines derive from aerial imagery, not surveyed walls.",
+            "Source-selected observation; identity, ownership and legal boundaries are not confirmed. Source join and positional accuracy remain unreviewed.",
+            "Rooflines are not walls. Other obstructions, zoning, setbacks, services and delivery access remain unassessed."
+          ],
+          "scope": "City rooflines returned by this parcel-intersection query only; not a complete obstruction inventory"
+        },
+        "case_id": "live:10573:0",
+        "crs": "EPSG:3157",
+        "geometry_revision": "client-capture-fnv1a32:86efaaa2",
+        "parcel_id": "live-parcel:10573:0",
+        "source": {
+          "capture_date": "2026-10-08T00:47:51.745569+00:00",
+          "provider": "City of Victoria Open Data",
+          "record_label": "Parcel MapServer response",
+          "reference": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=json&objectIds=10573&outFields=OBJECTID%2CPID%2CVicPID%2CGISLINK%2CParcelType%2CParcelStatus%2CShape_Area&returnGeometry=true&outSR=3157",
+          "review_status": "unreviewed"
+        }
+      },
+      "schema_version": "sr.zoning-site-assumptions.v1",
+      "street_adjacency": {
+        "all_marked": false,
+        "edge_ids": [],
+        "origin": "user"
+      },
+      "waterfront": {
+        "evidence_state": "assumed",
+        "note": "Assuming not waterfront for preliminary scouting; choose Yes and mark water-adjoining edges if applicable.",
+        "origin": "journey_default",
+        "value": false
+      },
+      "waterfront_edge_ids": []
+    },
+    "geometry": {
+      "buildings": [
+        {
+          "basis": "roofline",
+          "id": "live-roof:81666",
+          "shape": {
+            "crs": "EPSG:3157",
+            "geometry": {
+              "coordinates": [
+                [
+                  [
+                    471914.6129999999,
+                    5365842.211999999
+                  ],
+                  [
+                    471917.88800000027,
+                    5365840.585999999
+                  ],
+                  [
+                    471917.1639999999,
+                    5365839.129000001
+                  ],
+                  [
+                    471919.9519999996,
+                    5365837.744999999
+                  ],
+                  [
+                    471915.5329999998,
+                    5365828.8440000005
+                  ],
+                  [
+                    471914.96,
+                    5365829.129000001
+                  ],
+                  [
+                    471914.0449999999,
+                    5365827.286
+                  ],
+                  [
+                    471906.11000000034,
+                    5365831.226
+                  ],
+                  [
+                    471907.07799999975,
+                    5365833.174000001
+                  ],
+                  [
+                    471906.7379999999,
+                    5365833.343
+                  ],
+                  [
+                    471911.0990000004,
+                    5365842.127
+                  ],
+                  [
+                    471913.8839999996,
+                    5365840.744999999
+                  ],
+                  [
+                    471914.6129999999,
+                    5365842.211999999
+                  ]
+                ]
+              ],
+              "type": "Polygon"
+            }
+          },
+          "source": {
+            "capture_date": "2026-10-08T00:47:52.032615+00:00",
+            "provider": "City of Victoria Open Data",
+            "record_label": "Building MapServer response",
+            "reference": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=json&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%2C%22rings%22%3A%5B%5B%5B471925.7468999997%2C5365845.4209%5D%2C%5B471912.3811999997%2C5365811.394200001%5D%2C%5B471901.3491000002%2C5365819.451400001%5D%2C%5B471914.7149%2C5365853.4782%5D%2C%5B471925.7468999997%2C5365845.4209%5D%5D%5D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+            "review_status": "unreviewed"
+          }
+        },
+        {
+          "basis": "roofline",
+          "id": "live-roof:81667",
+          "shape": {
+            "crs": "EPSG:3157",
+            "geometry": {
+              "coordinates": [
+                [
+                  [
+                    471915.2139999997,
+                    5365819.73
+                  ],
+                  [
+                    471913.7470000005,
+                    5365815.692
+                  ],
+                  [
+                    471910.9639999997,
+                    5365816.704
+                  ],
+                  [
+                    471912.43099999987,
+                    5365820.742000001
+                  ],
+                  [
+                    471915.2139999997,
+                    5365819.73
+                  ]
+                ]
+              ],
+              "type": "Polygon"
+            }
+          },
+          "source": {
+            "capture_date": "2026-10-08T00:47:52.032615+00:00",
+            "provider": "City of Victoria Open Data",
+            "record_label": "Building MapServer response",
+            "reference": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=json&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%2C%22rings%22%3A%5B%5B%5B471925.7468999997%2C5365845.4209%5D%2C%5B471912.3811999997%2C5365811.394200001%5D%2C%5B471901.3491000002%2C5365819.451400001%5D%2C%5B471914.7149%2C5365853.4782%5D%2C%5B471925.7468999997%2C5365845.4209%5D%5D%5D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true",
+            "review_status": "unreviewed"
+          }
+        }
+      ],
+      "capture": {
+        "completeness": "complete_for_declared_scope",
+        "limitations": [
+          "Feature update date and positional accuracy not supplied; rooflines derive from aerial imagery, not surveyed walls.",
+          "Source-selected observation; identity, ownership and legal boundaries are not confirmed. Source join and positional accuracy remain unreviewed.",
+          "Rooflines are not walls. Other obstructions, zoning, setbacks, services and delivery access remain unassessed."
+        ],
+        "scope": "City rooflines returned by this parcel-intersection query only; not a complete obstruction inventory"
+      },
+      "named_boundaries": [],
+      "parcel": {
+        "id": "live-parcel:10573:0",
+        "shape": {
+          "crs": "EPSG:3157",
+          "geometry": {
+            "coordinates": [
+              [
+                [
+                  471925.7468999997,
+                  5365845.4209
+                ],
+                [
+                  471912.3811999997,
+                  5365811.394200001
+                ],
+                [
+                  471901.3491000002,
+                  5365819.451400001
+                ],
+                [
+                  471914.7149,
+                  5365853.4782
+                ],
+                [
+                  471925.7468999997,
+                  5365845.4209
+                ]
+              ]
+            ],
+            "type": "Polygon"
+          }
+        },
+        "source": {
+          "capture_date": "2026-10-08T00:47:51.745569+00:00",
+          "provider": "City of Victoria Open Data",
+          "record_label": "Parcel MapServer response",
+          "reference": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=json&objectIds=10573&outFields=OBJECTID%2CPID%2CVicPID%2CGISLINK%2CParcelType%2CParcelStatus%2CShape_Area&returnGeometry=true&outSR=3157",
+          "review_status": "unreviewed"
+        }
+      },
+      "placement": {
+        "angle_degrees": -21.445006404314483,
+        "centre_xy": [
+          471913.55,
+          5365832.44
+        ],
+        "depth_m": 9.144,
+        "id": "user-supplied-placement",
+        "width_m": 3.048
+      },
+      "projected_metre_crs": "EPSG:3157",
+      "requirements": [],
+      "schema_version": "scouting-geometry.v1"
+    },
+    "model_revision": "catalogue-record:aux-300@sr-40.2026-10-06.provider-pages.v2",
+    "proposal": {
+      "confirmed_instrument": "Zoning Bylaw 2018",
+      "confirmed_zone": "GRD-1 (PGA)",
+      "floor_area_definition_acknowledged": null,
+      "foundation_attached": true,
+      "legal_lot_confirmed": null,
+      "no_relevant_projections": null,
+      "proposed_use": "garden_suite"
+    },
+    "proposal_evidence": {
+      "confirmed_instrument": {
+        "note": "Mapped GRD-1 (PGA) under Zoning Bylaw 2018 (No. 18-072). single covered mapping; Unreviewed map observation for investigation; check current bylaws, amendments, overlays and parcel identity. No accepted rules were published.; unreviewed site applicability.",
+        "origin": "municipal_lookup",
+        "source": {
+          "capture_date": "2026-10-08T00:47:53.043592+00:00",
+          "currentness_limitations": [
+            "Feature update date, legal revision and positional accuracy are not supplied."
+          ],
+          "locator": "Zoning polygon 83; selected parcel 10573",
+          "provider": "City of Victoria Open Data",
+          "record_label": "City zoning polygons intersecting selected parcel: GRD-1 (PGA) \u00b7 General Residential District-1 Zone Priority Growth Area",
+          "review_status": "unreviewed_live_observation",
+          "source_revision": null,
+          "url": "https://www.victoria.ca/building-business/permits-development-construction/zoning/zoning-regulation-bylaw-2018"
+        },
+        "value": "Zoning Bylaw 2018"
+      },
+      "confirmed_zone": {
+        "note": "Mapped GRD-1 (PGA) under Zoning Bylaw 2018 (No. 18-072). single covered mapping; Unreviewed map observation for investigation; check current bylaws, amendments, overlays and parcel identity. No accepted rules were published.; unreviewed site applicability.",
+        "origin": "municipal_lookup",
+        "source": {
+          "capture_date": "2026-10-08T00:47:53.043592+00:00",
+          "currentness_limitations": [
+            "Feature update date, legal revision and positional accuracy are not supplied."
+          ],
+          "locator": "Zoning polygon 83; selected parcel 10573",
+          "provider": "City of Victoria Open Data",
+          "record_label": "City zoning polygons intersecting selected parcel: GRD-1 (PGA) \u00b7 General Residential District-1 Zone Priority Growth Area",
+          "review_status": "unreviewed_live_observation",
+          "source_revision": null,
+          "url": "https://www.victoria.ca/building-business/permits-development-construction/zoning/zoning-regulation-bylaw-2018"
+        },
+        "value": "GRD-1 (PGA)"
+      },
+      "floor_area_definition_acknowledged": {
+        "note": null,
+        "origin": "unknown",
+        "source": null,
+        "value": null
+      },
+      "foundation_attached": {
+        "note": "Permanent-foundation scenario default; installation has not been confirmed.",
+        "origin": "journey_default",
+        "source": null,
+        "value": true
+      },
+      "legal_lot_confirmed": {
+        "note": null,
+        "origin": "unknown",
+        "source": null,
+        "value": null
+      },
+      "no_relevant_projections": {
+        "note": null,
+        "origin": "unknown",
+        "source": null,
+        "value": null
+      },
+      "proposed_use": {
+        "note": "Model 300 garden-suite exploration default; editable and not independently verified.",
+        "origin": "journey_default",
+        "source": null,
+        "value": "garden_suite"
+      }
+    },
+    "rear_edge_id": null,
+    "schema_version": "placement-scenarios.request.v1",
+    "street_edge_id": null,
+    "street_pattern": "unknown"
+  },
+  "response": {
+    "schema_version": "placement-scenarios.result.v1",
+    "status": "unresolved",
+    "reason": "Street selection is incomplete or unknown. Captured gaps remain available; boundary and yard applicability is unresolved until explicitly confirmed.",
+    "property_revision": "live:10573:0:live-parcel:10573:0:client-capture-fnv1a32:86efaaa2",
+    "placement_revision": "client-placement-fnv1a32:c4b79b50",
+    "model_revision": "catalogue-record:aux-300@sr-40.2026-10-06.provider-pages.v2",
+    "packet_id": "victoria-zb2018-grd1-ordinary-garden-suite-scouting",
+    "packet_revision": "candidate-2026-10-06-1",
+    "scope": "Approximate nominal rectangle to captured parcel edges, with separately labelled user wall-to-line overrides where supplied; candidate City of Victoria ordinary GRD-1 garden-suite side/rear/flanking distances only",
+    "scenarios": [
+      {
+        "front_edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-0",
+        "checks": [
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-1",
+            "role": "side",
+            "distance_m": 12.875943032038,
+            "basis": "captured_nominal",
+            "minimum_m": 0.6,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-side-rear-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 11.875943032038,
+            "planning_meets": true
+          },
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-2",
+            "role": "rear",
+            "distance_m": 5.083482049053794,
+            "basis": "captured_nominal",
+            "minimum_m": 0.6,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-side-rear-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 4.083482049053794,
+            "planning_meets": true
+          },
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-3",
+            "role": "side",
+            "distance_m": 12.867384911899862,
+            "basis": "captured_nominal",
+            "minimum_m": 0.6,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-side-rear-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 11.867384911899862,
+            "planning_meets": true
+          }
+        ],
+        "outcome": "pass"
+      },
+      {
+        "front_edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-0",
+        "checks": [
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-1",
+            "role": "side",
+            "distance_m": 12.875943032038,
+            "basis": "captured_nominal",
+            "minimum_m": 0.6,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-side-rear-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 11.875943032038,
+            "planning_meets": true
+          },
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-2",
+            "role": "rear",
+            "distance_m": 5.083482049053794,
+            "basis": "captured_nominal",
+            "minimum_m": 0.6,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-side-rear-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 4.083482049053794,
+            "planning_meets": true
+          },
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-3",
+            "role": "flanking_street",
+            "distance_m": 12.867384911899862,
+            "basis": "captured_nominal",
+            "minimum_m": 3.5,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-flanking-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 11.867384911899862,
+            "planning_meets": true
+          }
+        ],
+        "outcome": "pass"
+      },
+      {
+        "front_edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-0",
+        "checks": [
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-1",
+            "role": "flanking_street",
+            "distance_m": 12.875943032038,
+            "basis": "captured_nominal",
+            "minimum_m": 3.5,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-flanking-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 11.875943032038,
+            "planning_meets": true
+          },
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-2",
+            "role": "rear",
+            "distance_m": 5.083482049053794,
+            "basis": "captured_nominal",
+            "minimum_m": 0.6,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-side-rear-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 4.083482049053794,
+            "planning_meets": true
+          },
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-3",
+            "role": "side",
+            "distance_m": 12.867384911899862,
+            "basis": "captured_nominal",
+            "minimum_m": 0.6,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-side-rear-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 11.867384911899862,
+            "planning_meets": true
+          }
+        ],
+        "outcome": "pass"
+      },
+      {
+        "front_edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-0",
+        "checks": [
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-1",
+            "role": "flanking_street",
+            "distance_m": 12.875943032038,
+            "basis": "captured_nominal",
+            "minimum_m": 3.5,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-flanking-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 11.875943032038,
+            "planning_meets": true
+          },
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-2",
+            "role": "rear",
+            "distance_m": 5.083482049053794,
+            "basis": "captured_nominal",
+            "minimum_m": 0.6,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-side-rear-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 4.083482049053794,
+            "planning_meets": true
+          },
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-3",
+            "role": "flanking_street",
+            "distance_m": 12.867384911899862,
+            "basis": "captured_nominal",
+            "minimum_m": 3.5,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-flanking-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 11.867384911899862,
+            "planning_meets": true
+          }
+        ],
+        "outcome": "pass"
+      },
+      {
+        "front_edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-1",
+        "checks": [
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-0",
+            "role": "side",
+            "distance_m": 5.082592659447276,
+            "basis": "captured_nominal",
+            "minimum_m": 0.6,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-side-rear-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 4.082592659447276,
+            "planning_meets": true
+          },
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-2",
+            "role": "side",
+            "distance_m": 5.083482049053794,
+            "basis": "captured_nominal",
+            "minimum_m": 0.6,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-side-rear-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 4.083482049053794,
+            "planning_meets": true
+          },
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-3",
+            "role": "rear",
+            "distance_m": 12.867384911899862,
+            "basis": "captured_nominal",
+            "minimum_m": 0.6,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-side-rear-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 11.867384911899862,
+            "planning_meets": true
+          }
+        ],
+        "outcome": "pass"
+      },
+      {
+        "front_edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-1",
+        "checks": [
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-0",
+            "role": "side",
+            "distance_m": 5.082592659447276,
+            "basis": "captured_nominal",
+            "minimum_m": 0.6,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-side-rear-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 4.082592659447276,
+            "planning_meets": true
+          },
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-2",
+            "role": "flanking_street",
+            "distance_m": 5.083482049053794,
+            "basis": "captured_nominal",
+            "minimum_m": 3.5,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-flanking-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 4.083482049053794,
+            "planning_meets": true
+          },
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-3",
+            "role": "rear",
+            "distance_m": 12.867384911899862,
+            "basis": "captured_nominal",
+            "minimum_m": 0.6,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-side-rear-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 11.867384911899862,
+            "planning_meets": true
+          }
+        ],
+        "outcome": "pass"
+      },
+      {
+        "front_edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-1",
+        "checks": [
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-0",
+            "role": "flanking_street",
+            "distance_m": 5.082592659447276,
+            "basis": "captured_nominal",
+            "minimum_m": 3.5,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-flanking-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 4.082592659447276,
+            "planning_meets": true
+          },
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-2",
+            "role": "side",
+            "distance_m": 5.083482049053794,
+            "basis": "captured_nominal",
+            "minimum_m": 0.6,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-side-rear-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 4.083482049053794,
+            "planning_meets": true
+          },
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-3",
+            "role": "rear",
+            "distance_m": 12.867384911899862,
+            "basis": "captured_nominal",
+            "minimum_m": 0.6,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-side-rear-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 11.867384911899862,
+            "planning_meets": true
+          }
+        ],
+        "outcome": "pass"
+      },
+      {
+        "front_edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-1",
+        "checks": [
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-0",
+            "role": "flanking_street",
+            "distance_m": 5.082592659447276,
+            "basis": "captured_nominal",
+            "minimum_m": 3.5,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-flanking-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 4.082592659447276,
+            "planning_meets": true
+          },
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-2",
+            "role": "flanking_street",
+            "distance_m": 5.083482049053794,
+            "basis": "captured_nominal",
+            "minimum_m": 3.5,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-flanking-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 4.083482049053794,
+            "planning_meets": true
+          },
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-3",
+            "role": "rear",
+            "distance_m": 12.867384911899862,
+            "basis": "captured_nominal",
+            "minimum_m": 0.6,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-side-rear-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 11.867384911899862,
+            "planning_meets": true
+          }
+        ],
+        "outcome": "pass"
+      },
+      {
+        "front_edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-2",
+        "checks": [
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-0",
+            "role": "rear",
+            "distance_m": 5.082592659447276,
+            "basis": "captured_nominal",
+            "minimum_m": 0.6,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-side-rear-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 4.082592659447276,
+            "planning_meets": true
+          },
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-1",
+            "role": "side",
+            "distance_m": 12.875943032038,
+            "basis": "captured_nominal",
+            "minimum_m": 0.6,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-side-rear-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 11.875943032038,
+            "planning_meets": true
+          },
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-3",
+            "role": "side",
+            "distance_m": 12.867384911899862,
+            "basis": "captured_nominal",
+            "minimum_m": 0.6,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-side-rear-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 11.867384911899862,
+            "planning_meets": true
+          }
+        ],
+        "outcome": "pass"
+      },
+      {
+        "front_edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-2",
+        "checks": [
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-0",
+            "role": "rear",
+            "distance_m": 5.082592659447276,
+            "basis": "captured_nominal",
+            "minimum_m": 0.6,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-side-rear-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 4.082592659447276,
+            "planning_meets": true
+          },
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-1",
+            "role": "side",
+            "distance_m": 12.875943032038,
+            "basis": "captured_nominal",
+            "minimum_m": 0.6,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-side-rear-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 11.875943032038,
+            "planning_meets": true
+          },
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-3",
+            "role": "flanking_street",
+            "distance_m": 12.867384911899862,
+            "basis": "captured_nominal",
+            "minimum_m": 3.5,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-flanking-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 11.867384911899862,
+            "planning_meets": true
+          }
+        ],
+        "outcome": "pass"
+      },
+      {
+        "front_edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-2",
+        "checks": [
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-0",
+            "role": "rear",
+            "distance_m": 5.082592659447276,
+            "basis": "captured_nominal",
+            "minimum_m": 0.6,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-side-rear-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 4.082592659447276,
+            "planning_meets": true
+          },
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-1",
+            "role": "flanking_street",
+            "distance_m": 12.875943032038,
+            "basis": "captured_nominal",
+            "minimum_m": 3.5,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-flanking-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 11.875943032038,
+            "planning_meets": true
+          },
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-3",
+            "role": "side",
+            "distance_m": 12.867384911899862,
+            "basis": "captured_nominal",
+            "minimum_m": 0.6,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-side-rear-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 11.867384911899862,
+            "planning_meets": true
+          }
+        ],
+        "outcome": "pass"
+      },
+      {
+        "front_edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-2",
+        "checks": [
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-0",
+            "role": "rear",
+            "distance_m": 5.082592659447276,
+            "basis": "captured_nominal",
+            "minimum_m": 0.6,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-side-rear-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 4.082592659447276,
+            "planning_meets": true
+          },
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-1",
+            "role": "flanking_street",
+            "distance_m": 12.875943032038,
+            "basis": "captured_nominal",
+            "minimum_m": 3.5,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-flanking-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 11.875943032038,
+            "planning_meets": true
+          },
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-3",
+            "role": "flanking_street",
+            "distance_m": 12.867384911899862,
+            "basis": "captured_nominal",
+            "minimum_m": 3.5,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-flanking-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 11.867384911899862,
+            "planning_meets": true
+          }
+        ],
+        "outcome": "pass"
+      },
+      {
+        "front_edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-3",
+        "checks": [
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-0",
+            "role": "side",
+            "distance_m": 5.082592659447276,
+            "basis": "captured_nominal",
+            "minimum_m": 0.6,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-side-rear-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 4.082592659447276,
+            "planning_meets": true
+          },
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-1",
+            "role": "rear",
+            "distance_m": 12.875943032038,
+            "basis": "captured_nominal",
+            "minimum_m": 0.6,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-side-rear-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 11.875943032038,
+            "planning_meets": true
+          },
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-2",
+            "role": "side",
+            "distance_m": 5.083482049053794,
+            "basis": "captured_nominal",
+            "minimum_m": 0.6,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-side-rear-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 4.083482049053794,
+            "planning_meets": true
+          }
+        ],
+        "outcome": "pass"
+      },
+      {
+        "front_edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-3",
+        "checks": [
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-0",
+            "role": "side",
+            "distance_m": 5.082592659447276,
+            "basis": "captured_nominal",
+            "minimum_m": 0.6,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-side-rear-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 4.082592659447276,
+            "planning_meets": true
+          },
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-1",
+            "role": "rear",
+            "distance_m": 12.875943032038,
+            "basis": "captured_nominal",
+            "minimum_m": 0.6,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-side-rear-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 11.875943032038,
+            "planning_meets": true
+          },
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-2",
+            "role": "flanking_street",
+            "distance_m": 5.083482049053794,
+            "basis": "captured_nominal",
+            "minimum_m": 3.5,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-flanking-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 4.083482049053794,
+            "planning_meets": true
+          }
+        ],
+        "outcome": "pass"
+      },
+      {
+        "front_edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-3",
+        "checks": [
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-0",
+            "role": "flanking_street",
+            "distance_m": 5.082592659447276,
+            "basis": "captured_nominal",
+            "minimum_m": 3.5,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-flanking-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 4.082592659447276,
+            "planning_meets": true
+          },
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-1",
+            "role": "rear",
+            "distance_m": 12.875943032038,
+            "basis": "captured_nominal",
+            "minimum_m": 0.6,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-side-rear-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 11.875943032038,
+            "planning_meets": true
+          },
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-2",
+            "role": "side",
+            "distance_m": 5.083482049053794,
+            "basis": "captured_nominal",
+            "minimum_m": 0.6,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-side-rear-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 4.083482049053794,
+            "planning_meets": true
+          }
+        ],
+        "outcome": "pass"
+      },
+      {
+        "front_edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-3",
+        "checks": [
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-0",
+            "role": "flanking_street",
+            "distance_m": 5.082592659447276,
+            "basis": "captured_nominal",
+            "minimum_m": 3.5,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-flanking-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 4.082592659447276,
+            "planning_meets": true
+          },
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-1",
+            "role": "rear",
+            "distance_m": 12.875943032038,
+            "basis": "captured_nominal",
+            "minimum_m": 0.6,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-side-rear-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 11.875943032038,
+            "planning_meets": true
+          },
+          {
+            "edge_id": "client-capture-fnv1a32:86efaaa2:ring-0:segment-2",
+            "role": "flanking_street",
+            "distance_m": 5.083482049053794,
+            "basis": "captured_nominal",
+            "minimum_m": 3.5,
+            "meets": true,
+            "rule_id": "victoria-zb2018-garden-suite-flanking-setback",
+            "planning_buffer_m": 1.0,
+            "planning_distance_m": 4.083482049053794,
+            "planning_meets": true
+          }
+        ],
+        "outcome": "pass"
+      }
+    ],
+    "edge_distances_m": {
+      "client-capture-fnv1a32:86efaaa2:ring-0:segment-0": 5.082592659447276,
+      "client-capture-fnv1a32:86efaaa2:ring-0:segment-1": 12.875943032038,
+      "client-capture-fnv1a32:86efaaa2:ring-0:segment-2": 5.083482049053794,
+      "client-capture-fnv1a32:86efaaa2:ring-0:segment-3": 12.867384911899862
+    },
+    "edge_measurement_lines": {
+      "client-capture-fnv1a32:86efaaa2:ring-0:segment-0": [
+        [
+          471916.640051717,
+          5365836.138288846
+        ],
+        [
+          471921.3707738412,
+          5365834.280059494
+        ]
+      ],
+      "client-capture-fnv1a32:86efaaa2:ring-0:segment-1": [
+        [
+          471910.459948283,
+          5365828.741711155
+        ],
+        [
+          471902.8658281486,
+          5365818.3436705535
+        ]
+      ],
+      "client-capture-fnv1a32:86efaaa2:ring-0:segment-2": [
+        [
+          471913.8030680662,
+          5365837.252662107
+        ],
+        [
+          471909.0715209985,
+          5365839.111223941
+        ]
+      ],
+      "client-capture-fnv1a32:86efaaa2:ring-0:segment-3": [
+        [
+          471916.640051717,
+          5365836.138288846
+        ],
+        [
+          471924.22923063283,
+          5365846.529340663
+        ]
+      ]
+    },
+    "thresholds_m": {
+      "side_rear": 0.6,
+      "flanking_street": 3.5
+    },
+    "sources": [
+      {
+        "provider": "City of Victoria",
+        "record_label": "Zoning Bylaw 2018, No. 18-072",
+        "url": "https://www.victoria.ca/media/file/zoning-bylaw-2018",
+        "locator": "Part 3.1(28)(f), PDF pp27-28; Part 2.1 Setback and Side Lot Line, PDF p19",
+        "capture_date": "2026-10-06T01:44:33Z",
+        "source_revision": "PDF p1 publishing note: consolidated through No. 22-048, June 9, 2022; PDF p4 amendment list: through No. 26-060, July 30, 2026; City 2018 bylaw page describes 2025 modernization; its September wording differs from the PDF's October 2 adoption entry",
+        "currentness_limitations": [
+          "Conflicting PDF consolidation labels; exact effective interval is unresolved.",
+          "Independent legal interpretation and parcel applicability review are pending."
+        ],
+        "review_status": "candidate"
+      },
+      {
+        "provider": "City of Victoria",
+        "record_label": "Zoning Bylaw 2018, No. 18-072",
+        "url": "https://www.victoria.ca/media/file/zoning-bylaw-2018",
+        "locator": "Part 3.1(28)(g), PDF pp27-28; Part 2.1 Flanking Street Lot Line and Setback, PDF pp15-16 and p19",
+        "capture_date": "2026-10-06T01:44:33Z",
+        "source_revision": "PDF p1 publishing note: consolidated through No. 22-048, June 9, 2022; PDF p4 amendment list: through No. 26-060, July 30, 2026; City 2018 bylaw page describes 2025 modernization; its September wording differs from the PDF's October 2 adoption entry",
+        "currentness_limitations": [
+          "Conflicting PDF consolidation labels; exact effective interval is unresolved.",
+          "Independent legal interpretation and parcel applicability review are pending."
+        ],
+        "review_status": "candidate"
+      }
+    ],
+    "limitations": [
+      "Captured parcel edges are not verified registered legal lot lines; the nominal rectangle is not a surveyed building face or installed envelope.",
+      "User wall-to-line distances are unverified assumptions and do not alter the captured nominal geometry observations.",
+      "Street-facing choice is a scenario assumption, not a legal front lot line classification.",
+      "Front setback, rear-yard location/occupancy and height are outside this boundary scenario status; see the separately scoped additional checks. Site-specific provisions, projections and other applicable checks remain unreviewed.",
+      "Current zoning, legal lot, pathway and waterfront applicability remain unknown. Candidate rules are unreviewed and unpublished."
+    ],
+    "proposal_evidence": {
+      "proposed_use": {
+        "value": "garden_suite",
+        "origin": "journey_default",
+        "source": null,
+        "note": "Model 300 garden-suite exploration default; editable and not independently verified."
+      },
+      "foundation_attached": {
+        "value": true,
+        "origin": "journey_default",
+        "source": null,
+        "note": "Permanent-foundation scenario default; installation has not been confirmed."
+      },
+      "confirmed_zone": {
+        "value": "GRD-1 (PGA)",
+        "origin": "municipal_lookup",
+        "source": {
+          "provider": "City of Victoria Open Data",
+          "record_label": "City zoning polygons intersecting selected parcel: GRD-1 (PGA) \u00b7 General Residential District-1 Zone Priority Growth Area",
+          "url": "https://www.victoria.ca/building-business/permits-development-construction/zoning/zoning-regulation-bylaw-2018",
+          "locator": "Zoning polygon 83; selected parcel 10573",
+          "capture_date": "2026-10-08T00:47:53.043592+00:00",
+          "source_revision": null,
+          "currentness_limitations": [
+            "Feature update date, legal revision and positional accuracy are not supplied."
+          ],
+          "review_status": "unreviewed_live_observation"
+        },
+        "note": "Mapped GRD-1 (PGA) under Zoning Bylaw 2018 (No. 18-072). single covered mapping; Unreviewed map observation for investigation; check current bylaws, amendments, overlays and parcel identity. No accepted rules were published.; unreviewed site applicability."
+      },
+      "confirmed_instrument": {
+        "value": "Zoning Bylaw 2018",
+        "origin": "municipal_lookup",
+        "source": {
+          "provider": "City of Victoria Open Data",
+          "record_label": "City zoning polygons intersecting selected parcel: GRD-1 (PGA) \u00b7 General Residential District-1 Zone Priority Growth Area",
+          "url": "https://www.victoria.ca/building-business/permits-development-construction/zoning/zoning-regulation-bylaw-2018",
+          "locator": "Zoning polygon 83; selected parcel 10573",
+          "capture_date": "2026-10-08T00:47:53.043592+00:00",
+          "source_revision": null,
+          "currentness_limitations": [
+            "Feature update date, legal revision and positional accuracy are not supplied."
+          ],
+          "review_status": "unreviewed_live_observation"
+        },
+        "note": "Mapped GRD-1 (PGA) under Zoning Bylaw 2018 (No. 18-072). single covered mapping; Unreviewed map observation for investigation; check current bylaws, amendments, overlays and parcel identity. No accepted rules were published.; unreviewed site applicability."
+      },
+      "legal_lot_confirmed": {
+        "value": null,
+        "origin": "unknown",
+        "source": null,
+        "note": null
+      },
+      "floor_area_definition_acknowledged": {
+        "value": null,
+        "origin": "unknown",
+        "source": null,
+        "note": null
+      },
+      "no_relevant_projections": {
+        "value": null,
+        "origin": "unknown",
+        "source": null,
+        "note": null
+      }
+    },
+    "additional_checks": [
+      {
+        "id": "area",
+        "label": "Floor area",
+        "status": "probable",
+        "detail": "Nominal footprint plus 10% = 30.7 m\u00b2, below the 56 m\u00b2 candidate limit. Planning estimate, not measured regulatory floor area; confirm levels, inclusions and model configuration.",
+        "action_target": "scouting-area-buffer",
+        "observed": 30.658003200000003,
+        "threshold": 56.0,
+        "unit": "m2",
+        "basis": "nominal footprint plus explicit planning buffer; unverified floor-area proxy",
+        "source": {
+          "provider": "City of Victoria",
+          "record_label": "Zoning Bylaw 2018, No. 18-072",
+          "url": "https://www.victoria.ca/media/file/zoning-bylaw-2018",
+          "locator": "Part 3.1(28)(d), PDF p27; Part 2.1 Floor Area, PDF p16",
+          "capture_date": "2026-10-06T01:44:33Z",
+          "source_revision": "PDF p1 publishing note: consolidated through No. 22-048, June 9, 2022; PDF p4 amendment list: through No. 26-060, July 30, 2026; City 2018 bylaw page describes 2025 modernization; its September wording differs from the PDF's October 2 adoption entry",
+          "currentness_limitations": [
+            "Conflicting PDF consolidation labels; exact effective interval is unresolved.",
+            "Independent legal interpretation and parcel applicability review are pending."
+          ],
+          "review_status": "candidate"
+        },
+        "visual_evidence": null
+      },
+      {
+        "id": "height",
+        "label": "Height",
+        "status": "probable",
+        "detail": "Advertised height plus 10% and 0.3 m foundation allowance = 3.82 m, below the 4.2 m candidate limit. Grade, slope, foundation design and roof datum remain unverified; the estimate is not measured installed height.",
+        "action_target": "scouting-height",
+        "observed": 3.82044,
+        "threshold": 4.2,
+        "unit": "m",
+        "basis": "advertised height plus planning buffer and foundation allowance; not installed height",
+        "source": {
+          "provider": "City of Victoria",
+          "record_label": "Zoning Bylaw 2018, No. 18-072",
+          "url": "https://www.victoria.ca/media/file/zoning-bylaw-2018",
+          "locator": "Part 3.1(28)(e), PDF p27; Part 2.1 Height, PDF p17; Average Grade, PDF p12",
+          "capture_date": "2026-10-06T01:44:33Z",
+          "source_revision": "PDF p1 publishing note: consolidated through No. 22-048, June 9, 2022; PDF p4 amendment list: through No. 26-060, July 30, 2026; City 2018 bylaw page describes 2025 modernization; its September wording differs from the PDF's October 2 adoption entry",
+          "currentness_limitations": [
+            "Conflicting PDF consolidation labels; exact effective interval is unresolved.",
+            "Independent legal interpretation and parcel applicability review are pending."
+          ],
+          "review_status": "candidate"
+        },
+        "visual_evidence": null
+      },
+      {
+        "id": "front",
+        "label": "Front boundary distance",
+        "status": "unknown",
+        "detail": "The placement can be measured, but front-line context is unresolved. Mark known street edges and explicitly confirm completeness, or keep Not sure; also supply waterfront status if known.",
+        "action_target": "street-side",
+        "observed": null,
+        "threshold": 4.0,
+        "unit": "m",
+        "basis": "missing input",
+        "source": {
+          "provider": "City of Victoria",
+          "record_label": "Zoning Bylaw 2018, No. 18-072",
+          "url": "https://www.victoria.ca/media/file/zoning-bylaw-2018",
+          "locator": "Part 4.1(4)(a), PDF p31, buildings with less than three dwelling units; Part 2.1 Setback, PDF p19",
+          "capture_date": "2026-10-06T01:44:33Z",
+          "source_revision": "PDF p1 publishing note: consolidated through No. 22-048, June 9, 2022; PDF p4 amendment list: through No. 26-060, July 30, 2026; City 2018 bylaw page describes 2025 modernization; its September wording differs from the PDF's October 2 adoption entry",
+          "currentness_limitations": [
+            "Conflicting PDF consolidation labels; exact effective interval is unresolved.",
+            "Independent legal interpretation and parcel applicability review are pending."
+          ],
+          "review_status": "candidate"
+        },
+        "visual_evidence": null
+      },
+      {
+        "id": "separation",
+        "label": "Distance from the main building",
+        "status": "conflict",
+        "detail": "The nominal model falls below 2.4 m to the largest mapped outline, assumed main building (roofline). Approximate only; legal endpoints need review. The mapped main roofline crosses the parcel boundary; confirm both outlines.",
+        "action_target": "principal-building",
+        "observed": 0.0,
+        "threshold": 2.4,
+        "unit": "m",
+        "basis": "largest-outline assumption live-roof:81666: roofline to nominal model; not legal wall separation",
+        "source": {
+          "provider": "City of Victoria",
+          "record_label": "Zoning Bylaw 2018, No. 18-072",
+          "url": "https://www.victoria.ca/media/file/zoning-bylaw-2018",
+          "locator": "Part 3.1(28)(h), PDF p28; approximate roofline-to-nominal comparison only; legal endpoints unresolved",
+          "capture_date": "2026-10-06T01:44:33Z",
+          "source_revision": "PDF p1 publishing note: consolidated through No. 22-048, June 9, 2022; PDF p4 amendment list: through No. 26-060, July 30, 2026; City 2018 bylaw page describes 2025 modernization; its September wording differs from the PDF's October 2 adoption entry",
+          "currentness_limitations": [
+            "Conflicting PDF consolidation labels; exact effective interval is unresolved.",
+            "Independent legal interpretation and parcel applicability review are pending."
+          ],
+          "review_status": "candidate"
+        },
+        "visual_evidence": {
+          "schema_version": "scouting-comparison-geometry.v1",
+          "crs": "EPSG:3157",
+          "principal_building_id": "live-roof:81666",
+          "principal_outline_area_m2": 122.25449999293517,
+          "principal_crosses_parcel": true,
+          "measurement_line": [
+            [
+              471913.3068267973,
+              5365827.652528346
+            ],
+            [
+              471913.3068267973,
+              5365827.652528346
+            ]
+          ],
+          "rear_yard": null,
+          "outside_rear_yard": null,
+          "rear_yard_area_m2": null,
+          "outside_rear_yard_area_m2": null
+        }
+      },
+      {
+        "id": "rear_location",
+        "label": "Located behind the main building",
+        "status": "unknown",
+        "detail": "Street completeness and a coherent front/rear classification are unresolved. Mark known street edges and explicitly confirm the selection, or continue with Not sure.",
+        "action_target": "street-side",
+        "observed": null,
+        "threshold": null,
+        "unit": null,
+        "basis": "missing input",
+        "source": {
+          "provider": "City of Victoria",
+          "record_label": "Zoning Bylaw 2018, No. 18-072",
+          "url": "https://www.victoria.ca/media/file/zoning-bylaw-2018",
+          "locator": "Part 3.1(28)(a), PDF p27; Part 2.1 Rear Yard, PDF p19; approximate parallel rear-face construction only",
+          "capture_date": "2026-10-06T01:44:33Z",
+          "source_revision": "PDF p1 publishing note: consolidated through No. 22-048, June 9, 2022; PDF p4 amendment list: through No. 26-060, July 30, 2026; City 2018 bylaw page describes 2025 modernization; its September wording differs from the PDF's October 2 adoption entry",
+          "currentness_limitations": [
+            "Conflicting PDF consolidation labels; exact effective interval is unresolved.",
+            "Independent legal interpretation and parcel applicability review are pending."
+          ],
+          "review_status": "candidate"
+        },
+        "visual_evidence": null
+      },
+      {
+        "id": "rear_occupancy",
+        "label": "Share of the rear yard",
+        "status": "unknown",
+        "detail": "Street completeness and a coherent front/rear classification are unresolved. Mark known street edges and explicitly confirm the selection, or continue with Not sure.",
+        "action_target": "street-side",
+        "observed": null,
+        "threshold": 0.25,
+        "unit": "ratio_of_rear_yard",
+        "basis": "missing input",
+        "source": {
+          "provider": "City of Victoria",
+          "record_label": "Zoning Bylaw 2018, No. 18-072",
+          "url": "https://www.victoria.ca/media/file/zoning-bylaw-2018",
+          "locator": "Part 3.1(28)(i), PDF p28; nominal footprint divided by approximate rear-yard area, not lot area",
+          "capture_date": "2026-10-06T01:44:33Z",
+          "source_revision": "PDF p1 publishing note: consolidated through No. 22-048, June 9, 2022; PDF p4 amendment list: through No. 26-060, July 30, 2026; City 2018 bylaw page describes 2025 modernization; its September wording differs from the PDF's October 2 adoption entry",
+          "currentness_limitations": [
+            "Conflicting PDF consolidation labels; exact effective interval is unresolved.",
+            "Independent legal interpretation and parcel applicability review are pending."
+          ],
+          "review_status": "candidate"
+        },
+        "visual_evidence": null
+      }
+    ],
+    "additional_revision": "candidate-scouting-2026-10-06-1"
+  }
+}

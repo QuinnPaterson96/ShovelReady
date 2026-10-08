@@ -7,7 +7,7 @@ export type Summary = { conclusion: string; next: string; checks: SummaryCheck[]
 export function summaryFindings(summary: Summary) {
   return summary.checks.flatMap((check, index) => check.parts ? check.parts.map((part, partIndex) => ({ ...part, targetId: `summary-check-${index}-part-${partIndex}` })) : [{ ...check, targetId: `summary-check-${index}` }])
 }
-export const statusLabels = { checked: 'Checked under stated inputs', probable: 'Plausible under assumptions', review: 'Needs review', conflict: 'Preliminary concern', unknown: 'Missing information', unsupported: 'Not covered' }
+export const statusLabels = { checked: 'Checked under stated inputs', probable: 'Likely fine', review: 'Needs review', conflict: 'Preliminary concern', unknown: 'Missing information', unsupported: 'Not covered' }
 export function StatusIcon({ status }: { status: SummaryCheck['status'] }) {
   return <svg className="homeowner-summary__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" />{status === 'checked' || status === 'probable' ? <path d="m7 12 3 3 7-7" /> : status === 'unsupported' ? <path d="M7 12h10" /> : <><path d={status === 'conflict' ? 'M12 6v8' : 'M9 9a3 3 0 0 1 6 0c0 2-3 2-3 5'} /><circle cx="12" cy="18" r=".5" /></>}</svg>
 }
