@@ -46,13 +46,10 @@ test('tiny observed overlap and entered-target shortfall stay material beside th
 test('partial street marks retain unknown completion and role help uses accessible disclosure', () => {
   const html = renderToStaticMarkup(createElement(OccupiedLotPreview, { selected: exampleCase, placement: initialExamplePosition(), onMove: () => {}, nudgeMetres: 1, boundaryInteraction: { ...interaction,
     mode: 'front', streetIds: [interaction.edges[0].id], allStreetsMarked: false } }))
-  assert.match(html, /previous partial marks; completeness unresolved/)
-  assert.ok(html.indexOf('boundary-role-help') < html.indexOf('class="occupied-map"'))
-  assert.match(html, /<details><summary>Mark without the map<\/summary>/)
+  assert.match(html, /1 marked · completeness unknown/)
+  assert.ok(html.indexOf('About Boundary roles') < html.indexOf('class="occupied-map"'))
+  assert.match(html, /<details class="boundary-keyboard"><summary>Mark without the map<\/summary>/)
   assert.match(html, /Not sure · clear street marks/)
-  assert.match(html, /<details class="boundary-role-help"><summary>/)
-  assert.match(html, /role="img" aria-labelledby=/)
-  assert.match(html, /no measured fit or legal boundary classification/)
-  assert.match(html, /keep the role unknown or choose Not sure/)
+  assert.match(html, /aria-label="About Boundary roles &amp; planning margins" aria-expanded="false"/)
   assert.doesNotMatch(html, /type="checkbox"[^>]*checked/)
 })

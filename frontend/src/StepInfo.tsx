@@ -28,7 +28,7 @@ export function StepInfo({ label, children, symbol = 'i', trigger, className = '
     if (open) { document.addEventListener('pointerdown', outside); document.addEventListener('keydown', escape) }
     return () => { cancelClose(); document.removeEventListener('pointerdown', outside); document.removeEventListener('keydown', escape) }
   }, [open])
-  return <span className={`step-info ${className}`}><button ref={button} type="button" className="step-info__button" aria-label={`About ${label}`} aria-expanded={open} aria-controls={open ? id : undefined} aria-describedby={open ? id : undefined}
+  return <span className={`step-info ${trigger ? 'step-info--custom' : ''} ${className}`}><button ref={button} type="button" className="step-info__button" aria-label={`About ${label}`} aria-expanded={open} aria-controls={open ? id : undefined} aria-describedby={open ? id : undefined}
     onMouseEnter={show} onMouseLeave={leave} onFocus={show} onBlur={dismiss}
     onClick={() => { cancelClose(); pinned.current = !pinned.current; setOpen(pinned.current) }} onKeyDown={event => { if (event.key === 'Escape') dismiss() }}>{trigger ?? symbol}</button>
     {open && createPortal(<span ref={popup} id={id} role="tooltip" className="step-info__text" style={position} onMouseEnter={show} onMouseLeave={leave}>{children}</span>, document.body)}

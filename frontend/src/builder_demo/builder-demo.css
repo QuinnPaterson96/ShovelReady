@@ -136,6 +136,9 @@
 .builder-demo .builder-footprint-controls[hidden], .occupied-placement-controls[hidden] { display: none; }
 .builder-demo .builder-footprint-controls h3 { margin: .2rem 0; }
 .builder-demo .builder-placement-next { order: 3; }
+.builder-placement-next--floating { min-height: 7rem; }
+.builder-demo .builder-placement-next--floating > .homeowner-summary__continue { position: fixed; z-index: 50; bottom: max(.5rem, env(safe-area-inset-bottom)); left: var(--placement-action-left); width: var(--placement-action-width); box-sizing: border-box; margin: 0; padding: .65rem .8rem; border: 1px solid var(--border-strong); border-radius: var(--radius-card); background: var(--surface); box-shadow: 0 3px 16px color-mix(in srgb, var(--ink) 20%, transparent); }
+.builder-placement-next .placement-action-status { font-size: .85rem; margin: 0 0 .35rem; }
 .builder-preparation, .builder-drawing-export { margin: 1rem 0; padding: 1rem; border: 1px solid var(--border); border-radius: var(--radius-card); background: var(--surface); }
 .builder-export-preview { width: 100%; max-height: 520px; object-fit: contain; object-position: top; border: 1px solid var(--border); background: var(--surface); }
 .builder-demo .builder-example-layout > .builder-example-controls { order: 4; }
