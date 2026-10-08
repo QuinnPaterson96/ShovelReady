@@ -204,6 +204,11 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     assert.equal(geometryCalls, 2)
     await click('Wrong property? Change')
     assert.equal(document.activeElement?.id, 'sd-address')
+    // Project preferences stay, but old site-specific questions/responses cannot
+    // leak into the next property's enquiry.
+    assert.equal(document.querySelector<HTMLInputElement>('#builder-use')!.value, 'Garden suite')
+    assert.equal(document.querySelector<HTMLInputElement>('#builder-nextStep')!.value, '')
+    assert.equal(document.querySelector<HTMLInputElement>('#builder-relationship')!.value, '')
     await act(async () => { releaseLate() })
     assert.equal(document.getElementById('builder-quick-checks'), null)
     assert.equal(document.querySelector('#placement-map'), null)

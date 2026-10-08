@@ -226,7 +226,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const [includeSiteDetails, setIncludeSiteDetails] = useState(true)
   const [emailMessage, setEmailMessage] = useState('')
   function changeIntendedUse(value: string) { setUse(value); setProjectSettings(previous => applyIntendedUse(previous, value)); setReadyFor(null) }
-  function siteEdited() { setBufferSuggestion(undefined); setMoveSuggestion(undefined); setAcknowledgedConflicts([]); setSelection(null); setImported(false); setMeasurementResult(null); setSiteAssumptions(null); setProjectSettings(applyIntendedUse(modelProjectSettings(model), use)); setGeometryPending(false); setAccess(''); setServices(''); setProjectContext(previous => ({ ...previous, relationship: '' })); setWaterfrontMarks({ revision: null, ids: [] }); setDrawingExport(null); setStreetMarks({ revision: null, data: { edge_ids: [], all_marked: false, origin: 'user' } }); setRearEdge(null); setSelectedBoundary(null); setBoundaryMark(null); setMarkingRole(null); setBoundaryMode('place'); setReadyFor(null); setRevision(value => value + 1) }
+  function siteEdited() { setBufferSuggestion(undefined); setMoveSuggestion(undefined); setAcknowledgedConflicts([]); setSelection(null); setImported(false); setMeasurementResult(null); setSiteAssumptions(null); setProjectSettings(applyIntendedUse(modelProjectSettings(model), use)); setGeometryPending(false); setAccess(''); setServices(''); setProjectContext(previous => ({ ...previous, relationship: '', nextStep: '' })); setQuestion(`Could ${model.name} be suitable for this property?`); setWaterfrontMarks({ revision: null, ids: [] }); setDrawingExport(null); setStreetMarks({ revision: null, data: { edge_ids: [], all_marked: false, origin: 'user' } }); setRearEdge(null); setSelectedBoundary(null); setBoundaryMark(null); setMarkingRole(null); setBoundaryMode('place'); setReadyFor(null); setRevision(value => value + 1) }
   function changeMode(next: typeof mode) {
     setExpanded({ property: next !== 'example', placement: next === 'example', next: false, email: false })
     setMode(next); siteEdited(); setLive(null); setManual(null)
@@ -705,7 +705,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       </details>
     </section>
     <IntendedUseControl value={use} onChange={changeIntendedUse} />
-    {checksPending && <p role="status">Updating checks. Previous findings are shown for reference; copy and save will use the updated results when ready.</p>}
+    {checksPending && <p role="status">Updating checks. {summary ? 'Previous findings are shown for reference; ' : ''}copy and save will use the updated results when ready.</p>}
     <EnquiryRecovery enquiry={!checksPending && (expanded.next || enquiryReady) ? draftText : null} report={reportDoc ? enquiryPlainText(reportDoc) : null} technicalEvidence={JSON.stringify(technicalEvidence, null, 2)} />
     <section className="builder-stage" id="builder-property" aria-labelledby="builder-property-title">
     <p className="eyebrow">Property</p><h2 id="builder-property-title">Start with what you know</h2>
@@ -714,7 +714,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     <div id="builder-property-content" hidden={!expanded.property}>
     <div className="builder-entry-choices"><div><strong>Use my own property</strong><p>Search a Victoria address or enter known facts.</p><button type="button" onClick={() => changeMode('live')}>Use my own property</button></div>
       <div><strong>Try an example property</strong><p>Open a saved parcel and roofline with an illustrative {model.name} placement.</p><button type="button" onClick={() => changeMode('example')}>Try an example property</button></div></div>
-    <p className="metadata">Changing property clears its placement, street marks, measurements and property answers. Your model, intended use, timing, budget and contact preferences stay; review any property details you typed in your question.</p>
+    <p className="metadata">Changing property clears its placement, street marks, measurements, property answers and enquiry question/response. Your model, intended use, timing, budget and contact preferences stay.</p>
     <label htmlFor="builder-site-mode">How would you like to enter your property?</label>
     <select id="builder-site-mode" value={mode} onChange={event => changeMode(event.target.value as typeof mode)}>
       <option value="live">Search a Victoria address</option><option value="manual">Enter facts or sketch manually</option><option value="retained">Use the retained example workflow</option><option value="example">Example property / saved data</option>
