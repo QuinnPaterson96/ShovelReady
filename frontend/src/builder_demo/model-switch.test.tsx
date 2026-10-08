@@ -22,7 +22,12 @@ test('switching models retains the property, resets overrides and exports only t
   const expose = (name: string, value: unknown) => { originals.set(name, Object.getOwnPropertyDescriptor(globalThis, name)); Object.defineProperty(globalThis, name, { configurable: true, writable: true, value }) }
   for (const [name, value] of Object.entries({ Element: dom.window.Element, HTMLElement: dom.window.HTMLElement, window: dom.window, document: dom.window.document, navigator: dom.window.navigator, requestAnimationFrame: (cb: () => void) => setTimeout(cb, 0), IS_REACT_ACT_ENVIRONMENT: true })) expose(name, value)
   const fixture = JSON.parse(readFileSync('src/scenario_handoff/retained-assessment.fixture.json', 'utf8'))
-  expose('fetch', async (url: string, options: RequestInit) => url === '/api/scouting-geometry/assess'
+  const addresses = JSON.parse(readFileSync('src/site_discovery/may-street-api.fixture.json', 'utf8'))
+  const municipal = JSON.parse(readFileSync('src/site_discovery/municipal-api.fixture.json', 'utf8'))
+  expose('fetch', async (url: string, options: RequestInit) => url === '/api/address-search' ? { ok: true, json: async () => addresses }
+    : url === '/api/municipal-sites/search' ? { ok: true, json: async () => municipal.search }
+    : url === '/api/municipal-sites/observe' ? { ok: true, json: async () => municipal.observation }
+    : url === '/api/scouting-geometry/assess'
     ? { ok: true, json: async () => ({ ...fixture, input: JSON.parse(String(options.body)), checks: fixture.checks.filter((check: {kind: string}) => check.kind !== 'requirement') }) }
     : { ok: false, status: 503 })
   const document = dom.window.document
@@ -86,6 +91,26 @@ test('switching models retains the property, resets overrides and exports only t
       assert.equal(JSON.parse(new TextDecoder().decode(files['prefab-technical-evidence.json'])).model_catalogue.model.model_id, id)
     }
     assert.ok(![...document.querySelectorAll('#builder-model-choice option')].some(item => item.textContent?.includes('Yarrow')))
+    // Reproduced defect: the mounted discovery flow kept its initial Model 300
+    // callback after a model switch. A later selected property must use Quadra's
+    // explicit unknown defaults, not the reference model's residential/foundation defaults.
+    await act(async () => {
+      const mode = document.getElementById('builder-site-mode') as HTMLSelectElement
+      mode.value = 'live'; mode.dispatchEvent(new dom.window.Event('change', { bubbles: true }))
+      const select = document.getElementById('builder-model-choice') as HTMLSelectElement
+      select.value = 'hewing-quadra4'; select.dispatchEvent(new dom.window.Event('change', { bubbles: true }))
+    })
+    await edit('sd-address', '1144 May St, Victoria')
+    await act(async () => document.querySelector('form.sd-search, .site-discovery form')!.dispatchEvent(new dom.window.Event('submit', { bubbles: true, cancelable: true })))
+    await click('1144 May St, Victoria, BC · Victoria')
+    await settle()
+    assert.equal(evidence().model_catalogue.model.model_id, 'hewing-quadra4')
+    assert.ok(evidence().live?.parcel, 'live source fixture selected')
+    assert.equal(evidence().project_settings.proposal.proposed_use, null)
+    assert.equal(evidence().project_settings.proposal.foundation_attached, null)
+    assert.equal(evidence().project_settings.evidence.proposed_use.origin, 'unknown')
+    assert.equal(evidence().project_settings.evidence.foundation_attached.origin, 'unknown')
+
   } finally {
     await act(async () => root.unmount())
     for (const [name, descriptor] of originals) { if (descriptor) Object.defineProperty(globalThis, name, descriptor); else Reflect.deleteProperty(globalThis, name) }

@@ -131,6 +131,12 @@ Existing buffer/movement suggestions use the same rendering and handlers here an
 in the detailed checklist; no additional geometric recommendation is invented.
 Pending-input guards and unresolved-conflict acknowledgement behavior are preserved.
 
+The review branch also integrates main `ad1f09b` after prefab #295 was merged.
+Both slices corrected the same stale discovery callback; the shared latest-callback
+ref is retained. The new model legend is preserved in exports alongside the protected
+distance callouts, source links and current-input output guards. No review changes
+were merged into main as part of this follow-up.
+
 Verification: 171 frontend behavioral checks and TypeScript/Vite build; 36 stateless
 conditional-screening/scenario HTTP checks and targeted ruff. Regressions cover a
 single marked street, additional marks, removal of the last mark, Not sure through

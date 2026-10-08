@@ -97,6 +97,48 @@ Research #292 remains separate, unmerged; this PR can run without merging it.
 | Yarrow delivery assessment unavailable during research; not proof it does not exist | Yarrow is staged only | Recommend Yarrow as the next residential candidate. Data owner asks Nexus for current controlled Yarrow drawings, exterior/installed height and datum, roof/deck/stair extent, defined interior/footprint area, residential certification/use limits, site work/transport/crane scope, Island service area, current price/currency/exclusions, timeline stages and delivery assessment access |
 | Source/capture gaps and no acceptance review | Demo observations cannot be published as accepted data | Data owner resolves the 50 staged gaps, records review and uses separate publication workflow |
 | Provider image rights unresolved | Link previews only | Product owner requests permission or continues neutral link cards |
-| Manual/live property switching, full keyboard journey, final model-specific PDF rendering and real homeowner/provider review not completed | Demo usability verification incomplete; software tests do not establish usefulness | Integration owner completes those journeys and output QA; product owner arranges recipient validation before release |
+| Real homeowner/provider review and exhaustive accessibility/device audit not completed | Core local journeys are checked; software/browser checks do not establish usefulness for recipients or all assistive technologies | Product owner arranges recipient validation; integration owner expands device/assistive-technology checks before release |
 
 No outreach was sent, no active release published, no merge or deployment performed.
+
+## Follow-up usability verification — October 7, 2026
+
+Completed the local follow-up against real local geometry and public read-only
+BC/City endpoints, with no database or provider submission:
+- Keyboard: Enter opens the journey and source `<summary>` disclosure; ArrowDown
+  changes the native model selector. The previous disclosure locator failure was
+  automation targeting, not a broken UI. Enter opens City floor-area help and the
+  disclosure reports expanded. Core guided workflow proceeds through Move unit,
+  street/boundary review with unknowns retained, property facts, quick checks,
+  enquiry review and contact handoff. A map ArrowRight move works. The external
+  provider link was verified without opening/submitting a form. This is core
+  keyboard journey coverage, not an exhaustive accessibility audit.
+- Manual: synthetic 20 x 35 m sketch and centre 10/20 m measured with Model 240;
+  width override removed on Studio switch; site facts/frame/position retained.
+  Studio -> Quadra resets dimensions and clears the previous measurement. Remeasure
+  uses 6.121399999999999 m on both axes. Focus/Tab away preserves exact measurement
+  and current result despite ordinary 6.12 m display.
+- Live: public May Street fixture address searched and selected through real BC and
+  City APIs. Quadra -> Studio -> Quadra keeps parcel 87 and single-detached answer,
+  invalidates the old result immediately, preserves unknown use/foundation and
+  measures the selected model dimensions after explicit placement. Overlap with the
+  captured roofline remains a conflict and travels into the unsent enquiry.
+- Independently rendered every page of actual downloaded Studio and Quadra PDFs
+  with bundled PDFium, and inspected recipient report/JSON identities. Studio two
+  pages are readable. Quadra exposed a model/edge label collision; the proposed
+  model label now occupies a copper-key legend slot at the top of the map rather
+  than the placement centre. This changes display only, not geometry or evidence.
+  Fresh final-build Quadra download/render reviewed after the correction.
+
+Provider/source evidence, acceptance/publication, image rights and real recipient
+validation remain as assigned above. Nothing was merged, deployed or sent.
+
+
+Fresh selection before property search also reproduced stale callback defaults:
+SiteDiscovery's mounted flow retained its initial host callback, so selecting a
+property after choosing Quadra could restore Model 300 use/foundation assumptions.
+The flow now invokes the latest callback through a ref. The existing behavioral
+switch test additionally chooses Quadra before fixture-backed address/parcel
+selection and asserts unknown use and foundation plus unknown evidence origins.
+Final live browser and downloaded evidence confirm those defaults remain unknown.
+This is source-workflow state protection; fixtures do not establish source accuracy.
