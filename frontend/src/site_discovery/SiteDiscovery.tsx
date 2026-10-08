@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { publicSourceUrl, readableDate, TechnicalDetails } from '../ReadableProvenance'
 import { DiscoveryFlow, initial } from './flow'
 import type { Address, Confirmed, Source, State, Transport } from './flow'
@@ -31,7 +31,9 @@ export function SiteDiscovery({ onConfirm, transport = liveTransport, onManual, 
   const [addressOpen, setAddressOpen] = useState(true)
   const [parcelOpen, setParcelOpen] = useState(true)
   const [observationOpen, setObservationOpen] = useState(true)
-  const [flow] = useState(() => new DiscoveryFlow(transport, setState, onConfirm, autoProceed))
+  const onConfirmRef = useRef(onConfirm)
+  onConfirmRef.current = onConfirm
+  const [flow] = useState(() => new DiscoveryFlow(transport, setState, value => onConfirmRef.current(value), autoProceed))
   useEffect(() => { void import('./site-discovery.css'); return () => flow.dispose() }, [flow])
   useEffect(() => { if (resetKey) { flow.reject(); setAddressOpen(true); setParcelOpen(true); setObservationOpen(true) } }, [resetKey, flow])
   useEffect(() => { if (inspectKey) setParcelOpen(true) }, [inspectKey])
