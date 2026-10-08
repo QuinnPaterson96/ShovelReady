@@ -81,3 +81,34 @@ Ordinary CI remains offline and does not require Chrome/Playwright.
 - Independent planning/provider source review, accepted publication and homeowner/
   manufacturer validation remain external gates; software checks and agent visual
   inspection do not establish source accuracy, legal feasibility or recipient usefulness.
+
+## Follow-up: recipient opening and reproduced plan-label collision
+
+The supplied requested response now leads the enquiry. A distinct free-text
+question remains in the provider questions; the default suitability prompt and
+identical response are not duplicated. The contact closes the message without
+another generic next-step request. A dedicated placement section lets each
+recipient format replace availability wording with its actual included/following
+sketch statement, or omit it when no drawing is present.
+
+Measured-gap drawings now reserve right and bottom callout gutters. All connector
+paths render before opaque label cards, preventing a connector from crossing the
+candidate minimum. Drawings without gap callouts retain their existing transform;
+source geometry, measurements and comparison evidence are unchanged.
+
+Verification: build/typecheck passed and 28 focused behavioural checks passed
+(default/custom/duplicate opening, delivery wording, callout layer order, existing
+exports and model switching). Browser-generated Model 300 and unknown-use Studio
+PDFs were regenerated, Poppler rendered, and all four pages inspected. Headings
+retain following text, Unicode and contact blocks remain readable, and the plan
+statement accurately describes the following page. A separate browser-rendered
+Su’it label-risk reconstruction uses the retained second-PID parcel and rooflines
+with a 3.048 by 9.144 m unit at 80.48 degrees; gap endpoints/distances were supplied
+for collision review, not evaluated as a real-site result. Its right gap labels
+and zero-gap/2.4 m minimum card are clear, including the full crossing roofline.
+
+Remaining acceptance work: the coordinator will cherry-pick this follow-up,
+regenerate actual composed Su’it/Cecelia/example PDFs, and inspect their final
+pages. This is needed to verify current integrated input and labels; the worker
+reconstruction does not substitute for that review. Raster-PDF accessibility and
+independent source/provider review gaps above remain.
