@@ -75,7 +75,9 @@ export function screeningDocument(selection: SitePreparationSelection | null, in
     return `${label}: ${outcome}; measured ${measurementWithUnit(check.distance_m, 'length')}. ${check.id.startsWith('requirement:user-') ? 'User assumption, not a legal setback.' : 'Source-derived comparison; applicability requires review.'}`
   }).join(' ')
   const subsetCount = (status: import('../conditional_screening/model').ScreeningStatus) => conditional?.checks.filter(check => check.status === status).length ?? 0
-  const conditionalSummary = conditional
+  const conditionalSummary = pathway && pathway.proposed_use !== 'garden_suite'
+    ? 'Garden-suite applicability is unresolved for the selected use. The retained candidate-rule details below are hypothetical investigation prompts, not applicable passes or an overall result. Use the overall placement summary for physical concerns and open questions.'
+    : conditional
     ? `Candidate Victoria garden-suite comparison for this supplied placement: ${subsetCount('meets_under_assumptions')} checks meet under stated assumptions; ${subsetCount('apparent_conflict_under_assumptions') ? `${subsetCount('apparent_conflict_under_assumptions')} concern${subsetCount('apparent_conflict_under_assumptions') === 1 ? '' : 's'} in this subset;` : `no concerns identified in the supplied-facts comparisons;`} ${subsetCount('needs_information')} need information; ${subsetCount('unsupported')} outside scope. Candidate source/currentness and site facts remain unreviewed; no approval or complete bylaw review.`
     : 'Conditional zoning findings are not current for these inputs. No legal compatibility conclusion is available.'
   const scenarioSummary = scenarios

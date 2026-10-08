@@ -246,8 +246,10 @@ def test_buffer_estimates_and_front_override_preserve_exact_evidence():
     # Independent arithmetic: 40*1.1=44 m2 and 3.2*1.1+.30=3.82m.
     # Unknown installed grade remains a probable estimate, never a measured pass.
     body = request((10, 16))
-    body["assumptions"]["waterfront"] = {"value": False, "origin": "journey_default", "evidence_state": "assumed",
-                                            "note": "Assuming not waterfront for this estimate."}
+    body["assumptions"]["waterfront"] = {
+        "value": False, "origin": "journey_default", "evidence_state": "assumed",
+        "note": "Assuming not waterfront for this estimate.",
+    }
     body["proposal"] = {"confirmed_zone": "GRD-1",
                         "confirmed_instrument": "Zoning Bylaw 2018"}
     body["street_pattern"] = "single"
