@@ -129,7 +129,8 @@ export function suggestedBoundaryRoles(edges: BoundaryEdge[], frontId: string | 
     index === frontIndex ? 'front' : index === (frontIndex + 2) % 4 ? 'rear' : 'side']))
 }
 
-/** Geometric suggestions preserve every explicit role and never supply evaluation facts. */
+/** Display proposals may assume the currently marked streets are the only streets.
+ * They preserve explicit roles; street completeness and evaluation applicability stay separate. */
 export function inferBoundaryRoles(edges: BoundaryEdge[], streets?: StreetAdjacency): BoundaryRoleSuggestions {
   const result: BoundaryRoleSuggestions = { roles: {}, conflicts: [], basis: 'user_marks' }
   if (!ordinaryFourEdgeBoundary(edges)) return result
@@ -140,15 +141,15 @@ export function inferBoundaryRoles(edges: BoundaryEdge[], streets?: StreetAdjace
   const rear = rears.length ? ordered.indexOf(rears[0]) : -1
   if (front >= 0 && rear >= 0 && (front + 2) % 4 !== rear) { result.conflicts.push('Your front and rear marks are not opposite. Review your marks.'); return result }
   if (front < 0 && rear >= 0) front = (rear + 2) % 4
-  if (front < 0 && streets?.all_marked && streets.edge_ids.length === 1) front = ordered.findIndex(edge => edge.id === streets.edge_ids[0])
+  if (front < 0 && streets?.edge_ids.length === 1) front = ordered.findIndex(edge => edge.id === streets.edge_ids[0])
   if (front < 0) return result
   if (streets?.all_marked && !streets.edge_ids.includes(ordered[front].id)) { result.conflicts.push('The front implied by your marks does not border a marked street. Review front/rear or street marks.'); return result }
   ordered.forEach((edge, index) => {
-    const role: EdgeRole = index === front ? 'front' : index === (front + 2) % 4 ? 'rear' : streets?.edge_ids.includes(edge.id) ? 'flanking_street' : streets?.all_marked ? 'side' : 'unknown'
+    const role: EdgeRole = index === front ? 'front' : index === (front + 2) % 4 ? 'rear' : streets?.edge_ids.includes(edge.id) ? 'flanking_street' : 'side'
     const explicit = edge.role.value
     if (explicit && explicit !== 'unknown') {
-      if (role !== 'unknown' && explicit !== role) result.conflicts.push(`Edge ${edge.segment + 1}: your ${explicit === 'flanking_street' ? 'flanking' : explicit} mark differs from the suggested ${role === 'flanking_street' ? 'flanking' : role}. Your mark is kept.`)
-    } else if (role !== 'unknown') result.roles[edge.id] = role
+      if (explicit !== role) result.conflicts.push(`Edge ${edge.segment + 1}: your ${explicit === 'flanking_street' ? 'flanking' : explicit} mark differs from the suggested ${role === 'flanking_street' ? 'flanking' : role}. Your mark is kept.`)
+    } else result.roles[edge.id] = role
   })
   return result
 }

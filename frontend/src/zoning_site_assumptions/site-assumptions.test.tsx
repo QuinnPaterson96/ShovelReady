@@ -69,7 +69,7 @@ test('front/rear anchors infer editable corner roles without overwriting explici
   assert.deepEqual(inferBoundaryRoles(value.edges, streets).roles, {})
   a.role.value = 'front'
   assert.deepEqual(inferBoundaryRoles(value.edges, streets).roles, { [b.id]: 'flanking_street', [c.id]: 'rear', [d.id]: 'side' })
-  assert.deepEqual(inferBoundaryRoles(value.edges, { ...streets, all_marked: false }).roles, { [b.id]: 'flanking_street', [c.id]: 'rear' })
+  assert.deepEqual(inferBoundaryRoles(value.edges, { ...streets, all_marked: false }).roles, { [b.id]: 'flanking_street', [c.id]: 'rear', [d.id]: 'side' })
   a.role.value = 'unknown'; c.role.value = 'rear'
   assert.deepEqual(inferBoundaryRoles(value.edges, streets).roles, { [a.id]: 'front', [b.id]: 'flanking_street', [d.id]: 'side' })
   b.role.value = 'side'
@@ -81,7 +81,9 @@ test('front/rear anchors infer editable corner roles without overwriting explici
   assert.match(inferBoundaryRoles(value.edges, streets).conflicts.join(' '), /not opposite/)
   b.role.value = c.role.value = 'unknown'
   assert.deepEqual(inferBoundaryRoles(value.edges, { ...streets, edge_ids: [a.id] }).roles, { [a.id]: 'front', [b.id]: 'side', [c.id]: 'rear', [d.id]: 'side' })
-  assert.deepEqual(inferBoundaryRoles(value.edges, { ...streets, edge_ids: [a.id], all_marked: false }).roles, {})
+  assert.deepEqual(inferBoundaryRoles(value.edges, { ...streets, edge_ids: [a.id], all_marked: false }).roles, { [a.id]: 'front', [b.id]: 'side', [c.id]: 'rear', [d.id]: 'side' })
+  assert.equal(a.role.value, 'unknown', 'display proposals never assign a role')
+  assert.deepEqual(inferBoundaryRoles(value.edges, { ...streets, edge_ids: [], all_marked: false }).roles, {}, 'no street/role anchor means no invented frontage')
 })
 
 

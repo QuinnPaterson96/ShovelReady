@@ -105,3 +105,30 @@ existing map anchor, matching the established boundary-overlay pattern. Geometry
 answers, measurements and finding status are unchanged. Local full-size browser
 inspection confirms all four labels visibly paint. This is a parent visual check,
 not independent user validation; the tester follow-up browser was unavailable.
+
+## Restore planning proposals and Cecelia height response
+
+The navigation correction over-gated boundary proposals on confirmed street
+completeness. A single marked street now proposes Front, opposite Rear and Side
+roles again. Explicit acceptance saves attributed planning assumptions and reviews
+the boundary workflow stage; it does not confirm streets. No street/front/rear
+anchor still produces no proposal. Actual street edits invalidate derived roles;
+navigation alone preserves them.
+
+Parent browser reproduction on 419 Cecelia Rd exposed two frontend response
+contract mismatches: the server's `street-side` action was absent from the parser,
+and unresolved street context with retained hypothetical alternatives was rejected.
+The whole response was discarded, including the correctly calculated height.
+The parser now accepts that explicit unresolved state without promoting it to a
+pass. The shared probable label is `Likely fine`; height help retains advertised
+height +10% +0.30 m, source attribution and unresolved grade/datum applicability.
+Independent arithmetic for the retained public-source response is
+3.2004 ×1.10 +0.30 =3.82044 m, below the candidate 4.20 m comparison.
+
+Verification: frontend production build and all 153 frontend behavioral tests
+passed, including partial street → accept proposals → revisit and the actual
+Cecelia response contract regression. Parent localhost browser inspection confirms
+the proposal and buffered height display. These are software and parent UI checks,
+not independent homeowner or legal/source validation. Existing accepted-source and
+real-human validation gates remain #104/#147; proposed boundary roles and height
+allowances remain correctable assumptions.

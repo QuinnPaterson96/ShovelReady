@@ -8,7 +8,7 @@ import { homeownerSummary } from './victoriaSummaryAdapter'
 import type { Result } from '../occupied_lots/contract'
 import type { MappedZoning } from './projectSettings'
 import { applyMappedZoning, changeProjectSetting, initialProjectSettings } from './projectSettings'
-import type { ScenarioResult } from './scenarios'
+import { parseScenarioResult, type ScenarioResult } from './scenarios'
 import { PropertyScan, parsePropertyScan, type PropertyScanResult } from './PropertyScan'
 import type { ScreeningResult } from './model'
 
@@ -163,4 +163,27 @@ test('buffer guidance retains review and separates assumption changes from measu
   assert.equal(row.status, 'review')
   assert.match(row.resolutions!.map(item => item.detail).join(' '), /at least 2 m.*approximately 0.46 m.*buffer of 0.54 m.*only your assumption/)
   assert.equal(homeownerSummary({ ...base, scenario: { ...scenario, scenarios: [...scenario.scenarios, ...scenario.scenarios] }, assumptions }).checks.find(row => row.label === 'Distance to boundaries')!.resolutions, undefined)
+})
+
+
+test('Cecelia incomplete street action does not discard the buffered height and floor area response', () => {
+  // Captured real API response for 419 Cecelia, parcel-centre placement, no
+  // confirmed streets. Independent arithmetic: 3.2004 * 1.10 + .30 = 3.82044 m.
+  // Candidate 4.2 m limit is retained with its source, not a verified legal limit.
+  const retained = JSON.parse(readFileSync('src/conditional_screening/cecelia-incomplete-streets.fixture.json', 'utf8'))
+  const scenario = parseScenarioResult(retained.response, retained.request)
+  assert.equal(scenario.status, 'unresolved', 'hypothetical boundary alternatives are not an applicable pass')
+  const summary = homeownerSummary({ ...base, scenario })
+  const height = summary.checks.find(row => row.label === 'Height')!
+  assert.equal(height.status, 'probable')
+  assert.ok(Math.abs(scenario.additional_checks!.find(row => row.id === 'height')!.observed! - 3.82044) < 1e-10)
+  assert.match(height.detail, /10%.*0.3 m.*3.82 m.*4.2 m/)
+  assert.equal(height.action?.label, 'Review height estimate')
+  assert.equal(summary.checks.find(row => row.label === 'Floor area')?.status, 'probable')
+  assert.equal(summary.checks.find(row => row.label === 'Front boundary distance')?.status, 'unknown')
+  assert.equal(summary.checks.find(row => row.label === 'Front boundary distance')?.action?.target, 'street-side')
+  assert.match(renderToStaticMarkup(createElement(HomeownerSummary, { summary, onNavigate() {} })), /Height · Likely fine/)
+  const corrupt = structuredClone(scenario)
+  corrupt.additional_checks![0].action_target = 'unsupported-action'
+  assert.throws(() => parseScenarioResult(corrupt), /malformed/, 'unknown actions still fail contract validation')
 })
