@@ -93,7 +93,7 @@ test('saved example retains the licensed packet and an explicit measurable start
   assert.match(html, /Nominal exterior rectangle · saved Victoria example/)
   assert.match(html, /Open Government Licence/)
   assert.match(html, /Recheck placement/)
-  assert.match(html, /Click the map or drag the rectangle/)
+  assert.match(html, /Click the map to place its centre/)
   assert.match(html, /North ↑/)
   assert.match(html, /Reset placement/)
   assert.match(html, /Saved example sources and exact projected coordinates/)

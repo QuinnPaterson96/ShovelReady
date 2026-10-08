@@ -85,18 +85,21 @@ export function BoundaryMapTools({ interaction }: { interaction: BoundaryMapInte
   const complete = interaction.allStreetsMarked ?? false
   const exterior = edges.filter(edge => edge.ring === 0)
   const supported = ordinaryFourEdgeBoundary(edges)
-  return <div className="boundary-map-tools" aria-label="Boundary selection controls">
-    <BoundaryRoleHelp />
+  return <div className="boundary-map-tools" hidden={mode === 'place'} aria-label="Boundary selection controls">
     {!supported && <p>This outline needs manual review. Marks record your assumptions; street-side suggestions cannot resolve its frontage.</p>}
     {mode === 'front' && <>
-      <p>Click every property edge that borders a street. Your marks save this answer immediately; other edges are assumed not to adjoin a street. Click a marked edge again to remove it, or choose Not sure to leave street context unknown. Your unit stays in position.</p>
+      <p>Click street-adjoining edges on the map. Click again to remove a mark. Marks save immediately; other edges are assumed not to adjoin a street.</p>
+      <button type="button" onClick={() => onSelect(null)}>Not sure · clear street marks</button>
+      <details><summary>Mark without the map</summary>
       <div className="boundary-map-buttons">{exterior.map((edge, index) => <button type="button" key={edge.id}
         aria-pressed={marked.includes(edge.id)} onClick={() => onSelect(edge.id)}>Edge {index + 1} borders a street</button>)}
-        <button type="button" onClick={() => onSelect(null)}>Not sure · clear street marks</button>
       </div>
+      </details>
       <p role="status">{!complete ? 'Street context remains unknown. Mark a known street edge to save an answer, or continue with Not sure.' : marked.length === 1 && supported ? 'Street answer saved. For this simple one-street sketch, front, opposite rear and side roles are suggestions only. Adjust boundary facts if you can support them.' : 'Street answer saved. In Adjust boundaries, mark Front or Rear to suggest the other roles; use your property plan to support your choice.'}</p>
-      <p><strong>Street information: your input · {complete ? 'marked streets; other edges assumed not street-adjoining' : marked.length ? 'previous partial marks; completeness unresolved' : 'not sure or not yet marked'}.</strong> These are your observations, not an independent map verification.</p>
-      <p>Grey road bands show your street marks only: no measured road width, surveyed location or access point is implied.</p>
+      <details><summary>About your street marks</summary>
+        <p><strong>Street information: your input · {complete ? 'marked streets; other edges assumed not street-adjoining' : marked.length ? 'previous partial marks; completeness unresolved' : 'not sure or not yet marked'}.</strong> These are your observations, not an independent map verification.</p>
+        <p>Grey road bands show your street marks only: no measured road width, surveyed location or access point is implied.</p>
+      </details>
     </>}
     {mode === 'waterfront' && <>
       <p>Mark every edge adjoining water. Click again to remove a mark. Waterfront edges are separate from street edges and front/rear roles.</p>
