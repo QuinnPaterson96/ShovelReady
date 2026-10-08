@@ -1,3 +1,5 @@
+import { defaultJourneyModel } from '../model_catalogue/demo'
+import type { CatalogueModel } from '../model_catalogue/model'
 import { OccupiedLotPreview, PlacementConcerns } from '../occupied_lots/OccupiedLots'
 import { EvidenceAtFooter } from '../EvidenceAtFooter'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
@@ -16,8 +18,11 @@ const roofSource = exampleCase.site.buildings[0]?.source
 const show = (value: number | null, dimension: 'length' | 'area') => measurementWithUnit(value, dimension)
 
 
-export function ExampleProperty({ onMeasurement, boundaryInteraction, placementSummary, placementContinuation, evidenceTargetId, moveSuggestion, placementConcerns, onContinueUnresolved }: { placementConcerns?: ReactNode; onContinueUnresolved?: () => void; onMeasurement: (value: OccupiedMeasurement | null) => void; boundaryInteraction?: BoundaryMapInteraction; placementSummary?: ReactNode; placementContinuation?: ReactNode; evidenceTargetId?: string; moveSuggestion?: { dx: number; dy: number; token: number } }) {
-  const [position, setPosition] = useState(initialExamplePosition)
+export function ExampleProperty({ model = defaultJourneyModel, onMeasurement, boundaryInteraction, placementSummary, placementContinuation, evidenceTargetId, moveSuggestion, placementConcerns, onContinueUnresolved }: { model?: CatalogueModel; placementConcerns?: ReactNode; onContinueUnresolved?: () => void; onMeasurement: (value: OccupiedMeasurement | null) => void; boundaryInteraction?: BoundaryMapInteraction; placementSummary?: ReactNode; placementContinuation?: ReactNode; evidenceTargetId?: string; moveSuggestion?: { dx: number; dy: number; token: number } }) {
+  const initialPosition = () => ({ ...initialExamplePosition(),
+    width: model.measurements.find(item => item.name === 'nominal_exterior_width')?.quantity?.value ?? '',
+    depth: model.measurements.find(item => item.name === 'nominal_exterior_depth')?.quantity?.value ?? '' })
+  const [position, setPosition] = useState(initialPosition)
   const appliedMove = useRef<number | null>(null)
   useEffect(() => {
     if (!moveSuggestion || appliedMove.current === moveSuggestion.token) return
@@ -68,7 +73,7 @@ export function ExampleProperty({ onMeasurement, boundaryInteraction, placementS
   }
 
   function reset() {
-    setPosition(initialExamplePosition())
+    setPosition(initialPosition())
     setAssumptions(emptyExampleAssumptions())
     setEditedDimensions({ width: false, depth: false })
     invalidate()
@@ -92,7 +97,7 @@ export function ExampleProperty({ onMeasurement, boundaryInteraction, placementS
       const measured = parseExampleResult(await response.json(), payload)
       if (sequence !== version.current) return
       setResult(measured); setPhase('current'); setMessage('Current measurement for this illustrative placement.')
-      onMeasurement({ site: exampleCase, model: null, result: measured,
+      onMeasurement({ site: exampleCase, model, result: measured,
         widthOrigin: editedDimensions.width ? 'user' : 'catalogue',
         depthOrigin: editedDimensions.depth ? 'user' : 'catalogue' })
     } catch (error) {
@@ -122,8 +127,8 @@ export function ExampleProperty({ onMeasurement, boundaryInteraction, placementS
   const checkWarning = phase === 'unresolved' || phase === 'current' && (conflict || unresolved)
 
   return <section className="builder-example" aria-label="Saved example property">
-    <p className="builder-example-summary"><strong>Model 300 · {show(Number(position.width), 'length')} wide × {show(Number(position.depth), 'length')} long</strong><span>Nominal exterior rectangle · saved Victoria example · {source.provider}, {source.record_label} · captured {readableDate(source.capture_date)} · {source.review_status} · <a href={publicSourceUrl(source.reference) ?? '#builder-example-evidence'} target="_blank" rel="noreferrer">Parcel source</a></span></p>
-    <OccupiedLotPreview selected={exampleCase} placement={position} modelLabel="Model 300" onMove={move} nudgeMetres={step} conflictIds={conflictIds} boundaryInteraction={boundaryInteraction} placementSummary={placementSummary} placementContinuation={placementContinuation} placementControls={<div className="builder-footprint-controls" hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}><h3>Adjust the footprint</h3>
+    <p className="builder-example-summary"><strong>{model.name} · {show(Number(position.width), 'length')} wide × {show(Number(position.depth), 'length')} long</strong><span>Nominal exterior rectangle · saved Victoria example · {source.provider}, {source.record_label} · captured {readableDate(source.capture_date)} · {source.review_status} · <a href={publicSourceUrl(source.reference) ?? '#builder-example-evidence'} target="_blank" rel="noreferrer">Parcel source</a></span></p>
+    <OccupiedLotPreview selected={exampleCase} placement={position} modelLabel={model.name} onMove={move} nudgeMetres={step} conflictIds={conflictIds} boundaryInteraction={boundaryInteraction} placementSummary={placementSummary} placementContinuation={placementContinuation} placementControls={<div className="builder-footprint-controls" hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}><h3>Adjust the footprint</h3>
         <p>Click the map or drag the rectangle. Arrow keys move it when the map has focus. Checks update automatically after movement settles.</p>
         <div className="builder-example-main-actions"><div><label htmlFor="builder-example-angle">Rotation (degrees)</label><input id="builder-example-angle" type="number" step="any" value={rotationFocused || !position.angle.trim() || !Number.isFinite(Number(position.angle)) ? position.angle : String(Number(Number(position.angle).toFixed(2)))} onFocus={() => setRotationFocused(true)} onBlur={() => setRotationFocused(false)} onChange={event => edit('angle', event.target.value)} /></div>
         <button type="button" disabled={exampleOrientation.status !== 'suggested'} onClick={() => { if (exampleOrientation.status === 'suggested') edit('angle', String(exampleOrientation.angle_degrees)) }}>Align to lot</button>
@@ -133,7 +138,7 @@ export function ExampleProperty({ onMeasurement, boundaryInteraction, placementS
           <div className="builder-example-directions"><button type="button" onClick={() => nudge(0, 1)}>North ↑</button><button type="button" onClick={() => nudge(-1, 0)}>West ←</button><button type="button" onClick={() => nudge(1, 0)}>East →</button><button type="button" onClick={() => nudge(0, -1)}>South ↓</button></div>
           <p>Focus the map and use arrow keys for the same steps.</p>
         </details>
-        <details><summary>Details and edit dimensions</summary><p>Model 300 provider dimensions are unreviewed. Edits make this a custom size scenario.</p><div className="builder-example-fields">
+        <details><summary>Details and edit dimensions</summary><p>{model.name} provider dimensions are unreviewed. Edits make this a custom size scenario.</p><div className="builder-example-fields">
           <div><MeasurementLabel field="width" inputId="builder-example-width" /><MeasurementInput id="builder-example-width" dimension="length" type="number" step="any" value={position.width} onChange={event => edit('width', event.target.value)} /></div>
           <div><MeasurementLabel field="depth" inputId="builder-example-depth" /><MeasurementInput id="builder-example-depth" dimension="length" type="number" step="any" value={position.depth} onChange={event => edit('depth', event.target.value)} /></div>
         </div>
@@ -157,7 +162,7 @@ export function ExampleProperty({ onMeasurement, boundaryInteraction, placementS
       {comparisons.length > 0 && <><h4>Your clearance target comparisons</h4><ul>{comparisons.map(check => { const parcel = check.id === 'requirement:user-parcel-minimum'; const minimum = parcel ? assumptions.parcel : assumptions.roofline; return <li key={check.id}>{parcel ? 'Captured parcel boundary' : 'Captured roofline'}: your minimum {show(Number(minimum), 'length')}; measured {show(check.distance_m, 'length')}. {check.comparison === 'shortfall' ? `Short by ${show(check.margin_m === null ? null : Math.abs(check.margin_m), 'length')}.` : check.comparison === 'meets' ? `Meets your target by ${show(check.margin_m, 'length')}.` : `Unresolved${check.reason ? `: ${check.reason.replace(/_/g, ' ')}` : '.'}`} User assumption, not a legal setback or permit result.</li> })}</ul></>}
       <p>This geometry observation does not establish zoning, legal setbacks, installed height, access or permit eligibility. Exact distances and shortfalls are available in the source details below.</p></details>}
     <details className="builder-example-status"><summary>Site source and limits</summary>
-      <p>City of Victoria {source.record_label}; parcel and mapped roofline snapshot captured {readableDate(source.capture_date)}. Source observations and Model 300 dimensions are unreviewed. The copper rectangle is an illustrative placement, not a proposed or approved building location.</p>
+      <p>City of Victoria {source.record_label}; parcel and mapped roofline snapshot captured {readableDate(source.capture_date)}. Source observations and {model.name} dimensions are unreviewed. The copper rectangle is an illustrative placement, not a proposed or approved building location.</p>
       <p>Contains information licensed under the <a href="https://opendata.victoria.ca/pages/open-data-licence" target="_blank" rel="noreferrer">Open Government Licence – City of Victoria</a>. <a href={publicSourceUrl(source.reference) ?? '#builder-example-evidence'} target="_blank" rel="noreferrer">Parcel source</a>{roofSource && <> · <a href={publicSourceUrl(roofSource.reference) ?? '#builder-example-evidence'} target="_blank" rel="noreferrer">Roofline source</a></>}.</p>
       <p>Unknown: legal lot lines, building walls and roles, other obstructions, zoning and setbacks, installed height and datum, current controlled provider dimensions, access and services.</p>
     </details>

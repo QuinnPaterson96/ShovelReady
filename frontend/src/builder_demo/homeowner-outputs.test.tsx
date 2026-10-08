@@ -25,11 +25,11 @@ test('unknown and office uses stay qualified across the recipient formats', () =
     }
     const files = enquiryPackageFiles(doc, null, ['Ask the property owner'], { exact_value: 3.048, revision: 'unknown' }, null)
     const decode = (name: string) => new TextDecoder().decode(files[name])
-    assert.ok(decode('model-300-enquiry.md').includes(qualification))
-    assert.ok(decode('model-300-supporting-report.md').includes('No supporting screening report'))
-    assert.ok(decode('model-300-supporting-report.md').includes('(model-300-technical-evidence.json)'))
+    assert.ok(decode('prefab-enquiry.md').includes(qualification))
+    assert.ok(decode('prefab-supporting-report.md').includes('No supporting screening report'))
+    assert.ok(decode('prefab-supporting-report.md').includes('(prefab-technical-evidence.json)'))
     assert.ok(decode('README.txt').includes('No placement drawing is included'))
-    assert.equal(JSON.parse(decode('model-300-technical-evidence.json')).exact_value, 3.048)
+    assert.equal(JSON.parse(decode('prefab-technical-evidence.json')).exact_value, 3.048)
   }
 })
 

@@ -2,7 +2,7 @@ import { EvidenceAtFooter } from '../EvidenceAtFooter'
 import { MapSourceHelp } from '../zoning_site_assumptions/MapSourceHelp'
 import { suggestPlacementOrientation } from '../placement_orientation'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
-import { bundledCatalogue } from '../model_catalogue/model'
+import { bundledCatalogue, type Catalogue } from '../model_catalogue/model'
 import { PublishedDimensions } from '../model_catalogue/PublishedDimensions'
 import { MeasurementLabel } from '../model_catalogue/MeasurementLabel'
 import { MeasurementInput } from '../MeasurementInput'
@@ -132,6 +132,7 @@ export function OccupiedLotPreview({ selected, placement, onMove, nudgeMetres, c
 
 export type OccupiedMeasurement = { site: Case; model: (typeof bundledCatalogue.models)[number] | null; result: Result; widthOrigin: 'catalogue' | 'user'; depthOrigin: 'catalogue' | 'user' }
 export type OccupiedLotsProps = {
+  catalogue?: Pick<Catalogue, 'models'>
   placementSummary?: ReactNode
   placementConcerns?: ReactNode
   onContinueUnresolved?: () => void
@@ -147,8 +148,8 @@ export type OccupiedLotsProps = {
   boundaryInteraction?: BoundaryMapInteraction
 }
 
-export default function OccupiedLots({ allowedModelIds, initialModelId = '', onMeasurement, showHandoff = true, suppliedCase, boundaryInteraction, compactPlacement = false, evidenceTargetId, moveSuggestion, placementSummary, placementContinuation, placementConcerns, onContinueUnresolved }: OccupiedLotsProps) {
-  const initialModel = bundledCatalogue.models.find(m => m.model_id === initialModelId && (!allowedModelIds || allowedModelIds.includes(m.model_id)))
+export default function OccupiedLots({ catalogue = bundledCatalogue, allowedModelIds, initialModelId = '', onMeasurement, showHandoff = true, suppliedCase, boundaryInteraction, compactPlacement = false, evidenceTargetId, moveSuggestion, placementSummary, placementContinuation, placementConcerns, onContinueUnresolved }: OccupiedLotsProps) {
+  const initialModel = catalogue.models.find(m => m.model_id === initialModelId && (!allowedModelIds || allowedModelIds.includes(m.model_id)))
   const initialDimension = (name: string) => {
     const quantity = initialModel?.measurements.find(m => m.name === name)?.quantity
     return quantity?.unit === 'm' ? String(Number(quantity.value)) : ''
@@ -172,7 +173,7 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
   const selected = cases.find(c => c.case_id === caseId) ?? null
   const orientation = selected ? suggestPlacementOrientation(selected.site) : null
   const startingAngle = (site: Case) => { const suggestion = suggestPlacementOrientation(site.site); return suggestion.status === 'suggested' ? String(suggestion.angle_degrees) : '0' }
-  const allowedModels = bundledCatalogue.models.filter(m => !allowedModelIds || allowedModelIds.includes(m.model_id))
+  const allowedModels = catalogue.models.filter(m => !allowedModelIds || allowedModelIds.includes(m.model_id))
   const model = allowedModels.find(m => m.model_id === modelId)
   function invalidate() { activeCheck.current?.abort(); version.current++; setResult(null); onMeasurement?.(null); setAssessmentError(''); setAssessing(false) }
   const appliedMove = useRef<number | null>(null)
@@ -344,7 +345,7 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
             <button className="sr-primary" disabled={!valid || !assumptionsValid || assessing} onClick={() => void assess()}>{assessing ? 'Checking…' : assessmentError ? 'Retry placement check' : 'Recheck placement'}</button>
             {assessmentError && <p role="alert">{assessmentError} Edit the sketch or try again; no result is shown.</p>}
           </div>
-  return <section className={`occupied-lots${compactPlacement ? ' occupied-lots--compact' : ''}`} aria-labelledby={compactPlacement ? undefined : 'occupied-title'} aria-label={compactPlacement ? 'Model 300 placement map' : undefined}>
+  return <section className={`occupied-lots${compactPlacement ? ' occupied-lots--compact' : ''}`} aria-labelledby={compactPlacement ? undefined : 'occupied-title'} aria-label={compactPlacement ? `${model?.name ?? 'Model'} placement map` : undefined}>
     {!compactPlacement && <><p className="eyebrow">Occupied-lot workspace</p><h2 id="occupied-title">See what this footprint meets on a captured lot</h2></>}
     <p className="occupied-intro">{compactPlacement ? 'Click the map or drag the rectangle. Captured geometry is checked after edits settle.' : `${suppliedCase ? 'Use your selected property observation and set the nominal footprint.' : 'Choose a retained Victoria parcel and set the nominal footprint.'} Click to place it. Observed overlaps and distances are checked automatically after edits settle.`}</p>
     {compactPlacement ? <details><summary>Map scope and limitations</summary><p className="notice">Approximate, parcel-intersecting captures only. Rooflines are not walls; no observed overlap does not certify clear space. Legal boundaries, setbacks, other obstructions and provider dimensions need separate review. This does not establish site fit or permit eligibility.</p></details> : <p className="notice">Approximate, parcel-intersecting captures only. Rooflines are not walls; no observed overlap does not certify clear space. Legal boundaries, setbacks, other obstructions and provider dimensions need separate review. This does not establish site fit or permit eligibility.</p>}

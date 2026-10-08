@@ -287,3 +287,7 @@ street-mark completion on advancing, and a bounded City heritage/planning map sc
 Empty searched layers are scoped probable findings; permit documents, title and
 servicing remain review gaps. See [architecture](docs/architecture.md) for defaults,
 provenance and uncertainty handling. These features do not publish accepted data.
+
+The prefab demonstration now also offers Model 240, C.H. Studio Pod and Quadra 4.
+These are unreviewed observations, not accepted product/site evaluations.
+See [the model mapping, local demo and remaining evidence gaps](docs/prefab-generalization.md).

@@ -28,11 +28,11 @@ const manual: ManualFacts = { address: manualFact('Unmatched example address'), 
 const enquiry = (...args: Parameters<typeof screeningDocument>) => enquiryPlainText(screeningDocument(...args))
 const questions = { intendedUse: 'family accommodation', timing: '', budget: '', access: '', services: '' }
 
-test('Model 300 entry uses an explicit single-model catalogue lead and optional examples', () => {
+test('Model 300 entry uses an explicit unreviewed catalogue choices and optional examples', () => {
   const html = renderToStaticMarkup(createElement(BuilderDemo))
   assert.match(html, /Model 300/)
   assert.match(html, /Start with a site lead or the facts you know/)
-  assert.doesNotMatch(html, /Model 240|The Landing/)
+  assert.match(html, /Model 240/); assert.match(html, /Quadra 4/); assert.match(html, /C.H. Studio Pod/); assert.doesNotMatch(html, /The Landing|Yarrow/)
   assert.doesNotMatch(html, /Import a separate retained example for placement/)
   assert.match(html, /Try an example property/)
   assert.match(html, /Use my own property/)
@@ -264,7 +264,7 @@ test('placement export retains source geometry and an unsent MIME attachment pre
   const parts = mime.split('Content-Transfer-Encoding: base64\r\n\r\n').slice(1).map(part => part.split('\r\n--')[0].replace(/\r\n/g, ''))
   assert.equal(Buffer.from(parts[0], 'base64').toString('utf8'), body)
   assert.deepEqual(new Uint8Array(Buffer.from(parts[1], 'base64')), png)
-  assert.match(mime, /Content-Disposition: attachment; filename="model-300-placement.png"/)
+  assert.match(mime, /Content-Disposition: attachment; filename="prefab-placement.png"/)
   assert.doesNotMatch(attachedEmail('', 'Model 300', body), /Content-Disposition: attachment/)
   assert.throws(() => attachedEmail('a@example.com\r\nBcc:evil@example.com', 'subject', body), /Invalid recipient/)
 })
@@ -346,8 +346,8 @@ test('package keeps complete evidence in JSON without embedding diagnostics in t
   const doc = enquiryDocument(null, questions, null)
   const files = enquiryPackageFiles(doc, screeningDocument(null, questions, null), ['Owner preparation'], evidence, null)
   const decode = (name: string) => new TextDecoder().decode(files[name])
-  assert.deepEqual(JSON.parse(decode('model-300-technical-evidence.json')), evidence)
-  assert.doesNotMatch(decode('model-300-supporting-report.md'), /```json|strict-input subset|Parcel containment contained|enter installed height/)
-  assert.match(decode('model-300-supporting-report.md'), /model-300-technical-evidence.json/)
-  assert.doesNotMatch(decode('model-300-enquiry.md'), /Owner preparation/)
+  assert.deepEqual(JSON.parse(decode('prefab-technical-evidence.json')), evidence)
+  assert.doesNotMatch(decode('prefab-supporting-report.md'), /```json|strict-input subset|Parcel containment contained|enter installed height/)
+  assert.match(decode('prefab-supporting-report.md'), /prefab-technical-evidence.json/)
+  assert.doesNotMatch(decode('prefab-enquiry.md'), /Owner preparation/)
 })

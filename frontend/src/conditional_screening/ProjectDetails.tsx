@@ -51,7 +51,7 @@ export function ProjectDetails({ settings, mapped, lookup, busy, error, onRetry,
         <label>Legal lot boundary <select value={choice(proposal.legal_lot_confirmed)} onChange={event => change('legal_lot_confirmed', event.target.value === '' ? null : event.target.value === 'true')}><option value="">Unknown</option><option value="true">I have evidence this outline matches one legal lot</option><option value="false">Known mismatch or multiple lots</option></select></label>
         <label>Projections affecting setbacks <select value={choice(proposal.no_relevant_projections)} onChange={event => change('no_relevant_projections', event.target.value === '' ? null : event.target.value === 'true')}><option value="">Unknown</option><option value="true">I have evidence no relevant projections apply</option><option value="false">Relevant eaves or other projections may apply</option></select></label>
       </details>
-      <p>Model 300's published footprint does not resolve roof overhangs, eaves or Victoria's legal measurement basis. Unknown projections remain open in affected checks.</p>
+      <p>A model's published footprint does not resolve roof overhangs, eaves or Victoria's legal measurement basis. Unknown projections remain open in affected checks.</p>
     </details>
   </section>
 }
