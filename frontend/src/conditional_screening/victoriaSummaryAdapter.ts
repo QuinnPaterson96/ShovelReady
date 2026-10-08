@@ -38,7 +38,8 @@ export function homeownerSummary(input: {
   const mappedOutside = mapped?.status === 'single' && (!supportedGardenSuiteZone(mapped.zone) || mapped.instrument !== 'Zoning Bylaw 2018 (No. 18-072)')
   const enteredOutside = settings.evidence.confirmed_zone.origin === 'user' && settings.proposal.confirmed_zone === 'other' ||
     settings.evidence.confirmed_instrument.origin === 'user' && settings.proposal.confirmed_instrument === 'other'
-  const outsideScope = mappedOutside || enteredOutside
+  const useOutside = settings.proposal.proposed_use !== 'garden_suite'
+  const outsideScope = mappedOutside || enteredOutside || useOutside
 
   const geometryConflict = geometry?.checks.some(check => check.relation === 'outside' || check.relation === 'touches' || check.relation === 'positive_area_overlap' || check.comparison === 'shortfall') ?? false
   const contained = geometry?.checks.some(check => check.kind === 'containment' && check.relation === 'contained') ?? false
@@ -50,9 +51,9 @@ export function homeownerSummary(input: {
   const legalDistanceConflict = screening?.checks.some(check => check.rule.kind === 'boundary_min' && check.status === 'apparent_conflict_under_assumptions') ?? false
   checks.push(assumptions?.street_adjacency && !assumptions.street_adjacency.all_marked
     ? { label: 'Distance to boundaries', status: 'unknown', detail: `${contained && geometryComplete ? 'The current rectangle is inside the captured parcel. ' : ''}Street selection is incomplete; front and street-side context and boundary comparisons remain unresolved. Any candidate distances are exploratory.`, action: { label: 'Review street edges', target: 'street-side' } }
-    : legalDistanceConflict || scenario?.status === 'apparent_conflict'
+    : !outsideScope && (legalDistanceConflict || scenario?.status === 'apparent_conflict')
     ? { label: 'Distance to boundaries', status: 'conflict', detail: 'At least one candidate distance conflicts under the stated assumptions.', action: { label: 'Review boundary measurements', target: 'boundary-offsets' } }
-    : outsideScope ? { label: 'Distance to boundaries', status: 'unsupported', detail: 'Boundary rules for this zoning are not yet covered.' }
+    : outsideScope ? { label: 'Distance to boundaries', status: 'unsupported', detail: 'Boundary rules for this use or zoning are outside the supported garden-suite comparison.' }
     : scenarioError ? { label: 'Distance to boundaries', status: 'unknown', detail: 'The distance comparison could not be loaded. The captured geometry remains separate.', action: { label: 'Retry distance check', target: 'retry-scenario' } }
     : scenario?.status === 'bounded_pass'
       ? { label: 'Distance to boundaries', status: scenario.scenarios?.some(s => s.checks.some(c => c.planning_meets === false)) ? 'review' : scenario.scenarios?.some(s => s.checks.some(c => (c.planning_buffer_m ?? 0) > 0)) ? 'probable' : 'checked', detail: scenario.scenarios?.some(s => s.checks.some(c => c.planning_meets === false)) ? 'Captured distances clear the candidate minimums, but the planning buffers do not. Review buffers or supply measured offsets; no observed distance conflict is established.' : 'Tested side and rear distances clear the candidate minimums after any stated planning buffers. Approximate geometry; front and legal-line distances remain separate.', action: { label: 'Review planning buffers', target: 'boundary-offsets' } }
@@ -67,7 +68,7 @@ export function homeownerSummary(input: {
     ...(!outsideScope ? { action: { label: 'Review waterfront status', target: 'waterfront-lot' } } : {}) })
   const countChecked = screening?.checks.some(check => check.rule.kind === 'count_max' && check.status === 'meets_under_assumptions') ?? false
   checks.push(outsideScope
-    ? { label: 'Existing garden suite', status: 'unsupported', detail: 'Suite count rules for this zoning are not covered.' }
+    ? { label: 'Existing garden suite', status: 'unsupported', detail: 'Garden-suite count comparisons do not establish suitability for this use or zoning.' }
     : countConflict
     ? { label: 'Existing garden suite', status: 'conflict', detail: 'The supplied suite count conflicts with the candidate count check.', action: { label: 'Review suite count', target: 'existing-suites' } }
     : suiteCount === null || suiteCount === undefined
@@ -109,7 +110,7 @@ export function homeownerSummary(input: {
       action: { label: 'Review property scan', target: 'property-scan' } })
   }
   checks.push(outsideScope
-    ? { label: 'Zoning coverage', status: 'unsupported', detail: mappedOutside ? `Mapped ${mapped?.zone ?? 'unknown zone'} is outside this tool’s supported Victoria GRD-1 packet. This does not mean a garden suite is prohibited.` : 'Your entered zone or bylaw is outside this tool’s Victoria GRD-1 packet. This does not mean a garden suite is prohibited.' }
+    ? { label: 'Zoning coverage', status: 'unsupported', detail: useOutside ? 'Garden-suite zoning comparisons do not apply to an unknown or other intended use. Physical placement observations remain separate.' : mappedOutside ? `Mapped ${mapped?.zone ?? 'unknown zone'} is outside this tool’s supported Victoria GRD-1 packet. This does not mean a garden suite is prohibited.` : 'Your entered zone or bylaw is outside this tool’s Victoria GRD-1 packet. This does not mean a garden suite is prohibited.' }
     : zoningError || lookup?.status === 'unavailable'
       ? { label: 'Zoning coverage', status: 'unknown', detail: 'The municipal zoning source is unavailable. No current zone was verified.', ...(onRetryAvailable ? { action: { label: 'Retry zoning lookup', target: 'zoning-retry' } } : {}) }
       : zoningBusy ? { label: 'Zoning coverage', status: 'unknown', detail: 'Checking the municipal zoning map.' }
@@ -150,7 +151,11 @@ export function homeownerSummary(input: {
   }
   const supportingChecks = checks.flatMap(check => check.parts ?? [check])
   const supportedConflict = screening?.checks.some(check => check.rule.kind !== 'prerequisite' && check.rule.kind !== 'boundary_min' && check.status === 'apparent_conflict_under_assumptions') ?? false
-  const conflict = geometryConflict || legalDistanceConflict || scenario?.status === 'apparent_conflict' || countConflict || supportedConflict || checks.some(check => check.status === 'conflict')
+  if (useOutside) checks.push({ label: 'Intended use', status: settings.proposal.proposed_use === null ? 'unknown' : 'unsupported',
+    detail: settings.proposal.proposed_use === null ? 'Intended use is unknown. Physical placement observations remain available; garden-suite planning comparisons cannot establish a result for an undecided use.' : 'This use is outside the garden-suite comparisons. Physical placement observations remain available; ask the provider about suitability and City staff about applicable planning rules.',
+    action: { label: 'Review intended use', target: 'builder-intended-use' },
+    gap: { missing: 'An intended use and planning rules applicable to that use.', affects: 'A garden-suite comparison cannot establish suitability for an office or undecided project.', next: 'Choose the intended use or keep Not sure; ask the provider about product suitability and City staff about applicable rules.', owner: 'Homeowner / provider / City reviewer' } })
+  const conflict = geometryConflict || !outsideScope && (legalDistanceConflict || scenario?.status === 'apparent_conflict' || countConflict || supportedConflict) || checks.some(check => check.status === 'conflict')
   const supportingCoverage = ['separation', 'front', 'rear_location', 'rear_occupancy', 'height'].every(id => scenario?.additional_checks?.some(check => check.id === id && (check.status === 'checked' || check.status === 'probable')))
   const readyToExplore = supportingCoverage && contained && geometryComplete && !outsideScope && scenario?.status === 'bounded_pass' && supportingChecks.every(check => check.status === 'checked' || check.status === 'probable' || check.status === 'unsupported')
   for (const check of supportingChecks) {
@@ -163,7 +168,7 @@ export function homeownerSummary(input: {
   }
   return {
     conclusion: conflict ? 'This placement has a conflict' : readyToExplore ? 'Worth exploring with the provider' : geometry ? 'Review this placement' : 'Place the unit to explore the possibilities',
-    next: conflict ? 'Review the flagged position or supplied facts, then check the remaining unknowns.' : readyToExplore ? 'The supported checks look plausible under the stated assumptions. Ask the provider about the requirements this tool does not cover.' : geometry ? 'Follow the next steps to review the property and prepare an enquiry. Unresolved questions stay visible.' : 'Place the model on a property to start the approximate checks.',
+    next: conflict ? 'Resolve the named placement concerns first, or ask for advice with those concerns included. Other placements may still be possible.' : readyToExplore ? 'The supported checks look plausible under the stated assumptions. Ask the provider about the requirements this tool does not cover.' : geometry ? 'The placement observations alone do not establish planning suitability. Resolve the priority questions below or include them when asking for advice.' : 'Place the model on a property to start the approximate checks.',
     checks,
   }
 }

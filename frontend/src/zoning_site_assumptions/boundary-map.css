@@ -18,3 +18,14 @@
 .boundary-role-help { margin-block: .75rem; }
 .boundary-role-help dt { font-weight: 700; color: var(--ink); }
 .boundary-role-help dd { margin: .2rem 0 .7rem; color: var(--ink-muted); }
+.boundary-role-help > summary { min-height: 44px; display: flex; align-items: center; cursor: pointer; font-weight: 650; }
+.boundary-role-help > summary:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.boundary-role-help figure { margin: .75rem 0; }
+.boundary-role-help svg { display: block; width: 100%; max-width: 520px; color: var(--ink); }
+.boundary-role-help svg text { fill: currentColor; font: 12px sans-serif; }
+.boundary-help-street { fill: var(--border); }
+.boundary-help-parcel { fill: none; stroke: var(--primary); stroke-width: 2; }
+.boundary-help-unit { fill: var(--copper-soft); stroke: var(--copper); stroke-width: 2; }
+.boundary-help-margin { fill: none; stroke: var(--copper); stroke-width: 2; stroke-dasharray: 4 3; }
+.boundary-help-gap { fill: none; stroke: var(--ink); stroke-width: 1.5; }
+.boundary-role-help figcaption { color: var(--ink-muted); font-size: .9rem; }
