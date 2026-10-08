@@ -88,7 +88,7 @@ export function BoundaryMapTools({ interaction }: { interaction: BoundaryMapInte
   const complete = interaction.allStreetsMarked ?? false
   const exterior = edges.filter(edge => edge.ring === 0)
   const supported = ordinaryFourEdgeBoundary(edges)
-  return <div className="boundary-map-tools" hidden={mode === 'place' && !interaction.showPropertyDetails} data-mode={mode} aria-label="Boundary selection controls">
+  return <div className="boundary-map-tools" hidden={mode === 'place'} data-mode={mode} aria-label="Boundary selection controls">
     {!supported && <p>This outline needs manual review. Marks record your assumptions; street-side suggestions cannot resolve its frontage.</p>}
     {mode === 'front' && <>
       <div className="boundary-street-toolbar">
