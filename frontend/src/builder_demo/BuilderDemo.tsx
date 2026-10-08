@@ -609,6 +609,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     ? `SAVED EXAMPLE ONLY — not my property. I will paste the full reviewed ${model.name} enquiry into this draft before sending.`
     : `I have prepared a ${model.name} enquiry. I will paste the full reviewed text into this draft before sending.`
   function openDraft(kind: 'mailto' | 'gmail') {
+    if (checksPending || !enquiryDoc) return
     const url = emailDraftUrl(kind, recipient, emailSubject, emailTooLong ? shortEmailBody : emailBody)
     if (!url) { setEmailMessage('Enter one valid email address without line breaks.'); return }
     try {
@@ -625,6 +626,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     }
   }
   async function copyEmailBody() {
+    if (checksPending || !enquiryDoc) return
     try {
       if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable')
       await navigator.clipboard.writeText(emailBody)
@@ -801,7 +803,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       </div>
       <div className="builder-enquiry-confirm">
         <h3>Happy with your enquiry?</h3><p>You can edit it again later.</p>
-        <button className="builder-continue" type="button" disabled={!contextComplete || exportBusy} onClick={() => { setReadyFor(draftText); openJourneyStep('email') }}>Confirm enquiry &amp; continue →</button>
+        <button className="builder-continue" type="button" disabled={!contextComplete || checksPending || exportBusy} onClick={() => { if (!enquiryDoc || checksPending) return; setReadyFor(draftText); openJourneyStep('email') }}>Confirm enquiry &amp; continue →</button>
         <p role="status">{enquiryReady ? 'Enquiry confirmed. No message has been sent.' : 'Draft in progress. Review before continuing.'}</p>
       </div>
       <TechnicalDetails title="Complete site selection, sources and measurements"><CopyableRecord id="builder-technical-record" label="Complete technical evidence export" value={JSON.stringify(technicalEvidence, null, 2)} /></TechnicalDetails>
@@ -813,7 +815,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
         <p className="eyebrow">Contact provider · unsent enquiry</p><h2 id="builder-email-title">Contact {model.provider}</h2>
         <button type="button" aria-expanded={expanded.email} aria-controls="builder-email-content" onClick={() => toggleStep('email')}>{expanded.email ? 'Collapse provider contact' : 'Review provider contact'}</button>
         <div id="builder-email-content" hidden={!expanded.email}>
-        {!contextComplete ? <><p>Provide the three context answers before preparing your provider message.</p><button id="builder-contact-context" type="button" onClick={() => openJourneyStep('enquiry')}>Add enquiry context</button></> : <>
+        {!contextComplete || checksPending ? <><p>{checksPending ? 'Updating checks. Your current provider message will be available when they finish.' : 'Provide the three context answers before preparing your provider message.'}</p>{!contextComplete && <button id="builder-contact-context" type="button" onClick={() => openJourneyStep('enquiry')}>Add enquiry context</button>}</> : <>
         <p>{model.provider} uses an official contact page{model.provider === 'aux box' ? ' with a central enquiry form' : ''}. Copy your prepared enquiry, then review the provider’s requested information. Checked October 7, 2026.</p>
         <p className="metadata">Opening the website does not send your enquiry or attach your report. This independent demonstration has no affiliation with {model.provider}.</p>
         <label htmlFor="builder-provider-text">Your enquiry to paste into the form</label><textarea id="builder-provider-text" readOnly rows={8} value={draftText} />

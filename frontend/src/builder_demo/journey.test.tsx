@@ -143,7 +143,7 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     assert.equal(website.href, 'https://www.auxbox.ca/contact')
     assert.match(document.getElementById('builder-email-content')!.textContent!, /central enquiry form.*Copy your prepared enquiry/s)
     assert.equal(document.querySelector<HTMLDetailsElement>('.builder-email-optional')!.open, false)
-    assert.match(document.querySelector<HTMLTextAreaElement>('#builder-provider-text')!.value, /Could Model 300 be suitable/)
+    assert.match(document.querySelector<HTMLTextAreaElement>('#builder-provider-text')!.value, /Please advise whether this is worth investigating further/)
     let copiedEnquiry = ''
     Object.defineProperty(dom.window.navigator, 'clipboard', { configurable: true, value: { writeText: async (text: string) => { copiedEnquiry = text } } })
     await click('Copy enquiry for provider')
@@ -201,14 +201,15 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     await act(async () => { await new Promise(resolve => setTimeout(resolve, 550)) })
     assert.equal([...document.querySelectorAll<HTMLButtonElement>('button')].some(node => node.textContent === 'Download placement PNG' && !node.disabled), false, 'a pending placement must not export the earlier drawing')
     assert.equal(document.querySelector('#builder-enquiry-text'), null, 'stale draft cannot be copied as current')
+    assert.equal([...document.querySelectorAll<HTMLButtonElement>('button')].find(node => node.textContent === 'Confirm enquiry & continue →')!.disabled, true)
+    assert.equal(document.querySelector('#builder-provider-text'), null, 'pending findings cannot become an empty provider message')
     assert.equal(geometryCalls, 2)
     await click('Wrong property? Change')
     assert.equal(document.activeElement?.id, 'sd-address')
     // Project preferences stay, but old site-specific questions/responses cannot
     // leak into the next property's enquiry.
-    assert.equal(document.querySelector<HTMLInputElement>('#builder-use')!.value, 'Garden suite')
-    assert.equal(document.querySelector<HTMLInputElement>('#builder-nextStep')!.value, '')
-    assert.equal(document.querySelector<HTMLInputElement>('#builder-relationship')!.value, '')
+    assert.equal(document.querySelector<HTMLSelectElement>('#builder-intended-use')!.value, 'Garden suite')
+    assert.equal(document.querySelector('#builder-enquiry-text'), null, 'the old property enquiry is no longer active')
     await act(async () => { releaseLate() })
     assert.equal(document.getElementById('builder-quick-checks'), null)
     assert.equal(document.querySelector('#placement-map'), null)
@@ -216,7 +217,7 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     // A page remount must recover the enquiry text, while old geometry and
     // acknowledged findings must not become an active assessment.
     const saved = JSON.parse(dom.window.sessionStorage.getItem('shovelready.enquiry-recovery.v1')!)
-    assert.match(saved.enquiry, /Could Model 300 be suitable/)
+    assert.match(saved.enquiry, /Please advise whether this is worth investigating further/)
     assert.match(saved.report, /supporting screening report/)
     assert.equal(JSON.parse(saved.technicalEvidence).schema_version, 'builder-evidence.v1')
     assert.doesNotMatch(saved.report, /builder-evidence.v1|Complete historical technical evidence/)

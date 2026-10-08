@@ -44,7 +44,7 @@ test('switching models retains the property, resets overrides and exports only t
       await act(async () => { [...document.querySelectorAll<HTMLButtonElement>(`#${id} button`)].find(button => button.textContent === answer)!.click() })
     }
     const retainedFacts = evidence().zoning_site_assumptions
-    await edit('builder-configuration', 'Model 300 special options')
+    await edit('builder-configuration', 'Model 300 special options'); await settle()
     await edit('builder-email-recipient', 'old-provider@example.com')
     await edit('builder-example-width', '12')
     // Initial source figures / exact conversions from the model sheets; tolerance
@@ -54,10 +54,11 @@ test('switching models retains the property, resets overrides and exports only t
       const reset = evidence()
       assert.equal(reset.measurement, null, 'old result is invalidated synchronously')
       assert.equal(reset.enquiry_inputs.configuration, '')
-      assert.equal((document.getElementById('builder-email-recipient') as HTMLInputElement).value, '')
+      assert.equal(document.getElementById('builder-email-recipient'), null, 'pending model cannot prepare an email')
       assert.equal(reset.enquiry_inputs.intendedUse, 'Unknown')
       assert.equal(reset.enquiry_inputs.relationship, 'I own the property')
       await settle()
+      assert.equal((document.getElementById('builder-email-recipient') as HTMLInputElement).value, '')
       const current = evidence(), model = journeyCatalogue.models.find(item => item.model_id === id)!
       for (const key of ['building_type', 'existing_garden_suites', 'waterfront']) assert.deepEqual(current.zoning_site_assumptions[key], retainedFacts[key])
       assert.equal(current.measurement.site.site.parcel.id, parcel)
