@@ -44,13 +44,12 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
   const root = createRoot(document.getElementById('root')!)
   function Journey() {
     const [completion, setCompletion] = useState(emptyBuilderJourneyCompletion)
-    return <><BuilderJourneyNav completion={completion} /><BuilderDemo onProgressChange={setCompletion} /></>
+    return <><BuilderJourneyNav completion={completion} /><BuilderDemo onProgressChange={setCompletion} presetRequest={1} /></>
   }
   const button = (label: string) => [...document.querySelectorAll<HTMLButtonElement>('button')].find(node => node.textContent === label)!
   const click = async (label: string) => { assert.ok(button(label), label); await act(async () => { button(label).click() }); await act(async () => { await new Promise(resolve => setTimeout(resolve, 20)) }) }
   try {
     await act(async () => { root.render(createElement(Journey)) })
-    await click('Try an example property')
     await act(async () => { const choice = document.getElementById('builder-intended-use') as HTMLSelectElement; choice.value = 'Garden suite'; choice.dispatchEvent(new dom.window.Event('change', { bubbles: true })) })
     await act(async () => { await new Promise(resolve => setTimeout(resolve, 550)) })
     await act(async () => { await new Promise(resolve => setTimeout(resolve, 450)) })
@@ -346,8 +345,7 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
   const change = async (node: HTMLInputElement | HTMLSelectElement, value: string) => { await act(async () => { node.focus(); Object.getOwnPropertyDescriptor(node instanceof dom.window.HTMLSelectElement ? dom.window.HTMLSelectElement.prototype : dom.window.HTMLInputElement.prototype, 'value')!.set!.call(node, value); node.dispatchEvent(node instanceof dom.window.HTMLSelectElement ? new dom.window.Event('change', { bubbles: true }) : new dom.window.KeyboardEvent('keyup', { key: '5', bubbles: true })) }) }
   try {
     let completion = emptyBuilderJourneyCompletion
-    await act(async () => root.render(createElement<{ onProgressChange?: (next: typeof emptyBuilderJourneyCompletion) => void }>(BuilderDemo, { onProgressChange: next => { completion = next } })))
-    await click('Try an example property')
+    await act(async () => root.render(createElement<{ onProgressChange?: (next: typeof emptyBuilderJourneyCompletion) => void; presetRequest?: number }>(BuilderDemo, { onProgressChange: next => { completion = next }, presetRequest: 1 })))
     await act(async () => { const choice = document.getElementById('builder-intended-use') as HTMLSelectElement; choice.value = 'Garden suite'; choice.dispatchEvent(new dom.window.Event('change', { bubbles: true })) }); await settle(550); await settle(1150)
     assert.match(document.querySelector('.builder-placement-results')!.textContent!, /timed out/)
     assert.doesNotMatch(document.querySelector('.builder-placement-results')!.textContent!, /Checking plausible/)

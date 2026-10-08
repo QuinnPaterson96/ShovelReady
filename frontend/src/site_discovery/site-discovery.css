@@ -36,3 +36,9 @@
 .site-discovery .sd-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin: .75rem 0; }
 .site-discovery pre { white-space: pre-wrap; overflow-wrap: anywhere; }
 @media (max-width: 540px) { .site-discovery .sd-search button, .site-discovery .sd-actions button, .site-discovery .sd-selected button { width: 100%; } }
+
+.sd-address-heading { display: flex; align-items: center; gap: .5rem; }
+.sd-address-heading h4 { margin: 0; }
+.site-discovery .sd-fallback { background: transparent; padding: 0; }
+.site-discovery .sd-manual-link { background: transparent; border: 0; color: var(--primary); padding: .5rem 0; text-decoration: underline; min-height: 44px; }
+.sd-selected .step-info { flex: none; }

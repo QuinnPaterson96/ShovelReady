@@ -131,7 +131,7 @@ test('service failure and no-match keep manual continuation visible', async () =
   assert.match(flow.state.message, /continue manually/i)
   const html = renderToStaticMarkup(createElement(SiteDiscovery, { transport, onConfirm() {} }))
   assert.match(html, /retained lookup or <a href="#manual-address">manual site details below<\/a>/)
-  assert.match(html, /Search for a property/)
+  assert.match(html, /Enter your address/)
   assert.doesNotMatch(html, /fit result/i)
 })
 
