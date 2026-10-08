@@ -22,7 +22,10 @@ export function FloatingNext({ active, sectionId, children }: { active: boolean;
     let sectionVisible = false, endVisible = false
     const update = () => {
       const box = section.getBoundingClientRect()
-      setBounds({ left: Math.max(8, box.left), width: Math.max(0, Math.min(box.width, document.documentElement.clientWidth - 16)) })
+      const viewportWidth = document.documentElement.clientWidth
+      setBounds(viewportWidth <= 760
+        ? { left: 8, width: Math.max(0, viewportWidth - 16) }
+        : { left: Math.max(8, box.left), width: Math.max(0, Math.min(box.width, viewportWidth - 16)) })
       setFloating(sectionVisible && !endVisible)
     }
     const observer = new IntersectionObserver(entries => {
