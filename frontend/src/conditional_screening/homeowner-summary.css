@@ -2,6 +2,10 @@
 .homeowner-summary h3 { margin: 0 0 .35rem; }
 .homeowner-summary p { margin: .3rem 0 .7rem; }
 .homeowner-summary__scope { color: var(--ink-muted); }
+.homeowner-summary__gap { margin: .6rem 0; }
+.homeowner-summary__gap dt { font-weight: 650; }
+.homeowner-summary__gap dd { margin: .15rem 0 .5rem; }
+.homeowner-summary__workflow { font-size: .9rem; color: var(--ink-muted); }
 .homeowner-summary ul { list-style: none; padding: 0; margin: 1rem 0 0; display: grid; gap: .55rem; }
 .homeowner-summary li { display: flex; gap: .75rem; align-items: flex-start; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: .7rem; min-width: 0; }
 .homeowner-summary li > div { min-width: 0; }

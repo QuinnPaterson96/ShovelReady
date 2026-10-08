@@ -8,7 +8,23 @@ import type { SiteAssumptions } from '../zoning_site_assumptions/model'
 
 import type { PropertyScanResult } from './PropertyScan'
 
-import type { SummaryCheck, Summary } from './HomeownerSummary'
+import type { FindingGap, SummaryCheck, Summary } from './HomeownerSummary'
+
+// These requests describe the bounded Victoria adapter's inputs, not new rule findings.
+const inputGaps: Record<string, FindingGap> = {
+  'placement-map': { missing: 'A current placement with usable parcel and building outlines.', affects: 'Containment and building gaps cannot be assessed reliably.', next: 'Place or recheck the rectangle; use a local sketch when mapped geometry is unavailable.', owner: 'Property contact' },
+  'boundary-offsets': { missing: 'Boundary roles and compatible wall-to-legal-line gaps.', affects: 'Mapped gaps and optional planning buffers do not establish legal setbacks.', next: 'Review the roles and buffers now; obtain a survey or suitable plan for legal measurements.', owner: 'Property contact, then surveyor / City reviewer' },
+  'street-side': { missing: 'Known street-adjoining edges and whether all have been marked.', affects: 'Street context changes possible front and street-side comparisons.', next: 'Mark the known street edges or leave their completeness unresolved.', owner: 'Property contact' },
+  'waterfront-lot': { missing: 'Waterfront status and any water-adjoining edges.', affects: 'Waterfront conditions can change boundary classification and siting rules.', next: 'Record what is known; ask City staff to establish applicable waterfront rules.', owner: 'Property contact / City reviewer' },
+  'existing-suites': { missing: 'The existing garden-suite count and lot eligibility.', affects: 'An assumed count cannot establish permission for another suite.', next: 'Confirm existing suites and ask City staff to check lot eligibility.', owner: 'Property contact / City reviewer' },
+  'zsa-floor-area': { missing: 'A floor-area calculation compatible with the candidate rule.', affects: 'Nominal footprint and interior floor area may exclude legally counted space.', next: 'Request dimensioned plans and have the applicable inclusions checked.', owner: 'Manufacturer / designer / City reviewer' },
+  'scouting-area-buffer': { missing: 'Reviewed floor area and its inclusions.', affects: 'The editable area allowance is a planning estimate.', next: 'Ask for a configuration-specific area calculation; retain the estimate separately.', owner: 'Manufacturer / designer' },
+  'scouting-height': { missing: 'Installed overall height, ground levels and measurement reference.', affects: 'Advertised height plus an allowance does not establish regulatory height.', next: 'Ask for the model height reference and foundation details; confirm site levels separately.', owner: 'Manufacturer, then site professional' },
+  'principal-building': { missing: 'Identification of the main home and a usable property plan.', affects: 'Main-home identity changes separation and estimated rear-yard comparisons.', next: 'Identify the main home on the drawing; obtain reviewed wall and yard geometry before relying on it.', owner: 'Property contact / surveyor / City reviewer' },
+  'separation-measurement-choice': { missing: 'Compatible main-home and proposed-unit measurement endpoints.', affects: 'A roofline gap may differ from the required wall or projection separation.', next: 'Confirm the main home and request suitable plans or survey measurements.', owner: 'Property contact / surveyor / City reviewer' },
+  'property-scan': { missing: 'Review of mapped records and unavailable or unsearched sources.', affects: 'A map search does not resolve permit conditions, title restrictions or servicing.', next: 'Review named records and ask City staff about their relevance; check title separately.', owner: 'Property contact / City reviewer / title professional' },
+  'zoning-settings': { missing: 'One applicable zone and bylaw for the legal property.', affects: 'The candidate comparison may not apply to the intended project.', next: 'Review the zoning lead and ask City staff to confirm applicability.', owner: 'Property contact / City reviewer' },
+}
 
 // Bounded Victoria packet adapter; the renderer consumes jurisdiction-neutral findings.
 export function homeownerSummary(input: {
@@ -32,7 +48,9 @@ export function homeownerSummary(input: {
       : { label: 'Space within the property', status: 'unknown', detail: geometry ? 'The parcel or roofline observation is incomplete.' : 'Place the model to check the captured parcel and rooflines.', action: { label: geometry ? 'Review placement' : 'Place model', target: 'placement-map' } })
 
   const legalDistanceConflict = screening?.checks.some(check => check.rule.kind === 'boundary_min' && check.status === 'apparent_conflict_under_assumptions') ?? false
-  checks.push(legalDistanceConflict || scenario?.status === 'apparent_conflict'
+  checks.push(assumptions?.street_adjacency && !assumptions.street_adjacency.all_marked
+    ? { label: 'Distance to boundaries', status: 'unknown', detail: `${contained && geometryComplete ? 'The current rectangle is inside the captured parcel. ' : ''}Street selection is incomplete; front and street-side context and boundary comparisons remain unresolved. Any candidate distances are exploratory.`, action: { label: 'Review street edges', target: 'street-side' } }
+    : legalDistanceConflict || scenario?.status === 'apparent_conflict'
     ? { label: 'Distance to boundaries', status: 'conflict', detail: 'At least one candidate distance conflicts under the stated assumptions.', action: { label: 'Review boundary measurements', target: 'boundary-offsets' } }
     : outsideScope ? { label: 'Distance to boundaries', status: 'unsupported', detail: 'Boundary rules for this zoning are not yet covered.' }
     : scenarioError ? { label: 'Distance to boundaries', status: 'unknown', detail: 'The distance comparison could not be loaded. The captured geometry remains separate.', action: { label: 'Retry distance check', target: 'retry-scenario' } }
@@ -63,7 +81,7 @@ export function homeownerSummary(input: {
   ] as const) {
     const check = screening?.checks.find(item => item.rule.kind === kind)
     if (kind === 'separation_min' && check && (check.rule.measurement_definition === null || check.rule.applicability === 'unknown')) {
-      checks.push({ label, status: 'unsupported', detail: 'The source rule’s separation measurement basis is unresolved. Entering a distance cannot complete this check; source review is needed.' })
+      checks.push({ label, status: 'unsupported', detail: 'The source rule’s separation measurement basis is unresolved. Entering a distance cannot complete this check; source review is needed.', gap: { missing: 'A reviewed separation rule and its measurement endpoints.', affects: 'A physical gap cannot establish the legal separation comparison.', next: 'Ask a City reviewer to establish the applicable rule and measurement basis before supplying legal-basis distances.', owner: 'City reviewer / qualified local professional' } })
       continue
     }
     if (outsideScope || check?.status === 'unsupported') {
@@ -79,7 +97,7 @@ export function homeownerSummary(input: {
     })
   }
   checks.push({ label: 'Other siting requirements', status: 'unsupported', detail: 'Front setback, rear-yard location and occupancy, and site-specific provisions are not yet covered.' })
-  checks.push({ label: 'Height', status: 'unsupported', detail: 'Not yet covered: installed height, grade and a reviewed applicable height rule are missing.' })
+  checks.push({ label: 'Height', status: 'unsupported', detail: 'Not yet covered: installed height, grade and a reviewed applicable height rule are missing.', gap: inputGaps['scouting-height'] })
   if (screeningError) checks.push({ label: 'Candidate rule checks', status: 'unknown', detail: 'The rule comparison could not be loaded for the current inputs.', action: { label: 'Retry rule checks', target: 'retry-screening' } })
   if (input.propertyScan || input.propertyScanBusy || input.propertyScanError) {
     const clear = input.propertyScan?.findings.every(row => row.status === 'probably_clear') ?? false
@@ -135,6 +153,14 @@ export function homeownerSummary(input: {
   const conflict = geometryConflict || legalDistanceConflict || scenario?.status === 'apparent_conflict' || countConflict || supportedConflict || checks.some(check => check.status === 'conflict')
   const supportingCoverage = ['separation', 'front', 'rear_location', 'rear_occupancy', 'height'].every(id => scenario?.additional_checks?.some(check => check.id === id && (check.status === 'checked' || check.status === 'probable')))
   const readyToExplore = supportingCoverage && contained && geometryComplete && !outsideScope && scenario?.status === 'bounded_pass' && supportingChecks.every(check => check.status === 'checked' || check.status === 'probable' || check.status === 'unsupported')
+  for (const check of supportingChecks) {
+    if (!['unknown', 'unsupported', 'review'].includes(check.status)) continue
+    const target = check.action?.target
+    check.gap ??= target && inputGaps[target] ? inputGaps[target]
+      : target?.startsWith('retry-') || target === 'zoning-retry'
+        ? { missing: 'A completed source response for the current inputs.', affects: 'Unavailable data cannot establish a result.', next: 'Retry the source; if unavailable, keep this check unresolved and request the relevant records.', owner: 'Property contact / source provider' }
+        : { missing: 'Supported, reviewed property-specific evidence for this requirement.', affects: 'The available checks cannot establish this part of planning feasibility.', next: 'Ask City staff or a qualified local professional which records and review are needed.', owner: 'City reviewer / qualified local professional' }
+  }
   return {
     conclusion: conflict ? 'This placement has a conflict' : readyToExplore ? 'Worth exploring with the provider' : geometry ? 'Review this placement' : 'Place the unit to explore the possibilities',
     next: conflict ? 'Review the flagged position or supplied facts, then check the remaining unknowns.' : readyToExplore ? 'The supported checks look plausible under the stated assumptions. Ask the provider about the requirements this tool does not cover.' : geometry ? 'Follow the next steps to review the property and prepare an enquiry. Unresolved questions stay visible.' : 'Place the model on a property to start the approximate checks.',
