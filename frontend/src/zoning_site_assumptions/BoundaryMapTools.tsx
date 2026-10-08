@@ -38,6 +38,7 @@ export function BoundaryRoleHelp({ compact = false }: { compact?: boolean }) {
 }
 
 export type BoundaryMapInteraction = {
+  showPropertyDetails?: boolean
   mainBuilding?: Feature
   mainBuildingAssumed?: boolean
   waterfront?: boolean
@@ -87,7 +88,7 @@ export function BoundaryMapTools({ interaction }: { interaction: BoundaryMapInte
   const complete = interaction.allStreetsMarked ?? false
   const exterior = edges.filter(edge => edge.ring === 0)
   const supported = ordinaryFourEdgeBoundary(edges)
-  return <div className="boundary-map-tools" hidden={mode === 'place'} data-mode={mode} aria-label="Boundary selection controls">
+  return <div className="boundary-map-tools" hidden={mode === 'place' && !interaction.showPropertyDetails} data-mode={mode} aria-label="Boundary selection controls">
     {!supported && <p>This outline needs manual review. Marks record your assumptions; street-side suggestions cannot resolve its frontage.</p>}
     {mode === 'front' && <>
       <div className="boundary-street-toolbar">
@@ -108,7 +109,7 @@ export function BoundaryMapTools({ interaction }: { interaction: BoundaryMapInte
       <div className="boundary-map-buttons">{exterior.map((edge, index) => <button key={edge.id} type="button" aria-pressed={interaction.waterfrontIds?.includes(edge.id) ?? false} onClick={() => onSelect(edge.id)}>Edge {index + 1} adjoins water</button>)}<button type="button" onClick={() => onSelect(null)}>Not sure · clear waterfront marks</button></div>
       <p>These marks record your observations. Waterfront front-line classification and special siting provisions still need a reviewed property plan.</p>
     </>}
-    <div hidden={mode !== 'rear'}>{interaction.editor}</div>
+    <div hidden={mode !== 'rear' && !interaction.showPropertyDetails}>{interaction.editor}</div>
   </div>
 }
 

@@ -114,6 +114,9 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     assert.equal(JSON.parse(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value).zoning_site_assumptions.street_adjacency.all_marked, false)
     await click('Next: Review property details →')
     assert.equal(document.activeElement?.id, 'building-type')
+    for (const id of ['building-type', 'principal-building', 'existing-suites', 'waterfront-lot']) {
+      assert.equal(document.getElementById(id)!.closest('[hidden]'), null, `${id} must not be hidden by a map-controls wrapper during property review`)
+    }
     assert.deepEqual(lastScroll, { id: 'building-type', options: { block: 'start', behavior: 'smooth' } })
     assert.equal(document.querySelector<HTMLDetailsElement>('#builder-property-details > details')!.open, true)
     assert.equal(document.querySelector('.builder-placement-next'), null)
