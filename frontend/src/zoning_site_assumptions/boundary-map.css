@@ -15,3 +15,6 @@
 .street-road polygon { fill: var(--border); stroke: var(--border-strong); stroke-width: 1; vector-effect: non-scaling-stroke; }
 .street-road line { stroke: var(--surface); stroke-width: 1; stroke-dasharray: 5 4; vector-effect: non-scaling-stroke; }
 .street-road text { fill: var(--ink); font-size: 1.1px; paint-order: stroke; stroke: var(--surface); stroke-width: .2px; font-weight: 650; }
+.boundary-role-help { margin-block: .75rem; }
+.boundary-role-help dt { font-weight: 700; color: var(--ink); }
+.boundary-role-help dd { margin: .2rem 0 .7rem; color: var(--ink-muted); }

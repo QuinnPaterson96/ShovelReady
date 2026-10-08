@@ -1,5 +1,13 @@
 # Architecture direction
 
+## Homeowner journey state — October 7, 2026
+
+Navigation changes presentation only. Explicit answer edits invalidate relevant
+findings and acknowledgements; workflow completion never confirms evidence.
+Unknown street context preserves physical measurements but blocks dependent
+frontage and yard conclusions. Shared map and report surfaces use the same current
+inputs. See [integration evidence and remaining gates](integration-homeowner-journey-round.md).
+
 ## Enquiry export checkpoint - October 7, 2026
 
 Model 300 enquiries now request explicit context and separate the recipient message

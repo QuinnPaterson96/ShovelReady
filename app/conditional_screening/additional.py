@@ -200,59 +200,62 @@ def additional_checks(body, boundary_result, packet, source_factory):
 
     waterfront_assumed = assumptions.waterfront.origin == "journey_default"
 
-    # Existing boundary validation establishes parcel/placement/edge correspondence.
-    if not boundary_result.scenarios:
-        for key in ("separation", "front", "rear_location", "rear_occupancy"):
-            add(
-                key,
-                "unknown",
-                "Review placement and boundary roles; a valid contained placement is needed.",
-            )
-        return tuple(checks)
-    front_distances = [
-        assumptions.measurements.boundary[s.front_edge_id].value
-        if s.front_edge_id in assumptions.measurements.boundary
-        else boundary_result.edge_distances_m[s.front_edge_id]
-        for s in boundary_result.scenarios
-    ]
-    limit = rules["front"]["threshold"]
-    outcomes = [distance >= limit for distance in front_distances]
-    planning_fronts = [distance - (assumptions.planning_buffers_m.get(s.front_edge_id, 0)
-                                  if s.front_edge_id not in assumptions.measurements.boundary
-                                  else 0)
-                      for distance, s in zip(
-                          front_distances, boundary_result.scenarios, strict=True)]
-    buffered = any(distance < raw for distance, raw in zip(
-        planning_fronts, front_distances, strict=True))
-    outcome = "meets" if all(outcomes) else "falls below" if not any(outcomes) else "may meet"
-    buffer_review = all(outcomes) and not all(distance >= limit for distance in planning_fronts)
-    if buffer_review:
-        targets["front"] = "boundary-offsets"
-    add(
-        "front",
-        "review" if buffer_review
-        else "probable" if all(outcomes) and (buffered or waterfront_assumed)
-        else "checked"
-        if all(outcomes) and assumptions.waterfront.value is False
-        else "probable"
-        if all(outcomes)
-        else "conflict"
-        if not any(outcomes)
-        else "unknown",
-        f"Approximate front distance {outcome} {limit:g} m across tested front-edge choices. "
-        "Building faces and projections need review. "
-        + (f"Planning clearance after the edge buffers: {max(0, min(planning_fronts)):.2f} m. "
-           + ("Buffer shortfall only: needs review, not an observed distance conflict. "
-              if buffer_review else "Planning allowance; see the raw comparison above. ")
-           if buffered else "")
-        + (
-            "Assuming this is not a waterfront lot."
-            if assumptions.waterfront.value is None or waterfront_assumed else ""
-        ),
-        observed=min(front_distances),
-        basis="captured parcel to nominal rectangle with user wall-to-line overrides; "
-        "coherent front-edge scenarios",
-    )
+    # Front and yard comparisons need street/boundary context. A contained
+    # footprint and main-home gap remain separate observations when that is unknown.
+    streets = assumptions.street_adjacency
+    street_context_missing = streets is not None and not streets.all_marked
+    if (not boundary_result.scenarios or street_context_missing
+            or assumptions.waterfront.value is None):
+        add("front", "unknown",
+            "The placement can be measured, but front-line context is unresolved. "
+            "Mark known street edges and explicitly confirm completeness, or keep Not sure; "
+            "also supply waterfront status if known.")
+        checks[-1].action_target = "street-side" if street_context_missing else "boundary-roles"
+    else:
+        front_distances = [
+            assumptions.measurements.boundary[s.front_edge_id].value
+            if s.front_edge_id in assumptions.measurements.boundary
+            else boundary_result.edge_distances_m[s.front_edge_id]
+            for s in boundary_result.scenarios
+        ]
+        limit = rules["front"]["threshold"]
+        outcomes = [distance >= limit for distance in front_distances]
+        planning_fronts = [distance - (assumptions.planning_buffers_m.get(s.front_edge_id, 0)
+                                      if s.front_edge_id not in assumptions.measurements.boundary
+                                      else 0)
+                          for distance, s in zip(
+                              front_distances, boundary_result.scenarios, strict=True)]
+        buffered = any(distance < raw for distance, raw in zip(
+            planning_fronts, front_distances, strict=True))
+        outcome = "meets" if all(outcomes) else "falls below" if not any(outcomes) else "may meet"
+        buffer_review = all(outcomes) and not all(distance >= limit for distance in planning_fronts)
+        if buffer_review:
+            targets["front"] = "boundary-offsets"
+        add(
+            "front",
+            "review" if buffer_review
+            else "probable" if all(outcomes) and (buffered or waterfront_assumed)
+            else "checked"
+            if all(outcomes) and assumptions.waterfront.value is False
+            else "probable"
+            if all(outcomes)
+            else "conflict"
+            if not any(outcomes)
+            else "unknown",
+            f"Approximate front distance {outcome} {limit:g} m across tested front-edge choices. "
+            "Building faces and projections need review. "
+            + (f"Planning clearance after the edge buffers: {max(0, min(planning_fronts)):.2f} m. "
+               + ("Buffer shortfall only: needs review, not an observed distance conflict. "
+                  if buffer_review else "Planning allowance; see the raw comparison above. ")
+               if buffered else "")
+            + (
+                "Assuming this is not a waterfront lot."
+                if assumptions.waterfront.value is None or waterfront_assumed else ""
+            ),
+            observed=min(front_distances),
+            basis="captured parcel to nominal rectangle with user wall-to-line overrides; "
+            "coherent front-edge scenarios",
+        )
 
     building_id = assumptions.principal_building_id.value
     building = next((b for b in body.geometry.buildings if b.id == building_id), None)
@@ -334,6 +337,15 @@ def additional_checks(body, boundary_result, packet, source_factory):
         checks[-1].detail += (
             " The mapped main roofline crosses the parcel boundary; confirm both outlines."
         )
+
+    if not boundary_result.scenarios or street_context_missing:
+        for key in ("rear_location", "rear_occupancy"):
+            add(key, "unknown",
+                "Street completeness and a coherent front/rear classification are unresolved. "
+                "Mark known street edges and explicitly confirm the selection, "
+                "or continue with Not sure.")
+            checks[-1].action_target = "street-side" if street_context_missing else "boundary-roles"
+        return tuple(checks)
 
     if (
         assumptions.building_type.value not in ("single_detached", "duplex")

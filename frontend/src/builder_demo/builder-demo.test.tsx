@@ -288,6 +288,13 @@ test('near-threshold concerns and arbitrary evidence text retain their exact mea
 })
 
 
+test('unknown-use report cannot present hypothetical garden-suite counts as applicable passes', () => {
+  const document = screeningDocument(null, { ...questions, intendedUse: 'Still deciding' }, null, false, null, null, false, null, reviewConditional, null, { proposed_use: null } as import('../conditional_screening/model').Pathway)
+  const report = enquiryPlainText(document)
+  assert.match(report, /Garden-suite applicability is unresolved for the selected use/)
+  assert.doesNotMatch(report, /no concerns identified in the supplied-facts comparisons|0 outside scope/)
+})
+
 test('a misleading producer count cannot suppress an included strict-input conflict', () => {
   const result = parseResult(JSON.parse(readFileSync('src/scenario_handoff/retained-assessment.fixture.json', 'utf8')))
   const site = parseSites(JSON.parse(readFileSync('../app/scouting_sites/data/sites.json', 'utf8')))[0]

@@ -244,6 +244,12 @@ def _boundary_screen(body: ScenarioRequest) -> ScenarioResult:
             "Plausible edge assignments change the candidate distance result; clarify "
             "street-facing and boundary roles.",
         )
+    if assumptions.street_adjacency is not None and not assumptions.street_adjacency.all_marked:
+        status, reason = (
+            "unresolved",
+            "Street selection is incomplete or unknown. Captured gaps remain available; "
+            "boundary and yard applicability is unresolved until explicitly confirmed.",
+        )
     return ScenarioResult(status=status, reason=reason, scenarios=tuple(scenarios),
                           edge_distances_m=distances, **common)
 

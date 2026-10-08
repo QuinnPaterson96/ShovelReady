@@ -246,6 +246,10 @@ def test_buffer_estimates_and_front_override_preserve_exact_evidence():
     # Independent arithmetic: 40*1.1=44 m2 and 3.2*1.1+.30=3.82m.
     # Unknown installed grade remains a probable estimate, never a measured pass.
     body = request((10, 16))
+    body["assumptions"]["waterfront"] = {
+        "value": False, "origin": "journey_default", "evidence_state": "assumed",
+        "note": "Assuming not waterfront for this estimate.",
+    }
     body["proposal"] = {"confirmed_zone": "GRD-1",
                         "confirmed_instrument": "Zoning Bylaw 2018"}
     body["street_pattern"] = "single"
@@ -324,6 +328,7 @@ def test_front_buffer_review_does_not_claim_an_observed_conflict():
     # Southern edge y=0; box spans y=4..6, so raw front gap equals 4m.
     # Default buffer lowers planning clearance to 3m, below the 4m limit.
     body = request((10, 5))
+    body["assumptions"]["waterfront"] = {"value": False, "origin": "user"}
     body["proposal"] = {"confirmed_zone": "GRD-1",
                         "confirmed_instrument": "Zoning Bylaw 2018"}
     body["street_pattern"] = "single"
@@ -429,3 +434,36 @@ def test_cecelia_package_ranks_full_outline_and_recomputes_dependent_findings():
         point[0] += 100
     assert next(c for c in screen(body)["additional_checks"]
                 if c["id"] == "separation")["status"] == "unknown"
+
+
+def test_unknown_streets_keep_boundary_and_yard_unresolved_without_losing_main_gap():
+    # Reproduced navigation risk: this same Cecelia placement is contained, but
+    # one selected edge is not a complete street answer. Navigation cannot turn
+    # that missing context into a passing yard/boundary conclusion.
+    import json
+    from pathlib import Path
+    body = json.loads(Path(
+        "frontend/src/builder_demo/cecelia-geometry.fixture.json"
+    ).read_text())["request"]
+    streets = body["assumptions"]["street_adjacency"]
+    streets["all_marked"] = False
+    body["street_pattern"] = "unknown"
+    body["street_edge_id"] = None
+    for ids in [streets["edge_ids"], []]:
+        streets["edge_ids"] = ids
+        result = screen(body)
+        checks = {c["id"]: c for c in result["additional_checks"]}
+        assert result["status"] == "unresolved"
+        assert len(result["edge_distances_m"]) == 4
+        assert checks["separation"]["status"] == "conflict"
+        assert checks["separation"]["observed"] == pytest.approx(1.5074461)
+        for key in ("front", "rear_location", "rear_occupancy"):
+            assert checks[key]["status"] == "unknown"
+            assert checks[key]["observed"] is None
+            assert checks[key]["visual_evidence"] is None
+        assert checks["height"]["status"] == "probable"
+    streets["all_marked"] = True
+    streets["edge_ids"] = []  # Explicit no-street answer yields no coherent front.
+    result = screen(body)
+    assert next(c for c in result["additional_checks"]
+                if c["id"] == "separation")["observed"] == pytest.approx(1.5074461)

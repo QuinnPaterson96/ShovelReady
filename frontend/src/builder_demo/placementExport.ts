@@ -13,7 +13,7 @@ export type PlacementDrawing = { svg: string; width: number; height: number; bre
 export type DrawingAssets = { png: Uint8Array; pngUrl: string; pdf: Uint8Array }
 
 /** Export the measured snapshot, never the interactive DOM or a stale placement. */
-export function placementDrawing(measured: OccupiedMeasurement, assumptions: SiteAssumptions | null, scenarios: ScenarioResult | null, example: boolean, colours: Record<string, string>): PlacementDrawing {
+export function placementDrawing(measured: OccupiedMeasurement, assumptions: SiteAssumptions | null, scenarios: ScenarioResult | null, example: boolean, colours: Record<string, string>, useQualification: string | null = null): PlacementDrawing {
   const site = measured.site.site, placement = measured.result.input.placement
   const angle = placement.angle_degrees * Math.PI / 180
   const corners = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([x, y]) => {
@@ -51,6 +51,7 @@ export function placementDrawing(measured: OccupiedMeasurement, assumptions: Sit
   const yardLabel = visual?.rear_yard_area_m2 ? text(`Estimated rear yard: ${measurementWithUnit(visual.rear_yard_area_m2, 'area')}${yardCheck?.observed !== null && yardCheck?.observed !== undefined ? ` / unit share ${Number((yardCheck.observed * 100).toFixed(1))}%` : ''}`, 60, 810, 15, true) : ''
   const details = [
     `Site: ${example ? 'Saved example only, not the sender’s property' : measured.site.label}.`,
+    ...(useQualification ? [useQualification] : []),
     `${measurementWithUnit(placement.width_m, 'length')} × ${measurementWithUnit(placement.depth_m, 'length')} proposed rectangle; rotation ${Number(placement.angle_degrees.toFixed(2))}°. Dimensions ${measured.widthOrigin === 'user' || measured.depthOrigin === 'user' ? 'edited by the user; model availability unconfirmed' : 'from published nominal dimensions, unreviewed'}.`,
     'Footprint excludes unconfirmed projections and installation space. Purple outlines may be roofs, not walls.',
     ...boundaryObservations(scenarios, assumptions),
@@ -76,7 +77,7 @@ export function placementDrawing(measured: OccupiedMeasurement, assumptions: Sit
   const featurePath = (feature: typeof site.parcel, fill: string, stroke: string) => `<path d="${shape(feature)}" fill="${escape(fill)}" fill-rule="evenodd" stroke="${escape(conflicting.has(feature.id) ? colours.danger : stroke)}" stroke-width="2"${conflicting.has(feature.id) ? ' stroke-dasharray="8 5"' : ''}/>`
   const edges = (assumptions?.edges ?? []).map((edge, i) => {
     const street = assumptions?.street_adjacency?.edge_ids.includes(edge.id), water = assumptions?.waterfront_edge_ids?.includes(edge.id)
-    const role = edge.role.value !== 'unknown' && edge.role.value ? edge.role.value : assumptions?.boundary_role_suggestions?.roles[edge.id] ?? 'unclassified'
+    const role = edge.role.value !== 'unknown' && edge.role.value ? edge.role.value : assumptions?.street_adjacency && !assumptions.street_adjacency.all_marked ? 'unclassified' : assumptions?.boundary_role_suggestions?.roles[edge.id] ?? 'unclassified'
     const px = (x(edge.start[0]) + x(edge.end[0])) / 2, py = (y(edge.start[1]) + y(edge.end[1])) / 2
     const road = roadBands(assumptions?.edges ?? [], street ? [edge.id] : [])[0]
     return `${road ? `<path d="${line(road.corners)} Z" fill="#bec9cb" stroke="#81979b"/>` : ''}${water ? `<path d="${line([edge.start, edge.end])}" stroke="${escape(colours.parcelStroke)}" stroke-width="7" fill="none" opacity=".8"/>` : ''}<text x="${px}" y="${py - 10}" font-size="15" text-anchor="middle" paint-order="stroke" stroke="white" stroke-width="4" fill="${escape(colours.ink)}">${escape(`${i + 1} · ${role.replace('flanking_street', 'street-side')}${role === 'unclassified' ? '' : ' (assumed)'}${street ? ' · street mark' : ''}${water ? ' · waterfront mark' : ''}`)}</text>`
@@ -149,9 +150,10 @@ export function enquiryPackageFiles(document: EnquiryDocument, report: EnquiryDo
   const files: Record<string, Uint8Array> = {
     'model-300-enquiry.md': encode(enquiryMarkdown(withPlacementSketch(document, assets ? 'An approximate proposed placement sketch is included below; it is not a survey or approved site plan.' : null)) + (assets ? '\n## Approximate proposed placement\n\n![Approximate proposed placement](model-300-placement.png)\n' : '')),
     'your-preparation-checklist.txt': encode(preparation.join('\n\n')),
-    'model-300-supporting-report.md': encode((report ? enquiryMarkdown(report) : '') + '\nFull technical evidence: [model-300-technical-evidence.json](model-300-technical-evidence.json).\n'),
+    'model-300-supporting-report.md': encode((report ? enquiryMarkdown(report) : '# Supporting evidence\n\nNo supporting screening report was available when this package was prepared. Planning feasibility remains unconfirmed.\n') + '\nFull technical evidence: [model-300-technical-evidence.json](model-300-technical-evidence.json).\n' + (assets ? '\nApproximate drawing: [PNG](model-300-placement.png) · [PDF](model-300-placement.pdf). These are not surveys or approved site plans.\n' : '\nNo current placement drawing is included.\n')),
     'model-300-technical-evidence.json': encode(JSON.stringify(evidence, null, 2)),
   }
+  files['README.txt'] = encode('Start with model-300-enquiry.md for the unsent provider message.\nReview your-preparation-checklist.txt for the sender’s next actions.\nRead model-300-supporting-report.md for the detailed findings and evidence links.\nComplete source identifiers, exact values and inputs are in model-300-technical-evidence.json.\n' + (assets ? 'The placement PNG and PDF are approximate discussion drawings. Keep the PNG beside the Markdown enquiry so its image link works.\n' : 'No placement drawing is included; prepare or recheck a placement before sharing one.\n') + 'Nothing in this package has been sent. Review the message, sources and any drawing before sharing.\n')
   if (assets) { files['model-300-placement.png'] = assets.png; files['model-300-placement.pdf'] = assets.pdf }
   return files
 }

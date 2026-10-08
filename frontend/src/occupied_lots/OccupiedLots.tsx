@@ -36,19 +36,57 @@ const checkText = (check: Check, selected?: Case) => {
     default: return `${check.kind.replace(/_/g, ' ')}: ${check.relation ?? check.status}`
   }
 }
-function Map({ selected, placement, onMove, nudgeMetres, conflictIds, boundaryInteraction, placementSummary, placementContinuation, placementControls, showBoundaryTools = true }: { placementControls?: ReactNode; placementSummary?: ReactNode; placementContinuation?: ReactNode; showBoundaryTools?: boolean; selected: Case; placement: Placement; onMove: (x: number, y: number) => void; nudgeMetres: number; conflictIds?: Set<string>; boundaryInteraction?: BoundaryMapInteraction }) {
+/** This panel preserves the current finding; continuing only carries it forward. */
+export function PlacementConcerns({ site, result, additional, onContinueUnresolved }: { site: Case | null; result: Result | null; additional?: ReactNode; onContinueUnresolved?: () => void }) {
+  const conflicts = result && site ? overlapFinding(site, result).conflicts : []
+  const minimumShortfalls = result?.checks.filter(check => check.kind === 'requirement' && check.comparison === 'shortfall') ?? []
+  if (!conflicts.length && !minimumShortfalls.length && !additional) return null
+  return <section className="occupied-map-concerns" aria-label="Concerns at the current position">
+    <h4>Concerns at this position</h4>
+    {(conflicts.length > 0 || minimumShortfalls.length > 0) && <ul>{[...conflicts, ...minimumShortfalls].map(check => <li key={check.id}>{checkText(check, site ?? undefined)}</li>)}</ul>}
+    {additional}
+    <p>Move the unit and recheck, or carry these unresolved concerns into your next enquiry. Continuing does not resolve a conflict or establish approval.</p>
+    {onContinueUnresolved && <button type="button" onClick={onContinueUnresolved}>Continue with unresolved placement concerns</button>}
+  </section>
+}
+
+export function OccupiedLotPreview({ selected, placement, onMove, nudgeMetres, conflictIds, boundaryInteraction, placementSummary, placementContinuation, placementControls, placementConcerns, modelLabel = 'Proposed unit', showBoundaryTools = true }: { placementControls?: ReactNode; placementSummary?: ReactNode; placementContinuation?: ReactNode; placementConcerns?: ReactNode; modelLabel?: string; showBoundaryTools?: boolean; selected: Case; placement: Placement; onMove: (x: number, y: number) => void; nudgeMetres: number; conflictIds?: Set<string>; boundaryInteraction?: BoundaryMapInteraction }) {
   const svg = useRef<SVGSVGElement>(null)
+  const preview = useRef<HTMLDialogElement>(null)
   const drag = useRef(false)
   const suppressClick = useRef(false)
   const site = selected.site
   const all = [site.parcel, ...site.buildings, ...site.named_boundaries].flatMap(points)
   const xs = all.map(p => p[0]), ys = all.map(p => p[1])
   const minX = Math.min(...xs), maxX = Math.max(...xs), minY = Math.min(...ys), maxY = Math.max(...ys)
-  const extent = Math.max(maxX - minX, maxY - minY, 20), pad = extent * .2
+  const extent = Math.max(maxX - minX, maxY - minY, 20), pad = extent * .25
   const view = `${minX - pad} ${-maxY - pad} ${maxX - minX + pad * 2} ${maxY - minY + pad * 2}`
   const scale = extent < 50 ? 5 : extent < 100 ? 10 : 20
   const scaleX = minX - pad * .65, scaleY = -minY + pad * .55
   const px = number(placement.x), py = number(placement.y), w = number(placement.width), d = number(placement.depth), a = number(placement.angle)
+  const mapLayers = <>
+      <path d={path(site.parcel)} fill="var(--map-parcel-fill)" stroke={conflictIds?.has(site.parcel.id) ? 'var(--danger)' : 'var(--map-parcel-stroke)'} strokeDasharray={conflictIds?.has(site.parcel.id) ? '7 4' : undefined} fillRule="evenodd" vectorEffect="non-scaling-stroke" strokeWidth={conflictIds?.has(site.parcel.id) ? '4' : '2'} />
+      {site.buildings.map((b, i) => {
+        const coords = points(b), centreX = (Math.min(...coords.map(p => p[0])) + Math.max(...coords.map(p => p[0]))) / 2, centreY = (Math.min(...coords.map(p => p[1])) + Math.max(...coords.map(p => p[1]))) / 2
+        const main = b.id === boundaryInteraction?.mainBuilding?.id
+        return <g key={b.id} data-main-building={main || undefined}><path d={path(b)} className={main ? 'occupied-roof--main' : undefined} fill="var(--map-roof-fill)" stroke={conflictIds?.has(b.id) ? 'var(--danger)' : 'var(--map-roof-stroke)'} strokeDasharray={conflictIds?.has(b.id) ? '7 4' : undefined} fillRule="evenodd" vectorEffect="non-scaling-stroke" strokeWidth={conflictIds?.has(b.id) || main ? '4' : '2'}><title>{`Roof ${i + 1}${main ? ': main building, ' + (boundaryInteraction?.mainBuildingAssumed ? 'assumed' : 'your selection') : ''}${conflictIds?.has(b.id) ? '; observed conflict' : ''}`}</title></path>
+          <text x={centreX} y={-centreY} textAnchor="middle" dominantBaseline="middle" className="occupied-roof-label" fontSize={extent * .034}>R{i + 1}</text>
+          {main && <g className="occupied-map-callout main-building-mark"><path d={`M${centreX} ${-centreY} V${-maxY - pad * .65}`} /><text x={(minX + maxX) / 2} y={-maxY - pad * .72} textAnchor="middle" fontSize={extent * .034}>Main building · {boundaryInteraction?.mainBuildingAssumed ? 'assumed' : 'your selection'} · R{i + 1}</text></g>}
+        </g>
+      })}
+      {site.named_boundaries.map(b => <path key={b.id} d={path(b)} fill="none" stroke="var(--map-zone-stroke)" vectorEffect="non-scaling-stroke" strokeWidth="2" />)}
+      {px !== null && py !== null && w !== null && d !== null && a !== null && w > 0 && d > 0 && <>
+        <g transform={`translate(${px} ${-py}) rotate(${-a})`}>
+          <rect x={-w / 2} y={-d / 2} width={w} height={d} fill="var(--map-zone-fill)" stroke="var(--map-zone-stroke)" strokeWidth="3" vectorEffect="non-scaling-stroke" style={{ cursor: 'grab', touchAction: 'none' }}
+            onPointerDown={e => { if (boundaryInteraction && boundaryInteraction.mode !== 'place') return; drag.current = true; suppressClick.current = true; e.currentTarget.ownerSVGElement?.setPointerCapture(e.pointerId) }} />
+          <circle r={Math.min(w, d) / 12} fill="var(--map-zone-stroke)" pointerEvents="none" />
+        </g>
+        <g className="occupied-map-callout occupied-map-callout--model"><path d={`M${px} ${-py} V${-minY + pad * .4}`} /><text x={Math.max(minX, Math.min(maxX, px))} y={-minY + pad * .8} textAnchor="middle" fontSize={extent * .034}>{modelLabel} · proposed position</text></g>
+      </>}
+      <g className="occupied-scale" aria-hidden="true"><path d={`M${scaleX} ${scaleY} h${scale} m${-scale} -2 v4 m${scale} -4 v4`} fill="none" stroke="var(--ink)" vectorEffect="non-scaling-stroke" strokeWidth="2" />
+        <text x={scaleX} y={scaleY - 3} fontSize={extent * .034}>{scale} m</text></g>
+      {boundaryInteraction && <BoundaryOverlay interaction={boundaryInteraction} />}
+  </>
   function move(clientX: number, clientY: number) {
     const element = svg.current
     if (!element) return
@@ -72,23 +110,17 @@ function Map({ selected, placement, onMove, nudgeMetres, conflictIds, boundaryIn
       onPointerMove={e => { if ((!boundaryInteraction || boundaryInteraction.mode === 'place') && drag.current) move(e.clientX, e.clientY) }}
       onPointerUp={e => { drag.current = false; if (e.currentTarget.hasPointerCapture(e.pointerId)) e.currentTarget.releasePointerCapture(e.pointerId) }}
       onPointerCancel={() => { drag.current = false; suppressClick.current = false }}>
-      <path d={path(site.parcel)} fill="var(--map-parcel-fill)" stroke={conflictIds?.has(site.parcel.id) ? 'var(--danger)' : 'var(--map-parcel-stroke)'} strokeDasharray={conflictIds?.has(site.parcel.id) ? '7 4' : undefined} fillRule="evenodd" vectorEffect="non-scaling-stroke" strokeWidth={conflictIds?.has(site.parcel.id) ? '4' : '2'} />
-      {site.buildings.map((b, i) => {
-        const coords = points(b), left = Math.min(...coords.map(p => p[0])), top = Math.max(...coords.map(p => p[1]))
-        return <g key={b.id}><path d={path(b)} fill="var(--map-roof-fill)" stroke={conflictIds?.has(b.id) ? 'var(--danger)' : 'var(--map-roof-stroke)'} strokeDasharray={conflictIds?.has(b.id) ? '7 4' : undefined} fillRule="evenodd" vectorEffect="non-scaling-stroke" strokeWidth={conflictIds?.has(b.id) ? '4' : '2'}><title>{`Captured roofline ${i + 1}${conflictIds?.has(b.id) ? ': observed conflict' : ''}`}</title></path>
-          {b.id !== boundaryInteraction?.mainBuilding?.id && <text x={left} y={-top - extent * .015} className="occupied-roof-label" fontSize={extent * .034}>Roof {i + 1}</text>}</g>
-      })}
-      {site.named_boundaries.map(b => <path key={b.id} d={path(b)} fill="none" stroke="var(--map-zone-stroke)" vectorEffect="non-scaling-stroke" strokeWidth="2" />)}
-      {px !== null && py !== null && w !== null && d !== null && a !== null && w > 0 && d > 0 && <g transform={`translate(${px} ${-py}) rotate(${-a})`}>
-        <rect x={-w / 2} y={-d / 2} width={w} height={d} fill="var(--map-zone-fill)" stroke="var(--map-zone-stroke)" strokeWidth="3" vectorEffect="non-scaling-stroke" style={{ cursor: 'grab', touchAction: 'none' }}
-          onPointerDown={e => { if (boundaryInteraction && boundaryInteraction.mode !== 'place') return; drag.current = true; suppressClick.current = true; e.currentTarget.ownerSVGElement?.setPointerCapture(e.pointerId) }} />
-        <circle r={Math.min(w, d) / 12} fill="var(--map-zone-stroke)" pointerEvents="none" />
-      </g>}
-      <g className="occupied-scale" aria-hidden="true"><path d={`M${scaleX} ${scaleY} h${scale} m${-scale} -2 v4 m${scale} -4 v4`} fill="none" stroke="var(--ink)" vectorEffect="non-scaling-stroke" strokeWidth="2" />
-        <text x={scaleX} y={scaleY - 3} fontSize={extent * .034}>{scale} m</text></g>
-      {boundaryInteraction && <BoundaryOverlay interaction={boundaryInteraction} />}
+      {mapLayers}
     </svg>
-    <p className="occupied-map-legend"><span>Teal · captured parcel</span><span>Purple · captured rooflines, not walls</span>{conflictIds && <span>Red dashed outline · current conflict</span>}<span>Copper · your nominal footprint</span><span>North ↑ · {site.projected_metre_crs}</span>{!!boundaryInteraction?.streetIds?.length && <span>Grey road bands · your marks, diagram only</span>}</p>
+    <p className="occupied-map-legend"><span>Teal · captured parcel</span><span>Purple · R labels identify captured rooflines, not walls</span>{conflictIds && <span>Red dashed outline · current conflict</span>}<span>Copper · your nominal footprint</span><span>North ↑ · {site.projected_metre_crs}</span>{!!boundaryInteraction?.streetIds?.length && <span>Grey road bands · your marks, diagram only</span>}</p>
+    <button type="button" onClick={() => preview.current?.showModal()}>Open full-size placement preview</button>
+    <dialog ref={preview} className="occupied-map-preview" aria-label="Full-size approximate placement preview">
+      <div className="occupied-preview-heading"><h3>Approximate placement plan</h3><button type="button" onClick={() => preview.current?.close()}>Close preview</button></div>
+      <svg className="occupied-preview-drawing" viewBox={view} role="img" aria-label={`${modelLabel} proposed position, captured parcel and numbered rooflines. North is up.`}>{mapLayers}</svg>
+      <p>R labels identify captured rooflines, not building walls. Main building is {boundaryInteraction?.mainBuilding ? boundaryInteraction.mainBuildingAssumed ? 'assumed from mapped geometry' : 'your selection' : 'unconfirmed'}. The copper rectangle shows {modelLabel}. Red dashed outlines identify observed geometry conflicts. North is up; scale is in metres.</p>
+      <p>Approximate source geometry only. Review the measurements and candidate requirements separately before relying on this position. Press Escape or Close preview to return to the map.</p>
+    </dialog>
+    {placementConcerns}
     <MapSourceHelp site={selected} />
     {placementControls}
     {placementContinuation && <div className="builder-placement-next">{placementContinuation}</div>}
@@ -101,6 +133,8 @@ function Map({ selected, placement, onMove, nudgeMetres, conflictIds, boundaryIn
 export type OccupiedMeasurement = { site: Case; model: (typeof bundledCatalogue.models)[number] | null; result: Result; widthOrigin: 'catalogue' | 'user'; depthOrigin: 'catalogue' | 'user' }
 export type OccupiedLotsProps = {
   placementSummary?: ReactNode
+  placementConcerns?: ReactNode
+  onContinueUnresolved?: () => void
   placementContinuation?: ReactNode
   moveSuggestion?: { dx: number; dy: number; token: number }
   evidenceTargetId?: string
@@ -113,7 +147,7 @@ export type OccupiedLotsProps = {
   boundaryInteraction?: BoundaryMapInteraction
 }
 
-export default function OccupiedLots({ allowedModelIds, initialModelId = '', onMeasurement, showHandoff = true, suppliedCase, boundaryInteraction, compactPlacement = false, evidenceTargetId, moveSuggestion, placementSummary, placementContinuation }: OccupiedLotsProps) {
+export default function OccupiedLots({ allowedModelIds, initialModelId = '', onMeasurement, showHandoff = true, suppliedCase, boundaryInteraction, compactPlacement = false, evidenceTargetId, moveSuggestion, placementSummary, placementContinuation, placementConcerns, onContinueUnresolved }: OccupiedLotsProps) {
   const initialModel = bundledCatalogue.models.find(m => m.model_id === initialModelId && (!allowedModelIds || allowedModelIds.includes(m.model_id)))
   const initialDimension = (name: string) => {
     const quantity = initialModel?.measurements.find(m => m.name === name)?.quantity
@@ -253,6 +287,7 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
   const clearances = result?.checks.filter(c => c.status === 'observed' && ['parcel_boundary_distance', 'nearest_building_distance', 'building_distance', 'named_boundary_distance'].includes(c.kind)) ?? []
   const comparisons = result?.checks.filter(c => c.kind === 'requirement') ?? []
   const otherChecks = result?.checks.filter(c => !['containment', 'building_overlap', 'parcel_boundary_distance', 'nearest_building_distance', 'building_distance', 'named_boundary_distance', 'requirement'].includes(c.kind) || c.status !== 'observed' && c.kind !== 'requirement') ?? []
+  const currentConcerns = <PlacementConcerns site={selected} result={result} additional={placementConcerns} onContinueUnresolved={onContinueUnresolved} />
   const observationIncomplete = otherChecks.length > 0 || overlap?.complete === false
   const geometryTone = observedConflicts.length ? 'conflict' : observationIncomplete || comparisons.some(c => c.comparison !== 'meets') ? 'unknown' : 'clear'
   const summary = result && selected ? [
@@ -323,7 +358,7 @@ export default function OccupiedLots({ allowedModelIds, initialModelId = '', onM
       {compactPlacement && <div className="occupied-compact-summary"><strong>{model ? `${model.name} · ` : 'Manual footprint · '}{show(width)} wide × {show(depth)} long</strong><span>Nominal exterior rectangle · {dimensionOrigin('width').toLowerCase()} width, {dimensionOrigin('depth').toLowerCase()} length.</span><span>{source?.provider} · {source?.record_label} · captured {readableDate(source?.capture_date)} · {source?.review_status}. {publicSourceUrl(source?.reference) && <a href={publicSourceUrl(source?.reference)!} target="_blank" rel="noreferrer">Parcel source</a>}</span></div>}
       <div className="occupied-workspace">
         <div className="occupied-map-column">
-          <Map placementControls={compactPlacement ? <div className="occupied-placement-controls" hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}>{footprintControls}{startingPositionControls}</div> : undefined} placementContinuation={placementContinuation} placementSummary={placementSummary} showBoundaryTools selected={selected} placement={placement} nudgeMetres={nudgeMetres} conflictIds={compactPlacement ? conflictIds : undefined} onMove={(x, y) => changePlacement({ x: String(x), y: String(y) })} boundaryInteraction={boundaryInteraction} />
+          <OccupiedLotPreview modelLabel={model?.name ?? 'Proposed unit'} placementConcerns={currentConcerns} placementControls={compactPlacement ? <div className="occupied-placement-controls" hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}>{footprintControls}{startingPositionControls}</div> : undefined} placementContinuation={placementContinuation} placementSummary={placementSummary} showBoundaryTools selected={selected} placement={placement} nudgeMetres={nudgeMetres} conflictIds={compactPlacement ? conflictIds : undefined} onMove={(x, y) => changePlacement({ x: String(x), y: String(y) })} boundaryInteraction={boundaryInteraction} />
           {!compactPlacement && startingPositionControls}
         </div>
         <div className="occupied-side">

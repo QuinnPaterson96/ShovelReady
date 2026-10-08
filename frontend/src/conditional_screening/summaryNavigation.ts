@@ -9,6 +9,7 @@ export function focusSummaryTarget(document: Document, target: string, block: Sc
     if (parent.tagName === 'DETAILS') (parent as HTMLDetailsElement).open = true
     parent = parent.parentElement
   }
+  if (!control.matches('input, select, textarea, button, a[href], [tabindex]')) control.setAttribute('tabindex', '-1')
   control.scrollIntoView?.({ block, behavior: 'smooth' })
   control.focus({ preventScroll: true })
   return true

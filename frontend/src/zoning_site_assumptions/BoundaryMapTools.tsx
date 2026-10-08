@@ -1,7 +1,20 @@
 import { roadBands } from './roads'
 import type { ReactNode } from 'react'
-import { path, points, type Feature } from '../occupied_lots/contract'
+import { type Feature } from '../occupied_lots/contract'
 import { ordinaryFourEdgeBoundary, type BoundaryEdge, type BoundaryMapMode } from './model'
+
+/** Sketch vocabulary only; the legal classification remains a separate reviewed fact. */
+export function BoundaryRoleHelp() {
+  return <details className="boundary-role-help"><summary>What do front, rear, side and street-side mean?</summary>
+    <p>These words label your preliminary property sketch. Check a survey or reliable property plan; a street mark alone does not establish a legal lot-line role.</p>
+    <dl><dt>Front</dt><dd>The boundary treated as the front in a complete placement scenario. It often faces a street; corners and through lots need review.</dd>
+      <dt>Rear</dt><dd>The boundary treated as the back of that same scenario. On a simple four-edge lot it is opposite the front; unusual lots may differ.</dd>
+      <dt>Side</dt><dd>A remaining boundary that is not treated as front, rear or street-side in that scenario.</dd>
+      <dt>Street-side (flanking street)</dt><dd>A side boundary adjoining another street. It can have a different candidate distance requirement from an ordinary side.</dd>
+      <dt>Not sure</dt><dd>Leave the role unknown. Mark known streets separately, and ask the property contact or City reviewer to confirm unclear roles.</dd></dl>
+    <p>The candidate comparisons here use the City of Victoria garden-suite packet shown with each result. These sketch definitions do not verify that packet's current legal applicability or supply a surveyed classification.</p>
+  </details>
+}
 
 export type BoundaryMapInteraction = {
   mainBuilding?: Feature
@@ -28,10 +41,6 @@ export function BoundaryOverlay({ interaction }: { interaction: BoundaryMapInter
   const marked = interaction.streetIds ?? []
   const roads = roadBands(interaction.edges, marked)
   return <g className="boundary-map-overlay" aria-hidden="true">
-    {interaction.mainBuilding && <g className="main-building-mark">
-      <path d={path(interaction.mainBuilding)} fill="var(--primary)" fillOpacity=".12" stroke="var(--primary)" strokeWidth="2" strokeDasharray="2 5" vectorEffect="non-scaling-stroke" />
-      <text transform={`translate(${Math.min(...points(interaction.mainBuilding).map(p => p[0]))} ${-Math.max(...points(interaction.mainBuilding).map(p => p[1])) - 1})`} x="0" y="0" className="boundary-map-edge-label">Main building · {interaction.mainBuildingAssumed ? 'assumed' : 'your selection'}</text>
-    </g>}
     {interaction.edges.filter(edge => interaction.waterfrontIds?.includes(edge.id)).map(edge => <g key={`water-${edge.id}`} className="waterfront-mark">
       <line x1={edge.start[0]} y1={-edge.start[1]} x2={edge.end[0]} y2={-edge.end[1]} stroke="var(--primary)" strokeWidth="7" strokeDasharray="3 4" vectorEffect="non-scaling-stroke" />
       <text transform={`translate(${(edge.start[0] + edge.end[0]) / 2} ${-(edge.start[1] + edge.end[1]) / 2 - 2})`} x="0" y="0" textAnchor="middle" className="boundary-map-edge-label">Waterfront · your mark</text>
@@ -59,6 +68,7 @@ export function BoundaryMapTools({ interaction }: { interaction: BoundaryMapInte
   const exterior = edges.filter(edge => edge.ring === 0)
   const supported = ordinaryFourEdgeBoundary(edges)
   return <div className="boundary-map-tools" aria-label="Boundary selection controls">
+    <BoundaryRoleHelp />
     {!supported && <p>This outline needs manual review. Marks record your assumptions; street-side suggestions cannot resolve its frontage.</p>}
     {mode === 'front' && <>
       <p>Click every property edge that borders a street. Click a marked edge again to remove it. Your unit stays in position.</p>
@@ -68,6 +78,7 @@ export function BoundaryMapTools({ interaction }: { interaction: BoundaryMapInte
       </div>
       <label className="boundary-map-single"><input type="checkbox" checked={complete} onChange={event => interaction.onStreetComplete?.(event.target.checked)} /> I've marked all street edges</label>
       <p role="status">{!complete ? 'Unmarked edges remain uncertain. Changing a mark clears this confirmation.' : marked.length === 1 && supported ? 'For this simple one-street sketch, front, opposite rear and side roles are suggestions only. Adjust boundary facts if you can support them.' : 'Street marks are recorded. In Adjust boundaries, mark Front or Rear to suggest the other roles; use your property plan to support your choice.'}</p>
+      <p><strong>Street information: your input · {complete ? 'you confirmed all street edges are marked' : marked.length ? 'partial marks; completion not confirmed' : 'not sure or not yet marked'}.</strong> These are your observations, not an independent map verification.</p>
       <p>Grey road bands show your street marks only: no measured road width, surveyed location or access point is implied.</p>
     </>}
     {mode === 'waterfront' && <>

@@ -81,7 +81,7 @@ test('mixed summary counts named statuses and gives conflict action priority wit
     JSON.parse(readFileSync('src/conditional_screening/api-response.fixture.json', 'utf8')).checks.find((check: {rule: {kind: string}}) => check.rule.kind === 'separation_min'),
   ] } as ScreeningResult })
   const html = renderToStaticMarkup(createElement(HomeownerSummary, { summary, onNavigate() {} }))
-  for (const [status, label] of [['checked', 'Checked'], ['unknown', 'Missing information'], ['conflict', 'Conflicts'], ['unsupported', 'Not covered']] as const) {
+  for (const [status, label] of [['checked', 'Checked'], ['unknown', 'Missing information'], ['conflict', 'Preliminary concern'], ['unsupported', 'Not covered']] as const) {
     assert.match(html, new RegExp(`${summary.checks.filter(check => check.status === status).length} ${label}`))
   }
   assert.match(html, /Next: Review floor area/)

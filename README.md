@@ -1,5 +1,7 @@
 # ShovelReady
 
+Latest journey integration: [uncertainty, map review and coherent enquiry outputs](docs/integration-homeowner-journey-round.md).
+
 Latest correction: [main-building selection and visual enquiry evidence](docs/integration-main-building-evidence.md).
 
 Latest enquiry improvement: [context questions, separate preparation checklist and approximate placement exports](docs/integration-enquiry-placement-export.md).
