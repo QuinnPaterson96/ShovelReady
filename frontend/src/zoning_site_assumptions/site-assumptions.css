@@ -78,6 +78,13 @@
 @media (max-width: 760px) { .boundary-action-panel[data-mode="rear"] > .boundary-map-tools, .builder-example-layout.boundary-action-panel[data-mode="rear"] > .builder-example-controls { grid-column: 1; grid-row: auto; } }
 
 .map-source-help { display: flex; align-items: center; gap: .5rem; color: var(--ink-muted); font-size: .85rem; margin: .4rem 0; }
+.occupied-map-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin-block: .5rem; }
+.occupied-map-toolbar > .boundary-role-help { flex-basis: 100%; }
+.boundary-action-panel[data-mode="rear"] > .occupied-map-toolbar { grid-column: 1 / -1; grid-row: 2; }
+.boundary-action-panel[data-mode="rear"] > .occupied-map { grid-row: 3; }
+.boundary-action-panel[data-mode="rear"] > .occupied-map-legend { grid-row: 4; }
+.boundary-action-panel[data-mode="rear"] > .boundary-map-tools { grid-row: 3 / 5; }
+@media (max-width: 760px) { .boundary-action-panel[data-mode="rear"] > :is(.occupied-map-toolbar, .occupied-map, .occupied-map-legend, .boundary-map-tools) { grid-column: 1; grid-row: auto; } }
 .boundary-action-panel[data-mode="rear"] > .builder-placement-concerns { grid-column: 1 / -1; grid-row: 5; min-width: 0; }
 .boundary-action-panel[data-mode="rear"] > .map-source-help { grid-column: 1; grid-row: 4; }
 .boundary-action-panel[data-mode="rear"] > .builder-placement-next { grid-row: 6; }

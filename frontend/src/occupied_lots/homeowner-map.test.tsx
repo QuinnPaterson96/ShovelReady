@@ -5,7 +5,6 @@ import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { exampleCase, initialExamplePosition } from '../builder_demo/example'
 import { initialAssumptions } from '../zoning_site_assumptions/model'
-import { BoundaryMapTools } from '../zoning_site_assumptions/BoundaryMapTools'
 import { OccupiedLotPreview, PlacementConcerns } from './OccupiedLots'
 import { parseResult } from './contract'
 
@@ -21,6 +20,7 @@ test('placement plan identifies selected full roofline and proposed model with d
   assert.match(html, /Main building · assumed · R1/)
   assert.match(html, /Model 300 · proposed position/)
   assert.match(html, /Open full-size placement preview/)
+  assert.ok(html.indexOf('Open full-size placement preview') < html.indexOf('<svg'))
   assert.match(html, /<dialog[^>]+aria-label="Full-size approximate placement preview"/)
   assert.match(html, /R labels identify captured rooflines, not building walls/)
 })
@@ -44,9 +44,11 @@ test('tiny observed overlap and entered-target shortfall stay material beside th
 })
 
 test('partial street marks retain unknown completion and role help uses accessible disclosure', () => {
-  const html = renderToStaticMarkup(createElement(BoundaryMapTools, { interaction: { ...interaction,
+  const html = renderToStaticMarkup(createElement(OccupiedLotPreview, { selected: exampleCase, placement: initialExamplePosition(), onMove: () => {}, nudgeMetres: 1, boundaryInteraction: { ...interaction,
     mode: 'front', streetIds: [interaction.edges[0].id], allStreetsMarked: false } }))
   assert.match(html, /previous partial marks; completeness unresolved/)
+  assert.ok(html.indexOf('boundary-role-help') < html.indexOf('class="occupied-map"'))
+  assert.match(html, /<details><summary>Mark without the map<\/summary>/)
   assert.match(html, /Not sure · clear street marks/)
   assert.match(html, /<details class="boundary-role-help"><summary>/)
   assert.match(html, /role="img" aria-labelledby=/)

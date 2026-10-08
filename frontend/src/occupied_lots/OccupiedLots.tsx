@@ -12,7 +12,7 @@ import { parseResult, parseSites, path, points } from './contract'
 import { overlapFinding } from './observations'
 import type { Case, Check, Result } from './contract'
 import ScenarioHandoff from '../scenario_handoff/ScenarioHandoff'
-import { BoundaryActionTabs, BoundaryMapTools, BoundaryOverlay, type BoundaryMapInteraction } from '../zoning_site_assumptions/BoundaryMapTools'
+import { BoundaryActionTabs, BoundaryMapTools, BoundaryOverlay, BoundaryRoleHelp, type BoundaryMapInteraction } from '../zoning_site_assumptions/BoundaryMapTools'
 
 type Placement = { x: string; y: string; width: string; depth: string; angle: string }
 const number = (value: string) => value.trim() !== '' && Number.isFinite(Number(value)) ? Number(value) : null
@@ -99,6 +99,12 @@ export function OccupiedLotPreview({ selected, placement, onMove, nudgeMetres, c
     {boundaryInteraction && <BoundaryActionTabs interaction={boundaryInteraction} />}
     <div className="boundary-action-panel" data-mode={boundaryInteraction?.mode} id="placement-action-panel" role={boundaryInteraction ? 'tabpanel' : undefined} aria-labelledby={boundaryInteraction ? `placement-action-${boundaryInteraction.mode}` : undefined}>
     <div className="occupied-map-heading"><h3>{boundaryInteraction?.mode === 'waterfront' ? 'Mark waterfront edges' : boundaryInteraction?.mode === 'front' ? 'Mark street edges' : boundaryInteraction?.mode === 'rear' ? 'Adjust boundary facts' : 'Place the footprint'}</h3><p className="metadata">{boundaryInteraction && boundaryInteraction.mode !== 'place' ? boundaryInteraction.mode === 'waterfront' ? 'Mark the edges adjoining water. Your placement stays in position.' : boundaryInteraction.mode === 'rear' ? 'Choose a mark on the right, then click an edge. Your placement stays in position.' : 'Click every edge that borders a street. Your placement stays in position.' : 'Click the map to place its centre. Drag the copper rectangle to adjust it.'}</p></div>
+    <div className="occupied-map-toolbar">
+      {boundaryInteraction && boundaryInteraction.mode !== 'place' && <BoundaryRoleHelp />}
+      <button type="button" onClick={() => preview.current?.showModal()}>Open full-size placement preview</button>
+      <MapSourceHelp site={selected} />
+    </div>
+    {showBoundaryTools && boundaryInteraction && <BoundaryMapTools interaction={boundaryInteraction} />}
     <svg ref={svg} className="occupied-map" role="img" tabIndex={0} aria-label={boundaryInteraction?.mode !== 'place' && boundaryInteraction ? `Boundary selection map of ${selected.label}. Choose a boundary mark and click an edge, or use Edge to mark in the panel. The model cannot move in this mode.` : `Approximate map of ${selected.label}. Click to place. Arrow keys move the rectangle ${nudgeMetres} ${nudgeMetres === 1 ? 'metre' : 'metres'}. Parcel and Roof 1 through Roof ${site.buildings.length} are captured outlines.`} viewBox={view}
       onClick={e => { if (boundaryInteraction && boundaryInteraction.mode !== 'place') return; if (suppressClick.current) { suppressClick.current = false; return }; move(e.clientX, e.clientY) }}
       onKeyDown={e => {
@@ -113,16 +119,13 @@ export function OccupiedLotPreview({ selected, placement, onMove, nudgeMetres, c
       {mapLayers}
     </svg>
     <p className="occupied-map-legend"><span>Teal · captured parcel</span><span>Purple · R labels identify captured rooflines, not walls</span>{conflictIds && <span>Red dashed outline · current conflict</span>}<span>Copper · your nominal footprint</span><span>North ↑ · {site.projected_metre_crs}</span>{!!boundaryInteraction?.streetIds?.length && <span>Grey road bands · your marks, diagram only</span>}</p>
-    <button type="button" onClick={() => preview.current?.showModal()}>Open full-size placement preview</button>
     <dialog ref={preview} className="occupied-map-preview" aria-label="Full-size approximate placement preview">
       <div className="occupied-preview-heading"><h3>Approximate placement plan</h3><button type="button" onClick={() => preview.current?.close()}>Close preview</button></div>
       <svg className="occupied-preview-drawing" viewBox={view} role="img" aria-label={`${modelLabel} proposed position, captured parcel and numbered rooflines. North is up.`}>{mapLayers}</svg>
       <p>R labels identify captured rooflines, not building walls. Main building is {boundaryInteraction?.mainBuilding ? boundaryInteraction.mainBuildingAssumed ? 'assumed from mapped geometry' : 'your selection' : 'unconfirmed'}. The copper rectangle shows {modelLabel}. Red dashed outlines identify observed geometry conflicts. North is up; scale is in metres.</p>
       <p>Approximate source geometry only. Review the measurements and candidate requirements separately before relying on this position. Press Escape or Close preview to return to the map.</p>
     </dialog>
-    <MapSourceHelp site={selected} />
     {placementControls}
-    {showBoundaryTools && boundaryInteraction && <BoundaryMapTools interaction={boundaryInteraction} />}
     {placementConcerns && <div className="builder-placement-concerns">{placementConcerns}</div>}
     {placementContinuation && <div className="builder-placement-next">{placementContinuation}</div>}
     {placementSummary && <div className="builder-map-summary">{placementSummary}</div>}
@@ -308,6 +311,12 @@ export default function OccupiedLots({ catalogue = bundledCatalogue, allowedMode
             <button disabled={number(placement.x) === null && number(placement.y) === null} onClick={() => changePlacement({ x: '', y: '' })}>Clear placement</button></div>
           <details><summary>About the starting position</summary><p>Recenter uses the parcel drawing's bounding-box centre as a sketch starting point. It does not search for a suitable location.</p></details></>
   const footprintControls = selected && <div className="occupied-controls" hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}>
+            {!compactPlacement && <><h3>2 · Adjust the position</h3><p className="metadata">Click the map or drag the rectangle. Checks update automatically after movement settles.</p></>}
+            <div className="occupied-main-actions"><label htmlFor="occupied-angle">Rotation (degrees)</label><input id="occupied-angle" type="number" step="any" value={rotationFocused || !placement.angle.trim() || !Number.isFinite(Number(placement.angle)) ? placement.angle : String(Number(Number(placement.angle).toFixed(2)))} onFocus={() => setRotationFocused(true)} onBlur={() => setRotationFocused(false)} onChange={e => changePlacement({ angle: e.target.value })} />
+            <button type="button" disabled={orientation?.status !== 'suggested'} onClick={() => { if (orientation?.status === 'suggested') changePlacement({ angle: String(orientation.angle_degrees) }) }}>Align to lot</button></div>
+
+            <details className="occupied-extra-controls" open={!compactPlacement}><summary>More placement controls</summary>
+            <p className="metadata">{orientation?.status === 'suggested' ? 'Alignment follows the approximate long direction; it does not choose a clear position or establish legal frontage.' : orientation?.reason}</p>
             <details className="occupied-model-settings" open={!compactPlacement ? true : undefined}><summary>{compactPlacement ? 'Details and edit dimensions' : 'Set the nominal footprint'}</summary>
             <label htmlFor="occupied-model">Prefab model or manual dimensions</label><select id="occupied-model" value={modelId} onChange={e => chooseModel(e.target.value)}>
               {!allowedModelIds && <option value="">Manual nominal footprint</option>}{allowedModels.map(m => <option key={m.model_id} value={m.model_id}>{m.provider} · {m.name}</option>)}</select>
@@ -321,11 +330,6 @@ export default function OccupiedLots({ catalogue = bundledCatalogue, allowedMode
             <p className="metadata">These values describe a nominal exterior rectangle, not an installed envelope. This placement sketch measures width and length only; it does not check height.</p>
             <p className="metadata">Lengths display to two decimal places and areas to one. Focus a field to edit its full value. Comparisons use stored values; full measurements remain in the evidence export.</p>
             </details>
-            <h3>{compactPlacement ? 'Adjust the footprint' : '2 · Adjust the position'}</h3>
-            <p className="metadata">Click the map or drag the rectangle. Checks update automatically after movement settles.</p>
-            <div className="occupied-main-actions"><label htmlFor="occupied-angle">Rotation (degrees)</label><input id="occupied-angle" type="number" step="any" value={rotationFocused || !placement.angle.trim() || !Number.isFinite(Number(placement.angle)) ? placement.angle : String(Number(Number(placement.angle).toFixed(2)))} onFocus={() => setRotationFocused(true)} onBlur={() => setRotationFocused(false)} onChange={e => changePlacement({ angle: e.target.value })} />
-            <button type="button" disabled={orientation?.status !== 'suggested'} onClick={() => { if (orientation?.status === 'suggested') changePlacement({ angle: String(orientation.angle_degrees) }) }}>Align to lot</button></div>
-            <p className="metadata">{orientation?.status === 'suggested' ? 'Alignment follows the approximate long direction; it does not choose a clear position or establish legal frontage.' : orientation?.reason}</p>
             <details className="occupied-fine-adjustment" open={!compactPlacement}><summary>Fine adjustment</summary>
             <div className="occupied-nudge"><label htmlFor="occupied-step">Move by</label><select id="occupied-step" value={nudgeMetres} onChange={e => setNudgeMetres(Number(e.target.value))}>
               <option value={0.25}>0.25 m</option><option value={1}>1 m</option><option value={5}>5 m</option></select>
@@ -347,6 +351,8 @@ export default function OccupiedLots({ catalogue = bundledCatalogue, allowedMode
             </details>
             {(!valid || !assumptionsValid) && <p role="status">Place the rectangle, enter positive width and depth, a finite rotation, and nonnegative optional minimums to measure.</p>}
             <button className="sr-primary" disabled={!valid || !assumptionsValid || assessing} onClick={() => void assess()}>{assessing ? 'Checking…' : assessmentError ? 'Retry placement check' : 'Recheck placement'}</button>
+            {compactPlacement && startingPositionControls}
+            </details>
             {assessmentError && <p role="alert">{assessmentError} Edit the sketch or try again; no result is shown.</p>}
           </div>
   return <section className={`occupied-lots${compactPlacement ? ' occupied-lots--compact' : ''}`} aria-labelledby={compactPlacement ? undefined : 'occupied-title'} aria-label={compactPlacement ? `${model?.name ?? 'Model'} placement map` : undefined}>
@@ -363,7 +369,7 @@ export default function OccupiedLots({ catalogue = bundledCatalogue, allowedMode
       {compactPlacement && <div className="occupied-compact-summary"><strong>{model ? `${model.name} · ` : 'Manual footprint · '}{show(width)} wide × {show(depth)} long</strong><span>Nominal exterior rectangle · {dimensionOrigin('width').toLowerCase()} width, {dimensionOrigin('depth').toLowerCase()} length.</span><span>{source?.provider} · {source?.record_label} · captured {readableDate(source?.capture_date)} · {source?.review_status}. {publicSourceUrl(source?.reference) && <a href={publicSourceUrl(source?.reference)!} target="_blank" rel="noreferrer">Parcel source</a>}</span></div>}
       <div className="occupied-workspace">
         <div className="occupied-map-column">
-          <OccupiedLotPreview modelLabel={model?.name ?? 'Proposed unit'} placementConcerns={currentConcerns} placementControls={compactPlacement ? <div className="occupied-placement-controls" hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}>{footprintControls}{startingPositionControls}</div> : undefined} placementContinuation={placementContinuation} placementSummary={placementSummary} showBoundaryTools selected={selected} placement={placement} nudgeMetres={nudgeMetres} conflictIds={compactPlacement ? conflictIds : undefined} onMove={(x, y) => changePlacement({ x: String(x), y: String(y) })} boundaryInteraction={boundaryInteraction} />
+          <OccupiedLotPreview modelLabel={model?.name ?? 'Proposed unit'} placementConcerns={currentConcerns} placementControls={compactPlacement ? <div className="occupied-placement-controls" hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}>{footprintControls}</div> : undefined} placementContinuation={placementContinuation} placementSummary={placementSummary} showBoundaryTools selected={selected} placement={placement} nudgeMetres={nudgeMetres} conflictIds={compactPlacement ? conflictIds : undefined} onMove={(x, y) => changePlacement({ x: String(x), y: String(y) })} boundaryInteraction={boundaryInteraction} />
           {!compactPlacement && startingPositionControls}
         </div>
         <div className="occupied-side">

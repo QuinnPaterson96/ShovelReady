@@ -130,11 +130,13 @@ export function ExampleProperty({ model = defaultJourneyModel, onMeasurement, on
 
   return <section className="builder-example" aria-label="Saved example property">
     <p className="builder-example-summary"><strong>{model.name} · {show(Number(position.width), 'length')} wide × {show(Number(position.depth), 'length')} long</strong><span>Nominal exterior rectangle · saved Victoria example · {source.provider}, {source.record_label} · captured {readableDate(source.capture_date)} · {source.review_status} · <a href={publicSourceUrl(source.reference) ?? '#builder-example-evidence'} target="_blank" rel="noreferrer">Parcel source</a></span></p>
-    <OccupiedLotPreview selected={exampleCase} placement={position} modelLabel={model.name} onMove={move} nudgeMetres={step} conflictIds={conflictIds} boundaryInteraction={boundaryInteraction} placementSummary={placementSummary} placementContinuation={placementContinuation} placementControls={<div className="builder-footprint-controls" hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}><h3>Adjust the footprint</h3>
-        <p>Click the map or drag the rectangle. Arrow keys move it when the map has focus. Checks update automatically after movement settles.</p>
+    <OccupiedLotPreview selected={exampleCase} placement={position} modelLabel={model.name} onMove={move} nudgeMetres={step} conflictIds={conflictIds} boundaryInteraction={boundaryInteraction} placementSummary={placementSummary} placementContinuation={placementContinuation} placementControls={<div className="builder-footprint-controls" hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}>
         <div className="builder-example-main-actions"><div><label htmlFor="builder-example-angle">Rotation (degrees)</label><input id="builder-example-angle" type="number" step="any" value={rotationFocused || !position.angle.trim() || !Number.isFinite(Number(position.angle)) ? position.angle : String(Number(Number(position.angle).toFixed(2)))} onFocus={() => setRotationFocused(true)} onBlur={() => setRotationFocused(false)} onChange={event => edit('angle', event.target.value)} /></div>
         <button type="button" disabled={exampleOrientation.status !== 'suggested'} onClick={() => { if (exampleOrientation.status === 'suggested') edit('angle', String(exampleOrientation.angle_degrees)) }}>Align to lot</button>
-        <button type="button" onClick={reset}>Reset placement</button></div>
+</div>
+        <details className="builder-extra-controls"><summary>More placement controls</summary>
+        <p className="metadata">{exampleOrientation.status === 'suggested' ? 'Alignment follows the approximate long direction of the lot; it does not choose a clear position or establish legal frontage.' : exampleOrientation.reason}</p>
+        <button type="button" onClick={reset}>Reset placement</button>
         <details className="builder-example-movement"><summary>Fine adjustment</summary>
           <label htmlFor="builder-example-step">Movement step</label><select id="builder-example-step" value={step} onChange={event => setStep(Number(event.target.value))}><option value="0.25">0.25 m</option><option value="1">1 m</option><option value="5">5 m</option></select>
           <div className="builder-example-directions"><button type="button" onClick={() => nudge(0, 1)}>North ↑</button><button type="button" onClick={() => nudge(-1, 0)}>West ←</button><button type="button" onClick={() => nudge(1, 0)}>East →</button><button type="button" onClick={() => nudge(0, -1)}>South ↓</button></div>
@@ -145,14 +147,14 @@ export function ExampleProperty({ model = defaultJourneyModel, onMeasurement, on
           <div><MeasurementLabel field="depth" inputId="builder-example-depth" /><MeasurementInput id="builder-example-depth" dimension="length" type="number" step="any" value={position.depth} onChange={event => edit('depth', event.target.value)} /></div>
         </div>
         </details>
-        <p className="metadata">{exampleOrientation.status === 'suggested' ? 'The initial rotation follows the approximate long direction of the captured lot. You can change it or align it again; alignment does not choose a clear position or establish frontage or setbacks.' : exampleOrientation.reason}</p>
+
         <details><summary>Optional clearance targets</summary><fieldset className="builder-example-assumptions"><legend>Minimum distances you choose</legend>
           <p>Compare measured distances with your own minimums. Blank means no target; these are not Victoria setback rules.</p>
           <label htmlFor="builder-example-parcel-minimum">Minimum to captured parcel boundary (m)</label><MeasurementInput id="builder-example-parcel-minimum" dimension="length" type="number" min="0" step="any" value={assumptions.parcel} onChange={event => editAssumption('parcel', event.target.value)} />
           <label htmlFor="builder-example-roofline-minimum">Minimum to captured roofline (m)</label><MeasurementInput id="builder-example-roofline-minimum" dimension="length" type="number" min="0" step="any" value={assumptions.roofline} onChange={event => editAssumption('roofline', event.target.value)} />
         </fieldset></details>
         <button type="button" disabled={busy || !request} onClick={() => void measure(position, assumptions)}>{busy ? 'Checking…' : phase === 'unresolved' ? 'Retry placement check' : 'Recheck placement'}</button>
-      </div>} placementConcerns={showPlacementConcerns && <PlacementConcerns site={exampleCase} result={result} additional={placementConcerns} onContinueUnresolved={onContinueUnresolved} />} />
+      </details></div>} placementConcerns={showPlacementConcerns && <PlacementConcerns site={exampleCase} result={result} additional={placementConcerns} onContinueUnresolved={onContinueUnresolved} />} />
     {checkWarning && <div className={`builder-example-outcome builder-example-outcome--${conflict ? 'conflict' : 'unknown'}`} role="alert">
       <strong>{phase === 'unresolved' || unresolved && !conflict ? 'Placement could not be fully checked' : 'Conflict at this position'}</strong>
       <p>{phase === 'unresolved' ? `${message} ${request ? 'Try again or edit the placement.' : 'Correct the placement inputs to check again.'}` : conflict ? `${crossesParcel ? 'The unit crosses or touches the mapped parcel boundary. ' : ''}${overlapsRoof ? 'The unit overlaps or touches a mapped roofline. ' : ''}Move the unit on the map and recheck. This finding applies to this position only.${unresolved ? ' Some measurements also remain unresolved; review Sources & technical evidence.' : ''}` : 'Some mapped geometry or your comparison could not be checked. Review Sources & technical evidence and try another position.'}</p>
