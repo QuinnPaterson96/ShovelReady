@@ -169,15 +169,19 @@ export function manufacturerDocument(input: EnquiryInput, address: string | null
   const withheld = (value?: string) => !value?.trim() || ['unknown', 'not sure', 'prefer not to say'].includes(value.trim().toLowerCase())
   const use = ['still deciding', 'undecided'].includes(input.intendedUse.trim().toLowerCase()) ? ' I’m still deciding how I would use it.' : withheld(input.intendedUse) ? ' My intended use is not yet confirmed.' : ` I would use it for ${input.intendedUse.trim()}.`
   const next = withheld(input.nextStep) ? '' : input.nextStep!.trim()
+  const question = withheld(input.question) ? '' : input.question!.trim()
+  const sameRequest = (a: string, b: string) => a.toLowerCase().replace(/\s+/g, ' ').replace(/[.!?]+$/, '') === b.toLowerCase().replace(/\s+/g, ' ').replace(/[.!?]+$/, '')
+  const additionalQuestion = next && question && !sameRequest(question, next) && !sameRequest(question, `Could ${model.name} be suitable for this property?`) ? question : null
   return {
     title: `${model.name} feasibility enquiry${address ? ` — ${address}` : ''}`,
     example,
-    question: input.question?.trim() || next || `Could you help establish whether ${model.name} is worth investigating for this project, and advise the next useful step?`,
+    question: next || question || `Could you help establish whether ${model.name} is worth investigating for this project, and advise the next useful step?`,
     sections: [
       section('Project', [`I’m exploring ${model.provider} ${model.name}${address ? ` at ${address}` : ' for a possible site'}.${use}`, ...(facts.length ? [facts.join(' ')] : [])], true),
       ...(concerns.length ? [section('Preliminary concerns', [linkedPlacement ? 'The following matters remain unresolved before relying on this proposal.' : input.propertyConcern?.trim() ? 'The property identity question concerns the proposed site; any placement findings below concern a separate retained example.' : 'The following findings concern a separate retained example, not the proposed property.', ...concerns,
         placementIssues.length ? 'Could you advise whether relocation, rotation or another configuration is worth exploring? I will resolve the planning questions separately before relying on this position.' : 'What site information would help you advise while I confirm the property details?' ], true)] : []),
       section(`Questions for ${model.provider}`, [
+        ...(additionalQuestion ? [additionalQuestion] : []),
         ...(model.model_id === 'wcch-ch-studio' ? [`${scenarioUse === 'garden_suite' ? 'Can you' : 'If I choose residential use, can you'} confirm whether this exact configuration supports permanent residential use in this locality? The published pod dimensions do not establish dwelling suitability.`] : []),
         '1. Can you share current dimensioned plans with their date/version, overhangs, interior floor area, height measurement reference and foundation requirements?',
         `2. Do you service ${address ? 'this locality' : 'the proposed locality once identified'}, and what truck access, crane setup space, lifting clearances and site photos or measurements do you need?`,
@@ -189,9 +193,9 @@ export function manufacturerDocument(input: EnquiryInput, address: string | null
         'The property contact needs to confirm the main home, existing suites and waterfront context. City staff or a qualified local professional needs to check the applicable rules, legal measurement basis and any permit or title conditions. Please advise what product information you can provide to support that review.'], true),
       section('Site information', [...placement, ...positivePropertyFindings(scan),
         ...(!measured ? ['No current measured placement is available; the proposed position and delivery access remain to be established.'] : []),
-        ...(sketchAvailable ? ['I have an approximate proposed placement sketch available. Please let me know the best way to share it.'] : []),
       ], true),
+      ...(sketchAvailable ? [section('Placement sketch', ['I have an approximate proposed placement sketch available. Please let me know the best way to share it.'], true)] : []),
     ],
-    closing: `${input.question?.trim() && next ? next : 'Please let me know what information would help you advise on the next step.'}${input.contact?.trim() ? `\n\n${input.contact.trim()}` : ''}`,
+    closing: input.contact?.trim() || 'Thank you.',
   }
 }

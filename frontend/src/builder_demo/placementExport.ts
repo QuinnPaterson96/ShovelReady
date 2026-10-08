@@ -23,9 +23,12 @@ export function placementDrawing(measured: OccupiedMeasurement, assumptions: Sit
   const all = [site.parcel, ...site.buildings, ...site.named_boundaries].flatMap(points).concat(corners)
   const minX = Math.min(...all.map(p => p[0])), maxX = Math.max(...all.map(p => p[0]))
   const minY = Math.min(...all.map(p => p[1])), maxY = Math.max(...all.map(p => p[1]))
-  const factor = Math.min(790 / Math.max(maxX - minX, 1), 600 / Math.max(maxY - minY, 1))
-  const x = (v: number) => 95 + (790 - (maxX - minX) * factor) / 2 + (v - minX) * factor
-  const y = (v: number) => 170 + (600 - (maxY - minY) * factor) / 2 + (maxY - v) * factor
+  const hasGapCallouts = Object.keys(scenarios?.edge_measurement_lines ?? {}).length > 0 || scenarios?.additional_checks?.some(check => check.id === 'separation' && check.visual_evidence && check.observed !== null)
+  // Reserve clear callout gutters only when measured gaps are available.
+  const plotWidth = hasGapCallouts ? 540 : 790, plotHeight = hasGapCallouts ? 500 : 600
+  const factor = Math.min(plotWidth / Math.max(maxX - minX, 1), plotHeight / Math.max(maxY - minY, 1))
+  const x = (v: number) => 95 + (plotWidth - (maxX - minX) * factor) / 2 + (v - minX) * factor
+  const y = (v: number) => 170 + (plotHeight - (maxY - minY) * factor) / 2 + (maxY - v) * factor
   const line = (coordinates: [number, number][]) => coordinates.map((p, i) => `${i ? 'L' : 'M'}${x(p[0])} ${y(p[1])}`).join(' ')
   const shape = (feature: typeof site.parcel) => {
     const { type, coordinates } = feature.shape.geometry
@@ -43,11 +46,18 @@ export function placementDrawing(measured: OccupiedMeasurement, assumptions: Sit
   const gap = (ends: [[number, number], [number, number]], label: string, slot: number, conflict = false, extra = '') => {
     const colour = conflict ? colours.danger : colours.ink
     const a = ends[0], b = ends[1], px = (x(a[0]) + x(b[0])) / 2, py = (y(a[1]) + y(b[1])) / 2
-    const tx = slot < 0 ? 65 : 705, ty = slot < 0 ? 470 : 355 + slot * 75
-    return `<path d="${line(ends)}" stroke="${escape(colour)}" stroke-width="3"${conflict ? ' stroke-dasharray="6 3"' : ''}/>${ends.map(p => `<circle cx="${x(p[0])}" cy="${y(p[1])}" r="3" fill="${escape(colour)}"/>`).join('')}<path d="M${px} ${py} L${slot < 0 ? tx + 190 : tx - 10} ${ty}" fill="none" stroke="${escape(colour)}" stroke-width="1"/><text x="${tx}" y="${ty}" font-size="14" font-weight="700" paint-order="stroke" stroke="white" stroke-width="4" fill="${escape(colour)}">${escape(label)}</text>${extra ? text(extra, tx, ty + 23, 14) : ''}`
+    const tx = slot < 0 ? 65 : 685, ty = slot < 0 ? 730 : 215 + slot * 65
+    return {
+      lines: `<path d="${line(ends)}" stroke="${escape(colour)}" stroke-width="3"${conflict ? ' stroke-dasharray="6 3"' : ''}/>${ends.map(p => `<circle cx="${x(p[0])}" cy="${y(p[1])}" r="3" fill="${escape(colour)}"/>`).join('')}<path d="M${px} ${py} L${tx - 10} ${ty - 5}" fill="none" stroke="${escape(colour)}" stroke-width="1"/>`,
+      label: `<g class="placement-gap-callout"><rect x="${tx - 5}" y="${ty - 18}" width="260" height="${extra ? 51 : 28}" rx="4" fill="white"/><text x="${tx}" y="${ty}" font-size="14" font-weight="700" fill="${escape(colour)}">${escape(label)}</text>${extra ? text(extra, tx, ty + 23, 14) : ''}</g>`,
+    }
+
   }
-  const gaps = Object.entries(scenarios?.edge_measurement_lines ?? {}).map(([id, ends], i) => gap(ends, `Edge ${(assumptions?.edges.findIndex(e => e.id === id) ?? -1) + 1}: ${measurementWithUnit(scenarios!.edge_distances_m[id], 'length')} mapped gap`, i)).join('') +
-    (visual && separation?.observed !== null && separation?.observed !== undefined ? gap(visual.measurement_line, `${measurementWithUnit(separation.observed, 'length')} main-home gap`, -1, separation.status === 'conflict', `Candidate minimum: ${measurementWithUnit(separation.threshold, 'length')}${separation.status === 'conflict' ? ' (concern)' : ''}`) : '')
+  const gapItems = Object.entries(scenarios?.edge_measurement_lines ?? {}).map(([id, ends], i) => gap(ends, `Edge ${(assumptions?.edges.findIndex(e => e.id === id) ?? -1) + 1}: ${measurementWithUnit(scenarios!.edge_distances_m[id], 'length')} mapped gap`, i))
+  if (visual && separation?.observed !== null && separation?.observed !== undefined) gapItems.push(gap(visual.measurement_line, `${measurementWithUnit(separation.observed, 'length')} main-home gap`, -1, separation.status === 'conflict', `Candidate minimum: ${measurementWithUnit(separation.threshold, 'length')}${separation.status === 'conflict' ? ' (concern)' : ''}`))
+  const gapLines = gapItems.map(item => item.lines).join('')
+  const gapLabels = gapItems.map(item => item.label).join('')
+
   const yardLabel = visual?.rear_yard_area_m2 ? text(`Estimated rear yard: ${measurementWithUnit(visual.rear_yard_area_m2, 'area')}${yardCheck?.observed !== null && yardCheck?.observed !== undefined ? ` / unit share ${Number((yardCheck.observed * 100).toFixed(1))}%` : ''}`, 60, 810, 15, true) : ''
   const details = [
     `Site: ${example ? 'Saved example only, not the sender’s property' : measured.site.label}.`,
@@ -86,7 +96,7 @@ export function placementDrawing(measured: OccupiedMeasurement, assumptions: Sit
   return { width: 1000, height, mapNotes: details.filter(value => /^(Parcel source:|Building source:|Candidate comparison source:)/.test(value)), breaks: [880, ...rows.flatMap((row, i) => row === '' ? [946 + i * 24] : [])], svg: `<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="${height}" viewBox="0 0 1000 ${height}"><rect width="100%" height="100%" fill="white"/><g font-family="Segoe UI, Arial, sans-serif" fill="${escape(colours.ink)}">${text('Approximate proposed placement', 40, 45, 28, true)}${text('Not a survey or approved site plan · preliminary discussion only', 40, 76)}${text(example ? 'SAVED EXAMPLE ONLY — not the sender’s property' : measured.site.label.slice(0, 85), 40, 106, 18, true)}<rect x="40" y="130" width="920" height="690" fill="#f0f5f4" stroke="${escape(colours.parcelStroke)}"/>${featurePath(site.parcel, colours.parcelFill, colours.parcelStroke)}${yardLayer}${site.buildings.map((b, i) => {
     const coords = points(b), bx = Math.min(...coords.map(p => p[0])), by = Math.max(...coords.map(p => p[1]))
     return featurePath(b, colours.roofFill, colours.roofStroke) + text(b.id === mainId ? `Building ${i + 1} · main home (unverified)` : `Building ${i + 1} · ${b.basis}`, x(bx), y(by) - 8, 15, true)
-  }).join('')}${site.named_boundaries.map(b => featurePath(b, 'none', colours.zoneStroke)).join('')}${edges}<path d="${line(corners)} Z" fill="${escape(colours.zoneFill)}" stroke="${escape(colours.zoneStroke)}" stroke-width="3"/>${outsideLayer}${gaps}${yardLabel}${text(`Proposed ${measured.model?.name ?? 'model'}`,  x(placement.centre_xy[0]) + 15, y(placement.centre_xy[1]), 16, true)}${text(site.projected_metre_crs === 'LOCAL:METRE' ? 'Local sketch · north unknown' : 'Grid north ↑', 60, 160, 15)}<path d="M60 790 h${scaleM * factor} M60 782 v16 M${60 + scaleM * factor} 782 v16" stroke="${escape(colours.ink)}"/>${text(`${scaleM} m · indicative scale`, 60, 775, 14)}${text('Teal: parcel / Purple: buildings / Copper: unit / Yellow dashed: estimated rear yard', 40, 850, 16)}${text('Red: comparison concern / outside yard · Grey: street marks, not road widths. All gaps approximate.', 40, 875, 16)}${text('Measurements, assumptions & sources', 40, 912, 21, true)}${rows.map((row, i) => text(row, 40, 946 + i * 24, 16)).join('')}</g></svg>` }
+  }).join('')}${site.named_boundaries.map(b => featurePath(b, 'none', colours.zoneStroke)).join('')}${edges}<path d="${line(corners)} Z" fill="${escape(colours.zoneFill)}" stroke="${escape(colours.zoneStroke)}" stroke-width="3"/>${outsideLayer}${gapLines}${yardLabel}${text(`Proposed ${measured.model?.name ?? 'model'}`,  x(placement.centre_xy[0]) + 15, y(placement.centre_xy[1]), 16, true)}${text(site.projected_metre_crs === 'LOCAL:METRE' ? 'Local sketch · north unknown' : 'Grid north ↑', 60, 160, 15)}<path d="M60 790 h${scaleM * factor} M60 782 v16 M${60 + scaleM * factor} 782 v16" stroke="${escape(colours.ink)}"/>${text(`${scaleM} m · indicative scale`, 60, 775, 14)}${text('Teal: parcel / Purple: buildings / Copper: unit / Yellow dashed: estimated rear yard', 40, 850, 16)}${text('Red: comparison concern / outside yard · Grey: street marks, not road widths. All gaps approximate.', 40, 875, 16)}${gapLabels}${text('Measurements, assumptions & sources', 40, 912, 21, true)}${rows.map((row, i) => text(row, 40, 946 + i * 24, 16)).join('')}</g></svg>` }
 }
 
 export async function renderDrawing(drawing: PlacementDrawing): Promise<DrawingAssets> {
@@ -193,7 +203,8 @@ export async function renderEnquiryPdf(enquiry: EnquiryDocument, assets: Drawing
   write(enquiry.title, false, true)
   if (enquiry.example) write('SAVED EXAMPLE ONLY - not my property.', true)
   write(enquiry.question)
-  for (const section of enquiry.sections.filter(section => section.heading !== 'Placement sketch')) {
+  const recipient = withPlacementSketch(enquiry, assets ? 'An approximate proposed placement plan follows in this PDF. It is a discussion sketch, not a survey or approved site plan.' : null)
+  for (const section of recipient.sections) {
     if (!section.paragraphs.length) continue
     write(section.heading, true)
     for (const paragraph of section.paragraphs) write(paragraph)
