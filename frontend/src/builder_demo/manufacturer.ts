@@ -14,6 +14,14 @@ export type EnquiryInput = {
   relationship?: string; stage?: string; configuration?: string; nextStep?: string; contact?: string
 }
 
+export function enquiryUseQualification(intendedUse: string): string {
+  const use = intendedUse.trim().toLowerCase()
+  const unconfirmed = !use || ['unknown', 'still deciding', 'undecided', 'prefer not to say'].includes(use)
+  return unconfirmed
+    ? 'Intended use is unconfirmed. The planning comparisons assume a garden suite and may not apply to the eventual use. Physical placement observations remain approximate.'
+    : `Intended use supplied: ${intendedUse.trim()}. The planning comparisons use a garden-suite scenario; City or professional review must establish whether that scenario applies.`
+}
+
 export function conditionalObservation(check: ScreeningCheck): string {
   const status = { meets_under_assumptions: 'meets under the supplied facts',
     apparent_conflict_under_assumptions: 'unresolved preliminary concern under the supplied assumptions',
@@ -48,7 +56,7 @@ export function assumptionsDescription(input: EnquiryInput, assumptions: SiteAss
       `Waterfront status: ${assumptions.waterfront.value === null ? 'not supplied' : assumptions.waterfront.value ? 'yes' : 'no'} (${provenance(assumptions.waterfront)}).`,
       `Main outline: ${assumptions.principal_building_id.value ? `Outline ${assumptions.observed_buildings.findIndex(b => b.id === assumptions.principal_building_id.value) + 1}, ${assumptions.principal_building_id.origin === 'journey_default' ? 'assumed from the largest mapped outline, not verified as the main house' : 'selected by the user, not independently verified as the main house'}` : 'not identified'}. Main-home identification and legal boundaries remain unverified.`,
     ] : ['Main building, existing suites, waterfront status and boundary roles have not been supplied.']),
-    'A planning comparison based on a garden-suite scenario does not establish that it applies to the intended use. The City or a qualified professional must review applicability.'
+    enquiryUseQualification(input.intendedUse)
   ].join(' ')
 }
 const section = (heading: string, paragraphs: string[], siteDetails = false): EnquirySection =>
@@ -90,7 +98,7 @@ export function placementConcerns(measured: OccupiedMeasurement | null, conditio
   }
   // Each boundary is reported once even when several alternative front-line choices were tested.
   const failingEdges = new Map<string, string>()
-  for (const scenario of scenarios?.scenarios ?? []) for (const check of scenario.checks) if (!check.meets)
+  for (const scenario of scenarios?.status === 'unresolved' ? [] : scenarios?.scenarios ?? []) for (const check of scenario.checks) if (!check.meets)
     failingEdges.set(check.edge_id, `An approximate ${check.role === 'flanking_street' ? 'street-side' : check.role} boundary gap of ${measurementWithUnit(check.distance_m, 'length')} falls short of the candidate ${measurementWithUnit(check.minimum_m, 'length')} distance by ${measurementWithUnit(check.minimum_m - check.distance_m, 'length')}. Boundary roles and legal measurements require review.`)
   concerns.push(...failingEdges.values())
   concerns.push(...(scenarios?.additional_checks ?? []).filter(check => check.status === 'conflict').map(additionalObservation))
@@ -105,6 +113,8 @@ export function placementConcerns(measured: OccupiedMeasurement | null, conditio
 }
 
 export function boundaryObservations(scenarios: ScenarioResult | null, assumptions: SiteAssumptions | null): string[] {
+  if (assumptions?.street_adjacency && !assumptions.street_adjacency.all_marked)
+    return ['Street-adjoining edge selection is incomplete. Candidate front and street-side alternatives remain unresolved; complete the known street marks or keep the context unknown before relying on boundary comparisons. Individual candidate distances remain in the technical evidence.']
   return (assumptions?.edges ?? []).map((edge, index) => {
     const roles = new Set(scenarios?.scenarios.map(s => s.front_edge_id === edge.id ? 'front' : s.checks.find(c => c.edge_id === edge.id)?.role).filter(Boolean))
     const role = edge.role.value && edge.role.value !== 'unknown' ? edge.role.value : roles.size === 1 ? [...roles][0] : null
@@ -149,16 +159,18 @@ export function manufacturerDocument(input: EnquiryInput, address: string | null
     input.access.trim() && `Access information/questions: ${input.access.trim()}.`, input.services.trim() && `Utility information/questions: ${input.services.trim()}.`].filter((v): v is string => !!v)
   const placement = measured && linkedPlacement ? [`The preliminary rectangle is ${measurementWithUnit(measured.result.input.placement.width_m, 'length')} × ${measurementWithUnit(measured.result.input.placement.depth_m, 'length')}${measured.widthOrigin === 'user' || measured.depthOrigin === 'user' ? '; dimensions have been edited and availability needs your confirmation' : ' using published nominal dimensions'}. It excludes unconfirmed overhangs and installation space.`] : []
   const withheld = (value?: string) => !value?.trim() || ['unknown', 'prefer not to say'].includes(value.trim().toLowerCase())
-  const use = input.intendedUse.trim().toLowerCase() === 'still deciding' ? ' I’m still deciding how I would use it.' : withheld(input.intendedUse) ? '' : ` I would use it for ${input.intendedUse.trim()}.`
+  const use = ['still deciding', 'undecided'].includes(input.intendedUse.trim().toLowerCase()) ? ' I’m still deciding how I would use it.' : withheld(input.intendedUse) ? ' My intended use is not yet confirmed.' : ` I would use it for ${input.intendedUse.trim()}.`
   const next = withheld(input.nextStep) ? '' : input.nextStep!.trim()
   return {
     title: `Model 300 feasibility enquiry${address ? ` — ${address}` : ''}`,
     example,
-    question: input.question?.trim() || 'Could you help establish whether Model 300 is worth investigating for this project?',
+    question: input.question?.trim() || next || 'Could you help establish whether Model 300 is worth investigating for this project, and advise the next useful step?',
     sections: [
       section('Project', [`I’m exploring aux box Model 300${address ? ` at ${address}` : ' for a possible site'}.${use}`, ...facts.filter(fact => !/Relationship to the property: (Unknown|Prefer not to say)\./i.test(fact))], true),
       ...(concerns.length ? [section('Preliminary concerns', [linkedPlacement ? 'The preliminary placement raises the following unresolved concerns.' : 'The following findings concern a separate retained example, not the proposed property.', ...concerns,
-        'These preliminary comparisons assume a garden suite; their applicability needs checking. They are not established legal violations. Could relocation, rotation or a smaller model help address these concerns?'], true)] : []),
+        'These are unresolved comparisons, not established legal violations. Could relocation, rotation or a smaller model help address these concerns?'], true)] : []),
+      section('Planning questions to resolve separately', [enquiryUseQualification(input.intendedUse),
+        'The property contact needs to confirm the main home, existing suites and waterfront context. City staff or a qualified local professional needs to check the applicable rules, legal measurement basis and any permit or title conditions. Please advise what product information you can provide to support that review.'], true),
       section('Questions for aux box', [
         '1. Can you share current dimensioned plans with their date/version, overhangs, interior floor area, height measurement reference and foundation requirements?',
         `2. Do you service ${address ? 'this locality' : 'the proposed locality once identified'}, and what truck access, crane setup space, lifting clearances and site photos or measurements do you need?`,
@@ -167,9 +179,10 @@ export function manufacturerDocument(input: EnquiryInput, address: string | null
         '5. What is the current lead time, when does it start, and what decisions, permits and site preparation must be complete before booking or delivery?',
       ]),
       section('Site information', [...placement, ...positivePropertyFindings(scan),
+        ...(!measured ? ['No current measured placement is available; the proposed position and delivery access remain to be established.'] : []),
         ...(sketchAvailable ? ['I have an approximate proposed placement sketch available. Please let me know the best way to share it.'] : []),
       ], true),
     ],
-    closing: `${next}${input.contact?.trim() ? `\n\n${input.contact.trim()}` : ''}`,
+    closing: `${input.question?.trim() && next ? next : 'Please let me know what information would help you advise on the next step.'}${input.contact?.trim() ? `\n\n${input.contact.trim()}` : ''}`,
   }
 }
