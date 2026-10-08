@@ -8,6 +8,7 @@ import { AdditionalInputs } from '../conditional_screening/AdditionalInputs'
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { SiteDiscovery } from '../site_discovery/SiteDiscovery'
 import type { Confirmed } from '../site_discovery/flow'
+import { SelectedProperty } from '../site_discovery/SelectedProperty'
 import { placementCase } from '../site_discovery/placement'
 import { ManualSiteInput } from '../manual_site/ManualSiteInput'
 import type { ManualSiteOutput } from '../manual_site/model'
@@ -23,6 +24,8 @@ import { overlapFinding } from '../occupied_lots/observations'
 import { HeightView } from './height_view/HeightView'
 import { ModelImage } from './model_image/ModelImage'
 import { ExampleProperty } from './ExampleProperty'
+import { IntendedUseControl, applyIntendedUse } from './intendedUse'
+import { useRetainedResult } from '../conditional_screening/resultRetention'
 import { exampleCase, exampleSourcePage } from './example'
 import { SiteAssumptionsEditor } from '../zoning_site_assumptions/SiteAssumptions'
 import { ordinaryFourEdgeBoundary, type StreetAdjacency, type BoundaryMapMode, type SiteAssumptions } from '../zoning_site_assumptions/model'
@@ -165,6 +168,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const [heightRevision, setHeightRevision] = useState(0)
   const [mode, setMode] = useState<'live' | 'manual' | 'retained' | 'example'>('live')
   const [propertyReset, setPropertyReset] = useState(0)
+  const [propertyInspect, setPropertyInspect] = useState(0)
   const [live, setLive] = useState<Confirmed | null>(null)
   const [manual, setManual] = useState<ManualSiteOutput | null>(null)
   const liveCase = useMemo(() => live ? placementCase(live) : undefined, [live])
@@ -172,9 +176,10 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const [selection, setSelection] = useState<SitePreparationSelection | null>(null)
   const [imported, setImported] = useState(false)
   const [measurementResult, setMeasurementResult] = useState<OccupiedMeasurement | null>(null)
+  const [geometryPending, setGeometryPending] = useState(false)
   const [buffersPending, setBuffersPending] = useState(false)
   const [siteAssumptions, setSiteAssumptions] = useState<SiteAssumptions | null>(null)
-  const [projectSettings, setProjectSettings] = useState(() => modelProjectSettings(model))
+  const [projectSettings, setProjectSettings] = useState(() => applyIntendedUse(modelProjectSettings(model), ''))
   const [zoningState, setZoningState] = useState<{ key: string; result: ZoningLookup } | null>(null)
   const [zoningError, setZoningError] = useState<{ key: string; message: string } | null>(null)
   const [zoningBusy, setZoningBusy] = useState(false)
@@ -216,23 +221,23 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const [recipient, setRecipient] = useState('')
   const [includeSiteDetails, setIncludeSiteDetails] = useState(true)
   const [emailMessage, setEmailMessage] = useState('')
-  function siteEdited() { setBufferSuggestion(undefined); setMoveSuggestion(undefined); setAcknowledgedConflicts([]); setSelection(null); setImported(false); setMeasurementResult(null); setSiteAssumptions(null); setProjectSettings(modelProjectSettings(model)); setStreetMarks({ revision: null, data: { edge_ids: [], all_marked: false, origin: 'user' } }); setRearEdge(null); setSelectedBoundary(null); setBoundaryMark(null); setMarkingRole(null); setBoundaryMode('place'); setReadyFor(null); setRevision(value => value + 1) }
+  function changeIntendedUse(value: string) { setUse(value); setProjectSettings(previous => applyIntendedUse(previous, value)); setReadyFor(null) }
+  function siteEdited() { setBufferSuggestion(undefined); setMoveSuggestion(undefined); setAcknowledgedConflicts([]); setSelection(null); setImported(false); setMeasurementResult(null); setSiteAssumptions(null); setProjectSettings(applyIntendedUse(modelProjectSettings(model), use)); setGeometryPending(false); setAccess(''); setServices(''); setProjectContext(previous => ({ ...previous, relationship: '' })); setWaterfrontMarks({ revision: null, ids: [] }); setDrawingExport(null); setStreetMarks({ revision: null, data: { edge_ids: [], all_marked: false, origin: 'user' } }); setRearEdge(null); setSelectedBoundary(null); setBoundaryMark(null); setMarkingRole(null); setBoundaryMode('place'); setReadyFor(null); setRevision(value => value + 1) }
   function changeMode(next: typeof mode) {
-    setFoundationAllowanceM(model.model_id === 'aux-300' ? '0.30' : null); setHeightRevision(value => value + 1)
     setExpanded({ property: next !== 'example', placement: next === 'example', next: false, email: false })
     setMode(next); siteEdited(); setLive(null); setManual(null)
     setDraft({ ...emptySiteInput, kind: 'address' })
-    setQuestion(suggestedQuestion); setUse(''); setTiming(''); setBudget(''); setAccess(''); setServices(''); setProjectContext({ relationship: '', stage: '', configuration: '', nextStep: '', contact: '' }); setDrawingExport(null)
+    setDrawingExport(null)
     setReadyFor(null); setManualConfirmedFor(null); setIncludeSiteDetails(true); setEmailMessage('')
   }
   function switchModel(nextId: string) {
     const next = journeyCatalogue.models.find(item => item.model_id === nextId)
     if (!next || nextId === modelId) return
-    setModelId(nextId); setMeasurementResult(null)
+    setModelId(nextId); setMeasurementResult(null); setGeometryPending(false)
     setManual(previous => previous ? { ...previous, assessment: null, placement: null } : null)
     setSiteAssumptions(previous => previous ? { ...previous, measurements: { ...previous.measurements, boundary: {}, principal_separation: null, floor_area: null } } : null)
     setProjectSettings(previous => {
-      const nextSettings = modelProjectSettings(next)
+      const nextSettings = applyIntendedUse(modelProjectSettings(next), use)
       return { proposal: { ...nextSettings.proposal,
         confirmed_zone: previous.proposal.confirmed_zone, confirmed_instrument: previous.proposal.confirmed_instrument,
         legal_lot_confirmed: previous.proposal.legal_lot_confirmed },
@@ -257,6 +262,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const propertyScan = usePropertyScan(selectedRef, geometryRevision)
   const zoningKey = selectedRef && geometryRevision ? JSON.stringify([selectedRef, geometryRevision, revision, zoningRetry]) : null
   const currentZoning = zoningKey && zoningState?.key === zoningKey ? zoningState.result : null
+  const latestZoningKey = useRef(zoningKey); latestZoningKey.current = zoningKey
   const currentZoningError = zoningKey && zoningError?.key === zoningKey ? zoningError.message : ''
   useEffect(() => {
     if (!zoningKey || !selectedRef) { setZoningBusy(false); return }
@@ -269,9 +275,9 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
           body: JSON.stringify({ schema_version: 'victoria-zoning.v1', ...selectedRef }), signal: controller.signal })
         if (!response.ok) throw Error(`City zoning lookup unavailable (${response.status}).`)
         const result = parseZoningLookup(await response.json(), selectedRef.parcel_ref)
-        if (!controller.signal.aborted) { setZoningState({ key: zoningKey, result }); setZoningError(null); setZoningBusy(false) }
+        if (!controller.signal.aborted && latestZoningKey.current === zoningKey) { setZoningState({ key: zoningKey, result }); setZoningError(null); setZoningBusy(false) }
       } catch (error) {
-        if (!controller.signal.aborted || controller.signal.reason === 'timeout') { setZoningError({ key: zoningKey, message: controller.signal.reason === 'timeout' ? 'Timed out.' : error instanceof Error ? error.message : 'Unavailable.' }); setZoningBusy(false) }
+        if (latestZoningKey.current === zoningKey && (!controller.signal.aborted || controller.signal.reason === 'timeout')) { setZoningError({ key: zoningKey, message: controller.signal.reason === 'timeout' ? 'Timed out.' : error instanceof Error ? error.message : 'Unavailable.' }); setZoningBusy(false) }
       } finally { window.clearTimeout(timeout) }
     }, 300)
     return () => { controller.abort(); window.clearTimeout(timer); window.clearTimeout(timeout) }
@@ -311,6 +317,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
         foundation_allowance_m: foundationAllowanceM === null ? null : Number(foundationAllowanceM) } } : null
   const scenarioKey = scenarioRequest ? JSON.stringify([scenarioRequest, scenarioRetry]) : null
   const currentScenario = scenarioKey && scenarioState?.key === scenarioKey ? scenarioState.result : null
+  const latestScenarioKey = useRef(scenarioKey); latestScenarioKey.current = scenarioKey
   const currentScenarioError = scenarioKey && scenarioError?.key === scenarioKey ? scenarioError.message : ''
   const boundaryInteraction: BoundaryMapInteraction | undefined = zoningCase ? {
     editor: <SiteAssumptionsEditor initialValue={siteAssumptions} detailsSummary={<>Floor area buffer: +{estimateBuffers.area}%. {scoutingHeight?.key === additionalKey && scoutingHeight.value !== null ? `Supplied installed height: ${measurementWithUnit(scoutingHeight.value, 'length')}.` : `Advertised height buffer: +${estimateBuffers.height}%; foundation allowance: ${foundationAllowanceM === null ? 'unknown' : measurementWithUnit(foundationAllowanceM, 'length')}.`}</>} detailsInputs={<AdditionalInputs key={additionalKey} buffers={estimateBuffers} onBuffers={setEstimateBuffers} foundation={foundationAllowanceM} onFoundation={setFoundationAllowanceM} onHeight={value => { setScoutingHeight({ key: additionalKey, value }); setReadyFor(null) }} result={currentScenario} />} bufferSuggestion={bufferSuggestion} onBoundaryAccepted={accepted => setReviewedBoundariesFor(boundaryReviewKey(accepted))} onFactsNext={() => advanceJourneyStep('checks')} factsNextDisabled={buffersPending} detailsStep={journeyStep === 'details'} forceBoundaryEditor={boundaryEditorOverride || selectedBoundary !== null} onPlanningBuffersPending={setBuffersPending} waterfrontMarks={waterfrontMarks.revision === geometryRevision ? waterfrontMarks.ids : []} onWaterfrontChange={yes => { if (yes) { waterfrontFocusPending.current = true; changeBoundaryMode('waterfront') } else { if (boundaryMode === 'waterfront') changeBoundaryMode('place'); setWaterfrontMarks({ revision: geometryRevision, ids: [] }) } }} onBoundaryDismiss={() => { setSelectedBoundary(null); setMarkingRole(null); document.getElementById('boundary-roles')?.focus() }} edgeDistances={currentScenario?.edge_distances_m} homeownerDefaults streetAdjacency={streetAdjacency} markingRole={markingRole} onMarkingRoleChange={setMarkingRole} boundaryMark={boundaryMark} sharedMode={boundaryMode} selectedBoundary={selectedBoundary} onBoundarySelect={selectBoundary} site={zoningCase} geometryRevision={geometryRevision!} placementRevision={placementRevision} frontEdge={streetEdge} rearEdge={rearEdge} streetPattern={streetPattern} onChange={assumptionsChanged} />,
@@ -325,6 +332,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     setScenarioBusy(true)
     const timeout = window.setTimeout(() => {
       controller.abort()
+      if (latestScenarioKey.current !== scenarioKey) return
       setScenarioError({ key: scenarioKey, message: 'Approximate setback screen timed out. Change the placement or measure again to retry.' })
       setScenarioBusy(false)
     }, 10000)
@@ -336,9 +344,9 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
         if (result.property_revision !== expectedPropertyRevision(scenarioRequest.assumptions) ||
           result.placement_revision !== scenarioRequest.assumptions.placement_revision ||
           result.model_revision !== scenarioRequest.model_revision) throw new Error('Scenario response did not match current inputs.')
-        if (!controller.signal.aborted) { setScenarioState({ key: scenarioKey, result }); setScenarioError(null); setScenarioBusy(false) }
+        if (!controller.signal.aborted && latestScenarioKey.current === scenarioKey) { setScenarioState({ key: scenarioKey, result }); setScenarioError(null); setScenarioBusy(false) }
       } catch (error) {
-        if (!controller.signal.aborted) { setScenarioError({ key: scenarioKey, message: error instanceof Error ? error.message : 'Approximate setback screen unavailable.' }); setScenarioBusy(false) }
+        if (!controller.signal.aborted && latestScenarioKey.current === scenarioKey) { setScenarioError({ key: scenarioKey, message: error instanceof Error ? error.message : 'Approximate setback screen unavailable.' }); setScenarioBusy(false) }
       } finally {
         window.clearTimeout(timeout)
       }
@@ -349,12 +357,14 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     ? { schema_version: 'conditional-screening.api.v1', assumptions: currentAssumptions, model_revision: `catalogue-record:${model.model_id}@${modelSnapshot(model)}`, proposal: pathway, proposal_evidence: effectiveSettings.evidence } : null
   const requestKey = screeningRequest ? JSON.stringify([screeningIdentity(screeningRequest), conditionalRetry]) : null
   const currentScreening = requestKey && conditionalState?.key === requestKey ? conditionalState.result : null
+  const latestScreeningKey = useRef(requestKey); latestScreeningKey.current = requestKey
   const currentScreeningError = requestKey && conditionalError?.key === requestKey ? conditionalError.message : ''
   useEffect(() => {
     if (!screeningRequest || !requestKey) { setConditionalBusy(false); return }
     const controller = new AbortController()
     const timeout = window.setTimeout(() => {
       controller.abort('timeout')
+      if (latestScreeningKey.current !== requestKey) return
       setConditionalError({ key: requestKey, message: 'Conditional screen timed out.' })
       setConditionalBusy(false)
     }, 10000)
@@ -367,16 +377,16 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
         if (result.request.property_revision !== expectedPropertyRevision(screeningRequest.assumptions) ||
           result.request.placement_revision !== screeningRequest.assumptions.placement_revision ||
           result.request.model_revision !== screeningRequest.model_revision) throw new Error('Conditional response did not match the current input revisions.')
-        if (!controller.signal.aborted) { setConditionalState({ key: requestKey, result }); setConditionalError(null); setConditionalBusy(false) }
+        if (!controller.signal.aborted && latestScreeningKey.current === requestKey) { setConditionalState({ key: requestKey, result }); setConditionalError(null); setConditionalBusy(false) }
       } catch (error) {
-        if (!controller.signal.aborted) { setConditionalError({ key: requestKey, message: error instanceof Error ? error.message : 'Conditional screen unavailable.' }); setConditionalBusy(false) }
+        if (!controller.signal.aborted && latestScreeningKey.current === requestKey) { setConditionalError({ key: requestKey, message: error instanceof Error ? error.message : 'Conditional screen unavailable.' }); setConditionalBusy(false) }
       } finally {
         window.clearTimeout(timeout)
       }
     }, 300)
     return () => { controller.abort(); window.clearTimeout(timer); window.clearTimeout(timeout) }
   }, [requestKey])
-  const makeEnquiryDoc = () => hasSite ? enquiryDocument(selection, { question, intendedUse: use, timing, budget, access, services, ...projectContext }, measurementResult, imported, live, manual, mode === 'example', foundationAllowanceM, currentScreening, currentAssumptions, pathway, currentScenario, effectiveSettings, propertyScan.result, model) : null
+  const makeEnquiryDoc = () => hasSite ? enquiryDocument(selection, { question, intendedUse: use, timing, budget, access, services, ...projectContext, propertyConcern: live?.parcel.identityConcern }, measurementResult, imported, live, manual, mode === 'example', foundationAllowanceM, currentScreening, currentAssumptions, pathway, currentScenario, effectiveSettings, propertyScan.result, model) : null
   const manualSignature = JSON.stringify({ facts: manual?.facts ?? null, site: manual?.site ?? null })
   const propertyComplete = mode === 'example' || !!(live || selection || mode === 'manual' && manual && manualConfirmedFor === manualSignature)
   const placementComplete = !!(measurementResult || mode === 'manual' && manual?.assessment)
@@ -415,24 +425,34 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   }
   const boundaryReviewRevision = boundaryReviewKey(currentAssumptions)
   const currentMeasurement = measurementResult?.result ?? manual?.assessment
-  const summary = zoningCase ? homeownerSummary({ geometry: measurementResult?.result ?? null,
+  const computedSummary = zoningCase ? homeownerSummary({ geometry: measurementResult?.result ?? null,
     geometryComplete: (!live || live.observation.buildingsState === 'available') && !!measurementResult && overlapFinding(zoningCase, measurementResult.result).complete,
     scenario: currentScenario, screening: currentScreening,
     assumptions: currentAssumptions, settings: effectiveSettings, mapped: mappedZoning, lookup: currentZoning, zoningBusy, zoningError: currentZoningError,
     propertyScan: propertyScan.result, propertyScanBusy: propertyScan.busy, propertyScanError: propertyScan.error, scenarioError: currentScenarioError, screeningError: currentScreeningError, onRetryAvailable: !!zoningKey }) : null
-  if (summary && model.model_id === 'wcch-ch-studio') summary.checks.splice(1, 0, {
+  if (computedSummary && model.model_id === 'wcch-ch-studio') computedSummary.checks.splice(1, 0, {
     label: 'Permanent dwelling suitability', status: 'unknown',
     detail: 'C.H. Studio Pod body dimensions support a footprint comparison. Permanent residential suitability has not been established.',
     gap: { missing: 'A provider-confirmed permanent residential configuration and its supporting documents.',
       affects: 'Space on the property does not establish eligibility for a garden suite.',
       next: 'Ask West Coast Container Homes which residential configuration, foundation and documentation it can supply for this locality.', owner: 'West Coast Container Homes, then City reviewer' },
   })
+  // Pending input identities apply before effects/debounce; retained findings
+  // are display-only and excluded from exports and readiness.
+  const checksPending = geometryPending || buffersPending || !!measurementResult && !currentAssumptions ||
+    !!scenarioKey && !currentScenario && !currentScenarioError ||
+    !!requestKey && !currentScreening && !currentScreeningError ||
+    !!zoningKey && !currentZoning && !currentZoningError || propertyScan.busy
+  const evaluationInputKey = JSON.stringify([geometryPending, placementRevision, currentAssumptions, scenarioKey, requestKey, zoningKey, propertyScan.result, propertyScan.error, estimateBuffers, foundationAllowanceM, use])
+  const displayResult = useRetainedResult({ scopeKey: geometryRevision ? JSON.stringify([geometryRevision, model.model_id, modelSnapshot(model)]) : null,
+    inputKey: evaluationInputKey, current: computedSummary, pending: checksPending })
+  const summary = displayResult.result
   const conflictKey = (check: import('../conditional_screening/HomeownerSummary').SummaryCheck) => findingAcknowledgementKey(check, { geometryRevision, measurement: measurementResult, assumptions: currentAssumptions, streets: streetAdjacency, settings: effectiveSettings, buffers: estimateBuffers, foundation: foundationAllowanceM, installedHeight: scoutingHeight?.key === additionalKey ? scoutingHeight.value : null, intendedUse: use, scan: propertyScan.result })
   const findings = summary ? summaryFindings(summary) : []
   useEffect(() => {
     // Prune old acknowledgements after a coherent input change. Pending request
     // labels are not input changes and cannot erase unrelated reviews.
-    if (!currentAssumptions || !measurementResult) return
+    if (!currentAssumptions || !measurementResult || checksPending) return
     setAcknowledgedConflicts(previous => {
       const retained = previous.filter(key => {
         const stored = JSON.parse(key) as unknown[]
@@ -443,17 +463,17 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       })
       return retained.length === previous.length ? previous : retained
     })
-  }, [geometryRevision, placementRevision, currentAssumptions, effectiveSettings, streetAdjacency, estimateBuffers, foundationAllowanceM, scoutingHeight, use, propertyScan.result])
+  }, [geometryRevision, placementRevision, currentAssumptions, effectiveSettings, streetAdjacency, estimateBuffers, foundationAllowanceM, scoutingHeight, use, propertyScan.result, checksPending])
   const includedFindings = findings.filter(check => !['checked', 'probable'].includes(check.status) && acknowledgedConflicts.includes(conflictKey(check)))
   const currentAcknowledgements = includedFindings.filter(check => check.status === 'conflict')
   const currentOpenQuestions = includedFindings.filter(check => check.status !== 'conflict')
   const outstandingFindings = findings.filter(check => !['checked', 'probable'].includes(check.status) && !includedFindings.includes(check))
-  const readinessBusy = !measurementResult || !!scenarioKey && !currentScenario && scenarioBusy || !!requestKey && !currentScreening && conditionalBusy || propertyScan.busy || !!zoningKey && !currentZoning && zoningBusy
+  const readinessBusy = !measurementResult || checksPending
   const reviewReadiness = summary ? { total: findings.length, addressed: findings.length - outstandingFindings.length, busy: readinessBusy, ready: findings.length > 0 && outstandingFindings.length === 0 && !readinessBusy, targetId: outstandingFindings[0]?.targetId } : undefined
   const readinessSignature = JSON.stringify(reviewReadiness)
   const contextComplete = !!(use.trim() && projectContext.relationship.trim() && projectContext.nextStep.trim())
-  const enquiryDoc = contextComplete ? makeEnquiryDoc() : null
-  const exportMeasurement: OccupiedMeasurement | null = measurementResult ?? (manual?.assessment && manual.site ? {
+  const enquiryDoc = contextComplete && !checksPending ? makeEnquiryDoc() : null
+  const exportMeasurement: OccupiedMeasurement | null = checksPending ? null : measurementResult ?? (manual?.assessment && manual.site ? {
     site: { case_id: 'manual', label: manual.facts.address || 'User-entered local sketch', site: manual.site }, model,
     widthOrigin: 'user', depthOrigin: 'user', result: { ...manual.assessment, checks: manual.assessment.checks.map(check => ({ ...check, source_feature_ids: [], margin_m: null, comparison: null })) },
   } : null)
@@ -483,7 +503,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     const paragraphs = ['I have an approximate proposed placement sketch available. Please let me know the best way to share it.']
     enquiryDoc.sections.push({ heading: 'Placement sketch', paragraphs, emailSummary: paragraphs[0], siteDetails: true })
   }
-  const reportDoc = hasSite ? screeningDocument(selection, { question, intendedUse: use, timing, budget, access, services, ...projectContext }, measurementResult, imported, live, manual, mode === 'example', foundationAllowanceM, currentScreening, currentAssumptions, pathway, currentScenario, effectiveSettings, propertyScan.result, model) : null
+  const reportDoc = hasSite && !checksPending ? screeningDocument(selection, { question, intendedUse: use, timing, budget, access, services, ...projectContext, propertyConcern: live?.parcel.identityConcern }, measurementResult, imported, live, manual, mode === 'example', foundationAllowanceM, currentScreening, currentAssumptions, pathway, currentScenario, effectiveSettings, propertyScan.result, model) : null
   if (reportDoc && currentAcknowledgements.length) {
     const paragraphs = currentAcknowledgements.map(check => `${check.label}: ${check.detail} Acknowledged by the user for discussion with the City/provider. The conflict remains unresolved; City agreement or an exception is not established.`)
     reportDoc.sections.push({ heading: 'Acknowledged conflicts for discussion', paragraphs, emailSummary: paragraphs.join(' ') })
@@ -494,12 +514,12 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   }
   const draftText = enquiryDoc ? enquiryPlainText(enquiryDoc) : ''
   function applyBuffer(edgeId: string, value: number) {
-    if (buffersPending || !geometryRevision || !currentAssumptions || !summary?.checks.some(check => check.resolutions?.some(item => item.edgeId === edgeId && item.bufferM === value))) return
+    if (checksPending || buffersPending || !geometryRevision || !currentAssumptions || !summary?.checks.some(check => check.resolutions?.some(item => item.edgeId === edgeId && item.bufferM === value))) return
     setBufferSuggestion({ edgeId, value, token: ++suggestionSequence.current, geometryRevision, placementRevision })
     setReadyFor(null)
   }
   function applyMove(edgeId: string, distance: number) {
-    if (buffersPending || !geometryRevision || !summary?.checks.some(check => check.resolutions?.some(item => item.edgeId === edgeId && item.moveM === distance))) return
+    if (checksPending || buffersPending || !geometryRevision || !summary?.checks.some(check => check.resolutions?.some(item => item.edgeId === edgeId && item.moveM === distance))) return
     const edge = currentAssumptions?.edges.find(edge => edge.id === edgeId)
     const edges = currentAssumptions?.edges ?? []
     if (!edge || !distance || edges.length !== 4) return
@@ -520,13 +540,14 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     : nextJourneyStep === 'enquiry' ? { label: 'Prepare enquiry', hint: 'Next, turn these findings and open questions into an editable enquiry.' }
     : { label: 'Review quick checks', hint: 'Next, review what looks promising and which questions to include in your enquiry.' }
   const mapConcerns = findings.filter(check => check.status === 'conflict' && ['Distance to boundaries', 'Distance from the main building', 'Front boundary distance', 'Located behind the main building', 'Share of the rear yard'].includes(check.label))
-  const placementConcernsPanel = mapConcerns.length ? <ul>{mapConcerns.map(check => <li key={check.label}><strong>{check.label}: </strong>{check.detail}</li>)}</ul> : undefined
+  const placementConcernsPanel = mapConcerns.length ? <><p hidden={!checksPending} role="status">Updating checks · previous concerns below are awaiting the new measurements.</p><ul>{mapConcerns.map(check => <li key={check.label}><strong>{check.label}: </strong>{check.detail}</li>)}</ul></> : undefined
   function continueWithPlacementConcerns() {
+    if (checksPending) return
     const concerns = findings.filter(check => check.status === 'conflict' && (check.label === 'Space within the property' || mapConcerns.includes(check)))
     setAcknowledgedConflicts(previous => [...new Set([...previous, ...concerns.map(conflictKey)])])
     advanceJourneyStep(nextJourneyStep)
   }
-  const summaryPanel = summary && <HomeownerSummary useQualification={enquiryUseQualification(use, pathway.proposed_use)} onApplyBuffer={applyBuffer} onMove={applyMove} actionsDisabled={buffersPending} acknowledged={includedFindings.map(check => check.label)} onAcknowledge={check => { setAcknowledgedConflicts(previous => previous.includes(conflictKey(check)) ? previous.filter(key => key !== conflictKey(check)) : [...previous, conflictKey(check)]); setReadyFor(null) }} summary={summary} onNavigate={navigateFlag} continuation={{ ...continuation, onContinue: () => advanceJourneyStep(nextJourneyStep) }} />
+  const summaryPanel = summary && <HomeownerSummary updating={displayResult.updating} useQualification={enquiryUseQualification(use, pathway.proposed_use)} onApplyBuffer={applyBuffer} onMove={applyMove} actionsDisabled={buffersPending || checksPending} acknowledged={includedFindings.map(check => check.label)} onAcknowledge={check => { if (checksPending) return; setAcknowledgedConflicts(previous => previous.includes(conflictKey(check)) ? previous.filter(key => key !== conflictKey(check)) : [...previous, conflictKey(check)]); setReadyFor(null) }} summary={summary} onNavigate={navigateFlag} continuation={{ ...continuation, onContinue: () => advanceJourneyStep(nextJourneyStep) }} />
   const placementContinuation = summary && journeyStep !== 'details' && <div className="homeowner-summary__continue"><p>{buffersPending ? 'Save your planning buffers to apply them before continuing.' : continuation.hint}</p><div className="step-action"><button className="builder-continue" type="button" disabled={buffersPending} onClick={() => advanceJourneyStep(nextJourneyStep)}>Next: {continuation.label}<span aria-hidden="true"> →</span></button><StepInfo label={continuation.label}>{continuation.hint} Existing findings and unanswered questions remain in your enquiry.</StepInfo></div><p className="homeowner-summary__continue-note">You can continue with open questions. Your placement and findings stay with your enquiry.</p></div>
   function changeProperty() {
     if (mode === 'live') { siteEdited(); setLive(null); setPropertyReset(value => value + 1) }
@@ -560,6 +581,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     if (propertyFact || target === 'placement-map') setBoundaryMode('place')
     if (target === 'boundary-roles' || target === 'boundary-offsets') { changeBoundaryMode('rear'); setBoundaryEditorOverride(true) }
     if (target === 'street-side') { changeBoundaryMode('front'); target = 'placement-action-front' }
+    if (target === 'builder-intended-use') { openJourneyStep('model'); requestAnimationFrame(() => focusSummaryTarget(document, target, 'start')); return }
     if (target === 'zoning-retry') { setZoningRetry(value => value + 1); return }
     if (target === 'retry-scenario') { setScenarioRetry(value => value + 1); return }
     if (target === 'retry-screening') { setConditionalRetry(value => value + 1); return }
@@ -605,16 +627,21 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       setEmailMessage('Full email body copied.')
     } catch { setEmailMessage('Clipboard unavailable. Select and copy the email body above.') }
   }
-  const technicalEvidence = { schema_version: 'builder-evidence.v1', enquiry_inputs: { question, intendedUse: use, timing, budget, access, services, ...projectContext }, model_catalogue: { snapshot_id: modelSnapshot(model), model }, acknowledged_conflicts_for_discussion: currentAcknowledgements, open_questions_for_discussion: currentOpenQuestions, review_readiness: reviewReadiness, foundation_scenario: { allowance_m: foundationAllowanceM, basis: 'planning_assumption', used_in_preliminary_height: currentScenario?.additional_checks?.some(check => check.id === 'height' && check.basis.startsWith('advertised height')) ?? false }, selection, live, manual, example: mode === 'example' ? exampleCase : null, measurement: measurementResult, zoning_site_assumptions: currentAssumptions, project_settings: zoningCase ? effectiveSettings : null, municipal_zoning_lookup: currentZoning, municipal_zoning_error: currentZoningError || null, property_scan: propertyScan.result, property_scan_error: propertyScan.error || null, placement_scenario_request: scenarioRequest, placement_scenario_result: currentScenario, conditional_screening: currentScreening }
+  const technicalEvidence = { schema_version: 'builder-evidence.v1', evaluation_state: checksPending ? 'updating' : 'current', enquiry_inputs: { question, intendedUse: use, timing, budget, access, services, ...projectContext }, model_catalogue: { snapshot_id: modelSnapshot(model), model }, acknowledged_conflicts_for_discussion: currentAcknowledgements, open_questions_for_discussion: currentOpenQuestions, review_readiness: reviewReadiness, foundation_scenario: { allowance_m: foundationAllowanceM, basis: 'planning_assumption', used_in_preliminary_height: currentScenario?.additional_checks?.some(check => check.id === 'height' && check.basis.startsWith('advertised height')) ?? false }, selection, live, manual, example: mode === 'example' ? exampleCase : null, measurement: measurementResult, zoning_site_assumptions: currentAssumptions, project_settings: zoningCase ? effectiveSettings : null, municipal_zoning_lookup: currentZoning, municipal_zoning_error: currentZoningError || null, property_scan: propertyScan.result, property_scan_error: propertyScan.error || null, placement_scenario_request: scenarioRequest, placement_scenario_result: currentScenario, conditional_screening: currentScreening }
+  const exportIdentity = JSON.stringify([geometryRevision, model.model_id, modelSnapshot(model), checksPending, enquiryDoc, reportDoc, drawingKey, technicalEvidence])
+  const latestExportIdentity = useRef(exportIdentity); latestExportIdentity.current = exportIdentity
   function downloadMarkdown(report = false) {
+    if (checksPending) return
     if (!report) { void exportPlacement('markdown'); return }
     if (!reportDoc) return
     downloadFile('prefab-supporting-report.md', enquiryMarkdown(reportDoc) + '\nComplete coordinates, inputs and calculations are available in the separate technical evidence JSON download.\n', 'text/markdown;charset=utf-8')
   }
   async function exportPlacement(kind: 'png' | 'pdf' | 'package' | 'email' | 'markdown') {
-    if (!contextComplete || !enquiryDoc || exportBusy) return
+    if (!contextComplete || !enquiryDoc || checksPending || exportBusy) return
     if (kind === 'email' && !validRecipient(recipient)) { setExportMessage('Enter a valid recipient email.'); return }
     const capturedKey = drawingKey
+    const capturedIdentity = exportIdentity
+    const assertCurrent = () => { if (latestExportIdentity.current !== capturedIdentity) throw new Error('Inputs changed during export. Save the updated enquiry when checks finish.') }
     setExportBusy(true); setExportMessage('Preparing export…')
     try {
       let assets = drawingAssets
@@ -622,8 +649,8 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       if (exportMeasurement && attach && !assets) {
         assets = await generateDrawing(exportMeasurement)
         if (drawingRevision.current !== capturedKey) throw new Error('Placement changed during export. Generate the current sketch again.')
-        setDrawingExport({ key: capturedKey, assets })
       }
+      assertCurrent()
       if (kind === 'png' || kind === 'pdf') {
         if (!assets) throw new Error('Measure a current placement first.')
         downloadFile(`prefab-placement.${kind}`, new Uint8Array(assets[kind]).buffer, kind === 'png' ? 'image/png' : 'application/pdf')
@@ -636,9 +663,11 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
         setEmailRequestedFor(JSON.stringify([draftText, recipient, includeSiteDetails])); setWebsiteRequestedFor(null)
       } else {
         const { zipSync } = await import('fflate')
+        assertCurrent()
         const files = enquiryPackageFiles(enquiryDoc, reportDoc, [...preparationChecklist({ intendedUse: use, timing, budget, access, services, ...projectContext }), ...currentOpenQuestions.map(item => `${item.label}: unresolved; included for discussion.`)], technicalEvidence, assets)
         downloadFile('prefab-enquiry-package.zip', new Uint8Array(zipSync(files)).buffer, 'application/zip')
       }
+      if (assets) setDrawingExport({ key: capturedKey, assets })
       setExportMessage(kind === 'email' ? 'Unsent .eml draft downloaded. Open it in your email app and check the recipient, body and attachment before sending. Some clients open .eml as a message rather than an editable draft; use the text and drawing downloads if needed.' : 'Export downloaded. Review the approximate drawing and enquiry before sharing.')
     } catch (error) { setExportMessage(error instanceof Error ? error.message : 'Export failed. Please try again.') }
     finally { setExportBusy(false) }
@@ -667,6 +696,8 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       <TechnicalDetails title="Catalogue source and exact model record"><pre>{JSON.stringify({ snapshot_id: modelSnapshot(model), model }, null, 2)}</pre></TechnicalDetails>
       </details>
     </section>
+    <IntendedUseControl value={use} onChange={changeIntendedUse} />
+    {checksPending && <p role="status">Updating checks. Previous findings are shown for reference; copy and save will use the updated results when ready.</p>}
     <EnquiryRecovery enquiry={expanded.next || enquiryReady ? draftText : null} report={reportDoc ? enquiryPlainText(reportDoc) : null} technicalEvidence={JSON.stringify(technicalEvidence, null, 2)} />
     <section className="builder-stage" id="builder-property" aria-labelledby="builder-property-title">
     <p className="eyebrow">Property</p><h2 id="builder-property-title">Start with what you know</h2>
@@ -675,27 +706,27 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     <div id="builder-property-content" hidden={!expanded.property}>
     <div className="builder-entry-choices"><div><strong>Use my own property</strong><p>Search a Victoria address or enter known facts.</p><button type="button" onClick={() => changeMode('live')}>Use my own property</button></div>
       <div><strong>Try an example property</strong><p>Open a saved parcel and roofline with an illustrative {model.name} placement.</p><button type="button" onClick={() => changeMode('example')}>Try an example property</button></div></div>
-    <p className="metadata">Changing property mode clears the current placement, answers and unsent draft. Copy any question you want to keep first.</p>
+    <p className="metadata">Changing property clears its placement, street marks, measurements and property answers. Your model, intended use, timing, budget and contact preferences stay; review any property details you typed in your question.</p>
     <label htmlFor="builder-site-mode">How would you like to enter your property?</label>
     <select id="builder-site-mode" value={mode} onChange={event => changeMode(event.target.value as typeof mode)}>
       <option value="live">Search a Victoria address</option><option value="manual">Enter facts or sketch manually</option><option value="retained">Use the retained example workflow</option><option value="example">Example property / saved data</option>
     </select>
-    {mode === 'live' && <SiteDiscovery autoProceed resetKey={propertyReset} onConfirm={next => { siteEdited(); setLive(next) }} onManual={() => changeMode('manual')} />}
+    {mode === 'live' && <SiteDiscovery autoProceed resetKey={propertyReset} inspectKey={propertyInspect} onConfirm={next => { siteEdited(); setLive(next) }} onManual={() => changeMode('manual')} />}
     {mode === 'retained' && <SitePreparation draft={draft} onDraftChange={next => { setDraft(next); setReadyFor(null) }} selection={selection}
       onEdit={siteEdited} onConfirm={next => { setSelection(next); setImported(false); setMeasurementResult(null); setReadyFor(null); setRevision(value => value + 1) }} />}
       {mode === 'manual' && <ManualSiteInput onChange={value => { if (JSON.stringify(value) !== JSON.stringify(manual)) { setManual(value); setReadyFor(null) } }} footprint={{ widthM: Number(measurement('nominal_exterior_width')?.quantity?.value) || null, depthM: Number(measurement('nominal_exterior_depth')?.quantity?.value) || null, label: `${model.provider} ${model.name} · unreviewed nominal dimensions` }} />}
       {mode === 'manual' && hasSite && <button type="button" onClick={() => setManualConfirmedFor(manualSignature)} disabled={propertyComplete}>Confirm my site description</button>}
     </div>
     </section>
-    {propertyComplete && <div className="builder-selected-property"><strong>Property: {mode === 'example' ? 'Saved Victoria example · not your property' : live?.address.label || manual?.facts.address || 'User-supplied site'}</strong><span>{live ? `${live.parcel.label} · source match, identity and ownership unverified` : 'Approximate and unreviewed'}</span><button type="button" onClick={changeProperty}>Wrong property? Change</button></div>}
+    {propertyComplete && live ? <SelectedProperty value={live} onChangeProperty={changeProperty} onInspectAlternatives={() => { setPropertyInspect(value => value + 1); setExpanded(previous => ({ ...previous, property: true })); setJourneyStep('property'); requestAnimationFrame(() => focusSummaryTarget(document, 'sd-parcels')); }} /> : propertyComplete && <div className="builder-selected-property"><strong>Property: {mode === 'example' ? 'Saved Victoria example · not your property' : live?.address.label || manual?.facts.address || 'User-supplied site'}</strong><span>{live ? `${live.parcel.label} · source match, identity and ownership unverified` : 'Approximate and unreviewed'}</span><button type="button" onClick={changeProperty}>Wrong property? Change</button></div>}
     <section className="builder-stage" id="builder-placement" aria-labelledby="builder-placement-title">
       <p className="eyebrow">Placement</p><h2 id="builder-placement-title">Explore one approximate placement</h2>
       <p>{propertyComplete ? zoningCase ? 'Place the unit and see what is worth exploring.' : placementSummary : 'Choose a property to explore placement.'}</p>
       <button type="button" aria-expanded={expanded.placement && propertyComplete} aria-controls="builder-placement-content" disabled={!propertyComplete} onClick={() => toggleStep('placement')}>{expanded.placement ? 'Collapse placement' : 'Explore placement'}</button>
       <div id="builder-placement-content" hidden={!expanded.placement || !propertyComplete}>
       {mode === 'manual' && <p>Your manual sketch and placement controls are in Property. Reopen that step to adjust them.</p>}
-      {mode === 'example' && <ExampleProperty model={model} placementConcerns={placementConcernsPanel} onContinueUnresolved={continueWithPlacementConcerns} moveSuggestion={moveSuggestion?.geometryRevision === geometryRevision ? moveSuggestion : undefined} evidenceTargetId="builder-geometry-evidence" key={revision} placementContinuation={placementContinuation} placementSummary={summaryPanel} boundaryInteraction={boundaryInteraction} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} />}
-      {mode === 'live' && (liveCase ? <OccupiedLots catalogue={journeyCatalogue} key={revision} placementConcerns={placementConcernsPanel} onContinueUnresolved={continueWithPlacementConcerns} placementContinuation={placementContinuation} placementSummary={summaryPanel} moveSuggestion={moveSuggestion?.geometryRevision === geometryRevision ? moveSuggestion : undefined} evidenceTargetId="builder-geometry-evidence" compactPlacement suppliedCase={liveCase} boundaryInteraction={boundaryInteraction} allowedModelIds={[MODEL_ID]} initialModelId={MODEL_ID} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} showHandoff={false} /> : <p>Select a Victoria property above to open its captured parcel sketch. Available geometry is approximate and unreviewed.</p>)}
+      {mode === 'example' && <ExampleProperty model={model} placementConcerns={placementConcernsPanel} onContinueUnresolved={checksPending ? undefined : continueWithPlacementConcerns} moveSuggestion={moveSuggestion?.geometryRevision === geometryRevision ? moveSuggestion : undefined} evidenceTargetId="builder-geometry-evidence" key={revision} placementContinuation={placementContinuation} placementSummary={summaryPanel} boundaryInteraction={boundaryInteraction} onAssessmentPending={setGeometryPending} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} />}
+      {mode === 'live' && (liveCase ? <OccupiedLots catalogue={journeyCatalogue} key={revision} placementConcerns={placementConcernsPanel} onContinueUnresolved={checksPending ? undefined : continueWithPlacementConcerns} placementContinuation={placementContinuation} placementSummary={summaryPanel} moveSuggestion={moveSuggestion?.geometryRevision === geometryRevision ? moveSuggestion : undefined} evidenceTargetId="builder-geometry-evidence" compactPlacement suppliedCase={liveCase} boundaryInteraction={boundaryInteraction} allowedModelIds={[MODEL_ID]} initialModelId={MODEL_ID} onAssessmentPending={setGeometryPending} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} showHandoff={false} /> : <p>Select a Victoria property above to open its captured parcel sketch. Available geometry is approximate and unreviewed.</p>)}
 
     {zoningCase && <><EvidenceAtFooter targetId="builder-rule-evidence"><section className="builder-placement-results" aria-label="Current placement results">
       <details className="builder-how-checked"><summary>Candidate rules, assumptions and exact evidence</summary>
@@ -709,7 +740,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       <p>Three captured lots are examples with their own parcel and roofline geometry. They are not citywide address coverage. Importing one does not match it to your address or parcel lead.</p>
       {!imported ? <button type="button" onClick={() => { setImported(true); setReadyFor(null) }}>Import a separate retained example for placement</button>
         : <><button type="button" onClick={() => { setImported(false); setMeasurementResult(null); setReadyFor(null); setRevision(value => value + 1) }}>Remove example</button>
-          <OccupiedLots catalogue={journeyCatalogue} key={revision} allowedModelIds={[MODEL_ID]} initialModelId={MODEL_ID} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} showHandoff={false} /></>}
+          <OccupiedLots catalogue={journeyCatalogue} key={revision} allowedModelIds={[MODEL_ID]} initialModelId={MODEL_ID} onAssessmentPending={setGeometryPending} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} showHandoff={false} /></>}
     </section>}
     {mode === 'retained' && !selection && <p>Confirm a site lead above to consider a separate retained placement example. An example is never matched to your site lead.</p>}
       <details className="builder-optional"><summary>Illustrate model height and foundation</summary><p>This illustration is separate from the installed-height comparison above. A foundation allowance does not establish average grade.</p><HeightView key={`height-${heightRevision}`} model={model} foundationAllowanceM={foundationAllowanceM} onFoundationAllowanceChange={value => { setFoundationAllowanceM(value); setReadyFor(null) }} /></details>
@@ -725,7 +756,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       {!hasSite && <p>Add a property or your known site facts above to prepare an unsent enquiry. Your answers stay local to this journey.</p>}
       {hasSite && <><p>First, share three useful facts. Choose Unknown or Prefer not to say if appropriate. These answers stay local until you share the enquiry.</p>
       <div className="builder-questions">
-        <label htmlFor="builder-use">How would you use {model.name}?</label><input id="builder-use" list="builder-use-options" value={use} onChange={event => setUse(event.target.value)} placeholder="Choose a suggestion or type your answer" />
+        <label htmlFor="builder-use">How would you use {model.name}?</label><input id="builder-use" list="builder-use-options" value={use} onChange={event => changeIntendedUse(event.target.value)} placeholder="Choose a suggestion or type your answer" />
         <datalist id="builder-use-options">{['a home for myself', 'family accommodation', 'a rental suite', 'an office', 'Still deciding', 'Unknown', 'Prefer not to say'].map(value => <option key={value} value={value} />)}</datalist>
         <label htmlFor="builder-relationship">Relationship to the property</label><input id="builder-relationship" list="builder-relationship-options" value={projectContext.relationship} onChange={event => setProjectContext(previous => ({ ...previous, relationship: event.target.value }))} placeholder="Choose a suggestion or type your answer" />
         <datalist id="builder-relationship-options">{['I own the property', 'I am considering buying it', 'I am helping the owner', 'Unknown', 'Prefer not to say'].map(value => <option key={value} value={value} />)}</datalist>

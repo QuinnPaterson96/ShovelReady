@@ -143,12 +143,13 @@ export type OccupiedLotsProps = {
   allowedModelIds?: readonly string[]
   initialModelId?: string
   onMeasurement?: (measurement: OccupiedMeasurement | null) => void
+  onAssessmentPending?: (pending: boolean) => void
   showHandoff?: boolean
   suppliedCase?: Case
   boundaryInteraction?: BoundaryMapInteraction
 }
 
-export default function OccupiedLots({ catalogue = bundledCatalogue, allowedModelIds, initialModelId = '', onMeasurement, showHandoff = true, suppliedCase, boundaryInteraction, compactPlacement = false, evidenceTargetId, moveSuggestion, placementSummary, placementContinuation, placementConcerns, onContinueUnresolved }: OccupiedLotsProps) {
+export default function OccupiedLots({ catalogue = bundledCatalogue, allowedModelIds, initialModelId = '', onMeasurement, onAssessmentPending, showHandoff = true, suppliedCase, boundaryInteraction, compactPlacement = false, evidenceTargetId, moveSuggestion, placementSummary, placementContinuation, placementConcerns, onContinueUnresolved }: OccupiedLotsProps) {
   const initialModel = catalogue.models.find(m => m.model_id === initialModelId && (!allowedModelIds || allowedModelIds.includes(m.model_id)))
   const initialDimension = (name: string) => {
     const quantity = initialModel?.measurements.find(m => m.name === name)?.quantity
@@ -246,6 +247,8 @@ export default function OccupiedLots({ catalogue = bundledCatalogue, allowedMode
   const buildingMinimum = assumptions.building.trim() ? number(assumptions.building) : null
   const assumptionsValid = (parcelMinimum === null ? !assumptions.parcel.trim() : parcelMinimum >= 0) &&
     (buildingMinimum === null ? !assumptions.building.trim() : buildingMinimum >= 0)
+  const geometryPending = !!valid && assumptionsValid && !result && !assessmentError
+  useEffect(() => { onAssessmentPending?.(geometryPending) }, [geometryPending])
   async function assess() {
     if (!selected || !valid || !assumptionsValid) return
     invalidate()
