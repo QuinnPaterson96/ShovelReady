@@ -33,7 +33,7 @@ test('switching models retains the property, resets overrides and exports only t
     input.focus(); Object.getOwnPropertyDescriptor(dom.window.HTMLInputElement.prototype, 'value')!.set!.call(input, text)
     input.dispatchEvent(new dom.window.KeyboardEvent('keyup', { key: '5', bubbles: true }))
   })
-  const settle = async () => act(async () => { await new Promise(resolve => setTimeout(resolve, 650)) })
+  const settle = async () => { await act(async () => { await new Promise(resolve => setTimeout(resolve, 650)) }); await act(async () => { await new Promise(resolve => setTimeout(resolve, 450)) }) }
   const evidence = () => JSON.parse((document.getElementById('builder-technical-record') as HTMLTextAreaElement).value)
   try {
     await act(async () => root.render(createElement(BuilderDemo)))

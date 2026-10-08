@@ -45,6 +45,7 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     await act(async () => { const choice = document.getElementById('builder-intended-use') as HTMLSelectElement; choice.value = 'Garden suite'; choice.dispatchEvent(new dom.window.Event('change', { bubbles: true })) })
     await click('Try an example property')
     await act(async () => { await new Promise(resolve => setTimeout(resolve, 550)) })
+    await act(async () => { await new Promise(resolve => setTimeout(resolve, 450)) })
     assert.match(document.querySelector('#builder-quick-checks')!.textContent!, /Review this placement/)
     const map = document.querySelector('#placement-map svg')!
     const summary = document.querySelector('#builder-quick-checks')!
@@ -181,6 +182,7 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     const facts = JSON.parse(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value).zoning_site_assumptions
     assert.deepEqual([facts.building_type.value, facts.building_type.evidence_state], ['single_detached', 'user_confirmed'])
     assert.deepEqual([facts.waterfront.value, facts.waterfront.origin, facts.waterfront.evidence_state], [false, 'user', 'user_confirmed'])
+    await act(async () => { await new Promise(resolve => setTimeout(resolve, 450)) })
     await click('Confirm enquiry & continue →')
     assert.match(document.getElementById('builder-enquiry-content')!.textContent!, /Enquiry confirmed/)
     assert.equal(document.getElementById('builder-enquiry-content')!.hidden, true)
@@ -364,12 +366,12 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
     assert.match(document.querySelector('#builder-quick-checks')!.textContent!, /Distance to boundaries · Preliminary concern/)
     await click('Acknowledge and include in enquiry'); await settle()
     assert.match(document.querySelector('#builder-quick-checks')!.textContent!, /Distance to boundaries · Preliminary concern/)
-    for (const [id, value] of [['builder-use', 'family accommodation'], ['builder-relationship', 'I own the property'], ['builder-nextStep', 'Please advise on suitability.']]) await change(document.getElementById(id) as HTMLInputElement, value)
-    assert.equal(JSON.parse(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value).acknowledged_conflicts_for_discussion.length, 0, 'changed use invalidates this garden-suite concern acknowledgement')
-    await click('Acknowledge and include in enquiry'); await settle()
+    for (const [id, value] of [['builder-use', 'Garden suite'], ['builder-relationship', 'I own the property'], ['builder-nextStep', 'Please advise on suitability.']]) await change(document.getElementById(id) as HTMLInputElement, value)
+    assert.equal(JSON.parse(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value).acknowledged_conflicts_for_discussion.length, 1, 'unchanged intended use preserves its concern acknowledgement')
+    await settle()
     const recipientText = () => document.querySelector<HTMLTextAreaElement>('#builder-enquiry-text')!.value
     assert.match(recipientText(), /falls short.*0.5 m/s)
-    assert.match(recipientText(), /not established legal violations/)
+    assert.match(recipientText(), /Boundary roles and legal measurements require review/)
     assert.doesNotMatch(recipientText(), /Acknowledged conflicts|acknowledged by the user/i)
     assert.equal(JSON.parse(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value).acknowledged_conflicts_for_discussion.length, 1)
     assert.ok(document.querySelector('.homeowner-summary__acknowledged-conflict'))
@@ -537,6 +539,17 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
     await act(async () => [...document.querySelectorAll<HTMLButtonElement>('#waterfront-lot button')].find(node => node.textContent === 'No')!.click()); await settle()
     assert.equal([...document.querySelectorAll('[role="tab"]')].some(tab => tab.textContent === 'Mark waterfront'), false)
     assert.deepEqual(latest.assumptions.waterfront_edge_ids, [])
+
+    // Changing use must reconcile the screen and both human-facing documents;
+    // unknown input does not inherit a garden-suite scenario.
+    await change(document.querySelector<HTMLSelectElement>('#builder-intended-use')!, 'Not sure'); await settle()
+    const unknownEvidence = JSON.parse(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value)
+    assert.equal(unknownEvidence.project_settings.proposal.proposed_use, null)
+    assert.equal(unknownEvidence.enquiry_inputs.intendedUse, 'Not sure')
+    assert.match(document.querySelector('#builder-quick-checks')!.textContent!, /Intended use/)
+    assert.doesNotMatch(recipientText(), /planning comparisons use a garden-suite scenario/)
+    assert.match(recipientText(), /intended use is (?:not yet confirmed|unconfirmed)/i)
+    assert.doesNotMatch(document.querySelector('[aria-label="Supporting screening report"]')!.textContent!, /Height.*Likely fine|Rear-yard occupancy.*Likely fine/s)
 
   } finally {
     await act(async () => root.unmount())

@@ -43,7 +43,8 @@ import { parseScenarioResult, type ScenarioRequest, type ScenarioResult } from '
 import { currentPlacementRevision, expectedPropertyRevision, parseScreeningResult, propertyGeometryRevision, screeningIdentity, type Pathway, type ScreeningRequest, type ScreeningResult } from '../conditional_screening/model'
 import { EnquiryPreview, withPlacementSketch, emailDraftUrl, enquiryEmailBody, enquiryMarkdown, enquiryPlainText,  validRecipient, type EnquiryDocument } from './enquiry'
 import { preparationChecklist } from './manufacturer'
-import { placementDrawing, renderDrawing, downloadFile, attachedEmail, enquiryPackageFiles, type DrawingAssets } from './placementExport'
+import { EnquirySaveOptions } from './EnquirySaveOptions'
+import { placementDrawing, renderDrawing, renderEnquiryPdf, downloadFile, attachedEmail, enquiryPackageFiles, type DrawingAssets } from './placementExport'
 
 const modelValues = (model: CatalogueModel) => {
   const measurement = (name: string) => modelMeasure(model, name)
@@ -507,7 +508,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     enquiryDoc.sections.push({ heading: 'Placement sketch', paragraphs, emailSummary: paragraphs[0], siteDetails: true })
   }
   const reportDoc = hasSite && !checksPending ? screeningDocument(selection, { question, intendedUse: use, timing, budget, access, services, ...projectContext, propertyConcern: live?.parcel.identityConcern }, measurementResult, imported, live, manual, mode === 'example', foundationAllowanceM, currentScreening, currentAssumptions, pathway, currentScenario, effectiveSettings, propertyScan.result, model) : null
-  if (reportDoc && currentAcknowledgements.length) {
+  if (reportDoc && !checksPending && currentAcknowledgements.length) {
     const paragraphs = currentAcknowledgements.map(check => `${check.label}: ${check.detail} Acknowledged by the user for discussion with the City/provider. The conflict remains unresolved; City agreement or an exception is not established.`)
     reportDoc.sections.push({ heading: 'Acknowledged conflicts for discussion', paragraphs, emailSummary: paragraphs.join(' ') })
   }
@@ -639,7 +640,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     if (!reportDoc) return
     downloadFile('prefab-supporting-report.md', enquiryMarkdown(reportDoc) + '\nComplete coordinates, inputs and calculations are available in the separate technical evidence JSON download.\n', 'text/markdown;charset=utf-8')
   }
-  async function exportPlacement(kind: 'png' | 'pdf' | 'package' | 'email' | 'markdown') {
+  async function exportPlacement(kind: 'enquiry-pdf' | 'png' | 'pdf' | 'package' | 'email' | 'markdown') {
     if (!contextComplete || !enquiryDoc || checksPending || exportBusy) return
     if (kind === 'email' && !validRecipient(recipient)) { setExportMessage('Enter a valid recipient email.'); return }
     const capturedKey = drawingKey
@@ -654,7 +655,11 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
         if (drawingRevision.current !== capturedKey) throw new Error('Placement changed during export. Generate the current sketch again.')
       }
       assertCurrent()
-      if (kind === 'png' || kind === 'pdf') {
+      if (kind === 'enquiry-pdf') {
+        const bytes = await renderEnquiryPdf(enquiryDoc, assets)
+        assertCurrent()
+        downloadFile('prefab-enquiry.pdf', new Uint8Array(bytes).buffer, 'application/pdf')
+      } else if (kind === 'png' || kind === 'pdf') {
         if (!assets) throw new Error('Measure a current placement first.')
         downloadFile(`prefab-placement.${kind}`, new Uint8Array(assets[kind]).buffer, kind === 'png' ? 'image/png' : 'application/pdf')
       } else if (kind === 'markdown') {
@@ -757,7 +762,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       <button type="button" aria-expanded={expanded.next} aria-controls="builder-enquiry-content" onClick={() => toggleStep('next')}>{expanded.next ? 'Collapse enquiry' : enquiryReady ? 'Edit enquiry' : 'Review enquiry'}</button>
       <div id="builder-enquiry-content" hidden={!expanded.next}>
       {!hasSite && <p>Add a property or your known site facts above to prepare an unsent enquiry. Your answers stay local to this journey.</p>}
-      {hasSite && <><p>First, share three useful facts. Choose Unknown or Prefer not to say if appropriate. These answers stay local until you share the enquiry.</p>
+      {hasSite && <><p>Review your intended use, relationship to the property and the response you want. Unknown or Prefer not to say are fine. These answers stay local until you share the enquiry.</p>
       <div className="builder-questions">
         <label htmlFor="builder-use">How would you use {model.name}?</label><input id="builder-use" list="builder-use-options" value={use} onChange={event => changeIntendedUse(event.target.value)} placeholder="Choose a suggestion or type your answer" />
         <datalist id="builder-use-options">{['a home for myself', 'family accommodation', 'a rental suite', 'an office', 'Still deciding', 'Unknown', 'Prefer not to say'].map(value => <option key={value} value={value} />)}</datalist>
@@ -786,13 +791,13 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       {enquiryDoc && <section className="builder-drawing-export" aria-label="Placement drawing and enquiry exports"><h3>Share your proposed placement</h3><p>Approximate proposed placement—not a survey or approved site plan. The drawing includes captured outlines, marked edges, gaps, buffers and sources. Access and entrance locations are not established.</p>
         {drawingAssets && <img className="builder-export-preview" src={drawingAssets.pngUrl} alt="Approximate proposed placement with measurements, assumptions and sources" />}
         {!exportMeasurement && <p>No current measured placement is available. Add or recheck a placement to include a drawing.</p>}
-        <div className="builder-email-buttons"><button type="button" disabled={!exportMeasurement || exportBusy} onClick={() => void exportPlacement('png')}>Download placement PNG</button><button type="button" disabled={!exportMeasurement || exportBusy} onClick={() => void exportPlacement('pdf')}>Download placement PDF</button><button type="button" disabled={exportBusy} onClick={() => void exportPlacement('package')}>Download enquiry package</button></div>
+        <EnquirySaveOptions onSave={kind => void exportPlacement(kind)} disabled={checksPending || !contextComplete} busy={exportBusy} hasPlacement={!!exportMeasurement} />
         <p className="metadata">The package keeps the Markdown enquiry and its image together, plus a PDF, supporting evidence and your separate preparation checklist. Standalone Markdown embeds a generated drawing; some Markdown readers do not display embedded images.</p>
         <p role="status">{exportMessage}</p></section>}
       <div className="builder-enquiry-actions">
         {enquiryDoc && <>
         <CopyableRecord id="builder-enquiry-text" label="Plain-text enquiry to copy" value={draftText} />
-        <button type="button" onClick={() => downloadMarkdown()}>Download Markdown enquiry</button></>}
+        </>}
       </div>
       <div className="builder-enquiry-confirm">
         <h3>Happy with your enquiry?</h3><p>You can edit it again later.</p>
