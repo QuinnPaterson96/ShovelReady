@@ -1,0 +1,792 @@
+[
+  {
+    "case": "oakbay-transit",
+    "requested_address": "867 Transit Rd, Oak Bay, BC",
+    "accessed_utc": "2026-10-08T00:42:11.021285+00:00",
+    "geocoder_url": "https://geocoder.api.gov.bc.ca/addresses.json?addressString=867+Transit+Rd%2C+Oak+Bay%2C+BC&maxResults=3&outputSRS=4326",
+    "candidates": [
+      {
+        "address": "867 Transit Rd, Oak Bay, BC",
+        "precision": "CIVIC_NUMBER",
+        "score": 100,
+        "faults": [],
+        "point": {
+          "type": "Point",
+          "crs": {
+            "type": "EPSG",
+            "properties": {
+              "code": 4326
+            }
+          },
+          "coordinates": [
+            -123.309072,
+            48.4184822
+          ]
+        }
+      },
+      {
+        "address": "Transit Rd, Oak Bay, BC",
+        "precision": "STREET",
+        "score": 77,
+        "faults": [
+          {
+            "value": 867,
+            "element": "CIVIC_NUMBER",
+            "fault": "notInAnyBlock",
+            "penalty": 1
+          }
+        ],
+        "point": {
+          "type": "Point",
+          "crs": {
+            "type": "EPSG",
+            "properties": {
+              "code": 4326
+            }
+          },
+          "coordinates": [
+            -123.3095285,
+            48.4191165
+          ]
+        }
+      },
+      {
+        "address": "Oak Bay, BC",
+        "precision": "LOCALITY",
+        "score": 56,
+        "faults": [
+          {
+            "value": "TRANSIT RD",
+            "element": "STREET_NAME",
+            "fault": "notMatched",
+            "penalty": 12
+          }
+        ],
+        "point": {
+          "type": "Point",
+          "crs": {
+            "type": "EPSG",
+            "properties": {
+              "code": 4326
+            }
+          },
+          "coordinates": [
+            -123.3180555,
+            48.4258334
+          ]
+        }
+      }
+    ],
+    "pmbc_url": "https://openmaps.gov.bc.ca/geo/pub/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=pub%3AWHSE_CADASTRE.PMBC_PARCEL_POLY_SV&count=20&outputFormat=application%2Fjson&bbox=-123.309082%2C48.4184722%2C-123.309062%2C48.4184922%2CEPSG%3A4326",
+    "crs": {
+      "type": "name",
+      "properties": {
+        "name": "urn:ogc:def:crs:EPSG::3005"
+      }
+    },
+    "numberMatched": 1,
+    "numberReturned": 1,
+    "parcel_candidates": [
+      {
+        "id": "WHSE_CADASTRE.PMBC_PARCEL_POLY_SV.fid-35b26df0_1a118efc01f_-74f3",
+        "properties": {
+          "PMBC_PP_SYSID": 4804901,
+          "PARCEL_NAME": "006163424",
+          "PLAN_NUMBER": "VIP4004",
+          "PIN": null,
+          "PID": "006163424",
+          "PID_FORMATTED": "006-163-424",
+          "PID_NUMBER": 6163424,
+          "PARCEL_STATUS": "Active",
+          "PARCEL_CLASS": "Subdivision",
+          "OWNER_TYPE": "Private",
+          "PARCEL_START_DATE": null,
+          "MUNICIPALITY": "Oak Bay, The Corporation of the District of",
+          "REGIONAL_DISTRICT": "Capital Regional District",
+          "WHEN_UPDATED": "2019-01-05Z",
+          "FEATURE_AREA_SQM": 897.8891,
+          "FEATURE_LENGTH_M": 133.6604,
+          "OBJECTID": 197127668,
+          "SE_ANNO_CAD_DATA": null
+        },
+        "geometry_type": "Polygon",
+        "valid": true,
+        "covers_first_point": true
+      }
+    ]
+  },
+  {
+    "case": "oakbay-westdowne",
+    "requested_address": "2939 Westdowne Rd, Oak Bay, BC",
+    "accessed_utc": "2026-10-08T00:42:11.779924+00:00",
+    "geocoder_url": "https://geocoder.api.gov.bc.ca/addresses.json?addressString=2939+Westdowne+Rd%2C+Oak+Bay%2C+BC&maxResults=3&outputSRS=4326",
+    "candidates": [
+      {
+        "address": "2939 Westdowne Rd, Oak Bay, BC",
+        "precision": "CIVIC_NUMBER",
+        "score": 100,
+        "faults": [],
+        "point": {
+          "type": "Point",
+          "crs": {
+            "type": "EPSG",
+            "properties": {
+              "code": 4326
+            }
+          },
+          "coordinates": [
+            -123.3199962,
+            48.4428294
+          ]
+        }
+      },
+      {
+        "address": "Westdowne Rd, Oak Bay, BC",
+        "precision": "STREET",
+        "score": 77,
+        "faults": [
+          {
+            "value": 2939,
+            "element": "CIVIC_NUMBER",
+            "fault": "notInAnyBlock",
+            "penalty": 1
+          }
+        ],
+        "point": {
+          "type": "Point",
+          "crs": {
+            "type": "EPSG",
+            "properties": {
+              "code": 4326
+            }
+          },
+          "coordinates": [
+            -123.3193696,
+            48.4454047
+          ]
+        }
+      },
+      {
+        "address": "Oak Bay, BC",
+        "precision": "LOCALITY",
+        "score": 56,
+        "faults": [
+          {
+            "value": "WESTDOWNE RD",
+            "element": "STREET_NAME",
+            "fault": "notMatched",
+            "penalty": 12
+          }
+        ],
+        "point": {
+          "type": "Point",
+          "crs": {
+            "type": "EPSG",
+            "properties": {
+              "code": 4326
+            }
+          },
+          "coordinates": [
+            -123.3180555,
+            48.4258334
+          ]
+        }
+      }
+    ],
+    "pmbc_url": "https://openmaps.gov.bc.ca/geo/pub/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=pub%3AWHSE_CADASTRE.PMBC_PARCEL_POLY_SV&count=20&outputFormat=application%2Fjson&bbox=-123.32000620000001%2C48.4428194%2C-123.3199862%2C48.442839400000004%2CEPSG%3A4326",
+    "crs": {
+      "type": "name",
+      "properties": {
+        "name": "urn:ogc:def:crs:EPSG::3005"
+      }
+    },
+    "numberMatched": 2,
+    "numberReturned": 2,
+    "parcel_candidates": [
+      {
+        "id": "WHSE_CADASTRE.PMBC_PARCEL_POLY_SV.fid--702b30b4_1a118e3141a_-1c5f",
+        "properties": {
+          "PMBC_PP_SYSID": 1412749,
+          "PARCEL_NAME": "005934206",
+          "PLAN_NUMBER": "VIP5858",
+          "PIN": null,
+          "PID": "005934206",
+          "PID_FORMATTED": "005-934-206",
+          "PID_NUMBER": 5934206,
+          "PARCEL_STATUS": "Active",
+          "PARCEL_CLASS": "Subdivision",
+          "OWNER_TYPE": "Private",
+          "PARCEL_START_DATE": null,
+          "MUNICIPALITY": "Oak Bay, The Corporation of the District of",
+          "REGIONAL_DISTRICT": "Capital Regional District",
+          "WHEN_UPDATED": "2024-09-12Z",
+          "FEATURE_AREA_SQM": 1333.6048,
+          "FEATURE_LENGTH_M": 165.7585,
+          "OBJECTID": 195737904,
+          "SE_ANNO_CAD_DATA": null
+        },
+        "geometry_type": "Polygon",
+        "valid": true,
+        "covers_first_point": true
+      },
+      {
+        "id": "WHSE_CADASTRE.PMBC_PARCEL_POLY_SV.fid--702b30b4_1a118e3141a_-1c5e",
+        "properties": {
+          "PMBC_PP_SYSID": 4189819,
+          "PARCEL_NAME": "005934133",
+          "PLAN_NUMBER": "VIP5858",
+          "PIN": null,
+          "PID": "005934133",
+          "PID_FORMATTED": "005-934-133",
+          "PID_NUMBER": 5934133,
+          "PARCEL_STATUS": "Active",
+          "PARCEL_CLASS": "Subdivision",
+          "OWNER_TYPE": "Private",
+          "PARCEL_START_DATE": null,
+          "MUNICIPALITY": "Oak Bay, The Corporation of the District of",
+          "REGIONAL_DISTRICT": "Capital Regional District",
+          "WHEN_UPDATED": "2024-09-12Z",
+          "FEATURE_AREA_SQM": 1328.4091,
+          "FEATURE_LENGTH_M": 165.1943,
+          "OBJECTID": 196874918,
+          "SE_ANNO_CAD_DATA": null
+        },
+        "geometry_type": "Polygon",
+        "valid": true,
+        "covers_first_point": false
+      }
+    ]
+  },
+  {
+    "case": "saanich-kingsley",
+    "requested_address": "3325 Kingsley St, Saanich, BC",
+    "accessed_utc": "2026-10-08T00:42:12.346801+00:00",
+    "geocoder_url": "https://geocoder.api.gov.bc.ca/addresses.json?addressString=3325+Kingsley+St%2C+Saanich%2C+BC&maxResults=3&outputSRS=4326",
+    "candidates": [
+      {
+        "address": "3325 Kingsley St, Saanich, BC",
+        "precision": "CIVIC_NUMBER",
+        "score": 100,
+        "faults": [],
+        "point": {
+          "type": "Point",
+          "crs": {
+            "type": "EPSG",
+            "properties": {
+              "code": 4326
+            }
+          },
+          "coordinates": [
+            -123.3315659,
+            48.4518781
+          ]
+        }
+      },
+      {
+        "address": "3325 Kingsley Pl, Saanich, BC",
+        "precision": "BLOCK",
+        "score": 96,
+        "faults": [
+          {
+            "value": "ST",
+            "element": "STREET_TYPE",
+            "fault": "notMatched",
+            "penalty": 3
+          }
+        ],
+        "point": {
+          "type": "Point",
+          "crs": {
+            "type": "EPSG",
+            "properties": {
+              "code": 4326
+            }
+          },
+          "coordinates": [
+            -123.3318228,
+            48.4529109
+          ]
+        }
+      },
+      {
+        "address": "Kingsley St, Saanich, BC",
+        "precision": "STREET",
+        "score": 77,
+        "faults": [
+          {
+            "value": 3325,
+            "element": "CIVIC_NUMBER",
+            "fault": "notInAnyBlock",
+            "penalty": 1
+          }
+        ],
+        "point": {
+          "type": "Point",
+          "crs": {
+            "type": "EPSG",
+            "properties": {
+              "code": 4326
+            }
+          },
+          "coordinates": [
+            -123.3319935,
+            48.4494507
+          ]
+        }
+      }
+    ],
+    "pmbc_url": "https://openmaps.gov.bc.ca/geo/pub/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=pub%3AWHSE_CADASTRE.PMBC_PARCEL_POLY_SV&count=20&outputFormat=application%2Fjson&bbox=-123.3315759%2C48.4518681%2C-123.3315559%2C48.451888100000005%2CEPSG%3A4326",
+    "crs": {
+      "type": "name",
+      "properties": {
+        "name": "urn:ogc:def:crs:EPSG::3005"
+      }
+    },
+    "numberMatched": 1,
+    "numberReturned": 1,
+    "parcel_candidates": [
+      {
+        "id": "WHSE_CADASTRE.PMBC_PARCEL_POLY_SV.fid--3d0b9653_1a118d14f86_408d",
+        "properties": {
+          "PMBC_PP_SYSID": 2675388,
+          "PARCEL_NAME": "000554294",
+          "PLAN_NUMBER": "VIP1372",
+          "PIN": null,
+          "PID": "000554294",
+          "PID_FORMATTED": "000-554-294",
+          "PID_NUMBER": 554294,
+          "PARCEL_STATUS": "Active",
+          "PARCEL_CLASS": "Subdivision",
+          "OWNER_TYPE": "Private",
+          "PARCEL_START_DATE": null,
+          "MUNICIPALITY": "Saanich, The Corporation of the District of",
+          "REGIONAL_DISTRICT": "Capital Regional District",
+          "WHEN_UPDATED": "2025-06-05Z",
+          "FEATURE_AREA_SQM": 517.1945,
+          "FEATURE_LENGTH_M": 98.4734,
+          "OBJECTID": 196254417,
+          "SE_ANNO_CAD_DATA": null
+        },
+        "geometry_type": "Polygon",
+        "valid": true,
+        "covers_first_point": true
+      }
+    ]
+  },
+  {
+    "case": "saanich-cedar",
+    "requested_address": "4225 Cedar Hill Rd, Saanich, BC",
+    "accessed_utc": "2026-10-08T00:42:12.804587+00:00",
+    "geocoder_url": "https://geocoder.api.gov.bc.ca/addresses.json?addressString=4225+Cedar+Hill+Rd%2C+Saanich%2C+BC&maxResults=3&outputSRS=4326",
+    "candidates": [
+      {
+        "address": "4225 Cedar Hill Rd, Saanich, BC",
+        "precision": "CIVIC_NUMBER",
+        "score": 100,
+        "faults": [],
+        "point": {
+          "type": "Point",
+          "crs": {
+            "type": "EPSG",
+            "properties": {
+              "code": 4326
+            }
+          },
+          "coordinates": [
+            -123.3390256,
+            48.4812382
+          ]
+        }
+      },
+      {
+        "address": "4225 Cedarglen Rd, Saanich, BC",
+        "precision": "BLOCK",
+        "score": 92,
+        "faults": [
+          {
+            "value": "RD",
+            "element": "LOCALITY_GARBAGE",
+            "fault": "notAllowed",
+            "penalty": 3
+          },
+          {
+            "value": "CEDAR",
+            "element": "STREET_NAME",
+            "fault": "partialMatch",
+            "penalty": 1
+          },
+          {
+            "value": "HILL",
+            "element": "STREET_TYPE",
+            "fault": "notMatched",
+            "penalty": 3
+          }
+        ],
+        "point": {
+          "type": "Point",
+          "crs": {
+            "type": "EPSG",
+            "properties": {
+              "code": 4326
+            }
+          },
+          "coordinates": [
+            -123.3426391,
+            48.4812445
+          ]
+        }
+      },
+      {
+        "address": "Cedar Hill Rd, Saanich, BC",
+        "precision": "STREET",
+        "score": 77,
+        "faults": [
+          {
+            "value": 4225,
+            "element": "CIVIC_NUMBER",
+            "fault": "notInAnyBlock",
+            "penalty": 1
+          }
+        ],
+        "point": {
+          "type": "Point",
+          "crs": {
+            "type": "EPSG",
+            "properties": {
+              "code": 4326
+            }
+          },
+          "coordinates": [
+            -123.3348768,
+            48.4713787
+          ]
+        }
+      }
+    ],
+    "pmbc_url": "https://openmaps.gov.bc.ca/geo/pub/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=pub%3AWHSE_CADASTRE.PMBC_PARCEL_POLY_SV&count=20&outputFormat=application%2Fjson&bbox=-123.3390356%2C48.4812282%2C-123.3390156%2C48.4812482%2CEPSG%3A4326",
+    "crs": {
+      "type": "name",
+      "properties": {
+        "name": "urn:ogc:def:crs:EPSG::3005"
+      }
+    },
+    "numberMatched": 1,
+    "numberReturned": 1,
+    "parcel_candidates": [
+      {
+        "id": "WHSE_CADASTRE.PMBC_PARCEL_POLY_SV.fid-35b26df0_1a118efc01f_-74f2",
+        "properties": {
+          "PMBC_PP_SYSID": 2952279,
+          "PARCEL_NAME": "002559790",
+          "PLAN_NUMBER": "VIP27257",
+          "PIN": null,
+          "PID": "002559790",
+          "PID_FORMATTED": "002-559-790",
+          "PID_NUMBER": 2559790,
+          "PARCEL_STATUS": "Active",
+          "PARCEL_CLASS": "Subdivision",
+          "OWNER_TYPE": "Private",
+          "PARCEL_START_DATE": null,
+          "MUNICIPALITY": "Saanich, The Corporation of the District of",
+          "REGIONAL_DISTRICT": "Capital Regional District",
+          "WHEN_UPDATED": "2019-01-05Z",
+          "FEATURE_AREA_SQM": 848.9512,
+          "FEATURE_LENGTH_M": 129.773,
+          "OBJECTID": 196367818,
+          "SE_ANNO_CAD_DATA": null
+        },
+        "geometry_type": "Polygon",
+        "valid": true,
+        "covers_first_point": true
+      }
+    ]
+  },
+  {
+    "case": "langford-lone-oak",
+    "requested_address": "350 Lone Oak Pl, Langford, BC",
+    "accessed_utc": "2026-10-08T00:42:13.291981+00:00",
+    "geocoder_url": "https://geocoder.api.gov.bc.ca/addresses.json?addressString=350+Lone+Oak+Pl%2C+Langford%2C+BC&maxResults=3&outputSRS=4326",
+    "candidates": [
+      {
+        "address": "350 Lone Oak Pl, Langford, BC",
+        "precision": "CIVIC_NUMBER",
+        "score": 100,
+        "faults": [],
+        "point": {
+          "type": "Point",
+          "crs": {
+            "type": "EPSG",
+            "properties": {
+              "code": 4326
+            }
+          },
+          "coordinates": [
+            -123.4893234,
+            48.4589897
+          ]
+        }
+      },
+      {
+        "address": "Lone Oak Pl, Langford, BC",
+        "precision": "STREET",
+        "score": 77,
+        "faults": [
+          {
+            "value": 350,
+            "element": "CIVIC_NUMBER",
+            "fault": "notInAnyBlock",
+            "penalty": 1
+          }
+        ],
+        "point": {
+          "type": "Point",
+          "crs": {
+            "type": "EPSG",
+            "properties": {
+              "code": 4326
+            }
+          },
+          "coordinates": [
+            -123.4859418,
+            48.4614325
+          ]
+        }
+      },
+      {
+        "address": "Lone Tree Pl, Highlands, BC",
+        "precision": "STREET",
+        "score": 57,
+        "faults": [
+          {
+            "value": "OAK PL",
+            "element": "LOCALITY_GARBAGE",
+            "fault": "notAllowed",
+            "penalty": 3
+          },
+          {
+            "value": "LONE",
+            "element": "STREET_NAME",
+            "fault": "partialMatch",
+            "penalty": 1
+          },
+          {
+            "value": "LANGFORD",
+            "element": "LOCALITY",
+            "fault": "isAlias",
+            "penalty": 4
+          },
+          {
+            "value": "",
+            "element": "STREET_TYPE",
+            "fault": "missing",
+            "penalty": 6
+          },
+          {
+            "value": 350,
+            "element": "CIVIC_NUMBER",
+            "fault": "notInAnyBlock",
+            "penalty": 1
+          },
+          {
+            "value": "",
+            "element": "FAULTS",
+            "fault": "tooMany",
+            "penalty": 6
+          }
+        ],
+        "point": {
+          "type": "Point",
+          "crs": {
+            "type": "EPSG",
+            "properties": {
+              "code": 4326
+            }
+          },
+          "coordinates": [
+            -123.51287,
+            48.5135669
+          ]
+        }
+      }
+    ],
+    "pmbc_url": "https://openmaps.gov.bc.ca/geo/pub/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=pub%3AWHSE_CADASTRE.PMBC_PARCEL_POLY_SV&count=20&outputFormat=application%2Fjson&bbox=-123.4893334%2C48.45897969999999%2C-123.4893134%2C48.4589997%2CEPSG%3A4326",
+    "crs": {
+      "type": "name",
+      "properties": {
+        "name": "urn:ogc:def:crs:EPSG::3005"
+      }
+    },
+    "numberMatched": 2,
+    "numberReturned": 2,
+    "parcel_candidates": [
+      {
+        "id": "WHSE_CADASTRE.PMBC_PARCEL_POLY_SV.fid-1f05852d_1a118d16a45_-2f4d",
+        "properties": {
+          "PMBC_PP_SYSID": 4011079,
+          "PARCEL_NAME": "Interest",
+          "PLAN_NUMBER": "EPP73447",
+          "PIN": null,
+          "PID": null,
+          "PID_FORMATTED": null,
+          "PID_NUMBER": null,
+          "PARCEL_STATUS": "Active",
+          "PARCEL_CLASS": "Interest",
+          "OWNER_TYPE": "Unclassified",
+          "PARCEL_START_DATE": "2018-05-24Z",
+          "MUNICIPALITY": "Langford, City of",
+          "REGIONAL_DISTRICT": "Capital Regional District",
+          "WHEN_UPDATED": "2022-09-16Z",
+          "FEATURE_AREA_SQM": 767.9688,
+          "FEATURE_LENGTH_M": 313.2053,
+          "OBJECTID": 196800045,
+          "SE_ANNO_CAD_DATA": null
+        },
+        "geometry_type": "Polygon",
+        "valid": true,
+        "covers_first_point": false
+      },
+      {
+        "id": "WHSE_CADASTRE.PMBC_PARCEL_POLY_SV.fid-1f05852d_1a118d16a45_-2f4c",
+        "properties": {
+          "PMBC_PP_SYSID": 1144195,
+          "PARCEL_NAME": "030498481",
+          "PLAN_NUMBER": "EPP73445",
+          "PIN": null,
+          "PID": "030498481",
+          "PID_FORMATTED": "030-498-481",
+          "PID_NUMBER": 30498481,
+          "PARCEL_STATUS": "Active",
+          "PARCEL_CLASS": "Subdivision",
+          "OWNER_TYPE": "Private",
+          "PARCEL_START_DATE": "2018-05-24Z",
+          "MUNICIPALITY": "Langford, City of",
+          "REGIONAL_DISTRICT": "Capital Regional District",
+          "WHEN_UPDATED": "2025-08-08Z",
+          "FEATURE_AREA_SQM": 7318.5682,
+          "FEATURE_LENGTH_M": 440.8155,
+          "OBJECTID": 195629547,
+          "SE_ANNO_CAD_DATA": null
+        },
+        "geometry_type": "Polygon",
+        "valid": true,
+        "covers_first_point": true
+      }
+    ]
+  },
+  {
+    "case": "langford-jenkins",
+    "requested_address": "1100 Jenkins Ave, Langford, BC",
+    "accessed_utc": "2026-10-08T00:42:13.782141+00:00",
+    "geocoder_url": "https://geocoder.api.gov.bc.ca/addresses.json?addressString=1100+Jenkins+Ave%2C+Langford%2C+BC&maxResults=3&outputSRS=4326",
+    "candidates": [
+      {
+        "address": "1100 Jenkins Ave, Langford, BC",
+        "precision": "BLOCK",
+        "score": 99,
+        "faults": [],
+        "point": {
+          "type": "Point",
+          "crs": {
+            "type": "EPSG",
+            "properties": {
+              "code": 4326
+            }
+          },
+          "coordinates": [
+            -123.5227483,
+            48.4419186
+          ]
+        }
+      },
+      {
+        "address": "Jenkins Ave, Langford, BC",
+        "precision": "STREET",
+        "score": 77,
+        "faults": [
+          {
+            "value": 1100,
+            "element": "CIVIC_NUMBER",
+            "fault": "notInAnyBlock",
+            "penalty": 1
+          }
+        ],
+        "point": {
+          "type": "Point",
+          "crs": {
+            "type": "EPSG",
+            "properties": {
+              "code": 4326
+            }
+          },
+          "coordinates": [
+            -123.5173941,
+            48.4414697
+          ]
+        }
+      },
+      {
+        "address": "Langford, BC",
+        "precision": "LOCALITY",
+        "score": 56,
+        "faults": [
+          {
+            "value": "JENKINS AVE",
+            "element": "STREET_NAME",
+            "fault": "notMatched",
+            "penalty": 12
+          }
+        ],
+        "point": {
+          "type": "Point",
+          "crs": {
+            "type": "EPSG",
+            "properties": {
+              "code": 4326
+            }
+          },
+          "coordinates": [
+            -123.5044444,
+            48.4497222
+          ]
+        }
+      }
+    ],
+    "pmbc_url": "https://openmaps.gov.bc.ca/geo/pub/wfs?service=WFS&version=2.0.0&request=GetFeature&typeNames=pub%3AWHSE_CADASTRE.PMBC_PARCEL_POLY_SV&count=20&outputFormat=application%2Fjson&bbox=-123.5227583%2C48.4419086%2C-123.5227383%2C48.441928600000004%2CEPSG%3A4326",
+    "crs": {
+      "type": "name",
+      "properties": {
+        "name": "urn:ogc:def:crs:EPSG::3005"
+      }
+    },
+    "numberMatched": 1,
+    "numberReturned": 1,
+    "parcel_candidates": [
+      {
+        "id": "WHSE_CADASTRE.PMBC_PARCEL_POLY_SV.fid--3d0b9653_1a118d14f86_408e",
+        "properties": {
+          "PMBC_PP_SYSID": 3408152,
+          "PARCEL_NAME": "028682718",
+          "PLAN_NUMBER": "VIP78546",
+          "PIN": null,
+          "PID": "028682718",
+          "PID_FORMATTED": "028-682-718",
+          "PID_NUMBER": 28682718,
+          "PARCEL_STATUS": "Active",
+          "PARCEL_CLASS": "Subdivision",
+          "OWNER_TYPE": "Local Government",
+          "PARCEL_START_DATE": "2011-10-03Z",
+          "MUNICIPALITY": "Langford, City of",
+          "REGIONAL_DISTRICT": "Capital Regional District",
+          "WHEN_UPDATED": "2026-03-17Z",
+          "FEATURE_AREA_SQM": 60091.364,
+          "FEATURE_LENGTH_M": 2552.0755,
+          "OBJECTID": 196554783,
+          "SE_ANNO_CAD_DATA": null
+        },
+        "geometry_type": "Polygon",
+        "valid": true,
+        "covers_first_point": false
+      }
+    ]
+  }
+]
