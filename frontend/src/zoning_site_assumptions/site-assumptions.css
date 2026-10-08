@@ -78,10 +78,11 @@
 @media (max-width: 760px) { .boundary-action-panel[data-mode="rear"] > .boundary-map-tools, .builder-example-layout.boundary-action-panel[data-mode="rear"] > .builder-example-controls { grid-column: 1; grid-row: auto; } }
 
 .map-source-help { display: flex; align-items: center; gap: .5rem; color: var(--ink-muted); font-size: .85rem; margin: .4rem 0; }
+.boundary-action-panel[data-mode="rear"] > .builder-placement-concerns { grid-column: 1 / -1; grid-row: 5; min-width: 0; }
 .boundary-action-panel[data-mode="rear"] > .map-source-help { grid-column: 1; grid-row: 4; }
-.boundary-action-panel[data-mode="rear"] > .builder-placement-next { grid-row: 5; }
-.boundary-action-panel[data-mode="rear"] > .builder-map-summary { grid-row: 6; }
+.boundary-action-panel[data-mode="rear"] > .builder-placement-next { grid-row: 6; }
+.boundary-action-panel[data-mode="rear"] > .builder-map-summary { grid-row: 7; }
 .builder-example-layout.boundary-action-panel[data-mode="rear"] > .builder-placement-next { grid-row: 2; }
 .builder-example-layout.boundary-action-panel[data-mode="rear"] > .builder-map-summary { grid-row: 3; }
 .zsa .homeowner-summary__continue .builder-continue { flex: 1; text-align: left; }
-@media (max-width: 760px) { .boundary-action-panel[data-mode="rear"] > :is(.map-source-help, .builder-placement-next, .builder-map-summary), .builder-example-layout.boundary-action-panel[data-mode="rear"] > :is(.builder-placement-next, .builder-map-summary) { grid-row: auto; } }
+@media (max-width: 760px) { .boundary-action-panel[data-mode="rear"] > :is(.map-source-help, .builder-placement-concerns, .builder-placement-next, .builder-map-summary), .builder-example-layout.boundary-action-panel[data-mode="rear"] > :is(.builder-placement-next, .builder-map-summary) { grid-row: auto; } }

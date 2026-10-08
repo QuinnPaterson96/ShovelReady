@@ -116,6 +116,32 @@ artifact review, not human validation or verification of legal/source accuracy.
 
 ## Review setup
 
+### October 8 follow-up: street answers and end-of-placement review
+
+Marking one or more street edges now saves the street answer immediately, with
+`completion_method: marking`. Unmarked edges are explicitly assumed not to adjoin
+a street; the answer is user supplied, not map-verified or a legal boundary role.
+There is no additional completeness checkbox. Not sure and removing the last mark
+leave completeness false. Navigation itself still changes no street answer.
+The API accepts the additive completion provenance and preserves existing payloads.
+
+The homeowner acknowledgement panel appears at the end of boundary/buffer review,
+after the editor and before Next. It no longer interrupts movement or street marking.
+Existing buffer/movement suggestions use the same rendering and handlers here and
+in the detailed checklist; no additional geometric recommendation is invented.
+Pending-input guards and unresolved-conflict acknowledgement behavior are preserved.
+
+Verification: 171 frontend behavioral checks and TypeScript/Vite build; 36 stateless
+conditional-screening/scenario HTTP checks and targeted ruff. Regressions cover a
+single marked street, additional marks, removal of the last mark, Not sure through
+navigation, enquiry/report coherence and the panel order/shared suggestion actions.
+These are software checks, not source or homeowner validation. Fresh browser access
+to the stale local-preview tab was rejected by browser policy, so visual browser
+verification of this follow-up remains pending with the product/QA owner. Prior
+round screenshots and browser walkthroughs do not validate the new presentation.
+
+No main merge, deployment or provider communication was performed.
+
 Build frontend, then PowerShell `$env:SHOVELREADY_ENV='demo'` and
 `python -m uv run --locked uvicorn app.main:app --host 127.0.0.1 --port 8013`.
 Open localhost, Explore prefab models, select intended use and a named case. Search

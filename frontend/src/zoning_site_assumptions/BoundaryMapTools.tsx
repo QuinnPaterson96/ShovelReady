@@ -43,7 +43,6 @@ export type BoundaryMapInteraction = {
   suggestedRoles?: Record<string, import('./model').EdgeRole>
   streetIds?: string[]
   allStreetsMarked?: boolean
-  onStreetComplete?: (complete: boolean) => void
   editor?: ReactNode
   selectedId?: string | null
   edges: BoundaryEdge[]
@@ -90,14 +89,13 @@ export function BoundaryMapTools({ interaction }: { interaction: BoundaryMapInte
     <BoundaryRoleHelp />
     {!supported && <p>This outline needs manual review. Marks record your assumptions; street-side suggestions cannot resolve its frontage.</p>}
     {mode === 'front' && <>
-      <p>Click every property edge that borders a street. Click a marked edge again to remove it. Your unit stays in position.</p>
+      <p>Click every property edge that borders a street. Your marks save this answer immediately; other edges are assumed not to adjoin a street. Click a marked edge again to remove it, or choose Not sure to leave street context unknown. Your unit stays in position.</p>
       <div className="boundary-map-buttons">{exterior.map((edge, index) => <button type="button" key={edge.id}
         aria-pressed={marked.includes(edge.id)} onClick={() => onSelect(edge.id)}>Edge {index + 1} borders a street</button>)}
         <button type="button" onClick={() => onSelect(null)}>Not sure · clear street marks</button>
       </div>
-      <label className="boundary-map-single"><input type="checkbox" checked={complete} onChange={event => interaction.onStreetComplete?.(event.target.checked)} /> I've marked all street edges</label>
-      <p role="status">{!complete ? 'Unmarked edges remain uncertain. Changing a mark clears this confirmation.' : marked.length === 1 && supported ? 'For this simple one-street sketch, front, opposite rear and side roles are suggestions only. Adjust boundary facts if you can support them.' : 'Street marks are recorded. In Adjust boundaries, mark Front or Rear to suggest the other roles; use your property plan to support your choice.'}</p>
-      <p><strong>Street information: your input · {complete ? 'you confirmed all street edges are marked' : marked.length ? 'partial marks; completion not confirmed' : 'not sure or not yet marked'}.</strong> These are your observations, not an independent map verification.</p>
+      <p role="status">{!complete ? 'Street context remains unknown. Mark a known street edge to save an answer, or continue with Not sure.' : marked.length === 1 && supported ? 'Street answer saved. For this simple one-street sketch, front, opposite rear and side roles are suggestions only. Adjust boundary facts if you can support them.' : 'Street answer saved. In Adjust boundaries, mark Front or Rear to suggest the other roles; use your property plan to support your choice.'}</p>
+      <p><strong>Street information: your input · {complete ? 'marked streets; other edges assumed not street-adjoining' : marked.length ? 'previous partial marks; completeness unresolved' : 'not sure or not yet marked'}.</strong> These are your observations, not an independent map verification.</p>
       <p>Grey road bands show your street marks only: no measured road width, surveyed location or access point is implied.</p>
     </>}
     {mode === 'waterfront' && <>

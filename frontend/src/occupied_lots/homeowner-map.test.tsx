@@ -46,7 +46,7 @@ test('tiny observed overlap and entered-target shortfall stay material beside th
 test('partial street marks retain unknown completion and role help uses accessible disclosure', () => {
   const html = renderToStaticMarkup(createElement(BoundaryMapTools, { interaction: { ...interaction,
     mode: 'front', streetIds: [interaction.edges[0].id], allStreetsMarked: false } }))
-  assert.match(html, /partial marks; completion not confirmed/)
+  assert.match(html, /previous partial marks; completeness unresolved/)
   assert.match(html, /Not sure · clear street marks/)
   assert.match(html, /<details class="boundary-role-help"><summary>/)
   assert.match(html, /role="img" aria-labelledby=/)
