@@ -1,18 +1,37 @@
 import { roadBands } from './roads'
-import type { ReactNode } from 'react'
+import { useId, type ReactNode } from 'react'
 import { type Feature } from '../occupied_lots/contract'
 import { ordinaryFourEdgeBoundary, type BoundaryEdge, type BoundaryMapMode } from './model'
 
 /** Sketch vocabulary only; the legal classification remains a separate reviewed fact. */
 export function BoundaryRoleHelp() {
-  return <details className="boundary-role-help"><summary>What do front, rear, side and street-side mean?</summary>
-    <p>These words label your preliminary property sketch. Check a survey or reliable property plan; a street mark alone does not establish a legal lot-line role.</p>
-    <dl><dt>Front</dt><dd>The boundary treated as the front in a complete placement scenario. It often faces a street; corners and through lots need review.</dd>
-      <dt>Rear</dt><dd>The boundary treated as the back of that same scenario. On a simple four-edge lot it is opposite the front; unusual lots may differ.</dd>
-      <dt>Side</dt><dd>A remaining boundary that is not treated as front, rear or street-side in that scenario.</dd>
-      <dt>Street-side (flanking street)</dt><dd>A side boundary adjoining another street. It can have a different candidate distance requirement from an ordinary side.</dd>
-      <dt>Not sure</dt><dd>Leave the role unknown. Mark known streets separately, and ask the property contact or City reviewer to confirm unclear roles.</dd></dl>
-    <p>The candidate comparisons here use the City of Victoria garden-suite packet shown with each result. These sketch definitions do not verify that packet's current legal applicability or supply a surveyed classification.</p>
+  const id = useId()
+  return <details className="boundary-role-help"><summary>Boundary roles &amp; planning margins · illustrated help</summary>
+    <figure>
+      <svg viewBox="0 0 420 210" role="img" aria-labelledby={id}>
+        <title id={id}>Illustrative corner lot: front faces a street, rear is opposite, and street-side faces a second street. A planning margin is deducted from the mapped gap.</title>
+        <rect className="boundary-help-street" x="20" y="165" width="220" height="30" />
+        <rect className="boundary-help-street" x="200" y="20" width="40" height="145" />
+        <rect className="boundary-help-parcel" x="50" y="35" width="150" height="125" />
+        <text x="95" y="27">Rear</text><text x="100" y="155">Front</text>
+        <text x="12" y="90">Side</text><text x="203" y="90">Street-</text><text x="203" y="105">side</text>
+        <text x="98" y="185">Street</text>
+        <rect className="boundary-help-unit" x="108" y="60" width="48" height="40" />
+        <text x="120" y="85">Unit</text>
+        <path className="boundary-help-margin" d="M50 43h22v108H50" />
+        <text x="268" y="57">Mapped edge</text><path className="boundary-help-parcel" d="M275 65v100" />
+        <path className="boundary-help-margin" d="M300 65v100" />
+        <rect className="boundary-help-unit" x="345" y="88" width="55" height="55" />
+        <text x="351" y="121">Unit</text>
+        <path className="boundary-help-gap" d="M278 77h64m-64 0 6-4m-6 4 6 4m58-4-6-4m6 4-6 4" />
+        <text x="269" y="181">Gap − margin</text><text x="269" y="198">= planning estimate</text>
+      </svg>
+      <figcaption>Illustration only · no measured fit or legal boundary classification.</figcaption>
+    </figure>
+    <p><strong>Front</strong> is the chosen front in one complete sketch; <strong>rear</strong> is opposite on a simple four-edge lot. <strong>Side</strong> is another edge; <strong>street-side</strong> adjoins a second street. Corners, through lots and unusual outlines need review.</p>
+    <p>A <strong>planning margin</strong> leaves extra room for uncertainty: it is subtracted from the approximate mapped gap. It is your editable allowance, not a required setback or a correction to the map. Reducing it does not improve the underlying measurement.</p>
+    <p><strong>I don’t know:</strong> keep the role unknown or choose Not sure in the controls. Mark only streets you know; ask for a property plan or City review when the classification changes the decision.</p>
+    <p>These labels support the stated City of Victoria garden-suite comparison. A survey and applicable source rule are still needed to establish legal roles and distances.</p>
   </details>
 }
 
