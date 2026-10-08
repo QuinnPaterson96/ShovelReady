@@ -1,12 +1,13 @@
+import { StepInfo } from '../StepInfo'
 import { roadBands } from './roads'
 import { useId, type ReactNode } from 'react'
 import { type Feature } from '../occupied_lots/contract'
 import { ordinaryFourEdgeBoundary, type BoundaryEdge, type BoundaryMapMode } from './model'
 
 /** Sketch vocabulary only; the legal classification remains a separate reviewed fact. */
-export function BoundaryRoleHelp() {
+export function BoundaryRoleHelp({ compact = false }: { compact?: boolean }) {
   const id = useId()
-  return <details className="boundary-role-help"><summary>Boundary roles &amp; planning margins · illustrated help</summary>
+  const content = <>
     <figure>
       <svg viewBox="0 0 420 210" role="img" aria-labelledby={id}>
         <title id={id}>Illustrative corner lot: front faces a street, rear is opposite, and street-side faces a second street. A planning margin is deducted from the mapped gap.</title>
@@ -32,7 +33,8 @@ export function BoundaryRoleHelp() {
     <p>A <strong>planning margin</strong> leaves extra room for uncertainty: it is subtracted from the approximate mapped gap. It is your editable allowance, not a required setback or a correction to the map. Reducing it does not improve the underlying measurement.</p>
     <p><strong>I don’t know:</strong> keep the role unknown or choose Not sure in the controls. Mark only streets you know; ask for a property plan or City review when the classification changes the decision.</p>
     <p>These labels support the stated City of Victoria garden-suite comparison. A survey and applicable source rule are still needed to establish legal roles and distances.</p>
-  </details>
+  </>
+  return compact ? <StepInfo label="Boundary roles & planning margins" className="boundary-role-info"><strong>Boundary roles &amp; planning margins</strong><div className="boundary-role-help">{content}</div></StepInfo> : <details className="boundary-role-help"><summary>Boundary roles &amp; planning margins · illustrated help</summary>{content}</details>
 }
 
 export type BoundaryMapInteraction = {
@@ -85,28 +87,28 @@ export function BoundaryMapTools({ interaction }: { interaction: BoundaryMapInte
   const complete = interaction.allStreetsMarked ?? false
   const exterior = edges.filter(edge => edge.ring === 0)
   const supported = ordinaryFourEdgeBoundary(edges)
-  return <div className="boundary-map-tools" hidden={mode === 'place'} aria-label="Boundary selection controls">
+  return <div className="boundary-map-tools" hidden={mode === 'place'} data-mode={mode} aria-label="Boundary selection controls">
     {!supported && <p>This outline needs manual review. Marks record your assumptions; street-side suggestions cannot resolve its frontage.</p>}
     {mode === 'front' && <>
-      <p>Click street-adjoining edges on the map. Click again to remove a mark. Marks save immediately; other edges are assumed not to adjoin a street.</p>
-      <button type="button" onClick={() => onSelect(null)}>Not sure · clear street marks</button>
-      <details><summary>Mark without the map</summary>
-      <div className="boundary-map-buttons">{exterior.map((edge, index) => <button type="button" key={edge.id}
-        aria-pressed={marked.includes(edge.id)} onClick={() => onSelect(edge.id)}>Edge {index + 1} borders a street</button>)}
+      <div className="boundary-street-toolbar">
+        <button type="button" aria-label="Not sure · clear street marks" onClick={() => onSelect(null)}>Not sure</button>
+        <details className="boundary-keyboard"><summary>Mark without the map</summary>
+          <div className="boundary-map-buttons">{exterior.map((edge, index) => <button type="button" key={edge.id}
+            aria-pressed={marked.includes(edge.id)} onClick={() => onSelect(edge.id)}>Edge {index + 1} borders a street</button>)}</div>
+        </details>
+        <StepInfo label="your street marks"><p>Click a marked edge again to remove it. Marks save immediately; other edges are assumed not to adjoin a street. Not sure clears the marks and leaves street context unknown.</p>
+          <p><strong>Street information: your input · {complete ? 'marked streets; other edges assumed not street-adjoining' : marked.length ? 'previous partial marks; completeness unresolved' : 'not sure or not yet marked'}.</strong> These are your observations, not an independent map verification.</p>
+          <p>For a simple one-street lot, front, opposite rear and side roles are suggestions. Grey road bands illustrate your marks, not measured road width or access.</p>
+        </StepInfo>
       </div>
-      </details>
-      <p role="status">{!complete ? 'Street context remains unknown. Mark a known street edge to save an answer, or continue with Not sure.' : marked.length === 1 && supported ? 'Street answer saved. For this simple one-street sketch, front, opposite rear and side roles are suggestions only. Adjust boundary facts if you can support them.' : 'Street answer saved. In Adjust boundaries, mark Front or Rear to suggest the other roles; use your property plan to support your choice.'}</p>
-      <details><summary>About your street marks</summary>
-        <p><strong>Street information: your input · {complete ? 'marked streets; other edges assumed not street-adjoining' : marked.length ? 'previous partial marks; completeness unresolved' : 'not sure or not yet marked'}.</strong> These are your observations, not an independent map verification.</p>
-        <p>Grey road bands show your street marks only: no measured road width, surveyed location or access point is implied.</p>
-      </details>
+      <p role="status" className="boundary-street-status">{complete ? `${marked.length} ${marked.length === 1 ? 'street' : 'streets'} marked · saved` : marked.length ? `${marked.length} marked · completeness unknown` : 'Street context unknown · you can continue'}</p>
     </>}
     {mode === 'waterfront' && <>
       <p>Mark every edge adjoining water. Click again to remove a mark. Waterfront edges are separate from street edges and front/rear roles.</p>
       <div className="boundary-map-buttons">{exterior.map((edge, index) => <button key={edge.id} type="button" aria-pressed={interaction.waterfrontIds?.includes(edge.id) ?? false} onClick={() => onSelect(edge.id)}>Edge {index + 1} adjoins water</button>)}<button type="button" onClick={() => onSelect(null)}>Not sure · clear waterfront marks</button></div>
       <p>These marks record your observations. Waterfront front-line classification and special siting provisions still need a reviewed property plan.</p>
     </>}
-    {interaction.editor}
+    <div hidden={mode !== 'rear'}>{interaction.editor}</div>
   </div>
 }
 

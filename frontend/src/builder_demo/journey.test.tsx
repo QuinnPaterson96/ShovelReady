@@ -21,6 +21,12 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
   const originals = new Map<string, PropertyDescriptor | undefined>()
   const expose = (name: string, value: unknown) => { originals.set(name, Object.getOwnPropertyDescriptor(globalThis, name)); Object.defineProperty(globalThis, name, { configurable: true, writable: true, value }) }
   for (const [name, value] of Object.entries({ Element: dom.window.Element, HTMLElement: dom.window.HTMLElement, window: dom.window, document: dom.window.document, navigator: dom.window.navigator, requestAnimationFrame: (cb: () => void) => setTimeout(cb, 0), IS_REACT_ACT_ENVIRONMENT: true })) expose(name, value)
+  let mapVisibility!: (visible: boolean) => void
+  expose('IntersectionObserver', class {
+    constructor(callback: (entries: { isIntersecting: boolean }[]) => void) { mapVisibility = visible => callback([{ isIntersecting: visible }]) }
+    observe() {}
+    disconnect() {}
+  })
   const fixture = JSON.parse(readFileSync('src/scenario_handoff/retained-assessment.fixture.json', 'utf8'))
   let releaseLate!: () => void
   let geometryCalls = 0
@@ -52,6 +58,12 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     assert.ok(map.compareDocumentPosition(summary) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING)
     assert.ok(document.querySelector('.boundary-map-tools')!.compareDocumentPosition(document.querySelector('.builder-placement-next')!) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING)
     assert.equal(document.querySelector('.occupied-map-concerns'), null, 'movement is not interrupted by an acknowledgement panel')
+    const beforeFloating = document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value
+    await act(async () => mapVisibility(true))
+    assert.ok(document.querySelector('.builder-placement-next--floating'), 'Next floats while the map is in view')
+    await act(async () => mapVisibility(false))
+    assert.equal(document.querySelector('.builder-placement-next--floating'), null, 'Next returns to the document when the map leaves view')
+    assert.equal(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value, beforeFloating, 'presentation changes do not edit the scenario')
     assert.ok(document.querySelector('.builder-placement-next')!.compareDocumentPosition(summary) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING)
     assert.equal(document.querySelector<HTMLDetailsElement>('.homeowner-summary__checks')!.open, true)
     await act(async () => document.querySelector<HTMLButtonElement>('.homeowner-summary__counts .homeowner-summary__review')!.click())
@@ -91,7 +103,7 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     assert.match(document.querySelector('.builder-journey-rail')!.textContent!, /Boundaries✓Reviewed/)
     await click('Mark street edges')
     assert.deepEqual(JSON.parse(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value).zoning_site_assumptions, afterAccept.zoning_site_assumptions, 'reopening preserves saved selection and accepted proposals')
-    await click('Not sure · clear street marks')
+    await click('Not sure')
     await click('Next: Review boundaries →')
     assert.deepEqual(JSON.parse(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value).zoning_site_assumptions.street_adjacency.edge_ids, [])
     await click('Mark street edges')
@@ -429,7 +441,7 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
     assert.equal(document.querySelectorAll('#boundary-offsets input').length, 4)
     await click('Mark street edges'); await settle()
     assert.equal(latest.assumptions.street_adjacency?.all_marked, true, 'opening streets preserves explicit completion')
-    await click('Not sure · clear street marks'); await settle()
+    await click('Not sure'); await settle()
     await click('Edge 1 borders a street'); await settle()
     assert.equal(latest.assumptions.street_adjacency?.all_marked, true, 'one marked street is a complete answer')
     assert.equal(document.querySelector('.boundary-map-single input'), null)

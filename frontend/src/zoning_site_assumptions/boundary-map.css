@@ -4,6 +4,12 @@
 .boundary-map-tools button[aria-pressed="true"] { background: var(--primary-soft); border-color: var(--primary); }
 .boundary-map-tools :is(button, input):focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 .boundary-map-tools p { color: var(--ink-muted); }
+.boundary-map-tools[data-mode="front"] { margin: .25rem 0; padding: 0; border: 0; background: transparent; }
+.boundary-street-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.boundary-keyboard { flex: 1; min-width: 10rem; }
+.builder-demo .boundary-keyboard > summary { background: transparent; border: 0; padding: .5rem; margin: 0; min-height: 44px; }
+.boundary-keyboard[open] { flex-basis: 100%; }
+.boundary-street-status { margin: .25rem 0; font-size: .85rem; }
 .boundary-map-single { display: flex; align-items: center; gap: .5rem; margin-top: .8rem; }
 .boundary-map-edge { stroke: var(--copper); stroke-width: 3; vector-effect: non-scaling-stroke; pointer-events: none; }
 .boundary-map-edge--selected { stroke: var(--primary); stroke-width: 5; }
