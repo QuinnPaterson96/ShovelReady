@@ -94,3 +94,14 @@ separate geometry regression, not a substitute for either reported case.
   remain SR-14/SR-15. Current tab text recovery is historical, not a current assessment.
 
 Release verification and final commit identities are recorded in the PR handoff.
+
+## Final live visual correction
+
+After integration deployment, parent browser inspection reproduced invisible SVG
+roof/main/model/scale glyphs despite correct accessible names and bounding boxes.
+Text anchored directly at large EPSG:3157 coordinates was not painted. The focused
+follow-up renders glyphs at local zero coordinates and translates each label to its
+existing map anchor, matching the established boundary-overlay pattern. Geometry,
+answers, measurements and finding status are unchanged. Local full-size browser
+inspection confirms all four labels visibly paint. This is a parent visual check,
+not independent user validation; the tester follow-up browser was unavailable.

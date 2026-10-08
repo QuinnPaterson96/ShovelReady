@@ -70,8 +70,8 @@ export function OccupiedLotPreview({ selected, placement, onMove, nudgeMetres, c
         const coords = points(b), centreX = (Math.min(...coords.map(p => p[0])) + Math.max(...coords.map(p => p[0]))) / 2, centreY = (Math.min(...coords.map(p => p[1])) + Math.max(...coords.map(p => p[1]))) / 2
         const main = b.id === boundaryInteraction?.mainBuilding?.id
         return <g key={b.id} data-main-building={main || undefined}><path d={path(b)} className={main ? 'occupied-roof--main' : undefined} fill="var(--map-roof-fill)" stroke={conflictIds?.has(b.id) ? 'var(--danger)' : 'var(--map-roof-stroke)'} strokeDasharray={conflictIds?.has(b.id) ? '7 4' : undefined} fillRule="evenodd" vectorEffect="non-scaling-stroke" strokeWidth={conflictIds?.has(b.id) || main ? '4' : '2'}><title>{`Roof ${i + 1}${main ? ': main building, ' + (boundaryInteraction?.mainBuildingAssumed ? 'assumed' : 'your selection') : ''}${conflictIds?.has(b.id) ? '; observed conflict' : ''}`}</title></path>
-          <text x={centreX} y={-centreY} textAnchor="middle" dominantBaseline="middle" className="occupied-roof-label" fontSize={extent * .034}>R{i + 1}</text>
-          {main && <g className="occupied-map-callout main-building-mark"><path d={`M${centreX} ${-centreY} V${-maxY - pad * .65}`} /><text x={(minX + maxX) / 2} y={-maxY - pad * .72} textAnchor="middle" fontSize={extent * .034}>Main building · {boundaryInteraction?.mainBuildingAssumed ? 'assumed' : 'your selection'} · R{i + 1}</text></g>}
+          <text transform={`translate(${centreX} ${-centreY})`} x="0" y="0" textAnchor="middle" dominantBaseline="middle" className="occupied-roof-label" fontSize={extent * .034}>R{i + 1}</text>
+          {main && <g className="occupied-map-callout main-building-mark"><path d={`M${centreX} ${-centreY} V${-maxY - pad * .65}`} /><text transform={`translate(${(minX + maxX) / 2} ${-maxY - pad * .72})`} x="0" y="0" textAnchor="middle" fontSize={extent * .034}>Main building · {boundaryInteraction?.mainBuildingAssumed ? 'assumed' : 'your selection'} · R{i + 1}</text></g>}
         </g>
       })}
       {site.named_boundaries.map(b => <path key={b.id} d={path(b)} fill="none" stroke="var(--map-zone-stroke)" vectorEffect="non-scaling-stroke" strokeWidth="2" />)}
@@ -81,10 +81,10 @@ export function OccupiedLotPreview({ selected, placement, onMove, nudgeMetres, c
             onPointerDown={e => { if (boundaryInteraction && boundaryInteraction.mode !== 'place') return; drag.current = true; suppressClick.current = true; e.currentTarget.ownerSVGElement?.setPointerCapture(e.pointerId) }} />
           <circle r={Math.min(w, d) / 12} fill="var(--map-zone-stroke)" pointerEvents="none" />
         </g>
-        <g className="occupied-map-callout occupied-map-callout--model"><path d={`M${px} ${-py} V${-minY + pad * .4}`} /><text x={Math.max(minX, Math.min(maxX, px))} y={-minY + pad * .8} textAnchor="middle" fontSize={extent * .034}>{modelLabel} · proposed position</text></g>
+        <g className="occupied-map-callout occupied-map-callout--model"><path d={`M${px} ${-py} V${-minY + pad * .4}`} /><text transform={`translate(${Math.max(minX, Math.min(maxX, px))} ${-minY + pad * .8})`} x="0" y="0" textAnchor="middle" fontSize={extent * .034}>{modelLabel} · proposed position</text></g>
       </>}
       <g className="occupied-scale" aria-hidden="true"><path d={`M${scaleX} ${scaleY} h${scale} m${-scale} -2 v4 m${scale} -4 v4`} fill="none" stroke="var(--ink)" vectorEffect="non-scaling-stroke" strokeWidth="2" />
-        <text x={scaleX} y={scaleY - 3} fontSize={extent * .034}>{scale} m</text></g>
+        <text transform={`translate(${scaleX} ${scaleY - 3})`} x="0" y="0" fontSize={extent * .034}>{scale} m</text></g>
       {boundaryInteraction && <BoundaryOverlay interaction={boundaryInteraction} />}
   </>
   function move(clientX: number, clientY: number) {
