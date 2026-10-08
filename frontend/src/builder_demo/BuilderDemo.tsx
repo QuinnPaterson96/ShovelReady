@@ -9,6 +9,7 @@ import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { SiteDiscovery } from '../site_discovery/SiteDiscovery'
 import type { Confirmed } from '../site_discovery/flow'
 import { SelectedProperty } from '../site_discovery/SelectedProperty'
+import { parcelRecord } from '../site_discovery/parcelComparison'
 import { placementCase } from '../site_discovery/placement'
 import { ManualSiteInput } from '../manual_site/ManualSiteInput'
 import type { ManualSiteOutput } from '../manual_site/model'
@@ -390,7 +391,9 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     }, 300)
     return () => { controller.abort(); window.clearTimeout(timer); window.clearTimeout(timeout) }
   }, [requestKey])
-  const makeEnquiryDoc = () => hasSite ? enquiryDocument(selection, { question, intendedUse: use, timing, budget, access, services, ...projectContext, propertyConcern: live?.parcel.identityConcern }, measurementResult, imported, live, manual, mode === 'example', foundationAllowanceM, currentScreening, currentAssumptions, pathway, currentScenario, effectiveSettings, propertyScan.result, model) : null
+  const selectedParcelPid = live ? parcelRecord(live.parcel).pid : null
+  const propertyConcern = live?.parcel.identityConcern ? `${live.parcel.identityConcern.replace('Check which parcel your project concerns.', 'I need to confirm which parcel my project concerns.')}${selectedParcelPid ? ` The selected mapped parcel is PID ${selectedParcelPid}.` : ''}` : undefined
+  const makeEnquiryDoc = () => hasSite ? enquiryDocument(selection, { question, intendedUse: use, timing, budget, access, services, ...projectContext, propertyConcern }, measurementResult, imported, live, manual, mode === 'example', foundationAllowanceM, currentScreening, currentAssumptions, pathway, currentScenario, effectiveSettings, propertyScan.result, model) : null
   const manualSignature = JSON.stringify({ facts: manual?.facts ?? null, site: manual?.site ?? null })
   const propertyComplete = mode === 'example' || !!(live || selection || mode === 'manual' && manual && manualConfirmedFor === manualSignature)
   const placementComplete = !!(measurementResult || mode === 'manual' && manual?.assessment)
@@ -481,13 +484,14 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     site: { case_id: 'manual', label: manual.facts.address || 'User-entered local sketch', site: manual.site }, model,
     widthOrigin: 'user', depthOrigin: 'user', result: { ...manual.assessment, checks: manual.assessment.checks.map(check => ({ ...check, source_feature_ids: [], margin_m: null, comparison: null })) },
   } : null)
-  const drawingKey = exportMeasurement ? JSON.stringify([exportMeasurement, currentAssumptions, currentScenario, mode, use]) : ''
+  const drawingKey = exportMeasurement ? JSON.stringify([exportMeasurement, currentAssumptions, currentScenario, mode, use, selectedParcelPid]) : ''
   drawingRevision.current = drawingKey
   const drawingAssets = drawingExport?.key === drawingKey ? drawingExport.assets : null
   function generateDrawing(measured: OccupiedMeasurement) {
     const style = getComputedStyle(document.documentElement)
     const token = (name: string, fallback: string) => style.getPropertyValue(name).trim() || fallback
-    return renderDrawing(placementDrawing(measured, currentAssumptions, pathway.proposed_use === 'garden_suite' ? currentScenario : null, mode === 'example', {
+    const labelled = selectedParcelPid ? { ...measured, site: { ...measured.site, label: `${measured.site.label} · PID ${selectedParcelPid}` } } : measured
+    return renderDrawing(placementDrawing(labelled, currentAssumptions, pathway.proposed_use === 'garden_suite' ? currentScenario : null, mode === 'example', {
       ink: token('--ink', '#203238'), danger: token('--danger', '#9a3e35'), parcelFill: token('--map-parcel-fill', '#245b6833'), parcelStroke: token('--map-parcel-stroke', '#245b68'), roofFill: token('--map-roof-fill', '#665a9a55'), roofStroke: token('--map-roof-stroke', '#564881'), zoneFill: token('--map-zone-fill', '#c58a4a33'), zoneStroke: token('--map-zone-stroke', '#91602f'),
     }, enquiryUseQualification(use, pathway.proposed_use)))
   }
@@ -507,7 +511,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     const paragraphs = ['I have an approximate proposed placement sketch available. Please let me know the best way to share it.']
     enquiryDoc.sections.push({ heading: 'Placement sketch', paragraphs, emailSummary: paragraphs[0], siteDetails: true })
   }
-  const reportDoc = hasSite && !checksPending ? screeningDocument(selection, { question, intendedUse: use, timing, budget, access, services, ...projectContext, propertyConcern: live?.parcel.identityConcern }, measurementResult, imported, live, manual, mode === 'example', foundationAllowanceM, currentScreening, currentAssumptions, pathway, currentScenario, effectiveSettings, propertyScan.result, model) : null
+  const reportDoc = hasSite && !checksPending ? screeningDocument(selection, { question, intendedUse: use, timing, budget, access, services, ...projectContext, propertyConcern }, measurementResult, imported, live, manual, mode === 'example', foundationAllowanceM, currentScreening, currentAssumptions, pathway, currentScenario, effectiveSettings, propertyScan.result, model) : null
   if (reportDoc && !checksPending && currentAcknowledgements.length) {
     const paragraphs = currentAcknowledgements.map(check => `${check.label}: ${check.detail} Acknowledged by the user for discussion with the City/provider. The conflict remains unresolved; City agreement or an exception is not established.`)
     reportDoc.sections.push({ heading: 'Acknowledged conflicts for discussion', paragraphs, emailSummary: paragraphs.join(' ') })
@@ -633,7 +637,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       setEmailMessage('Full email body copied.')
     } catch { setEmailMessage('Clipboard unavailable. Select and copy the email body above.') }
   }
-  const technicalEvidence = { schema_version: 'builder-evidence.v1', evaluation_state: checksPending ? 'updating' : 'current', enquiry_inputs: { question, intendedUse: use, timing, budget, access, services, ...projectContext }, model_catalogue: { snapshot_id: modelSnapshot(model), model }, acknowledged_conflicts_for_discussion: currentAcknowledgements, open_questions_for_discussion: currentOpenQuestions, review_readiness: reviewReadiness, foundation_scenario: { allowance_m: foundationAllowanceM, basis: 'planning_assumption', used_in_preliminary_height: currentScenario?.additional_checks?.some(check => check.id === 'height' && check.basis.startsWith('advertised height')) ?? false }, selection, live, manual, example: mode === 'example' ? exampleCase : null, measurement: measurementResult, zoning_site_assumptions: currentAssumptions, project_settings: zoningCase ? effectiveSettings : null, municipal_zoning_lookup: currentZoning, municipal_zoning_error: currentZoningError || null, property_scan: propertyScan.result, property_scan_error: propertyScan.error || null, placement_scenario_request: scenarioRequest, placement_scenario_result: currentScenario, conditional_screening: currentScreening }
+  const technicalEvidence = { schema_version: 'builder-evidence.v1', evaluation_state: checksPending ? 'updating' : 'current', planning_comparison_scope: { selected_use: pathway.proposed_use, garden_suite_comparisons_applied: pathway.proposed_use === 'garden_suite', raw_scenario_results: 'Exploratory candidate comparisons; withheld from homeowner findings and recipient documents when intended use is unknown or outside the garden-suite scenario.' }, enquiry_inputs: { question, intendedUse: use, timing, budget, access, services, ...projectContext }, model_catalogue: { snapshot_id: modelSnapshot(model), model }, acknowledged_conflicts_for_discussion: currentAcknowledgements, open_questions_for_discussion: currentOpenQuestions, review_readiness: reviewReadiness, foundation_scenario: { allowance_m: foundationAllowanceM, basis: 'planning_assumption', used_in_preliminary_height: currentScenario?.additional_checks?.some(check => check.id === 'height' && check.basis.startsWith('advertised height')) ?? false }, selection, live, manual, example: mode === 'example' ? exampleCase : null, measurement: measurementResult, zoning_site_assumptions: currentAssumptions, project_settings: zoningCase ? effectiveSettings : null, municipal_zoning_lookup: currentZoning, municipal_zoning_error: currentZoningError || null, property_scan: propertyScan.result, property_scan_error: propertyScan.error || null, placement_scenario_request: scenarioRequest, placement_scenario_result: currentScenario, conditional_screening: currentScreening }
   const exportIdentity = JSON.stringify([geometryRevision, model.model_id, modelSnapshot(model), checksPending, enquiryDoc, reportDoc, drawingKey, technicalEvidence])
   const latestExportIdentity = useRef(exportIdentity); latestExportIdentity.current = exportIdentity
   function downloadMarkdown(report = false) {

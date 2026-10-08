@@ -427,3 +427,14 @@ through an explicit demo adapter. Research observations have a separate snapshot
 identity and remain unreviewed; accepted catalogue publication is unchanged. Model
 switches retain property facts and invalidate model-specific results and overrides.
 See [mapping, verification and remaining gaps](prefab-generalization.md).
+
+
+## Homeowner state and current-output integration — October 7, 2026
+
+[Round 2 integration](integration-homeowner-ux-round2.md) keeps intended-use mapping
+and attributed source/property selection shared across display and reporting. A
+retained result is display-only and scoped to property/model; current-input keys
+control acknowledgement, readiness and copy/export eligibility. Late asynchronous
+responses cannot replace a newer input. Recipient PDF, editable Markdown, sender
+checklist and technical evidence are separate projections of one current snapshot.
+No new service, database schema or accepted-data publication is introduced.

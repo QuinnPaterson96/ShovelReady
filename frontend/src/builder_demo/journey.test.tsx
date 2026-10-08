@@ -552,6 +552,7 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
     const unknownEvidence = JSON.parse(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value)
     assert.equal(unknownEvidence.project_settings.proposal.proposed_use, null)
     assert.equal(unknownEvidence.enquiry_inputs.intendedUse, 'Not sure')
+    assert.equal(unknownEvidence.planning_comparison_scope.garden_suite_comparisons_applied, false)
     assert.match(document.querySelector('#builder-quick-checks')!.textContent!, /Intended use/)
     assert.doesNotMatch(recipientText(), /planning comparisons use a garden-suite scenario/)
     assert.match(recipientText(), /intended use is (?:not yet confirmed|unconfirmed)/i)

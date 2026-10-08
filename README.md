@@ -1,5 +1,7 @@
 # ShovelReady
 
+Current review branch: [property selection, uncertainty and enquiry PDF integration](docs/integration-homeowner-ux-round2.md) (prepared for review; not merged/deployed).
+
 Latest journey integration: [uncertainty, map review and coherent enquiry outputs](docs/integration-homeowner-journey-round.md).
 
 Latest correction: [main-building selection and visual enquiry evidence](docs/integration-main-building-evidence.md).
