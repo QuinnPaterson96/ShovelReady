@@ -419,3 +419,11 @@ scenario edge checks without changing their raw distance/outcome; buffered-only
 shortfalls use review in the separately scoped findings and homeowner summary.
 Measured overrides remain distinct and unbuffered. No schema migration or accepted
 rule publication is involved; old requests retain their zero-buffer behavior.
+
+## Prefab journey generalization — October 7, 2026
+
+The homeowner host now selects Model 300, Model 240, C.H. Studio Pod or Quadra 4
+through an explicit demo adapter. Research observations have a separate snapshot
+identity and remain unreviewed; accepted catalogue publication is unchanged. Model
+switches retain property facts and invalidate model-specific results and overrides.
+See [mapping, verification and remaining gaps](prefab-generalization.md).

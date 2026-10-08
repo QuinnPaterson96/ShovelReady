@@ -7,7 +7,7 @@ test('completed workflow steps have a visible and accessible label; pending step
   const html = renderToStaticMarkup(<BuilderJourneyNav completion={{
     ...emptyBuilderJourneyCompletion, model: true, placement: true,
   }} />)
-  assert.match(html, /aria-label="Model 300 steps"/)
+  assert.match(html, /aria-label="Prefab model steps"/)
   for (const anchor of ['model', 'property', 'placement', 'quick-checks', 'next', 'email']) {
     assert.match(html, new RegExp(`href="#builder-${anchor}"`))
   }

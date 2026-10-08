@@ -40,8 +40,8 @@ const steps: readonly Step[] = [
 /** Keep this inside the builder workspace's hidden-but-mounted wrapper. */
 export function BuilderJourneyNav({ completion }: { completion: BuilderJourneyCompletion }) {
   return <aside className="sr-workspace-rail builder-journey-rail">
-    <nav aria-label="Model 300 steps">
-      <p>Model 300 journey</p>
+    <nav aria-label="Prefab model steps">
+      <p>Prefab model journey</p>
       {steps.map(({ key, label, anchor }, index) => {
         const done = completion[key]
         const current = completion.current === key

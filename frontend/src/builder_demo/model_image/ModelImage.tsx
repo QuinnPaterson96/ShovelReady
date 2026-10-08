@@ -1,6 +1,7 @@
+import { defaultJourneyModel, modelDescription } from '../../model_catalogue/demo'
+import type { CatalogueModel } from '../../model_catalogue/model'
 import { useState } from 'react'
 
-const MODEL_PAGE = 'https://www.auxbox.ca/model-300'
 
 /** Supply only a locally hosted Model 300 image with documented reuse rights. */
 export type ClearedModelPhoto = {
@@ -14,7 +15,7 @@ export type ClearedModelPhoto = {
   checkedAt: string
 }
 
-export type ModelImageProps = { photo?: ClearedModelPhoto }
+export type ModelImageProps = { photo?: ClearedModelPhoto; model?: CatalogueModel }
 
 function PhotoPreview({ photo }: { photo: ClearedModelPhoto }) {
   const [failed, setFailed] = useState(false)
@@ -24,7 +25,7 @@ function PhotoPreview({ photo }: { photo: ClearedModelPhoto }) {
 }
 
 /** A source-linked preview until a specifically licensed Model 300 photo is supplied. */
-export function ModelImage({ photo }: ModelImageProps) {
+export function ModelImage({ photo, model = defaultJourneyModel }: ModelImageProps) {
   const localPhoto = photo && /^\/(?!\/)/.test(photo.localSrc) &&
     [photo.alt, photo.sourcePage, photo.imageLabel, photo.photographerOrRightsHolder,
       photo.permissionBasis, photo.permissionRecord, photo.checkedAt].every(Boolean) ? photo : undefined
@@ -34,14 +35,14 @@ export function ModelImage({ photo }: ModelImageProps) {
       {localPhoto
         ? <PhotoPreview key={localPhoto.localSrc} photo={localPhoto} />
         : <div className="model-preview-visual model-preview-fallback" role="note">
-          <span className="model-preview-mark" aria-hidden="true">300</span>
-          <span>Manufacturer photo available on aux box</span>
+          <span className="model-preview-mark" aria-hidden="true">{model.provider === 'aux box' ? model.name.replace('Model ', '') : '↗'}</span>
+          <span>Manufacturer photo available on {model.provider}</span>
         </div>}
       <figcaption className="model-preview-copy">
-        <p className="model-preview-kicker">Manufacturer preview · aux box</p>
-        <h3>Model 300</h3>
-        <p>A prefabricated living space with a private bedroom, kitchen and full bathroom. The manufacturer lists a 300 sq ft footprint.</p>
-        <a className="model-preview-link" href={MODEL_PAGE} target="_blank" rel="noopener noreferrer">View photos and specifications on aux box <span aria-hidden="true">↗</span></a>
+        <p className="model-preview-kicker">Manufacturer preview · {model.provider}</p>
+        <h3>{model.name}</h3>
+        <p>{modelDescription(model)}</p>
+        <a className="model-preview-link" href={model.provider_url} target="_blank" rel="noopener noreferrer">View photos and specifications on {model.provider} <span aria-hidden="true">↗</span></a>
         <p className="model-preview-disclaimer">Options and site installation may vary.</p>
       </figcaption>
     </div>

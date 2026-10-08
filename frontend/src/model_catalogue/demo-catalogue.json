@@ -1,0 +1,442 @@
+{
+  "schema_version": "sr-40.catalogue.v1",
+  "snapshot_id": "demo.prefab-journey.2026-10-07.v1",
+  "captured_at": "2026-10-07",
+  "provenance": "manual_transcription_of_public_provider_specs",
+  "review_status": "unreviewed",
+  "models": [
+    {
+      "model_id": "hewing-quadra4",
+      "provider": "Hewing Haus",
+      "name": "Quadra 4",
+      "provider_url": "https://hewinghaus.com/product/quadra-4-400-sqft-home/",
+      "source_revision": null,
+      "configuration": "Research-only public offer; controlled configuration and revision unconfirmed.",
+      "construction_method": "Prefabricated home with provider-described CLT components",
+      "intended_use_note": "One-bedroom home; freeze kitchen/bathroom configuration; use acceptance unreviewed.",
+      "service_area_status": "provider_claim",
+      "service_area_note": "North America including islands is a provider offer, not a confirmed Victoria project.",
+      "installation_note": "Crane; foundation, permitting, services, shipping and install at additional cost.",
+      "footprint_note": "400 sqft marketing area has undefined interior/footprint basis; awnings separately shown.",
+      "height_note": "No overall exterior height or foundation-to-roof datum established.",
+      "missing_facts": [
+        "Current controlled plan/elevation and projection envelope",
+        "Interior area definition and schedule",
+        "Victoria installation and price/tax scope",
+        "Image/plan display permission",
+        "Mixed ft/in represented by approximate decimal feet in current Quantity contract; source text retained."
+      ],
+      "sources": [
+        {
+          "source_id": "quadra-model",
+          "url": "https://hewinghaus.com/product/quadra-4-400-sqft-home/",
+          "locator": "Model specifications and offer; browser inspection for Quadra price",
+          "captured_at": "2026-10-07",
+          "sha256": null,
+          "artifact_status": "capture_gap",
+          "upstream_revision": null,
+          "updated_at": null
+        },
+        {
+          "source_id": "quadra-plan",
+          "url": "https://hewinghaus.com/wp-content/uploads/2022/03/2026.02.09-QUADRA-4-pdf.jpg",
+          "locator": "Visually inspected public plan dimension lines; no controlled revision established",
+          "captured_at": "2026-10-07",
+          "sha256": null,
+          "artifact_status": "capture_gap",
+          "upstream_revision": null,
+          "updated_at": null
+        }
+      ],
+      "measurements": [
+        {
+          "name": "nominal_exterior_width",
+          "status": "known",
+          "definition": "Dimension line at model body edges; precise cladding face unconfirmed.",
+          "quantity": {
+            "original_text": "20 ft 1 in",
+            "original_value": "20.08333333333333",
+            "original_unit": "ft",
+            "dimension": "length",
+            "value": "6.121399999999998984",
+            "unit": "m",
+            "basis": null
+          },
+          "source_id": "quadra-plan",
+          "reason": null
+        },
+        {
+          "name": "nominal_exterior_depth",
+          "status": "known",
+          "definition": "Dimension line at model body edges; projections separate.",
+          "quantity": {
+            "original_text": "20 ft 1 in",
+            "original_value": "20.08333333333333",
+            "original_unit": "ft",
+            "dimension": "length",
+            "value": "6.121399999999998984",
+            "unit": "m",
+            "basis": null
+          },
+          "source_id": "quadra-plan",
+          "reason": null
+        },
+        {
+          "name": "manufacturer_interior_area",
+          "status": "missing",
+          "definition": "Published area is not established as usable interior area.",
+          "quantity": null,
+          "source_id": null,
+          "reason": "Published area is not established as usable interior area."
+        },
+        {
+          "name": "manufacturer_footprint",
+          "status": "missing",
+          "definition": "Published area/body dimensions do not establish complete manufacturer footprint basis.",
+          "quantity": null,
+          "source_id": null,
+          "reason": "Published area/body dimensions do not establish complete manufacturer footprint basis."
+        },
+        {
+          "name": "advertised_overall_height",
+          "status": "missing",
+          "definition": "No overall exterior height established in inspected sources.",
+          "quantity": null,
+          "source_id": null,
+          "reason": "No overall exterior height established in inspected sources."
+        },
+        {
+          "name": "roof_height",
+          "status": "missing",
+          "definition": "Foundation datum to roof high point is not supplied.",
+          "quantity": null,
+          "source_id": null,
+          "reason": "Foundation datum to roof high point is not supplied."
+        }
+      ],
+      "review_status": "unreviewed",
+      "prices": [
+        {
+          "source_id": "quadra-model",
+          "wording": "Starting at CAD $224,000.00 observed in live browser product page.",
+          "scope": "model",
+          "configuration": null,
+          "region": null,
+          "qualifications": [
+            "Customization pricing requires confirmation"
+          ],
+          "amount": {
+            "minimum": "224000",
+            "maximum": null
+          },
+          "currency": "CAD",
+          "basis": "starting",
+          "inclusions": [],
+          "exclusions": [
+            "Permitting",
+            "Foundations",
+            "Site services",
+            "Shipping",
+            "Installation"
+          ],
+          "tax_treatment": null
+        }
+      ],
+      "timings": [
+        {
+          "source_id": "quadra-model",
+          "wording": "Delivery may be possible as soon as 12 weeks after purchase; confirm a project-specific schedule.",
+          "scope": "model",
+          "configuration": "Research-only public offer; controlled configuration and revision unconfirmed.",
+          "region": null,
+          "qualifications": [
+            "Earliest provider claim, not a promised duration or occupancy schedule. No scalar range inferred."
+          ],
+          "stage": "contract_to_delivery",
+          "duration": null,
+          "unit": null,
+          "basis": "provider_claim",
+          "clock_start": "Purchase; exact prerequisites unconfirmed",
+          "prerequisites": [
+            "Confirm permitting, site readiness and configuration with provider."
+          ]
+        }
+      ]
+    },
+    {
+      "model_id": "nexus-yarrow",
+      "provider": "Nexus Modular Solutions",
+      "name": "Yarrow",
+      "provider_url": "https://nexusmodular.ca/the-yarrow",
+      "source_revision": null,
+      "configuration": "Research-only public offer; controlled configuration and revision unconfirmed.",
+      "construction_method": "Factory-built modular garden suite",
+      "intended_use_note": "Provider markets a one-bedroom garden suite; A277 versus Z240 configuration unconfirmed.",
+      "service_area_status": "provider_claim",
+      "service_area_note": "Provider expressly delivers across Vancouver Island and Gulf Islands; site-specific service unconfirmed.",
+      "installation_note": "Process describes site/crane/truck feasibility and prepared foundation; exact Yarrow design/scope unknown.",
+      "footprint_note": "Page 400 sqft and plan proposed floor area 397.5 sqft are not established usable interior/footprint measures; deck/stairs separate.",
+      "height_note": "No overall exterior height or roof datum established.",
+      "missing_facts": [
+        "Current controlled configuration and certification category",
+        "Elevations and installed height datum",
+        "Interior area and deck/stair/roof envelope",
+        "Project-assessment questionnaire did not render",
+        "Quote inclusions and image/plan display permission"
+      ],
+      "sources": [
+        {
+          "source_id": "yarrow-model",
+          "url": "https://nexusmodular.ca/the-yarrow",
+          "locator": "Model specifications and offer; browser inspection for Quadra price",
+          "captured_at": "2026-10-07",
+          "sha256": null,
+          "artifact_status": "capture_gap",
+          "upstream_revision": null,
+          "updated_at": null
+        },
+        {
+          "source_id": "yarrow-plan",
+          "url": "https://images.squarespace-cdn.com/content/v1/5eda70b23db73928bde4bc60/28bb95d3-3af7-4a83-a0e2-0377e2a77d50/Yarrow%2BFloor%2BPlan.png",
+          "locator": "Visually inspected public plan dimension lines; no controlled revision established",
+          "captured_at": "2026-10-07",
+          "sha256": null,
+          "artifact_status": "capture_gap",
+          "upstream_revision": null,
+          "updated_at": null
+        }
+      ],
+      "measurements": [
+        {
+          "name": "nominal_exterior_width",
+          "status": "known",
+          "definition": "Dimension line at model body edges; precise cladding face unconfirmed.",
+          "quantity": {
+            "original_text": "15 ft",
+            "original_value": "15",
+            "original_unit": "ft",
+            "dimension": "length",
+            "value": "4.5720",
+            "unit": "m",
+            "basis": null
+          },
+          "source_id": "yarrow-plan",
+          "reason": null
+        },
+        {
+          "name": "nominal_exterior_depth",
+          "status": "known",
+          "definition": "Dimension line at model body edges; projections separate.",
+          "quantity": {
+            "original_text": "26 ft 6 in",
+            "original_value": "26.5",
+            "original_unit": "ft",
+            "dimension": "length",
+            "value": "8.07720",
+            "unit": "m",
+            "basis": null
+          },
+          "source_id": "yarrow-plan",
+          "reason": null
+        },
+        {
+          "name": "manufacturer_interior_area",
+          "status": "missing",
+          "definition": "Published area is not established as usable interior area.",
+          "quantity": null,
+          "source_id": null,
+          "reason": "Published area is not established as usable interior area."
+        },
+        {
+          "name": "manufacturer_footprint",
+          "status": "missing",
+          "definition": "Published area/body dimensions do not establish complete manufacturer footprint basis.",
+          "quantity": null,
+          "source_id": null,
+          "reason": "Published area/body dimensions do not establish complete manufacturer footprint basis."
+        },
+        {
+          "name": "advertised_overall_height",
+          "status": "missing",
+          "definition": "No overall exterior height established in inspected sources.",
+          "quantity": null,
+          "source_id": null,
+          "reason": "No overall exterior height established in inspected sources."
+        },
+        {
+          "name": "roof_height",
+          "status": "missing",
+          "definition": "Foundation datum to roof high point is not supplied.",
+          "quantity": null,
+          "source_id": null,
+          "reason": "Foundation datum to roof high point is not supplied."
+        }
+      ],
+      "review_status": "unreviewed",
+      "prices": [],
+      "timings": []
+    },
+    {
+      "model_id": "wcch-ch-studio",
+      "provider": "West Coast Container Homes",
+      "name": "C.H. Studio Pod",
+      "provider_url": "https://westcoastcontainerhomes.ca/c-h-studio-pod/",
+      "source_revision": null,
+      "configuration": "Research-only public offer; controlled configuration and revision unconfirmed.",
+      "construction_method": "Container-based modular housing pod",
+      "intended_use_note": "Combined sleep/living, kitchenette/bathroom; permanent residential suitability unknown.",
+      "service_area_status": "provider_claim",
+      "service_area_note": "South Vancouver Island project and general delivery/placement service are documented; this model/site service unconfirmed.",
+      "installation_note": "Generic range describes pad/pavers and placement; this is not a permanent residential foundation design.",
+      "footprint_note": "160 sqft marketing size basis undefined; usable interior area and complete projection footprint unknown.",
+      "height_note": "Published 9 ft 6 in high, datum/high point undefined; do not map to roof_height.",
+      "missing_facts": [
+        "Permanent residential configuration and engineering documents",
+        "Sizing faces/projection envelope and interior area",
+        "Height datum and supported height options",
+        "Model currency, inclusions, tax and current timing",
+        "Site foundation/services and display permission"
+      ],
+      "sources": [
+        {
+          "source_id": "wcch-model",
+          "url": "https://westcoastcontainerhomes.ca/c-h-studio-pod/",
+          "locator": "Model specifications and offer; browser inspection for Quadra price",
+          "captured_at": "2026-10-07",
+          "sha256": null,
+          "artifact_status": "capture_gap",
+          "upstream_revision": null,
+          "updated_at": null
+        },
+        {
+          "source_id": "wcch-range",
+          "url": "https://westcoastcontainerhomes.ca/20-modular-housing-pods/",
+          "locator": "Delivery & Installation; 20 ft range process, not a controlled Studio installation specification",
+          "captured_at": "2026-10-07",
+          "sha256": null,
+          "artifact_status": "capture_gap",
+          "upstream_revision": null,
+          "updated_at": null
+        }
+      ],
+      "measurements": [
+        {
+          "name": "nominal_exterior_width",
+          "status": "known",
+          "definition": "Provider pod sizing; precise exterior measurement face unconfirmed.",
+          "quantity": {
+            "original_text": "8 ft",
+            "original_value": "8",
+            "original_unit": "ft",
+            "dimension": "length",
+            "value": "2.4384",
+            "unit": "m",
+            "basis": null
+          },
+          "source_id": "wcch-model",
+          "reason": null
+        },
+        {
+          "name": "nominal_exterior_depth",
+          "status": "known",
+          "definition": "Provider pod sizing; projections unconfirmed.",
+          "quantity": {
+            "original_text": "20 ft",
+            "original_value": "20",
+            "original_unit": "ft",
+            "dimension": "length",
+            "value": "6.0960",
+            "unit": "m",
+            "basis": null
+          },
+          "source_id": "wcch-model",
+          "reason": null
+        },
+        {
+          "name": "manufacturer_interior_area",
+          "status": "missing",
+          "definition": "Published area is not established as usable interior area.",
+          "quantity": null,
+          "source_id": null,
+          "reason": "Published area is not established as usable interior area."
+        },
+        {
+          "name": "manufacturer_footprint",
+          "status": "missing",
+          "definition": "Published area/body dimensions do not establish complete manufacturer footprint basis.",
+          "quantity": null,
+          "source_id": null,
+          "reason": "Published area/body dimensions do not establish complete manufacturer footprint basis."
+        },
+        {
+          "name": "advertised_overall_height",
+          "status": "known",
+          "definition": "Published height; datum and high point unconfirmed.",
+          "quantity": {
+            "original_text": "9 ft 6 in high",
+            "original_value": "9.5",
+            "original_unit": "ft",
+            "dimension": "length",
+            "value": "2.89560",
+            "unit": "m",
+            "basis": null
+          },
+          "source_id": "wcch-model",
+          "reason": null
+        },
+        {
+          "name": "roof_height",
+          "status": "missing",
+          "definition": "Foundation datum to roof high point is not supplied.",
+          "quantity": null,
+          "source_id": null,
+          "reason": "Foundation datum to roof high point is not supplied."
+        }
+      ],
+      "review_status": "unreviewed",
+      "prices": [
+        {
+          "source_id": "wcch-model",
+          "wording": "Starting at $96,860; model page does not state currency.",
+          "scope": "model",
+          "configuration": null,
+          "region": null,
+          "qualifications": [
+            "No model-price currency inferred from separately displayed CAD reservation deposit.",
+            "Installed cost and exclusions unconfirmed."
+          ],
+          "amount": {
+            "minimum": "96860",
+            "maximum": null
+          },
+          "currency": null,
+          "basis": "starting",
+          "inclusions": [],
+          "exclusions": [],
+          "tax_treatment": null
+        }
+      ],
+      "timings": [
+        {
+          "source_id": "wcch-range",
+          "wording": "Provider describes installation in under two hours after arrival; full residential completion is unconfirmed.",
+          "scope": "provider",
+          "configuration": "20 ft pod range; exact model/site installation scope unconfirmed",
+          "region": null,
+          "qualifications": [
+            "Provider range claim, not a site-specific commitment or permanent-dwelling schedule. No scalar duration inferred.",
+            "Annual delivery dates lack a year and availability; no calendar schedule inferred."
+          ],
+          "stage": "on_site_installation",
+          "duration": null,
+          "unit": null,
+          "basis": "provider_claim",
+          "clock_start": "Arrival",
+          "prerequisites": [
+            "Site preparation, access and service connections need confirmation."
+          ]
+        }
+      ]
+    }
+  ]
+}
