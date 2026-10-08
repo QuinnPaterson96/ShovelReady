@@ -122,7 +122,7 @@ export function homeownerSummary(input: {
     for (const extra of scenario.additional_checks) {
       const index = checks.findIndex(check => check.label === extra.label)
       const row: SummaryCheck = { label: extra.label, status: extra.status, detail: extra.detail,
-        ...(extra.action_target ? { action: { label: extra.action_target === 'boundary-offsets' ? 'Review planning buffers' : extra.action_target === 'scouting-height' ? 'Enter installed height' : extra.action_target === 'scouting-area-buffer' ? 'Review area estimate' : extra.action_target === 'zsa-floor-area' ? 'Review floor area' : extra.action_target === 'waterfront-lot' ? 'Confirm waterfront status' : extra.action_target === 'principal-building' ? 'Review main building' : 'Review boundary roles', target: extra.action_target } } : {}) }
+        ...(extra.action_target ? { action: { label: extra.action_target === 'boundary-offsets' ? 'Review planning buffers' : extra.action_target === 'scouting-height' ? 'Review height estimate' : extra.action_target === 'street-side' ? 'Review street edges' : extra.action_target === 'scouting-area-buffer' ? 'Review area estimate' : extra.action_target === 'zsa-floor-area' ? 'Review floor area' : extra.action_target === 'waterfront-lot' ? 'Confirm waterfront status' : extra.action_target === 'principal-building' ? 'Review main building' : 'Review boundary roles', target: extra.action_target } } : {}) }
       if (index >= 0) {
         if (checks[index].status !== 'conflict' && !(extra.id === 'area' && checks[index].status === 'checked')) checks[index] = row
       } else checks.splice(checks.length - 1, 0, row)
