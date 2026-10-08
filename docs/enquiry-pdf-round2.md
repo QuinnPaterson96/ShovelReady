@@ -131,3 +131,14 @@ its message, including Thank you, now fits page one and the plan occupies page t
 Both pages were inspected. This checks message pagination, not Cecelia geometry.
 Coordinator still owns final actual-case re-download and integrated plan review;
 raster-PDF accessibility and independent source-review gaps remain unchanged.
+
+## Follow-up: generic closing-only PDF page
+
+A generic Thank you is omitted only when its paragraph would start a new PDF
+message page. Custom closings and contact details always remain. No font, line
+spacing, source question or drawing semantics changed. The real-browser PDF
+check exercises a near-bottom body: generic courtesy stays one page with its last
+recipient paragraph intact; a meaningful contact closing remains on page two.
+Typecheck and seven focused export checks passed. The coordinator will inspect
+the final actual Su’it download after integration; existing accessibility and
+source-review gaps remain.
