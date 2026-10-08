@@ -108,13 +108,18 @@ test('address search, parcel inspection, compact summary and deliberate change r
   }
   const compared = compareParcels(parcels)
   const notices: (Confirmed | null)[] = []
+  const originalCallbackNotices: (Confirmed | null)[] = []
   const root = createRoot(dom.window.document.getElementById('root')!)
   const buttons = () => [...dom.window.document.querySelectorAll<HTMLButtonElement>('button')]
   const click = async (label: string) => act(async () => { const button = buttons().find(button => button.textContent?.includes(label)); assert.ok(button, label); button.click() })
   try {
-    await act(async () => root.render(createElement(SiteDiscovery, { autoProceed: true, onConfirm: value => notices.push(value), transport: {
+    const transport = {
       async addresses() { return { status: 'ok', candidates: [address] } }, async parcels() { return { status: 'ok', candidates: compared } }, async observe(parcel) { return parcel.inspection! },
-    } })))
+    } satisfies import('./flow').Transport
+    await act(async () => root.render(createElement(SiteDiscovery, { autoProceed: true, onConfirm: value => originalCallbackNotices.push(value), transport })))
+    // Model/intended-use edits can replace the host callback after mount while
+    // keeping the discovery flow alive. Selection must use current host context.
+    await act(async () => root.render(createElement(SiteDiscovery, { autoProceed: true, onConfirm: value => notices.push(value), transport })))
     await act(async () => {
       const input = dom.window.document.querySelector<HTMLInputElement>('#sd-address')!
       input.focus()
@@ -135,6 +140,7 @@ test('address search, parcel inspection, compact summary and deliberate change r
     assert.equal(notices.at(-1)?.parcel.id, compared[1].id)
     await click('Change property')
     assert.equal(notices.at(-1), null)
+    assert.equal(originalCallbackNotices.length, 0, 'confirmation and deliberate change use the latest host callback')
     assert.ok(dom.window.document.querySelector('#sd-address'))
     assert.doesNotMatch(dom.window.document.body.textContent!, /Observation rejected/)
   } finally {
