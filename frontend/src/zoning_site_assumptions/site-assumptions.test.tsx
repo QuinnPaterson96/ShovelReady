@@ -35,12 +35,14 @@ test('placement edits clear user measurements while keeping boundary roles', () 
   assert.equal(changed.placement_revision, 'placement-b')
 })
 
-test('rendered component offers labelled controls without another map', () => {
+test('rendered component keeps labelled controls and a building-selection preview', () => {
   const html = renderToStaticMarkup(createElement(SiteAssumptionsEditor, { site: site('ordinary', [[0, 0], [10, 0], [10, 20], [0, 20], [0, 0]]), geometryRevision: 'capture-a', placementRevision: 'placement-a', onChange: () => {} }))
   assert.match(html, /Parcel edge roles/)
   assert.match(html, /Edge 1 role/)
   assert.match(html, /Use my measurement/)
-  assert.doesNotMatch(html, /<svg/)
+  assert.match(html, /Choose the main building from captured outlines/)
+  assert.match(html, /Select outline 1 as main building/)
+  assert.doesNotMatch(html, /Click to place/)
   assert.match(html, /does not turn that roofline into wall geometry/)
 })
 

@@ -138,6 +138,7 @@ export function OccupiedLotPreview({ selected, placement, onMove, nudgeMetres, c
     {placementControls}
     {placementConcerns && <div className="builder-placement-concerns">{placementConcerns}</div>}
     {placementContinuation && <div className={`builder-placement-next${mapVisible ? ' builder-placement-next--floating' : ''}`} style={{ '--placement-action-left': `${actionBounds.left}px`, '--placement-action-width': `${actionBounds.width}px` } as CSSProperties}>{placementContinuation}</div>}
+    {boundaryInteraction && <div id="property-details-below-map" className="property-details-below-map" />}
     {placementSummary && <div className="builder-map-summary">{placementSummary}</div>}
     </div>
   </div>

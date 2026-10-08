@@ -22,9 +22,11 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
   const expose = (name: string, value: unknown) => { originals.set(name, Object.getOwnPropertyDescriptor(globalThis, name)); Object.defineProperty(globalThis, name, { configurable: true, writable: true, value }) }
   for (const [name, value] of Object.entries({ Element: dom.window.Element, HTMLElement: dom.window.HTMLElement, window: dom.window, document: dom.window.document, navigator: dom.window.navigator, requestAnimationFrame: (cb: () => void) => setTimeout(cb, 0), IS_REACT_ACT_ENVIRONMENT: true })) expose(name, value)
   let mapVisibility!: (visible: boolean) => void
+  const visibility = new Map<Element, (visible: boolean) => void>()
   expose('IntersectionObserver', class {
-    constructor(callback: (entries: { isIntersecting: boolean }[]) => void) { mapVisibility = visible => callback([{ isIntersecting: visible }]) }
-    observe() {}
+    callback: (entries: { target: Element; isIntersecting: boolean; intersectionRatio: number }[]) => void
+    constructor(callback: (entries: { target: Element; isIntersecting: boolean; intersectionRatio: number }[]) => void) { this.callback = callback }
+    observe(target: Element) { const notify = (visible: boolean) => this.callback([{ target, isIntersecting: visible, intersectionRatio: visible ? 1 : 0 }]); visibility.set(target, notify); if (target.tagName === 'svg') mapVisibility = notify }
     disconnect() {}
   })
   const fixture = JSON.parse(readFileSync('src/scenario_handoff/retained-assessment.fixture.json', 'utf8'))
@@ -113,14 +115,27 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     assert.equal(document.activeElement?.id, 'placement-action-rear')
     assert.equal(JSON.parse(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value).zoning_site_assumptions.street_adjacency.all_marked, false)
     await click('Next: Review property details →')
-    assert.equal(document.activeElement?.id, 'builder-intended-use')
+    assert.equal(document.activeElement?.id, 'building-type')
     for (const id of ['builder-intended-use', 'building-type', 'principal-building', 'existing-suites', 'waterfront-lot']) {
       assert.equal(document.getElementById(id)!.closest('[hidden]'), null, `${id} must not be hidden by a map-controls wrapper during property review`)
     }
-    assert.deepEqual(lastScroll, { id: 'builder-intended-use', options: { block: 'start', behavior: 'smooth' } })
+    assert.deepEqual(lastScroll, { id: 'building-type', options: { block: 'start', behavior: 'smooth' } })
+    const factsSectionElement = document.getElementById('builder-property-details')!
+    const factsEnd = factsSectionElement.querySelector('.floating-next')!
+    const beforeDock = document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value
+    await act(async () => { visibility.get(factsSectionElement)!(true); visibility.get(factsEnd)!(false) })
+    assert.ok(factsSectionElement.querySelector('.floating-next--docked'), 'Next docks while reviewing long property details')
+    assert.equal(factsSectionElement.querySelectorAll('.builder-continue').length, 1, 'docking does not duplicate the action')
+    await act(async () => visibility.get(factsEnd)!(true))
+    assert.equal(factsSectionElement.querySelector('.floating-next--docked'), null, 'Next settles into flow at the section end')
+    assert.equal(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value, beforeDock, 'docking changes no answers or findings')
     assert.equal(document.querySelector<HTMLDetailsElement>('#builder-property-details > details')!.open, true)
     assert.equal(document.querySelector('.builder-placement-next'), null)
     assert.equal(document.querySelector<HTMLSelectElement>('#builder-property-details #builder-intended-use')!.value, 'Garden suite')
+    assert.ok(document.getElementById('property-details-below-map')!.contains(document.getElementById('builder-property-details')))
+    assert.ok(map.compareDocumentPosition(document.getElementById('builder-property-details')!) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING)
+    assert.ok(document.getElementById('waterfront-lot')!.compareDocumentPosition(document.getElementById('builder-intended-use')!) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING)
+    assert.ok(document.querySelector('[aria-label="Choose the main building from captured outlines"] [role="button"]'))
     assert.ok(document.getElementById('builder-intended-use')!.compareDocumentPosition(summary) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING)
     assert.ok(document.querySelector('#builder-property-details #scouting-height'))
     assert.ok(document.querySelector('#builder-property-details #scouting-area-buffer'))
@@ -552,7 +567,7 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
     assert.match(document.querySelector('#builder-enquiry-content')!.textContent!, /None establishes legal feasibility/)
     assert.equal(latest.assumptions.principal_building_id.origin, 'journey_default')
     assert.match(document.querySelector('.main-building-mark')!.textContent!, /Main building · assumed/)
-    await act(async () => document.querySelector<HTMLButtonElement>('#principal-building button')!.click()); await settle()
+    await act(async () => document.querySelector<SVGGElement>('#principal-building svg [role=button]')!.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'Enter', bubbles: true }))); await settle()
     assert.equal(latest.assumptions.principal_building_id.evidence_state, 'user_confirmed')
     assert.equal(latest.assumptions.principal_building_id.origin, 'user')
 
