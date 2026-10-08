@@ -142,3 +142,20 @@ recipient paragraph intact; a meaningful contact closing remains on page two.
 Typecheck and seven focused export checks passed. The coordinator will inspect
 the final actual Su’it download after integration; existing accessibility and
 source-review gaps remain.
+
+## Follow-up: physical source links when planning comparisons are withheld
+
+Parcel/building captions and mapNotes now append publicSourceUrl of each existing
+source reference. Victoria query references become their public MapServer layer
+URLs; full request URLs remain unchanged in technical evidence. No absent source
+is invented. This also gives unknown-use plan PDFs clickable physical evidence
+links independently of withheld planning scenarios.
+
+Verification: typecheck and eight focused export checks passed, including retained
+actual MapServer query references with exact expected parcel/building layer URLs,
+no raw query parameters, and unchanged stored references. The browser PDF smoke
+check passed. A regenerated unknown-use Cecelia-message/saved-plan reconstruction
+with null scenarios was rendered and both pages inspected; pdfinfo -url confirms
+MapServer/11 and MapServer/1 destinations (four annotations across wrapped source
+lines). Coordinator will re-download the three actual integrated PDFs and verify
+source links and layout. Existing accessibility and source-review gaps remain.

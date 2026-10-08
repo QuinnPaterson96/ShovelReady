@@ -105,3 +105,21 @@ test('placement gap callouts cover connectors and reserve space beside geometry'
   assert.match(drawing.svg, /x="65" y="730"[^>]*>0 m main-home gap/)
   assert.match(drawing.svg, /x="65" y="753"[^>]*>Candidate minimum: 2\.4 m \(concern\)/)
 })
+
+// Unknown-use enquiries withhold planning comparisons, but physical source links
+// must survive. Expected layer URLs come from the retained MapServer references.
+test('unknown-use drawing retains public physical source links without raw query parameters', () => {
+  const parcelReference = exampleCase.site.parcel.source.reference
+  const roofReference = exampleCase.site.buildings[0].source.reference
+  assert.match(parcelReference!, /MapServer\/11\/query\?/)
+  assert.match(roofReference!, /MapServer\/1\/query\?/)
+  const drawing = placementDrawing({ site: exampleCase, model: null, result: parseResult(retainedGeometry), widthOrigin: 'catalogue', depthOrigin: 'catalogue' }, null, null, true,
+    { ink: '#203238', danger: '#9a3e35', parcelFill: '#d3e2e0', parcelStroke: '#245b68', roofFill: '#dbd5e8', roofStroke: '#564881', zoneFill: '#edcfac', zoneStroke: '#91602f' }, 'Intended use is unconfirmed; physical observations remain approximate.')
+  assert.equal(drawing.mapNotes?.length, 2)
+  assert.ok(drawing.mapNotes![0].endsWith('https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11'))
+  assert.ok(drawing.mapNotes![1].endsWith('https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1'))
+  assert.doesNotMatch(drawing.mapNotes!.join('\n'), /\/query|objectIds|outFields|Candidate comparison/)
+  assert.ok(drawing.svg.includes('MapServer/11') && drawing.svg.includes('MapServer/1'))
+  assert.equal(exampleCase.site.parcel.source.reference, parcelReference)
+  assert.equal(exampleCase.site.buildings[0].source.reference, roofReference)
+})

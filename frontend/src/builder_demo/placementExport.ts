@@ -59,6 +59,7 @@ export function placementDrawing(measured: OccupiedMeasurement, assumptions: Sit
   const gapLabels = gapItems.map(item => item.label).join('')
 
   const yardLabel = visual?.rear_yard_area_m2 ? text(`Estimated rear yard: ${measurementWithUnit(visual.rear_yard_area_m2, 'area')}${yardCheck?.observed !== null && yardCheck?.observed !== undefined ? ` / unit share ${Number((yardCheck.observed * 100).toFixed(1))}%` : ''}`, 60, 810, 15, true) : ''
+  const sourceLink = (reference: string | null) => { const url = publicSourceUrl(reference); return url ? ` ${url}` : '' }
   const details = [
     `Site: ${example ? 'Saved example only, not the sender’s property' : measured.site.label}.`,
     ...(useQualification ? [useQualification] : []),
@@ -68,8 +69,8 @@ export function placementDrawing(measured: OccupiedMeasurement, assumptions: Sit
     ...[...new Set(measured.result.checks.filter(c => ['nearest_building_distance', 'building_distance'].includes(c.kind) && c.distance_m !== null).map(c => `Approximate gap to ${c.source_feature_ids.map(id => `Building ${site.buildings.findIndex(b => b.id === id) + 1}`).join(', ') || 'unidentified building'}: ${measurementWithUnit(c.distance_m, 'length')}. Roofline-based unless recorded otherwise.`))],
     ...placementConcerns(measured, null, scenarios),
     ...(scenarios?.additional_checks ?? []).filter(check => check.status !== 'conflict').map(additionalObservation),
-    `Parcel source: ${site.parcel.source.provider} · ${site.parcel.source.record_label} · captured ${readableDate(site.parcel.source.capture_date)} · ${site.parcel.source.review_status}.`,
-    ...[...new Set(site.buildings.map(b => `Building source: ${b.source.provider} · ${b.source.record_label} · captured ${readableDate(b.source.capture_date)} · ${b.source.review_status}.`))],
+    `Parcel source: ${site.parcel.source.provider} · ${site.parcel.source.record_label} · captured ${readableDate(site.parcel.source.capture_date)} · ${site.parcel.source.review_status}.${sourceLink(site.parcel.source.reference)}`,
+    ...[...new Set(site.buildings.map(b => `Building source: ${b.source.provider} · ${b.source.record_label} · captured ${readableDate(b.source.capture_date)} · ${b.source.review_status}.${sourceLink(b.source.reference)}`))],
     ...(scenarios?.sources ?? []).map(source => `Candidate comparison source: ${source.provider} · ${source.record_label} · ${source.locator} · captured ${readableDate(source.capture_date)} · ${source.review_status}. ${source.url}`),
     `Coordinates: ${site.projected_metre_crs}. Boundary roles, street/waterfront marks and buffers are user assumptions.`,
     ...(visual?.principal_crosses_parcel ? ['The mapped main roofline extends beyond the parcel; neither outline is surveyed. The full roofline is retained for the approximate comparisons.'] : []),
