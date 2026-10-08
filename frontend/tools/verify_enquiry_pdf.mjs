@@ -27,7 +27,14 @@ const painted=[];const fillText=CanvasRenderingContext2D.prototype.fillText;
 CanvasRenderingContext2D.prototype.fillText=function(text,...args){painted.push(text);return fillText.call(this,text,...args)};
 const examplePdf=encode(await renderEnquiryPdf(example,assets));const examplePainted=painted.splice(0);
 const unknownPdf=encode(await renderEnquiryPdf(unknown,null));
-window.pdfChecks={example:examplePdf,unknown:unknownPdf,examplePainted,unknownPainted:painted,exampleText:JSON.stringify(example),unknownText:JSON.stringify(unknown)};
+const unknownPainted=painted.splice(0);
+// Near-bottom recipient content reproduced an otherwise empty Thank-you page.
+// A one-page body must stay one page for generic courtesy; contact must survive.
+const nearBottom={title:'Enquiry',question:'Please arrange a call.',example:false,
+ sections:[{heading:'Site information',paragraphs:['No current measured placement is available.',...Array.from({length:28},(_,i)=>'Recipient paragraph '+(i+1))],emailSummary:''}],closing:'Thank you.'};
+await renderEnquiryPdf(nearBottom,null);const genericClosingPainted=painted.splice(0);
+await renderEnquiryPdf({...nearBottom,closing:'Please contact Jordan to arrange a call.'},null);const customClosingPainted=painted.splice(0);
+window.pdfChecks={example:examplePdf,unknown:unknownPdf,examplePainted,unknownPainted,genericClosingPainted,customClosingPainted,exampleText:JSON.stringify(example),unknownText:JSON.stringify(unknown)};
 </script></body></html>`
 
 writeFileSync(harness, html)
@@ -55,6 +62,11 @@ try {
   assert.ok(!checks.examplePainted.includes('Approximate proposed placement')) // already in the map image
   assert.ok(checks.examplePainted.some(line => line.includes('Approximate mapped outlines')))
   assert.ok(!checks.unknownPainted.some(line => /plan follows|Placement sketch|Approximate mapped outlines/.test(line)))
+  assert.equal(checks.genericClosingPainted.filter(line => line.startsWith('Unsent preliminary enquiry | Page')).length, 1)
+  assert.ok(checks.genericClosingPainted.includes('Recipient paragraph 28'))
+  assert.ok(!checks.genericClosingPainted.includes('Thank you.'))
+  assert.equal(checks.customClosingPainted.filter(line => line.startsWith('Unsent preliminary enquiry | Page')).length, 2)
+  assert.ok(checks.customClosingPainted.includes('Please contact Jordan to arrange a call.'))
   writeFileSync('../output/pdf/representative-enquiries.json', JSON.stringify({ example, unknown }, null, 2))
   console.log('Generated actual example + unknown-use Studio PDFs. Render all pages before handoff.')
 } finally {

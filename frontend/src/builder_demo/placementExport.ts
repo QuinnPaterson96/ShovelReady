@@ -210,7 +210,9 @@ export async function renderEnquiryPdf(enquiry: EnquiryDocument, assets: Drawing
     write(section.heading, true)
     for (const paragraph of section.paragraphs) write(paragraph)
   }
-  write(enquiry.closing)
+  // A generic courtesy alone does not justify another message page. Preserve
+  // contact details and custom closings even when they need their own page.
+  if (enquiry.closing.trim() !== 'Thank you.' || cursor + 32 + 18 <= bottom) write(enquiry.closing)
   if (!assets && !enquiry.sections.some(section => section.paragraphs.some(paragraph => /No current measured placement/.test(paragraph)))) write('No current placement plan is included. The proposed position remains to be established.')
   finish()
   if (assets) {
