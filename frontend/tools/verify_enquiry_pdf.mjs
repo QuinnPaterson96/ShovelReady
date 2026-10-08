@@ -22,7 +22,12 @@ const example=manufacturerDocument(input,'saved Victoria example',true,measured,
 const studio=journeyCatalogue.models.find(m=>m.model_id==='wcch-ch-studio');
 const unknown=manufacturerDocument({...input,intendedUse:'Not sure',contact:'Zoë - 601 Su’it Street',access:'',services:''},'601 Su’it Street',false,null,null,null,null,true,false,null,studio);
 const encode=bytes=>{let s='';for(const byte of bytes)s+=String.fromCharCode(byte);return btoa(s)};
-window.pdfChecks={example:encode(await renderEnquiryPdf(example,assets)),unknown:encode(await renderEnquiryPdf(unknown,null)),exampleText:JSON.stringify(example),unknownText:JSON.stringify(unknown)};
+// Reproduced pagination risk: plan notes and a second plan title inflated the message.
+const painted=[];const fillText=CanvasRenderingContext2D.prototype.fillText;
+CanvasRenderingContext2D.prototype.fillText=function(text,...args){painted.push(text);return fillText.call(this,text,...args)};
+const examplePdf=encode(await renderEnquiryPdf(example,assets));const examplePainted=painted.splice(0);
+const unknownPdf=encode(await renderEnquiryPdf(unknown,null));
+window.pdfChecks={example:examplePdf,unknown:unknownPdf,examplePainted,unknownPainted:painted,exampleText:JSON.stringify(example),unknownText:JSON.stringify(unknown)};
 </script></body></html>`
 
 writeFileSync(harness, html)
@@ -46,6 +51,10 @@ try {
   assert.ok(unknown.title.includes('C.H. Studio Pod'))
   assert.ok(!JSON.stringify(unknown).includes('Model 300'))
   assert.ok(JSON.stringify(unknown).includes('Intended use is unconfirmed'))
+  assert.ok(!checks.examplePainted.includes('Placement sketch'))
+  assert.ok(!checks.examplePainted.includes('Approximate proposed placement')) // already in the map image
+  assert.ok(checks.examplePainted.some(line => line.includes('Approximate mapped outlines')))
+  assert.ok(!checks.unknownPainted.some(line => /plan follows|Placement sketch|Approximate mapped outlines/.test(line)))
   writeFileSync('../output/pdf/representative-enquiries.json', JSON.stringify({ example, unknown }, null, 2))
   console.log('Generated actual example + unknown-use Studio PDFs. Render all pages before handoff.')
 } finally {

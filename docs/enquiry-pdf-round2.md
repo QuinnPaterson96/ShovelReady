@@ -112,3 +112,22 @@ regenerate actual composed Su’it/Cecelia/example PDFs, and inspect their final
 pages. This is needed to verify current integrated input and labels; the worker
 reconstruction does not substitute for that review. Raster-PDF accessibility and
 independent source/provider review gaps above remain.
+
+## Follow-up: actual Cecelia pagination review
+
+The PDF message now omits the sketch availability section: the plan page carries
+its discussion-sketch note beside the actual drawing. The drawing's own header
+is used once instead of adding a second PDF heading. Body text remains 22 px with
+32 px line height; paragraph separation is 14 px rather than 18 px.
+
+Verification: typecheck and seven focused export checks passed. The real-browser
+PDF smoke check now asserts the painted message has no sketch-availability block
+or duplicate plan heading, the plan has its scope caption, and no-assets output
+has no phantom plan note. All four regenerated example/unknown-use PDF pages were
+rendered and visually inspected. The longer reconstruction retains two message
+pages for readable content. Actual Cecelia recipient Markdown from the integrated
+package was reconstructed with a clearly separate saved-plan rendering fixture:
+its message, including Thank you, now fits page one and the plan occupies page two.
+Both pages were inspected. This checks message pagination, not Cecelia geometry.
+Coordinator still owns final actual-case re-download and integrated plan review;
+raster-PDF accessibility and independent source-review gaps remain unchanged.
