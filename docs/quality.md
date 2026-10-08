@@ -225,6 +225,22 @@ records 153 passing frontend behavioral tests, 34 passing catalogue/intake tests
 type/build/lint and reproducible snapshot checks. The switch test reproduces site
 answer loss on placement remount and verifies its correction. The actual Studio
 enquiry package and rendered PNG were reviewed from the recipient perspective.
-Full keyboard/manual/live journeys, independent PDF rendering, provider source
-review, accepted publication and real recipient validation remain separate gaps;
+The initial handoff left keyboard/manual/live journeys and independent PDF rendering
+open; the follow-up below closes core journey/output checks. Provider source review,
+accepted publication and real recipient validation remain separate gaps;
 see the linked owner/action table. No database tests or cloud resources were used.
+
+
+### Prefab follow-up usability evidence
+
+The [follow-up record](prefab-generalization.md#follow-up-usability-verification--october-7-2026)
+adds manual and real live-source switching, core keyboard workflow and independent
+PDFium rendering of both Studio and Quadra downloaded PDFs. It reproduced a Quadra
+model/edge label collision, corrected by using a separate map legend slot, and
+checked a fresh download. Full frontend behavioral checks are rerun for this change;
+real recipient validation and exhaustive accessibility/device testing remain open.
+
+The same follow-up reproduced a stale discovery callback restoring Model 300 use
+and foundation when another model was selected before property search. The existing
+host regression now covers that action order; SiteDiscovery calls the current host
+callback and fresh live-source selection retains explicit unknowns.
