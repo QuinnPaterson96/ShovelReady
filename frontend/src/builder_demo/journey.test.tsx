@@ -42,6 +42,7 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
   const click = async (label: string) => { assert.ok(button(label), label); await act(async () => { button(label).click() }); await act(async () => { await new Promise(resolve => setTimeout(resolve, 20)) }) }
   try {
     await act(async () => { root.render(createElement(Journey)) })
+    await act(async () => { const choice = document.getElementById('builder-intended-use') as HTMLSelectElement; choice.value = 'Garden suite'; choice.dispatchEvent(new dom.window.Event('change', { bubbles: true })) })
     await click('Try an example property')
     await act(async () => { await new Promise(resolve => setTimeout(resolve, 550)) })
     assert.match(document.querySelector('#builder-quick-checks')!.textContent!, /Review this placement/)
@@ -51,7 +52,7 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     assert.ok(document.querySelector('.builder-placement-next')!.compareDocumentPosition(document.querySelector('.boundary-map-tools')!) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING)
     assert.ok(document.querySelector('.builder-placement-next')!.compareDocumentPosition(summary) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING)
     assert.equal(document.querySelector<HTMLDetailsElement>('.homeowner-summary__checks')!.open, true)
-    await act(async () => document.querySelector<HTMLButtonElement>('.homeowner-summary__counts .homeowner-summary__unknown')!.click())
+    await act(async () => document.querySelector<HTMLButtonElement>('.homeowner-summary__counts .homeowner-summary__review')!.click())
     assert.equal(document.activeElement, document.querySelector('.homeowner-summary__checks li.homeowner-summary__unknown'))
     const titleHelp = document.querySelector<HTMLButtonElement>('[aria-label="About Title restrictions"]')!
     await act(async () => titleHelp.focus())
@@ -120,7 +121,7 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     assert.deepEqual(afterProgression.measurement, JSON.parse(initialMeasurement).measurement)
     assert.equal(document.querySelector('#builder-enquiry-text'), null, 'missing context must not generate a recipient message')
     assert.equal(button('Confirm enquiry & continue →').disabled, true)
-    for (const [id, value] of [['builder-use', 'Unknown'], ['builder-relationship', 'Prefer not to say'], ['builder-nextStep', 'Please advise whether this is worth investigating further.']]) {
+    for (const [id, value] of [['builder-use', 'Garden suite'], ['builder-relationship', 'Prefer not to say'], ['builder-nextStep', 'Please advise whether this is worth investigating further.']]) {
       await act(async () => { const node = document.getElementById(id) as HTMLInputElement; node.focus(); Object.getOwnPropertyDescriptor(dom.window.HTMLInputElement.prototype, 'value')!.set!.call(node, value); node.dispatchEvent(new dom.window.KeyboardEvent('keyup', { key: '5', bubbles: true })) })
     }
     assert.ok(document.querySelector('#builder-enquiry-text'))
@@ -191,10 +192,13 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     assert.equal(document.querySelector<HTMLDetailsElement>('.builder-optional-site')!.open, false)
     await act(async () => document.querySelector<HTMLAnchorElement>('.builder-journey-rail a[href="#builder-placement"]')!.click()); await act(async () => { await new Promise(resolve => setTimeout(resolve, 20)) })
     await act(async () => { map.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'ArrowUp', bubbles: true })) })
-    assert.match(summary.textContent!, /Place the unit to explore the possibilities/)
+    assert.match(document.body.textContent!, /Updating checks/)
+    assert.match(summary.textContent!, /previous input|previous findings|Updating checks/i)
+    assert.equal(JSON.parse(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value).evaluation_state, 'updating')
     assert.match(document.getElementById('builder-enquiry-content')!.textContent!, /Draft in progress/)
     await act(async () => { await new Promise(resolve => setTimeout(resolve, 550)) })
-    assert.equal(button('Download placement PNG').disabled, true, 'a pending placement must not export the earlier measured drawing')
+    assert.equal([...document.querySelectorAll<HTMLButtonElement>('button')].some(node => node.textContent === 'Download placement PNG' && !node.disabled), false, 'a pending placement must not export the earlier drawing')
+    assert.equal(document.querySelector('#builder-enquiry-text'), null, 'stale draft cannot be copied as current')
     assert.equal(geometryCalls, 2)
     await click('Wrong property? Change')
     assert.equal(document.activeElement?.id, 'sd-address')
@@ -295,6 +299,7 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
   try {
     let completion = emptyBuilderJourneyCompletion
     await act(async () => root.render(createElement<{ onProgressChange?: (next: typeof emptyBuilderJourneyCompletion) => void }>(BuilderDemo, { onProgressChange: next => { completion = next } })))
+    await act(async () => { const choice = document.getElementById('builder-intended-use') as HTMLSelectElement; choice.value = 'Garden suite'; choice.dispatchEvent(new dom.window.Event('change', { bubbles: true })) })
     await click('Try an example property'); await settle(550); await settle(1150)
     assert.match(document.querySelector('.builder-placement-results')!.textContent!, /timed out/)
     assert.doesNotMatch(document.querySelector('.builder-placement-results')!.textContent!, /Checking plausible/)

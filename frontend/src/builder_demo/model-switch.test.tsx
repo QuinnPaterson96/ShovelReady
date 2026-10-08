@@ -66,7 +66,7 @@ test('switching models retains the property, resets overrides and exports only t
       assert.ok(Math.abs(current.measurement.result.input.placement.depth_m - depth) < 1e-10)
       assert.equal(current.measurement.widthOrigin, 'catalogue')
       assert.equal(current.model_catalogue.snapshot_id, modelSnapshot(model))
-      assert.equal(current.project_settings.proposal.proposed_use, id === 'aux-300' ? 'garden_suite' : null)
+      assert.equal(current.project_settings.proposal.proposed_use, null)
       assert.equal(current.foundation_scenario.allowance_m, null)
       const input = current.enquiry_inputs
       const args = [null, input, current.measurement, false, null, null, true, null, null, null, current.project_settings.proposal, null, null, null, model] as const
