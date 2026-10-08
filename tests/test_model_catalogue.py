@@ -1,5 +1,6 @@
 """Offline provenance and measurement boundary checks for real unreviewed candidates."""
 
+import json
 from copy import deepcopy
 from decimal import Decimal
 
@@ -7,6 +8,27 @@ import pytest
 from pydantic import ValidationError
 
 from app.model_catalogue import Catalogue, load_catalogue
+from app.model_catalogue.build_demo import INPUT, OUTPUT
+from app.model_catalogue.research_intake import validate_candidate
+
+
+def test_demo_export_keeps_research_unknowns_separate_from_active_catalogue():
+    # Integration: research intake -> canonical UI bundle. Expected source quantities
+    # come from the linked model sheets; this proves transcription consistency, not
+    # provider review, installed dimensions or residential eligibility.
+    active = load_catalogue()
+    candidate, gaps = validate_candidate(json.loads(INPUT.read_text(encoding="utf-8")))
+    assert json.loads(OUTPUT.read_text(encoding="utf-8")) == candidate.model_dump(mode="json")
+    assert candidate.snapshot_id != active.snapshot_id
+    assert {m.model_id for m in active.models} == {"click-landing", "aux-240", "aux-300"}
+    studio = next(m for m in candidate.models if m.model_id == "wcch-ch-studio")
+    assert studio.prices[0].currency is None
+    assert "permanent residential suitability unknown" in studio.intended_use_note.lower()
+    for model in candidate.models:
+        assert model.review_status == "unreviewed" and model.source_revision is None
+        for field in ["roof_height", "manufacturer_interior_area", "manufacturer_footprint"]:
+            assert next(m for m in model.measurements if m.name == field).quantity is None
+    assert gaps
 
 
 def test_snapshot_candidates_and_unknown_regulatory_height():

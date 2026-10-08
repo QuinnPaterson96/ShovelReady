@@ -16,7 +16,7 @@ const stageLabels: Record<Timing['stage'], string> = {
   on_site_installation: 'On-site installation', contract_to_delivery: 'Contract to delivery',
 }
 export const timingSummary = (timing: Timing) => `${stageLabels[timing.stage]}: ${timing.basis === 'estimated' ? 'roughly ' : ''}${timing.duration
-  ? `${range(timing.duration)} ${timing.duration.minimum === '1' && timing.duration.maximum === null ? timing.unit?.replace(/s$/, '') : timing.unit}` : 'duration unknown'}${timing.scope === 'provider' ? ' · provider-wide' : ''}`
+  ? `${range(timing.duration)} ${timing.duration.minimum === '1' && timing.duration.maximum === null ? timing.unit?.replace(/s$/, '') : timing.unit}` : timing.wording}${timing.scope === 'provider' ? ' · provider-wide' : ''}`
 
 function sourceText(model: CatalogueModel, claim: CommercialClaim) {
   const source = model.sources.find(item => item.source_id === claim.source_id)

@@ -12,7 +12,8 @@ import { placementCase } from '../site_discovery/placement'
 import { ManualSiteInput } from '../manual_site/ManualSiteInput'
 import type { ManualSiteOutput } from '../manual_site/model'
 import { measurementWithUnit } from '../measurements'
-import { bundledCatalogue } from '../model_catalogue/model'
+import type { CatalogueModel } from '../model_catalogue/model'
+import { defaultJourneyModel, journeyCatalogue, modelSnapshot, modelContact, modelProjectSettings, modelMeasure } from '../model_catalogue/demo'
 import { PriceTiming, priceTimingParagraphs } from '../model_catalogue/PriceTiming'
 import { CopyableRecord, publicSourceUrl, readableDate, TechnicalDetails } from '../ReadableProvenance'
 import { SitePreparation } from '../site_preparations/SitePreparation'
@@ -28,7 +29,7 @@ import { ordinaryFourEdgeBoundary, type StreetAdjacency, type BoundaryMapMode, t
 import type { BoundaryMapInteraction } from '../zoning_site_assumptions/BoundaryMapTools'
 import { ConditionalScreen } from '../conditional_screening/ConditionalScreen'
 import { ProjectDetails } from '../conditional_screening/ProjectDetails'
-import { applyMappedZoning, initialProjectSettings, withFloorAreaBasis } from '../conditional_screening/projectSettings'
+import { applyMappedZoning, withFloorAreaBasis } from '../conditional_screening/projectSettings'
 import type { ProjectSettings } from '../conditional_screening/projectSettings'
 import { parseZoningLookup, selectedParcelRef, zoningProjection, type ZoningLookup } from '../conditional_screening/victoriaZoning'
 import { PlacementScenarios } from '../conditional_screening/PlacementScenarios'
@@ -41,20 +42,18 @@ import { EnquiryPreview, withPlacementSketch, emailDraftUrl, enquiryEmailBody, e
 import { preparationChecklist } from './manufacturer'
 import { placementDrawing, renderDrawing, downloadFile, attachedEmail, enquiryPackageFiles, type DrawingAssets } from './placementExport'
 
-const MODEL_ID = 'aux-300' as const
-const foundModel = bundledCatalogue.models.find(item => item.model_id === MODEL_ID)
-if (!foundModel) throw new Error('The Model 300 catalogue record is unavailable')
-const model = foundModel
-
-const measurement = (name: string) => model.measurements.find(item => item.name === name)
-const original = (name: string) => measurement(name)?.quantity?.original_text ?? 'unknown'
-const metres = (name: string) => measurement(name)?.quantity?.unit === 'm'
-  ? measurementWithUnit(measurement(name)!.quantity!.value, 'length') : 'unknown'
+const modelValues = (model: CatalogueModel) => {
+  const measurement = (name: string) => modelMeasure(model, name)
+  const original = (name: string) => measurement(name)?.quantity?.original_text ?? 'unknown'
+  const metres = (name: string) => measurement(name)?.quantity?.unit === 'm' ? measurementWithUnit(measurement(name)!.quantity!.value, 'length') : 'unknown'
+  return { measurement, original, metres }
+}
 const fact = (value: string | number | null) => value === null || value === '' ? 'unknown' : String(value)
 const field = (value: string) => value.trim() || 'unknown'
 
 export function screeningDocument(selection: SitePreparationSelection | null, input: EnquiryInput, measured: OccupiedMeasurement | null, exampleImported = false, live: Confirmed | null = null, manual: ManualSiteOutput | null = null, savedExample = false, foundationAllowanceM: string | null = null,
-  conditional: ScreeningResult | null = null, siteAssumptions: SiteAssumptions | null = null, pathway: Pathway | null = null, scenarios: ScenarioResult | null = null, settings: ProjectSettings | null = null, scan: PropertyScanResult | null = null) {
+  conditional: ScreeningResult | null = null, siteAssumptions: SiteAssumptions | null = null, pathway: Pathway | null = null, scenarios: ScenarioResult | null = null, settings: ProjectSettings | null = null, scan: PropertyScanResult | null = null, model: CatalogueModel = defaultJourneyModel) {
+  const { original, metres } = modelValues(model)
   const source = model.sources[0]
   const candidate = selection?.candidate
   const p = measured?.result.input.placement
@@ -90,9 +89,9 @@ export function screeningDocument(selection: SitePreparationSelection | null, in
   const planningSummary = boundaryObservations(scenarios, siteAssumptions)
   const assumptionsSummary = assumptionsDescription(input, siteAssumptions, pathway, settings) + settingSourceSummary
   const lines = [
-    'UNSENT DRAFT · Model 300 enquiry for preliminary investigation',
-    'Prepared independently with ShovelReady; no affiliation with or contact to aux box.',
-    `Design: aux box Model 300; public page captured ${readableDate(source?.captured_at)}; unreviewed; manufacturer revision ${model.source_revision ?? 'unknown'}. Nominal exterior ${original('nominal_exterior_width')} × ${original('nominal_exterior_depth')} (${metres('nominal_exterior_width')} × ${metres('nominal_exterior_depth')}). Advertised exterior height ${original('advertised_overall_height')}; regulatory installed height and datum unknown. Source: ${model.provider_url}.`,
+    `UNSENT DRAFT · ${model.name} enquiry for preliminary investigation`,
+    `Prepared independently with ShovelReady; no affiliation with or contact to ${model.provider}.`,
+    `Design: ${model.provider} ${model.name}; public page captured ${readableDate(source?.captured_at)}; unreviewed; manufacturer revision ${model.source_revision ?? 'unknown'}. Nominal exterior ${original('nominal_exterior_width')} × ${original('nominal_exterior_depth')} (${metres('nominal_exterior_width')} × ${metres('nominal_exterior_depth')}). Advertised exterior height ${original('advertised_overall_height')}; regulatory installed height and datum unknown. Source: ${model.provider_url}.`,
     savedExample ? `Example property / saved data: City of Victoria ${exampleCase.site.parcel.source.record_label}; captured ${readableDate(exampleCase.site.parcel.source.capture_date)}; ${exampleCase.site.parcel.source.review_status}. Parcel source: ${exampleSourcePage(exampleCase.site.parcel.source.reference)} (${exampleCase.site.parcel.source.record_label}). Roofline source: ${exampleSourcePage(exampleCase.site.buildings[0]?.source.reference ?? null)} (${exampleCase.site.buildings[0]?.source.record_label ?? 'record unavailable'}). Contains information licensed under the Open Government Licence – City of Victoria: https://opendata.victoria.ca/pages/open-data-licence. Full source record links are in the technical evidence export. This is not the sender's property or a verified address.` :
     live ? `Site lead: ${live.address.label}; ${live.parcel.label}. ${live.schema_version === 'site-discovery.selected.v1' ? 'Source-selected City of Victoria observation; identity, ownership and legal boundaries are not confirmed' : 'User-confirmed City of Victoria source observation'}; source join and parcel identity remain unreviewed. Captured ${readableDate(live.observation.source.capturedAt)}. Source: ${publicSourceUrl(live.observation.source.url) ?? 'source link unavailable'}. ${live.observation.issues.join(' ')}` :
       manual ? `User-supplied site: ${field(manual.facts.address)}; stated area ${measurementWithUnit(manual.facts.statedAreaM2, 'area')}; notes ${field(manual.facts.notes)}. Approximate local sketch only, with no verified address, survey position or orientation.` :
@@ -107,14 +106,14 @@ export function screeningDocument(selection: SitePreparationSelection | null, in
       : `${exampleImported ? 'Imported example has no current measurement; remeasure after edits. ' : ''}Geometry and zoning unassessed for this site. An address or area does not define a usable parcel shape.`,
     `Foundation scenario allowance: ${foundationAllowanceM === null ? 'not supplied' : measurementWithUnit(foundationAllowanceM, 'length') + ' planning assumption (default or edited)'}. This allowance is used only in the labelled preliminary height estimate; installed height remains unverified.`,
     `Provider service/installation: ${model.service_area_note} ${model.installation_note}`,
-    'Questions: Please confirm the current controlled Model 300 drawing/revision, installed envelope and height datum; roof projections and site clearances; local delivery/crane access, foundation and utility requirements; and what site information you need before discussing this property.',
+    `Questions: Please confirm the current controlled ${model.name} drawing/revision, installed envelope and height datum; roof projections and site clearances; local delivery/crane access, foundation and utility requirements; and what site information you need before discussing this property.`,
     'Legal lot lines, building walls and roles, other obstructions, zoning and setbacks, installed height and datum, current controlled provider dimensions, access and services remain unresolved.',
     'Planning feasibility remains unconfirmed. Manufacturer drawings, property confirmation and City or professional review are separate next steps.',
   ]
   const offset = candidate ? 1 : 0
   return {
     kind: 'screening',
-    title: 'Model 300 supporting screening report',
+    title: `${model.name} supporting screening report`,
     question: ['Preliminary supplied-placement screening; source observations and candidate rules remain unreviewed.', enquiryUseQualification(input.intendedUse, pathway?.proposed_use), 'Exact values and complete identifiers are retained in the accompanying technical evidence.'].filter(Boolean).join(' '),
     example: savedExample,
     sections: [
@@ -124,7 +123,7 @@ export function screeningDocument(selection: SitePreparationSelection | null, in
       ...(scan ? [{ heading: 'Preliminary property scan', paragraphs: [...scan.findings.map(row => `${row.label}: ${row.status === 'probably_clear' ? 'no matching records found in this searched dataset' : row.status === 'review' ? 'records need review' : 'unknown'}. ${row.status === 'probably_clear' ? 'This does not establish absence of restrictions.' : row.detail}${row.source ? ` Source: ${row.source.provider}, ${row.source.record_label}, captured ${row.source.captured_at_utc.slice(0, 10)}, unreviewed; ${row.source.source_url.split('?')[0]}.` : ''}`), ...scan.limitations], emailSummary: scan.findings.map(row => `${row.label}: ${row.status === 'probably_clear' ? 'Likely fine in searched scope' : row.status === 'review' ? 'Needs review' : 'Unknown'}.`).join(' ') + ' Permit documents, title, projections and servicing remain unsearched.' }] : []),
 
       { heading: 'Price & timing', paragraphs: priceTimingParagraphs(model), emailSummary: priceTimingParagraphs(model).join(' ') },
-      { heading: 'Model', paragraphs: [lines[1], lines[2], lines[8 + offset]], emailSummary: `aux box Model 300; nominal exterior ${original('nominal_exterior_width')} × ${original('nominal_exterior_depth')}; source ${model.provider_url}; current controlled revision and installed height unknown.` },
+      { heading: 'Model', paragraphs: [lines[1], lines[2], lines[8 + offset]], emailSummary: `${model.provider} ${model.name}; nominal exterior ${original('nominal_exterior_width')} × ${original('nominal_exterior_depth')}; source ${model.provider_url}; current controlled revision and installed height unknown.` },
       { heading: 'Property', paragraphs: [lines[3], ...(candidate ? [lines[4]] : []), lines[4 + offset], lines[5 + offset]], emailSummary: savedExample ? 'Saved City of Victoria example only; this is not my property.' : live ? `Selected Victoria source lead: ${live.address.label}. Identity, ownership and legal boundaries remain unverified.` : manual ? `User-supplied site: ${field(manual.facts.address)}; facts and sketch unverified.` : `Site lead: ${candidate ? fact(candidate.address.value) : fact(selection?.manual.address.value ?? null)}; identity and dimensions unverified.` },
       { heading: 'Placement', paragraphs: [lines[6 + offset], lines[7 + offset], ...(clearanceText ? [clearanceText] : [])], emailSummary: measured ? `Approximate measured rectangle ${measurementWithUnit(p?.width_m, 'length')} × ${measurementWithUnit(p?.depth_m, 'length')}; ${measured.widthOrigin === 'user' || measured.depthOrigin === 'user' ? 'custom size, provider availability unknown; ' : ''}geometry observations recorded; ${conditional ? 'see separate conditional zoning checks' : 'zoning comparison unresolved'}. ${clearanceText}` : manual?.assessment ? `User sketch measured at ${measurementWithUnit(manual.assessment.input.placement.width_m, 'length')} × ${measurementWithUnit(manual.assessment.input.placement.depth_m, 'length')}; unverified geometry; zoning unassessed.` : 'No current placement measurement; geometry and zoning unassessed.' },
       { heading: 'Approximate setbacks', paragraphs: [scenarioSummary], emailSummary: scenarioSummary },
@@ -138,16 +137,20 @@ export function screeningDocument(selection: SitePreparationSelection | null, in
 export function enquiryDocument(...args: Parameters<typeof screeningDocument>) {
   const [selection, input, measured, , live, manual, savedExample, , conditional, , pathway, scenarios, , scan] = args
   const address = savedExample ? null : live?.address.label || manual?.facts.address || selection?.candidate?.address.value || selection?.manual.address.value || null
-  return manufacturerDocument(input, address === null ? null : String(address), !!savedExample, measured, conditional ?? null, scenarios ?? null, scan ?? null, !!(savedExample || live || manual?.assessment), false, pathway?.proposed_use)
+  return manufacturerDocument(input, address === null ? null : String(address), !!savedExample, measured, conditional ?? null, scenarios ?? null, scan ?? null, !!(savedExample || live || manual?.assessment), false, pathway?.proposed_use, args[14] ?? defaultJourneyModel)
 }
 
 export function enquiry(...args: Parameters<typeof enquiryDocument>) { return enquiryPlainText(enquiryDocument(...args)) }
 
 export type BuilderProgress = import('../navigation/BuilderJourneyNav').BuilderJourneyCompletion
 type JourneyStep = import('../navigation/BuilderJourneyNav').JourneyStep
-const suggestedQuestion = 'Could Model 300 be suitable for this property?'
 
 export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (progress: BuilderProgress) => void } = {}) {
+  const [modelId, setModelId] = useState(defaultJourneyModel.model_id)
+  const model = journeyCatalogue.models.find(item => item.model_id === modelId)!
+  const MODEL_ID = model.model_id
+  const { measurement, original, metres } = modelValues(model)
+  const suggestedQuestion = `Could ${model.name} be suitable for this property?`
   const [expanded, setExpanded] = useState({ property: true, placement: false, next: false, email: false })
   const [journeyStep, setJourneyStep] = useState<JourneyStep>('property')
   const [boundaryEditorOverride, setBoundaryEditorOverride] = useState(false)
@@ -171,7 +174,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const [measurementResult, setMeasurementResult] = useState<OccupiedMeasurement | null>(null)
   const [buffersPending, setBuffersPending] = useState(false)
   const [siteAssumptions, setSiteAssumptions] = useState<SiteAssumptions | null>(null)
-  const [projectSettings, setProjectSettings] = useState(initialProjectSettings)
+  const [projectSettings, setProjectSettings] = useState(() => modelProjectSettings(model))
   const [zoningState, setZoningState] = useState<{ key: string; result: ZoningLookup } | null>(null)
   const [zoningError, setZoningError] = useState<{ key: string; message: string } | null>(null)
   const [zoningBusy, setZoningBusy] = useState(false)
@@ -213,14 +216,37 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const [recipient, setRecipient] = useState('')
   const [includeSiteDetails, setIncludeSiteDetails] = useState(true)
   const [emailMessage, setEmailMessage] = useState('')
-  function siteEdited() { setBufferSuggestion(undefined); setMoveSuggestion(undefined); setAcknowledgedConflicts([]); setSelection(null); setImported(false); setMeasurementResult(null); setSiteAssumptions(null); setProjectSettings(initialProjectSettings()); setStreetMarks({ revision: null, data: { edge_ids: [], all_marked: false, origin: 'user' } }); setRearEdge(null); setSelectedBoundary(null); setBoundaryMark(null); setMarkingRole(null); setBoundaryMode('place'); setReadyFor(null); setRevision(value => value + 1) }
+  function siteEdited() { setBufferSuggestion(undefined); setMoveSuggestion(undefined); setAcknowledgedConflicts([]); setSelection(null); setImported(false); setMeasurementResult(null); setSiteAssumptions(null); setProjectSettings(modelProjectSettings(model)); setStreetMarks({ revision: null, data: { edge_ids: [], all_marked: false, origin: 'user' } }); setRearEdge(null); setSelectedBoundary(null); setBoundaryMark(null); setMarkingRole(null); setBoundaryMode('place'); setReadyFor(null); setRevision(value => value + 1) }
   function changeMode(next: typeof mode) {
-    setFoundationAllowanceM('0.30'); setHeightRevision(value => value + 1)
+    setFoundationAllowanceM(model.model_id === 'aux-300' ? '0.30' : null); setHeightRevision(value => value + 1)
     setExpanded({ property: next !== 'example', placement: next === 'example', next: false, email: false })
     setMode(next); siteEdited(); setLive(null); setManual(null)
     setDraft({ ...emptySiteInput, kind: 'address' })
     setQuestion(suggestedQuestion); setUse(''); setTiming(''); setBudget(''); setAccess(''); setServices(''); setProjectContext({ relationship: '', stage: '', configuration: '', nextStep: '', contact: '' }); setDrawingExport(null)
     setReadyFor(null); setManualConfirmedFor(null); setIncludeSiteDetails(true); setEmailMessage('')
+  }
+  function switchModel(nextId: string) {
+    const next = journeyCatalogue.models.find(item => item.model_id === nextId)
+    if (!next || nextId === modelId) return
+    setModelId(nextId); setMeasurementResult(null)
+    setManual(previous => previous ? { ...previous, assessment: null, placement: null } : null)
+    setSiteAssumptions(previous => previous ? { ...previous, measurements: { ...previous.measurements, boundary: {}, principal_separation: null, floor_area: null } } : null)
+    setProjectSettings(previous => {
+      const nextSettings = modelProjectSettings(next)
+      return { proposal: { ...nextSettings.proposal,
+        confirmed_zone: previous.proposal.confirmed_zone, confirmed_instrument: previous.proposal.confirmed_instrument,
+        legal_lot_confirmed: previous.proposal.legal_lot_confirmed },
+        evidence: { ...nextSettings.evidence, confirmed_zone: previous.evidence.confirmed_zone,
+          confirmed_instrument: previous.evidence.confirmed_instrument, legal_lot_confirmed: previous.evidence.legal_lot_confirmed } }
+    })
+    setFoundationAllowanceM(null); setHeightRevision(value => value + 1); setScoutingHeight(null)
+    setProjectContext(previous => ({ ...previous, configuration: '' }))
+    setQuestion(`Could ${next.name} be suitable for this property?`); setRecipient('')
+    setConditionalState(null); setScenarioState(null); setDrawingExport(null)
+    setAcknowledgedConflicts([]); setReviewedDetailsFor(null); setReviewedChecksFor(null)
+    setReadyFor(null); setEmailRequestedFor(null); setWebsiteRequestedFor(null)
+    setEmailMessage(''); setExportMessage(''); setMoveSuggestion(undefined); setBufferSuggestion(undefined)
+    setRevision(value => value + 1)
   }
   const hasSite = mode === 'example' || !!(selection || live || manual && (manual.site || Object.values(manual.facts).some(value => value.trim())))
   const zoningCase = mode === 'example' ? exampleCase : mode === 'live' ? liveCase ?? null : null
@@ -276,7 +302,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const additionalKey = JSON.stringify([geometryRevision, revision])
   const scenarioRequest: ScenarioRequest | null = measurementResult && currentAssumptions && zoningCase && measurementResult.site.site.parcel.id === zoningCase.site.parcel.id
     ? { schema_version: 'placement-scenarios.request.v1', geometry: measurementResult.result.input, assumptions: currentAssumptions,
-      model_revision: `catalogue-record:${model.model_id}@${bundledCatalogue.snapshot_id}`, proposal: pathway, proposal_evidence: effectiveSettings.evidence,
+      model_revision: `catalogue-record:${model.model_id}@${modelSnapshot(model)}`, proposal: pathway, proposal_evidence: effectiveSettings.evidence,
       street_edge_id: streetEdge, rear_edge_id: rearEdge, street_pattern: streetPattern,
       additional_inputs: { height_from_average_grade_m: scoutingHeight?.key === additionalKey ? scoutingHeight.value : null,
         nominal_footprint_area_m2: currentAssumptions.measurements.floor_area?.basis === 'rough_floor_area_estimate' ? currentAssumptions.measurements.floor_area.value : measurementResult.result.input.placement.width_m * measurementResult.result.input.placement.depth_m,
@@ -287,7 +313,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   const currentScenario = scenarioKey && scenarioState?.key === scenarioKey ? scenarioState.result : null
   const currentScenarioError = scenarioKey && scenarioError?.key === scenarioKey ? scenarioError.message : ''
   const boundaryInteraction: BoundaryMapInteraction | undefined = zoningCase ? {
-    editor: <SiteAssumptionsEditor detailsSummary={<>Floor area buffer: +{estimateBuffers.area}%. {scoutingHeight?.key === additionalKey && scoutingHeight.value !== null ? `Supplied installed height: ${measurementWithUnit(scoutingHeight.value, 'length')}.` : `Advertised height buffer: +${estimateBuffers.height}%; foundation allowance: ${foundationAllowanceM === null ? 'unknown' : measurementWithUnit(foundationAllowanceM, 'length')}.`}</>} detailsInputs={<AdditionalInputs key={additionalKey} buffers={estimateBuffers} onBuffers={setEstimateBuffers} foundation={foundationAllowanceM} onFoundation={setFoundationAllowanceM} onHeight={value => { setScoutingHeight({ key: additionalKey, value }); setReadyFor(null) }} result={currentScenario} />} bufferSuggestion={bufferSuggestion} onBoundaryAccepted={accepted => setReviewedBoundariesFor(boundaryReviewKey(accepted))} onFactsNext={() => advanceJourneyStep('checks')} factsNextDisabled={buffersPending} detailsStep={journeyStep === 'details'} forceBoundaryEditor={boundaryEditorOverride || selectedBoundary !== null} onPlanningBuffersPending={setBuffersPending} waterfrontMarks={waterfrontMarks.revision === geometryRevision ? waterfrontMarks.ids : []} onWaterfrontChange={yes => { if (yes) { waterfrontFocusPending.current = true; changeBoundaryMode('waterfront') } else { if (boundaryMode === 'waterfront') changeBoundaryMode('place'); setWaterfrontMarks({ revision: geometryRevision, ids: [] }) } }} onBoundaryDismiss={() => { setSelectedBoundary(null); setMarkingRole(null); document.getElementById('boundary-roles')?.focus() }} edgeDistances={currentScenario?.edge_distances_m} homeownerDefaults streetAdjacency={streetAdjacency} markingRole={markingRole} onMarkingRoleChange={setMarkingRole} boundaryMark={boundaryMark} sharedMode={boundaryMode} selectedBoundary={selectedBoundary} onBoundarySelect={selectBoundary} site={zoningCase} geometryRevision={geometryRevision!} placementRevision={placementRevision} frontEdge={streetEdge} rearEdge={rearEdge} streetPattern={streetPattern} onChange={assumptionsChanged} />,
+    editor: <SiteAssumptionsEditor initialValue={siteAssumptions} detailsSummary={<>Floor area buffer: +{estimateBuffers.area}%. {scoutingHeight?.key === additionalKey && scoutingHeight.value !== null ? `Supplied installed height: ${measurementWithUnit(scoutingHeight.value, 'length')}.` : `Advertised height buffer: +${estimateBuffers.height}%; foundation allowance: ${foundationAllowanceM === null ? 'unknown' : measurementWithUnit(foundationAllowanceM, 'length')}.`}</>} detailsInputs={<AdditionalInputs key={additionalKey} buffers={estimateBuffers} onBuffers={setEstimateBuffers} foundation={foundationAllowanceM} onFoundation={setFoundationAllowanceM} onHeight={value => { setScoutingHeight({ key: additionalKey, value }); setReadyFor(null) }} result={currentScenario} />} bufferSuggestion={bufferSuggestion} onBoundaryAccepted={accepted => setReviewedBoundariesFor(boundaryReviewKey(accepted))} onFactsNext={() => advanceJourneyStep('checks')} factsNextDisabled={buffersPending} detailsStep={journeyStep === 'details'} forceBoundaryEditor={boundaryEditorOverride || selectedBoundary !== null} onPlanningBuffersPending={setBuffersPending} waterfrontMarks={waterfrontMarks.revision === geometryRevision ? waterfrontMarks.ids : []} onWaterfrontChange={yes => { if (yes) { waterfrontFocusPending.current = true; changeBoundaryMode('waterfront') } else { if (boundaryMode === 'waterfront') changeBoundaryMode('place'); setWaterfrontMarks({ revision: geometryRevision, ids: [] }) } }} onBoundaryDismiss={() => { setSelectedBoundary(null); setMarkingRole(null); document.getElementById('boundary-roles')?.focus() }} edgeDistances={currentScenario?.edge_distances_m} homeownerDefaults streetAdjacency={streetAdjacency} markingRole={markingRole} onMarkingRoleChange={setMarkingRole} boundaryMark={boundaryMark} sharedMode={boundaryMode} selectedBoundary={selectedBoundary} onBoundarySelect={selectBoundary} site={zoningCase} geometryRevision={geometryRevision!} placementRevision={placementRevision} frontEdge={streetEdge} rearEdge={rearEdge} streetPattern={streetPattern} onChange={assumptionsChanged} />,
     mainBuilding: zoningCase.site.buildings.find(b => b.id === currentAssumptions?.principal_building_id.value), mainBuildingAssumed: currentAssumptions?.principal_building_id.origin === 'journey_default', waterfront: currentAssumptions?.waterfront.value === true, waterfrontIds: currentAssumptions?.waterfront_edge_ids,
     suggestedRoles: currentAssumptions?.boundary_role_suggestions?.roles, streetIds: streetAdjacency.edge_ids, allStreetsMarked: streetAdjacency.all_marked, onStreetComplete: all_marked => { setStreetMarks({ revision: geometryRevision, data: { ...streetAdjacency, all_marked, completion_method: 'explicit_confirmation' } }); setReadyFor(null) }, selectedId: selectedBoundary, edges: currentAssumptions?.edges ?? [], mode: boundaryMode, frontId: streetEdge, rearId: rearEdge,
     streetPattern, onModeChange: changeBoundaryMode,
@@ -320,7 +346,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     return () => { controller.abort(); window.clearTimeout(timer); window.clearTimeout(timeout) }
   }, [scenarioKey])
   const screeningRequest: ScreeningRequest | null = measurementResult && currentAssumptions && zoningCase && measurementResult.site.site.parcel.id === zoningCase.site.parcel.id
-    ? { schema_version: 'conditional-screening.api.v1', assumptions: currentAssumptions, model_revision: `catalogue-record:${model.model_id}@${bundledCatalogue.snapshot_id}`, proposal: pathway, proposal_evidence: effectiveSettings.evidence } : null
+    ? { schema_version: 'conditional-screening.api.v1', assumptions: currentAssumptions, model_revision: `catalogue-record:${model.model_id}@${modelSnapshot(model)}`, proposal: pathway, proposal_evidence: effectiveSettings.evidence } : null
   const requestKey = screeningRequest ? JSON.stringify([screeningIdentity(screeningRequest), conditionalRetry]) : null
   const currentScreening = requestKey && conditionalState?.key === requestKey ? conditionalState.result : null
   const currentScreeningError = requestKey && conditionalError?.key === requestKey ? conditionalError.message : ''
@@ -350,7 +376,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     }, 300)
     return () => { controller.abort(); window.clearTimeout(timer); window.clearTimeout(timeout) }
   }, [requestKey])
-  const makeEnquiryDoc = () => hasSite ? enquiryDocument(selection, { question, intendedUse: use, timing, budget, access, services, ...projectContext }, measurementResult, imported, live, manual, mode === 'example', foundationAllowanceM, currentScreening, currentAssumptions, pathway, currentScenario, effectiveSettings, propertyScan.result) : null
+  const makeEnquiryDoc = () => hasSite ? enquiryDocument(selection, { question, intendedUse: use, timing, budget, access, services, ...projectContext }, measurementResult, imported, live, manual, mode === 'example', foundationAllowanceM, currentScreening, currentAssumptions, pathway, currentScenario, effectiveSettings, propertyScan.result, model) : null
   const manualSignature = JSON.stringify({ facts: manual?.facts ?? null, site: manual?.site ?? null })
   const propertyComplete = mode === 'example' || !!(live || selection || mode === 'manual' && manual && manualConfirmedFor === manualSignature)
   const placementComplete = !!(measurementResult || mode === 'manual' && manual?.assessment)
@@ -394,6 +420,13 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     scenario: currentScenario, screening: currentScreening,
     assumptions: currentAssumptions, settings: effectiveSettings, mapped: mappedZoning, lookup: currentZoning, zoningBusy, zoningError: currentZoningError,
     propertyScan: propertyScan.result, propertyScanBusy: propertyScan.busy, propertyScanError: propertyScan.error, scenarioError: currentScenarioError, screeningError: currentScreeningError, onRetryAvailable: !!zoningKey }) : null
+  if (summary && model.model_id === 'wcch-ch-studio') summary.checks.splice(1, 0, {
+    label: 'Permanent dwelling suitability', status: 'unknown',
+    detail: 'C.H. Studio Pod body dimensions support a footprint comparison. Permanent residential suitability has not been established.',
+    gap: { missing: 'A provider-confirmed permanent residential configuration and its supporting documents.',
+      affects: 'Space on the property does not establish eligibility for a garden suite.',
+      next: 'Ask West Coast Container Homes which residential configuration, foundation and documentation it can supply for this locality.', owner: 'West Coast Container Homes, then City reviewer' },
+  })
   const conflictKey = (check: import('../conditional_screening/HomeownerSummary').SummaryCheck) => findingAcknowledgementKey(check, { geometryRevision, measurement: measurementResult, assumptions: currentAssumptions, streets: streetAdjacency, settings: effectiveSettings, buffers: estimateBuffers, foundation: foundationAllowanceM, installedHeight: scoutingHeight?.key === additionalKey ? scoutingHeight.value : null, intendedUse: use, scan: propertyScan.result })
   const findings = summary ? summaryFindings(summary) : []
   useEffect(() => {
@@ -450,7 +483,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     const paragraphs = ['I have an approximate proposed placement sketch available. Please let me know the best way to share it.']
     enquiryDoc.sections.push({ heading: 'Placement sketch', paragraphs, emailSummary: paragraphs[0], siteDetails: true })
   }
-  const reportDoc = hasSite ? screeningDocument(selection, { question, intendedUse: use, timing, budget, access, services, ...projectContext }, measurementResult, imported, live, manual, mode === 'example', foundationAllowanceM, currentScreening, currentAssumptions, pathway, currentScenario, effectiveSettings, propertyScan.result) : null
+  const reportDoc = hasSite ? screeningDocument(selection, { question, intendedUse: use, timing, budget, access, services, ...projectContext }, measurementResult, imported, live, manual, mode === 'example', foundationAllowanceM, currentScreening, currentAssumptions, pathway, currentScenario, effectiveSettings, propertyScan.result, model) : null
   if (reportDoc && currentAcknowledgements.length) {
     const paragraphs = currentAcknowledgements.map(check => `${check.label}: ${check.detail} Acknowledged by the user for discussion with the City/provider. The conflict remains unresolved; City agreement or an exception is not established.`)
     reportDoc.sections.push({ heading: 'Acknowledged conflicts for discussion', paragraphs, emailSummary: paragraphs.join(' ') })
@@ -543,12 +576,12 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   useEffect(() => { progressCallback.current?.({ reviewReadiness, model: true, property: propertyComplete, placement: placementComplete, streets: !!geometryRevision && streetAdjacency.all_marked, boundaries: reviewedBoundariesFor === boundaryReviewRevision, details: reviewedDetailsFor === detailsReviewRevision, checks: reviewedChecksFor === reviewRevision, enquiry: enquiryReady, email: !!draftText && (websiteRequestedFor === draftText || emailRequestedFor === JSON.stringify([draftText, recipient, includeSiteDetails])), handoff: websiteRequestedFor === draftText ? 'website' : 'email', current: journeyStep, mapAvailable: propertyComplete ? !!zoningCase : undefined }) }, [zoningCase, propertyComplete, placementComplete, enquiryReady, geometryRevision, streetAdjacency.all_marked, reviewedBoundariesFor, reviewedDetailsFor, reviewedChecksFor, reviewRevision, detailsReviewRevision, boundaryReviewRevision, websiteRequestedFor, emailRequestedFor, draftText, recipient, includeSiteDetails, journeyStep, readinessSignature])
   useEffect(() => { setReadyFor(null) }, [draftText])
   const emailBody = enquiryDoc ? enquiryEmailBody(enquiryDoc, includeSiteDetails) : ''
-  const emailSubject = enquiryDoc?.example ? 'Saved example only — Model 300 question' : includeSiteDetails ? enquiryDoc?.title ?? 'Model 300 feasibility enquiry' : 'Model 300 feasibility enquiry'
+  const emailSubject = enquiryDoc?.example ? `Saved example only — ${model.name} question` : includeSiteDetails ? enquiryDoc?.title ?? `${model.name} feasibility enquiry` : `${model.name} feasibility enquiry`
   useEffect(() => { setEmailMessage('') }, [emailBody, emailSubject])
   const emailTooLong = !!enquiryDoc && (!emailDraftUrl('mailto', recipient, emailSubject, emailBody) || !emailDraftUrl('gmail', recipient, emailSubject, emailBody)) && validRecipient(recipient)
   const shortEmailBody = enquiryDoc?.example
-    ? 'SAVED EXAMPLE ONLY — not my property. I will paste the full reviewed Model 300 enquiry into this draft before sending.'
-    : 'I have prepared a Model 300 enquiry. I will paste the full reviewed text into this draft before sending.'
+    ? `SAVED EXAMPLE ONLY — not my property. I will paste the full reviewed ${model.name} enquiry into this draft before sending.`
+    : `I have prepared a ${model.name} enquiry. I will paste the full reviewed text into this draft before sending.`
   function openDraft(kind: 'mailto' | 'gmail') {
     const url = emailDraftUrl(kind, recipient, emailSubject, emailTooLong ? shortEmailBody : emailBody)
     if (!url) { setEmailMessage('Enter one valid email address without line breaks.'); return }
@@ -572,11 +605,11 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       setEmailMessage('Full email body copied.')
     } catch { setEmailMessage('Clipboard unavailable. Select and copy the email body above.') }
   }
-  const technicalEvidence = { schema_version: 'builder-evidence.v1', enquiry_inputs: { question, intendedUse: use, timing, budget, access, services, ...projectContext }, model_catalogue: { snapshot_id: bundledCatalogue.snapshot_id, model }, acknowledged_conflicts_for_discussion: currentAcknowledgements, open_questions_for_discussion: currentOpenQuestions, review_readiness: reviewReadiness, foundation_scenario: { allowance_m: foundationAllowanceM, basis: 'planning_assumption', used_in_preliminary_height: currentScenario?.additional_checks?.some(check => check.id === 'height' && check.basis.startsWith('advertised height')) ?? false }, selection, live, manual, example: mode === 'example' ? exampleCase : null, measurement: measurementResult, zoning_site_assumptions: currentAssumptions, project_settings: zoningCase ? effectiveSettings : null, municipal_zoning_lookup: currentZoning, municipal_zoning_error: currentZoningError || null, property_scan: propertyScan.result, property_scan_error: propertyScan.error || null, placement_scenario_request: scenarioRequest, placement_scenario_result: currentScenario, conditional_screening: currentScreening }
+  const technicalEvidence = { schema_version: 'builder-evidence.v1', enquiry_inputs: { question, intendedUse: use, timing, budget, access, services, ...projectContext }, model_catalogue: { snapshot_id: modelSnapshot(model), model }, acknowledged_conflicts_for_discussion: currentAcknowledgements, open_questions_for_discussion: currentOpenQuestions, review_readiness: reviewReadiness, foundation_scenario: { allowance_m: foundationAllowanceM, basis: 'planning_assumption', used_in_preliminary_height: currentScenario?.additional_checks?.some(check => check.id === 'height' && check.basis.startsWith('advertised height')) ?? false }, selection, live, manual, example: mode === 'example' ? exampleCase : null, measurement: measurementResult, zoning_site_assumptions: currentAssumptions, project_settings: zoningCase ? effectiveSettings : null, municipal_zoning_lookup: currentZoning, municipal_zoning_error: currentZoningError || null, property_scan: propertyScan.result, property_scan_error: propertyScan.error || null, placement_scenario_request: scenarioRequest, placement_scenario_result: currentScenario, conditional_screening: currentScreening }
   function downloadMarkdown(report = false) {
     if (!report) { void exportPlacement('markdown'); return }
     if (!reportDoc) return
-    downloadFile('model-300-supporting-report.md', enquiryMarkdown(reportDoc) + '\nComplete coordinates, inputs and calculations are available in the separate technical evidence JSON download.\n', 'text/markdown;charset=utf-8')
+    downloadFile('prefab-supporting-report.md', enquiryMarkdown(reportDoc) + '\nComplete coordinates, inputs and calculations are available in the separate technical evidence JSON download.\n', 'text/markdown;charset=utf-8')
   }
   async function exportPlacement(kind: 'png' | 'pdf' | 'package' | 'email' | 'markdown') {
     if (!contextComplete || !enquiryDoc || exportBusy) return
@@ -593,18 +626,18 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       }
       if (kind === 'png' || kind === 'pdf') {
         if (!assets) throw new Error('Measure a current placement first.')
-        downloadFile(`model-300-placement.${kind}`, new Uint8Array(assets[kind]).buffer, kind === 'png' ? 'image/png' : 'application/pdf')
+        downloadFile(`prefab-placement.${kind}`, new Uint8Array(assets[kind]).buffer, kind === 'png' ? 'image/png' : 'application/pdf')
       } else if (kind === 'markdown') {
-        downloadFile('model-300-enquiry.md', enquiryMarkdown(withPlacementSketch(enquiryDoc, assets ? 'An approximate proposed placement sketch is included below; it is not a survey or approved site plan.' : null)) + (assets ? `\n## Approximate proposed placement\n\n![Approximate proposed placement](${assets.pngUrl})\n` : ''), 'text/markdown;charset=utf-8')
+        downloadFile('prefab-enquiry.md', enquiryMarkdown(withPlacementSketch(enquiryDoc, assets ? 'An approximate proposed placement sketch is included below; it is not a survey or approved site plan.' : null)) + (assets ? `\n## Approximate proposed placement\n\n![Approximate proposed placement](${assets.pngUrl})\n` : ''), 'text/markdown;charset=utf-8')
       } else if (kind === 'email') {
         const attachedDoc = withPlacementSketch(enquiryDoc, assets && includeSiteDetails ? 'I’ve attached an approximate proposed placement sketch for discussion. It is not a survey or approved site plan.' : null)
         const body = enquiryEmailBody(attachedDoc, includeSiteDetails)
-        downloadFile('model-300-enquiry.eml', attachedEmail(recipient, emailSubject, body, assets && includeSiteDetails ? assets.png : undefined), 'message/rfc822')
+        downloadFile('prefab-enquiry.eml', attachedEmail(recipient, emailSubject, body, assets && includeSiteDetails ? assets.png : undefined), 'message/rfc822')
         setEmailRequestedFor(JSON.stringify([draftText, recipient, includeSiteDetails])); setWebsiteRequestedFor(null)
       } else {
         const { zipSync } = await import('fflate')
         const files = enquiryPackageFiles(enquiryDoc, reportDoc, [...preparationChecklist({ intendedUse: use, timing, budget, access, services, ...projectContext }), ...currentOpenQuestions.map(item => `${item.label}: unresolved; included for discussion.`)], technicalEvidence, assets)
-        downloadFile('model-300-enquiry-package.zip', new Uint8Array(zipSync(files)).buffer, 'application/zip')
+        downloadFile('prefab-enquiry-package.zip', new Uint8Array(zipSync(files)).buffer, 'application/zip')
       }
       setExportMessage(kind === 'email' ? 'Unsent .eml draft downloaded. Open it in your email app and check the recipient, body and attachment before sending. Some clients open .eml as a message rather than an editable draft; use the text and drawing downloads if needed.' : 'Export downloaded. Review the approximate drawing and enquiry before sharing.')
     } catch (error) { setExportMessage(error instanceof Error ? error.message : 'Export failed. Please try again.') }
@@ -612,22 +645,26 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   }
   return <div className="builder-demo">
     <section className="builder-hero" id="builder-model" aria-labelledby="builder-title">
-      <p className="eyebrow">Independent sample journey · aux box</p>
-      <h1 id="builder-title">Explore Model 300 on your site</h1>
+      <label htmlFor="builder-model-choice">Choose a model</label>
+      <select id="builder-model-choice" value={modelId} onChange={event => switchModel(event.target.value)}>{journeyCatalogue.models.map(item => <option key={item.model_id} value={item.model_id}>{item.provider} · {item.name}</option>)}</select>
+      <p className="eyebrow">Independent sample journey · {model.provider}</p>
+      <h1 id="builder-title">Explore {model.name} on your site</h1>
       <p>Start with a site lead or the facts you know. Find a Victoria property, or sketch your own approximate lot, then test one placement and take away an unsent enquiry.</p>
-      <p className="notice">See whether Model 300 looks plausible enough to discuss with the provider. This independent aux box example prepares an enquiry; nothing is sent automatically.</p>
-      <p><strong>Model 300</strong> · {original('nominal_exterior_width')} × {original('nominal_exterior_depth')} · advertised height {original('advertised_overall_height')}. Provider dimensions are unreviewed.</p>
-      <ModelImage />
+      <p className="notice">See whether {model.name} looks plausible enough to discuss with {model.provider}. This independent example prepares an enquiry; nothing is sent automatically.</p>
+      <p><strong>{model.name}</strong> · {original('nominal_exterior_width')} × {original('nominal_exterior_depth')} · advertised height {original('advertised_overall_height')}. Provider dimensions are unreviewed.</p>
+      <ModelImage model={model} />
       <PriceTiming model={model} />
+      {model.model_id === 'wcch-ch-studio' && <p className="notice">Observational footprint comparison only. Permanent dwelling suitability is unconfirmed; ask West Coast Container Homes about this exact configuration before pursuing residential use.</p>}
+      <details><summary>Configuration and what to confirm next</summary><p>{model.configuration}</p><p>{model.intended_use_note}</p><p>{model.installation_note}</p><ul>{model.missing_facts.map(item => <li key={item}>{item}</li>)}</ul><p>Public-source observations, unreviewed. Demo availability is separate from accepted data publication.</p></details>
       <details className="builder-model-details"><summary>Model photos, specifications and sources</summary>
       <div className="builder-specs" aria-label="Captured model information">
         <div><strong>{original('nominal_exterior_width')} × {original('nominal_exterior_depth')}</strong><span>Provider nominal exterior rectangle · {metres('nominal_exterior_width')} × {metres('nominal_exterior_depth')}</span></div>
         <div><strong>{original('advertised_overall_height')}</strong><span>Advertised exterior height; installed regulatory height and datum unknown</span></div>
         <div><strong>{original('manufacturer_footprint')}</strong><span>Provider footprint; roof projections and regulatory area unverified</span></div>
       </div>
-      <p className="metadata">aux box · Model 300 public product page · captured {readableDate(model.sources[0]?.captured_at)} · {model.review_status}; manufacturer revision unknown. <a href={model.provider_url} target="_blank" rel="noreferrer">Provider source page</a>.</p>
+      <p className="metadata">{model.provider} · {model.name} public product page · captured {readableDate(model.sources[0]?.captured_at)} · {model.review_status}; manufacturer revision unknown. <a href={model.provider_url} target="_blank" rel="noreferrer">Provider source page</a>.</p>
       <p className="metadata">{model.footprint_note} {model.height_note} {model.service_area_note}</p>
-      <TechnicalDetails title="Catalogue source and exact model record"><pre>{JSON.stringify({ snapshot_id: bundledCatalogue.snapshot_id, model }, null, 2)}</pre></TechnicalDetails>
+      <TechnicalDetails title="Catalogue source and exact model record"><pre>{JSON.stringify({ snapshot_id: modelSnapshot(model), model }, null, 2)}</pre></TechnicalDetails>
       </details>
     </section>
     <EnquiryRecovery enquiry={expanded.next || enquiryReady ? draftText : null} report={reportDoc ? enquiryPlainText(reportDoc) : null} technicalEvidence={JSON.stringify(technicalEvidence, null, 2)} />
@@ -637,7 +674,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     <button type="button" aria-expanded={expanded.property} aria-controls="builder-property-content" onClick={() => toggleStep('property')}>{expanded.property ? 'Collapse property' : 'Review or change property'}</button>
     <div id="builder-property-content" hidden={!expanded.property}>
     <div className="builder-entry-choices"><div><strong>Use my own property</strong><p>Search a Victoria address or enter known facts.</p><button type="button" onClick={() => changeMode('live')}>Use my own property</button></div>
-      <div><strong>Try an example property</strong><p>Open a saved parcel and roofline with an illustrative Model 300 placement.</p><button type="button" onClick={() => changeMode('example')}>Try an example property</button></div></div>
+      <div><strong>Try an example property</strong><p>Open a saved parcel and roofline with an illustrative {model.name} placement.</p><button type="button" onClick={() => changeMode('example')}>Try an example property</button></div></div>
     <p className="metadata">Changing property mode clears the current placement, answers and unsent draft. Copy any question you want to keep first.</p>
     <label htmlFor="builder-site-mode">How would you like to enter your property?</label>
     <select id="builder-site-mode" value={mode} onChange={event => changeMode(event.target.value as typeof mode)}>
@@ -646,7 +683,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     {mode === 'live' && <SiteDiscovery autoProceed resetKey={propertyReset} onConfirm={next => { siteEdited(); setLive(next) }} onManual={() => changeMode('manual')} />}
     {mode === 'retained' && <SitePreparation draft={draft} onDraftChange={next => { setDraft(next); setReadyFor(null) }} selection={selection}
       onEdit={siteEdited} onConfirm={next => { setSelection(next); setImported(false); setMeasurementResult(null); setReadyFor(null); setRevision(value => value + 1) }} />}
-      {mode === 'manual' && <ManualSiteInput onChange={value => { if (JSON.stringify(value) !== JSON.stringify(manual)) { setManual(value); setReadyFor(null) } }} footprint={{ widthM: Number(measurement('nominal_exterior_width')?.quantity?.value) || null, depthM: Number(measurement('nominal_exterior_depth')?.quantity?.value) || null, label: 'aux box Model 300 · unreviewed nominal dimensions' }} />}
+      {mode === 'manual' && <ManualSiteInput onChange={value => { if (JSON.stringify(value) !== JSON.stringify(manual)) { setManual(value); setReadyFor(null) } }} footprint={{ widthM: Number(measurement('nominal_exterior_width')?.quantity?.value) || null, depthM: Number(measurement('nominal_exterior_depth')?.quantity?.value) || null, label: `${model.provider} ${model.name} · unreviewed nominal dimensions` }} />}
       {mode === 'manual' && hasSite && <button type="button" onClick={() => setManualConfirmedFor(manualSignature)} disabled={propertyComplete}>Confirm my site description</button>}
     </div>
     </section>
@@ -657,8 +694,8 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       <button type="button" aria-expanded={expanded.placement && propertyComplete} aria-controls="builder-placement-content" disabled={!propertyComplete} onClick={() => toggleStep('placement')}>{expanded.placement ? 'Collapse placement' : 'Explore placement'}</button>
       <div id="builder-placement-content" hidden={!expanded.placement || !propertyComplete}>
       {mode === 'manual' && <p>Your manual sketch and placement controls are in Property. Reopen that step to adjust them.</p>}
-      {mode === 'example' && <ExampleProperty placementConcerns={placementConcernsPanel} onContinueUnresolved={continueWithPlacementConcerns} moveSuggestion={moveSuggestion?.geometryRevision === geometryRevision ? moveSuggestion : undefined} evidenceTargetId="builder-geometry-evidence" key={revision} placementContinuation={placementContinuation} placementSummary={summaryPanel} boundaryInteraction={boundaryInteraction} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} />}
-      {mode === 'live' && (liveCase ? <OccupiedLots key={revision} placementConcerns={placementConcernsPanel} onContinueUnresolved={continueWithPlacementConcerns} placementContinuation={placementContinuation} placementSummary={summaryPanel} moveSuggestion={moveSuggestion?.geometryRevision === geometryRevision ? moveSuggestion : undefined} evidenceTargetId="builder-geometry-evidence" compactPlacement suppliedCase={liveCase} boundaryInteraction={boundaryInteraction} allowedModelIds={[MODEL_ID]} initialModelId={MODEL_ID} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} showHandoff={false} /> : <p>Select a Victoria property above to open its captured parcel sketch. Available geometry is approximate and unreviewed.</p>)}
+      {mode === 'example' && <ExampleProperty model={model} placementConcerns={placementConcernsPanel} onContinueUnresolved={continueWithPlacementConcerns} moveSuggestion={moveSuggestion?.geometryRevision === geometryRevision ? moveSuggestion : undefined} evidenceTargetId="builder-geometry-evidence" key={revision} placementContinuation={placementContinuation} placementSummary={summaryPanel} boundaryInteraction={boundaryInteraction} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} />}
+      {mode === 'live' && (liveCase ? <OccupiedLots catalogue={journeyCatalogue} key={revision} placementConcerns={placementConcernsPanel} onContinueUnresolved={continueWithPlacementConcerns} placementContinuation={placementContinuation} placementSummary={summaryPanel} moveSuggestion={moveSuggestion?.geometryRevision === geometryRevision ? moveSuggestion : undefined} evidenceTargetId="builder-geometry-evidence" compactPlacement suppliedCase={liveCase} boundaryInteraction={boundaryInteraction} allowedModelIds={[MODEL_ID]} initialModelId={MODEL_ID} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} showHandoff={false} /> : <p>Select a Victoria property above to open its captured parcel sketch. Available geometry is approximate and unreviewed.</p>)}
 
     {zoningCase && <><EvidenceAtFooter targetId="builder-rule-evidence"><section className="builder-placement-results" aria-label="Current placement results">
       <details className="builder-how-checked"><summary>Candidate rules, assumptions and exact evidence</summary>
@@ -672,7 +709,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       <p>Three captured lots are examples with their own parcel and roofline geometry. They are not citywide address coverage. Importing one does not match it to your address or parcel lead.</p>
       {!imported ? <button type="button" onClick={() => { setImported(true); setReadyFor(null) }}>Import a separate retained example for placement</button>
         : <><button type="button" onClick={() => { setImported(false); setMeasurementResult(null); setReadyFor(null); setRevision(value => value + 1) }}>Remove example</button>
-          <OccupiedLots key={revision} allowedModelIds={[MODEL_ID]} initialModelId={MODEL_ID} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} showHandoff={false} /></>}
+          <OccupiedLots catalogue={journeyCatalogue} key={revision} allowedModelIds={[MODEL_ID]} initialModelId={MODEL_ID} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} showHandoff={false} /></>}
     </section>}
     {mode === 'retained' && !selection && <p>Confirm a site lead above to consider a separate retained placement example. An example is never matched to your site lead.</p>}
       <details className="builder-optional"><summary>Illustrate model height and foundation</summary><p>This illustration is separate from the installed-height comparison above. A foundation allowance does not establish average grade.</p><HeightView key={`height-${heightRevision}`} model={model} foundationAllowanceM={foundationAllowanceM} onFoundationAllowanceChange={value => { setFoundationAllowanceM(value); setReadyFor(null) }} /></details>
@@ -688,7 +725,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       {!hasSite && <p>Add a property or your known site facts above to prepare an unsent enquiry. Your answers stay local to this journey.</p>}
       {hasSite && <><p>First, share three useful facts. Choose Unknown or Prefer not to say if appropriate. These answers stay local until you share the enquiry.</p>
       <div className="builder-questions">
-        <label htmlFor="builder-use">How would you use Model 300?</label><input id="builder-use" list="builder-use-options" value={use} onChange={event => setUse(event.target.value)} placeholder="Choose a suggestion or type your answer" />
+        <label htmlFor="builder-use">How would you use {model.name}?</label><input id="builder-use" list="builder-use-options" value={use} onChange={event => setUse(event.target.value)} placeholder="Choose a suggestion or type your answer" />
         <datalist id="builder-use-options">{['a home for myself', 'family accommodation', 'a rental suite', 'an office', 'Still deciding', 'Unknown', 'Prefer not to say'].map(value => <option key={value} value={value} />)}</datalist>
         <label htmlFor="builder-relationship">Relationship to the property</label><input id="builder-relationship" list="builder-relationship-options" value={projectContext.relationship} onChange={event => setProjectContext(previous => ({ ...previous, relationship: event.target.value }))} placeholder="Choose a suggestion or type your answer" />
         <datalist id="builder-relationship-options">{['I own the property', 'I am considering buying it', 'I am helping the owner', 'Unknown', 'Prefer not to say'].map(value => <option key={value} value={value} />)}</datalist>
@@ -711,7 +748,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
       {!contextComplete && <p role="status">Answer intended use, relationship to the property and the response wanted to generate your enquiry. Unknown and Prefer not to say are accepted answers.</p>}
       <section className="builder-preparation" aria-label="Your preparation checklist"><h3>Your preparation checklist</h3><p>For you to work through; these prompts are kept out of the provider message.</p><ul>{preparationChecklist({ intendedUse: use, timing, budget, access, services, ...projectContext }).map(item => <li key={item}>{item}</li>)}</ul>{currentOpenQuestions.length > 0 && <><h4>Questions you included for later review</h4><ul>{currentOpenQuestions.map(item => <li key={item.label}><strong>{item.label}</strong>: {item.detail}</li>)}</ul></>}</section>
       {enquiryDoc && <EnquiryPreview document={enquiryDoc} />}
-      {reportDoc && <details><summary>Supporting screening report · calculations, sources and uncertainty</summary><EnquiryPreview document={reportDoc} /><button type="button" onClick={() => downloadMarkdown(true)}>Download readable supporting report</button><button type="button" onClick={() => downloadFile('model-300-technical-evidence.json', JSON.stringify(technicalEvidence, null, 2), 'application/json')}>Download technical evidence JSON</button></details>}
+      {reportDoc && <details><summary>Supporting screening report · calculations, sources and uncertainty</summary><EnquiryPreview document={reportDoc} /><button type="button" onClick={() => downloadMarkdown(true)}>Download readable supporting report</button><button type="button" onClick={() => downloadFile('prefab-technical-evidence.json', JSON.stringify(technicalEvidence, null, 2), 'application/json')}>Download technical evidence JSON</button></details>}
       {enquiryDoc && <section className="builder-drawing-export" aria-label="Placement drawing and enquiry exports"><h3>Share your proposed placement</h3><p>Approximate proposed placement—not a survey or approved site plan. The drawing includes captured outlines, marked edges, gaps, buffers and sources. Access and entrance locations are not established.</p>
         {drawingAssets && <img className="builder-export-preview" src={drawingAssets.pngUrl} alt="Approximate proposed placement with measurements, assumptions and sources" />}
         {!exportMeasurement && <p>No current measured placement is available. Add or recheck a placement to include a drawing.</p>}
@@ -734,16 +771,16 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     </section>
     {hasSite && <>
       <section className="builder-stage builder-email" id="builder-email" aria-labelledby="builder-email-title">
-        <p className="eyebrow">Contact provider · unsent enquiry</p><h2 id="builder-email-title">Contact aux box</h2>
+        <p className="eyebrow">Contact provider · unsent enquiry</p><h2 id="builder-email-title">Contact {model.provider}</h2>
         <button type="button" aria-expanded={expanded.email} aria-controls="builder-email-content" onClick={() => toggleStep('email')}>{expanded.email ? 'Collapse provider contact' : 'Review provider contact'}</button>
         <div id="builder-email-content" hidden={!expanded.email}>
         {!contextComplete ? <><p>Provide the three context answers before preparing your provider message.</p><button id="builder-contact-context" type="button" onClick={() => openJourneyStep('enquiry')}>Add enquiry context</button></> : <>
-        <p>aux box uses a central enquiry form on its website. Copy your prepared enquiry, then paste it into the form. Checked October 7, 2026.</p>
-        <p className="metadata">Opening the website does not send your enquiry or attach your report. This independent demonstration has no affiliation with aux box.</p>
+        <p>{model.provider} uses an official contact page{model.provider === 'aux box' ? ' with a central enquiry form' : ''}. Copy your prepared enquiry, then review the provider’s requested information. Checked October 7, 2026.</p>
+        <p className="metadata">Opening the website does not send your enquiry or attach your report. This independent demonstration has no affiliation with {model.provider}.</p>
         <label htmlFor="builder-provider-text">Your enquiry to paste into the form</label><textarea id="builder-provider-text" readOnly rows={8} value={draftText} />
         <div className="builder-email-buttons">
           <button type="button" onClick={async () => { try { await navigator.clipboard.writeText(draftText); setEmailMessage('Enquiry copied. Paste it into the provider form and review it before submitting.'); } catch { setEmailMessage('Clipboard unavailable. Select and copy the enquiry text above.'); } }}>Copy enquiry for provider</button>
-          <a id="builder-provider-website" className="builder-email-primary" href="https://www.auxbox.ca/contact" target="_blank" rel="noreferrer" onClick={() => { setEmailRequestedFor(null); setWebsiteRequestedFor(draftText) }}>Continue to provider website →</a>
+          <a id="builder-provider-website" className="builder-email-primary" href={modelContact(model)} target="_blank" rel="noreferrer" onClick={() => { setEmailRequestedFor(null); setWebsiteRequestedFor(draftText) }}>Continue to provider website →</a>
         </div>
         <p role="status">{emailMessage}</p>
         <details className="builder-email-optional"><summary>I already have an email contact</summary>

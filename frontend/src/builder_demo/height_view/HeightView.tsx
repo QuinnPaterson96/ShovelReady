@@ -35,8 +35,8 @@ export function HeightView({ model, initialFoundationAllowanceM = '', foundation
       <svg className="height-view-diagram" viewBox="0 0 400 250" role="img" aria-label="Schematic building above a separate dashed foundation band; no datum or regulatory height is established">
         <path className="height-view-ground" d="M20 224H380" />
         <rect className="height-view-foundation" x="93" y="194" width="216" height="30" />
-        <path className="height-view-building" d="M93 194V83L123 66H279L309 83V194Z" />
-        <path className="height-view-roof" d="M82 84L121 54H281L320 84" />
+        <path className="height-view-building" d="M93 194V54H309V194Z" />
+        <text x="200" y="42" textAnchor="middle" className="height-view-svg-label">roof profile unknown</text>
         <path className="height-view-dimension" d="M57 54V194M48 54H66M48 194H66" />
         <text x="7" y="143" className="height-view-svg-label">A</text>
         <text x="197" y="215" textAnchor="middle" className="height-view-svg-label">B</text>

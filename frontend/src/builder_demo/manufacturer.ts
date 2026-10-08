@@ -8,6 +8,8 @@ import type { ProjectSettings } from '../conditional_screening/projectSettings'
 import type { PropertyScanResult } from '../conditional_screening/PropertyScan'
 import type { SiteAssumptions } from '../zoning_site_assumptions/model'
 import { measurementWithUnit } from '../measurements'
+import { defaultJourneyModel } from '../model_catalogue/demo'
+import type { CatalogueModel } from '../model_catalogue/model'
 
 export type EnquiryInput = {
   question?: string; intendedUse: string; timing: string; budget: string; access: string; services: string
@@ -151,7 +153,7 @@ export function preparationChecklist(input: EnquiryInput): string[] {
 
 export function manufacturerDocument(input: EnquiryInput, address: string | null, example: boolean,
   measured: OccupiedMeasurement | null, conditional: ScreeningResult | null, scenarios: ScenarioResult | null, scan: PropertyScanResult | null,
-  linkedPlacement: boolean, sketchAvailable = false, scenarioUse: Pathway['proposed_use'] = 'garden_suite'): EnquiryDocument {
+  linkedPlacement: boolean, sketchAvailable = false, scenarioUse: Pathway['proposed_use'] = 'garden_suite', model: CatalogueModel = defaultJourneyModel): EnquiryDocument {
   const concerns = placementConcerns(measured, conditional, scenarios)
   const facts = [input.relationship?.trim() && `Relationship to the property: ${input.relationship.trim()}.`,
     input.stage?.trim() && `Project stage: ${input.stage.trim()}.`,
@@ -163,20 +165,21 @@ export function manufacturerDocument(input: EnquiryInput, address: string | null
   const use = ['still deciding', 'undecided'].includes(input.intendedUse.trim().toLowerCase()) ? ' I’m still deciding how I would use it.' : withheld(input.intendedUse) ? ' My intended use is not yet confirmed.' : ` I would use it for ${input.intendedUse.trim()}.`
   const next = withheld(input.nextStep) ? '' : input.nextStep!.trim()
   return {
-    title: `Model 300 feasibility enquiry${address ? ` — ${address}` : ''}`,
+    title: `${model.name} feasibility enquiry${address ? ` — ${address}` : ''}`,
     example,
-    question: input.question?.trim() || next || 'Could you help establish whether Model 300 is worth investigating for this project, and advise the next useful step?',
+    question: input.question?.trim() || next || `Could you help establish whether ${model.name} is worth investigating for this project, and advise the next useful step?`,
     sections: [
-      section('Project', [`I’m exploring aux box Model 300${address ? ` at ${address}` : ' for a possible site'}.${use}`, ...facts.filter(fact => !/Relationship to the property: (Unknown|Prefer not to say)\./i.test(fact))], true),
+      section('Project', [`I’m exploring ${model.provider} ${model.name}${address ? ` at ${address}` : ' for a possible site'}.${use}`, ...facts.filter(fact => !/Relationship to the property: (Unknown|Prefer not to say)\./i.test(fact))], true),
       ...(concerns.length ? [section('Preliminary concerns', [linkedPlacement ? 'The preliminary placement raises the following unresolved concerns.' : 'The following findings concern a separate retained example, not the proposed property.', ...concerns,
         'These are unresolved comparisons, not established legal violations. Could relocation, rotation or a smaller model help address these concerns?'], true)] : []),
       section('Planning questions to resolve separately', [enquiryUseQualification(input.intendedUse, scenarioUse),
         'The property contact needs to confirm the main home, existing suites and waterfront context. City staff or a qualified local professional needs to check the applicable rules, legal measurement basis and any permit or title conditions. Please advise what product information you can provide to support that review.'], true),
-      section('Questions for aux box', [
+      section(`Questions for ${model.provider}`, [
+        ...(model.model_id === 'wcch-ch-studio' ? ['Can you confirm whether this exact configuration supports permanent residential use in this locality? The published pod dimensions do not establish dwelling suitability.'] : []),
         '1. Can you share current dimensioned plans with their date/version, overhangs, interior floor area, height measurement reference and foundation requirements?',
         `2. Do you service ${address ? 'this locality' : 'the proposed locality once identified'}, and what truck access, crane setup space, lifting clearances and site photos or measurements do you need?`,
         '3. What foundation requirements and utility connections are needed? Who coordinates site preparation, foundations, connections and permits, and what assistance do you offer?',
-        `4. What is the current ${input.configuration?.trim() ? 'price for the options described above' : 'starting price for the standard Model 300'}, and what is included? Please identify additional costs for tax, upgrades, transport, crane, installation, foundations, utility connections and permits.`,
+        `4. What is the current ${input.configuration?.trim() ? 'price for the options described above' : `starting price for the standard ${model.name}`}, and what is included? Please confirm currency and identify additional costs for tax, upgrades, transport, crane, installation, foundations, utility connections and permits.`,
         '5. What is the current lead time, when does it start, and what decisions, permits and site preparation must be complete before booking or delivery?',
       ]),
       section('Site information', [...placement, ...positivePropertyFindings(scan),

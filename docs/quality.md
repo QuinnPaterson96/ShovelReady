@@ -217,3 +217,14 @@ For each consequential PR, name the behavior protected, where the expected answe
 comes from, and what the test does not establish. Do not delete useful existing tests
 merely to change the test mix. Move effort toward uncovered failure modes. For small
 reversible documentation/presentation edits, proportionate inspection can suffice.
+
+## Prefab generalization verification — October 7, 2026
+
+[Implementation evidence and remaining gaps](prefab-generalization.md#implemented-and-verified)
+records 153 passing frontend behavioral tests, 34 passing catalogue/intake tests,
+type/build/lint and reproducible snapshot checks. The switch test reproduces site
+answer loss on placement remount and verifies its correction. The actual Studio
+enquiry package and rendered PNG were reviewed from the recipient perspective.
+Full keyboard/manual/live journeys, independent PDF rendering, provider source
+review, accepted publication and real recipient validation remain separate gaps;
+see the linked owner/action table. No database tests or cloud resources were used.

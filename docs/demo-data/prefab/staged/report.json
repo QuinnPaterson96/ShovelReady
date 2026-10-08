@@ -1,0 +1,307 @@
+{
+  "status": "valid_unreviewed",
+  "candidate_written": true,
+  "errors": [],
+  "gaps": [
+    {
+      "model_id": "hewing-quadra4",
+      "field": "quadra-model",
+      "issue": "source hash missing",
+      "next_action": "Hash the artifact or document why it cannot be retained."
+    },
+    {
+      "model_id": "hewing-quadra4",
+      "field": "quadra-model",
+      "issue": "source capture gap",
+      "next_action": "Obtain a reviewable capture or document the access/reuse limitation."
+    },
+    {
+      "model_id": "hewing-quadra4",
+      "field": "quadra-model",
+      "issue": "upstream revision unknown",
+      "next_action": "Request a controlled provider revision or drawing identifier."
+    },
+    {
+      "model_id": "hewing-quadra4",
+      "field": "quadra-plan",
+      "issue": "source hash missing",
+      "next_action": "Hash the artifact or document why it cannot be retained."
+    },
+    {
+      "model_id": "hewing-quadra4",
+      "field": "quadra-plan",
+      "issue": "source capture gap",
+      "next_action": "Obtain a reviewable capture or document the access/reuse limitation."
+    },
+    {
+      "model_id": "hewing-quadra4",
+      "field": "quadra-plan",
+      "issue": "upstream revision unknown",
+      "next_action": "Request a controlled provider revision or drawing identifier."
+    },
+    {
+      "model_id": "hewing-quadra4",
+      "field": "source_revision",
+      "issue": "model revision unknown",
+      "next_action": "Confirm the configuration and controlled revision for these dimensions."
+    },
+    {
+      "model_id": "hewing-quadra4",
+      "field": "manufacturer_interior_area",
+      "issue": "Published area is not established as usable interior area.",
+      "next_action": "Acquire a sourced value and definition, or keep it missing."
+    },
+    {
+      "model_id": "hewing-quadra4",
+      "field": "manufacturer_footprint",
+      "issue": "Published area/body dimensions do not establish complete manufacturer footprint basis.",
+      "next_action": "Acquire a sourced value and definition, or keep it missing."
+    },
+    {
+      "model_id": "hewing-quadra4",
+      "field": "advertised_overall_height",
+      "issue": "No overall exterior height established in inspected sources.",
+      "next_action": "Acquire a sourced value and definition, or keep it missing."
+    },
+    {
+      "model_id": "hewing-quadra4",
+      "field": "roof_height",
+      "issue": "Foundation datum to roof high point is not supplied.",
+      "next_action": "Acquire a sourced value and definition, or keep it missing."
+    },
+    {
+      "model_id": "hewing-quadra4",
+      "field": "missing_facts",
+      "issue": "Current controlled plan/elevation and projection envelope",
+      "next_action": "Resolve against a cited source before acceptance."
+    },
+    {
+      "model_id": "hewing-quadra4",
+      "field": "missing_facts",
+      "issue": "Interior area definition and schedule",
+      "next_action": "Resolve against a cited source before acceptance."
+    },
+    {
+      "model_id": "hewing-quadra4",
+      "field": "missing_facts",
+      "issue": "Victoria installation and price/tax scope",
+      "next_action": "Resolve against a cited source before acceptance."
+    },
+    {
+      "model_id": "hewing-quadra4",
+      "field": "missing_facts",
+      "issue": "Image/plan display permission",
+      "next_action": "Resolve against a cited source before acceptance."
+    },
+    {
+      "model_id": "hewing-quadra4",
+      "field": "missing_facts",
+      "issue": "Mixed ft/in represented by approximate decimal feet in current Quantity contract; source text retained.",
+      "next_action": "Resolve against a cited source before acceptance."
+    },
+    {
+      "model_id": "hewing-quadra4",
+      "field": "source review",
+      "issue": "Source meaning and applicability unreviewed",
+      "next_action": "Check transcriptions, definitions, configuration and service claims."
+    },
+    {
+      "model_id": "nexus-yarrow",
+      "field": "yarrow-model",
+      "issue": "source hash missing",
+      "next_action": "Hash the artifact or document why it cannot be retained."
+    },
+    {
+      "model_id": "nexus-yarrow",
+      "field": "yarrow-model",
+      "issue": "source capture gap",
+      "next_action": "Obtain a reviewable capture or document the access/reuse limitation."
+    },
+    {
+      "model_id": "nexus-yarrow",
+      "field": "yarrow-model",
+      "issue": "upstream revision unknown",
+      "next_action": "Request a controlled provider revision or drawing identifier."
+    },
+    {
+      "model_id": "nexus-yarrow",
+      "field": "yarrow-plan",
+      "issue": "source hash missing",
+      "next_action": "Hash the artifact or document why it cannot be retained."
+    },
+    {
+      "model_id": "nexus-yarrow",
+      "field": "yarrow-plan",
+      "issue": "source capture gap",
+      "next_action": "Obtain a reviewable capture or document the access/reuse limitation."
+    },
+    {
+      "model_id": "nexus-yarrow",
+      "field": "yarrow-plan",
+      "issue": "upstream revision unknown",
+      "next_action": "Request a controlled provider revision or drawing identifier."
+    },
+    {
+      "model_id": "nexus-yarrow",
+      "field": "source_revision",
+      "issue": "model revision unknown",
+      "next_action": "Confirm the configuration and controlled revision for these dimensions."
+    },
+    {
+      "model_id": "nexus-yarrow",
+      "field": "manufacturer_interior_area",
+      "issue": "Published area is not established as usable interior area.",
+      "next_action": "Acquire a sourced value and definition, or keep it missing."
+    },
+    {
+      "model_id": "nexus-yarrow",
+      "field": "manufacturer_footprint",
+      "issue": "Published area/body dimensions do not establish complete manufacturer footprint basis.",
+      "next_action": "Acquire a sourced value and definition, or keep it missing."
+    },
+    {
+      "model_id": "nexus-yarrow",
+      "field": "advertised_overall_height",
+      "issue": "No overall exterior height established in inspected sources.",
+      "next_action": "Acquire a sourced value and definition, or keep it missing."
+    },
+    {
+      "model_id": "nexus-yarrow",
+      "field": "roof_height",
+      "issue": "Foundation datum to roof high point is not supplied.",
+      "next_action": "Acquire a sourced value and definition, or keep it missing."
+    },
+    {
+      "model_id": "nexus-yarrow",
+      "field": "missing_facts",
+      "issue": "Current controlled configuration and certification category",
+      "next_action": "Resolve against a cited source before acceptance."
+    },
+    {
+      "model_id": "nexus-yarrow",
+      "field": "missing_facts",
+      "issue": "Elevations and installed height datum",
+      "next_action": "Resolve against a cited source before acceptance."
+    },
+    {
+      "model_id": "nexus-yarrow",
+      "field": "missing_facts",
+      "issue": "Interior area and deck/stair/roof envelope",
+      "next_action": "Resolve against a cited source before acceptance."
+    },
+    {
+      "model_id": "nexus-yarrow",
+      "field": "missing_facts",
+      "issue": "Project-assessment questionnaire did not render",
+      "next_action": "Resolve against a cited source before acceptance."
+    },
+    {
+      "model_id": "nexus-yarrow",
+      "field": "missing_facts",
+      "issue": "Quote inclusions and image/plan display permission",
+      "next_action": "Resolve against a cited source before acceptance."
+    },
+    {
+      "model_id": "nexus-yarrow",
+      "field": "source review",
+      "issue": "Source meaning and applicability unreviewed",
+      "next_action": "Check transcriptions, definitions, configuration and service claims."
+    },
+    {
+      "model_id": "wcch-ch-studio",
+      "field": "wcch-model",
+      "issue": "source hash missing",
+      "next_action": "Hash the artifact or document why it cannot be retained."
+    },
+    {
+      "model_id": "wcch-ch-studio",
+      "field": "wcch-model",
+      "issue": "source capture gap",
+      "next_action": "Obtain a reviewable capture or document the access/reuse limitation."
+    },
+    {
+      "model_id": "wcch-ch-studio",
+      "field": "wcch-model",
+      "issue": "upstream revision unknown",
+      "next_action": "Request a controlled provider revision or drawing identifier."
+    },
+    {
+      "model_id": "wcch-ch-studio",
+      "field": "wcch-range",
+      "issue": "source hash missing",
+      "next_action": "Hash the artifact or document why it cannot be retained."
+    },
+    {
+      "model_id": "wcch-ch-studio",
+      "field": "wcch-range",
+      "issue": "source capture gap",
+      "next_action": "Obtain a reviewable capture or document the access/reuse limitation."
+    },
+    {
+      "model_id": "wcch-ch-studio",
+      "field": "wcch-range",
+      "issue": "upstream revision unknown",
+      "next_action": "Request a controlled provider revision or drawing identifier."
+    },
+    {
+      "model_id": "wcch-ch-studio",
+      "field": "source_revision",
+      "issue": "model revision unknown",
+      "next_action": "Confirm the configuration and controlled revision for these dimensions."
+    },
+    {
+      "model_id": "wcch-ch-studio",
+      "field": "manufacturer_interior_area",
+      "issue": "Published area is not established as usable interior area.",
+      "next_action": "Acquire a sourced value and definition, or keep it missing."
+    },
+    {
+      "model_id": "wcch-ch-studio",
+      "field": "manufacturer_footprint",
+      "issue": "Published area/body dimensions do not establish complete manufacturer footprint basis.",
+      "next_action": "Acquire a sourced value and definition, or keep it missing."
+    },
+    {
+      "model_id": "wcch-ch-studio",
+      "field": "roof_height",
+      "issue": "Foundation datum to roof high point is not supplied.",
+      "next_action": "Acquire a sourced value and definition, or keep it missing."
+    },
+    {
+      "model_id": "wcch-ch-studio",
+      "field": "missing_facts",
+      "issue": "Permanent residential configuration and engineering documents",
+      "next_action": "Resolve against a cited source before acceptance."
+    },
+    {
+      "model_id": "wcch-ch-studio",
+      "field": "missing_facts",
+      "issue": "Sizing faces/projection envelope and interior area",
+      "next_action": "Resolve against a cited source before acceptance."
+    },
+    {
+      "model_id": "wcch-ch-studio",
+      "field": "missing_facts",
+      "issue": "Height datum and supported height options",
+      "next_action": "Resolve against a cited source before acceptance."
+    },
+    {
+      "model_id": "wcch-ch-studio",
+      "field": "missing_facts",
+      "issue": "Model currency, inclusions, tax and current timing",
+      "next_action": "Resolve against a cited source before acceptance."
+    },
+    {
+      "model_id": "wcch-ch-studio",
+      "field": "missing_facts",
+      "issue": "Site foundation/services and display permission",
+      "next_action": "Resolve against a cited source before acceptance."
+    },
+    {
+      "model_id": "wcch-ch-studio",
+      "field": "source review",
+      "issue": "Source meaning and applicability unreviewed",
+      "next_action": "Check transcriptions, definitions, configuration and service claims."
+    }
+  ]
+}

@@ -84,7 +84,7 @@ export default function App() {
         <button className="sr-home-brand" type="button" onClick={() => setPage('home')} aria-label="ShovelReady home"><Brand /></button>
         <nav className="sr-nav sr-primary-nav" aria-label="Main navigation">
           <button aria-current={page === 'home' ? 'page' : undefined} onClick={() => setPage('home')}>Home</button>
-          <button aria-current={page === 'builder' ? 'page' : undefined} onClick={openBuilder}>Model 300</button>
+          <button aria-current={page === 'builder' ? 'page' : undefined} onClick={openBuilder}>Prefab models</button>
           <button aria-current={page === 'inputs' || page === 'summary' ? 'page' : undefined} onClick={() => setPage('inputs')}>General assessment</button>
         </nav>
         <details className="sr-more-nav" ref={researchMenu} onKeyDown={event => {
@@ -107,7 +107,7 @@ export default function App() {
         <h1>Prepare a design for source-backed investigation.</h1>
         <p>Collect what you know about a building and its intended use. See which evidence is still needed before preliminary zoning scouting.</p>
         <p>We are exploring City of Victoria garden suites first. There is no accepted zoning dataset or real-site fit result yet. A preparation summary is not a feasibility assessment or permit approval.</p>
-        <div className="sr-actions"><button className="sr-primary" onClick={openBuilder}>Explore Model 300</button><button onClick={() => setPage('inputs')}>Start a general assessment</button>
+        <div className="sr-actions"><button className="sr-primary" onClick={openBuilder}>Explore prefab models</button><button onClick={() => setPage('inputs')}>Start a general assessment</button>
           <button onClick={openOccupied}>Sketch a placement</button>
           <button onClick={() => setPage('evidence')}>Explore examples</button></div>
         <p>Begin with your own inputs, or explicitly load a labelled synthetic example. Unknown facts can stay unknown.</p>
