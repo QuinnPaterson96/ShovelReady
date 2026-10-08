@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { StepInfo } from '../StepInfo'
 import { publicSourceUrl, readableDate, TechnicalDetails } from '../ReadableProvenance'
 import { DiscoveryFlow, initial } from './flow'
 import type { Address, Confirmed, Source, State, Transport } from './flow'
@@ -44,9 +45,7 @@ export function SiteDiscovery({ onConfirm, transport = liveTransport, onManual, 
     onInspectAlternatives={parcels.length > 1 ? () => setParcelOpen(true) : undefined}
     onRetryObservation={() => void flow.chooseParcel(confirmed.parcel.id)} />
   return <section className="site-discovery" aria-labelledby="site-discovery-title">
-    <h4 id="site-discovery-title">Search for a property · source demonstration</h4>
-    <p>{autoProceed ? 'Choose an address record. A sole parcel match opens approximate placement automatically; several parcels require your choice.' : 'Search an address, choose the address record, then choose and inspect a Victoria parcel before confirming it.'} These are unreviewed source leads.</p>
-    <details><summary>What do these matches mean?</summary><p>An address suggestion identifies a possible civic address. A parcel candidate is a separate municipal lead. Neither a geocoder score nor a nearby point proves parcel identity. Rooflines are mapped roof outlines, not legal building walls. Check the source dates and property identity independently.</p></details>
+    <div className="sd-address-heading"><h4 id="site-discovery-title">Enter your address</h4><StepInfo label="Address search and property outlines"><p>Choose an address result. A sole usable Victoria parcel opens placement automatically; several parcels require your choice.</p><p>Address suggestions and municipal outlines are unreviewed source leads. Neither a geocoder score nor a nearby point proves parcel identity. Rooflines are mapped roof outlines, not legal building walls. Check the property identity and source dates independently.</p></StepInfo></div>
     {address && !addressOpen && <div className="sd-selected"><p><strong>Address lead:</strong> {address.label}{address.locality ? ` · ${address.locality}` : ''}. Parcel identity is still separate.</p><button type="button" onClick={() => setAddressOpen(true)}>Change address</button></div>}
     {addressOpen && <form onSubmit={event => { event.preventDefault(); setParcelOpen(true); setObservationOpen(true); void flow.search() }}>
       <label htmlFor="sd-address">Street address in British Columbia</label>
@@ -74,7 +73,7 @@ export function SiteDiscovery({ onConfirm, transport = liveTransport, onManual, 
       <TechnicalDetails title="Complete observation and exact source records"><pre>{JSON.stringify(observation.raw, null, 2)}</pre></TechnicalDetails>
     </section>}
     {parcel && !busy && (!observation || observation.buildingsState === 'partial') && <p><button type="button" onClick={() => void flow.chooseParcel(parcel.id)}>Retry parcel and rooflines</button> Retrying clears the selected property and placement result.</p>}
-    {onManual ? <p className="sd-fallback"><button className="sd-manual-link" type="button" onClick={onManual}>Enter property details manually</button><span>Use this if search is wrong, outside Victoria or unavailable.</span></p> :
+    {onManual ? <p className="sd-fallback"><button className="sd-manual-link" type="button" onClick={onManual}>Can’t find your address? Enter details manually</button></p> :
       <p className="sd-fallback">You can continue with the retained lookup or <a href="#manual-address">manual site details below</a> if this search is wrong, outside Victoria or unavailable. This demonstration does not fill those fields or affect the prepared summary yet.</p>}
   </section>
 }

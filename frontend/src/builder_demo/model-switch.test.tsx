@@ -41,8 +41,8 @@ test('switching models retains the property, resets overrides and exports only t
   const settle = async () => { await act(async () => { await new Promise(resolve => setTimeout(resolve, 650)) }); await act(async () => { await new Promise(resolve => setTimeout(resolve, 450)) }) }
   const evidence = () => JSON.parse((document.getElementById('builder-technical-record') as HTMLTextAreaElement).value)
   try {
-    await act(async () => root.render(createElement(BuilderDemo)))
-    await click('Try an example property'); await settle()
+    await act(async () => root.render(createElement<{ presetRequest?: number }>(BuilderDemo, { presetRequest: 1 })))
+    await settle()
     await edit('builder-use', 'Unknown'); await edit('builder-relationship', 'I own the property'); await edit('builder-nextStep', 'Please advise the next step.')
     const parcel = evidence().measurement.site.site.parcel.id
     for (const [id, answer] of [['building-type', 'Yes'], ['existing-suites', 'None'], ['waterfront-lot', 'No']]) {
@@ -94,9 +94,8 @@ test('switching models retains the property, resets overrides and exports only t
     // Reproduced defect: the mounted discovery flow kept its initial Model 300
     // callback after a model switch. A later selected property must use Quadra's
     // explicit unknown defaults, not the reference model's residential/foundation defaults.
+    await click('Wrong property? Change')
     await act(async () => {
-      const mode = document.getElementById('builder-site-mode') as HTMLSelectElement
-      mode.value = 'live'; mode.dispatchEvent(new dom.window.Event('change', { bubbles: true }))
       const select = document.getElementById('builder-model-choice') as HTMLSelectElement
       select.value = 'hewing-quadra4'; select.dispatchEvent(new dom.window.Event('change', { bubbles: true }))
     })

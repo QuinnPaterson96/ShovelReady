@@ -8,7 +8,7 @@ type Identity = {
 
 export default function IdentityPanel() {
   const [identity, setIdentity] = useState<Identity | null>(null)
-  const built = import.meta.env.VITE_APPLICATION_COMMIT as string | undefined
+  const built = import.meta.env?.VITE_APPLICATION_COMMIT as string | undefined
   const commit = built && /^[0-9a-f]{40}$/.test(built) ? built : null
   useEffect(() => {
     const controller = new AbortController()

@@ -154,7 +154,7 @@ export function enquiry(...args: Parameters<typeof enquiryDocument>) { return en
 export type BuilderProgress = import('../navigation/BuilderJourneyNav').BuilderJourneyCompletion
 type JourneyStep = import('../navigation/BuilderJourneyNav').JourneyStep
 
-export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (progress: BuilderProgress) => void } = {}) {
+export default function BuilderDemo({ onProgressChange, presetRequest = 0 }: { presetRequest?: number; onProgressChange?: (progress: BuilderProgress) => void } = {}) {
   const [modelId, setModelId] = useState(defaultJourneyModel.model_id)
   const model = journeyCatalogue.models.find(item => item.model_id === modelId)!
   const MODEL_ID = model.model_id
@@ -230,12 +230,14 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
   function changeIntendedUse(value: string) { setUse(value); setProjectSettings(previous => applyIntendedUse(previous, value)); setReadyFor(null) }
   function siteEdited() { setBufferSuggestion(undefined); setMoveSuggestion(undefined); setAcknowledgedConflicts([]); setSelection(null); setImported(false); setMeasurementResult(null); setSiteAssumptions(null); setProjectSettings(applyIntendedUse(modelProjectSettings(model), use)); setGeometryPending(false); setAccess(''); setServices(''); setProjectContext(previous => ({ ...previous, relationship: '', nextStep: '' })); setQuestion(`Could ${model.name} be suitable for this property?`); setWaterfrontMarks({ revision: null, ids: [] }); setDrawingExport(null); setStreetMarks({ revision: null, data: { edge_ids: [], all_marked: false, origin: 'user' } }); setRearEdge(null); setSelectedBoundary(null); setBoundaryMark(null); setMarkingRole(null); setBoundaryMode('place'); setReadyFor(null); setRevision(value => value + 1) }
   function changeMode(next: typeof mode) {
+    if (next !== 'example' && window.location.hash.startsWith('#examples/')) window.history.replaceState(null, '', '#builder')
     setExpanded({ property: next !== 'example', placement: next === 'example', next: false, email: false })
     setMode(next); siteEdited(); setLive(null); setManual(null)
     setDraft({ ...emptySiteInput, kind: 'address' })
     setDrawingExport(null)
     setReadyFor(null); setManualConfirmedFor(null); setIncludeSiteDetails(true); setEmailMessage('')
   }
+  useEffect(() => { if (presetRequest) { switchModel(defaultJourneyModel.model_id); changeMode('example'); setProjectSettings(applyIntendedUse(modelProjectSettings(defaultJourneyModel), use)); setQuestion(`Could ${defaultJourneyModel.name} be suitable for this property?`); setJourneyStep('placement') } }, [presetRequest])
   function switchModel(nextId: string) {
     const next = journeyCatalogue.models.find(item => item.model_id === nextId)
     if (!next || nextId === modelId) return
@@ -581,7 +583,7 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     if (step === 'boundaries') changeBoundaryMode('rear')
     if (step === 'placement' || step === 'details') setBoundaryMode('place')
     setExpanded({ property: step === 'property', placement: !['property', 'model', 'enquiry', 'email'].includes(step), next: step === 'enquiry', email: step === 'email' })
-    const targets: Record<JourneyStep, string> = { model: 'builder-title', property: 'builder-site-mode', placement: 'placement-map', streets: 'placement-action-front', boundaries: 'placement-action-rear', details: 'builder-property-details', checks: 'builder-quick-checks', enquiry: 'builder-use', email: contextComplete ? 'builder-provider-website' : 'builder-contact-context' }
+    const targets: Record<JourneyStep, string> = { model: 'builder-title', property: 'sd-address', placement: 'placement-map', streets: 'placement-action-front', boundaries: 'placement-action-rear', details: 'builder-property-details', checks: 'builder-quick-checks', enquiry: 'builder-use', email: contextComplete ? 'builder-provider-website' : 'builder-contact-context' }
     requestAnimationFrame(() => {
       focusSummaryTarget(document, step === 'details' ? 'building-type' : targets[step], 'start')
       if (step === 'checks') { const details = document.querySelector<HTMLDetailsElement>('.homeowner-summary__checks'); if (details) details.open = true }
@@ -718,18 +720,13 @@ export default function BuilderDemo({ onProgressChange }: { onProgressChange?: (
     {checksPending && <p role="status">Updating checks. {summary ? 'Previous findings are shown for reference; ' : ''}copy and save will use the updated results when ready.</p>}
     <EnquiryRecovery enquiry={!checksPending && (expanded.next || enquiryReady) ? draftText : null} report={reportDoc ? enquiryPlainText(reportDoc) : null} technicalEvidence={JSON.stringify(technicalEvidence, null, 2)} />
     <section className="builder-stage" id="builder-property" aria-labelledby="builder-property-title">
-    <p className="eyebrow">Property</p><h2 id="builder-property-title">Start with what you know</h2>
-    <p>{propertyComplete ? (mode === 'example' ? 'Saved Victoria example selected.' : live ? live.address.label : `${manual?.facts.address || selection?.candidate?.address.value || selection?.manual.address.value || 'Site description'} · user-supplied; unverified.`) : 'Choose a property or enter the facts you know.'}</p>
-    <button type="button" aria-expanded={expanded.property} aria-controls="builder-property-content" onClick={() => toggleStep('property')}>{expanded.property ? 'Collapse property' : 'Review or change property'}</button>
+    <p className="eyebrow">Property</p><h2 id="builder-property-title">Where would you place the unit?</h2>
+    <p>{propertyComplete ? (mode === 'example' ? 'Saved Victoria example selected.' : live ? live.address.label : `${manual?.facts.address || selection?.candidate?.address.value || selection?.manual.address.value || 'Site description'} · user-supplied; unverified.`) : 'Enter your address to find its approximate property outline.'}</p>
+    {(propertyComplete || mode !== 'live') && <button type="button" aria-expanded={expanded.property} aria-controls="builder-property-content" onClick={() => toggleStep('property')}>{expanded.property ? 'Collapse property' : 'Review or change property'}</button>}
     <div id="builder-property-content" hidden={!expanded.property}>
-    <div className="builder-entry-choices"><div><strong>Use my own property</strong><p>Search a Victoria address or enter known facts.</p><button type="button" onClick={() => changeMode('live')}>Use my own property</button></div>
-      <div><strong>Try an example property</strong><p>Open a saved parcel and roofline with an illustrative {model.name} placement.</p><button type="button" onClick={() => changeMode('example')}>Try an example property</button></div></div>
-    <p className="metadata">Changing property clears its placement, street marks, measurements, property answers and enquiry question/response. Your model, intended use, timing, budget and contact preferences stay.</p>
-    <label htmlFor="builder-site-mode">How would you like to enter your property?</label>
-    <select id="builder-site-mode" value={mode} onChange={event => changeMode(event.target.value as typeof mode)}>
-      <option value="live">Search a Victoria address</option><option value="manual">Enter facts or sketch manually</option><option value="retained">Use the retained example workflow</option><option value="example">Example property / saved data</option>
-    </select>
     {mode === 'live' && <SiteDiscovery autoProceed resetKey={propertyReset} inspectKey={propertyInspect} onConfirm={next => { siteEdited(); setLive(next) }} onManual={() => changeMode('manual')} />}
+    {mode === 'example' && <p>Example property—not your property. <button type="button" onClick={() => changeMode('live')}>Enter your address instead</button></p>}
+    {mode === 'manual' && <button type="button" onClick={() => changeMode('live')}>Back to address search</button>}
     {mode === 'retained' && <SitePreparation draft={draft} onDraftChange={next => { setDraft(next); setReadyFor(null) }} selection={selection}
       onEdit={siteEdited} onConfirm={next => { setSelection(next); setImported(false); setMeasurementResult(null); setReadyFor(null); setRevision(value => value + 1) }} />}
       {mode === 'manual' && <ManualSiteInput onChange={value => { if (JSON.stringify(value) !== JSON.stringify(manual)) { setManual(value); setReadyFor(null) } }} footprint={{ widthM: Number(measurement('nominal_exterior_width')?.quantity?.value) || null, depthM: Number(measurement('nominal_exterior_depth')?.quantity?.value) || null, label: `${model.provider} ${model.name} · unreviewed nominal dimensions` }} />}

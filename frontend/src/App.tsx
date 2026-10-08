@@ -28,10 +28,22 @@ import './scenario_handoff/scenario-handoff.css'
 import './navigation/navigation.css'
 
 export default function App() {
-  const [page, setPage] = useState<'home' | 'builder' | 'inputs' | 'summary' | 'evidence' | 'pilot' | 'occupied'>('home')
+  const [page, setPage] = useState<'home' | 'builder' | 'examples' | 'inputs' | 'summary' | 'evidence' | 'pilot' | 'occupied'>(() => (window.location.hash === '#examples/model-300' || window.location.hash === '#builder') ? 'builder' : window.location.hash === '#examples' ? 'examples' : 'home')
+  const [presetRequest, setPresetRequest] = useState(() => window.location.hash === '#examples/model-300' ? 1 : 0)
   const [occupiedOpened, setOccupiedOpened] = useState(false)
   const [builderCompletion, setBuilderCompletion] = useState(emptyBuilderJourneyCompletion)
-  const [builderOpened, setBuilderOpened] = useState(false)
+  const [builderOpened, setBuilderOpened] = useState(() => window.location.hash === '#examples/model-300' || window.location.hash === '#builder')
+  const openHome = () => { window.location.hash = 'home'; setPage('home') }
+  const openExamples = () => { window.location.hash = 'examples'; setPage('examples') }
+  useEffect(() => {
+    const followPreset = () => {
+      if (window.location.hash === '#examples/model-300') { setBuilderOpened(true); setPresetRequest(value => value + 1); setPage('builder') }
+      else if (window.location.hash === '#examples') setPage('examples')
+      else if (window.location.hash === '#home') setPage('home')
+    }
+    window.addEventListener('hashchange', followPreset)
+    return () => window.removeEventListener('hashchange', followPreset)
+  }, [])
   const openBuilder = () => { setBuilderOpened(true); setPage('builder') }
   const openOccupied = () => { setOccupiedOpened(true); setPage('occupied') }
   const [draft, dispatch] = useReducer(draftReducer, initialDraft)
@@ -81,9 +93,9 @@ export default function App() {
   return (
     <main className="sr-shell">
       <header className="sr-site-header">
-        <button className="sr-home-brand" type="button" onClick={() => setPage('home')} aria-label="ShovelReady home"><Brand /></button>
+        <button className="sr-home-brand" type="button" onClick={openHome} aria-label="ShovelReady home"><Brand /></button>
         <nav className="sr-nav sr-primary-nav" aria-label="Main navigation">
-          <button aria-current={page === 'home' ? 'page' : undefined} onClick={() => setPage('home')}>Home</button>
+          <button aria-current={page === 'home' ? 'page' : undefined} onClick={openHome}>Home</button>
           <button aria-current={page === 'builder' ? 'page' : undefined} onClick={openBuilder}>Prefab models</button>
           <button aria-current={page === 'inputs' || page === 'summary' ? 'page' : undefined} onClick={() => setPage('inputs')}>General assessment</button>
         </nav>
@@ -109,13 +121,14 @@ export default function App() {
         <p>We are exploring City of Victoria garden suites first. There is no accepted zoning dataset or real-site fit result yet. A preparation summary is not a feasibility assessment or permit approval.</p>
         <div className="sr-actions"><button className="sr-primary" onClick={openBuilder}>Explore prefab models</button><button onClick={() => setPage('inputs')}>Start a general assessment</button>
           <button onClick={openOccupied}>Sketch a placement</button>
-          <button onClick={() => setPage('evidence')}>Explore examples</button></div>
-        <p>Begin with your own inputs, or explicitly load a labelled synthetic example. Unknown facts can stay unknown.</p>
+          <button onClick={openExamples}>Explore examples</button></div>
+        <p>Begin with your own inputs, or explicitly load a clearly labelled example. Unknown facts can stay unknown.</p>
         </div><PropertyIllustration />
       </section>}
+      {page === 'examples' && <section className="sr-home"><p className="eyebrow">Examples · approximate and unreviewed</p><h1>Explore an example placement</h1><p>Try the journey using a saved parcel and captured rooflines. This is an example property—not your property—and the placement is illustrative.</p><article className="builder-stage"><h2>Model 300 · saved Victoria example</h2><p>Explore the map, mark streets, review property details and prepare an unsent enquiry. Unanswered questions can stay unknown.</p><a className="builder-email-primary" href="#examples/model-300">Open Model 300 example →</a><p className="metadata">Opening this preset replaces the current property and its placement, street marks, measurements and review answers. Project preferences remain editable.</p></article><button onClick={() => setPage('evidence')}>Browse research examples and evidence</button></section>}
       {builderOpened && <div hidden={page !== 'builder'} className="sr-workspace">
         <BuilderJourneyNav completion={builderCompletion} />
-        <BuilderDemo onProgressChange={setBuilderCompletion} />
+        <BuilderDemo onProgressChange={setBuilderCompletion} presetRequest={presetRequest} />
       </div>}
       {(page === 'inputs' || page === 'summary') && <div className="sr-workspace">
         <aside className="sr-workspace-rail"><nav aria-label="General assessment steps">
