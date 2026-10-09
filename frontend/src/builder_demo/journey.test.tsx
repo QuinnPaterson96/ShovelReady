@@ -56,6 +56,8 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     assert.match(document.querySelector('#builder-quick-checks')!.textContent!, /Review this placement/)
     assert.deepEqual(lastScroll, { id: 'builder-placement-title', options: { block: 'start', behavior: 'smooth' } }, 'automatic placement entry scrolls to its heading')
     assert.equal(document.getElementById('builder-purpose')!.hidden, true, 'purpose stays out of placement until its later step')
+    assert.equal(document.getElementById('builder-checks-disclosure')!.hidden, true, 'detailed findings are not shown while entering placement')
+    assert.equal(document.querySelector('[aria-label="Review readiness"]'), null, 'readiness counts are deferred with the checks')
     const map = document.querySelector('#placement-map svg')!
     const summary = document.querySelector('#builder-quick-checks')!
     assert.ok(map.compareDocumentPosition(summary) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING)
@@ -157,8 +159,12 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     assert.equal(document.querySelector('.builder-journey-rail [aria-current="step"]')?.getAttribute('href'), '#builder-purpose')
     assert.equal(document.getElementById('builder-purpose')!.compareDocumentPosition(summary) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING, dom.window.Node.DOCUMENT_POSITION_FOLLOWING)
     await click('Next: Review quick checks →')
+    assert.equal(document.getElementById('builder-checks-disclosure')!.hidden, false, 'purpose continuation reveals the checks without requiring known answers')
     assert.match(document.querySelector('.builder-journey-rail')!.textContent!, /Intended purpose.*Reviewed/s)
     assert.equal(document.activeElement?.id, 'builder-quick-checks')
+    await act(async () => { document.querySelector<HTMLAnchorElement>('a[href="#builder-placement"]')!.click(); await new Promise(resolve => setTimeout(resolve, 20)) })
+    assert.equal(document.getElementById('builder-checks-disclosure')!.hidden, false, 'revealed checks stay available when revisiting earlier steps')
+    await act(async () => { document.querySelector<HTMLAnchorElement>('a[href="#builder-quick-checks"]')!.click(); await new Promise(resolve => setTimeout(resolve, 20)) })
     assert.equal(document.querySelector<HTMLDetailsElement>('#builder-property-details > details')!.open, false)
     assert.equal(document.querySelector<HTMLDetailsElement>('.homeowner-summary__checks')!.open, true)
     assert.match(document.querySelector('.builder-journey-rail')!.textContent!, /Boundaries✓Reviewed/)

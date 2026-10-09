@@ -157,3 +157,6 @@
 .builder-demo #builder-purpose[hidden] { display: none; }
 .builder-required-label span { display: inline-block; margin-left: .35rem; padding: .1rem .35rem; border-radius: var(--radius-sm); color: var(--primary); background: var(--primary-soft); font-size: .8rem; }
 .builder-demo .builder-required-input.is-missing { border: 2px solid var(--border-strong); background: var(--primary-soft); }
+
+.builder-demo #builder-checks-disclosure[hidden] { display: none; }
+.builder-checks-preview { color: var(--ink-muted); font-size: .9rem; }
