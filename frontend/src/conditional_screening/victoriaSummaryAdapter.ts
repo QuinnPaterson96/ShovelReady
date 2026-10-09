@@ -143,14 +143,19 @@ export function homeownerSummary(input: {
       return { edgeId: check.edge_id, bufferM: ceiling, moveM: movement, detail: `${edge >= 0 ? `Edge ${edge + 1}` : 'Boundary'} · ${check.role === 'flanking_street' ? 'Flanking' : check.role}: mapped gap ${metres(check.distance_m)} − ${metres(buffer)} planning buffer = ${metres(check.planning_distance_m ?? Math.max(0, check.distance_m - buffer))}; candidate minimum ${metres(check.minimum_m)}. A measured wall-to-legal-line gap of at least ${metres(check.minimum_m)} would clear this distance check under the stated roles. Moving approximately ${metres(movement)} farther from this edge would clear its current buffered estimate; recheck every boundary and building gap after moving. A buffer of ${metres(ceiling)} or less clears this edge's estimate, but reducing it changes only your assumption. Exact evidence is available below.` }
     })
   }
-  if (settings.proposal.proposed_use === null) {
-    // One unanswered choice blocks this comparison packet; it is not seven
-    // independent coverage failures. Keep physical observations, street input,
-    // and property-source findings available while the use stays unknown.
-    const awaitingUse = new Set(['Distance to boundaries', 'Waterfront rules', 'Existing garden suite', 'Floor area', 'Distance from the main building', 'Height'])
-    if (!mappedOutside && !enteredOutside) awaitingUse.add('Zoning coverage')
-    for (let index = checks.length - 1; index >= 0; index--) {
-      if (awaitingUse.has(checks[index].label)) checks.splice(index, 1)
+  if (useOutside) {
+    const useDependent = new Set(['Distance to boundaries', 'Waterfront rules', 'Existing garden suite', 'Floor area', 'Distance from the main building', 'Height'])
+    if (!mappedOutside && !enteredOutside) useDependent.add('Zoning coverage')
+    for (const check of checks) {
+      if (!useDependent.has(check.label)) continue
+      const unknownUse = settings.proposal.proposed_use === null
+      check.useDependent = true
+      check.status = unknownUse ? 'unknown' : 'unsupported'
+      check.detail = `${check.label} depends on the intended use. ${unknownUse
+        ? 'Use is unanswered or Not sure, so the garden-suite comparison remains unresolved.'
+        : 'The selected use is outside the supported garden-suite comparison.'} Physical placement observations remain separate.${mappedOutside || enteredOutside ? ' The zoning also falls outside the supported packet.' : ''}`
+      check.action = { label: 'Change intended use', target: 'builder-intended-use' }
+      check.gap = { missing: 'Intended use and applicable planning rules.', affects: 'This comparison cannot establish suitability until the use and applicable rules are known.', next: 'Change the intended use if you know it, or recognize this open question and include it in your enquiry.', owner: 'Homeowner / provider / City reviewer' }
     }
   }
   const propertyParts = checks.filter(check => ['Other siting requirements', 'Site-specific approvals and other requirements', 'Mapped heritage and planning flags'].includes(check.label))
