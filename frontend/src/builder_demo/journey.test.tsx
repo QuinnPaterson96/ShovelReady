@@ -20,7 +20,7 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
   Object.assign(dom.window.HTMLElement.prototype, { attachEvent: () => {}, detachEvent: () => {} })
   const originals = new Map<string, PropertyDescriptor | undefined>()
   const expose = (name: string, value: unknown) => { originals.set(name, Object.getOwnPropertyDescriptor(globalThis, name)); Object.defineProperty(globalThis, name, { configurable: true, writable: true, value }) }
-  for (const [name, value] of Object.entries({ Element: dom.window.Element, HTMLElement: dom.window.HTMLElement, window: dom.window, document: dom.window.document, navigator: dom.window.navigator, requestAnimationFrame: (cb: () => void) => setTimeout(cb, 0), IS_REACT_ACT_ENVIRONMENT: true })) expose(name, value)
+  for (const [name, value] of Object.entries({ Element: dom.window.Element, HTMLElement: dom.window.HTMLElement, MutationObserver: dom.window.MutationObserver, window: dom.window, document: dom.window.document, navigator: dom.window.navigator, requestAnimationFrame: (cb: () => void) => setTimeout(cb, 0), IS_REACT_ACT_ENVIRONMENT: true })) expose(name, value)
   let mapVisibility!: (visible: boolean) => void
   const visibility = new Map<Element, (visible: boolean) => void>()
   expose('IntersectionObserver', class {
@@ -55,6 +55,7 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     await act(async () => { await new Promise(resolve => setTimeout(resolve, 450)) })
     assert.match(document.querySelector('#builder-quick-checks')!.textContent!, /Review this placement/)
     assert.deepEqual(lastScroll, { id: 'builder-placement-title', options: { block: 'start', behavior: 'smooth' } }, 'automatic placement entry scrolls to its heading')
+    assert.equal(document.getElementById('builder-purpose')!.hidden, true, 'purpose stays out of placement until its later step')
     const map = document.querySelector('#placement-map svg')!
     const summary = document.querySelector('#builder-quick-checks')!
     assert.ok(map.compareDocumentPosition(summary) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING)
@@ -176,6 +177,9 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     assert.deepEqual(afterProgression.measurement, JSON.parse(initialMeasurement).measurement)
     assert.equal(document.querySelector('#builder-enquiry-text'), null, 'missing context must not generate a recipient message')
     assert.equal(button('Confirm enquiry & continue →').disabled, true)
+    for (const id of ['builder-use', 'builder-relationship', 'builder-nextStep']) assert.equal((document.getElementById(id) as HTMLInputElement).required, true)
+    assert.equal((document.getElementById('builder-question') as HTMLTextAreaElement).required, false)
+    assert.ok(document.getElementById('builder-relationship')!.classList.contains('is-missing'))
     for (const [id, value] of [['builder-use', 'Garden suite'], ['builder-relationship', 'Prefer not to say'], ['builder-nextStep', 'Please advise whether this is worth investigating further.']]) {
       await act(async () => { const node = document.getElementById(id) as HTMLInputElement; node.focus(); Object.getOwnPropertyDescriptor(dom.window.HTMLInputElement.prototype, 'value')!.set!.call(node, value); node.dispatchEvent(new dom.window.KeyboardEvent('keyup', { key: '5', bubbles: true })) })
     }
@@ -302,7 +306,7 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
   dom.window.setTimeout = ((cb, delay, ...args) => windowTimeout(cb, delay === 10000 ? 1000 : delay, ...args)) as typeof dom.window.setTimeout
   const originals = new Map<string, PropertyDescriptor | undefined>()
   const expose = (name: string, value: unknown) => { originals.set(name, Object.getOwnPropertyDescriptor(globalThis, name)); Object.defineProperty(globalThis, name, { configurable: true, writable: true, value }) }
-  for (const [name, value] of Object.entries({ Element: dom.window.Element, HTMLElement: dom.window.HTMLElement, window: dom.window, document: dom.window.document, navigator: dom.window.navigator, requestAnimationFrame: (cb: () => void) => setTimeout(cb, 0), IS_REACT_ACT_ENVIRONMENT: true })) expose(name, value)
+  for (const [name, value] of Object.entries({ Element: dom.window.Element, HTMLElement: dom.window.HTMLElement, MutationObserver: dom.window.MutationObserver, window: dom.window, document: dom.window.document, navigator: dom.window.navigator, requestAnimationFrame: (cb: () => void) => setTimeout(cb, 0), IS_REACT_ACT_ENVIRONMENT: true })) expose(name, value)
   const geometry = JSON.parse(readFileSync('src/scenario_handoff/retained-assessment.fixture.json', 'utf8'))
   const legal = JSON.parse(readFileSync('src/conditional_screening/api-response.fixture.json', 'utf8'))
   let scenarioCalls = 0
