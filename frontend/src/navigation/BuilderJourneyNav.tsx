@@ -1,5 +1,6 @@
 /** Workflow milestones supplied by BuilderDemo, not assessment outcomes. */
 export type BuilderJourneyCompletion = Readonly<{
+  checksAvailable?: boolean
   reviewReadiness?: { total: number; addressed: number; busy: boolean; ready: boolean; targetId?: string }
   model: boolean
   property: boolean
@@ -64,7 +65,7 @@ export function BuilderJourneyNav({ completion }: { completion: BuilderJourneyCo
       })}
       <small>Ticks show workflow progress, not passing checks. You submit the provider form or send the email yourself.</small>
       {completion.mapAvailable === false && <small>Map steps need a captured parcel. You can prepare an enquiry with the facts you know.</small>}
-      {completion.reviewReadiness && <section className={`builder-review-readiness${completion.reviewReadiness.ready ? ' is-ready' : ''}`} key={completion.reviewReadiness.ready ? 'ready' : 'pending'} aria-label="Review readiness">
+      {completion.checksAvailable !== false && completion.reviewReadiness && <section className={`builder-review-readiness${completion.reviewReadiness.ready ? ' is-ready' : ''}`} key={completion.reviewReadiness.ready ? 'ready' : 'pending'} aria-label="Review readiness">
         {completion.reviewReadiness.ready ? <>
           <strong>✓ Review complete</strong>
           <p role="status">You’ve addressed all {completion.reviewReadiness.total} items. Your questions and acknowledged risks are included.</p>

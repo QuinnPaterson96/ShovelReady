@@ -168,6 +168,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const [reviewedBoundariesFor, setReviewedBoundariesFor] = useState<string | null>(null)
   const [reviewedPurposeFor, setReviewedPurposeFor] = useState<string | null>(null)
   const [reviewedDetailsFor, setReviewedDetailsFor] = useState<string | null>(null)
+  const [checksRevealed, setChecksRevealed] = useState(false)
   const [reviewedChecksFor, setReviewedChecksFor] = useState<string | null>(null)
   const [websiteRequestedFor, setWebsiteRequestedFor] = useState<string | null>(null)
   const [emailRequestedFor, setEmailRequestedFor] = useState<string | null>(null)
@@ -231,7 +232,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const [includeSiteDetails, setIncludeSiteDetails] = useState(true)
   const [emailMessage, setEmailMessage] = useState('')
   function changeIntendedUse(value: string) { if (value !== use) setReviewedPurposeFor(null); setUse(value); setProjectSettings(previous => applyIntendedUse(previous, value)); setReadyFor(null) }
-  function siteEdited() { setBufferSuggestion(undefined); setMoveSuggestion(undefined); setAcknowledgedConflicts([]); setSelection(null); setImported(false); setMeasurementResult(null); setSiteAssumptions(null); setProjectSettings(applyIntendedUse(modelProjectSettings(model), use)); setGeometryPending(false); setAccess(''); setServices(''); setProjectContext(previous => ({ ...previous, relationship: '', nextStep: '' })); setQuestion(`Could ${model.name} be suitable for this property?`); setWaterfrontMarks({ revision: null, ids: [] }); setDrawingExport(null); setStreetMarks({ revision: null, data: { edge_ids: [], all_marked: false, origin: 'user' } }); setRearEdge(null); setSelectedBoundary(null); setBoundaryMark(null); setMarkingRole(null); setBoundaryMode('place'); setReadyFor(null); setRevision(value => value + 1) }
+  function siteEdited() { setChecksRevealed(false); setBufferSuggestion(undefined); setMoveSuggestion(undefined); setAcknowledgedConflicts([]); setSelection(null); setImported(false); setMeasurementResult(null); setSiteAssumptions(null); setProjectSettings(applyIntendedUse(modelProjectSettings(model), use)); setGeometryPending(false); setAccess(''); setServices(''); setProjectContext(previous => ({ ...previous, relationship: '', nextStep: '' })); setQuestion(`Could ${model.name} be suitable for this property?`); setWaterfrontMarks({ revision: null, ids: [] }); setDrawingExport(null); setStreetMarks({ revision: null, data: { edge_ids: [], all_marked: false, origin: 'user' } }); setRearEdge(null); setSelectedBoundary(null); setBoundaryMark(null); setMarkingRole(null); setBoundaryMode('place'); setReadyFor(null); setRevision(value => value + 1) }
   function changeMode(next: typeof mode) {
     if (next !== 'example' && window.location.hash.startsWith('#examples/')) window.history.replaceState(null, '', '#assessment')
     setExpanded({ property: next !== 'example', placement: next === 'example', next: false, email: false })
@@ -586,12 +587,12 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     openJourneyStep('placement')
   }
   const nextJourneyStep: JourneyStep = !placementComplete ? 'placement' : journeyStep === 'checks' ? 'enquiry' : journeyStep === 'purpose' ? 'checks' : journeyStep === 'details' ? 'purpose' : boundaryMode === 'front' ? 'boundaries' : boundaryMode === 'waterfront' ? 'details' : boundaryMode === 'rear' ? 'details' : streetAdjacency.all_marked ? 'boundaries' : 'streets'
-  const continuation = nextJourneyStep === 'placement' ? { label: 'Place model', hint: 'Choose an approximate position on the map.' }
-    : nextJourneyStep === 'streets' ? { label: 'Mark street edges', hint: 'Happy with this position? Next, mark every edge adjoining a street.' }
-    : nextJourneyStep === 'boundaries' ? { label: 'Review boundaries', hint: 'Next, review the suggested front, rear and side edges and the planning buffers.' }
+  const continuation = nextJourneyStep === 'placement' ? { label: 'Place model', hint: 'Place the unit on the map to continue.' }
+    : nextJourneyStep === 'streets' ? { label: 'Mark street edges', hint: 'Position saved. Next, mark the street edges you know, or choose Not sure.' }
+    : nextJourneyStep === 'boundaries' ? { label: 'Review boundaries', hint: 'Review suggested boundary roles and buffers, or leave uncertain roles unknown. Save any buffer edits before continuing.' }
     : nextJourneyStep === 'details' ? { label: 'Review property details', hint: 'Next, answer the property questions you know. You can leave the rest unknown.' }
     : nextJourneyStep === 'purpose' ? { label: 'Intended purpose', hint: 'Next, choose how you would use the unit, or keep Not sure.' }
-    : nextJourneyStep === 'enquiry' ? { label: 'Prepare enquiry', hint: 'Next, turn these findings and open questions into an editable enquiry.' }
+    : nextJourneyStep === 'enquiry' ? { label: 'Prepare enquiry', hint: 'Review concerns or carry them as open questions into your enquiry. Continuing does not resolve a concern.' }
     : { label: 'Review quick checks', hint: 'Next, review what looks promising and which questions to include in your enquiry.' }
   const mapConcerns = findings.filter(check => check.status === 'conflict' && ['Distance to boundaries', 'Distance from the main building', 'Front boundary distance', 'Located behind the main building', 'Share of the rear yard'].includes(check.label))
   const placementResolutions = findings.flatMap(check => check.resolutions ?? [])
@@ -614,8 +615,8 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
       !['checked', 'probable'].includes(item.status) && !acknowledgedConflicts.includes(conflictKey(item)))
     requestAnimationFrame(() => focusSummaryTarget(document, next?.targetId ?? 'builder-enquiry-title', 'start'))
   }
-  const summaryPanel = summary && <><HomeownerSummary updating={displayResult.updating} useQualification={displayResult.result?.useQualification} onApplyBuffer={applyBuffer} onMove={applyMove} actionsDisabled={buffersPending || checksPending} acknowledged={includedFindings.map(check => check.label)} onAcknowledge={acknowledgeFinding} summary={summary} onNavigate={navigateFlag} continuation={{ ...continuation, onContinue: () => advanceJourneyStep(nextJourneyStep) }} />{journeyStep === 'checks' && <FloatingNext active sectionId="builder-quick-checks"><div className="homeowner-summary__continue"><p>{continuation.hint}</p><button className="builder-continue" type="button" disabled={buffersPending || checksPending} onClick={() => advanceJourneyStep(nextJourneyStep)}>Next: {continuation.label}<span aria-hidden="true"> →</span></button></div></FloatingNext>}</>
-  const placementContinuation = summary && ['placement', 'streets', 'boundaries'].includes(journeyStep) && <div className="homeowner-summary__continue"><p className="placement-action-status">{buffersPending ? 'Save planning buffers before continuing' : journeyStep === 'streets' ? streetAdjacency.all_marked ? `${streetAdjacency.edge_ids.length} street${streetAdjacency.edge_ids.length === 1 ? '' : 's'} marked · saved` : 'Street context unknown · you can continue' : continuation.hint}</p><div className="step-action"><button className="builder-continue" type="button" disabled={buffersPending} onClick={() => advanceJourneyStep(nextJourneyStep)}>Next: {continuation.label}<span aria-hidden="true"> →</span></button><StepInfo label={continuation.label}>{continuation.hint} You can continue with open questions. Existing findings and unanswered questions remain in your enquiry.</StepInfo></div></div>
+  const summaryPanel = summary && <>{!checksRevealed && <p className="builder-checks-preview">Your preliminary checks will appear after property details and intended purpose.</p>}<div id="builder-checks-disclosure" hidden={!checksRevealed}><HomeownerSummary updating={displayResult.updating} useQualification={displayResult.result?.useQualification} onApplyBuffer={applyBuffer} onMove={applyMove} actionsDisabled={buffersPending || checksPending} acknowledged={includedFindings.map(check => check.label)} onAcknowledge={acknowledgeFinding} summary={summary} onNavigate={navigateFlag} continuation={{ ...continuation, onContinue: () => advanceJourneyStep(nextJourneyStep) }} />{journeyStep === 'checks' && <FloatingNext active sectionId="builder-quick-checks"><div className="homeowner-summary__continue"><p>{continuation.hint}</p><button className="builder-continue" type="button" disabled={buffersPending || checksPending} onClick={() => advanceJourneyStep(nextJourneyStep)}>Next: {continuation.label}<span aria-hidden="true"> →</span></button></div></FloatingNext>}</div></>
+  const placementContinuation = summary && ['placement', 'streets', 'boundaries'].includes(journeyStep) && <div className="homeowner-summary__continue"><p className="placement-action-status">{buffersPending ? 'Save planning buffers before continuing' : journeyStep === 'streets' ? streetAdjacency.all_marked ? `${streetAdjacency.edge_ids.length} street${streetAdjacency.edge_ids.length === 1 ? '' : 's'} marked · saved` : 'Mark the streets you know, or choose Not sure. Unknown street context can continue.' : journeyStep === 'boundaries' ? 'Review or accept suggested roles and buffers. Unknown roles can remain unresolved; save any buffer edits to continue.' : continuation.hint}</p><div className="step-action"><button className="builder-continue" type="button" disabled={buffersPending} onClick={() => advanceJourneyStep(nextJourneyStep)}>Next: {continuation.label}<span aria-hidden="true"> →</span></button><StepInfo label={continuation.label}>{continuation.hint} You can continue with open questions. Existing findings and unanswered questions remain in your enquiry.</StepInfo></div></div>
   function changeProperty() {
     if (mode === 'live') { siteEdited(); setLive(null); setPropertyReset(value => value + 1) }
     else changeMode('live')
@@ -633,6 +634,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     if (!propertyComplete && step !== 'model' && step !== 'property') step = 'property'
     if (!zoningCase && (step === 'streets' || step === 'boundaries' || step === 'details')) step = 'placement'
     setJourneyStep(step)
+    if (step === 'checks') setChecksRevealed(true)
     if (step === 'streets') changeBoundaryMode('front')
     if (step === 'boundaries') changeBoundaryMode('rear')
     if (step === 'placement' || step === 'details' || step === 'purpose') setBoundaryMode('place')
@@ -646,6 +648,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   }
   function navigateFlag(target: string) {
     const propertyFact = ['building-type', 'existing-suites', 'principal-building', 'waterfront-lot', 'zsa-floor-area', 'separation-measurement-choice', 'scouting-height', 'scouting-area-buffer'].includes(target)
+    if (!propertyFact && !['street-side', 'boundary-roles', 'boundary-offsets', 'placement-map', 'builder-intended-use'].includes(target)) setChecksRevealed(true)
     setJourneyStep(propertyFact ? 'details' : target === 'street-side' ? 'streets' : target === 'boundary-roles' || target === 'boundary-offsets' ? 'boundaries' : target === 'placement-map' ? 'placement' : 'checks')
     if (propertyFact || target === 'placement-map') setBoundaryMode('place')
     if (target === 'boundary-roles' || target === 'boundary-offsets') { changeBoundaryMode('rear'); setBoundaryEditorOverride(true) }
@@ -664,7 +667,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const enquiryReady = !!enquiryDoc && readyFor === draftText
   const progressCallback = useRef(onProgressChange)
   progressCallback.current = onProgressChange
-  useEffect(() => { progressCallback.current?.({ reviewReadiness, model: true, property: propertyComplete, placement: placementComplete, streets: !!geometryRevision && streetAdjacency.all_marked, boundaries: reviewedBoundariesFor === boundaryReviewRevision, details: reviewedDetailsFor === detailsReviewRevision, purpose: reviewedPurposeFor === use, checks: reviewedChecksFor === reviewRevision, enquiry: enquiryReady, email: !!draftText && (websiteRequestedFor === draftText || emailRequestedFor === JSON.stringify([draftText, recipient, includeSiteDetails])), handoff: websiteRequestedFor === draftText ? 'website' : 'email', current: journeyStep, mapAvailable: propertyComplete ? !!zoningCase : undefined }) }, [zoningCase, propertyComplete, placementComplete, enquiryReady, geometryRevision, streetAdjacency.all_marked, reviewedBoundariesFor, reviewedDetailsFor, reviewedChecksFor, reviewRevision, detailsReviewRevision, boundaryReviewRevision, reviewedPurposeFor, use, websiteRequestedFor, emailRequestedFor, draftText, recipient, includeSiteDetails, journeyStep, readinessSignature])
+  useEffect(() => { progressCallback.current?.({ reviewReadiness, checksAvailable: checksRevealed, model: true, property: propertyComplete, placement: placementComplete, streets: !!geometryRevision && streetAdjacency.all_marked, boundaries: reviewedBoundariesFor === boundaryReviewRevision, details: reviewedDetailsFor === detailsReviewRevision, purpose: reviewedPurposeFor === use, checks: reviewedChecksFor === reviewRevision, enquiry: enquiryReady, email: !!draftText && (websiteRequestedFor === draftText || emailRequestedFor === JSON.stringify([draftText, recipient, includeSiteDetails])), handoff: websiteRequestedFor === draftText ? 'website' : 'email', current: journeyStep, mapAvailable: propertyComplete ? !!zoningCase : undefined }) }, [checksRevealed, zoningCase, propertyComplete, placementComplete, enquiryReady, geometryRevision, streetAdjacency.all_marked, reviewedBoundariesFor, reviewedDetailsFor, reviewedChecksFor, reviewRevision, detailsReviewRevision, boundaryReviewRevision, reviewedPurposeFor, use, websiteRequestedFor, emailRequestedFor, draftText, recipient, includeSiteDetails, journeyStep, readinessSignature])
   useEffect(() => { setReadyFor(null) }, [draftText])
   const emailBody = enquiryDoc ? enquiryEmailBody(enquiryDoc, includeSiteDetails) : ''
   const emailSubject = enquiryDoc?.example ? `Saved example only — ${model.name} question` : includeSiteDetails ? enquiryDoc?.title ?? `${model.name} feasibility enquiry` : `${model.name} feasibility enquiry`
@@ -783,7 +786,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     <EnquiryRecovery enquiry={!checksPending && (expanded.next || enquiryReady) ? draftText : null} report={reportDoc ? enquiryPlainText(reportDoc) : null} technicalEvidence={JSON.stringify(technicalEvidence, null, 2)} />
     <section className="builder-stage" id="builder-property" aria-labelledby="builder-property-title">
     <p className="eyebrow">Property</p><h2 id="builder-property-title">Could this fit on your property?</h2>
-    <p>{propertyComplete ? (mode === 'example' ? 'Saved Victoria example selected.' : live ? live.address.label : `${manual?.facts.address || selection?.candidate?.address.value || selection?.manual.address.value || 'Site description'} · user-supplied; unverified.`) : 'Enter your address to find its approximate property outline.'}</p>
+    <p>{propertyComplete ? (mode === 'example' ? 'Saved Victoria example selected.' : live ? live.address.label : `${manual?.facts.address || selection?.candidate?.address.value || selection?.manual.address.value || 'Site description'} · user-supplied; unverified.`) : 'Choose an address result or confirm a manual site description to continue.'}</p>
     {propertyComplete && <button type="button" aria-expanded={expanded.property} aria-controls="builder-property-content" onClick={() => toggleStep('property')}>{expanded.property ? 'Collapse property' : 'Review or change property'}</button>}
     <div id="builder-property-content" hidden={propertyComplete && !expanded.property}>
     {mode === 'live' && <SiteDiscovery autoProceed resetKey={propertyReset} inspectKey={propertyInspect} onConfirm={next => { siteEdited(); setLive(next) }} onManual={() => changeMode('manual')} />}
@@ -810,7 +813,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
         {journeyStep !== 'purpose' && <button type="button" onClick={() => openJourneyStep('purpose')}>Review intended purpose</button>}
         <div hidden={journeyStep !== 'purpose'}>
           <IntendedUseControl value={use} onChange={changeIntendedUse} />
-          <FloatingNext active={journeyStep === 'purpose'} sectionId="builder-purpose"><div className="homeowner-summary__continue"><p>You can continue with an unanswered purpose or Not sure. Dependent planning checks remain unresolved.</p><button className="builder-continue" type="button" onClick={() => advanceJourneyStep(zoningCase ? 'checks' : 'enquiry')}>Next: {zoningCase ? 'Review quick checks' : 'Prepare enquiry'}<span aria-hidden="true"> →</span></button></div></FloatingNext>
+          <FloatingNext active={journeyStep === 'purpose'} sectionId="builder-purpose"><div className="homeowner-summary__continue"><p>Choose an intended use if known, or keep Not sure or unanswered and continue. Dependent planning checks remain unresolved.</p><button className="builder-continue" type="button" onClick={() => advanceJourneyStep(zoningCase ? 'checks' : 'enquiry')}>Next: {zoningCase ? 'Review quick checks' : 'Prepare enquiry'}<span aria-hidden="true"> →</span></button></div></FloatingNext>
         </div>
       </section></EvidenceAtFooter>}
       {mode === 'example' && <ExampleProperty model={model} showPlacementConcerns={journeyStep === 'boundaries'} placementConcerns={placementConcernsPanel} onContinueUnresolved={checksPending ? undefined : continueWithPlacementConcerns} moveSuggestion={moveSuggestion?.geometryRevision === geometryRevision ? moveSuggestion : undefined} evidenceTargetId="builder-geometry-evidence" key={revision} placementContinuation={placementContinuation} placementSummary={summaryPanel} boundaryInteraction={boundaryInteraction} onAssessmentPending={setGeometryPending} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} />}
@@ -881,7 +884,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
         </>}
       </div>
       <FloatingNext active={journeyStep === 'enquiry'} sectionId="builder-enquiry-content"><div className="builder-enquiry-confirm">
-        <h3>Happy with your enquiry?</h3><p>You can edit it again later.</p>
+        <h3>Happy with your enquiry?</h3><p>Complete the three required answers and review your draft to continue. Explicit unknown answers are accepted.</p>
         <button className="builder-continue" type="button" disabled={!contextComplete || checksPending || exportBusy} onClick={() => { if (!enquiryDoc || checksPending) return; setReadyFor(draftText); openJourneyStep('email') }}>Confirm enquiry &amp; continue →</button>
         <p role="status">{enquiryReady ? 'Enquiry confirmed. No message has been sent.' : 'Draft in progress. Review before continuing.'}</p>
       </div></FloatingNext>
@@ -895,6 +898,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
         <button type="button" aria-expanded={expanded.email} aria-controls="builder-email-content" onClick={() => toggleStep('email')}>{expanded.email ? 'Collapse provider contact' : 'Review provider contact'}</button>
         <div id="builder-email-content" hidden={!expanded.email}>
         {!contextComplete || checksPending ? <><p>{checksPending ? 'Updating checks. Your current provider message will be available when they finish.' : 'Provide the three context answers before preparing your provider message.'}</p>{!contextComplete && <button id="builder-contact-context" type="button" onClick={() => openJourneyStep('enquiry')}>Add enquiry context</button>}</> : <>
+        <p>Review your prepared draft, then open the provider website or download an email draft. You send or submit it yourself.</p>
         <p>{model.provider} uses an official contact page{model.provider === 'aux box' ? ' with a central enquiry form' : ''}. Copy your prepared enquiry, then review the provider’s requested information. Checked October 7, 2026.</p>
         <p className="metadata">Opening the website does not send your enquiry or attach your report. This independent demonstration has no affiliation with {model.provider}.</p>
         <label htmlFor="builder-provider-text">Your enquiry to paste into the form</label><textarea id="builder-provider-text" readOnly rows={8} value={draftText} />
