@@ -91,6 +91,7 @@ export function BoundaryMapTools({ interaction }: { interaction: BoundaryMapInte
   return <div className="boundary-map-tools" hidden={mode === 'place'} data-mode={mode} aria-label="Boundary selection controls">
     {!supported && <p>This outline needs manual review. Marks record your assumptions; street-side suggestions cannot resolve its frontage.</p>}
     {mode === 'front' && <>
+      <p>Streets help determine which boundary rules we compare. Click each edge that borders a street, or choose Not sure.</p>
       <div className="boundary-street-toolbar">
         <button type="button" aria-label="Not sure · clear street marks" onClick={() => onSelect(null)}>Not sure</button>
         <details className="boundary-keyboard"><summary>Mark without the map</summary>
@@ -102,7 +103,7 @@ export function BoundaryMapTools({ interaction }: { interaction: BoundaryMapInte
           <p>For a simple one-street lot, front, opposite rear and side roles are suggestions. Grey road bands illustrate your marks, not measured road width or access.</p>
         </StepInfo>
       </div>
-      <p role="status" className="boundary-street-status">{complete ? `${marked.length} ${marked.length === 1 ? 'street' : 'streets'} marked · saved` : marked.length ? `${marked.length} marked · completeness unknown` : 'Street context unknown · you can continue'}</p>
+      <p role="status" className="boundary-street-status">{complete ? marked.length ? `${marked.length} ${marked.length === 1 ? 'street' : 'streets'} marked · saved` : 'No street-adjoining edges · your answer saved' : marked.length ? `${marked.length} marked · completeness unknown` : 'Street context unknown · you can continue'}</p>
     </>}
     {mode === 'waterfront' && <>
       <p>Mark every edge adjoining water. Click again to remove a mark. Waterfront edges are separate from street edges and front/rear roles.</p>

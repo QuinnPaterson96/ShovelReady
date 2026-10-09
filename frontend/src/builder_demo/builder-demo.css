@@ -160,3 +160,7 @@
 
 .builder-demo #builder-checks-disclosure[hidden] { display: none; }
 .builder-checks-preview { color: var(--ink-muted); font-size: .9rem; }
+
+.builder-street-dialog { max-width: min(36rem, calc(100vw - 2rem)); box-sizing: border-box; padding: 1.25rem; color: var(--ink); background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--radius-card); }
+.builder-street-dialog::backdrop { background: color-mix(in srgb, var(--ink) 35%, transparent); }
+.builder-street-dialog-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
