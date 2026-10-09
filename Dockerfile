@@ -1,4 +1,4 @@
-FROM node:22.14.0-bookworm-slim AS frontend
+FROM public.ecr.aws/docker/library/node:22.14.0-bookworm-slim AS frontend
 WORKDIR /build/frontend
 COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci
@@ -8,7 +8,7 @@ COPY app/draft_evaluations/inputs/synthetic-*.json /build/app/draft_evaluations/
 COPY docs/rule-packets/victoria-garden-suite/packet.json /build/docs/rule-packets/victoria-garden-suite/packet.json
 RUN npm run build
 
-FROM python:3.12-slim-bookworm
+FROM public.ecr.aws/docker/library/python:3.12-slim-bookworm
 ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 SHOVELREADY_ENV=demo
 WORKDIR /app
 RUN python -m pip install --no-cache-dir uv==0.12.17

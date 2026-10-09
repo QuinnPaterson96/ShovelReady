@@ -191,7 +191,8 @@
       ]
     },
     {
-      "normalElapsedSeconds": 56.806
+      "explicitNavigation": true,
+      "normalMotionHoldMs": 7500
     }
   ],
   "errors": [],

@@ -9,6 +9,10 @@ the immutable-image delivery/restore criteria in SR-15.
 ## Deployment
 
 - Deploy the repository Dockerfile from trusted main; enable Railway's Wait for CI.
+- Pull the official Node and Python base images from `public.ecr.aws/docker/library/`.
+  CI uses the same public registry for PostgreSQL 17. No registry login or AWS
+  credentials are required. Existing version tags remain mutable; see the matching
+  manifest verification in [quality evidence](quality.md#ci-image-pull-registry).
 - The container serves the frontend and API on port 8000. Set PORT=8000 and domain
   target port to 8000. Configure health path /health, timeout 120 seconds and restart
   policy On Failure with 3 retries in the Railway service settings.

@@ -1,6 +1,6 @@
 import type { AssessmentEntry } from '../navigation/assessmentEntry'
 import { buildingClearanceMove } from './buildingMove'
-import { useWalkthrough } from './walkthrough'
+import { useWalkthrough, walkthroughPhase } from './walkthrough'
 import { FloatingNext, PlaybackLayout } from '../FloatingNext'
 import { findingAcknowledgementKey } from './journeyState'
 import { enquiryUseQualification, manufacturerDocument, placementConcerns, boundaryObservations, additionalObservation, conditionalObservation, assumptionsDescription, type EnquiryInput } from './manufacturer'
@@ -31,7 +31,7 @@ import { ModelImage } from './model_image/ModelImage'
 import { ExampleProperty } from './ExampleProperty'
 import { IntendedUseControl, applyIntendedUse } from './intendedUse'
 import { useRetainedResult } from '../conditional_screening/resultRetention'
-import { demoEnquiryAnswers, movedExamplePosition, exampleCase, exampleSourcePage } from './example'
+import { demoEnquiryAnswers, movedExamplePosition, initialExamplePosition, exampleCase, exampleSourcePage } from './example'
 import { SiteAssumptionsEditor } from '../zoning_site_assumptions/SiteAssumptions'
 import { ordinaryFourEdgeBoundary, type StreetAdjacency, type BoundaryMapMode, type SiteAssumptions } from '../zoning_site_assumptions/model'
 import type { BoundaryMapInteraction } from '../zoning_site_assumptions/BoundaryMapTools'
@@ -544,9 +544,8 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const readinessSignature = JSON.stringify(reviewReadiness)
   const playback = useWalkthrough(visible, stop =>
     stop === 'model' || stop === 'property' || !!measurementResult && !checksPending &&
-      (stop !== 'moved' && stop !== 'result' && stop !== 'enquiry' ||
-        measurementResult.result.input.placement.centre_xy[0] === Number(movedExamplePosition().x) &&
-        measurementResult.result.input.placement.centre_xy[1] === Number(movedExamplePosition().y)) &&
+      (measurementResult.result.input.placement.centre_xy[0] === Number((stop === 'initial' ? initialExamplePosition() : movedExamplePosition()).x) &&
+        measurementResult.result.input.placement.centre_xy[1] === Number((stop === 'initial' ? initialExamplePosition() : movedExamplePosition()).y)) &&
       (stop !== 'result' && stop !== 'enquiry' || use === demoEnquiryAnswers.intendedUse), geometryFailure)
   const playbackActive = !!playback.state && visible
   playbackLayoutRef.current = playbackActive
@@ -852,7 +851,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     if (journeyStep !== expectedStep) return
     const scrollKey = `${playbackRun}:${playbackStop}`
     if (playbackScrolled.current === scrollKey) return
-    if (!playbackActive || !playbackStop || playback.state?.paused) return
+    if (!playbackActive || !playbackStop) return
     const target = playbackStop === 'model' ? 'builder-title' : playbackStop === 'property' ? 'builder-property-title' : playbackStop === 'result' ? 'builder-quick-checks' : playbackStop === 'enquiry' ? 'builder-unsent-preview' : 'placement-map'
     const frame = requestAnimationFrame(() => {
       if (!playbackLayoutRef.current || !journeyVisible.current) return
@@ -860,14 +859,15 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
       if (element && !element.closest('[hidden]')) { playbackScrolled.current = scrollKey; element.scrollIntoView?.({ block: 'start', behavior: 'auto' }) }
     })
     return () => { if (typeof cancelAnimationFrame !== 'undefined') cancelAnimationFrame(frame) }
-  }, [playbackActive, playbackStop, playbackRun, playback.state?.paused, journeyStep, expanded, !!enquiryDoc])
+  }, [playbackActive, playbackStop, playbackRun, journeyStep, expanded, !!enquiryDoc])
   return <PlaybackLayout.Provider value={playbackActive}><div className="builder-demo" data-playback={playbackActive || undefined}>
     {playbackActive && <section data-playback-controls className="builder-playback" aria-label="Walkthrough controls">
-      <p aria-live="polite">{playback.state!.finished ? 'Walkthrough complete. ' : ''}{playbackCaptions[playbackStop!]}{geometryFailure ? ' Placement check unavailable. Playback paused; retry or take over.' : !['model', 'property'].includes(playbackStop!) && (!measurementResult || checksPending) ? ' Waiting for current checks; you can pause, retry in the assessment, or take over.' : ''}</p>
+      <span className="builder-playback-progress">Step {walkthroughPhase[playbackStop!]} of 5</span>
+      <p aria-live="polite">{playback.state!.finished ? 'Walkthrough complete. ' : ''}{playbackCaptions[playbackStop!]}{geometryFailure ? ' Placement check unavailable. Retry in the assessment or take over.' : !playback.ready ? ' Waiting for current checks; you can go back or take over.' : ''}</p>
       <div className="sr-actions">
-        <button hidden={playback.state!.finished} type="button" onClick={playback.pause}>{playback.state!.paused ? 'Resume' : 'Pause'}</button>
-        {playback.reducedMotion && !playback.state!.finished && <button type="button" disabled={!playback.ready} onClick={playback.next}>Next</button>}
-        <button hidden={playback.state!.finished} type="button" onClick={playback.skip}>Skip to result</button>
+        <button type="button" disabled={playbackStop === 'model'} onClick={playback.back}>Back</button>
+        {!playback.state!.finished && <button className="builder-continue" type="button" disabled={!playback.ready || playback.state!.skipping} onClick={playback.next}>Next</button>}
+        <button hidden={playback.state!.finished || playbackStop === 'result'} type="button" onClick={playback.skip}>Skip to result</button>
         <button type="button" onClick={() => { playback.cancel(); requestAnimationFrame(() => focusSummaryTarget(document, playbackStop === 'enquiry' ? 'builder-use' : playbackStop === 'model' ? 'builder-model-choice' : 'placement-map')) }}>Let me try</button>
       </div>
     </section>}
@@ -947,7 +947,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
           <FloatingNext active={journeyStep === 'purpose'} sectionId="builder-purpose"><div className="homeowner-summary__continue"><p>Choose an intended use if known, or keep Not sure or unanswered and continue. Dependent planning checks remain unresolved.</p><button className="builder-continue" type="button" onClick={() => advanceJourneyStep(zoningCase ? 'checks' : 'enquiry')}>Next: {zoningCase ? 'Review quick checks' : 'Prepare enquiry'}<span aria-hidden="true"> →</span></button></div></FloatingNext>
         </div>
       </section></EvidenceAtFooter>}
-      {mode === 'example' && <ExampleProperty onFailureChange={setGeometryFailure} playbackPosition={playbackStop === 'moved' ? { token: playbackRun!, position: movedExamplePosition() } : undefined} model={model} showPlacementConcerns={journeyStep === 'boundaries'} placementConcerns={placementConcernsPanel} onContinueUnresolved={checksPending ? undefined : continueWithPlacementConcerns} moveSuggestion={moveSuggestion?.geometryRevision === geometryRevision ? moveSuggestion : undefined} evidenceTargetId="builder-geometry-evidence" key={revision} placementContinuation={placementContinuation} placementSummary={summaryPanel} boundaryInteraction={boundaryInteraction} onAssessmentPending={setGeometryPending} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} />}
+      {mode === 'example' && <ExampleProperty onFailureChange={setGeometryFailure} playbackPosition={playbackStop === 'initial' || playbackStop === 'moved' ? { token: playbackRun!, position: playbackStop === 'initial' ? initialExamplePosition() : movedExamplePosition() } : undefined} model={model} showPlacementConcerns={journeyStep === 'boundaries'} placementConcerns={placementConcernsPanel} onContinueUnresolved={checksPending ? undefined : continueWithPlacementConcerns} moveSuggestion={moveSuggestion?.geometryRevision === geometryRevision ? moveSuggestion : undefined} evidenceTargetId="builder-geometry-evidence" key={revision} placementContinuation={placementContinuation} placementSummary={summaryPanel} boundaryInteraction={boundaryInteraction} onAssessmentPending={setGeometryPending} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} />}
       {mode === 'live' && (liveCase ? <OccupiedLots catalogue={journeyCatalogue} key={revision} showPlacementConcerns={journeyStep === 'boundaries'} placementConcerns={placementConcernsPanel} onContinueUnresolved={checksPending ? undefined : continueWithPlacementConcerns} placementContinuation={placementContinuation} placementSummary={summaryPanel} moveSuggestion={moveSuggestion?.geometryRevision === geometryRevision ? moveSuggestion : undefined} evidenceTargetId="builder-geometry-evidence" compactPlacement suppliedCase={liveCase} boundaryInteraction={boundaryInteraction} allowedModelIds={[MODEL_ID]} initialModelId={MODEL_ID} onAssessmentPending={setGeometryPending} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} showHandoff={false} /> : <p>Select a Victoria property above to open its captured parcel sketch. Available geometry is approximate and unreviewed.</p>)}
 
     {zoningCase && <><EvidenceAtFooter targetId="builder-rule-evidence"><section className="builder-placement-results" aria-label="Current placement results">
