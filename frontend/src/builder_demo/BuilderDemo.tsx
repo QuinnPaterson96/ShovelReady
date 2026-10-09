@@ -198,6 +198,15 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const [conditionalError, setConditionalError] = useState<{ key: string; message: string } | null>(null)
   const [conditionalBusy, setConditionalBusy] = useState(false)
   const [conditionalRetry, setConditionalRetry] = useState(0)
+  const [streetDecisionFor, setStreetDecisionFor] = useState<string | null>(null)
+  const [streetSkipTarget, setStreetSkipTarget] = useState<JourneyStep | null>(null)
+  const streetDialog = useRef<HTMLDialogElement>(null)
+  useEffect(() => {
+    const dialog = streetDialog.current
+    if (!dialog) return
+    if (streetSkipTarget) { if (!dialog.open) { if (dialog.showModal) dialog.showModal(); else dialog.setAttribute('open', '') } }
+    else if (dialog.open) { if (dialog.close) dialog.close(); else dialog.removeAttribute('open') }
+  }, [streetSkipTarget])
   const [streetMarks, setStreetMarks] = useState<{ revision: string | null; data: StreetAdjacency }>({ revision: null, data: { edge_ids: [], all_marked: false, origin: 'user' } })
   const [markingRole, setMarkingRole] = useState<import('../zoning_site_assumptions/model').EdgeRole | null>(null)
   const [boundaryMark, setBoundaryMark] = useState<{ id: string; role: import('../zoning_site_assumptions/model').EdgeRole } | null>(null)
@@ -232,7 +241,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const [includeSiteDetails, setIncludeSiteDetails] = useState(true)
   const [emailMessage, setEmailMessage] = useState('')
   function changeIntendedUse(value: string) { if (value !== use) setReviewedPurposeFor(null); setUse(value); setProjectSettings(previous => applyIntendedUse(previous, value)); setReadyFor(null) }
-  function siteEdited() { setChecksRevealed(false); setBufferSuggestion(undefined); setMoveSuggestion(undefined); setAcknowledgedConflicts([]); setSelection(null); setImported(false); setMeasurementResult(null); setSiteAssumptions(null); setProjectSettings(applyIntendedUse(modelProjectSettings(model), use)); setGeometryPending(false); setAccess(''); setServices(''); setProjectContext(previous => ({ ...previous, relationship: '', nextStep: '' })); setQuestion(`Could ${model.name} be suitable for this property?`); setWaterfrontMarks({ revision: null, ids: [] }); setDrawingExport(null); setStreetMarks({ revision: null, data: { edge_ids: [], all_marked: false, origin: 'user' } }); setRearEdge(null); setSelectedBoundary(null); setBoundaryMark(null); setMarkingRole(null); setBoundaryMode('place'); setReadyFor(null); setRevision(value => value + 1) }
+  function siteEdited() { setStreetDecisionFor(null); setStreetSkipTarget(null); setChecksRevealed(false); setBufferSuggestion(undefined); setMoveSuggestion(undefined); setAcknowledgedConflicts([]); setSelection(null); setImported(false); setMeasurementResult(null); setSiteAssumptions(null); setProjectSettings(applyIntendedUse(modelProjectSettings(model), use)); setGeometryPending(false); setAccess(''); setServices(''); setProjectContext(previous => ({ ...previous, relationship: '', nextStep: '' })); setQuestion(`Could ${model.name} be suitable for this property?`); setWaterfrontMarks({ revision: null, ids: [] }); setDrawingExport(null); setStreetMarks({ revision: null, data: { edge_ids: [], all_marked: false, origin: 'user' } }); setRearEdge(null); setSelectedBoundary(null); setBoundaryMark(null); setMarkingRole(null); setBoundaryMode('place'); setReadyFor(null); setRevision(value => value + 1) }
   function changeMode(next: typeof mode) {
     if (next !== 'example' && window.location.hash.startsWith('#examples/')) window.history.replaceState(null, '', '#assessment')
     setExpanded({ property: next !== 'example', placement: next === 'example', next: false, email: false })
@@ -326,9 +335,11 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   function toggleStreet(id: string | null) {
     if (id && !currentAssumptions?.edges.some(edge => edge.id === id && edge.ring === 0)) return
     const edge_ids = id === null ? [] : streetAdjacency.edge_ids.includes(id) ? streetAdjacency.edge_ids.filter(edge => edge !== id) : [...streetAdjacency.edge_ids, id]
+    setStreetDecisionFor(id === null || edge_ids.length > 0 ? geometryRevision : null)
     setStreetMarks({ revision: geometryRevision, data: { origin: 'user', all_marked: edge_ids.length > 0, completion_method: edge_ids.length ? 'marking' : undefined, edge_ids } }); setReadyFor(null)
   }
-  function changeBoundaryMode(next: BoundaryMapMode) {
+  function changeBoundaryMode(next: BoundaryMapMode, answered = false) {
+    if (!answered && next === 'rear' && zoningCase && !streetAdjacency.all_marked && streetDecisionFor !== geometryRevision) { setStreetSkipTarget('boundaries'); return }
     setBoundaryEditorOverride(false)
     setJourneyStep(next === 'front' ? 'streets' : next === 'place' ? 'placement' : 'boundaries')
     setBoundaryMode(next)
@@ -624,19 +635,21 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     requestAnimationFrame(() => focusSummaryTarget(document, 'sd-address'))
   }
   function advanceJourneyStep(step: JourneyStep) {
+    if (journeyStep === 'streets' && ['boundaries', 'details', 'purpose', 'checks', 'enquiry', 'email'].includes(step) && !streetAdjacency.all_marked && streetDecisionFor !== geometryRevision) { setStreetSkipTarget(step); return }
     if (journeyStep === 'boundaries') setReviewedBoundariesFor(boundaryReviewRevision)
     if (journeyStep === 'details') setReviewedDetailsFor(detailsReviewRevision)
     if (journeyStep === 'purpose') setReviewedPurposeFor(use)
     if (journeyStep === 'checks') setReviewedChecksFor(reviewRevision)
     openJourneyStep(step)
   }
-  function openJourneyStep(step: JourneyStep) {
+  function openJourneyStep(step: JourneyStep, answered = false) {
+    if (!answered && zoningCase && ['boundaries', 'details', 'purpose', 'checks', 'enquiry', 'email'].includes(step) && !streetAdjacency.all_marked && streetDecisionFor !== geometryRevision) { setStreetSkipTarget(step); return }
     if (!propertyComplete && step !== 'model' && step !== 'property') step = 'property'
     if (!zoningCase && (step === 'streets' || step === 'boundaries' || step === 'details')) step = 'placement'
     setJourneyStep(step)
     if (step === 'checks') setChecksRevealed(true)
     if (step === 'streets') changeBoundaryMode('front')
-    if (step === 'boundaries') changeBoundaryMode('rear')
+    if (step === 'boundaries') changeBoundaryMode('rear', true)
     if (step === 'placement' || step === 'details' || step === 'purpose') setBoundaryMode('place')
     setExpanded({ property: step === 'property', placement: !['property', 'model', 'enquiry', 'email'].includes(step), next: step === 'enquiry', email: step === 'email' })
     const targets: Record<JourneyStep, string> = { model: 'builder-title', property: 'sd-address', placement: 'builder-placement-title', streets: 'placement-action-front', boundaries: 'placement-action-rear', details: 'builder-property-details', purpose: 'builder-intended-use', checks: 'builder-quick-checks', enquiry: 'builder-enquiry-title', email: contextComplete ? 'builder-provider-website' : 'builder-contact-context' }
@@ -667,7 +680,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const enquiryReady = !!enquiryDoc && readyFor === draftText
   const progressCallback = useRef(onProgressChange)
   progressCallback.current = onProgressChange
-  useEffect(() => { progressCallback.current?.({ reviewReadiness, checksAvailable: checksRevealed, model: true, property: propertyComplete, placement: placementComplete, streets: !!geometryRevision && streetAdjacency.all_marked, boundaries: reviewedBoundariesFor === boundaryReviewRevision, details: reviewedDetailsFor === detailsReviewRevision, purpose: reviewedPurposeFor === use, checks: reviewedChecksFor === reviewRevision, enquiry: enquiryReady, email: !!draftText && (websiteRequestedFor === draftText || emailRequestedFor === JSON.stringify([draftText, recipient, includeSiteDetails])), handoff: websiteRequestedFor === draftText ? 'website' : 'email', current: journeyStep, mapAvailable: propertyComplete ? !!zoningCase : undefined }) }, [checksRevealed, zoningCase, propertyComplete, placementComplete, enquiryReady, geometryRevision, streetAdjacency.all_marked, reviewedBoundariesFor, reviewedDetailsFor, reviewedChecksFor, reviewRevision, detailsReviewRevision, boundaryReviewRevision, reviewedPurposeFor, use, websiteRequestedFor, emailRequestedFor, draftText, recipient, includeSiteDetails, journeyStep, readinessSignature])
+  useEffect(() => { progressCallback.current?.({ reviewReadiness, checksAvailable: checksRevealed, model: true, property: propertyComplete, placement: placementComplete, streets: !!geometryRevision && (streetAdjacency.all_marked || streetDecisionFor === geometryRevision), boundaries: reviewedBoundariesFor === boundaryReviewRevision, details: reviewedDetailsFor === detailsReviewRevision, purpose: reviewedPurposeFor === use, checks: reviewedChecksFor === reviewRevision, enquiry: enquiryReady, email: !!draftText && (websiteRequestedFor === draftText || emailRequestedFor === JSON.stringify([draftText, recipient, includeSiteDetails])), handoff: websiteRequestedFor === draftText ? 'website' : 'email', current: journeyStep, mapAvailable: propertyComplete ? !!zoningCase : undefined }) }, [checksRevealed, zoningCase, propertyComplete, placementComplete, enquiryReady, geometryRevision, streetDecisionFor, streetAdjacency.all_marked, reviewedBoundariesFor, reviewedDetailsFor, reviewedChecksFor, reviewRevision, detailsReviewRevision, boundaryReviewRevision, reviewedPurposeFor, use, websiteRequestedFor, emailRequestedFor, draftText, recipient, includeSiteDetails, journeyStep, readinessSignature])
   useEffect(() => { setReadyFor(null) }, [draftText])
   const emailBody = enquiryDoc ? enquiryEmailBody(enquiryDoc, includeSiteDetails) : ''
   const emailSubject = enquiryDoc?.example ? `Saved example only — ${model.name} question` : includeSiteDetails ? enquiryDoc?.title ?? `${model.name} feasibility enquiry` : `${model.name} feasibility enquiry`
@@ -751,6 +764,16 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     finally { setExportBusy(false) }
   }
   return <div className="builder-demo">
+    <dialog ref={streetDialog} aria-labelledby="street-context-title" aria-describedby="street-context-reason" className="builder-street-dialog" onCancel={() => setStreetSkipTarget(null)}>
+      <h2 id="street-context-title">Street context needed</h2>
+      <p id="street-context-reason">Street frontage can affect legal front, side and rear classifications, required distances, and where a garden suite may be placed. If you’re unsure, you can continue—but checks that depend on street context will remain unresolved.</p>
+      <p>Your marks record your observations; they do not establish legal frontage.</p>
+      <div className="builder-street-dialog-actions">
+        <button type="button" onClick={() => { setStreetSkipTarget(null); openJourneyStep('streets'); }}>Mark streets</button>
+        <button type="button" onClick={() => { const target = streetSkipTarget; toggleStreet(null); setStreetSkipTarget(null); if (target) openJourneyStep(target, true); }}>I’m not sure—continue</button>
+        <button type="button" onClick={() => { const target = streetSkipTarget; setStreetDecisionFor(geometryRevision); setStreetMarks({ revision: geometryRevision, data: { edge_ids: [], all_marked: true, completion_method: 'explicit_confirmation', origin: 'user' } }); setReadyFor(null); setStreetSkipTarget(null); if (target) openJourneyStep(target, true); }}>No edges border a street</button>
+      </div>
+    </dialog>
     <dialog ref={entryDialog} onCancel={() => { setPendingEntry(null); requestAnimationFrame(() => document.getElementById('builder-model-choice')?.focus()) }} aria-labelledby="example-replace-title">
       <h2 id="example-replace-title">Open the example assessment?</h2>
       <p>This replaces your selected model, property, placement and property review answers with Model 300 on a saved Victoria property. Your general project preferences remain editable.</p>
