@@ -8,13 +8,14 @@ export type BuilderJourneyCompletion = Readonly<{
   streets?: boolean
   boundaries?: boolean
   details?: boolean
+  purpose?: boolean
   checks?: boolean
   handoff?: 'website' | 'email'
   email?: boolean
   current?: JourneyStep
   mapAvailable?: boolean
 }>
-export type JourneyStep = 'model' | 'property' | 'placement' | 'streets' | 'boundaries' | 'details' | 'checks' | 'enquiry' | 'email'
+export type JourneyStep = 'model' | 'property' | 'placement' | 'streets' | 'boundaries' | 'details' | 'purpose' | 'checks' | 'enquiry' | 'email'
 
 export const emptyBuilderJourneyCompletion: BuilderJourneyCompletion = {
   model: false,
@@ -32,6 +33,7 @@ const steps: readonly Step[] = [
   { key: 'streets', label: 'Street edges', anchor: 'placement-action-front' },
   { key: 'boundaries', label: 'Boundaries', anchor: 'placement-action-rear' },
   { key: 'details', label: 'Property details', anchor: 'builder-property-details' },
+  { key: 'purpose', label: 'Intended purpose', anchor: 'builder-purpose' },
   { key: 'checks', label: 'Quick checks', anchor: 'builder-quick-checks' },
   { key: 'enquiry', label: 'Prepare enquiry', anchor: 'builder-next' },
   { key: 'email', label: 'Contact provider', anchor: 'builder-email' },
@@ -51,7 +53,7 @@ export function BuilderJourneyNav({ completion }: { completion: BuilderJourneyCo
           <span className="builder-journey-label">{label}</span>
           <span className={`builder-journey-state${done ? ' is-complete' : ''}`}>
             {done && <span className="builder-journey-check" aria-hidden="true">✓</span>}
-            {unavailable ? 'Map unavailable' : done ? key === 'email' ? completion.handoff === 'website' ? 'Website requested' : 'Draft requested' : key === 'checks' || key === 'boundaries' || key === 'details' ? 'Reviewed' : 'Complete' : current ? 'Current step' : 'To do'}
+            {unavailable ? 'Map unavailable' : done ? key === 'email' ? completion.handoff === 'website' ? 'Website requested' : 'Draft requested' : key === 'checks' || key === 'boundaries' || key === 'details' || key === 'purpose' ? 'Reviewed' : 'Complete' : current ? 'Current step' : 'To do'}
           </span>
         </a>
       })}

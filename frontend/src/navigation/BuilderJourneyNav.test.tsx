@@ -8,7 +8,7 @@ test('completed workflow steps have a visible and accessible label; pending step
     ...emptyBuilderJourneyCompletion, model: true, placement: true,
   }} />)
   assert.match(html, /aria-label="Prefab model steps"/)
-  for (const anchor of ['model', 'property', 'placement', 'quick-checks', 'next', 'email']) {
+  for (const anchor of ['model', 'property', 'placement', 'purpose', 'quick-checks', 'next', 'email']) {
     assert.match(html, new RegExp(`href="#builder-${anchor}"`))
   }
   assert.match(html, /Model<\/span><span class="builder-journey-state is-complete"><span class="builder-journey-check" aria-hidden="true">✓<\/span>Complete<\/span>/)
@@ -28,5 +28,5 @@ test('a stale completion disappears when host state invalidates it', () => {
   }} />)
   assert.equal((complete.match(/>Complete<\/span>/g) ?? []).length, 4)
   assert.equal((edited.match(/>Complete<\/span>/g) ?? []).length, 2)
-  assert.equal((edited.match(/>To do<\/span>/g) ?? []).length, 7)
+  assert.equal((edited.match(/>To do<\/span>/g) ?? []).length, 8)
 })

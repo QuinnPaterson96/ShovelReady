@@ -103,3 +103,7 @@
 .main-building-preview figcaption { font-size: .85rem; color: var(--ink-muted); }
 .boundary-action-panel[data-mode="rear"] > .property-details-below-map { grid-row: 7; }
 .boundary-action-panel[data-mode="rear"] > .builder-map-summary { grid-row: 8; }
+
+.intended-purpose-below-map { grid-column: 1 / -1; order: 4; min-width: 0; }
+.boundary-action-panel[data-mode="rear"] > .intended-purpose-below-map { grid-row: 8; }
+.boundary-action-panel[data-mode="rear"] > .builder-map-summary { grid-row: 9; }
