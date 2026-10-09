@@ -1,3 +1,4 @@
+import { buildingClearanceMove } from './buildingMove'
 import { FloatingNext } from '../FloatingNext'
 import { findingAcknowledgementKey } from './journeyState'
 import { enquiryUseQualification, manufacturerDocument, placementConcerns, boundaryObservations, additionalObservation, conditionalObservation, assumptionsDescription, type EnquiryInput } from './manufacturer'
@@ -458,7 +459,12 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0 }: { p
   const evaluationInputKey = JSON.stringify([geometryPending, placementRevision, currentAssumptions, scenarioKey, requestKey, zoningKey, propertyScan.result, propertyScan.error, estimateBuffers, foundationAllowanceM, use])
   const displayResult = useRetainedResult({ scopeKey: geometryRevision ? JSON.stringify([geometryRevision, model.model_id, modelSnapshot(model)]) : null,
     inputKey: evaluationInputKey, current: computedSummary ? { summary: computedSummary, useQualification: enquiryUseQualification(use, pathway.proposed_use) } : null, pending: checksPending })
-  const summary = displayResult.result?.summary ?? null
+  const baseSummary = displayResult.result?.summary ?? null
+  const separation = currentScenario?.additional_checks?.find(check => check.id === 'separation')
+  const mainOutline = measurementResult?.site.site.buildings.find(building => building.id === currentAssumptions?.principal_building_id.value)
+  const buildingMove = separation?.status === 'conflict' && separation.unit === 'm' && !currentAssumptions?.measurements.principal_separation && mainOutline && measurementResult && separation.threshold !== null
+    ? buildingClearanceMove(mainOutline, measurementResult.result.input.placement, separation.threshold) : null
+  const summary = baseSummary && { ...baseSummary, checks: baseSummary.checks.map(check => check.label === 'Distance from the main building' && buildingMove ? { ...check, resolutions: [{ edgeId: 'main-building', moveM: buildingMove.distance, detail: `Try moving ${buildingMove.distance} m away from the selected main outline to clear its approximate ${separation!.threshold} m candidate comparison. This conservative suggestion may cross a boundary or approach another building; recheck all gaps. Rooflines and legal applicability remain unverified.` }] } : check) }
   const conflictKey = (check: import('../conditional_screening/HomeownerSummary').SummaryCheck) => findingAcknowledgementKey(check, { geometryRevision, measurement: measurementResult, assumptions: currentAssumptions, streets: streetAdjacency, settings: effectiveSettings, buffers: estimateBuffers, foundation: foundationAllowanceM, installedHeight: scoutingHeight?.key === additionalKey ? scoutingHeight.value : null, intendedUse: use, scan: propertyScan.result })
   const findings = summary ? summaryFindings(summary) : []
   useEffect(() => {
@@ -533,6 +539,12 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0 }: { p
   }
   function applyMove(edgeId: string, distance: number) {
     if (checksPending || buffersPending || !geometryRevision || !summary?.checks.some(check => check.resolutions?.some(item => item.edgeId === edgeId && item.moveM === distance))) return
+    if (edgeId === 'main-building' && buildingMove && distance === buildingMove.distance) {
+      setMoveSuggestion({ dx: buildingMove.dx, dy: buildingMove.dy, token: ++suggestionSequence.current, geometryRevision })
+      setReadyFor(null)
+      openJourneyStep('placement')
+      return
+    }
     const edge = currentAssumptions?.edges.find(edge => edge.id === edgeId)
     const edges = currentAssumptions?.edges ?? []
     if (!edge || !distance || edges.length !== 4) return
@@ -561,7 +573,19 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0 }: { p
     setAcknowledgedConflicts(previous => [...new Set([...previous, ...concerns.map(conflictKey)])])
     advanceJourneyStep(nextJourneyStep)
   }
-  const summaryPanel = summary && <><HomeownerSummary updating={displayResult.updating} useQualification={displayResult.result?.useQualification} onApplyBuffer={applyBuffer} onMove={applyMove} actionsDisabled={buffersPending || checksPending} acknowledged={includedFindings.map(check => check.label)} onAcknowledge={check => { if (checksPending) return; setAcknowledgedConflicts(previous => previous.includes(conflictKey(check)) ? previous.filter(key => key !== conflictKey(check)) : [...previous, conflictKey(check)]); setReadyFor(null) }} summary={summary} onNavigate={navigateFlag} continuation={{ ...continuation, onContinue: () => advanceJourneyStep(nextJourneyStep) }} />{journeyStep === 'checks' && <FloatingNext active sectionId="builder-quick-checks"><div className="homeowner-summary__continue"><p>{continuation.hint}</p><button className="builder-continue" type="button" disabled={buffersPending || checksPending} onClick={() => advanceJourneyStep(nextJourneyStep)}>Next: {continuation.label}<span aria-hidden="true"> →</span></button></div></FloatingNext>}</>
+  function acknowledgeFinding(check: import('../conditional_screening/HomeownerSummary').SummaryCheck) {
+    if (checksPending) return
+    const key = conflictKey(check)
+    const removing = acknowledgedConflicts.includes(key)
+    setAcknowledgedConflicts(previous => removing ? previous.filter(item => item !== key) : [...previous, key])
+    setReadyFor(null)
+    if (removing) return
+    const index = findings.findIndex(item => item.label === check.label)
+    const next = [...findings.slice(index + 1), ...findings.slice(0, index)].find(item =>
+      !['checked', 'probable'].includes(item.status) && !acknowledgedConflicts.includes(conflictKey(item)))
+    requestAnimationFrame(() => focusSummaryTarget(document, next?.targetId ?? 'builder-enquiry-title', 'start'))
+  }
+  const summaryPanel = summary && <><HomeownerSummary updating={displayResult.updating} useQualification={displayResult.result?.useQualification} onApplyBuffer={applyBuffer} onMove={applyMove} actionsDisabled={buffersPending || checksPending} acknowledged={includedFindings.map(check => check.label)} onAcknowledge={acknowledgeFinding} summary={summary} onNavigate={navigateFlag} continuation={{ ...continuation, onContinue: () => advanceJourneyStep(nextJourneyStep) }} />{journeyStep === 'checks' && <FloatingNext active sectionId="builder-quick-checks"><div className="homeowner-summary__continue"><p>{continuation.hint}</p><button className="builder-continue" type="button" disabled={buffersPending || checksPending} onClick={() => advanceJourneyStep(nextJourneyStep)}>Next: {continuation.label}<span aria-hidden="true"> →</span></button></div></FloatingNext>}</>
   const placementContinuation = summary && ['placement', 'streets', 'boundaries'].includes(journeyStep) && <div className="homeowner-summary__continue"><p className="placement-action-status">{buffersPending ? 'Save planning buffers before continuing' : journeyStep === 'streets' ? streetAdjacency.all_marked ? `${streetAdjacency.edge_ids.length} street${streetAdjacency.edge_ids.length === 1 ? '' : 's'} marked · saved` : 'Street context unknown · you can continue' : continuation.hint}</p><div className="step-action"><button className="builder-continue" type="button" disabled={buffersPending} onClick={() => advanceJourneyStep(nextJourneyStep)}>Next: {continuation.label}<span aria-hidden="true"> →</span></button><StepInfo label={continuation.label}>{continuation.hint} You can continue with open questions. Existing findings and unanswered questions remain in your enquiry.</StepInfo></div></div>
   function changeProperty() {
     if (mode === 'live') { siteEdited(); setLive(null); setPropertyReset(value => value + 1) }
@@ -583,7 +607,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0 }: { p
     if (step === 'boundaries') changeBoundaryMode('rear')
     if (step === 'placement' || step === 'details') setBoundaryMode('place')
     setExpanded({ property: step === 'property', placement: !['property', 'model', 'enquiry', 'email'].includes(step), next: step === 'enquiry', email: step === 'email' })
-    const targets: Record<JourneyStep, string> = { model: 'builder-title', property: 'sd-address', placement: 'placement-map', streets: 'placement-action-front', boundaries: 'placement-action-rear', details: 'builder-property-details', checks: 'builder-quick-checks', enquiry: 'builder-use', email: contextComplete ? 'builder-provider-website' : 'builder-contact-context' }
+    const targets: Record<JourneyStep, string> = { model: 'builder-title', property: 'sd-address', placement: 'placement-map', streets: 'placement-action-front', boundaries: 'placement-action-rear', details: 'builder-property-details', checks: 'builder-quick-checks', enquiry: 'builder-enquiry-title', email: contextComplete ? 'builder-provider-website' : 'builder-contact-context' }
     requestAnimationFrame(() => {
       focusSummaryTarget(document, step === 'details' ? 'building-type' : targets[step], 'start')
       if (step === 'checks') { const details = document.querySelector<HTMLDetailsElement>('.homeowner-summary__checks'); if (details) details.open = true }
@@ -722,8 +746,8 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0 }: { p
     <section className="builder-stage" id="builder-property" aria-labelledby="builder-property-title">
     <p className="eyebrow">Property</p><h2 id="builder-property-title">Where would you place the unit?</h2>
     <p>{propertyComplete ? (mode === 'example' ? 'Saved Victoria example selected.' : live ? live.address.label : `${manual?.facts.address || selection?.candidate?.address.value || selection?.manual.address.value || 'Site description'} · user-supplied; unverified.`) : 'Enter your address to find its approximate property outline.'}</p>
-    {(propertyComplete || mode !== 'live') && <button type="button" aria-expanded={expanded.property} aria-controls="builder-property-content" onClick={() => toggleStep('property')}>{expanded.property ? 'Collapse property' : 'Review or change property'}</button>}
-    <div id="builder-property-content" hidden={!expanded.property}>
+    {propertyComplete && <button type="button" aria-expanded={expanded.property} aria-controls="builder-property-content" onClick={() => toggleStep('property')}>{expanded.property ? 'Collapse property' : 'Review or change property'}</button>}
+    <div id="builder-property-content" hidden={propertyComplete && !expanded.property}>
     {mode === 'live' && <SiteDiscovery autoProceed resetKey={propertyReset} inspectKey={propertyInspect} onConfirm={next => { siteEdited(); setLive(next) }} onManual={() => changeMode('manual')} />}
     {mode === 'example' && <p>Example property—not your property. <button type="button" onClick={() => changeMode('live')}>Enter your address instead</button></p>}
     {mode === 'manual' && <button type="button" onClick={() => changeMode('live')}>Back to address search</button>}
