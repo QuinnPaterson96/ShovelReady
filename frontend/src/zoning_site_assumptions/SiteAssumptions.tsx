@@ -143,7 +143,7 @@ function Editor({ initialValue, detailsTargetId, detailsIntro, detailsSummary, d
       {detailsInputs}
     </details>
       {detailsIntro}
-      {onFactsNext && <FloatingNext active={detailsStep === true} sectionId="builder-property-details"><div className="homeowner-summary__continue"><p>Ready to review the findings? Unanswered questions can stay unknown.</p><div className="step-action"><button className="builder-continue" type="button" disabled={factsNextDisabled} onClick={() => { if (factsSection.current) factsSection.current.open = false; onFactsNext() }}>Next: Review quick checks<span aria-hidden="true"> →</span></button><StepInfo label="Review quick checks">Marks Property details reviewed and opens the current findings. Your answers remain editable and unknown answers stay unknown.</StepInfo></div>{factsNextDisabled && <p>Save your pending planning buffers before continuing.</p>}</div></FloatingNext>}
+      {onFactsNext && <FloatingNext active={detailsStep === true} sectionId="builder-property-details"><div className="homeowner-summary__continue"><p>Next, choose the intended purpose. Unanswered questions can stay unknown.</p><div className="step-action"><button className="builder-continue" type="button" disabled={factsNextDisabled} onClick={() => { if (factsSection.current) factsSection.current.open = false; onFactsNext() }}>Next: Intended purpose<span aria-hidden="true"> →</span></button><StepInfo label="Intended purpose">Marks Property details reviewed and opens Intended purpose. Your answers remain editable and unknown answers stay unknown.</StepInfo></div>{factsNextDisabled && <p>Save your pending planning buffers before continuing.</p>}</div></FloatingNext>}
 
     </fieldset>
     </details>

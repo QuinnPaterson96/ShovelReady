@@ -54,6 +54,7 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     await act(async () => { await new Promise(resolve => setTimeout(resolve, 550)) })
     await act(async () => { await new Promise(resolve => setTimeout(resolve, 450)) })
     assert.match(document.querySelector('#builder-quick-checks')!.textContent!, /Review this placement/)
+    assert.deepEqual(lastScroll, { id: 'builder-placement-title', options: { block: 'start', behavior: 'smooth' } }, 'automatic placement entry scrolls to its heading')
     const map = document.querySelector('#placement-map svg')!
     const summary = document.querySelector('#builder-quick-checks')!
     assert.ok(map.compareDocumentPosition(summary) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING)
@@ -115,7 +116,7 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     assert.equal(JSON.parse(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value).zoning_site_assumptions.street_adjacency.all_marked, false)
     await click('Next: Review property details →')
     assert.equal(document.activeElement?.id, 'building-type')
-    for (const id of ['builder-intended-use', 'building-type', 'principal-building', 'existing-suites', 'waterfront-lot']) {
+    for (const id of ['building-type', 'principal-building', 'existing-suites', 'waterfront-lot']) {
       assert.equal(document.getElementById(id)!.closest('[hidden]'), null, `${id} must not be hidden by a map-controls wrapper during property review`)
     }
     assert.deepEqual(lastScroll, { id: 'building-type', options: { block: 'start', behavior: 'smooth' } })
@@ -130,8 +131,10 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     assert.equal(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value, beforeDock, 'docking changes no answers or findings')
     assert.equal(document.querySelector<HTMLDetailsElement>('#builder-property-details > details')!.open, true)
     assert.equal(document.querySelector('.builder-placement-next'), null)
-    assert.equal(document.querySelector<HTMLSelectElement>('#builder-property-details #builder-intended-use')!.value, 'Garden suite')
+    assert.equal(document.querySelector<HTMLSelectElement>('#builder-purpose #builder-intended-use')!.value, 'Garden suite')
     assert.ok(document.getElementById('property-details-below-map')!.contains(document.getElementById('builder-property-details')))
+    assert.ok(document.getElementById('intended-purpose-below-map')!.contains(document.getElementById('builder-purpose')))
+    assert.equal(document.getElementById('builder-property-details')!.contains(document.getElementById('builder-intended-use')), false)
     assert.ok(map.compareDocumentPosition(document.getElementById('builder-property-details')!) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING)
     assert.ok(document.getElementById('waterfront-lot')!.compareDocumentPosition(document.getElementById('builder-intended-use')!) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING)
     assert.ok(document.querySelector('[aria-label="Choose the main building from captured outlines"] [role="button"]'))
@@ -147,7 +150,12 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     assert.equal(optionalMeasurements.open, true)
     assert.doesNotMatch(document.body.textContent!, /Complete the remaining checks/)
     assert.equal(document.getElementById('builder-property-details')!.hidden, false)
+    await click('Next: Intended purpose →')
+    assert.equal(document.activeElement?.id, 'builder-intended-use')
+    assert.equal(document.querySelector('.builder-journey-rail [aria-current="step"]')?.getAttribute('href'), '#builder-purpose')
+    assert.equal(document.getElementById('builder-purpose')!.compareDocumentPosition(summary) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING, dom.window.Node.DOCUMENT_POSITION_FOLLOWING)
     await click('Next: Review quick checks →')
+    assert.match(document.querySelector('.builder-journey-rail')!.textContent!, /Intended purpose.*Reviewed/s)
     assert.equal(document.activeElement?.id, 'builder-quick-checks')
     assert.equal(document.querySelector<HTMLDetailsElement>('#builder-property-details > details')!.open, false)
     assert.equal(document.querySelector<HTMLDetailsElement>('.homeowner-summary__checks')!.open, true)
@@ -613,6 +621,9 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
     assert.ok(JSON.parse(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value).open_questions_for_discussion.length > 0)
     await click('Change intended use'); await settle()
     assert.equal(document.activeElement?.id, 'builder-intended-use', 'dependent check opens and focuses the real use control')
+    await click('Next: Review quick checks →'); await settle()
+    assert.equal(document.querySelector<HTMLSelectElement>('#builder-intended-use')!.value, 'Not sure', 'purpose progression preserves explicit uncertainty')
+
 
 
   } finally {

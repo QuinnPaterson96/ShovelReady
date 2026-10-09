@@ -142,3 +142,6 @@
 .builder-preparation, .builder-drawing-export { margin: 1rem 0; padding: 1rem; border: 1px solid var(--border); border-radius: var(--radius-card); background: var(--surface); }
 .builder-export-preview { width: 100%; max-height: 520px; object-fit: contain; object-position: top; border: 1px solid var(--border); background: var(--surface); }
 .builder-demo .builder-example-layout > .builder-example-controls { order: 4; }
+
+/* Property details and purpose precede detailed findings in the map workspace. */
+.builder-demo .builder-map-summary { order: 5; }
