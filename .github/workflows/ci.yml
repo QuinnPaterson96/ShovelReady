@@ -131,7 +131,14 @@ jobs:
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
         run: |
           if [ -n "$DOCKERHUB_USERNAME" ] && [ -n "$DOCKERHUB_TOKEN" ]; then
-            printf '%s' "$DOCKERHUB_TOKEN" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
+            for attempt in 1 2 3; do
+              if printf '%s' "$DOCKERHUB_TOKEN" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin; then
+                break
+              fi
+              if [ "$attempt" -eq 3 ]; then exit 1; fi
+              echo "Docker Hub login failed; retrying (attempt $attempt of 3)."
+              sleep 10
+            done
           else
             echo 'Docker Hub credentials unavailable; using anonymous public pulls.'
           fi

@@ -275,7 +275,10 @@ PostgreSQL images in walkthrough PR #317, including one retry. The owner configu
 `DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` as repository Actions secrets, using a
 separate public-read-only Docker token without expiry at the owner's request.
 The PostgreSQL service uses registry credentials before job steps; container build
-uses password-stdin login and always logs out. Fork PRs receive no repository secrets
+uses password-stdin login and always logs out. Two consecutive CI attempts timed out
+at Docker Hub's token endpoint while authenticated PostgreSQL pulls and backend
+checks passed. Login now retries at most three times, ten seconds apart, and fails
+the job if all attempts fail. Fork PRs receive no repository secrets
 and retain anonymous public pulls; their rate limits can still block CI. No credentials
 are committed or included in builds. Actual authentication and completed application
 checks must be verified in final-head CI, separately from local frontend/browser checks.
