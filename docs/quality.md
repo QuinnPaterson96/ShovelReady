@@ -268,6 +268,14 @@ records crowded lower plan sources/footers as an export follow-up; the exact JSO
 Municipal success paths, source acceptance, broad accessibility and participant validation
 remain separate gaps. No deployment, source publication or external enquiry was performed.
 
+## Homepage verification — October 9, 2026
+
+[Homepage rework evidence](homepage-rework.md) records the homeowner-first copy,
+actual saved-example map asset and its licence/attribution, 177 passing frontend tests,
+build/type checks, desktop/mobile browser inspection, keyboard focus and protected
+resume/demo entry. Software and developer visual checks are separate from source
+acceptance and participant validation. Pilot contact, manufacturer image permission,
+session persistence and accepted real-evaluation gaps remain explicitly assigned there.
 ### CI image-pull registry
 
 Docker Hub first returned unauthenticated pull-limit errors in walkthrough PR #317.

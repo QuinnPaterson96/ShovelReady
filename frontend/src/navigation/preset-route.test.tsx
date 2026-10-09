@@ -41,7 +41,7 @@ test('one assessment supports fresh, demo and model links without history resets
     assert.ok(document.querySelector('dialog[open]') !== null, 'explicit replacement asks before changing existing work')
     assert.equal(document.querySelector<HTMLSelectElement>('#builder-model-choice')!.value, 'hewing-quadra4')
     await click('Keep current assessment')
-    await click('Home'); await click('Start assessment')
+    await click('Home'); await click('Check my property →')
     assert.equal(document.querySelector<HTMLSelectElement>('#builder-model-choice')!.value, 'hewing-quadra4', 'ordinary entry resumes the selected model')
     await act(async () => { dom.window.history.back(); await new Promise(resolve => setTimeout(resolve, 25)) })
     await act(async () => { dom.window.history.forward(); await new Promise(resolve => setTimeout(resolve, 25)) })
@@ -77,6 +77,11 @@ test('one assessment supports fresh, demo and model links without history resets
     assert.ok(document.querySelector('#sd-address'), 'old builder URL opens shared empty journey')
     await act(async () => { dom.window.history.replaceState(null, '', '#inputs'); root.render(createElement(App, { key: 'old-inputs' })) })
     assert.ok(document.querySelector('[aria-label="Input preparation steps"]'), 'research preparation tools remain reachable')
+    await act(async () => { dom.window.history.replaceState(null, '', '#home'); root.render(createElement(App, { key: 'homepage-walkthrough' })) })
+    await click('Watch the demo')
+    assert.ok(document.querySelector('[data-playback-controls]'), 'homepage secondary action starts the existing guided walkthrough')
+    assert.match(document.querySelector('.builder-hero')!.textContent!, /Example assessment/)
+    assert.equal(document.querySelector<HTMLSelectElement>('#builder-model-choice')!.value, 'aux-300')
 
   } finally {
     await act(async () => root.unmount())

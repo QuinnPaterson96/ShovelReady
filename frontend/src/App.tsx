@@ -11,7 +11,7 @@ import { BuilderJourneyNav, emptyBuilderJourneyCompletion } from './navigation/B
 import './navigation/builder-journey-nav.css'
 import './builder_demo/model_image/model-image.css'
 import { Brand } from './brand/Brand'
-import { PropertyIllustration } from './brand/PropertyIllustration'
+import Homepage from './assessment/Homepage'
 import { AssessmentForm, PreparationSummary } from './assessment/Assessment'
 import { draftReducer, initialDraft, submissionErrors } from './assessment/model'
 import './assessment/assessment.css'
@@ -137,15 +137,7 @@ export default function App() {
         </details>
       </header>
       <div ref={content} tabIndex={-1} className="sr-page-content">
-      {page === 'home' && <section className="sr-home sr-home-layout"><div>
-        <p className="eyebrow">From an idea to the next useful question</p>
-        <h1>Explore a prefab on your property.</h1>
-        <p>Choose a model, explore its placement and prepare a useful question for the provider.</p>
-        <p>Preliminary exploration, starting with City of Victoria properties. Source observations and planning comparisons are unreviewed; no accepted zoning or permit finding is made.</p>
-        <div className="sr-actions"><button className="sr-primary" onClick={openBuilder}>Start assessment</button><button onClick={() => openDemo()}>Try an example</button><button onClick={() => openDemo(true)}>Watch a walkthrough</button></div>
-        <p>The demo opens an Example assessment with aux box Model 300 and a saved Victoria property. You can change either.</p>
-        </div><PropertyIllustration />
-      </section>}
+      {page === 'home' && <Homepage onAssessment={openBuilder} onDemo={() => openDemo()} onWalkthrough={() => openDemo(true)} />}
       {builderOpened && <div hidden={page !== 'builder'} className="sr-workspace">
         <BuilderJourneyNav completion={builderCompletion} />
         <BuilderDemo visible={page === 'builder'} onProgressChange={setBuilderCompletion} entryRequest={entryRequest} />

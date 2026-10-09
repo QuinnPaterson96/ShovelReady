@@ -44,7 +44,7 @@ const settled = async () => { await page.waitForTimeout(150); await wait(async (
 const next = async () => { await wait(() => button('Next').isEnabled()); await click('Next') }
 try {
   await page.goto(frontend)
-  await click('Watch a walkthrough')
+  await click('Watch the demo')
   assert.match(await caption().textContent(), /Model 300/)
   await page.waitForTimeout(800)
   assert.match(await caption().textContent(), /Model 300/)
@@ -137,7 +137,7 @@ try {
   // Narrow keyboard journey with reduced motion: explicit Next, same real calculations.
   await page.setViewportSize({ width: 390, height: 844 })
   await page.goto(frontend + '/#home'); await page.reload()
-  await click('Watch a walkthrough'); await next(); await next(); await settled()
+  await click('Watch the demo'); await next(); await next(); await settled()
   await page.screenshot({ path: `${output}/mobile-initial.png` })
   const box = await page.locator('[data-playback-controls]').boundingBox()
   assert.ok(box.height < 230 && box.width <= 390)
@@ -150,7 +150,7 @@ try {
   assert.equal(await page.locator('#builder-use').evaluate(node => node === document.activeElement), true)
   // With normal motion, waiting longer than the old dwell cannot advance a step.
   await page.emulateMedia({ reducedMotion: 'no-preference' })
-  await page.goto(frontend + '/#home'); await page.reload(); await click('Watch a walkthrough')
+  await page.goto(frontend + '/#home'); await page.reload(); await click('Watch the demo')
   await page.waitForTimeout(7500)
   assert.match(await caption().textContent(), /Model 300/)
   for (let i = 0; i < 5; i++) await next()
@@ -172,7 +172,7 @@ try {
   assert.deepEqual(errors, [])
   const readOnlyPosts = ['/api/scouting-geometry/assess', '/api/conditional-screening/v1/evaluate', '/api/conditional-screening/v1/placement-scenarios', '/api/victoria-zoning/lookup', '/api/victoria-zoning/property-scan']
   assert.ok(requests.every(r => r.method === 'GET' || r.method === 'POST' && readOnlyPosts.includes(r.path)))
-  await page.goto(frontend + '/#home'); await page.reload(); await click('Watch a walkthrough')
+  await page.goto(frontend + '/#home'); await page.reload(); await click('Watch the demo')
   await page.getByRole('button', { name: 'Home', exact: true }).click()
   await page.waitForTimeout(100)
   await page.getByRole('button', { name: 'Start assessment', exact: true }).first().click()
