@@ -1,5 +1,17 @@
 # Architecture direction
 
+## Canonical homeowner journey - October 8, 2026
+
+One mounted assessment host owns the model, property, placement, comparisons and
+unsent enquiry/export state. Home and Start assessment replace the redundant
+model-selector and general-preparation primary destinations. An explicit homepage
+demo action passes a one-shot example/model entry payload to this host; history and
+ordinary entry resume it. Cold model links validate IDs against the existing
+catalogue. Presets do not introduce builder tenancy or model-specific calculations.
+The older input preparation remains a Research tool for custom design dimensions,
+scope, evidence requests and synthetic preparation examples; it does not produce
+homeowner placement assessments. See [integration evidence](integration-canonical-navigation.md).
+
 ## Homeowner journey state — October 7, 2026
 
 Navigation changes presentation only. Explicit answer edits invalidate relevant

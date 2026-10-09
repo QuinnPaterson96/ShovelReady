@@ -1,3 +1,4 @@
+import type { AssessmentEntry } from '../navigation/assessmentEntry'
 import { buildingClearanceMove } from './buildingMove'
 import { FloatingNext } from '../FloatingNext'
 import { findingAcknowledgementKey } from './journeyState'
@@ -155,7 +156,7 @@ export function enquiry(...args: Parameters<typeof enquiryDocument>) { return en
 export type BuilderProgress = import('../navigation/BuilderJourneyNav').BuilderJourneyCompletion
 type JourneyStep = import('../navigation/BuilderJourneyNav').JourneyStep
 
-export default function BuilderDemo({ onProgressChange, presetRequest = 0 }: { presetRequest?: number; onProgressChange?: (progress: BuilderProgress) => void } = {}) {
+export default function BuilderDemo({ onProgressChange, presetRequest = 0, entryRequest }: { entryRequest?: AssessmentEntry | null; presetRequest?: number; onProgressChange?: (progress: BuilderProgress) => void } = {}) {
   const [modelId, setModelId] = useState(defaultJourneyModel.model_id)
   const model = journeyCatalogue.models.find(item => item.model_id === modelId)!
   const MODEL_ID = model.model_id
@@ -232,14 +233,37 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0 }: { p
   function changeIntendedUse(value: string) { if (value !== use) setReviewedPurposeFor(null); setUse(value); setProjectSettings(previous => applyIntendedUse(previous, value)); setReadyFor(null) }
   function siteEdited() { setBufferSuggestion(undefined); setMoveSuggestion(undefined); setAcknowledgedConflicts([]); setSelection(null); setImported(false); setMeasurementResult(null); setSiteAssumptions(null); setProjectSettings(applyIntendedUse(modelProjectSettings(model), use)); setGeometryPending(false); setAccess(''); setServices(''); setProjectContext(previous => ({ ...previous, relationship: '', nextStep: '' })); setQuestion(`Could ${model.name} be suitable for this property?`); setWaterfrontMarks({ revision: null, ids: [] }); setDrawingExport(null); setStreetMarks({ revision: null, data: { edge_ids: [], all_marked: false, origin: 'user' } }); setRearEdge(null); setSelectedBoundary(null); setBoundaryMark(null); setMarkingRole(null); setBoundaryMode('place'); setReadyFor(null); setRevision(value => value + 1) }
   function changeMode(next: typeof mode) {
-    if (next !== 'example' && window.location.hash.startsWith('#examples/')) window.history.replaceState(null, '', '#builder')
+    if (next !== 'example' && window.location.hash.startsWith('#examples/')) window.history.replaceState(null, '', '#assessment')
     setExpanded({ property: next !== 'example', placement: next === 'example', next: false, email: false })
     setMode(next); siteEdited(); setLive(null); setManual(null)
     setDraft({ ...emptySiteInput, kind: 'address' })
     setDrawingExport(null)
     setReadyFor(null); setManualConfirmedFor(null); setIncludeSiteDetails(true); setEmailMessage('')
   }
-  useEffect(() => { if (presetRequest) { switchModel(defaultJourneyModel.model_id); changeMode('example'); setProjectSettings(applyIntendedUse(modelProjectSettings(defaultJourneyModel), use)); setQuestion(`Could ${defaultJourneyModel.name} be suitable for this property?`); setJourneyStep('placement') } }, [presetRequest])
+  const entryHandled = useRef(false)
+  const processedEntry = useRef<{ request: AssessmentEntry | null | undefined; legacy: number } | null>(null)
+  const [pendingEntry, setPendingEntry] = useState<AssessmentEntry | null>(null)
+  const entryDialog = useRef<HTMLDialogElement>(null)
+  function applyEntry(entry: AssessmentEntry) {
+    const next = journeyCatalogue.models.find(item => item.model_id === entry.modelId) ?? model
+    switchModel(next.model_id)
+    if (entry.example) {
+      changeMode('example')
+      setProjectSettings(applyIntendedUse(modelProjectSettings(next), use))
+      setQuestion(`Could ${next.name} be suitable for this property?`)
+      setJourneyStep('placement')
+    }
+  }
+  useEffect(() => {
+    if (processedEntry.current?.request === entryRequest && processedEntry.current?.legacy === presetRequest) return
+    processedEntry.current = { request: entryRequest, legacy: presetRequest }
+    const entry = entryRequest ?? (presetRequest ? { example: true, modelId: defaultJourneyModel.model_id } : null)
+    if (!entry) { entryHandled.current = true; return }
+    if (entry.example && (entryHandled.current || hasSite)) setPendingEntry(entry)
+    else applyEntry(entry)
+    entryHandled.current = true
+  }, [entryRequest, presetRequest])
+  useEffect(() => { if (pendingEntry) entryDialog.current?.showModal() }, [pendingEntry])
   function switchModel(nextId: string) {
     const next = journeyCatalogue.models.find(item => item.model_id === nextId)
     if (!next || nextId === modelId) return
@@ -724,10 +748,15 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0 }: { p
     finally { setExportBusy(false) }
   }
   return <div className="builder-demo">
+    <dialog ref={entryDialog} onCancel={() => { setPendingEntry(null); requestAnimationFrame(() => document.getElementById('builder-model-choice')?.focus()) }} aria-labelledby="example-replace-title">
+      <h2 id="example-replace-title">Open the example assessment?</h2>
+      <p>This replaces your selected model, property, placement and property review answers with Model 300 on a saved Victoria property. Your general project preferences remain editable.</p>
+      <div className="sr-actions"><button type="button" autoFocus onClick={() => { entryDialog.current?.close(); setPendingEntry(null); document.getElementById('builder-model-choice')?.focus() }}>Keep current assessment</button><button type="button" onClick={() => { if (pendingEntry) applyEntry(pendingEntry); entryDialog.current?.close(); setPendingEntry(null); document.getElementById('builder-model-choice')?.focus() }}>Load example assessment</button></div>
+    </dialog>
     <section className="builder-hero" id="builder-model" aria-labelledby="builder-title">
       <label htmlFor="builder-model-choice">Choose a model</label>
       <select id="builder-model-choice" value={modelId} onChange={event => switchModel(event.target.value)}>{journeyCatalogue.models.map(item => <option key={item.model_id} value={item.model_id}>{item.provider} · {item.name}</option>)}</select>
-      <p className="eyebrow">Independent sample journey · {model.provider}</p>
+      <p className="eyebrow">{mode === 'example' ? 'Example assessment' : 'Assessment'} · {model.provider}</p>
       <h1 id="builder-title">Explore {model.name} on your site</h1>
       <p>Explore a placement, review potential concerns, and prepare a question for the provider.</p>
       <p className="notice">Preliminary exploration · nothing is sent automatically.</p>

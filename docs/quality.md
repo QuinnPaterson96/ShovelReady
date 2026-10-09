@@ -244,3 +244,14 @@ The same follow-up reproduced a stale discovery callback restoring Model 300 use
 and foundation when another model was selected before property search. The existing
 host regression now covers that action order; SiteDiscovery calls the current host
 callback and fresh live-source selection retains explicit unknowns.
+
+## Canonical navigation verification - October 8, 2026
+
+See [integration evidence](integration-canonical-navigation.md) for the composed
+navigation/history/model/property journey checks and the retained changed-provider
+[local enquiry](navigation-simplification-enquiry.txt). These are developer/agent
+software and recipient-perspective inspections, not manufacturer validation or
+accepted source/legal review. Existing model-switch/export coverage protects stale
+provider details; navigation coverage now exercises the mounted App and assessment
+through explicit demo replacement, history, fresh and model-prefilled entry, legacy
+links and example-to-real invalidation. No enquiry was sent.
