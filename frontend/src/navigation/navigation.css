@@ -113,3 +113,13 @@
   .sr-site-header .sr-primary-nav button:last-child { grid-column: auto; }
   .sr-more-nav nav { right: 0; }
 }
+
+.builder-demo dialog {
+  width: min(32rem, calc(100vw - 2rem));
+  padding: 1.5rem;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-card);
+}
+.builder-demo dialog::backdrop { background: color-mix(in srgb, var(--ink) 40%, transparent); }

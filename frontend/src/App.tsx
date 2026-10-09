@@ -26,26 +26,49 @@ import './builder_demo/height_view/height-view.css'
 import './occupied_lots/occupied-lots.css'
 import './scenario_handoff/scenario-handoff.css'
 import './navigation/navigation.css'
+import { assessmentEntry, type AssessmentEntry } from './navigation/assessmentEntry'
 
 export default function App() {
-  const [page, setPage] = useState<'home' | 'builder' | 'examples' | 'inputs' | 'summary' | 'evidence' | 'pilot' | 'occupied'>(() => (window.location.hash === '#examples/model-300' || window.location.hash === '#builder') ? 'builder' : window.location.hash === '#examples' ? 'examples' : 'home')
-  const [presetRequest, setPresetRequest] = useState(() => window.location.hash === '#examples/model-300' ? 1 : 0)
+  type Page = 'home' | 'builder' | 'inputs' | 'summary' | 'evidence' | 'pilot' | 'occupied'
+  const initialEntry = useRef(assessmentEntry(window.location.hash))
+  const initialPage = (): Page => initialEntry.current ? 'builder' : window.location.hash === '#inputs' ? 'inputs' : 'home'
+  const [page, setPage] = useState<Page>(initialPage)
+  const [entryRequest, setEntryRequest] = useState<AssessmentEntry | null>(initialEntry.current)
   const [occupiedOpened, setOccupiedOpened] = useState(false)
   const [builderCompletion, setBuilderCompletion] = useState(emptyBuilderJourneyCompletion)
-  const [builderOpened, setBuilderOpened] = useState(() => window.location.hash === '#examples/model-300' || window.location.hash === '#builder')
-  const openHome = () => { window.location.hash = 'home'; setPage('home') }
-  const openExamples = () => { window.location.hash = 'examples'; setPage('examples') }
+  const [builderOpened, setBuilderOpened] = useState(() => !!initialEntry.current)
+  const builderVisited = useRef(!!initialEntry.current)
+  const navigate = (destination: Page, hash: string) => {
+    if (window.location.hash !== hash) window.history.pushState(null, '', hash)
+    setPage(destination)
+  }
+  const openHome = () => navigate('home', '#home')
+  const openBuilder = () => { builderVisited.current = true; setBuilderOpened(true); navigate('builder', '#assessment') }
+  const openDemo = () => {
+    builderVisited.current = true; setBuilderOpened(true)
+    setEntryRequest({ example: true, modelId: 'aux-300' })
+    navigate('builder', '#assessment')
+  }
   useEffect(() => {
-    const followPreset = () => {
-      if (window.location.hash === '#examples/model-300') { setBuilderOpened(true); setPresetRequest(value => value + 1); setPage('builder') }
-      else if (window.location.hash === '#examples') setPage('examples')
-      else if (window.location.hash === '#home') setPage('home')
+    const followRoute = () => {
+      const entry = assessmentEntry(window.location.hash)
+      if (entry) {
+        // History and step links reopen the mounted journey; only a new explicit
+        // entry (or cold URL load) initializes a preset.
+        if (!builderVisited.current) setEntryRequest(entry)
+        builderVisited.current = true; setBuilderOpened(true); setPage('builder')
+      } else if (['#inputs', '#summary', '#evidence', '#pilot', '#occupied'].includes(window.location.hash)) {
+        const destination = window.location.hash.slice(1) as Page
+        if (destination === 'occupied') setOccupiedOpened(true)
+        setPage(destination)
+      }
+      else if (window.location.hash === '#home' || window.location.hash === '#examples' || !window.location.hash) setPage('home')
     }
-    window.addEventListener('hashchange', followPreset)
-    return () => window.removeEventListener('hashchange', followPreset)
+    window.addEventListener('hashchange', followRoute)
+    window.addEventListener('popstate', followRoute)
+    return () => { window.removeEventListener('hashchange', followRoute); window.removeEventListener('popstate', followRoute) }
   }, [])
-  const openBuilder = () => { setBuilderOpened(true); setPage('builder') }
-  const openOccupied = () => { setOccupiedOpened(true); setPage('occupied') }
+  const openOccupied = () => { setOccupiedOpened(true); navigate('occupied', '#occupied') }
   const [draft, dispatch] = useReducer(draftReducer, initialDraft)
   const content = useRef<HTMLDivElement>(null)
   const researchMenu = useRef<HTMLDetailsElement>(null)
@@ -53,7 +76,7 @@ export default function App() {
   const openResearch = (destination: 'evidence' | 'pilot' | 'occupied') => {
     if (researchMenu.current) researchMenu.current.open = false
     if (destination === 'occupied') openOccupied()
-    else setPage(destination)
+    else navigate(destination, '#' + destination)
   }
   const [mode, setMode] = useState('real')
   const [health, setHealth] = useState('Checking backend…')
@@ -96,8 +119,7 @@ export default function App() {
         <button className="sr-home-brand" type="button" onClick={openHome} aria-label="ShovelReady home"><Brand /></button>
         <nav className="sr-nav sr-primary-nav" aria-label="Main navigation">
           <button aria-current={page === 'home' ? 'page' : undefined} onClick={openHome}>Home</button>
-          <button aria-current={page === 'builder' ? 'page' : undefined} onClick={openBuilder}>Prefab models</button>
-          <button aria-current={page === 'inputs' || page === 'summary' ? 'page' : undefined} onClick={() => setPage('inputs')}>General assessment</button>
+          <button aria-current={page === 'builder' ? 'page' : undefined} onClick={openBuilder}>Start assessment</button>
         </nav>
         <details className="sr-more-nav" ref={researchMenu} onKeyDown={event => {
           if (event.key === 'Escape' && researchMenu.current?.open) {
@@ -107,6 +129,7 @@ export default function App() {
         }}>
           <summary>Research <span aria-hidden="true">▾</span></summary>
           <nav aria-label="Research navigation">
+            <button aria-current={page === 'inputs' || page === 'summary' ? 'page' : undefined} onClick={() => navigate('inputs', '#inputs')}>Input preparation tools</button>
             <button aria-current={page === 'evidence' ? 'page' : undefined} onClick={() => openResearch('evidence')}>Examples and evidence</button>
             <button aria-current={page === 'pilot' ? 'page' : undefined} onClick={() => openResearch('pilot')}>Pilot investigation</button>
             <button aria-current={page === 'occupied' ? 'page' : undefined} onClick={() => openResearch('occupied')}>Occupied-lot sketch</button>
@@ -116,23 +139,20 @@ export default function App() {
       <div ref={content} tabIndex={-1} className="sr-page-content">
       {page === 'home' && <section className="sr-home sr-home-layout"><div>
         <p className="eyebrow">From an idea to the next useful question</p>
-        <h1>Prepare a design for source-backed investigation.</h1>
-        <p>Collect what you know about a building and its intended use. See which evidence is still needed before preliminary zoning scouting.</p>
-        <p>We are exploring City of Victoria garden suites first. There is no accepted zoning dataset or real-site fit result yet. A preparation summary is not a feasibility assessment or permit approval.</p>
-        <div className="sr-actions"><button className="sr-primary" onClick={openBuilder}>Explore prefab models</button><button onClick={() => setPage('inputs')}>Start a general assessment</button>
-          <button onClick={openOccupied}>Sketch a placement</button>
-          <button onClick={openExamples}>Explore examples</button></div>
-        <p>Begin with your own inputs, or explicitly load a clearly labelled example. Unknown facts can stay unknown.</p>
+        <h1>Explore a prefab on your property.</h1>
+        <p>Choose a model, explore its placement and prepare a useful question for the provider.</p>
+        <p>Preliminary exploration, starting with City of Victoria properties. Source observations and planning comparisons are unreviewed; no accepted zoning or permit finding is made.</p>
+        <div className="sr-actions"><button className="sr-primary" onClick={openBuilder}>Start assessment</button><button onClick={openDemo}>Try the demo</button></div>
+        <p>The demo opens an Example assessment with aux box Model 300 and a saved Victoria property. You can change either.</p>
         </div><PropertyIllustration />
       </section>}
-      {page === 'examples' && <section className="sr-home"><p className="eyebrow">Examples · approximate and unreviewed</p><h1>Explore an example placement</h1><p>Try the journey using a saved parcel and captured rooflines. This is an example property—not your property—and the placement is illustrative.</p><article className="builder-stage"><h2>Model 300 · saved Victoria example</h2><p>Explore the map, mark streets, review property details and prepare an unsent enquiry. Unanswered questions can stay unknown.</p><a className="builder-email-primary" href="#examples/model-300">Open Model 300 example →</a><p className="metadata">Opening this preset replaces the current property and its placement, street marks, measurements and review answers. Project preferences remain editable.</p></article><button onClick={() => setPage('evidence')}>Browse research examples and evidence</button></section>}
       {builderOpened && <div hidden={page !== 'builder'} className="sr-workspace">
         <BuilderJourneyNav completion={builderCompletion} />
-        <BuilderDemo onProgressChange={setBuilderCompletion} presetRequest={presetRequest} />
+        <BuilderDemo onProgressChange={setBuilderCompletion} entryRequest={entryRequest} />
       </div>}
       {(page === 'inputs' || page === 'summary') && <div className="sr-workspace">
-        <aside className="sr-workspace-rail"><nav aria-label="General assessment steps">
-          <p>General assessment</p>
+        <aside className="sr-workspace-rail"><nav aria-label="Input preparation steps">
+          <p>Input preparation</p>
           <button aria-current={page === 'inputs' ? 'step' : undefined} onClick={() => setPage('inputs')}>01 <span>Inputs</span></button>
           <button aria-current={page === 'summary' ? 'step' : undefined} disabled={!assessmentReady} onClick={() => setPage('summary')}>02 <span>Preparation summary</span></button>
           {!assessmentReady && <small>Complete required inputs to view the summary.</small>}

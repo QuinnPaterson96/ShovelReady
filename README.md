@@ -25,6 +25,13 @@ journey is implemented as a local demonstration; the history below records its s
 
 ## Status
 
+The homeowner entry is now **Home / Start assessment**, with **Try the demo** on
+Home. Both open the same model/property/placement/checks/enquiry journey. Model
+selection and specifications live inside it; the former Prefab models destination
+was the selector, not a separate browse catalogue. Research retains the older input
+preparation and evidence tools. See [navigation integration](docs/integration-canonical-navigation.md)
+for compatible links, state behavior, verification and remaining gates.
+
 The [boundary planning update](docs/integration-boundary-planning.md) adds an attributed
 main-outline default, separate waterfront marks, dismissible edge details and explicit
 1 m planning buffers with Likely fine / Needs review findings. The shared workspace
