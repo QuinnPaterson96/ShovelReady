@@ -143,6 +143,16 @@ export function homeownerSummary(input: {
       return { edgeId: check.edge_id, bufferM: ceiling, moveM: movement, detail: `${edge >= 0 ? `Edge ${edge + 1}` : 'Boundary'} · ${check.role === 'flanking_street' ? 'Flanking' : check.role}: mapped gap ${metres(check.distance_m)} − ${metres(buffer)} planning buffer = ${metres(check.planning_distance_m ?? Math.max(0, check.distance_m - buffer))}; candidate minimum ${metres(check.minimum_m)}. A measured wall-to-legal-line gap of at least ${metres(check.minimum_m)} would clear this distance check under the stated roles. Moving approximately ${metres(movement)} farther from this edge would clear its current buffered estimate; recheck every boundary and building gap after moving. A buffer of ${metres(ceiling)} or less clears this edge's estimate, but reducing it changes only your assumption. Exact evidence is available below.` }
     })
   }
+  if (settings.proposal.proposed_use === null) {
+    // One unanswered choice blocks this comparison packet; it is not seven
+    // independent coverage failures. Keep physical observations, street input,
+    // and property-source findings available while the use stays unknown.
+    const awaitingUse = new Set(['Distance to boundaries', 'Waterfront rules', 'Existing garden suite', 'Floor area', 'Distance from the main building', 'Height'])
+    if (!mappedOutside && !enteredOutside) awaitingUse.add('Zoning coverage')
+    for (let index = checks.length - 1; index >= 0; index--) {
+      if (awaitingUse.has(checks[index].label)) checks.splice(index, 1)
+    }
+  }
   const propertyParts = checks.filter(check => ['Other siting requirements', 'Site-specific approvals and other requirements', 'Mapped heritage and planning flags'].includes(check.label))
   const propertyIndex = checks.findIndex(check => propertyParts.includes(check))
   if (propertyIndex >= 0) {
@@ -151,8 +161,8 @@ export function homeownerSummary(input: {
   }
   const supportingChecks = checks.flatMap(check => check.parts ?? [check])
   const supportedConflict = screening?.checks.some(check => check.rule.kind !== 'prerequisite' && check.rule.kind !== 'boundary_min' && check.status === 'apparent_conflict_under_assumptions') ?? false
-  if (useOutside) checks.push({ label: 'Intended use', status: settings.proposal.proposed_use === null ? 'unknown' : 'unsupported',
-    detail: settings.proposal.proposed_use === null ? 'Intended use is unknown. Physical placement observations remain available; garden-suite planning comparisons cannot establish a result for an undecided use.' : 'This use is outside the garden-suite comparisons. Physical placement observations remain available; ask the provider about suitability and City staff about applicable planning rules.',
+  if (useOutside) checks.splice(1, 0, { label: 'Intended use', status: settings.proposal.proposed_use === null ? 'unknown' : 'unsupported',
+    detail: settings.proposal.proposed_use === null ? 'Intended use is unanswered or Not sure. Boundary, waterfront, suite-count, floor-area, main-building, yard and buffered-height comparisons are waiting for this choice. Physical placement observations remain available. Choose Garden suite if that is your intended use, or keep Not sure and carry this question into your enquiry.' : 'This use is outside the garden-suite comparisons. Physical placement observations remain available; ask the provider about suitability and City staff about applicable planning rules.',
     action: { label: 'Review intended use', target: 'builder-intended-use' },
     gap: { missing: 'An intended use and planning rules applicable to that use.', affects: 'A garden-suite comparison cannot establish suitability for an office or undecided project.', next: 'Choose the intended use or keep Not sure; ask the provider about product suitability and City staff about applicable rules.', owner: 'Homeowner / provider / City reviewer' } })
   const conflict = geometryConflict || !outsideScope && (legalDistanceConflict || scenario?.status === 'apparent_conflict' || countConflict || supportedConflict) || checks.some(check => check.status === 'conflict')

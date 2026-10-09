@@ -27,8 +27,8 @@ test('office and unknown uses cannot inherit a previous garden-suite pass or con
     const summary = homeownerSummary({ ...base, settings: applyIntendedUse(base.settings, answer), scenario, screening })
     assert.equal(summary.conclusion, 'Review this placement')
     assert.equal(summary.checks[0].status, 'checked', 'approximate physical observations remain available')
-    assert.equal(summary.checks.find(check => check.label === 'Distance to boundaries')?.status, 'unsupported')
-    assert.equal(summary.checks.find(check => check.label === 'Floor area')?.status, 'unsupported')
+    assert.equal(summary.checks.find(check => check.label === 'Distance to boundaries')?.status, answer === 'Not sure' ? undefined : 'unsupported')
+    assert.equal(summary.checks.find(check => check.label === 'Floor area')?.status, answer === 'Not sure' ? undefined : 'unsupported')
     assert.equal(summary.checks.find(check => check.label === 'Intended use')?.status, answer === 'Not sure' ? 'unknown' : 'unsupported')
   }
 })
@@ -201,4 +201,17 @@ test('Cecelia incomplete street action does not discard the buffered height and 
   const corrupt = structuredClone(scenario)
   corrupt.additional_checks![0].action_target = 'unsupported-action'
   assert.throws(() => parseScenarioResult(corrupt), /malformed/, 'unknown actions still fail contract validation')
+})
+
+test('unanswered Cecelia use has one actionable prerequisite; choosing garden suite restores buffered comparisons', () => {
+  const retained = JSON.parse(readFileSync('src/conditional_screening/cecelia-incomplete-streets.fixture.json', 'utf8'))
+  const scenario = parseScenarioResult(retained.response, retained.request)
+  const pending = homeownerSummary({ ...base, scenario, settings: applyIntendedUse(base.settings, '') })
+  assert.equal(pending.checks.find(row => row.label === 'Intended use')?.action?.target, 'builder-intended-use')
+  assert.match(pending.checks.find(row => row.label === 'Intended use')!.detail, /buffered-height.*waiting.*Not sure/)
+  assert.ok(!pending.checks.some(row => ['Height', 'Floor area', 'Distance from the main building'].includes(row.label)))
+  const chosen = homeownerSummary({ ...base, scenario, settings: applyIntendedUse(base.settings, 'Garden suite') })
+  assert.equal(chosen.checks.find(row => row.label === 'Height')?.status, 'probable')
+  assert.equal(chosen.checks.find(row => row.label === 'Floor area')?.status, 'probable')
+  assert.equal(chosen.checks.find(row => row.label === 'Distance from the main building')?.status, 'conflict')
 })
