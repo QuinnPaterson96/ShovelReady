@@ -268,17 +268,29 @@ records crowded lower plan sources/footers as an export follow-up; the exact JSO
 Municipal success paths, source acceptance, broad accessibility and participant validation
 remain separate gaps. No deployment, source publication or external enquiry was performed.
 
-### CI image-pull authentication
+### CI image-pull registry
 
-Docker Hub returned unauthenticated pull-limit errors for the public Node and
-PostgreSQL images in walkthrough PR #317, including one retry. The owner configured
-`DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` as repository Actions secrets, using a
-separate public-read-only Docker token without expiry at the owner's request.
-The PostgreSQL service uses registry credentials before job steps; container build
-uses password-stdin login and always logs out. Two consecutive CI attempts timed out
-at Docker Hub's token endpoint while authenticated PostgreSQL pulls and backend
-checks passed. Login now retries at most three times, ten seconds apart, and fails
-the job if all attempts fail. Fork PRs receive no repository secrets
-and retain anonymous public pulls; their rate limits can still block CI. No credentials
-are committed or included in builds. Actual authentication and completed application
-checks must be verified in final-head CI, separately from local frontend/browser checks.
+Docker Hub first returned unauthenticated pull-limit errors in walkthrough PR #317.
+Authenticated PostgreSQL pulls and backend checks subsequently passed, but container
+pulls repeatedly received token-endpoint timeouts/HTTP 504, even with bounded login
+retries. The owner requested switching to Docker's official images on ECR Public.
+The Dockerfile now pulls Node/Python and CI pulls PostgreSQL from
+`public.ecr.aws/docker/library/`, without login or AWS credentials. Docker Hub login,
+logout and service credentials were removed; the repository secrets and Docker tokens
+remain provisioned but unused by this workflow. No credentials are committed or
+included in builds. Forks use the same anonymous public registry.
+
+On October 9, anonymous registry API reads independently fetched manifest bytes from
+Docker Hub and ECR Public. SHA-256 index digests and Linux AMD64 child digests matched
+for all three exact tags. Index digests at that verification:
+
+| Image tag | Matching index digest |
+|---|---|
+| `node:22.14.0-bookworm-slim` | `sha256:1c18d9ab3af4585870b92e4dbc5cac5a0dc77dd13df1a5905cea89fc720eb05b` |
+| `python:3.12-slim-bookworm` | `sha256:34386ef0cb081344d7ec1c103ba398e6e9f64e9ab3a1509accc92a4e24a07258` |
+| `postgres:17` | `sha256:2d2b8998d31037bf721cfdf764d76ba74171b4fab3431b7f72c27c56ddbdf9e3` |
+
+Tags retain their existing update behavior and are not digest-pinned. Matching
+manifests establish image equivalence at this check; full final-head CI must separately
+verify pulls, disposable database checks, build and container application behavior.
+Railway build/startup verification remains pending until deployment.
