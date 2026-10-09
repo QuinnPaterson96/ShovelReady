@@ -42,6 +42,10 @@ Implemented on `origin/main` d7fe466 (guided walkthrough #316 and canonical navi
 | Real homeowner/provider comprehension untested | Visual/software checks do not demonstrate usefulness or conversion | Owner arranges homeowner/provider walkthroughs after reviewing this PR. |
 | Assessment session persistence remains limited | Reload may lose work; the homepage promises resume only in the open session | Existing journey owner decides persistence requirements separately. |
 | Controlled site/model inputs, source applicability review and accepted publication remain outstanding | This demonstration cannot supply an accepted real feasibility/permit finding | Source/review owners complete existing acceptance gates; no homepage claim closes them. |
-| Concurrent walkthrough #317 | Its new controls are separate; both PRs touch the browser script | Integrator retains the four Watch the demo locator updates when combining #317; rerun the combined entry check. No BuilderDemo/navigation/CSS changes from #317 are duplicated here. |
+| Walkthrough #317 integrated | Current main controls and the homepage labels are combined | Resolved script/quality conflicts, retaining Next/Back controls and Watch the demo locators; combined build and entry tests verified before merge. |
 
 The other open homeowner property/results/export PRs do not overlap homepage code. Root checkout's unrelated edits were preserved. No merge, deployment, source publication, outreach or production write was performed.
+
+## Integration update
+
+Current main 8a098e3 (#317) was merged into this branch on October 9. The shared script retains the new Next/Back walkthrough and homepage locators; quality records from both changes are preserved. The inherited CI/container registry fix is from main. Combined frontend build and behavioral checks are rerun for this final integration.
