@@ -168,8 +168,10 @@
 /* One playback control area replaces docking; map controls remain in flow. */
 .builder-playback { position: sticky; top: .5rem; z-index: 51; padding: .65rem; border: 1px solid var(--border-strong); border-radius: var(--radius-card); background: var(--surface); }
 .builder-playback p { margin: 0 0 .4rem; font-size: .95rem; }
-.builder-playback .sr-actions { gap: .4rem; }
-.builder-playback button { min-height: 44px; }
+.builder-playback .sr-actions { gap: .4rem; margin: 0; }
+.builder-playback-progress { display: block; color: var(--ink-muted); font-size: .85rem; margin-bottom: .25rem; }
+.builder-playback .builder-continue { margin: 0; }
+.builder-demo .builder-playback button { min-height: 44px; margin: 0; padding: .45rem .8rem; font-size: 1rem; }
 .builder-demo[data-playback] :is(#builder-title, #builder-property-title, #placement-map, #builder-quick-checks, #builder-enquiry-title) { scroll-margin-top: 12rem; }
 .floating-next--docked :is(.step-action > p, .homeowner-summary__continue > p, .builder-enquiry-confirm > p, .builder-enquiry-confirm > h3) { display: none; }
 .floating-next--docked .builder-continue { width: 100%; margin: 0; }

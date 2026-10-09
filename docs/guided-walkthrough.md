@@ -1,7 +1,7 @@
 # Guided example walkthrough
 
-Implemented against `origin/main` at
-`1dcc50d815005f9aa57e9ce9abaab17cb7294168` on October 9, 2026.
+Initially implemented on October 9, 2026; explicit Next/Back navigation replaces
+timed playback against merged baseline `d7fe466c18914bc2d2cc65601b20340d8b09b1db`.
 This is an editable preliminary demonstration, not accepted site evaluation.
 
 Home offers Start assessment, Try an example and Watch a walkthrough. The latter
@@ -17,17 +17,19 @@ and real local geometry API. The moved centre is `(473693.7, 5362202.36)` in
 EPSG:3157; dimensions and orientation come from the existing example/catalogue.
 The review supplied this movement for this parcel, not for arbitrary geometry.
 No stored response or timer declares success. Placement/current revision readiness
-gates progression; failures pause at the current workspace with retry/takeover.
+gates Next; failures remain at the current workspace with retry/takeover.
 
-The normal narration budget is 55 seconds plus measurement waits. Pause cancels
-advancement and Resume starts the current phase's narration interval again. Skip
-applies the moved input, awaits current checks, supplies related example answers
-together and opens the unsent enquiry. Reduced motion has static captions, instant
-changes and explicit Next/Skip. Completion retains Let me try. No playback action
+One floating panel shows the current explanation, Step 1–5, Back and Next. There
+are no dwell timers or Pause/Resume controls, including with normal motion. Back
+restores the initial placement when revisiting the before/after comparison and
+awaits its new measurement. Next waits for current checks. Skip applies the moved
+input, awaits current checks, supplies related example answers together and stops
+at the findings; Next then opens the unsent enquiry. All transitions use one
+instant scroll after their target renders. Completion retains Back and Let me try. No playback action
 copies, downloads, confirms readiness, opens a provider or sends a message.
 
 Editing, model/property changes, navigation and unmount cancel pending playback.
-Pointer-down invalidates timers without shifting the layout under a click or drag;
+Pointer-down invalidates pending skip advancement without shifting the layout under a click or drag;
 the interaction completes before the caption area is removed. Existing request
 version/abort checks reject old measurements. Playback owns scrolling and suppresses
 both existing docking paths; manual docks now show a compact action. A queued resize
@@ -85,18 +87,19 @@ Final local results: 177 frontend tests passed; TypeScript/Vite build passed;
 48 focused geometry/conditional tests passed; focused Ruff and `git diff --check`
 passed. No database tests were run locally because no isolated PostgreSQL was
 configured. Vite retains its existing large-chunk advisory; FastAPI testing reports
-the existing httpx deprecation. Final normal playback completed in 56.806 seconds.
+the existing httpx deprecation. The original timed version completed in 56.806
+seconds; explicit navigation has no duration target.
 Final-head GitHub CI is a separate integration check.
 
-Observed browser run: pause/resume before advancement and during an in-flight
-measurement; incomplete geometry response; skip and replay with keep/replace; failure and retry; model switch
+Observed browser run: Next/Back with restored initial geometry; disabled Next during an in-flight
+measurement; incomplete geometry response; skip to findings and replay with keep/replace; failure and retry; model switch
 with a late response; property correction/manual fallback; 390 × 844 keyboard
-takeover and reduced motion; navigation exit; normal timed playback; unsent output
+takeover and reduced motion; navigation exit; a normal-motion hold longer than the former dwell without advancement; unsent output
 and exact source evidence. The geometry reproduced about 0.7 m² outside and 1.6 m²
 roof overlap initially, then containment/no observed overlap with about 2.08 m to
 the mapped boundary and 5.08 m to the roofline. These are reproduction observations,
 not copied numerical oracles or legal setbacks. See `browser-results.json` for the
-actual final run duration and unrounded checks.
+actual navigation checks and unrounded measurements.
 
 PDF recipient inspection used Poppler page rendering: the main enquiry carries
 the request, example identity, synthetic-answer attribution, product questions and

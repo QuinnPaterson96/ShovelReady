@@ -455,7 +455,9 @@ No new service, database schema or accepted-data publication is introduced.
 
 The existing assessment owns example initialization and a small typed frontend playback
 controller. It calls the existing journey/placement actions and waits for current API
-results; there is no alternate evaluator or tour service. Demo-supplied intended-use
+results. Explicit Next/Back replaces dwell timers; each placement visit has a fresh
+command identity, so Back restores the comparison and rejects stale responses.
+There is no alternate evaluator or tour service. Demo-supplied intended-use
 attribution passes through the existing conditional boundary separately from defaults
 and observations. No persistence, migration or publication changes. See
 [verification and integration gaps](guided-walkthrough.md).

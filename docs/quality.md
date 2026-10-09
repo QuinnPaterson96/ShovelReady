@@ -261,7 +261,36 @@ links and example-to-real invalidation. No enquiry was sent.
 [The walkthrough record](guided-walkthrough.md) separates mounted behavioral coverage,
 real local API/browser reproduction, source readiness and human validation. It includes
 390 × 844 keyboard/reduced-motion checks, delayed/failed responses and obsolete-response
-takeover. Recipient inspection of an explicitly saved PDF verifies demo attribution but
+takeover. Explicit Next/Back checks restore the before-placement geometry, hold a
+normal-motion step past its former dwell, gate Next on current measurements and
+stop Skip at findings. Recipient inspection of an explicitly saved PDF verifies demo attribution but
 records crowded lower plan sources/footers as an export follow-up; the exact JSON remains complete.
 Municipal success paths, source acceptance, broad accessibility and participant validation
 remain separate gaps. No deployment, source publication or external enquiry was performed.
+
+### CI image-pull registry
+
+Docker Hub first returned unauthenticated pull-limit errors in walkthrough PR #317.
+Authenticated PostgreSQL pulls and backend checks subsequently passed, but container
+pulls repeatedly received token-endpoint timeouts/HTTP 504, even with bounded login
+retries. The owner requested switching to Docker's official images on ECR Public.
+The Dockerfile now pulls Node/Python and CI pulls PostgreSQL from
+`public.ecr.aws/docker/library/`, without login or AWS credentials. Docker Hub login,
+logout and service credentials were removed; the repository secrets and Docker tokens
+remain provisioned but unused by this workflow. No credentials are committed or
+included in builds. Forks use the same anonymous public registry.
+
+On October 9, anonymous registry API reads independently fetched manifest bytes from
+Docker Hub and ECR Public. SHA-256 index digests and Linux AMD64 child digests matched
+for all three exact tags. Index digests at that verification:
+
+| Image tag | Matching index digest |
+|---|---|
+| `node:22.14.0-bookworm-slim` | `sha256:1c18d9ab3af4585870b92e4dbc5cac5a0dc77dd13df1a5905cea89fc720eb05b` |
+| `python:3.12-slim-bookworm` | `sha256:34386ef0cb081344d7ec1c103ba398e6e9f64e9ab3a1509accc92a4e24a07258` |
+| `postgres:17` | `sha256:2d2b8998d31037bf721cfdf764d76ba74171b4fab3431b7f72c27c56ddbdf9e3` |
+
+Tags retain their existing update behavior and are not digest-pinned. Matching
+manifests establish image equivalence at this check; full final-head CI must separately
+verify pulls, disposable database checks, build and container application behavior.
+Railway build/startup verification remains pending until deployment.
