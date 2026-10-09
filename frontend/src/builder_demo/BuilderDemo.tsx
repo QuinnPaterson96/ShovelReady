@@ -616,6 +616,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0 }: { p
     const targets: Record<JourneyStep, string> = { model: 'builder-title', property: 'sd-address', placement: 'builder-placement-title', streets: 'placement-action-front', boundaries: 'placement-action-rear', details: 'builder-property-details', purpose: 'builder-intended-use', checks: 'builder-quick-checks', enquiry: 'builder-enquiry-title', email: contextComplete ? 'builder-provider-website' : 'builder-contact-context' }
     requestAnimationFrame(() => {
       focusSummaryTarget(document, step === 'details' ? 'building-type' : targets[step], 'start')
+      if (step === 'purpose') document.getElementById('builder-purpose')?.scrollIntoView({ block: 'center', behavior: 'smooth' })
       if (step === 'checks') { const details = document.querySelector<HTMLDetailsElement>('.homeowner-summary__checks'); if (details) details.open = true }
     })
   }
@@ -625,7 +626,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0 }: { p
     if (propertyFact || target === 'placement-map') setBoundaryMode('place')
     if (target === 'boundary-roles' || target === 'boundary-offsets') { changeBoundaryMode('rear'); setBoundaryEditorOverride(true) }
     if (target === 'street-side') { changeBoundaryMode('front'); target = 'placement-action-front' }
-    if (target === 'builder-intended-use') { openJourneyStep('purpose'); requestAnimationFrame(() => focusSummaryTarget(document, target, 'start')); return }
+    if (target === 'builder-intended-use') { openJourneyStep('purpose'); return }
     if (target === 'zoning-retry') { setZoningRetry(value => value + 1); return }
     if (target === 'retry-scenario') { setScenarioRetry(value => value + 1); return }
     if (target === 'retry-screening') { setConditionalRetry(value => value + 1); return }
@@ -728,9 +729,10 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0 }: { p
       <select id="builder-model-choice" value={modelId} onChange={event => switchModel(event.target.value)}>{journeyCatalogue.models.map(item => <option key={item.model_id} value={item.model_id}>{item.provider} · {item.name}</option>)}</select>
       <p className="eyebrow">Independent sample journey · {model.provider}</p>
       <h1 id="builder-title">Explore {model.name} on your site</h1>
-      <p>Start with a site lead or the facts you know. Find a Victoria property, or sketch your own approximate lot, then test one placement and take away an unsent enquiry.</p>
-      <p className="notice">See whether {model.name} looks plausible enough to discuss with {model.provider}. This independent example prepares an enquiry; nothing is sent automatically.</p>
+      <p>Explore a placement, review potential concerns, and prepare a question for the provider.</p>
+      <p className="notice">Preliminary exploration · nothing is sent automatically.</p>
       <p><strong>{model.name}</strong> · {original('nominal_exterior_width')} × {original('nominal_exterior_depth')} · advertised height {original('advertised_overall_height')}. Provider dimensions are unreviewed.</p>
+      <details className="builder-model-overview"><summary>About {model.name} · photos, price and specifications</summary>
       <ModelImage model={model} />
       <PriceTiming model={model} />
       {model.model_id === 'wcch-ch-studio' && <p className="notice">Observational footprint comparison only. Permanent dwelling suitability is unconfirmed; ask West Coast Container Homes about this exact configuration before pursuing residential use.</p>}
@@ -745,12 +747,13 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0 }: { p
       <p className="metadata">{model.footprint_note} {model.height_note} {model.service_area_note}</p>
       <TechnicalDetails title="Catalogue source and exact model record"><pre>{JSON.stringify({ snapshot_id: modelSnapshot(model), model }, null, 2)}</pre></TechnicalDetails>
       </details>
+      </details>
     </section>
 
     {checksPending && <p role="status">Updating checks. {summary ? 'Previous findings are shown for reference; ' : ''}copy and save will use the updated results when ready.</p>}
     <EnquiryRecovery enquiry={!checksPending && (expanded.next || enquiryReady) ? draftText : null} report={reportDoc ? enquiryPlainText(reportDoc) : null} technicalEvidence={JSON.stringify(technicalEvidence, null, 2)} />
     <section className="builder-stage" id="builder-property" aria-labelledby="builder-property-title">
-    <p className="eyebrow">Property</p><h2 id="builder-property-title">Where would you place the unit?</h2>
+    <p className="eyebrow">Property</p><h2 id="builder-property-title">Could this fit on your property?</h2>
     <p>{propertyComplete ? (mode === 'example' ? 'Saved Victoria example selected.' : live ? live.address.label : `${manual?.facts.address || selection?.candidate?.address.value || selection?.manual.address.value || 'Site description'} · user-supplied; unverified.`) : 'Enter your address to find its approximate property outline.'}</p>
     {propertyComplete && <button type="button" aria-expanded={expanded.property} aria-controls="builder-property-content" onClick={() => toggleStep('property')}>{expanded.property ? 'Collapse property' : 'Review or change property'}</button>}
     <div id="builder-property-content" hidden={propertyComplete && !expanded.property}>
@@ -763,8 +766,9 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0 }: { p
       {mode === 'manual' && hasSite && <button type="button" onClick={() => setManualConfirmedFor(manualSignature)} disabled={propertyComplete}>Confirm my site description</button>}
     </div>
     </section>
+    {!propertyComplete && <p className="builder-journey-preview">Find property → Place unit → Review → Contact provider</p>}
     {propertyComplete && live && !expanded.property ? <SelectedProperty value={live} onChangeProperty={changeProperty} onInspectAlternatives={() => { setPropertyInspect(value => value + 1); setExpanded(previous => ({ ...previous, property: true })); setJourneyStep('property'); requestAnimationFrame(() => focusSummaryTarget(document, 'sd-parcels')); }} /> : propertyComplete && !live && <div className="builder-selected-property"><strong>Property: {mode === 'example' ? 'Saved Victoria example · not your property' : manual?.facts.address || 'User-supplied site'}</strong><span>Approximate and unreviewed</span><button type="button" onClick={changeProperty}>Wrong property? Change</button></div>}
-    <section className="builder-stage" id="builder-placement" aria-labelledby="builder-placement-title">
+    <section hidden={!propertyComplete} className="builder-stage" id="builder-placement" aria-labelledby="builder-placement-title">
       <p className="eyebrow">Placement</p><h2 id="builder-placement-title">Explore one approximate placement</h2>
       <p>{propertyComplete ? zoningCase ? 'Place the unit and see what is worth exploring.' : placementSummary : 'Choose a property to explore placement.'}</p>
       <button type="button" aria-expanded={expanded.placement && propertyComplete} aria-controls="builder-placement-content" disabled={!propertyComplete} onClick={() => toggleStep('placement')}>{expanded.placement ? 'Collapse placement' : 'Explore placement'}</button>
@@ -802,7 +806,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0 }: { p
       </div>
       {propertyComplete && <button className="builder-continue" type="button" onClick={() => openJourneyStep('enquiry')}>Prepare enquiry{placementComplete ? '' : ' with placement unknown'}</button>}
     </section>
-    <section className="builder-stage builder-enquiry" id="builder-next" aria-labelledby="builder-enquiry-title">
+    <section hidden={!propertyComplete} className="builder-stage builder-enquiry" id="builder-next" aria-labelledby="builder-enquiry-title">
       <p className="eyebrow">Take away · local draft</p><h2 id="builder-enquiry-title">Prepare a useful question</h2>
       <p>Review your enquiry, then copy it into the provider’s website form or use an email contact you already have. Nothing is sent automatically.</p>
       {enquiryReady && !expanded.next && <p role="status">Enquiry confirmed. You can edit it again; no message has been sent.</p>}

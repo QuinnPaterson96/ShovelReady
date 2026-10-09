@@ -152,6 +152,7 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     assert.equal(document.getElementById('builder-property-details')!.hidden, false)
     await click('Next: Intended purpose →')
     assert.equal(document.activeElement?.id, 'builder-intended-use')
+    assert.deepEqual(lastScroll, { id: 'builder-purpose', options: { block: 'center', behavior: 'smooth' } }, 'center the full purpose card, retaining focus on its control')
     assert.equal(document.querySelector('.builder-journey-rail [aria-current="step"]')?.getAttribute('href'), '#builder-purpose')
     assert.equal(document.getElementById('builder-purpose')!.compareDocumentPosition(summary) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING, dom.window.Node.DOCUMENT_POSITION_FOLLOWING)
     await click('Next: Review quick checks →')

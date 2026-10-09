@@ -44,7 +44,12 @@ export function BuilderJourneyNav({ completion }: { completion: BuilderJourneyCo
   return <aside className="sr-workspace-rail builder-journey-rail">
     <nav aria-label="Prefab model steps">
       <p>Prefab model journey</p>
-      {steps.map(({ key, label, anchor }, index) => {
+      {!completion.property && <div className="builder-entry-stages">
+        <a href="#builder-property" aria-current="step">1 · Find property</a>
+        <span>2 · Place unit</span><span>3 · Review</span><span>4 · Contact provider</span>
+        <a href="#builder-model">Change model</a>
+      </div>}
+      {completion.property && steps.map(({ key, label, anchor }, index) => {
         const done = completion[key]
         const current = completion.current === key
         const unavailable = completion.mapAvailable === false && (key === 'streets' || key === 'boundaries' || key === 'checks' || key === 'details')

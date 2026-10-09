@@ -31,7 +31,9 @@ const questions = { intendedUse: 'family accommodation', timing: '', budget: '',
 test('Model 300 entry uses an explicit unreviewed catalogue choices and optional examples', () => {
   const html = renderToStaticMarkup(createElement(BuilderDemo))
   assert.match(html, /Model 300/)
-  assert.match(html, /Start with a site lead or the facts you know/)
+  assert.match(html, /Explore a placement, review potential concerns/)
+  assert.match(html, /<section hidden="" class="builder-stage" id="builder-placement"/)
+  assert.match(html, /<section hidden="" class="builder-stage builder-enquiry" id="builder-next"/)
   assert.match(html, /Model 240/); assert.match(html, /Quadra 4/); assert.match(html, /C.H. Studio Pod/); assert.doesNotMatch(html, /The Landing|Yarrow/)
   assert.doesNotMatch(html, /Import a separate retained example for placement/)
   assert.doesNotMatch(html, /Try an example property|Use my own property|builder-site-mode/)
