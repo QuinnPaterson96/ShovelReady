@@ -42,6 +42,9 @@ test('direct example URL opens a labelled preset; page navigation preserves it a
     assert.ok(document.querySelector('.manual-site'), 'manual fallback remains reachable')
     await click('Back to address search')
     assert.ok(document.querySelector('#sd-address'))
+    await act(async () => { document.querySelector<HTMLAnchorElement>('a[href="#builder-model"]')!.click(); await new Promise(resolve => setTimeout(resolve, 20)) })
+    assert.equal(document.querySelector('#sd-address')!.closest('[hidden]'), null, 'navigation cannot hide empty address entry')
+    assert.ok(![...document.querySelectorAll('button')].some(node => ['Collapse property', 'Review or change property'].includes(node.textContent ?? '')), 'empty location has no collapse toggle')
   } finally {
     await act(async () => root.unmount())
     for (const [name, descriptor] of originals) { if (descriptor) Object.defineProperty(globalThis, name, descriptor); else Reflect.deleteProperty(globalThis, name) }
