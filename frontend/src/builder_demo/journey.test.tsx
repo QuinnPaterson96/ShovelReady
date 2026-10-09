@@ -153,6 +153,12 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     assert.equal(document.querySelector<HTMLDetailsElement>('.homeowner-summary__checks')!.open, true)
     assert.match(document.querySelector('.builder-journey-rail')!.textContent!, /Boundaries✓Reviewed/)
     assert.match(document.querySelector('.builder-journey-rail')!.textContent!, /Property details✓Reviewed/)
+    // Boundary edits above may still be debouncing; wait for the user-visible
+    // action to become enabled rather than clicking through pending checks.
+    for (let attempt = 0; button('Next: Prepare enquiry →').disabled && attempt < 20; attempt++) {
+      await act(async () => { await new Promise(resolve => setTimeout(resolve, 100)) })
+    }
+    assert.equal(button('Next: Prepare enquiry →').disabled, false)
     await click('Next: Prepare enquiry →')
     assert.equal(document.activeElement?.id, 'builder-enquiry-title')
     assert.equal(document.getElementById('builder-enquiry-content')!.hidden, false)
@@ -596,10 +602,18 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
     assert.equal(unknownEvidence.enquiry_inputs.intendedUse, 'Not sure')
     assert.equal(unknownEvidence.planning_comparison_scope.garden_suite_comparisons_applied, false)
     assert.match(document.querySelector('#builder-quick-checks')!.textContent!, /Intended use/)
-    assert.doesNotMatch(document.querySelector('#builder-quick-checks')!.textContent!, /Height · Not covered|Move .* away from the main building|Floor area · Not covered/, 'unknown use shows its prerequisite rather than inactive comparisons')
+    assert.doesNotMatch(document.querySelector('#builder-quick-checks')!.textContent!, /Height · Not covered|Move .* away from the main building|Floor area · Not covered/, 'unknown use keeps dependent checks unresolved and withholds inactive move actions')
     assert.doesNotMatch(recipientText(), /planning comparisons use a garden-suite scenario/)
     assert.match(recipientText(), /intended use is (?:not yet confirmed|unconfirmed)/i)
     assert.doesNotMatch(document.querySelector('[aria-label="Supporting screening report"]')!.textContent!, /Height.*Likely fine|Rear-yard occupancy.*Likely fine/s)
+    const dependentRow = [...document.querySelectorAll<HTMLLIElement>('#builder-quick-checks li')].find(row => row.textContent?.includes('Recognize and include in enquiry'))!
+    await click('Recognize and include in enquiry'); await settle()
+    assert.ok(dependentRow.textContent?.includes('Missing information'), 'recognition does not resolve the use-dependent check')
+    assert.equal(document.querySelector<HTMLSelectElement>('#builder-intended-use')!.value, 'Not sure', 'recognition cannot supply an intended use')
+    assert.ok(JSON.parse(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value).open_questions_for_discussion.length > 0)
+    await click('Change intended use'); await settle()
+    assert.equal(document.activeElement?.id, 'builder-intended-use', 'dependent check opens and focuses the real use control')
+
 
   } finally {
     await act(async () => root.unmount())
