@@ -267,3 +267,15 @@ stop Skip at findings. Recipient inspection of an explicitly saved PDF verifies 
 records crowded lower plan sources/footers as an export follow-up; the exact JSON remains complete.
 Municipal success paths, source acceptance, broad accessibility and participant validation
 remain separate gaps. No deployment, source publication or external enquiry was performed.
+
+### CI image-pull authentication
+
+Docker Hub returned unauthenticated pull-limit errors for the public Node and
+PostgreSQL images in walkthrough PR #317, including one retry. The owner configured
+`DOCKERHUB_USERNAME` and `DOCKERHUB_TOKEN` as repository Actions secrets, using a
+separate public-read-only Docker token without expiry at the owner's request.
+The PostgreSQL service uses registry credentials before job steps; container build
+uses password-stdin login and always logs out. Fork PRs receive no repository secrets
+and retain anonymous public pulls; their rate limits can still block CI. No credentials
+are committed or included in builds. Actual authentication and completed application
+checks must be verified in final-head CI, separately from local frontend/browser checks.

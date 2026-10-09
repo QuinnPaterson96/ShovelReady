@@ -15,6 +15,9 @@ jobs:
     services:
       postgres:
         image: postgres:17
+        credentials:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
         env:
           POSTGRES_USER: fixture
           POSTGRES_PASSWORD: disposable-ci-only
@@ -122,6 +125,16 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Authenticate Docker Hub public image pulls
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          if [ -n "$DOCKERHUB_USERNAME" ] && [ -n "$DOCKERHUB_TOKEN" ]; then
+            printf '%s' "$DOCKERHUB_TOKEN" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
+          else
+            echo 'Docker Hub credentials unavailable; using anonymous public pulls.'
+          fi
       - run: docker build -t shovelready:ci .
       - name: Verify container serves health, frontend and public-case metadata
         run: |
@@ -166,3 +179,6 @@ jobs:
           assert result['coverage']['not_applicable'] == 0
           assert result['coverage']['needs_information'] > 0
           PY
+      - name: Clear Docker Hub credentials
+        if: always()
+        run: docker logout
