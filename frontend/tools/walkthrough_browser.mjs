@@ -10,7 +10,7 @@ const output = process.env.WALKTHROUGH_OUTPUT ?? '../docs/walkthrough-verificati
 await mkdir(output, { recursive: true })
 const browser = await chromium.launch({ headless: true, ...(process.env.WALKTHROUGH_BROWSER ? { channel: process.env.WALKTHROUGH_BROWSER } : {}) })
 const errors = [], requests = [], results = []
-let hold = false, fail = false, release, heldStarted, verifyingExport = false
+let hold = false, fail = false, partial = false, release, heldStarted, verifyingExport = false
 const context = await browser.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: 'reduce' })
 const page = await context.newPage()
 page.on('pageerror', error => errors.push(error.message))
@@ -29,6 +29,7 @@ await page.route('**/*', async route => {
   // Unknown external discovery routes are not needed for this saved example.
   if (!['/health', '/api/scouting-geometry/assess', '/api/conditional-screening/v1/evaluate', '/api/conditional-screening/v1/placement-scenarios'].includes(url.pathname)) return route.fulfill({ status: 503, body: 'offline boundary' })
   const response = await context.request.fetch(api + url.pathname, { method: request.method(), data: request.postData(), headers: { 'Content-Type': 'application/json' } })
+  if (partial && url.pathname === '/api/scouting-geometry/assess' && response.ok()) { const body = await response.json(); body.checks = body.checks.filter(check => check.kind !== 'building_overlap'); return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(body) }) }
   await route.fulfill({ response })
 })
 const button = text => page.getByRole('button', { name: text, exact: true })
@@ -84,6 +85,9 @@ try {
   e = await evidence()
   assert.equal(e.demo_answer_provenance.relationship, undefined)
   assert.equal(e.demo_answer_provenance.intendedUse.origin, 'demo_supplied')
+  await page.locator('#builder-model-choice').selectOption('hewing-quadra4')
+  await settled()
+  assert.equal((await evidence()).project_settings.evidence.proposed_use.origin, 'demo_supplied', 'changing the model does not turn an unchanged example answer into user input')
   // Replay requires explicit replacement; keep-current preserves the edited text.
   await click('Replay walkthrough'); await click('Keep current assessment')
   assert.equal(await page.locator('#builder-relationship').inputValue(), 'I am helping the owner')
@@ -107,6 +111,11 @@ try {
   assert.equal(await button('Resume').isVisible(), true); fail = false; await page.getByText('More placement controls', { exact: true }).click(); await click('Retry placement check'); await settled()
   assert.equal(await page.locator('[data-playback-controls]').count(), 0, 'retry is a takeover')
   console.log('Failure recovery complete')
+  // An incomplete response cannot turn absence of overlap rows into a success caption.
+  await click('Replay walkthrough'); await click('Load example assessment')
+  partial = true; await next(); await next(); await settled(); await next(); await settled(); await next(); await settled()
+  assert.match(await caption().textContent(), /Inspect the current placement findings/)
+  partial = false; await click('Let me try')
   // Obsolete response after model switch cannot replace the new model or its dimensions.
   await click('Replay walkthrough'); await click('Load example assessment')
   hold = true
@@ -147,6 +156,10 @@ try {
   await (await download).saveAs(`${output}/example-enquiry.pdf`)
   await writeFile(`${output}/example-enquiry.txt`, await page.locator('#builder-enquiry-text').inputValue())
   await writeFile(`${output}/example-evidence.json`, JSON.stringify(await evidence(), null, 2))
+  await click('Wrong property? Change')
+  await click('Can’t find your address? Enter details manually')
+  await page.locator('#manual-address').fill('My own property description')
+  assert.equal(await page.locator('#builder-intended-use').inputValue(), '', 'a property correction clears the example intention instead of claiming it as user input')
   assert.deepEqual(errors, [])
   const readOnlyPosts = ['/api/scouting-geometry/assess', '/api/conditional-screening/v1/evaluate', '/api/conditional-screening/v1/placement-scenarios', '/api/victoria-zoning/lookup', '/api/victoria-zoning/property-scan']
   assert.ok(requests.every(r => r.method === 'GET' || r.method === 'POST' && readOnlyPosts.includes(r.path)))

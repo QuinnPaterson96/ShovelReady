@@ -36,6 +36,8 @@ callback after unmount was reproduced in the browser and now checks its element.
 Garden suite, unknown street context, example relationship and requested response
 have `demo_supplied` attribution in technical evidence and a grouped readable note
 in enquiries/reports. Individual edits remove that answer's demo attribution.
+Changing models preserves attribution for an unchanged example intention; changing
+properties clears that example intention so it cannot become a claimed user answer.
 The garden-suite scenario origin survives the existing HTTP boundary/evaluator;
 demo origins cannot assert zoning, title or other favourable legal facts. Existing
 journey defaults and municipal observations keep their separate origins. Main-home
@@ -83,11 +85,11 @@ Final local results: 177 frontend tests passed; TypeScript/Vite build passed;
 48 focused geometry/conditional tests passed; focused Ruff and `git diff --check`
 passed. No database tests were run locally because no isolated PostgreSQL was
 configured. Vite retains its existing large-chunk advisory; FastAPI testing reports
-the existing httpx deprecation. Final normal playback completed in 56.821 seconds.
+the existing httpx deprecation. Final normal playback completed in 56.806 seconds.
 Final-head GitHub CI is a separate integration check.
 
 Observed browser run: pause/resume before advancement and during an in-flight
-measurement; skip and replay with keep/replace; failure and retry; model switch
+measurement; incomplete geometry response; skip and replay with keep/replace; failure and retry; model switch
 with a late response; property correction/manual fallback; 390 × 844 keyboard
 takeover and reduced motion; navigation exit; normal timed playback; unsent output
 and exact source evidence. The geometry reproduced about 0.7 m² outside and 1.6 m²
