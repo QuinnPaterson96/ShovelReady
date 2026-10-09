@@ -145,3 +145,11 @@
 
 /* Property details and purpose precede detailed findings in the map workspace. */
 .builder-demo .builder-map-summary { order: 5; }
+
+/* Reveal the detailed workspace after property selection. */
+.builder-demo > section[hidden] { display: none; }
+.builder-demo .builder-model-overview { margin-top: .75rem; }
+.builder-demo #builder-property #sd-address { min-height: 48px; padding: .65rem .75rem; box-sizing: border-box; font: inherit; }
+.builder-journey-preview { color: var(--ink-muted); text-align: center; font-size: .9rem; }
+.builder-entry-stages { display: grid; gap: .75rem; }
+.builder-entry-stages > span { padding: .5rem; color: var(--ink-muted); }
