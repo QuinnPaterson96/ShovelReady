@@ -255,3 +255,13 @@ accepted source/legal review. Existing model-switch/export coverage protects sta
 provider details; navigation coverage now exercises the mounted App and assessment
 through explicit demo replacement, history, fresh and model-prefilled entry, legacy
 links and example-to-real invalidation. No enquiry was sent.
+
+## Guided walkthrough verification — October 9, 2026
+
+[The walkthrough record](guided-walkthrough.md) separates mounted behavioral coverage,
+real local API/browser reproduction, source readiness and human validation. It includes
+390 × 844 keyboard/reduced-motion checks, delayed/failed responses and obsolete-response
+takeover. Recipient inspection of an explicitly saved PDF verifies demo attribution but
+records crowded lower plan sources/footers as an export follow-up; the exact JSON remains complete.
+Municipal success paths, source acceptance, broad accessibility and participant validation
+remain separate gaps. No deployment, source publication or external enquiry was performed.

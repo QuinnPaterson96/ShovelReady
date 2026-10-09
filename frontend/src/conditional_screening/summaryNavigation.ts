@@ -10,7 +10,7 @@ export function focusSummaryTarget(document: Document, target: string, block: Sc
     parent = parent.parentElement
   }
   if (!control.matches('input, select, textarea, button, a[href], [tabindex]')) control.setAttribute('tabindex', '-1')
-  control.scrollIntoView?.({ block, behavior: 'smooth' })
+  control.scrollIntoView?.({ block, behavior: document.defaultView?.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
   control.focus({ preventScroll: true })
   return true
 }

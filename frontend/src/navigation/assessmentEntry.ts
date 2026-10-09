@@ -2,7 +2,7 @@ import { journeyCatalogue } from '../model_catalogue/demo'
 
 // Small, validated entry payload shared by direct links and explicit actions.
 // No builder tenancy, independent assessment state or calculation path.
-export type AssessmentEntry = { example?: boolean; modelId?: string }
+export type AssessmentEntry = { example?: boolean; walkthrough?: boolean; modelId?: string }
 export function assessmentEntry(hash: string): AssessmentEntry | null {
   if (hash === '#examples/model-300') return { example: true, modelId: 'aux-300' }
   if (hash === '#builder' || hash.startsWith('#builder-') || hash.startsWith('#placement-action-')) return {}

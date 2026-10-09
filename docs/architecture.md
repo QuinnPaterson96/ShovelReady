@@ -450,3 +450,12 @@ control acknowledgement, readiness and copy/export eligibility. Late asynchronou
 responses cannot replace a newer input. Recipient PDF, editable Markdown, sender
 checklist and technical evidence are separate projections of one current snapshot.
 No new service, database schema or accepted-data publication is introduced.
+
+## Bounded walkthrough checkpoint — October 9, 2026
+
+The existing assessment owns example initialization and a small typed frontend playback
+controller. It calls the existing journey/placement actions and waits for current API
+results; there is no alternate evaluator or tour service. Demo-supplied intended-use
+attribution passes through the existing conditional boundary separately from defaults
+and observations. No persistence, migration or publication changes. See
+[verification and integration gaps](guided-walkthrough.md).

@@ -206,7 +206,8 @@ class Proposal(Strict):
 class SettingEvidence(Strict):
     value: str | bool | None
     origin: Literal[
-        "journey_default", "user", "user_confirmed", "municipal_lookup", "derived", "unknown"
+        "journey_default", "demo_supplied", "user", "user_confirmed", "municipal_lookup",
+        "derived", "unknown"
     ]
     source: Source | None = None
     note: str | None = Field(default=None, max_length=1000)
@@ -240,6 +241,8 @@ class ProposalEvidence(Strict):
                 "proposed_use", "foundation_attached"
             ):
                 raise ValueError("this setting cannot acquire a favourable default")
+            if item.origin == "demo_supplied" and name != "proposed_use":
+                raise ValueError("demo answers may only supply the intended-use scenario")
             if item.origin == "municipal_lookup" and name not in (
                 "confirmed_zone", "confirmed_instrument"
             ):
@@ -291,7 +294,8 @@ def _source(packet: dict, rule: dict) -> Source:
 
 def _fact(name: str, value: bool | None, note: str | None = None,
           evidence: SettingEvidence | None = None) -> Fact:
-    origins = {"journey_default": "journey_default", "user": "user_assumption",
+    origins = {"demo_supplied": "demo_supplied", "journey_default": "journey_default",
+               "user": "user_assumption",
                "user_confirmed": "user_confirmed", "municipal_lookup": "municipal_observation",
                "derived": "derived_assumption",
                "unknown": "user_assumption"}

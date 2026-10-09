@@ -164,3 +164,27 @@
 .builder-street-dialog { max-width: min(36rem, calc(100vw - 2rem)); box-sizing: border-box; padding: 1.25rem; color: var(--ink); background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--radius-card); }
 .builder-street-dialog::backdrop { background: color-mix(in srgb, var(--ink) 35%, transparent); }
 .builder-street-dialog-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+
+/* One playback control area replaces docking; map controls remain in flow. */
+.builder-playback { position: sticky; top: .5rem; z-index: 51; padding: .65rem; border: 1px solid var(--border-strong); border-radius: var(--radius-card); background: var(--surface); }
+.builder-playback p { margin: 0 0 .4rem; font-size: .95rem; }
+.builder-playback .sr-actions { gap: .4rem; }
+.builder-playback button { min-height: 44px; }
+.builder-demo[data-playback] :is(#builder-title, #builder-property-title, #placement-map, #builder-quick-checks, #builder-enquiry-title) { scroll-margin-top: 12rem; }
+.floating-next--docked :is(.step-action > p, .homeowner-summary__continue > p, .builder-enquiry-confirm > p, .builder-enquiry-confirm > h3) { display: none; }
+.floating-next--docked .builder-continue { width: 100%; margin: 0; }
+.floating-next--docked .step-action { width: 100%; }
+@media (max-width: 760px) {
+  .builder-playback .sr-actions { display: grid; grid-template-columns: 1fr 1fr; }
+  .builder-playback button { padding: .4rem; }
+  .builder-demo[data-playback] :is(#placement-map, #builder-quick-checks, #builder-enquiry-title) { scroll-margin-top: 15rem; }
+}
+
+.builder-placement-next--floating > .homeowner-summary__continue > p { display: none; }
+.builder-placement-next--floating .builder-continue { width: 100%; margin: 0; }
+
+.builder-demo[data-playback] #placement-map svg.occupied-map { scroll-margin-top: 10rem; height: min(58vh, 500px); min-height: 280px; }
+@media (max-width: 760px) { .builder-demo[data-playback] #placement-map svg.occupied-map { scroll-margin-top: 14rem; height: 360px; min-height: 0; } }
+
+.builder-demo[data-playback] #builder-unsent-preview { scroll-margin-top: 12rem; }
+@media (max-width: 760px) { .builder-demo[data-playback] #builder-unsent-preview { scroll-margin-top: 15rem; } }

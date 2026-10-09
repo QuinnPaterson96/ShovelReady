@@ -44,9 +44,9 @@ export default function App() {
   }
   const openHome = () => navigate('home', '#home')
   const openBuilder = () => { builderVisited.current = true; setBuilderOpened(true); navigate('builder', '#assessment') }
-  const openDemo = () => {
+  const openDemo = (walkthrough = false) => {
     builderVisited.current = true; setBuilderOpened(true)
-    setEntryRequest({ example: true, modelId: 'aux-300' })
+    setEntryRequest({ example: true, modelId: 'aux-300', walkthrough })
     navigate('builder', '#assessment')
   }
   useEffect(() => {
@@ -142,13 +142,13 @@ export default function App() {
         <h1>Explore a prefab on your property.</h1>
         <p>Choose a model, explore its placement and prepare a useful question for the provider.</p>
         <p>Preliminary exploration, starting with City of Victoria properties. Source observations and planning comparisons are unreviewed; no accepted zoning or permit finding is made.</p>
-        <div className="sr-actions"><button className="sr-primary" onClick={openBuilder}>Start assessment</button><button onClick={openDemo}>Try the demo</button></div>
+        <div className="sr-actions"><button className="sr-primary" onClick={openBuilder}>Start assessment</button><button onClick={() => openDemo()}>Try an example</button><button onClick={() => openDemo(true)}>Watch a walkthrough</button></div>
         <p>The demo opens an Example assessment with aux box Model 300 and a saved Victoria property. You can change either.</p>
         </div><PropertyIllustration />
       </section>}
       {builderOpened && <div hidden={page !== 'builder'} className="sr-workspace">
         <BuilderJourneyNav completion={builderCompletion} />
-        <BuilderDemo onProgressChange={setBuilderCompletion} entryRequest={entryRequest} />
+        <BuilderDemo visible={page === 'builder'} onProgressChange={setBuilderCompletion} entryRequest={entryRequest} />
       </div>}
       {(page === 'inputs' || page === 'summary') && <div className="sr-workspace">
         <aside className="sr-workspace-rail"><nav aria-label="Input preparation steps">

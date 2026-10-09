@@ -1,6 +1,6 @@
 import type { Pathway } from './model'
 
-export type SettingOrigin = 'journey_default' | 'user' | 'user_confirmed' | 'municipal_lookup' | 'derived' | 'unknown'
+export type SettingOrigin = 'journey_default' | 'demo_supplied' | 'user' | 'user_confirmed' | 'municipal_lookup' | 'derived' | 'unknown'
 export type MunicipalSource = { provider: string; record_label: string; url: string; capture_date: string | null; review_status: string; locator: string; source_revision?: string | null; currentness_limitations?: string[] }
 export type SettingEvidence = { value: string | boolean | null; origin: SettingOrigin; source: MunicipalSource | null; note: string | null }
 export type ProposalEvidence = { [K in keyof Pathway]: SettingEvidence }
