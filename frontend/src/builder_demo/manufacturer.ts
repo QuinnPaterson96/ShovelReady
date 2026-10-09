@@ -12,7 +12,7 @@ import { defaultJourneyModel } from '../model_catalogue/demo'
 import type { CatalogueModel } from '../model_catalogue/model'
 
 export type EnquiryInput = {
-  question?: string; propertyConcern?: string; intendedUse: string; timing: string; budget: string; access: string; services: string
+  demoAnswers?: Partial<Record<'intendedUse' | 'relationship' | 'nextStep' | 'streetContext', string>>; question?: string; propertyConcern?: string; intendedUse: string; timing: string; budget: string; access: string; services: string
   relationship?: string; stage?: string; configuration?: string; nextStep?: string; contact?: string
 }
 
@@ -51,7 +51,7 @@ export function assumptionsDescription(input: EnquiryInput, assumptions: SiteAss
   const use = settings?.evidence.proposed_use
   const foundation = settings?.evidence.foundation_attached
   return [`Intended use: ${input.intendedUse.trim() || 'not supplied'}.`,
-    `Screening use: ${pathway?.proposed_use === 'garden_suite' ? 'garden suite' : pathway?.proposed_use === 'other' ? 'other use' : 'not supplied'} (${use?.origin === 'user_confirmed' ? 'confirmed by the user for this scenario, unverified' : use?.origin === 'journey_default' ? 'default scenario, not confirmed intended use' : 'scenario assumption, unverified'}).`,
+    `Screening use: ${pathway?.proposed_use === 'garden_suite' ? 'garden suite' : pathway?.proposed_use === 'other' ? 'other use' : 'not supplied'} (${use?.origin === 'demo_supplied' ? 'demo-supplied scenario, not a property fact' : use?.origin === 'user_confirmed' ? 'confirmed by the user for this scenario, unverified' : use?.origin === 'journey_default' ? 'default scenario, not confirmed intended use' : 'scenario assumption, unverified'}).`,
     `Foundation attachment: ${pathway?.foundation_attached === null || pathway?.foundation_attached === undefined ? 'not supplied' : pathway.foundation_attached ? 'attached to a permanent foundation scenario' : 'not attached to a permanent foundation scenario'} (${foundation?.origin === 'journey_default' ? 'default assumption, unconfirmed' : foundation?.origin === 'user_confirmed' ? 'user-confirmed scenario, unverified' : 'unverified assumption'}).`,
     ...(assumptions ? [
       `Main-building type: ${assumptions.building_type.value === null ? 'not supplied' : { single_detached: 'single-family detached home', duplex: 'duplex', other: 'other' }[assumptions.building_type.value]} (user answer, unverified).`,

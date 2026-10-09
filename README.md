@@ -300,3 +300,9 @@ provenance and uncertainty handling. These features do not publish accepted data
 The prefab demonstration now also offers Model 240, C.H. Studio Pod and Quadra 4.
 These are unreviewed observations, not accepted product/site evaluations.
 See [the model mapping, local demo and remaining evidence gaps](docs/prefab-generalization.md).
+
+## Guided example walkthrough
+
+Home now offers Try an example and Watch a walkthrough beside Start assessment.
+Both use the same Model 300 / saved Victoria assessment; playback ends at an editable
+unsent enquiry. See [implementation, verification and remaining gaps](docs/guided-walkthrough.md).

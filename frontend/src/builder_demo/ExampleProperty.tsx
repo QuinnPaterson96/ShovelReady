@@ -18,7 +18,7 @@ const roofSource = exampleCase.site.buildings[0]?.source
 const show = (value: number | null, dimension: 'length' | 'area') => measurementWithUnit(value, dimension)
 
 
-export function ExampleProperty({ model = defaultJourneyModel, onMeasurement, onAssessmentPending, boundaryInteraction, placementSummary, placementContinuation, evidenceTargetId, moveSuggestion, placementConcerns, showPlacementConcerns = true, onContinueUnresolved }: { model?: CatalogueModel; onAssessmentPending?: (pending: boolean) => void; placementConcerns?: ReactNode; showPlacementConcerns?: boolean; onContinueUnresolved?: () => void; onMeasurement: (value: OccupiedMeasurement | null) => void; boundaryInteraction?: BoundaryMapInteraction; placementSummary?: ReactNode; placementContinuation?: ReactNode; evidenceTargetId?: string; moveSuggestion?: { dx: number; dy: number; token: number } }) {
+export function ExampleProperty({ model = defaultJourneyModel, onMeasurement, onAssessmentPending, boundaryInteraction, placementSummary, placementContinuation, evidenceTargetId, moveSuggestion, placementConcerns, showPlacementConcerns = true, onContinueUnresolved, onFailureChange, playbackPosition }: { onFailureChange?: (failed: boolean) => void; playbackPosition?: { token: number; position: ExamplePosition }; model?: CatalogueModel; onAssessmentPending?: (pending: boolean) => void; placementConcerns?: ReactNode; showPlacementConcerns?: boolean; onContinueUnresolved?: () => void; onMeasurement: (value: OccupiedMeasurement | null) => void; boundaryInteraction?: BoundaryMapInteraction; placementSummary?: ReactNode; placementContinuation?: ReactNode; evidenceTargetId?: string; moveSuggestion?: { dx: number; dy: number; token: number } }) {
   const initialPosition = () => ({ ...initialExamplePosition(),
     width: model.measurements.find(item => item.name === 'nominal_exterior_width')?.quantity?.value ?? '',
     depth: model.measurements.find(item => item.name === 'nominal_exterior_depth')?.quantity?.value ?? '' })
@@ -30,6 +30,13 @@ export function ExampleProperty({ model = defaultJourneyModel, onMeasurement, on
     invalidate()
     setPosition(current => ({ ...current, x: String(Number(current.x) + moveSuggestion.dx), y: String(Number(current.y) + moveSuggestion.dy) }))
   }, [moveSuggestion])
+  const appliedPlayback = useRef<number | null>(null)
+  useEffect(() => {
+    if (!playbackPosition || appliedPlayback.current === playbackPosition.token) return
+    appliedPlayback.current = playbackPosition.token
+    invalidate()
+    setPosition(playbackPosition.position)
+  }, [playbackPosition])
   const [assumptions, setAssumptions] = useState(emptyExampleAssumptions)
   const [result, setResult] = useState<Result | null>(null)
   const [phase, setPhase] = useState<'measuring' | 'stale' | 'unresolved' | 'current'>('measuring')
@@ -43,6 +50,8 @@ export function ExampleProperty({ model = defaultJourneyModel, onMeasurement, on
   const request = exampleRequest(position, assumptions)
   const geometryPending = !!request && (phase === 'stale' || phase === 'measuring');
   useEffect(() => { onAssessmentPending?.(geometryPending) }, [geometryPending])
+
+  useEffect(() => { onFailureChange?.(phase === 'unresolved') }, [phase])
 
   function invalidate() {
     activeCheck.current?.abort()

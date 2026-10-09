@@ -1,7 +1,10 @@
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+
+export const PlaybackLayout = createContext(false)
 
 /** One action, docked while its active section is visible; never duplicates a button. */
 export function FloatingNext({ active, sectionId, children }: { active: boolean; sectionId: string; children: ReactNode }) {
+  const playback = useContext(PlaybackLayout)
   const end = useRef<HTMLDivElement>(null)
   const action = useRef<HTMLDivElement>(null)
   const [height, setHeight] = useState(128)
@@ -9,7 +12,7 @@ export function FloatingNext({ active, sectionId, children }: { active: boolean;
   const [bounds, setBounds] = useState({ left: 8, width: 320 })
   useEffect(() => {
     if (!action.current) return
-    const measure = () => setHeight(action.current!.getBoundingClientRect().height)
+    const measure = () => { if (action.current) setHeight(action.current.getBoundingClientRect().height) }
     measure()
     if (typeof ResizeObserver === 'undefined') return
     const observer = new ResizeObserver(measure)
@@ -18,7 +21,7 @@ export function FloatingNext({ active, sectionId, children }: { active: boolean;
   }, [])
   useEffect(() => {
     const section = document.getElementById(sectionId)
-    if (!active || !section || !end.current || typeof IntersectionObserver === 'undefined') { setFloating(false); return }
+    if (playback || !active || !section || !end.current || typeof IntersectionObserver === 'undefined') { setFloating(false); return }
     let sectionVisible = false, endVisible = false
     const update = () => {
       const box = section.getBoundingClientRect()
@@ -38,6 +41,6 @@ export function FloatingNext({ active, sectionId, children }: { active: boolean;
     observer.observe(section); observer.observe(end.current)
     window.addEventListener('resize', update)
     return () => { observer.disconnect(); window.removeEventListener('resize', update) }
-  }, [active, sectionId])
+  }, [active, sectionId, playback])
   return <div ref={end} className={`floating-next${active && floating ? ' floating-next--docked' : ''}`} style={{ minHeight: height || undefined, '--next-left': `${bounds.left}px`, '--next-width': `${bounds.width}px` } as CSSProperties}><div ref={action} className="floating-next__action">{children}</div></div>
 }

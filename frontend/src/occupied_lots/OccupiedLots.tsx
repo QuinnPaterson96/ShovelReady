@@ -1,7 +1,8 @@
+import { PlaybackLayout } from '../FloatingNext'
 import { EvidenceAtFooter } from '../EvidenceAtFooter'
 import { MapSourceHelp } from '../zoning_site_assumptions/MapSourceHelp'
 import { suggestPlacementOrientation } from '../placement_orientation'
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { useContext, useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { bundledCatalogue, type Catalogue } from '../model_catalogue/model'
 import { PublishedDimensions } from '../model_catalogue/PublishedDimensions'
 import { MeasurementLabel } from '../model_catalogue/MeasurementLabel'
@@ -53,6 +54,7 @@ export function PlacementConcerns({ site, result, additional, onContinueUnresolv
 export function OccupiedLotPreview({ selected, placement, onMove, nudgeMetres, conflictIds, boundaryInteraction, placementSummary, placementContinuation, placementControls, placementConcerns, modelLabel = 'Proposed unit', showBoundaryTools = true }: { placementControls?: ReactNode; placementSummary?: ReactNode; placementContinuation?: ReactNode; placementConcerns?: ReactNode; modelLabel?: string; showBoundaryTools?: boolean; selected: Case; placement: Placement; onMove: (x: number, y: number) => void; nudgeMetres: number; conflictIds?: Set<string>; boundaryInteraction?: BoundaryMapInteraction }) {
   const svg = useRef<SVGSVGElement>(null)
   const preview = useRef<HTMLDialogElement>(null)
+  const playback = useContext(PlaybackLayout)
   const [mapVisible, setMapVisible] = useState(false)
   const [actionBounds, setActionBounds] = useState({ left: 8, width: 320 })
   useEffect(() => {
@@ -137,7 +139,7 @@ export function OccupiedLotPreview({ selected, placement, onMove, nudgeMetres, c
     </dialog>
     {placementControls}
     {placementConcerns && <div className="builder-placement-concerns">{placementConcerns}</div>}
-    {placementContinuation && <div className={`builder-placement-next${mapVisible ? ' builder-placement-next--floating' : ''}`} style={{ '--placement-action-left': `${actionBounds.left}px`, '--placement-action-width': `${actionBounds.width}px` } as CSSProperties}>{placementContinuation}</div>}
+    {placementContinuation && <div className={`builder-placement-next${mapVisible && !playback ? ' builder-placement-next--floating' : ''}`} style={{ '--placement-action-left': `${actionBounds.left}px`, '--placement-action-width': `${actionBounds.width}px` } as CSSProperties}>{placementContinuation}</div>}
     {boundaryInteraction && <div id="property-details-below-map" className="property-details-below-map" />}
     {boundaryInteraction && <div id="intended-purpose-below-map" className="intended-purpose-below-map" />}
     {placementSummary && <div className="builder-map-summary">{placementSummary}</div>}

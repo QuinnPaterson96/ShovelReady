@@ -91,3 +91,11 @@ export function exampleObservation(result: Result) {
   return { finding, comparisons, conflict, unresolved, shortfall,
     kind: conflict ? 'conflict' : unresolved ? 'unresolved' : shortfall ? 'shortfall' : 'clear' } as const
 }
+
+// Reproduced on the retained Parcel 87 capture in the October 9 live review.
+// This is an input, never an expected result or a legal setback assertion.
+export const movedExamplePosition = (): ExamplePosition => ({ ...initialExamplePosition(), x: '473693.7', y: '5362202.36' })
+export const demoEnquiryAnswers = {
+  streetContext: 'Not sure', intendedUse: 'Garden suite', relationship: 'Exploring an example; not my property',
+  nextStep: 'Please advise what information is needed for initial suitability advice.',
+} as const

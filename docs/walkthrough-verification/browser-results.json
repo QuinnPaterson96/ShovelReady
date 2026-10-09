@@ -1,0 +1,207 @@
+{
+  "results": [
+    {
+      "phase": "initial",
+      "placement": {
+        "id": "illustrative-example-placement",
+        "centre_xy": [
+          473689.18,
+          5362171.53
+        ],
+        "width_m": 3.048,
+        "depth_m": 9.144,
+        "angle_degrees": -9.52150333822101
+      },
+      "checks": [
+        {
+          "id": "containment",
+          "kind": "containment",
+          "status": "observed",
+          "relation": "outside",
+          "area_m2": 0.6983782135307937,
+          "distance_m": null,
+          "margin_m": null,
+          "comparison": null,
+          "requirement_id": null,
+          "requirement_status": null,
+          "source_feature_ids": [
+            "new-87-parcel:87"
+          ],
+          "reason": null
+        },
+        {
+          "id": "parcel_boundary",
+          "kind": "parcel_boundary_distance",
+          "status": "observed",
+          "relation": null,
+          "area_m2": null,
+          "distance_m": 0,
+          "margin_m": null,
+          "comparison": null,
+          "requirement_id": null,
+          "requirement_status": null,
+          "source_feature_ids": [
+            "new-87-parcel:87"
+          ],
+          "reason": null
+        },
+        {
+          "id": "building:new-87-buildings:69542:overlap",
+          "kind": "building_overlap",
+          "status": "observed",
+          "relation": "positive_area_overlap",
+          "area_m2": 1.5823711460288783,
+          "distance_m": null,
+          "margin_m": null,
+          "comparison": null,
+          "requirement_id": null,
+          "requirement_status": null,
+          "source_feature_ids": [
+            "new-87-buildings:69542"
+          ],
+          "reason": null
+        },
+        {
+          "id": "building:new-87-buildings:69542:distance",
+          "kind": "building_distance",
+          "status": "observed",
+          "relation": null,
+          "area_m2": null,
+          "distance_m": 0,
+          "margin_m": null,
+          "comparison": null,
+          "requirement_id": null,
+          "requirement_status": null,
+          "source_feature_ids": [
+            "new-87-buildings:69542"
+          ],
+          "reason": null
+        },
+        {
+          "id": "nearest_building",
+          "kind": "nearest_building_distance",
+          "status": "observed",
+          "relation": null,
+          "area_m2": null,
+          "distance_m": 0,
+          "margin_m": null,
+          "comparison": null,
+          "requirement_id": null,
+          "requirement_status": null,
+          "source_feature_ids": [
+            "new-87-buildings:69542"
+          ],
+          "reason": null
+        }
+      ]
+    },
+    {
+      "phase": "moved",
+      "placement": {
+        "id": "illustrative-example-placement",
+        "centre_xy": [
+          473693.7,
+          5362202.36
+        ],
+        "width_m": 3.048,
+        "depth_m": 9.144,
+        "angle_degrees": -9.52150333822101
+      },
+      "checks": [
+        {
+          "id": "containment",
+          "kind": "containment",
+          "status": "observed",
+          "relation": "contained",
+          "area_m2": 0,
+          "distance_m": null,
+          "margin_m": null,
+          "comparison": null,
+          "requirement_id": null,
+          "requirement_status": null,
+          "source_feature_ids": [
+            "new-87-parcel:87"
+          ],
+          "reason": null
+        },
+        {
+          "id": "parcel_boundary",
+          "kind": "parcel_boundary_distance",
+          "status": "observed",
+          "relation": null,
+          "area_m2": null,
+          "distance_m": 2.0753113488327943,
+          "margin_m": null,
+          "comparison": null,
+          "requirement_id": null,
+          "requirement_status": null,
+          "source_feature_ids": [
+            "new-87-parcel:87"
+          ],
+          "reason": null
+        },
+        {
+          "id": "building:new-87-buildings:69542:overlap",
+          "kind": "building_overlap",
+          "status": "observed",
+          "relation": "separate",
+          "area_m2": 0,
+          "distance_m": null,
+          "margin_m": null,
+          "comparison": null,
+          "requirement_id": null,
+          "requirement_status": null,
+          "source_feature_ids": [
+            "new-87-buildings:69542"
+          ],
+          "reason": null
+        },
+        {
+          "id": "building:new-87-buildings:69542:distance",
+          "kind": "building_distance",
+          "status": "observed",
+          "relation": null,
+          "area_m2": null,
+          "distance_m": 5.075315681927815,
+          "margin_m": null,
+          "comparison": null,
+          "requirement_id": null,
+          "requirement_status": null,
+          "source_feature_ids": [
+            "new-87-buildings:69542"
+          ],
+          "reason": null
+        },
+        {
+          "id": "nearest_building",
+          "kind": "nearest_building_distance",
+          "status": "observed",
+          "relation": null,
+          "area_m2": null,
+          "distance_m": 5.075315681927815,
+          "margin_m": null,
+          "comparison": null,
+          "requirement_id": null,
+          "requirement_status": null,
+          "source_feature_ids": [
+            "new-87-buildings:69542"
+          ],
+          "reason": null
+        }
+      ]
+    },
+    {
+      "normalElapsedSeconds": 56.806
+    }
+  ],
+  "errors": [],
+  "requests": [
+    "GET /api/identity",
+    "GET /health",
+    "POST /api/victoria-zoning/property-scan",
+    "POST /api/victoria-zoning/lookup",
+    "POST /api/scouting-geometry/assess",
+    "POST /api/conditional-screening/v1/placement-scenarios",
+    "POST /api/conditional-screening/v1/evaluate"
+  ]
+}

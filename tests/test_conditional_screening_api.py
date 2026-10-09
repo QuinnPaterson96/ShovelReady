@@ -305,3 +305,21 @@ def test_main_outline_default_does_not_satisfy_legal_principal_building_prerequi
                      if c["rule"]["fact_id"] == "principal_building")
     assert principal["fact"]["status"] == "unknown"
     assert principal["status"] == "needs_information"
+
+
+def test_demo_scenario_origin_survives_evaluation_without_asserting_legal_facts():
+    # The demo supplies a scenario, never title, zoning or confirmed property facts.
+    body = payload()
+    body["proposal_evidence"] = {
+        name: {"value": value, "origin": "user", "source": None, "note": None}
+        for name, value in body["proposal"].items()
+    }
+    body["proposal_evidence"]["proposed_use"]["origin"] = "demo_supplied"
+    response = post(body)
+    assert response.status_code == 200, response.text
+    data = response.json()
+    assert data["request"]["proposal_evidence"]["proposed_use"]["origin"] == "demo_supplied"
+    use = next(fact for fact in data["request"]["facts"] if fact["id"] == "proposed_use")
+    assert use["origin"] == "demo_supplied"
+    body["proposal_evidence"]["legal_lot_confirmed"]["origin"] = "demo_supplied"
+    assert post(body).status_code == 422
