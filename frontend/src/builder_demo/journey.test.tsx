@@ -596,6 +596,7 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
     assert.equal(unknownEvidence.enquiry_inputs.intendedUse, 'Not sure')
     assert.equal(unknownEvidence.planning_comparison_scope.garden_suite_comparisons_applied, false)
     assert.match(document.querySelector('#builder-quick-checks')!.textContent!, /Intended use/)
+    assert.doesNotMatch(document.querySelector('#builder-quick-checks')!.textContent!, /Height · Not covered|Move .* away from the main building|Floor area · Not covered/, 'unknown use shows its prerequisite rather than inactive comparisons')
     assert.doesNotMatch(recipientText(), /planning comparisons use a garden-suite scenario/)
     assert.match(recipientText(), /intended use is (?:not yet confirmed|unconfirmed)/i)
     assert.doesNotMatch(document.querySelector('[aria-label="Supporting screening report"]')!.textContent!, /Height.*Likely fine|Rear-yard occupancy.*Likely fine/s)
