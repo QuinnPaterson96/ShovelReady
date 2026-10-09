@@ -8,7 +8,7 @@ import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import BuilderDemo from './BuilderDemo'
 
-test('playback pause, skip and edit takeover retain current state and reject an obsolete measurement', async () => {
+test('explicit walkthrough steps, back, skip and edit takeover reject an obsolete measurement', async () => {
   // Retained HTTP boundary response protects workflow identity, not arithmetic.
   // The browser suite separately calls the real local geometry/planning API.
   const fixture = JSON.parse(readFileSync('src/scenario_handoff/retained-assessment.fixture.json', 'utf8'))
@@ -42,13 +42,20 @@ test('playback pause, skip and edit takeover retain current state and reject an 
   try {
     await act(async () => root.render(<BuilderDemo entryRequest={{ example: true, modelId: 'aux-300', walkthrough: true }} />))
     assert.match(caption()!, /Model 300/)
-    await click('Pause'); await tick(550); assert.match(caption()!, /Model 300/)
-    await click('Resume'); await click('Next'); assert.match(caption()!, /Parcel 87/)
+    await tick(550); assert.match(caption()!, /Model 300/)
+    assert.equal(button('Pause'), undefined)
+    await click('Next'); assert.match(caption()!, /Parcel 87/)
+    await click('Back'); assert.match(caption()!, /Model 300/)
+    await click('Next')
     await click('Next'); await tick(800)
     assert.match(caption()!, /starting position/)
     hold = true; await click('Skip to result'); await tick(550)
     assert.ok(held)
-    await click('Pause'); assert.match(caption()!, /Move away/)
+    assert.match(caption()!, /Move away/)
+    assert.equal(button('Next').disabled, true, 'pending moved measurement cannot advance')
+    hold = false
+    await click('Back'); await tick(100)
+    assert.match(caption()!, /starting position/)
     await act(async () => {
       const select = document.querySelector<HTMLSelectElement>('#builder-model-choice')!
       select.value = 'hewing-quadra4'; select.dispatchEvent(new dom.window.Event('change', { bubbles: true }))

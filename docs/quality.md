@@ -261,7 +261,9 @@ links and example-to-real invalidation. No enquiry was sent.
 [The walkthrough record](guided-walkthrough.md) separates mounted behavioral coverage,
 real local API/browser reproduction, source readiness and human validation. It includes
 390 × 844 keyboard/reduced-motion checks, delayed/failed responses and obsolete-response
-takeover. Recipient inspection of an explicitly saved PDF verifies demo attribution but
+takeover. Explicit Next/Back checks restore the before-placement geometry, hold a
+normal-motion step past its former dwell, gate Next on current measurements and
+stop Skip at findings. Recipient inspection of an explicitly saved PDF verifies demo attribution but
 records crowded lower plan sources/footers as an export follow-up; the exact JSON remains complete.
 Municipal success paths, source acceptance, broad accessibility and participant validation
 remain separate gaps. No deployment, source publication or external enquiry was performed.
