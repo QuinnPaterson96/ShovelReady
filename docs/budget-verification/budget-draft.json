@@ -1,0 +1,100 @@
+{
+  "schema_version": "project-budget.draft.v1",
+  "scope": "whole_project",
+  "items": [
+    {
+      "id": "catalogue:sr-40.2026-10-06.provider-pages.v2:aux-300:0",
+      "category": "unit",
+      "label": "aux box Model 300",
+      "state": "priced",
+      "money": {
+        "minimum": "187000",
+        "maximum": null,
+        "currency": "CAD",
+        "precision": 0
+      },
+      "basis": "starting",
+      "included_in": null,
+      "alternative_group": "building-offer",
+      "selected": true,
+      "inclusions": [
+        "Full bathroom and complete kitchen described on the model page"
+      ],
+      "exclusions": [
+        "Permitting",
+        "Foundations",
+        "Site services",
+        "Shipping",
+        "Installation"
+      ],
+      "tax_basis": null,
+      "tax_status": "unknown",
+      "rationale": "Provider model claim; configuration: Public Model 300 one-bedroom page; upgrades not fixed. Model starting price, not total project cost. Upgrades are listed separately; their prices and a fixed configuration are not supplied. The page lists North America delivery; regional pricing is not stated.",
+      "recheck_reason": null,
+      "treatment": "capital_cost",
+      "context": {
+        "model_id": "aux-300",
+        "model_revision": null,
+        "snapshot_id": "sr-40.2026-10-06.provider-pages.v2",
+        "configuration": "Public one-bedroom product page; upgrades not fixed",
+        "property_key": "[\"example\",\"client-capture-fnv1a32:3d11ac45\",null,null,null,null,null,0]",
+        "scenario_key": "[\"Garden suite\",1,{\"id\":\"illustrative-example-placement\",\"centre_xy\":[473693.7,5362202.36],\"width_m\":3.048,\"depth_m\":9.144,\"angle_degrees\":-9.52150333822101}]"
+      },
+      "evidence": {
+        "origin": "catalogue",
+        "provider": "aux box",
+        "label": "Model 300 price claim",
+        "locator": "https://www.auxbox.ca/model-300 — Starting price; Layout & Specs > Materials, Upgrades, Site Prep, Delivery + Installation",
+        "captured_at": "2026-10-06",
+        "effective_at": null,
+        "expires_at": null,
+        "recorded_at": "2026-10-19",
+        "review_status": "unreviewed",
+        "original_record": "{\"snapshot_id\":\"sr-40.2026-10-06.provider-pages.v2\",\"model_id\":\"aux-300\",\"model_revision\":null,\"model_configuration\":\"Public one-bedroom product page; upgrades not fixed\",\"source\":{\"source_id\":\"aux-300-commercial\",\"url\":\"https://www.auxbox.ca/model-300\",\"locator\":\"Starting price; Layout & Specs > Materials, Upgrades, Site Prep, Delivery + Installation\",\"captured_at\":\"2026-10-06\",\"sha256\":null,\"artifact_status\":\"capture_gap\",\"upstream_revision\":null,\"updated_at\":null},\"claim\":{\"source_id\":\"aux-300-commercial\",\"wording\":\"Starting at $187,000 CAD. On-site prep including permitting, foundations, site services, shipping, and install at additional cost\",\"scope\":\"model\",\"configuration\":\"Public Model 300 one-bedroom page; upgrades not fixed\",\"region\":null,\"qualifications\":[\"Model starting price, not total project cost.\",\"Upgrades are listed separately; their prices and a fixed configuration are not supplied.\",\"The page lists North America delivery; regional pricing is not stated.\"],\"amount\":{\"minimum\":\"187000\",\"maximum\":null},\"currency\":\"CAD\",\"basis\":\"starting\",\"inclusions\":[\"Full bathroom and complete kitchen described on the model page\"],\"exclusions\":[\"Permitting\",\"Foundations\",\"Site services\",\"Shipping\",\"Installation\"],\"tax_treatment\":null}}"
+      }
+    },
+    {
+      "id": "manual:delivery",
+      "category": "delivery",
+      "label": "Delivery and lift",
+      "state": "priced",
+      "money": {
+        "minimum": "2500.25",
+        "maximum": "2500.25",
+        "currency": "CAD",
+        "precision": 2
+      },
+      "basis": "allowance",
+      "included_in": null,
+      "alternative_group": null,
+      "selected": true,
+      "inclusions": [],
+      "exclusions": [],
+      "tax_basis": null,
+      "tax_status": "unknown",
+      "rationale": "Synthetic homeowner allowance; no delivery quote",
+      "recheck_reason": null,
+      "treatment": "capital_cost",
+      "context": {
+        "model_id": "aux-300",
+        "model_revision": null,
+        "snapshot_id": "sr-40.2026-10-06.provider-pages.v2",
+        "configuration": "Public one-bedroom product page; upgrades not fixed",
+        "property_key": "[\"example\",\"client-capture-fnv1a32:3d11ac45\",null,null,null,null,null,0]",
+        "scenario_key": "[\"Garden suite\",1,{\"id\":\"illustrative-example-placement\",\"centre_xy\":[473693.7,5362202.36],\"width_m\":3.048,\"depth_m\":9.144,\"angle_degrees\":-9.52150333822101}]"
+      },
+      "evidence": {
+        "origin": "user_allowance",
+        "provider": "Homeowner",
+        "label": "User planning allowance",
+        "locator": "Entered in this local draft",
+        "captured_at": null,
+        "effective_at": null,
+        "expires_at": null,
+        "recorded_at": "2026-10-19",
+        "review_status": "unreviewed",
+        "original_record": "{\"id\":\"manual:delivery\",\"category\":\"delivery\",\"label\":\"Delivery and lift\",\"state\":\"priced\",\"basis\":\"allowance\",\"minimum\":\"2500.25\",\"maximum\":\"\",\"bound\":\"exact\",\"currency\":\"CAD\",\"included_in\":\"\",\"rationale\":\"Synthetic homeowner allowance; no delivery quote\",\"tax_basis\":\"\",\"provider\":\"\",\"locator\":\"\",\"captured_at\":\"\",\"effective_at\":\"\",\"expires_at\":\"\",\"inclusions\":[],\"exclusions\":[],\"treatment\":\"capital_cost\",\"tax_status\":\"unknown\"}"
+      }
+    }
+  ]
+}

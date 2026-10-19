@@ -1,0 +1,43 @@
+# Model 300 feasibility enquiry
+
+I would like an initial call.
+
+## Project
+
+I’m exploring aux box Model 300 for a possible site. My intended use is not yet confirmed.
+
+My budget range is Around CAD 250,000 for the whole project, as an owner preference rather than a cost estimate.
+
+## Cost scope for discussion
+
+Budget scope: Whole project. Cost coverage is incomplete; a complete scenario range is unavailable. Priced-components subtotal: CAD 189,500.25 or more; upper amount unknown. Price source: aux box, Model 300 price claim, captured 2026-10-06, unreviewed. [https://www.auxbox.ca/model-300](https://www.auxbox.ca/model-300) Still unpriced or unresolved: Upgrades, Foundation and site work, Service connections, Professional work, Fees, Tax, Contingency. Tax basis is unstated on priced work; specify whether tax is included or separately allowed. At least one priced line has no finite upper amount. A starting price cannot bound the project. Allowances are user assumptions. Source claims and user-entered quote facts remain unreviewed; tax treatment and scope must be stated for a complete scenario.
+
+Builder/provider: For Model 300, which current configuration, currency and dated price apply, and what upgrades, delivery/lift and tax are included or excluded?
+
+Qualified site/utility reviewer: What foundation/site and connection information is needed to bound work for this property?
+
+Builder/provider: Who will establish professional-work, fee and tax scope, and what information is needed before pricing it?
+
+## Questions for aux box
+
+I have a CAD 2,500.25 planning allowance for delivery and lift, not a quote. Can you help establish the next information needed?
+
+1. Can you share current dimensioned plans with their date/version, overhangs, interior floor area, height measurement reference and foundation requirements?
+
+2. Do you service the proposed locality once identified, and what truck access, crane setup space, lifting clearances and site photos or measurements do you need?
+
+3. What foundation requirements and utility connections are needed? Who coordinates site preparation, foundations, connections and permits, and what assistance do you offer?
+
+4. What is the current lead time, when does it start, and what decisions, permits and site preparation must be complete before booking or delivery?
+
+## Planning questions to resolve separately
+
+Intended use is unconfirmed. The selected unknown-use scenario is outside the supported garden-suite comparisons. Ask City staff or a qualified local professional about applicable rules; physical observations remain approximate.
+
+The property contact needs to confirm the main home, existing suites and waterfront context. City staff or a qualified local professional needs to check the applicable rules, legal measurement basis and any permit or title conditions. Please advise what product information you can provide to support that review.
+
+## Site information
+
+No current measured placement is available; the proposed position and delivery access remain to be established.
+
+Thank you.

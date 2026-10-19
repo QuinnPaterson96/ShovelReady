@@ -10,8 +10,11 @@ import type { SiteAssumptions } from '../zoning_site_assumptions/model'
 import { measurementWithUnit } from '../measurements'
 import { defaultJourneyModel } from '../model_catalogue/demo'
 import type { CatalogueModel } from '../model_catalogue/model'
+import type { BudgetDraft, Context } from '../project_budget/contract'
+import { budgetQuestions, budgetSummary, calculateBudget } from '../project_budget/pipeline'
 
 export type EnquiryInput = {
+  budgetDraft?: { draft: BudgetDraft; context: Context; today?: string }
   demoAnswers?: Partial<Record<'intendedUse' | 'relationship' | 'nextStep' | 'streetContext', string>>; question?: string; propertyConcern?: string; intendedUse: string; timing: string; budget: string; access: string; services: string
   relationship?: string; stage?: string; configuration?: string; nextStep?: string; contact?: string
 }
@@ -172,6 +175,9 @@ export function manufacturerDocument(input: EnquiryInput, address: string | null
   const question = withheld(input.question) ? '' : input.question!.trim()
   const sameRequest = (a: string, b: string) => a.toLowerCase().replace(/\s+/g, ' ').replace(/[.!?]+$/, '') === b.toLowerCase().replace(/\s+/g, ' ').replace(/[.!?]+$/, '')
   const additionalQuestion = next && question && !sameRequest(question, next) && !sameRequest(question, `Could ${model.name} be suitable for this property?`) ? question : null
+  const budgetResult = input.budgetDraft ? calculateBudget(input.budgetDraft.draft, input.budgetDraft.context, input.budgetDraft.today) : null
+  const budgetLines = budgetResult && input.budgetDraft ? budgetSummary(input.budgetDraft.draft, budgetResult) : []
+  const budgetNext = budgetResult && input.budgetDraft ? budgetQuestions(input.budgetDraft.draft, budgetResult, model.name) : []
   return {
     title: `${model.name} feasibility enquiry${address ? ` — ${address}` : ''}`,
     example,
@@ -180,14 +186,16 @@ export function manufacturerDocument(input: EnquiryInput, address: string | null
       section('Project', [`I’m exploring ${model.provider} ${model.name}${address ? ` at ${address}` : ' for a possible site'}.${use}`, ...(facts.length ? [facts.join(' ')] : [])], true),
       ...(concerns.length ? [section('Preliminary concerns', [linkedPlacement ? 'The following matters remain unresolved before relying on this proposal.' : input.propertyConcern?.trim() ? 'The property identity question concerns the proposed site; any placement findings below concern a separate retained example.' : 'The following findings concern a separate retained example, not the proposed property.', ...concerns,
         placementIssues.length ? 'Could you advise whether relocation, rotation or another configuration is worth exploring? I will resolve the planning questions separately before relying on this position.' : 'What site information would help you advise while I confirm the property details?' ], true)] : []),
+      ...(budgetLines.length ? [section('Cost scope for discussion', [budgetLines.join(' '),
+        ...budgetNext.map(item => `${item.answerer}: ${item.question}`)])] : []),
       section(`Questions for ${model.provider}`, [
         ...(additionalQuestion ? [additionalQuestion] : []),
         ...(model.model_id === 'wcch-ch-studio' ? [`${scenarioUse === 'garden_suite' ? 'Can you' : 'If I choose residential use, can you'} confirm whether this exact configuration supports permanent residential use in this locality? The published pod dimensions do not establish dwelling suitability.`] : []),
         '1. Can you share current dimensioned plans with their date/version, overhangs, interior floor area, height measurement reference and foundation requirements?',
         `2. Do you service ${address ? 'this locality' : 'the proposed locality once identified'}, and what truck access, crane setup space, lifting clearances and site photos or measurements do you need?`,
         '3. What foundation requirements and utility connections are needed? Who coordinates site preparation, foundations, connections and permits, and what assistance do you offer?',
-        `4. What is the current ${supplied(input.configuration) ? 'price for the options described above' : `starting price for the standard ${model.name}`}, and what is included? Please confirm currency and identify additional costs for tax, upgrades, transport, crane, installation, foundations, utility connections and permits.`,
-        '5. What is the current lead time, when does it start, and what decisions, permits and site preparation must be complete before booking or delivery?',
+        ...(!input.budgetDraft ? [`4. What is the current ${supplied(input.configuration) ? 'price for the options described above' : `starting price for the standard ${model.name}`}, and what is included? Please confirm currency and identify additional costs for tax, upgrades, transport, crane, installation, foundations, utility connections and permits.`] : []),
+        `${input.budgetDraft ? '4' : '5'}. What is the current lead time, when does it start, and what decisions, permits and site preparation must be complete before booking or delivery?`,
       ]),
       section('Planning questions to resolve separately', [enquiryUseQualification(input.intendedUse, scenarioUse),
         'The property contact needs to confirm the main home, existing suites and waterfront context. City staff or a qualified local professional needs to check the applicable rules, legal measurement basis and any permit or title conditions. Please advise what product information you can provide to support that review.'], true),
