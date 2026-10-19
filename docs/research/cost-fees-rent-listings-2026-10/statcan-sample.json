@@ -1,0 +1,81 @@
+{
+  "status": "Successful read-only public data probe; research excerpt, not an ADU estimate or active dataset",
+  "retrieved_on_utc": "2026-10-16",
+  "api_request": "https://www150.statcan.gc.ca/t1/wds/rest/getFullTableDownloadCSV/46100092/en",
+  "api_result": {
+    "status": "SUCCESS",
+    "object": "https://www150.statcan.gc.ca/n1/tbl/csv/46100092-eng.zip"
+  },
+  "table": "46-10-0092-01",
+  "reference_period_interpretation": "2026-04 is the quarterly start date for Q2 2026, not the capture month",
+  "source_notice": "Source: Statistics Canada, Table 46-10-0092-01, second quarter 2026. Reproduced and distributed on an as is basis with the permission of Statistics Canada.",
+  "licence": "https://www.statcan.gc.ca/en/terms-conditions/open-licence",
+  "raw_csv_fields": [
+    "REF_DATE", "GEO", "DGUID", "Rental unit type", "Estimates", "UOM", "UOM_ID",
+    "SCALAR_FACTOR", "SCALAR_ID", "VECTOR", "COORDINATE", "VALUE", "STATUS", "SYMBOL",
+    "TERMINATED", "DECIMALS"
+  ],
+  "raw_rows": [
+    {
+      "REF_DATE": "2026-04",
+      "GEO": "Victoria, Census metropolitan area (CMA)",
+      "DGUID": "2021S0503935",
+      "Rental unit type": "Apartment - 1 bedroom",
+      "Estimates": "Average asking rent",
+      "UOM": "Dollars",
+      "UOM_ID": "81",
+      "SCALAR_FACTOR": "units",
+      "SCALAR_ID": "0",
+      "VECTOR": "v1675425162",
+      "COORDINATE": "42.2.1",
+      "VALUE": "2040",
+      "STATUS": "",
+      "SYMBOL": "",
+      "TERMINATED": "",
+      "DECIMALS": "0"
+    },
+    {
+      "REF_DATE": "2026-04",
+      "GEO": "Victoria, Census metropolitan area (CMA)",
+      "DGUID": "2021S0503935",
+      "Rental unit type": "House - 2 bedrooms",
+      "Estimates": "Average asking rent",
+      "UOM": "Dollars",
+      "UOM_ID": "81",
+      "SCALAR_FACTOR": "units",
+      "SCALAR_ID": "0",
+      "VECTOR": "v1810299305",
+      "COORDINATE": "42.6.1",
+      "VALUE": "",
+      "STATUS": "..",
+      "SYMBOL": "",
+      "TERMINATED": "",
+      "DECIMALS": "0"
+    },
+    {
+      "REF_DATE": "2026-04",
+      "GEO": "Victoria, Census metropolitan area (CMA)",
+      "DGUID": "2021S0503935",
+      "Rental unit type": "House - 3 or more bedrooms",
+      "Estimates": "Average asking rent",
+      "UOM": "Dollars",
+      "UOM_ID": "81",
+      "SCALAR_FACTOR": "units",
+      "SCALAR_ID": "0",
+      "VECTOR": "v1810299306",
+      "COORDINATE": "42.7.1",
+      "VALUE": "",
+      "STATUS": "..",
+      "SYMBOL": "",
+      "TERMINATED": "",
+      "DECIMALS": "0"
+    }
+  ],
+  "interpretation": {
+    "apartment_one_bedroom": "Average asking rent, Victoria CMA, Canadian dollars per month; contextual benchmark, not a Model 300 or detached ADU rent",
+    "house_rows": "Empty source VALUE and original STATUS .. preserved. Not zero; no detached-house or ADU range inferred",
+    "sample_size": "Not supplied in sampled CSV rows",
+    "utilities_and_finish_quality": "Not standardized by these rows",
+    "capture_gap": "Raw ZIP read in memory for this probe; bytes/hash not retained. This excerpt is manually retained from observed output"
+  }
+}

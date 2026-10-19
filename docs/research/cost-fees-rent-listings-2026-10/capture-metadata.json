@@ -1,0 +1,49 @@
+{
+  "status": "research capture metadata only; hashes identify observed bytes, not legal or manufacturer revisions",
+  "sources": [
+    {
+      "label": "victoria-waiver",
+      "requested_url": "https://www.victoria.ca/media/4426",
+      "resolved_url": "https://www.victoria.ca/media/file/development-fee-waiver-bylaw",
+      "retrieved_at": "2026-10-16T21:14:35.018766+00:00",
+      "sha256": "3f03e95a7244ba51a56755ff236780625bd9e96f5e29f2d71dd0b19eaad003a3",
+      "bytes": 96251,
+      "page_count": 2,
+      "page_rendered_for_review": 2,
+      "raw_file_in_repository": false
+    },
+    {
+      "label": "langford-building",
+      "requested_url": "https://langford.ca/wp-content/uploads/2025/11/1160-Building-Bylaw-2008-Consolidated-to-20260601-1.pdf",
+      "resolved_url": "https://langford.ca/wp-content/uploads/2025/11/1160-Building-Bylaw-2008-Consolidated-to-20260601-1.pdf",
+      "retrieved_at": "2026-10-16T21:14:35.446014+00:00",
+      "sha256": "b5ae0b8baa915a36ce45369c74371a47d70080b701a59f6d5e1d60d22f6ce0f5",
+      "bytes": 608014,
+      "page_count": 32,
+      "page_rendered_for_review": 23,
+      "raw_file_in_repository": false
+    },
+    {
+      "label": "saanich-building",
+      "requested_url": "https://www.saanich.ca/assets/Local~Government/Documents/Bylaws~and~Policies/BUILDING%20BYLAW%2C%202019%2C%20NO.%209529.pdf",
+      "resolved_url": "https://www.saanich.ca/assets/Local~Government/Documents/Bylaws~and~Policies/BUILDING%20BYLAW%2C%202019%2C%20NO.%209529.pdf",
+      "retrieved_at": "2026-10-16T21:14:37.545831+00:00",
+      "sha256": "2707a6bf7b81b966778ef8d649c1f082fe6aae154791c76769b4b95964a2f535",
+      "bytes": 377222,
+      "page_count": 60,
+      "page_rendered_for_review": 52,
+      "raw_file_in_repository": false
+    },
+    {
+      "label": "oakbay-4952-report",
+      "requested_url": "https://oakbay.civicweb.net/document/167207/Planning,%20Building%20and%20Development%20Fees%20and%20Cha.pdf?handle=6DC5C1679ED64EB0A01A914736E7C855",
+      "resolved_url": "https://oakbay.civicweb.net/document/167207/Planning,%20Building%20and%20Development%20Fees%20and%20Cha.pdf?handle=6DC5C1679ED64EB0A01A914736E7C855",
+      "retrieved_at": "2026-10-16T21:14:38.589548+00:00",
+      "sha256": "c06f120dac20c326287a949a5eb9d8e972a13cf6ff73c2d8c0078dbdddc56d52",
+      "bytes": 391768,
+      "page_count": 11,
+      "page_rendered_for_review": 10,
+      "raw_file_in_repository": false
+    }
+  ]
+}
