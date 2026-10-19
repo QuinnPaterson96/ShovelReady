@@ -108,4 +108,3 @@ Do not put budget fields in `Quantity` or silently change `Catalogue`, which cur
 | Timing evidence | User target distinct from dated provider statement; start/end milestones and dependencies, reservation status unknown unless evidenced | Factory duration, permit delay and occupancy are not interchangeable; reuse existing catalogue `Timing` claims; project target and booked-slot evidence remain separate |
 
 Money can initially remain in original CAD decimal strings. Do not introduce FX, tax optimization, debt underwriting, automated valuation or cross-provider financial scoring. If converting a unit rate, retain original unit/area basis and conversion precision; provider226ft² living area and300ft² footprint cannot be substituted for legal fee area or another provider's area label. Rendering may round currency for readability, but calculations and exports retain exact source amounts and supported fee rounding. Source review and publication remain separate gates.
-
