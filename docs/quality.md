@@ -2,6 +2,17 @@
 
 Status: initial working agreement, September 17, 2026. These are acceptance criteria for future work, not claims about current test coverage.
 
+## Budget-scope prototype checkpoint — October 19, 2026
+
+The optional financial draft has behavior-focused coverage for catalogue/manual
+intake through exact calculation, enquiry and full evidence, with independent decimal
+examples protecting package double-counting, zero, range bounds, mixed/unknown
+currencies and failed-import preservation. Context changes withhold old costs.
+[Verification and recipient output](budget-verification/README.md) retains the checks,
+browser/download evidence, comparison and remaining gaps. Agent visual/editorial review
+does not establish source accuracy, accepted publication or builder/homeowner usefulness;
+Quinn owns the separately authorized human comparison under #16/#147.
+
 ## Decision-level quality
 
 Define the supported customer decision, geography, use type, and source coverage before measuring correctness. Track false exclusions, misleading candidates, investigation/unknown share, and net user verification time. Retaining every parcel is not a useful success merely because recall is high.

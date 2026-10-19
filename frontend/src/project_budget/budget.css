@@ -1,0 +1,30 @@
+.project-budget { margin: 1.5rem 0; padding: 1rem 0; border-block: 1px solid var(--border); max-width: 60rem; overflow-wrap: anywhere; }
+.project-budget summary { cursor: pointer; padding: .6rem 0; font-weight: 600; min-height: 44px; }
+.project-budget > summary { font-size: 1.1rem; }
+.project-budget > summary span { display: inline-block; font-size: .9rem; font-weight: 400; color: var(--ink-muted); margin-inline-start: .5rem; }
+.project-budget p { max-width: 72ch; }
+.project-budget label { display: block; margin-top: .6rem; }
+.project-budget input, .project-budget select, .project-budget textarea { min-width: 0; max-width: 100%; min-height: 44px; color: var(--ink); background: var(--surface); padding: .6rem; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); caret-color: var(--primary); }
+.project-budget textarea { width: 100%; resize: vertical; }
+.budget-summary { background: var(--surface-subtle); padding: .8rem 1rem; margin-block: 1rem; font-variant-numeric: tabular-nums; }
+.budget-summary p { margin: .35rem 0; }
+.budget-suggestion, .budget-source { border-top: 1px solid var(--border); padding-block: .6rem 1rem; }
+.budget-coverage { list-style: none; padding: 0; margin-block: .75rem; }
+.budget-coverage li { display: flex; gap: 1rem; align-items: center; justify-content: space-between; padding-block: .75rem; margin: 0; border-top: 1px solid var(--border); }
+.budget-coverage li > div { min-width: 0; }
+.budget-coverage span { display: block; color: var(--ink-muted); }
+.budget-coverage button { flex-shrink: 0; }
+.budget-editor { background: var(--surface-subtle); padding: 1rem; }
+.budget-editor h4 { margin-top: 0; }
+.budget-fields { display: grid; grid-template-columns: minmax(10rem, 1fr) minmax(0, 2fr); gap: .6rem 1rem; align-items: center; }
+.budget-date { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(10rem, 1fr) minmax(0, 2fr); gap: 1rem; align-items: center; }
+.budget-fields label { margin: 0; }
+.budget-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: 1rem; }
+.project-budget .budget-error { color: var(--danger-ink); }
+.project-budget pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: .85rem; }
+@media (max-width: 680px) {
+  .budget-fields, .budget-date { grid-template-columns: minmax(0, 1fr); }
+  .budget-fields label { margin-top: .5rem; }
+  .budget-coverage li { align-items: start; flex-direction: column; gap: .4rem; }
+  .project-budget > summary span { display: block; margin-inline-start: 0; }
+}

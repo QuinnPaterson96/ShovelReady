@@ -1,5 +1,15 @@
 # Architecture direction
 
+## Optional budget scope — October 19, 2026
+
+The existing browser journey now has a small versioned budget-draft boundary:
+catalogue Price/user entry → strict validation → draft items → exact deterministic
+decimal calculation → display/enquiry/evidence. Ordinary frontend modules reuse the
+existing catalogue and local scenario exports; no second financial API, database or
+service is introduced. Cost context changes withhold old claims/allowances while
+preserving owner preferences. Deployment does not publish new prices. See
+[contract, intake, adapter seams and limitations](project-budget-prototype.md).
+
 ## Canonical homeowner journey - October 8, 2026
 
 One mounted assessment host owns the model, property, placement, comparisons and

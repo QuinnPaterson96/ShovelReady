@@ -1,5 +1,11 @@
 # ShovelReady
 
+Optional local prototype: [budget and cost scope](docs/project-budget-prototype.md)
+reuses captured model prices and explicit user allowances to show priced components,
+missing costs and useful enquiry questions. It does not establish installed cost or
+affordability. [Same-facts enquiry comparison](docs/samples/budget-scope/comparison.html)
+is prepared for a future builder/homeowner study; customer validation remains open.
+
 Current review branch: [property selection, uncertainty and enquiry PDF integration](docs/integration-homeowner-ux-round2.md) (prepared for review; not merged/deployed).
 
 Latest journey integration: [uncertainty, map review and coherent enquiry outputs](docs/integration-homeowner-journey-round.md).

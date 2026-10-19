@@ -1,0 +1,25 @@
+{
+  "checks": [
+    "guided demo",
+    "keyboard disclosure",
+    "catalogue suggestion",
+    "decimal allowance",
+    "negative edit preserves draft",
+    "malformed import preserves draft",
+    "draft JSON download",
+    "desktop/mobile no overflow",
+    "unsent enquiry PDF/ZIP",
+    "incomplete financial contact",
+    "model/property invalidation retains owner preference"
+  ],
+  "errors": [],
+  "requests": [
+    "GET /api/identity",
+    "GET /health",
+    "POST /api/victoria-zoning/property-scan",
+    "POST /api/victoria-zoning/lookup",
+    "POST /api/scouting-geometry/assess",
+    "POST /api/conditional-screening/v1/placement-scenarios",
+    "POST /api/conditional-screening/v1/evaluate"
+  ]
+}
