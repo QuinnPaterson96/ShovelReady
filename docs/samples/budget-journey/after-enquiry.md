@@ -1,0 +1,41 @@
+# Model 300 feasibility enquiry
+
+I would like an initial call.
+
+## Project
+
+I’m exploring aux box Model 300 for a possible site. My intended use is not yet confirmed.
+
+My spending preference is Around CAD 250,000 for the whole project, as an owner preference rather than a cost estimate.
+
+## Cost scope for discussion
+
+Cost scope: Whole project. Priced-components subtotal: CAD 189,500.25 or more; upper amount unknown. Based on aux box published starting price (captured 2026-10-06, unreviewed; [https://www.auxbox.ca/model-300](https://www.auxbox.ca/model-300)) and Delivery and lift owner allowance (CAD 2,500.25). Unpriced or unresolved: Upgrades, Foundation and site work, Service connections, Professional work, Fees, Tax, Contingency. Installed total unavailable; please help establish the missing scope.
+
+Builder/provider: For Model 300, which current configuration, currency and dated price apply, and what upgrades, delivery/lift and tax are included or excluded?
+
+Builder/provider: Which access/crane, foundation and utility facts would let you or a local contractor scope installation, and who coordinates that work?
+
+Builder/provider: Who will confirm professional-work, permit-fee and tax scope, including any applicable waiver or credit?
+
+## Questions for aux box
+
+I have a CAD 2,500.25 planning allowance for delivery and lift, not a quote. Can you help establish the next information needed?
+
+1. Can you share current dimensioned plans with their date/version, overhangs, interior floor area, height measurement reference and foundation requirements?
+
+2. Do you service the proposed locality once identified?
+
+3. What is the current lead time, when does it start, and what decisions, permits and site preparation must be complete before booking or delivery?
+
+## Planning questions to resolve separately
+
+Intended use is unconfirmed. The selected unknown-use scenario is outside the supported garden-suite comparisons. Ask City staff or a qualified local professional about applicable rules; physical observations remain approximate.
+
+The property contact needs to confirm the main home, existing suites and waterfront context. City staff or a qualified local professional needs to check the applicable rules, legal measurement basis and any permit or title conditions. Please advise what product information you can provide to support that review.
+
+## Site information
+
+No current measured placement is available; the proposed position and delivery access remain to be established.
+
+Thank you.

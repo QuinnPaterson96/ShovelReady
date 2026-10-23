@@ -46,6 +46,16 @@ test('real captured Price -> explicit draft -> partial calculation -> enquiry, r
   assert.ok(exported.includes(suggestion.evidence.original_record.replace(/"/g, '\\"'))) // complete claim retained inside technical JSON/Markdown
   assert.equal(evidence.accepted_publication, false)
   assert.ok(budgetQuestions(draft, result, model.name).length <= 3)
+  const costSection = enquiry.sections.find(section => section.heading === 'Cost scope for discussion')!
+  assert.equal(costSection.paragraphs.length <= 4, true, 'one short cost paragraph and at most three next questions')
+  assert.ok(costSection.paragraphs[0].split(/\s+/).length < 120, 'the recipient does not receive the diagnostic report')
+  assert.doesNotMatch(costSection.paragraphs.join(' '), /prototype’s 90-day|probability interval|recency_policy/)
+  // Reproduced recipient risk: a subtotal must identify which user allowance it contains.
+  const withAllowance = replaceItem(draft, manual('delivery', { minimum: '2500.25' }))
+  const recipient = manufacturerDocument({ ...input, budgetDraft: { draft: withAllowance, context, today } }, null, false, null, null, null, null, false, false, null, model)
+  const costText = recipient.sections.find(section => section.heading === 'Cost scope for discussion')!.paragraphs[0]
+  assert.match(costText, /Delivery and lift owner allowance \(CAD 2,500.25\)/)
+  assert.ok(costText.includes(suggestion.evidence.locator.split(' — ')[0]))
 })
 
 test('independent package arithmetic: 100.10–120.10 + 2.20 + tax 0 = 102.30–122.30; included delivery has no second charge', () => {
@@ -146,4 +156,7 @@ test('incomplete cost draft still makes a useful unknown-context contact and ret
   assert.match(text, /No usable priced components/)
   assert.match(text, /Builder\/provider/)
   assert.ok(budgetSummary(draft, calculate(draft)).some(p => p.includes('unknown') || p.includes('Unknown')))
+  const building = { ...draft, scope: 'building' as const }
+  const questions = budgetQuestions(building, calculate(building), model.name)
+  assert.ok(questions.some(question => /access\/crane.*foundation.*utility/.test(question.question)), 'building-only pricing must not remove installation questions outside that cost scope')
 })

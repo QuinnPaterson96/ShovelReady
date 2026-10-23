@@ -5,7 +5,7 @@ import { parseResult, type Result } from '../occupied_lots/contract'
 import { exampleObservation, exampleRequest, initialExamplePosition, parseExampleResult } from './example'
 
 const fixture = parseResult(JSON.parse(readFileSync('src/scenario_handoff/retained-assessment.fixture.json', 'utf8')))
-const geometryOnly: Result = { ...fixture, checks: fixture.checks.filter(check => check.kind !== 'requirement') }
+const geometryOnly = parseResult(JSON.parse(readFileSync('src/builder_demo/cecelia-geometry.fixture.json', 'utf8')).measurement.result)
 const changed = (patch: Partial<Result['checks'][number]>, kind: string): Result => ({
   ...geometryOnly, checks: geometryOnly.checks.map(check => check.kind === kind ? { ...check, ...patch } : check),
 })
@@ -37,7 +37,7 @@ test('optional user minima preserve exact numbers and a shortfall cannot look cl
 
 test('late or mismatched measurement input cannot be returned as the current example', () => {
   const request = exampleRequest(initialExamplePosition())!
-  const matching = { ...fixture, input: { ...fixture.input, placement: { ...request.placement }, requirements: request.requirements } }
+  const matching = { ...fixture, input: { ...request } }
   assert.equal(parseExampleResult(matching, request).checks.length, fixture.checks.length)
   assert.throws(() => parseExampleResult({ ...matching, input: { ...matching.input, placement: { ...matching.input.placement, centre_xy: [0, 0] } } }, request))
   assert.throws(() => parseExampleResult({ ...matching, input: { ...matching.input, requirements: [{ ...request.requirements[0], minimum_m: 7 }] } }, request))

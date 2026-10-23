@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import saved from '../builder_demo/example-site.json'
+import packet from '../../../app/scouting_sites/data/sites.json'
 import type { Site } from '../occupied_lots/contract'
 import { suggestPlacementOrientation } from './index'
 
@@ -8,6 +8,7 @@ const parcel = (rings: number[][][]) => ({
   projected_metre_crs: 'EPSG:3157',
   parcel: { shape: { crs: 'EPSG:3157', geometry: { type: 'Polygon' as const, coordinates: rings } } },
 }) as Site
+const saved = packet.cases[0] // Keep the independently documented VIC-087 direction case.
 
 // Exact rectangle corners are constructed independently from the direction vector.
 // The helper must orient the engine's local depth/Y axis along the long side.

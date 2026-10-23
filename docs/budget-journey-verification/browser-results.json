@@ -1,0 +1,28 @@
+{
+  "checks": [
+    "Cecelia guided demo with real captured price and unknown fee",
+    "budget Back/Next without reseeding",
+    "keyboard takeover",
+    "catalogue suggestion",
+    "decimal allowance",
+    "negative edit preserves draft",
+    "malformed import preserves draft",
+    "same-tab navigation preserves budget",
+    "draft JSON download and explicit reload recovery",
+    "desktop/mobile no overflow",
+    "unsent enquiry PDF/ZIP with full fee evidence",
+    "incomplete financial contact",
+    "configuration/use/model/property invalidation retains owner preference",
+    "unknown municipality has no Victoria reference"
+  ],
+  "errors": [],
+  "requests": [
+    "GET /api/identity",
+    "GET /health",
+    "POST /api/victoria-zoning/property-scan",
+    "POST /api/victoria-zoning/lookup",
+    "POST /api/scouting-geometry/assess",
+    "POST /api/conditional-screening/v1/placement-scenarios",
+    "POST /api/conditional-screening/v1/evaluate"
+  ]
+}

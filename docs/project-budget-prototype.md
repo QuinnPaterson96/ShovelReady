@@ -1,5 +1,10 @@
 # Optional project budget scope prototype
 
+The [October 23 journey follow-up](project-budget-journey.md) supersedes the UI
+entry and walkthrough descriptions below. The original draft/calculation contract
+and historical verification remain intact. Budget is now an optional stage before
+enquiry; the walkthrough uses captured 419 Cecelia geometry and one priced component.
+
 October 19, 2026. Parent [#320](https://github.com/QuinnPaterson96/ShovelReady/issues/320),
 implementation [#321–#325](https://github.com/QuinnPaterson96/ShovelReady/issues/321).
 Based on main `86ddb42` including the integrated commercial research in PR #319.

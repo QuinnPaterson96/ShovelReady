@@ -191,11 +191,14 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     assert.match(document.querySelector('.builder-journey-rail')!.textContent!, /Property details✓Reviewed/)
     // Boundary edits above may still be debouncing; wait for the user-visible
     // action to become enabled rather than clicking through pending checks.
-    for (let attempt = 0; button('Next: Prepare enquiry →').disabled && attempt < 20; attempt++) {
+    for (let attempt = 0; button('Next: Explore budget (optional) →').disabled && attempt < 20; attempt++) {
       await act(async () => { await new Promise(resolve => setTimeout(resolve, 100)) })
     }
-    assert.equal(button('Next: Prepare enquiry →').disabled, false)
-    await click('Next: Prepare enquiry →')
+    assert.equal(button('Next: Explore budget (optional) →').disabled, false)
+    await click('Next: Explore budget (optional) →')
+    assert.equal(document.activeElement?.id, 'builder-budget-title')
+    assert.match(document.querySelector('#project-budget')!.textContent!, /Incomplete.*installed total unavailable/)
+    await click('Continue to enquiry with known costs or gaps →')
     assert.equal(document.activeElement?.id, 'builder-enquiry-title')
     assert.equal(document.getElementById('builder-enquiry-content')!.hidden, false)
     assert.match(document.querySelector('.builder-journey-rail')!.textContent!, /Quick checks✓Reviewed/)
@@ -214,7 +217,7 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     assert.match(document.querySelector('.builder-journey-rail')!.textContent!, /Contact providerTo do/)
     const reviewedEvidence = document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value
     const reviewedDraft = document.querySelector<HTMLTextAreaElement>('#builder-enquiry-text')!.value
-    for (const anchor of ['#placement-action-front', '#placement-action-rear', '#builder-property-details', '#builder-quick-checks', '#builder-next']) {
+    for (const anchor of ['#placement-action-front', '#placement-action-rear', '#builder-property-details', '#builder-quick-checks', '#builder-budget-stage', '#builder-next']) {
       await act(async () => document.querySelector<HTMLAnchorElement>(`.builder-journey-rail a[href="${anchor}"]`)!.click())
       await act(async () => { await new Promise(resolve => setTimeout(resolve, 20)) })
       assert.equal(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value, reviewedEvidence, 'review navigation is a read-only transition')

@@ -5,7 +5,7 @@ import type { Case, Result } from '../occupied_lots/contract'
 import { parseResult } from '../occupied_lots/contract'
 import { overlapFinding } from '../occupied_lots/observations'
 
-// Frozen from app/scouting_sites/data/sites.json, VIC-087. This is a saved
+// Frozen from cecelia-geometry.fixture.json, captured October 7, 2026. This is a saved
 // observation, not an address match or a claim about a customer's property.
 export const exampleCase = savedCase as Case
 export const exampleSourcePage = (reference: string | null) => {
@@ -15,7 +15,7 @@ export const exampleSourcePage = (reference: string | null) => {
 }
 export const exampleOrientation = suggestPlacementOrientation(exampleCase.site)
 export const examplePlacement = {
-  x: 473689.18, y: 5362171.53, angle: exampleOrientation.status === 'suggested' ? exampleOrientation.angle_degrees : 90,
+  x: 471913, y: 5365834, angle: exampleOrientation.status === 'suggested' ? exampleOrientation.angle_degrees : 90,
 } as const
 
 const model = bundledCatalogue.models.find(item => item.model_id === 'aux-300')
@@ -92,9 +92,9 @@ export function exampleObservation(result: Result) {
     kind: conflict ? 'conflict' : unresolved ? 'unresolved' : shortfall ? 'shortfall' : 'clear' } as const
 }
 
-// Reproduced on the retained Parcel 87 capture in the October 9 live review.
+// Supplied clear position retained in the Cecelia geometry fixture, rechecked by the API.
 // This is an input, never an expected result or a legal setback assertion.
-export const movedExamplePosition = (): ExamplePosition => ({ ...initialExamplePosition(), x: '473693.7', y: '5362202.36' })
+export const movedExamplePosition = (): ExamplePosition => ({ ...initialExamplePosition(), x: '471906.5401536183', y: '5365824.096762222' })
 export const demoEnquiryAnswers = {
   streetContext: 'Not sure', intendedUse: 'Garden suite', relationship: 'Exploring an example; not my property',
   nextStep: 'Please advise what information is needed for initial suitability advice.',

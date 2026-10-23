@@ -1,10 +1,10 @@
 {
-  "case_id": "VIC-087",
-  "label": "Victoria parcel 87",
+  "case_id": "live:10573:0",
+  "label": "419 Cecelia Rd, Victoria, BC",
   "site": {
     "projected_metre_crs": "EPSG:3157",
     "parcel": {
-      "id": "new-87-parcel:87",
+      "id": "live-parcel:10573:0",
       "shape": {
         "crs": "EPSG:3157",
         "geometry": {
@@ -12,40 +12,40 @@
           "coordinates": [
             [
               [
-                473704.5708999997,
-                5362207.274800001
+                471925.7468999997,
+                5365845.4209
               ],
               [
-                473697.6003999999,
-                5362165.7161
+                471912.3811999997,
+                5365811.394200001
               ],
               [
-                473682.57519999985,
-                5362168.232999999
+                471901.3491000002,
+                5365819.451400001
               ],
               [
-                473689.5469000004,
-                5362209.7984
+                471914.7149,
+                5365853.4782
               ],
               [
-                473704.5708999997,
-                5362207.274800001
+                471925.7468999997,
+                5365845.4209
               ]
             ]
           ]
         }
       },
       "source": {
-        "provider": "City of Victoria",
-        "record_label": "Parcel 87",
-        "capture_date": "2026-09-26T22:51:34.382196+00:00",
+        "provider": "City of Victoria Open Data",
+        "record_label": "Parcel MapServer response",
+        "capture_date": "2026-10-07T23:01:46.595162+00:00",
         "review_status": "unreviewed",
-        "reference": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=pjson&objectIds=87&outFields=OBJECTID%2CVicPID%2CPID%2CParcelStatus%2CParcelType%2CPrimarySurveyParcel%2CShape_Area&returnGeometry=true&outSR=3157"
+        "reference": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=json&objectIds=10573&outFields=OBJECTID%2CPID%2CVicPID%2CGISLINK%2CParcelType%2CParcelStatus%2CShape_Area&returnGeometry=true&outSR=3157"
       }
     },
     "buildings": [
       {
-        "id": "new-87-buildings:69542",
+        "id": "live-roof:81666",
         "shape": {
           "crs": "EPSG:3157",
           "geometry": {
@@ -53,83 +53,120 @@
             "coordinates": [
               [
                 [
-                  473699.76999999955,
-                  5362184.606000001
+                  471914.6129999999,
+                  5365842.211999999
                 ],
                 [
-                  473698.44600000046,
-                  5362176.959000001
+                  471917.88800000027,
+                  5365840.585999999
                 ],
                 [
-                  473695.4450000003,
-                  5362177.478
+                  471917.1639999999,
+                  5365839.129000001
                 ],
                 [
-                  473695.1799999997,
-                  5362175.948999999
+                  471919.9519999996,
+                  5365837.744999999
                 ],
                 [
-                  473693.1320000002,
-                  5362176.304
+                  471915.5329999998,
+                  5365828.8440000005
                 ],
                 [
-                  473692.9060000004,
-                  5362174.998
+                  471914.95999999996,
+                  5365829.129000001
                 ],
                 [
-                  473686.45999999996,
-                  5362176.114
+                  471914.0449999999,
+                  5365827.286
                 ],
                 [
-                  473686.96499999985,
-                  5362179.029999999
+                  471906.11000000034,
+                  5365831.226
                 ],
                 [
-                  473686.841,
-                  5362179.051000001
+                  471907.07799999975,
+                  5365833.174000001
                 ],
                 [
-                  473687.89300000016,
-                  5362185.131999999
+                  471906.7379999999,
+                  5365833.343
                 ],
                 [
-                  473687.69600000046,
-                  5362185.165999999
+                  471911.0990000004,
+                  5365842.127
                 ],
                 [
-                  473689.11400000006,
-                  5362193.355
+                  471913.8839999996,
+                  5365840.744999999
                 ],
                 [
-                  473700.9299999997,
-                  5362191.3100000005
-                ],
-                [
-                  473699.76999999955,
-                  5362184.606000001
+                  471914.6129999999,
+                  5365842.211999999
                 ]
               ]
             ]
           }
         },
+        "basis": "roofline",
         "source": {
-          "provider": "City of Victoria",
-          "record_label": "Mapped roofline 69542",
-          "capture_date": "2026-09-26T22:51:34.632779+00:00",
+          "provider": "City of Victoria Open Data",
+          "record_label": "Building MapServer response",
+          "capture_date": "2026-10-07T23:01:46.816917+00:00",
           "review_status": "unreviewed",
-          "reference": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=pjson&geometry=%7B%22rings%22%3A%5B%5B%5B473704.5708999997%2C5362207.274800001%5D%2C%5B473697.6003999999%2C5362165.7161%5D%2C%5B473682.57519999985%2C5362168.232999999%5D%2C%5B473689.5469000004%2C5362209.7984%5D%2C%5B473704.5708999997%2C5362207.274800001%5D%5D%5D%2C%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true"
+          "reference": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=json&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%2C%22rings%22%3A%5B%5B%5B471925.7468999997%2C5365845.4209%5D%2C%5B471912.3811999997%2C5365811.394200001%5D%2C%5B471901.3491000002%2C5365819.451400001%5D%2C%5B471914.7149%2C5365853.4782%5D%2C%5B471925.7468999997%2C5365845.4209%5D%5D%5D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true"
+        }
+      },
+      {
+        "id": "live-roof:81667",
+        "shape": {
+          "crs": "EPSG:3157",
+          "geometry": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [
+                  471915.2139999997,
+                  5365819.73
+                ],
+                [
+                  471913.74700000044,
+                  5365815.692
+                ],
+                [
+                  471910.9639999997,
+                  5365816.704
+                ],
+                [
+                  471912.43099999987,
+                  5365820.742000001
+                ],
+                [
+                  471915.2139999997,
+                  5365819.73
+                ]
+              ]
+            ]
+          }
         },
-        "basis": "roofline"
+        "basis": "roofline",
+        "source": {
+          "provider": "City of Victoria Open Data",
+          "record_label": "Building MapServer response",
+          "capture_date": "2026-10-07T23:01:46.816917+00:00",
+          "review_status": "unreviewed",
+          "reference": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1/query?f=json&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%2C%22rings%22%3A%5B%5B%5B471925.7468999997%2C5365845.4209%5D%2C%5B471912.3811999997%2C5365811.394200001%5D%2C%5B471901.3491000002%2C5365819.451400001%5D%2C%5B471914.7149%2C5365853.4782%5D%2C%5B471925.7468999997%2C5365845.4209%5D%5D%5D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CLAYER%2CSHAPE_Area&returnGeometry=true&returnZ=true"
+        }
       }
     ],
     "named_boundaries": [],
     "capture": {
-      "completeness": "partial",
-      "scope": "Parcel-intersecting City of Victoria mapped rooflines only",
+      "completeness": "complete_for_declared_scope",
+      "scope": "City rooflines returned by this parcel-intersection query only; not a complete obstruction inventory",
       "limitations": [
-        "Mapped rooflines are not surveyed walls or all site obstructions.",
-        "Building roles, legal lot lines, occupancy and zoning applicability are unreviewed.",
-        "Address points and zoning intersections are research context, not verified site identity or rules."
+        "Feature update date and positional accuracy not supplied; rooflines derive from aerial imagery, not surveyed walls.",
+        "Source-selected observation; identity, ownership and legal boundaries are not confirmed. Source join and positional accuracy remain unreviewed.",
+        "Rooflines are not walls. Other obstructions, zoning, setbacks, services and delivery access remain unassessed."
       ]
     }
   }

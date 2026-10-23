@@ -16,7 +16,7 @@ export type BuilderJourneyCompletion = Readonly<{
   current?: JourneyStep
   mapAvailable?: boolean
 }>
-export type JourneyStep = 'model' | 'property' | 'placement' | 'streets' | 'boundaries' | 'details' | 'purpose' | 'checks' | 'enquiry' | 'email'
+export type JourneyStep = 'model' | 'property' | 'placement' | 'streets' | 'boundaries' | 'details' | 'purpose' | 'checks' | 'budget' | 'enquiry' | 'email'
 
 export const emptyBuilderJourneyCompletion: BuilderJourneyCompletion = {
   model: false,
@@ -36,6 +36,7 @@ const steps: readonly Step[] = [
   { key: 'details', label: 'Property details', anchor: 'builder-property-details' },
   { key: 'purpose', label: 'Intended purpose', anchor: 'builder-purpose' },
   { key: 'checks', label: 'Quick checks', anchor: 'builder-quick-checks' },
+  { key: 'budget', label: 'Budget (optional)', anchor: 'builder-budget-stage' },
   { key: 'enquiry', label: 'Prepare enquiry', anchor: 'builder-next' },
   { key: 'email', label: 'Contact provider', anchor: 'builder-email' },
 ]
@@ -51,7 +52,7 @@ export function BuilderJourneyNav({ completion }: { completion: BuilderJourneyCo
         <a href="#builder-model">Change model</a>
       </div>}
       {completion.property && steps.map(({ key, label, anchor }, index) => {
-        const done = completion[key]
+        const done = key === 'budget' ? false : completion[key]
         const current = completion.current === key
         const unavailable = completion.mapAvailable === false && (key === 'streets' || key === 'boundaries' || key === 'checks' || key === 'details')
         return <a key={key} href={`#${anchor}`} aria-current={current ? 'step' : undefined} aria-disabled={unavailable || undefined} onClick={event => { if (unavailable) event.preventDefault() }}>
@@ -59,7 +60,7 @@ export function BuilderJourneyNav({ completion }: { completion: BuilderJourneyCo
           <span className="builder-journey-label">{label}</span>
           <span className={`builder-journey-state${done ? ' is-complete' : ''}`}>
             {done && <span className="builder-journey-check" aria-hidden="true">✓</span>}
-            {unavailable ? 'Map unavailable' : done ? key === 'email' ? completion.handoff === 'website' ? 'Website requested' : 'Draft requested' : key === 'checks' || key === 'boundaries' || key === 'details' || key === 'purpose' ? 'Reviewed' : 'Complete' : current ? 'Current step' : 'To do'}
+            {unavailable ? 'Map unavailable' : done ? key === 'email' ? completion.handoff === 'website' ? 'Website requested' : 'Draft requested' : key === 'checks' || key === 'boundaries' || key === 'details' || key === 'purpose' ? 'Reviewed' : 'Complete' : current ? 'Current step' : key === 'budget' ? 'Optional' : 'To do'}
           </span>
         </a>
       })}

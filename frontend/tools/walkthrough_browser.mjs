@@ -15,8 +15,17 @@ const context = await browser.newContext({ viewport: { width: 1280, height: 900 
 const page = await context.newPage()
 page.on('pageerror', error => errors.push(error.message))
 page.on('download', () => { if (!verifyingExport) errors.push('unexpected playback download') })
-context.on('page', popup => { if (popup !== page) errors.push('unexpected provider navigation') })
-await page.route('**/*', async route => {
+const popups = []
+context.on('page', popup => {
+  if (popup !== page) {
+    const record = { url: popup.url(), duringExport: verifyingExport, requests: [] }
+    popups.push(record)
+    popup.on('framenavigated', frame => { if (frame === popup.mainFrame()) record.url = frame.url() })
+    popup.on('request', request => record.requests.push(request.url()))
+    if (!verifyingExport) errors.push('unexpected playback popup')
+  }
+})
+await context.route('**/*', async route => {
   const request = route.request(), url = new URL(request.url())
   if (url.origin !== new URL(frontend).origin) { errors.push(`unexpected external request: ${url.origin}`); return route.abort() }
   if (!url.pathname.startsWith('/api/') && url.pathname !== '/health') return route.continue()
@@ -28,9 +37,11 @@ await page.route('**/*', async route => {
   if (/zoning-lookup|property-scan/.test(url.pathname)) return route.fulfill({ status: 503, body: 'offline municipal boundary' })
   // Unknown external discovery routes are not needed for this saved example.
   if (!['/health', '/api/scouting-geometry/assess', '/api/conditional-screening/v1/evaluate', '/api/conditional-screening/v1/placement-scenarios'].includes(url.pathname)) return route.fulfill({ status: 503, body: 'offline boundary' })
-  const response = await context.request.fetch(api + url.pathname, { method: request.method(), data: request.postData(), headers: { 'Content-Type': 'application/json' } })
-  if (partial && url.pathname === '/api/scouting-geometry/assess' && response.ok()) { const body = await response.json(); body.checks = body.checks.filter(check => check.kind !== 'building_overlap'); return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(body) }) }
-  await route.fulfill({ response })
+  // Independent transport lets obsolete responses finish even after browser cancellation.
+  const response = await fetch(api + url.pathname, { method: request.method(), body: request.postData() || undefined, headers: { 'Content-Type': 'application/json' } })
+  let body = await response.text()
+  if (partial && url.pathname === '/api/scouting-geometry/assess' && response.ok) { const value = JSON.parse(body); value.checks = value.checks.filter(check => check.kind !== 'building_overlap'); body = JSON.stringify(value) }
+  await route.fulfill({ status: response.status, contentType: 'application/json', body }).catch(error => { if (!/closed|disposed|cancel|intercept/i.test(error.message)) throw error })
 })
 const button = text => page.getByRole('button', { name: text, exact: true })
 const click = async text => button(text).click()
@@ -50,26 +61,26 @@ try {
   assert.match(await caption().textContent(), /Model 300/)
   assert.equal(await button('Pause').count(), 0)
   await next()
-  assert.match(await caption().textContent(), /Parcel 87/)
+  assert.match(await caption().textContent(), /419 Cecelia/)
   await next(); await settled()
   let e = await evidence()
   assert.equal(e.measurement.result.input.projected_metre_crs, 'EPSG:3157')
   const checks = e.measurement.result.checks
-  assert.equal(checks.find(c => c.kind === 'containment').relation, 'outside')
+  assert.equal(checks.find(c => c.kind === 'containment').relation, 'contained')
   assert.ok(checks.some(c => c.kind === 'building_overlap' && c.relation === 'positive_area_overlap'))
   results.push({ phase: 'initial', placement: e.measurement.result.input.placement, checks })
   await page.screenshot({ path: `${output}/desktop-initial.png` })
   assert.equal(await page.locator('.builder-placement-next--floating, .floating-next--docked').count(), 0)
   await next(); await settled()
   e = await evidence()
-  assert.deepEqual(e.measurement.result.input.placement.centre_xy, [473693.7, 5362202.36])
+  assert.deepEqual(e.measurement.result.input.placement.centre_xy, [471906.5401536183, 5365824.096762222])
   assert.equal(e.measurement.result.checks.find(c => c.kind === 'containment').relation, 'contained')
   assert.ok(e.measurement.result.checks.filter(c => c.kind === 'building_overlap').every(c => c.relation === 'separate'))
   await page.screenshot({ path: `${output}/desktop-moved.png` })
   results.push({ phase: 'moved', placement: e.measurement.result.input.placement, checks: e.measurement.result.checks })
   await click('Back'); await settled()
   assert.match(await caption().textContent(), /starting position/)
-  assert.deepEqual((await evidence()).measurement.result.input.placement.centre_xy, [473689.18, 5362171.53], 'Back restores the initial comparison instead of showing the moved geometry under its caption')
+  assert.deepEqual((await evidence()).measurement.result.input.placement.centre_xy, [471913, 5365834], 'Back restores the initial comparison instead of showing the moved geometry under its caption')
   await next(); await settled()
   await next(); await settled()
   assert.match(await caption().textContent(), /Not sure/)
@@ -79,6 +90,9 @@ try {
   assert.equal(e.zoning_site_assumptions.building_type.value, null)
   assert.equal(e.zoning_site_assumptions.street_adjacency.all_marked, false)
   assert.equal(e.zoning_site_assumptions.existing_garden_suites.origin, 'journey_default')
+  await next(); await settled()
+  assert.match(await caption().textContent(), /187,000/)
+  assert.equal((await evidence()).project_budget.calculation.complete, false)
   await next(); await settled()
   assert.match(await page.locator('#builder-enquiry-text').inputValue(), /Demo-supplied answers/)
   assert.equal(await page.locator('#builder-next').isVisible(), true)
@@ -97,7 +111,7 @@ try {
   await click('Replay walkthrough'); await click('Keep current assessment')
   assert.equal(await page.locator('#builder-relationship').inputValue(), 'I am helping the owner')
   await click('Replay walkthrough'); await click('Load example assessment')
-  await click('Skip to result'); await wait(async () => /Not sure/.test(await caption().textContent())); await next()
+  await click('Skip to result'); await wait(async () => /Not sure/.test(await caption().textContent())); await next(); await next()
   await settled(); assert.match(await page.locator('#builder-enquiry-text').inputValue(), /Demo-supplied/)
   // A response completes the explicit skip only as far as results; ordinary Next stays gated.
   await click('Let me try'); await click('Replay walkthrough'); await click('Load example assessment')
@@ -107,6 +121,7 @@ try {
   assert.equal(await button('Next').isEnabled(), false)
   hold = false; release(); await settled(); await page.waitForTimeout(200)
   assert.match(await caption().textContent(), /Not sure/)
+  await next(); assert.match(await caption().textContent(), /187,000/)
   await next(); assert.match(await caption().textContent(), /unsent enquiry/)
   console.log('Explicit skip and pending checks complete')
   // A failed request cannot enable Next. Retry/takeover stays usable.
@@ -145,6 +160,8 @@ try {
   await button('Skip to result').focus(); await page.keyboard.press('Enter')
   await wait(async () => /Not sure/.test(await caption().textContent())); await settled()
   await button('Next').focus(); await page.keyboard.press('Enter'); await settled()
+  assert.equal(await page.locator('#builder-budget-stage').isVisible(), true)
+  await button('Next').focus(); await page.keyboard.press('Enter'); await settled()
   await page.screenshot({ path: `${output}/mobile-enquiry.png` })
   await button('Let me try').focus(); await page.keyboard.press('Enter')
   assert.equal(await page.locator('#builder-use').evaluate(node => node === document.activeElement), true)
@@ -153,7 +170,7 @@ try {
   await page.goto(frontend + '/#home'); await page.reload(); await click('Watch the demo')
   await page.waitForTimeout(7500)
   assert.match(await caption().textContent(), /Model 300/)
-  for (let i = 0; i < 5; i++) await next()
+  for (let i = 0; i < 6; i++) await next()
   await settled()
   assert.match(await caption().textContent(), /Walkthrough complete/)
   assert.match(await page.locator('#builder-enquiry-text').inputValue(), /Demo-supplied/)
@@ -170,6 +187,9 @@ try {
   await page.locator('#manual-address').fill('My own property description')
   assert.equal(await page.locator('#builder-intended-use').inputValue(), '', 'a property correction clears the example intention instead of claiming it as user input')
   assert.deepEqual(errors, [])
+  // Edge can open its own download hub for an explicitly requested PDF download.
+  // Allow that exact internal UI only during export, with no document/network requests.
+  assert.ok(popups.every(popup => popup.duringExport && ['', 'about:blank', 'edge://downloads-hub/'].includes(popup.url) && popup.requests.length === 0), JSON.stringify(popups))
   const readOnlyPosts = ['/api/scouting-geometry/assess', '/api/conditional-screening/v1/evaluate', '/api/conditional-screening/v1/placement-scenarios', '/api/victoria-zoning/lookup', '/api/victoria-zoning/property-scan']
   assert.ok(requests.every(r => r.method === 'GET' || r.method === 'POST' && readOnlyPosts.includes(r.path)))
   await page.goto(frontend + '/#home'); await page.reload(); await click('Watch the demo')
@@ -178,6 +198,6 @@ try {
   await page.getByRole('button', { name: 'Start assessment', exact: true }).first().click()
   assert.equal(await page.locator('[data-playback-controls]').count(), 0, 'navigation cancels playback instead of resuming obsolete transitions')
   assert.equal(await page.locator('#builder-intended-use').inputValue(), '')
-  await writeFile(`${output}/browser-results.json`, JSON.stringify({ results, errors, requests: [...new Set(requests.map(r => `${r.method} ${r.path}`))] }, null, 2))
+  await writeFile(`${output}/browser-results.json`, JSON.stringify({ results, errors, downloadSurfaces: popups, requests: [...new Set(requests.map(r => `${r.method} ${r.path}`))] }, null, 2))
   console.log('Walkthrough browser journeys passed:', JSON.stringify(results.map(r => r.phase ?? r)))
 } catch (error) { await page.screenshot({ path: `${output}/failure.png` }); console.error('Failure state', await caption().textContent({ timeout: 1000 }).catch(() => 'no playback')); throw error } finally { release?.(); await browser.close() }

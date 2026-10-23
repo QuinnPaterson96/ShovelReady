@@ -169,13 +169,28 @@ export type BudgetQuestion = { answerer: string; question: string }
 export function budgetQuestions(draft: BudgetDraft, result: BudgetResult, modelName: string): BudgetQuestion[] {
   const questions: BudgetQuestion[] = []
   const unresolved = (category: Category) => result.missing.includes(category)
-  if (draft.scope === 'not_sure') questions.push({ answerer: 'Homeowner', question: 'Is your budget preference for the building only or the whole project? Not sure is a useful answer for an initial call.' })
   if (result.issues.length || unresolved('unit') || draft.items.some(item => result.counted_ids.includes(item.id) && item.basis === 'starting'))
     questions.push({ answerer: 'Builder/provider', question: `For ${modelName}, which current configuration, currency and dated price apply, and what upgrades, delivery/lift and tax are included or excluded?` })
-  if (unresolved('site') || unresolved('services')) questions.push({ answerer: 'Qualified site/utility reviewer', question: `What ${[unresolved('site') && 'foundation/site', unresolved('services') && 'connection'].filter(Boolean).join(' and ')} information is needed to bound work for this property?` })
+  questions.push({ answerer: 'Builder/provider', question: 'Which access/crane, foundation and utility facts would let you or a local contractor scope installation, and who coordinates that work?' })
   if (questions.length < 3 && (unresolved('fees') || unresolved('professional') || unresolved('tax')))
-    questions.push({ answerer: 'Builder/provider', question: 'Who will establish professional-work, fee and tax scope, and what information is needed before pricing it?' })
+    questions.push({ answerer: 'Builder/provider', question: 'Who will confirm professional-work, permit-fee and tax scope, including any applicable waiver or credit?' })
   return questions.slice(0, 3)
+}
+/** Recipient prose is deliberately separate from the full calculation report. */
+export function budgetEnquiryParagraph(draft: BudgetDraft, result: BudgetResult): string {
+  const sources = draft.items.filter(item => result.counted_ids.includes(item.id))
+  const origins = sources.map(item => item.evidence.origin === 'user_allowance' ? `${categories[item.category]} owner allowance (${displayMoney(item.money!)})`
+    : item.evidence.origin === 'user_quote' ? `${categories[item.category]} owner-entered quote fact (${displayMoney(item.money!)})`
+      : `${item.evidence.provider} published ${item.basis === 'starting' ? 'starting price' : 'price'} (captured ${item.evidence.captured_at ?? 'date unknown'}, unreviewed; ${item.evidence.locator.split(' — ')[0]})`)
+  return [
+    `Cost scope: ${scopeLabels[draft.scope]}.`,
+    result.subtotals.length ? result.subtotals.map(money => `${result.complete ? 'Scenario range under supplied assumptions' : 'Priced-components subtotal'}: ${displayMoney(money)}.`).join(' ') : 'No usable priced components supplied.',
+    origins.length ? `Based on ${origins.join(' and ')}.` : '',
+    result.missing.length ? `Unpriced or unresolved: ${result.missing.map(c => categories[c]).join(', ')}.` : '',
+    result.issues.length ? 'Affected cost entries are withheld pending scope recheck.' : '',
+    result.complete ? 'This is an assumption-based scenario, not a quote.' : 'Installed total unavailable; please help establish the missing scope.',
+    draft.scope === 'building' ? 'Site and delivery work are outside this building-only scope.' : '',
+  ].filter(Boolean).join(' ')
 }
 export function budgetEvidence(draft: BudgetDraft, context: Context, today = utcToday()) {
   return { draft: parseBudget(draft), current_context: context, calculated_at: today, calculation: calculateBudget(draft, context, today),

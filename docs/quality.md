@@ -2,6 +2,18 @@
 
 Status: initial working agreement, September 17, 2026. These are acceptance criteria for future work, not claims about current test coverage.
 
+## Budget-journey review checkpoint — October 23, 2026
+
+The existing integration coverage now includes optional-budget navigation, the
+captured Cecelia demo, a shorter recipient cost paragraph and preservation of
+installation questions even with building-only pricing. [Retained verification](budget-journey-verification/README.md)
+separates software checks, official-source recheck, agent comprehension inspection
+and the still-missing actual recipient study. The audit identified unnamed allowance
+contributions; the generator now retains their category/amount in recipient prose.
+Unknown Victoria fee eligibility remains unresolved, with no zero or factory-price
+valuation inferred. [Implementation and exact gaps](project-budget-journey.md) list
+practical impacts and next owners. No deployment or accepted publication occurred.
+
 ## Budget-scope prototype checkpoint — October 19, 2026
 
 The optional financial draft has behavior-focused coverage for catalogue/manual

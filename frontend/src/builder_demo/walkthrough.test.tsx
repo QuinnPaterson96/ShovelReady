@@ -44,7 +44,7 @@ test('explicit walkthrough steps, back, skip and edit takeover reject an obsolet
     assert.match(caption()!, /Model 300/)
     await tick(550); assert.match(caption()!, /Model 300/)
     assert.equal(button('Pause'), undefined)
-    await click('Next'); assert.match(caption()!, /Parcel 87/)
+    await click('Next'); assert.match(caption()!, /419 Cecelia/)
     await click('Back'); assert.match(caption()!, /Model 300/)
     await click('Next')
     await click('Next'); await tick(800)
