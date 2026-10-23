@@ -4,6 +4,15 @@ October 23, 2026. Base `a573522715894e66f5c976f377b0004320ff3420`;
 checks cover this branch's integrated working tree / GitHub PR head. Final-head CI
 is recorded in the PR. [Scope, decisions and exact gaps](../project-budget-journey.md).
 
+Browser artifacts cover application code at `ba9d45fc00fcc590ffdfbe12a64b20398c933c8e`.
+The follow-up changes only the orientation test's fixture import to an equivalent
+retained frontend fixture so it stays inside Docker's build context. Its four
+focused cases, typecheck and build passed; application behavior/artifacts are unchanged.
+Initial-head CI passed backend, frontend, Windows lifecycle and security; the
+container job stopped on public ECR HTTP 429 before application build. Final-head
+results/retries are explicitly recorded in PR #328 rather than treating that failure
+as a successful startup check.
+
 ## Reproduction and software evidence
 
 From repository root, no database URL or live model/provider credentials:
