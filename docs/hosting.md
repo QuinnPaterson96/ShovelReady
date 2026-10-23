@@ -9,7 +9,7 @@ the immutable-image delivery/restore criteria in SR-15.
 ## Deployment
 
 - Deploy the repository Dockerfile from trusted main; enable Railway's Wait for CI.
-- Pull the official Node and Python base images from `public.ecr.aws/docker/library/`.
+- Pull the official Node and Python base images from `docker.io/library/`.
   Backend CI uses Docker Hub's official `docker.io/library/postgres:17` after
   repeated ECR Public data-limit failures on October 23. No registry login or AWS
   credentials are required. Existing version tags remain mutable; see the matching

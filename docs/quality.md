@@ -6,8 +6,10 @@ PR #328's backend job repeatedly failed before tests while pulling PostgreSQL 17
 from ECR Public (`toomanyrequests: Data limit exceeded`), including the requested
 retry in run 40016377478. Only the disposable backend service image source now
 uses Docker Hub's official `docker.io/library/postgres:17`. PostgreSQL major,
-isolation, health checks and test gates remain unchanged. Container application
-base images remain on ECR. This requires no credentials or new infrastructure;
+isolation, health checks and test gates remain unchanged. The next run (40019031402)
+also hit ECR's 429 limit fetching Node, so the application Node/Python base images
+now use their official Docker Hub locations with unchanged version tags as well.
+This requires no credentials or new infrastructure;
 neither public registry is guaranteed free of rate limits. Final-head CI is the
 verification gate before merge, and supersedes the historical registry choice below.
 
