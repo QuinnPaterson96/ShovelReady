@@ -10,7 +10,8 @@ the immutable-image delivery/restore criteria in SR-15.
 
 - Deploy the repository Dockerfile from trusted main; enable Railway's Wait for CI.
 - Pull the official Node and Python base images from `public.ecr.aws/docker/library/`.
-  CI uses the same public registry for PostgreSQL 17. No registry login or AWS
+  Backend CI uses Docker Hub's official `docker.io/library/postgres:17` after
+  repeated ECR Public data-limit failures on October 23. No registry login or AWS
   credentials are required. Existing version tags remain mutable; see the matching
   manifest verification in [quality evidence](quality.md#ci-image-pull-registry).
 - The container serves the frontend and API on port 8000. Set PORT=8000 and domain
