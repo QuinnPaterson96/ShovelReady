@@ -78,17 +78,17 @@ test('sourced commercial information survives supporting report formats', () => 
 })
 
 test('saved example retains the licensed packet and an explicit measurable starting placement', () => {
-  const retained = parseSites(JSON.parse(readFileSync('../app/scouting_sites/data/sites.json', 'utf8')))[0]
+  const retained = JSON.parse(readFileSync('src/builder_demo/cecelia-geometry.fixture.json', 'utf8')).measurement.site
   assert.deepEqual(exampleCase, retained)
   const request = exampleRequest(initialExamplePosition())
   assert.ok(request)
-  assert.equal(request.parcel.source.provider, 'City of Victoria')
+  assert.equal(request.parcel.source.provider, 'City of Victoria Open Data')
   assert.equal(request.parcel.source.review_status, 'unreviewed')
   assert.equal(request.buildings[0].basis, 'roofline')
   assert.equal(request.placement.width_m, 3.048)
   assert.equal(request.placement.depth_m, 9.144)
-  assert.deepEqual(request.placement.centre_xy, [473689.18, 5362171.53])
-  assert.ok(request.placement.angle_degrees > -10 && request.placement.angle_degrees < -9, 'building length follows the saved lot axis')
+  assert.deepEqual(request.placement.centre_xy, [471913, 5365834])
+  assert.ok(request.placement.angle_degrees > -22 && request.placement.angle_degrees < -21, 'building length follows the saved Cecelia lot axis')
   assert.equal(exampleRequest({ ...initialExamplePosition(), width: '' }), null)
   assert.equal(exampleRequest({ ...initialExamplePosition(), x: 'unknown' }), null)
   const html = renderToStaticMarkup(createElement(ExampleProperty, { onMeasurement: () => {} }))

@@ -1,0 +1,279 @@
+{
+  "results": [
+    {
+      "phase": "initial",
+      "placement": {
+        "id": "illustrative-example-placement",
+        "centre_xy": [
+          471913,
+          5365834
+        ],
+        "width_m": 3.048,
+        "depth_m": 9.144,
+        "angle_degrees": -21.445006404314483
+      },
+      "checks": [
+        {
+          "id": "containment",
+          "kind": "containment",
+          "status": "observed",
+          "relation": "contained",
+          "area_m2": 0,
+          "distance_m": null,
+          "margin_m": null,
+          "comparison": null,
+          "requirement_id": null,
+          "requirement_status": null,
+          "source_feature_ids": [
+            "live-parcel:10573:0"
+          ],
+          "reason": null
+        },
+        {
+          "id": "parcel_boundary",
+          "kind": "parcel_boundary_distance",
+          "status": "observed",
+          "relation": null,
+          "area_m2": null,
+          "distance_m": 4.001210626890807,
+          "margin_m": null,
+          "comparison": null,
+          "requirement_id": null,
+          "requirement_status": null,
+          "source_feature_ids": [
+            "live-parcel:10573:0"
+          ],
+          "reason": null
+        },
+        {
+          "id": "building:live-roof:81666:overlap",
+          "kind": "building_overlap",
+          "status": "observed",
+          "relation": "positive_area_overlap",
+          "area_m2": 27.87091200091291,
+          "distance_m": null,
+          "margin_m": null,
+          "comparison": null,
+          "requirement_id": null,
+          "requirement_status": null,
+          "source_feature_ids": [
+            "live-roof:81666"
+          ],
+          "reason": null
+        },
+        {
+          "id": "building:live-roof:81666:distance",
+          "kind": "building_distance",
+          "status": "observed",
+          "relation": null,
+          "area_m2": null,
+          "distance_m": 0,
+          "margin_m": null,
+          "comparison": null,
+          "requirement_id": null,
+          "requirement_status": null,
+          "source_feature_ids": [
+            "live-roof:81666"
+          ],
+          "reason": null
+        },
+        {
+          "id": "building:live-roof:81667:overlap",
+          "kind": "building_overlap",
+          "status": "observed",
+          "relation": "separate",
+          "area_m2": 0,
+          "distance_m": null,
+          "margin_m": null,
+          "comparison": null,
+          "requirement_id": null,
+          "requirement_status": null,
+          "source_feature_ids": [
+            "live-roof:81667"
+          ],
+          "reason": null
+        },
+        {
+          "id": "building:live-roof:81667:distance",
+          "kind": "building_distance",
+          "status": "observed",
+          "relation": null,
+          "area_m2": null,
+          "distance_m": 8.451245180773258,
+          "margin_m": null,
+          "comparison": null,
+          "requirement_id": null,
+          "requirement_status": null,
+          "source_feature_ids": [
+            "live-roof:81667"
+          ],
+          "reason": null
+        },
+        {
+          "id": "nearest_building",
+          "kind": "nearest_building_distance",
+          "status": "observed",
+          "relation": null,
+          "area_m2": null,
+          "distance_m": 0,
+          "margin_m": null,
+          "comparison": null,
+          "requirement_id": null,
+          "requirement_status": null,
+          "source_feature_ids": [
+            "live-roof:81666"
+          ],
+          "reason": null
+        }
+      ]
+    },
+    {
+      "phase": "moved",
+      "placement": {
+        "id": "illustrative-example-placement",
+        "centre_xy": [
+          471906.5401536183,
+          5365824.096762222
+        ],
+        "width_m": 3.048,
+        "depth_m": 9.144,
+        "angle_degrees": -21.445006404314483
+      },
+      "checks": [
+        {
+          "id": "containment",
+          "kind": "containment",
+          "status": "observed",
+          "relation": "contained",
+          "area_m2": 0,
+          "distance_m": null,
+          "margin_m": null,
+          "comparison": null,
+          "requirement_id": null,
+          "requirement_status": null,
+          "source_feature_ids": [
+            "live-parcel:10573:0"
+          ],
+          "reason": null
+        },
+        {
+          "id": "parcel_boundary",
+          "kind": "parcel_boundary_distance",
+          "status": "observed",
+          "relation": null,
+          "area_m2": null,
+          "distance_m": 1.6092896315309058,
+          "margin_m": null,
+          "comparison": null,
+          "requirement_id": null,
+          "requirement_status": null,
+          "source_feature_ids": [
+            "live-parcel:10573:0"
+          ],
+          "reason": null
+        },
+        {
+          "id": "building:live-roof:81666:overlap",
+          "kind": "building_overlap",
+          "status": "observed",
+          "relation": "separate",
+          "area_m2": 0,
+          "distance_m": null,
+          "margin_m": null,
+          "comparison": null,
+          "requirement_id": null,
+          "requirement_status": null,
+          "source_feature_ids": [
+            "live-roof:81666"
+          ],
+          "reason": null
+        },
+        {
+          "id": "building:live-roof:81666:distance",
+          "kind": "building_distance",
+          "status": "observed",
+          "relation": null,
+          "area_m2": null,
+          "distance_m": 1.5074461055639987,
+          "margin_m": null,
+          "comparison": null,
+          "requirement_id": null,
+          "requirement_status": null,
+          "source_feature_ids": [
+            "live-roof:81666"
+          ],
+          "reason": null
+        },
+        {
+          "id": "building:live-roof:81667:overlap",
+          "kind": "building_overlap",
+          "status": "observed",
+          "relation": "separate",
+          "area_m2": 0,
+          "distance_m": null,
+          "margin_m": null,
+          "comparison": null,
+          "requirement_id": null,
+          "requirement_status": null,
+          "source_feature_ids": [
+            "live-roof:81667"
+          ],
+          "reason": null
+        },
+        {
+          "id": "building:live-roof:81667:distance",
+          "kind": "building_distance",
+          "status": "observed",
+          "relation": null,
+          "area_m2": null,
+          "distance_m": 5.185544682081473,
+          "margin_m": null,
+          "comparison": null,
+          "requirement_id": null,
+          "requirement_status": null,
+          "source_feature_ids": [
+            "live-roof:81667"
+          ],
+          "reason": null
+        },
+        {
+          "id": "nearest_building",
+          "kind": "nearest_building_distance",
+          "status": "observed",
+          "relation": null,
+          "area_m2": null,
+          "distance_m": 1.5074461055639987,
+          "margin_m": null,
+          "comparison": null,
+          "requirement_id": null,
+          "requirement_status": null,
+          "source_feature_ids": [
+            "live-roof:81666"
+          ],
+          "reason": null
+        }
+      ]
+    },
+    {
+      "explicitNavigation": true,
+      "normalMotionHoldMs": 7500
+    }
+  ],
+  "errors": [],
+  "downloadSurfaces": [
+    {
+      "url": "edge://downloads-hub/",
+      "duringExport": true,
+      "requests": []
+    }
+  ],
+  "requests": [
+    "GET /api/identity",
+    "GET /health",
+    "POST /api/victoria-zoning/property-scan",
+    "POST /api/victoria-zoning/lookup",
+    "POST /api/scouting-geometry/assess",
+    "POST /api/conditional-screening/v1/placement-scenarios",
+    "POST /api/conditional-screening/v1/evaluate"
+  ]
+}

@@ -1,0 +1,25 @@
+/** One reference-only component. No payable fee or exemption is inferred. */
+export const victoriaBuildingPermitReference = {
+  authority: 'City of Victoria',
+  component: 'Building permit fee',
+  status: 'unresolved',
+  captured_at: '2026-10-23',
+  review_status: 'agent source check; independent interpretation review pending',
+  source: 'https://www.victoria.ca/media/file/development-fee-waiver-bylaw',
+  source_revision: 'Development Fee Waiver Bylaw 26-020, sections 2–6',
+  adopted_at: '2026-01-29',
+  repeal_at: '2027-01-29',
+  base_source: 'https://www.victoria.ca/media/file/building-and-plumbing-regulation-bylaw-17-113-consolidated',
+  base_locator: 'Building and Plumbing Regulation Bylaw 17-113, section 19, Schedule A',
+  base_revision: 'Official linked consolidation: April 27, 2023 through Bylaw 23-037; later amendments not independently certified',
+  valuation_basis: 'Section 19(9): greater of contract price including professional fees and reasonable extras, or the Chief Building Inspector’s determined cost. Not the factory starting price.',
+  reductions_and_payments: 'Sections 15(3), 19(2)–(3), 19(6), 19(10)–(11) address professional certification, application payment, cancellation refunds and affordable housing. Conditions/credits are not supplied or calculated here.',
+  inputs: { city_accepted_complete_at: null, application_status: null, accepted_permit_valuation: null },
+  amount: null,
+  reason: 'City acceptance date and application status are unknown. Confirm whether the temporary waiver applies to this building-permit fee; otherwise obtain the City-accepted construction valuation and applicable reductions or credits.',
+  conditions: [
+    'Complete application received after adoption through the repeal date, inclusive; received means accepted by the designated City employee and not determined, rejected or withdrawn.',
+    'The waiver lists specified fees only. It does not establish that development charges, utility works or refundable securities are free.',
+    'No manufacturer starting price is used as permit valuation. No application payment or credit is added separately.',
+  ],
+} as const

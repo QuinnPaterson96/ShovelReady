@@ -14,7 +14,7 @@ export default function Homepage({ onAssessment, onDemo, onWalkthrough }: Props)
           <button className="sr-primary" onClick={onAssessment}>Check my property <span aria-hidden="true">→</span></button>
           <button onClick={onWalkthrough}>Watch the demo</button>
         </div>
-        <p className="homepage-entry-note">Have an assessment in progress? Check my property returns to your work in this open session.</p>
+        <p className="homepage-entry-note">The demo has six stages, including an optional budget moment. Advance at your pace. Check my property returns to your work in this open session.</p>
         <p className="homepage-scope">Preliminary exploration, starting in the City of Victoria. A promising placement still needs source review and site-specific advice; this is not a permit finding.</p>
       </div>
       <figure className="homepage-product">

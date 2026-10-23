@@ -1,7 +1,7 @@
-.project-budget { margin: 1.5rem 0; padding: 1rem 0; border-block: 1px solid var(--border); max-width: 60rem; overflow-wrap: anywhere; }
+.project-budget { margin: 1.5rem 0; padding: 1rem; border-block: 1px solid var(--border); max-width: 60rem; overflow-wrap: anywhere; }
+.project-budget > input { width: min(100%, 42rem); }
 .project-budget summary { cursor: pointer; padding: .6rem 0; font-weight: 600; min-height: 44px; }
-.project-budget > summary { font-size: 1.1rem; }
-.project-budget > summary span { display: inline-block; font-size: .9rem; font-weight: 400; color: var(--ink-muted); margin-inline-start: .5rem; }
+.project-budget h2 span { display: inline-block; font-size: 1rem; font-weight: 400; color: var(--ink-muted); margin-inline-start: .5rem; }
 .project-budget p { max-width: 72ch; }
 .project-budget label { display: block; margin-top: .6rem; }
 .project-budget input, .project-budget select, .project-budget textarea { min-width: 0; max-width: 100%; min-height: 44px; color: var(--ink); background: var(--surface); padding: .6rem; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); caret-color: var(--primary); }
@@ -26,5 +26,5 @@
   .budget-fields, .budget-date { grid-template-columns: minmax(0, 1fr); }
   .budget-fields label { margin-top: .5rem; }
   .budget-coverage li { align-items: start; flex-direction: column; gap: .4rem; }
-  .project-budget > summary span { display: block; margin-inline-start: 0; }
+  .project-budget h2 span { display: block; margin-inline-start: 0; }
 }

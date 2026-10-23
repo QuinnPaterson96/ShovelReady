@@ -1,6 +1,31 @@
 # Quality engineering agreement
 
+## Backend CI registry correction — October 23, 2026
+
+PR #328's backend job repeatedly failed before tests while pulling PostgreSQL 17
+from ECR Public (`toomanyrequests: Data limit exceeded`), including the requested
+retry in run 40016377478. Only the disposable backend service image source now
+uses Docker Hub's official `docker.io/library/postgres:17`. PostgreSQL major,
+isolation, health checks and test gates remain unchanged. The next run (40019031402)
+also hit ECR's 429 limit fetching Node, so the application Node/Python base images
+now use their official Docker Hub locations with unchanged version tags as well.
+This requires no credentials or new infrastructure;
+neither public registry is guaranteed free of rate limits. Final-head CI is the
+verification gate before merge, and supersedes the historical registry choice below.
+
 Status: initial working agreement, September 17, 2026. These are acceptance criteria for future work, not claims about current test coverage.
+
+## Budget-journey review checkpoint — October 23, 2026
+
+The existing integration coverage now includes optional-budget navigation, the
+captured Cecelia demo, a shorter recipient cost paragraph and preservation of
+installation questions even with building-only pricing. [Retained verification](budget-journey-verification/README.md)
+separates software checks, official-source recheck, agent comprehension inspection
+and the still-missing actual recipient study. The audit identified unnamed allowance
+contributions; the generator now retains their category/amount in recipient prose.
+Unknown Victoria fee eligibility remains unresolved, with no zero or factory-price
+valuation inferred. [Implementation and exact gaps](project-budget-journey.md) list
+practical impacts and next owners. No deployment or accepted publication occurred.
 
 ## Budget-scope prototype checkpoint — October 19, 2026
 

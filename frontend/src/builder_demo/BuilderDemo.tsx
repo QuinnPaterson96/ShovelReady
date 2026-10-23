@@ -51,7 +51,8 @@ import { preparationChecklist } from './manufacturer'
 import { EnquirySaveOptions } from './EnquirySaveOptions'
 import { BudgetSection } from '../project_budget/BudgetSection'
 import type { BudgetDraft, Context as BudgetContext } from '../project_budget/contract'
-import { budgetEvidence, budgetSummary, calculateBudget, emptyBudget, reconcile } from '../project_budget/pipeline'
+import { budgetEvidence, budgetSummary, calculateBudget, catalogueSuggestions, emptyBudget, reconcile, replaceItem } from '../project_budget/pipeline'
+import { victoriaBuildingPermitReference } from '../project_budget/victoriaFee'
 import { placementDrawing, renderDrawing, renderEnquiryPdf, downloadFile, attachedEmail, enquiryPackageFiles, type DrawingAssets } from './placementExport'
 
 const modelValues = (model: CatalogueModel) => {
@@ -107,7 +108,7 @@ export function screeningDocument(selection: SitePreparationSelection | null, in
     `UNSENT DRAFT · ${model.name} enquiry for preliminary investigation`,
     `Prepared independently with ShovelReady; no affiliation with or contact to ${model.provider}.`,
     `Design: ${model.provider} ${model.name}; public page captured ${readableDate(source?.captured_at)}; unreviewed; manufacturer revision ${model.source_revision ?? 'unknown'}. Nominal exterior ${original('nominal_exterior_width')} × ${original('nominal_exterior_depth')} (${metres('nominal_exterior_width')} × ${metres('nominal_exterior_depth')}). Advertised exterior height ${original('advertised_overall_height')}; regulatory installed height and datum unknown. Source: ${model.provider_url}.`,
-    savedExample ? `Example property / saved data: City of Victoria ${exampleCase.site.parcel.source.record_label}; captured ${readableDate(exampleCase.site.parcel.source.capture_date)}; ${exampleCase.site.parcel.source.review_status}. Parcel source: ${exampleSourcePage(exampleCase.site.parcel.source.reference)} (${exampleCase.site.parcel.source.record_label}). Roofline source: ${exampleSourcePage(exampleCase.site.buildings[0]?.source.reference ?? null)} (${exampleCase.site.buildings[0]?.source.record_label ?? 'record unavailable'}). Contains information licensed under the Open Government Licence – City of Victoria: https://opendata.victoria.ca/pages/open-data-licence. Full source record links are in the technical evidence export. This is not the sender's property or a verified address.` :
+    savedExample ? `Example property / saved data: ${exampleCase.label}; City of Victoria ${exampleCase.site.parcel.source.record_label}; captured ${readableDate(exampleCase.site.parcel.source.capture_date)}; ${exampleCase.site.parcel.source.review_status}. Parcel source: ${exampleSourcePage(exampleCase.site.parcel.source.reference)} (${exampleCase.site.parcel.source.record_label}). Roofline source: ${exampleSourcePage(exampleCase.site.buildings[0]?.source.reference ?? null)} (${exampleCase.site.buildings[0]?.source.record_label ?? 'record unavailable'}). Contains information licensed under the Open Government Licence – City of Victoria: https://opendata.victoria.ca/pages/open-data-licence. Full source record links are in the technical evidence export. This is not the sender's property or a verified address.` :
     live ? `Site lead: ${live.address.label}; ${live.parcel.label}. ${live.schema_version === 'site-discovery.selected.v1' ? 'Source-selected City of Victoria observation; identity, ownership and legal boundaries are not confirmed' : 'User-confirmed City of Victoria source observation'}; source join and parcel identity remain unreviewed. Captured ${readableDate(live.observation.source.capturedAt)}. Source: ${publicSourceUrl(live.observation.source.url) ?? 'source link unavailable'}. ${live.observation.issues.join(' ')}` :
       manual ? `User-supplied site: ${field(manual.facts.address)}; stated area ${measurementWithUnit(manual.facts.statedAreaM2, 'area')}; notes ${field(manual.facts.notes)}. Approximate local sketch only, with no verified address, survey position or orientation.` :
       `Site lead: ${candidate ? 'City of Victoria retained parcel observation' : 'manual facts without a matched parcel'}. Source address ${candidate ? fact(candidate.address.value) : 'unknown'}; manual address ${fact(selection?.manual.address.value ?? null)}; manual approximate area ${measurementWithUnit(selection?.manual.lot_area_m2.value, 'area')}. Manual notes: ${fact(selection?.manual.notes.value ?? null)}. Manual entries are unverified and separate from source observations. Exact parcel identifiers remain in technical evidence.`,
@@ -152,7 +153,7 @@ export function screeningDocument(selection: SitePreparationSelection | null, in
 
 export function enquiryDocument(...args: Parameters<typeof screeningDocument>) {
   const [selection, input, measured, , live, manual, savedExample, , conditional, , pathway, scenarios, , scan] = args
-  const address = savedExample ? null : live?.address.label || manual?.facts.address || selection?.candidate?.address.value || selection?.manual.address.value || null
+  const address = savedExample ? exampleCase.label : live?.address.label || manual?.facts.address || selection?.candidate?.address.value || selection?.manual.address.value || null
   return manufacturerDocument(input, address === null ? null : String(address), !!savedExample, measured, conditional ?? null, scenarios ?? null, scan ?? null, !!(savedExample || live || manual?.assessment), false, pathway?.proposed_use, args[14] ?? defaultJourneyModel)
 }
 
@@ -237,6 +238,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const [timing, setTiming] = useState('')
   const [budget, setBudget] = useState('')
   const [budgetDraft, setBudgetDraft] = useState<BudgetDraft>(emptyBudget)
+  const [demoBudgetSetup, setDemoBudgetSetup] = useState(false)
   const [access, setAccess] = useState('')
   const [services, setServices] = useState('')
   const [projectContext, setProjectContext] = useState({ relationship: '', stage: '', configuration: '', nextStep: '', contact: '' })
@@ -253,7 +255,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const [demoAnswers, setDemoAnswers] = useState<EnquiryInput['demoAnswers']>({})
   function clearDemoAnswer(key: 'intendedUse' | 'relationship' | 'nextStep' | 'streetContext') { setDemoAnswers(previous => { const next = { ...previous }; delete next[key]; return next }) }
   function changeIntendedUse(value: string, demo = false) { if (!demo) clearDemoAnswer('intendedUse'); if (value !== use) setReviewedPurposeFor(null); setUse(value); setProjectSettings(previous => applyIntendedUse(previous, value)); setReadyFor(null) }
-  function siteEdited() { const retainedUse = demoAnswers?.intendedUse === use ? '' : use; setUse(retainedUse); setGeometryFailure(false); setDemoAnswers({}); setStreetDecisionFor(null); setStreetSkipTarget(null); setChecksRevealed(false); setBufferSuggestion(undefined); setMoveSuggestion(undefined); setAcknowledgedConflicts([]); setSelection(null); setImported(false); setMeasurementResult(null); setSiteAssumptions(null); setProjectSettings(applyIntendedUse(modelProjectSettings(model), retainedUse)); setGeometryPending(false); setAccess(''); setServices(''); setProjectContext(previous => ({ ...previous, relationship: '', nextStep: '' })); setQuestion(`Could ${model.name} be suitable for this property?`); setWaterfrontMarks({ revision: null, ids: [] }); setDrawingExport(null); setStreetMarks({ revision: null, data: { edge_ids: [], all_marked: false, origin: 'user' } }); setRearEdge(null); setSelectedBoundary(null); setBoundaryMark(null); setMarkingRole(null); setBoundaryMode('place'); setReadyFor(null); setRevision(value => value + 1) }
+  function siteEdited() { setDemoBudgetSetup(false); const retainedUse = demoAnswers?.intendedUse === use ? '' : use; setUse(retainedUse); setGeometryFailure(false); setDemoAnswers({}); setStreetDecisionFor(null); setStreetSkipTarget(null); setChecksRevealed(false); setBufferSuggestion(undefined); setMoveSuggestion(undefined); setAcknowledgedConflicts([]); setSelection(null); setImported(false); setMeasurementResult(null); setSiteAssumptions(null); setProjectSettings(applyIntendedUse(modelProjectSettings(model), retainedUse)); setGeometryPending(false); setAccess(''); setServices(''); setProjectContext(previous => ({ ...previous, relationship: '', nextStep: '' })); setQuestion(`Could ${model.name} be suitable for this property?`); setWaterfrontMarks({ revision: null, ids: [] }); setDrawingExport(null); setStreetMarks({ revision: null, data: { edge_ids: [], all_marked: false, origin: 'user' } }); setRearEdge(null); setSelectedBoundary(null); setBoundaryMark(null); setMarkingRole(null); setBoundaryMode('place'); setReadyFor(null); setRevision(value => value + 1) }
   function changeMode(next: typeof mode) {
     if (next !== 'example' && window.location.hash.startsWith('#examples/')) window.history.replaceState(null, '', '#assessment')
     setExpanded({ property: next !== 'example', placement: next === 'example', next: false, email: false })
@@ -272,6 +274,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     if (entry.example) {
       playback.cancel()
       setUse(''); setTiming(''); setBudget(''); setBudgetDraft(emptyBudget()); setAccess(''); setServices('');
+      setDemoBudgetSetup(false)
       setProjectContext({ relationship: '', stage: '', configuration: '', nextStep: '', contact: '' })
       setFoundationAllowanceM('0.30'); setEstimateBuffers({ area: 10, height: 10 })
       changeMode('example')
@@ -294,7 +297,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   function switchModel(nextId: string) {
     const next = journeyCatalogue.models.find(item => item.model_id === nextId)
     if (!next || nextId === modelId) return
-    setGeometryFailure(false); setModelId(nextId); setMeasurementResult(null); setGeometryPending(false)
+    setDemoBudgetSetup(false); setGeometryFailure(false); setModelId(nextId); setMeasurementResult(null); setGeometryPending(false)
     setManual(previous => previous ? { ...previous, assessment: null, placement: null } : null)
     setSiteAssumptions(previous => previous ? { ...previous, measurements: { ...previous.measurements, boundary: {}, principal_separation: null, floor_area: null } } : null)
     setProjectSettings(previous => {
@@ -327,13 +330,14 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   }
   const budgetContextKey = JSON.stringify(budgetContext)
   const latestBudgetContext = useRef(budgetContext); latestBudgetContext.current = budgetContext
+  const victoriaBudget = mode === 'example' || mode === 'live' && live?.address.locality?.toLowerCase() === 'victoria'
   // Reconcile synchronously for display/export and retain the flag in state, even after switching back.
   const currentBudget = reconcile(budgetDraft, budgetContext)
   useEffect(() => { setBudgetDraft(previous => reconcile(previous, budgetContext)) }, [budgetContextKey])
   const budgetInput = currentBudget.items.length || currentBudget.scope !== 'not_sure' ? { draft: currentBudget, context: budgetContext } : undefined
   const placementRevision = measurementResult ? currentPlacementRevision({ placement: measurementResult.result.input.placement, model: measurementResult.model?.model_id ?? null, widthOrigin: measurementResult.widthOrigin, depthOrigin: measurementResult.depthOrigin }) : 'placement-unmeasured'
   const currentAssumptions = zoningCase && geometryRevision && siteAssumptions?.property.case_id === zoningCase.case_id && siteAssumptions.property.parcel_id === zoningCase.site.parcel.id && siteAssumptions.property.geometry_revision === geometryRevision && siteAssumptions.placement_revision === placementRevision ? siteAssumptions : null
-  const selectedRef = mode === 'live' ? selectedParcelRef(live) : mode === 'example' ? { parcel_ref: { source: 'city-of-victoria-pid-parcels' as const, object_id: 87 } } : null
+  const selectedRef = mode === 'live' ? selectedParcelRef(live) : mode === 'example' ? { parcel_ref: { source: 'city-of-victoria-pid-parcels' as const, object_id: 10573 } } : null
   const propertyScan = usePropertyScan(selectedRef, geometryRevision)
   const zoningKey = selectedRef && geometryRevision ? JSON.stringify([selectedRef, geometryRevision, revision, zoningRetry]) : null
   const currentZoning = zoningKey && zoningState?.key === zoningKey ? zoningState.result : null
@@ -484,7 +488,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     function revealStep(event: MouseEvent) {
       const anchor = event.target instanceof Element ? event.target.closest('a') : null
       if (event.defaultPrevented || !anchor?.closest('.builder-journey-rail') || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return
-      const routes: Record<string, JourneyStep> = { '#builder-model': 'model', '#builder-property': 'property', '#builder-placement': 'placement', '#placement-action-front': 'streets', '#placement-action-rear': 'boundaries', '#builder-property-details': 'details', '#builder-purpose': 'purpose', '#builder-quick-checks': 'checks', '#builder-next': 'enquiry', '#builder-email': 'email' }
+      const routes: Record<string, JourneyStep> = { '#builder-model': 'model', '#builder-property': 'property', '#builder-placement': 'placement', '#placement-action-front': 'streets', '#placement-action-rear': 'boundaries', '#builder-property-details': 'details', '#builder-purpose': 'purpose', '#builder-quick-checks': 'checks', '#builder-budget-stage': 'budget', '#builder-next': 'enquiry', '#builder-email': 'email' }
       const href = anchor.getAttribute('href') ?? ''
       if (href.startsWith('#summary-check-')) { event.preventDefault(); openJourneyStep('checks'); requestAnimationFrame(() => focusSummaryTarget(document, href.slice(1))); return }
       const step = routes[href]
@@ -564,7 +568,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     stop === 'model' || stop === 'property' || !!measurementResult && !checksPending &&
       (measurementResult.result.input.placement.centre_xy[0] === Number((stop === 'initial' ? initialExamplePosition() : movedExamplePosition()).x) &&
         measurementResult.result.input.placement.centre_xy[1] === Number((stop === 'initial' ? initialExamplePosition() : movedExamplePosition()).y)) &&
-      (stop !== 'result' && stop !== 'enquiry' || use === demoEnquiryAnswers.intendedUse), geometryFailure)
+      (stop !== 'result' && stop !== 'budget' && stop !== 'enquiry' || use === demoEnquiryAnswers.intendedUse), geometryFailure)
   const playbackActive = !!playback.state && visible
   playbackLayoutRef.current = playbackActive
   const playbackStop = playback.state?.stop
@@ -588,6 +592,17 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
       })
       setProjectContext(previous => ({ ...previous, relationship: demoEnquiryAnswers.relationship, nextStep: demoEnquiryAnswers.nextStep }))
       openJourneyStep('checks', true, true)
+    }
+    if (playbackStop === 'budget') {
+      // This explicit walkthrough transition uses real captured data, never invented site allowances.
+      // Once the user edits anything playback cancels before this handler can run again.
+      setBudgetDraft(previous => {
+        if (previous.items.length || previous.scope !== 'not_sure') return previous
+        const price = catalogueSuggestions(model, modelSnapshot(model), latestBudgetContext.current)[0]
+        return price ? replaceItem({ ...previous, scope: 'whole_project' }, price) : { ...previous, scope: 'whole_project' }
+      })
+      setDemoBudgetSetup(true)
+      openJourneyStep('budget', true, true)
     }
     if (playbackStop === 'enquiry') openJourneyStep('enquiry', true, true)
   }, [playbackActive, playbackStop, playbackRun])
@@ -687,13 +702,13 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     setReadyFor(null)
     openJourneyStep('placement')
   }
-  const nextJourneyStep: JourneyStep = !placementComplete ? 'placement' : journeyStep === 'checks' ? 'enquiry' : journeyStep === 'purpose' ? 'checks' : journeyStep === 'details' ? 'purpose' : boundaryMode === 'front' ? 'boundaries' : boundaryMode === 'waterfront' ? 'details' : boundaryMode === 'rear' ? 'details' : streetAdjacency.all_marked ? 'boundaries' : 'streets'
+  const nextJourneyStep: JourneyStep = !placementComplete ? 'placement' : journeyStep === 'checks' ? 'budget' : journeyStep === 'purpose' ? 'checks' : journeyStep === 'details' ? 'purpose' : boundaryMode === 'front' ? 'boundaries' : boundaryMode === 'waterfront' ? 'details' : boundaryMode === 'rear' ? 'details' : streetAdjacency.all_marked ? 'boundaries' : 'streets'
   const continuation = nextJourneyStep === 'placement' ? { label: 'Place model', hint: 'Place the unit on the map to continue.' }
     : nextJourneyStep === 'streets' ? { label: 'Mark street edges', hint: 'Position saved. Next, mark the street edges you know, or choose Not sure.' }
     : nextJourneyStep === 'boundaries' ? { label: 'Review boundaries', hint: 'Review suggested boundary roles and buffers, or leave uncertain roles unknown. Save any buffer edits before continuing.' }
     : nextJourneyStep === 'details' ? { label: 'Review property details', hint: 'Next, answer the property questions you know. You can leave the rest unknown.' }
     : nextJourneyStep === 'purpose' ? { label: 'Intended purpose', hint: 'Next, choose how you would use the unit, or keep Not sure.' }
-    : nextJourneyStep === 'enquiry' ? { label: 'Prepare enquiry', hint: 'Review concerns or carry them as open questions into your enquiry. Continuing does not resolve a concern.' }
+    : nextJourneyStep === 'budget' ? { label: 'Explore budget (optional)', hint: 'Review published pricing and unpriced work, or continue to enquiry with costs unknown.' }
     : { label: 'Review quick checks', hint: 'Next, review what looks promising and which questions to include in your enquiry.' }
   const mapConcerns = findings.filter(check => check.status === 'conflict' && ['Distance to boundaries', 'Distance from the main building', 'Front boundary distance', 'Located behind the main building', 'Share of the rear yard'].includes(check.label))
   const placementResolutions = findings.flatMap(check => check.resolutions ?? [])
@@ -725,7 +740,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     requestAnimationFrame(() => focusSummaryTarget(document, 'sd-address'))
   }
   function advanceJourneyStep(step: JourneyStep) {
-    if (journeyStep === 'streets' && ['boundaries', 'details', 'purpose', 'checks', 'enquiry', 'email'].includes(step) && !streetAdjacency.all_marked && streetDecisionFor !== geometryRevision) { setStreetSkipTarget(step); return }
+    if (journeyStep === 'streets' && ['boundaries', 'details', 'purpose', 'checks', 'budget', 'enquiry', 'email'].includes(step) && !streetAdjacency.all_marked && streetDecisionFor !== geometryRevision) { setStreetSkipTarget(step); return }
     if (journeyStep === 'boundaries') setReviewedBoundariesFor(boundaryReviewRevision)
     if (journeyStep === 'details') setReviewedDetailsFor(detailsReviewRevision)
     if (journeyStep === 'purpose') setReviewedPurposeFor(use)
@@ -733,7 +748,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     openJourneyStep(step)
   }
   function openJourneyStep(step: JourneyStep, answered = false, playbackTransition = false) {
-    if (!answered && zoningCase && ['boundaries', 'details', 'purpose', 'checks', 'enquiry', 'email'].includes(step) && !streetAdjacency.all_marked && streetDecisionFor !== geometryRevision) { setStreetSkipTarget(step); return }
+    if (!answered && zoningCase && ['boundaries', 'details', 'purpose', 'checks', 'budget', 'enquiry', 'email'].includes(step) && !streetAdjacency.all_marked && streetDecisionFor !== geometryRevision) { setStreetSkipTarget(step); return }
     if (!propertyComplete && step !== 'model' && step !== 'property') step = 'property'
     if (!zoningCase && (step === 'streets' || step === 'boundaries' || step === 'details')) step = 'placement'
     setJourneyStep(step)
@@ -741,8 +756,8 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     if (step === 'streets') changeBoundaryMode('front')
     if (step === 'boundaries') changeBoundaryMode('rear', true)
     if (step === 'placement' || step === 'details' || step === 'purpose') setBoundaryMode('place')
-    setExpanded({ property: step === 'property', placement: !['property', 'model', 'enquiry', 'email'].includes(step), next: step === 'enquiry', email: step === 'email' })
-    const targets: Record<JourneyStep, string> = { model: 'builder-title', property: 'sd-address', placement: 'builder-placement-title', streets: 'placement-action-front', boundaries: 'placement-action-rear', details: 'builder-property-details', purpose: 'builder-intended-use', checks: 'builder-quick-checks', enquiry: 'builder-enquiry-title', email: contextComplete ? 'builder-provider-website' : 'builder-contact-context' }
+    setExpanded({ property: step === 'property', placement: !['property', 'model', 'budget', 'enquiry', 'email'].includes(step), next: step === 'enquiry', email: step === 'email' })
+    const targets: Record<JourneyStep, string> = { model: 'builder-title', property: 'sd-address', placement: 'builder-placement-title', streets: 'placement-action-front', boundaries: 'placement-action-rear', details: 'builder-property-details', purpose: 'builder-intended-use', checks: 'builder-quick-checks', budget: 'builder-budget-title', enquiry: 'builder-enquiry-title', email: contextComplete ? 'builder-provider-website' : 'builder-contact-context' }
     if (playbackTransition) return // Playback owns one scroll after the target renders.
     requestAnimationFrame(() => {
       if (playbackActive || !visible) return
@@ -806,7 +821,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
       setEmailMessage('Full email body copied.')
     } catch { setEmailMessage('Clipboard unavailable. Select and copy the email body above.') }
   }
-  const technicalEvidence = { schema_version: 'builder-evidence.v1', project_budget: budgetInput ? budgetEvidence(currentBudget, budgetContext) : null, demo_answer_provenance: Object.fromEntries(Object.entries(currentDemoAnswers ?? {}).map(([key, value]) => [key, { value, origin: 'demo_supplied' }])), evaluation_state: checksPending ? 'updating' : 'current', planning_comparison_scope: { selected_use: pathway.proposed_use, garden_suite_comparisons_applied: pathway.proposed_use === 'garden_suite', raw_scenario_results: 'Exploratory candidate comparisons; withheld from homeowner findings and recipient documents when intended use is unknown or outside the garden-suite scenario.' }, enquiry_inputs: { question, intendedUse: use, timing, budget, access, services, ...projectContext }, model_catalogue: { snapshot_id: modelSnapshot(model), model }, acknowledged_conflicts_for_discussion: currentAcknowledgements, open_questions_for_discussion: currentOpenQuestions, review_readiness: reviewReadiness, foundation_scenario: { allowance_m: foundationAllowanceM, basis: 'planning_assumption', used_in_preliminary_height: currentScenario?.additional_checks?.some(check => check.id === 'height' && check.basis.startsWith('advertised height')) ?? false }, selection, live, manual, example: mode === 'example' ? exampleCase : null, measurement: measurementResult, zoning_site_assumptions: currentAssumptions, project_settings: zoningCase ? effectiveSettings : null, municipal_zoning_lookup: currentZoning, municipal_zoning_error: currentZoningError || null, property_scan: propertyScan.result, property_scan_error: propertyScan.error || null, placement_scenario_request: scenarioRequest, placement_scenario_result: currentScenario, conditional_screening: currentScreening }
+  const technicalEvidence = { schema_version: 'builder-evidence.v1', project_budget: budgetInput ? { ...budgetEvidence(currentBudget, budgetContext), demo_setup: demoBudgetSetup, fee_references: victoriaBudget ? [victoriaBuildingPermitReference] : [] } : null, demo_answer_provenance: Object.fromEntries(Object.entries(currentDemoAnswers ?? {}).map(([key, value]) => [key, { value, origin: 'demo_supplied' }])), evaluation_state: checksPending ? 'updating' : 'current', planning_comparison_scope: { selected_use: pathway.proposed_use, garden_suite_comparisons_applied: pathway.proposed_use === 'garden_suite', raw_scenario_results: 'Exploratory candidate comparisons; withheld from homeowner findings and recipient documents when intended use is unknown or outside the garden-suite scenario.' }, enquiry_inputs: { question, intendedUse: use, timing, budget, access, services, ...projectContext }, model_catalogue: { snapshot_id: modelSnapshot(model), model }, acknowledged_conflicts_for_discussion: currentAcknowledgements, open_questions_for_discussion: currentOpenQuestions, review_readiness: reviewReadiness, foundation_scenario: { allowance_m: foundationAllowanceM, basis: 'planning_assumption', used_in_preliminary_height: currentScenario?.additional_checks?.some(check => check.id === 'height' && check.basis.startsWith('advertised height')) ?? false }, selection, live, manual, example: mode === 'example' ? exampleCase : null, measurement: measurementResult, zoning_site_assumptions: currentAssumptions, project_settings: zoningCase ? effectiveSettings : null, municipal_zoning_lookup: currentZoning, municipal_zoning_error: currentZoningError || null, property_scan: propertyScan.result, property_scan_error: propertyScan.error || null, placement_scenario_request: scenarioRequest, placement_scenario_result: currentScenario, conditional_screening: currentScreening }
   const exportIdentity = JSON.stringify([geometryRevision, model.model_id, modelSnapshot(model), checksPending, enquiryDoc, reportDoc, drawingKey, technicalEvidence])
   const latestExportIdentity = useRef(exportIdentity); latestExportIdentity.current = exportIdentity
   function downloadMarkdown(report = false) {
@@ -857,10 +872,11 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   }
   const playbackCaptions = {
     model: 'Explore aux box Model 300: nominal provider dimensions, unreviewed.',
-    property: 'City of Victoria Parcel 87: saved, partial map outlines; this is not your property.',
+    property: '419 Cecelia Road, City of Victoria: saved, partial map outlines; this is not your property.',
     initial: 'Check the starting position against the mapped parcel and roofline.',
     moved: 'Move away from the mapped overlap. The current evaluator checks this new position.',
     result: `${measurementResult && overlapFinding(measurementResult.site, measurementResult.result).complete && !overlapFinding(measurementResult.site, measurementResult.result).conflicts.length ? 'This position avoids the mapped overlap. ' : 'Inspect the current placement findings. '}Garden suite is an example scenario. Street context stays Not sure; planning questions still need review.`,
+    budget: 'CAD 187,000 is the captured Model 300 starting price. Your spending preference is separate. Site costs are unpriced, so the installed total remains unavailable. Take over to explore assumptions, or continue with gaps.',
     enquiry: 'Review this editable, unsent enquiry. The builder can advise which information to gather next.',
   }
   const playbackScrolled = useRef('')
@@ -870,7 +886,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     const scrollKey = `${playbackRun}:${playbackStop}`
     if (playbackScrolled.current === scrollKey) return
     if (!playbackActive || !playbackStop) return
-    const target = playbackStop === 'model' ? 'builder-title' : playbackStop === 'property' ? 'builder-property-title' : playbackStop === 'result' ? 'builder-quick-checks' : playbackStop === 'enquiry' ? 'builder-unsent-preview' : 'placement-map'
+    const target = playbackStop === 'model' ? 'builder-title' : playbackStop === 'property' ? 'builder-property-title' : playbackStop === 'result' ? 'builder-quick-checks' : playbackStop === 'budget' ? 'builder-budget-title' : playbackStop === 'enquiry' ? 'builder-unsent-preview' : 'placement-map'
     const frame = requestAnimationFrame(() => {
       if (!playbackLayoutRef.current || !journeyVisible.current) return
       const element = target === 'placement-map' ? document.querySelector<HTMLElement>('#placement-map svg') : document.getElementById(target)
@@ -880,13 +896,13 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   }, [playbackActive, playbackStop, playbackRun, journeyStep, expanded, !!enquiryDoc])
   return <PlaybackLayout.Provider value={playbackActive}><div className="builder-demo" data-playback={playbackActive || undefined}>
     {playbackActive && <section data-playback-controls className="builder-playback" aria-label="Walkthrough controls">
-      <span className="builder-playback-progress">Step {walkthroughPhase[playbackStop!]} of 5</span>
+      <span className="builder-playback-progress">Step {walkthroughPhase[playbackStop!]} of 6</span>
       <p aria-live="polite">{playback.state!.finished ? 'Walkthrough complete. ' : ''}{playbackCaptions[playbackStop!]}{geometryFailure ? ' Placement check unavailable. Retry in the assessment or take over.' : !playback.ready ? ' Waiting for current checks; you can go back or take over.' : ''}</p>
       <div className="sr-actions">
         <button type="button" disabled={playbackStop === 'model'} onClick={playback.back}>Back</button>
         {!playback.state!.finished && <button className="builder-continue" type="button" disabled={!playback.ready || playback.state!.skipping} onClick={playback.next}>Next</button>}
         <button hidden={playback.state!.finished || playbackStop === 'result'} type="button" onClick={playback.skip}>Skip to result</button>
-        <button type="button" onClick={() => { playback.cancel(); requestAnimationFrame(() => focusSummaryTarget(document, playbackStop === 'enquiry' ? 'builder-use' : playbackStop === 'model' ? 'builder-model-choice' : 'placement-map')) }}>Let me try</button>
+        <button type="button" onClick={() => { playback.cancel(); requestAnimationFrame(() => focusSummaryTarget(document, playbackStop === 'enquiry' ? 'builder-use' : playbackStop === 'budget' ? 'builder-budget' : playbackStop === 'model' ? 'builder-model-choice' : 'placement-map')) }}>Let me try</button>
       </div>
     </section>}
     {mode === 'example' && !playbackActive && <button type="button" onClick={() => setPendingEntry({ example: true, modelId: 'aux-300', walkthrough: true })}>Replay walkthrough</button>}
@@ -948,7 +964,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     </div>
     </section>
     {!propertyComplete && <p className="builder-journey-preview">Find property → Place unit → Review → Contact provider</p>}
-    {propertyComplete && live && !expanded.property ? <SelectedProperty value={live} onChangeProperty={changeProperty} onInspectAlternatives={() => { setPropertyInspect(value => value + 1); setExpanded(previous => ({ ...previous, property: true })); setJourneyStep('property'); requestAnimationFrame(() => focusSummaryTarget(document, 'sd-parcels')); }} /> : propertyComplete && !live && <div className="builder-selected-property"><strong>Property: {mode === 'example' ? 'Saved Victoria example · not your property' : manual?.facts.address || 'User-supplied site'}</strong><span>Approximate and unreviewed</span><button type="button" onClick={changeProperty}>Wrong property? Change</button></div>}
+    {propertyComplete && live && !expanded.property ? <SelectedProperty value={live} onChangeProperty={changeProperty} onInspectAlternatives={() => { setPropertyInspect(value => value + 1); setExpanded(previous => ({ ...previous, property: true })); setJourneyStep('property'); requestAnimationFrame(() => focusSummaryTarget(document, 'sd-parcels')); }} /> : propertyComplete && !live && <div className="builder-selected-property"><strong>Property: {mode === 'example' ? '419 Cecelia Road · saved example, not your property' : manual?.facts.address || 'User-supplied site'}</strong><span>Approximate and unreviewed</span><button type="button" onClick={changeProperty}>Wrong property? Change</button></div>}
     <section hidden={!propertyComplete} className="builder-stage" id="builder-placement" aria-labelledby="builder-placement-title">
       <p className="eyebrow">Placement</p><h2 id="builder-placement-title">Explore one approximate placement</h2>
       <p>{propertyComplete ? zoningCase ? 'Place the unit and see what is worth exploring.' : placementSummary : 'Choose a property to explore placement.'}</p>
@@ -985,8 +1001,16 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     {mode === 'retained' && !selection && <p>Confirm a site lead above to consider a separate retained placement example. An example is never matched to your site lead.</p>}
       <details className="builder-optional"><summary>Illustrate model height and foundation</summary><p>This illustration is separate from the installed-height comparison above. A foundation allowance does not establish average grade.</p><HeightView key={`height-${heightRevision}`} model={model} foundationAllowanceM={foundationAllowanceM} onFoundationAllowanceChange={value => { setFoundationAllowanceM(value); setReadyFor(null) }} /></details>
       </div>
-      {propertyComplete && <button className="builder-continue" type="button" onClick={() => openJourneyStep('enquiry')}>Prepare enquiry{placementComplete ? '' : ' with placement unknown'}</button>}
+      {propertyComplete && <div className="budget-actions"><button className="builder-continue" type="button" onClick={() => openJourneyStep('budget')}>Explore budget (optional)</button><button type="button" onClick={() => openJourneyStep('enquiry')}>Prepare enquiry{placementComplete ? '' : ' with placement unknown'}</button></div>}
     </section>
+    <div id="builder-budget-stage" hidden={!propertyComplete || journeyStep !== 'budget'}>
+      <BudgetSection draft={currentBudget} context={budgetContext} model={model} preference={budget} onPreference={value => { setBudget(value); setReadyFor(null) }}
+        projectLabel={`${mode === 'example' ? '419 Cecelia Road · saved demo, not your property' : live?.address.label || manual?.facts.address || 'Selected property'} · Use: ${use.trim() || 'not supplied'}`}
+        victoria={victoriaBudget} demoSetup={demoBudgetSetup && mode === 'example'}
+        onContinue={() => openJourneyStep('enquiry')}
+        onChange={next => { setDemoBudgetSetup(false); setBudgetDraft(reconcile(next, latestBudgetContext.current)); setReadyFor(null) }} />
+      <p className="metadata">Model, configuration, property, placement or intended-use changes withhold existing costs for recheck. Your spending preference and cost scope remain. Save the draft JSON before reloading; live assessment inputs are kept only in this open session.</p>
+    </div>
     <section hidden={!propertyComplete} className="builder-stage builder-enquiry" id="builder-next" aria-labelledby="builder-enquiry-title">
       <p className="eyebrow">Take away · local draft</p><h2 id="builder-enquiry-title">Prepare a useful question</h2>
       <p>Review your enquiry, then copy it into the provider’s website form or use an email contact you already have. Nothing is sent automatically.</p>
@@ -1005,9 +1029,9 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
         <datalist id="builder-response-options">{['Please advise whether this is worth investigating further.', 'I would like to arrange an initial call.', 'Please share standard pricing and inclusions.', 'Unknown', 'Prefer not to say'].map(value => <option key={value} value={value} />)}</datalist>
         <label htmlFor="builder-question">Your question for the builder (optional)</label><textarea id="builder-question" value={question} onChange={event => setQuestion(event.target.value)} placeholder="Ask about suitability, next steps or additional costs." />
         <label htmlFor="builder-timing">Possible timing (optional)</label><input id="builder-timing" value={timing} onChange={event => setTiming(event.target.value)} placeholder="e.g. next year; unknown is fine" />
-        <label htmlFor="builder-budget">Your owner budget, optional</label><input id="builder-budget" value={budget} onChange={event => setBudget(event.target.value)} placeholder="Your affordability preference; unknown is fine" />
       </div>
-      <BudgetSection draft={currentBudget} context={budgetContext} model={model} onChange={next => { setBudgetDraft(reconcile(next, latestBudgetContext.current)); setReadyFor(null) }} />
+      <p>Spending preference: {budget.trim() || 'Not supplied'}. {budgetInput ? 'Your current cost draft and unpriced work are included below.' : 'Costs can remain unknown.'}</p>
+      <button type="button" onClick={() => openJourneyStep('budget')}>Review budget (optional)</button>
       <details className="builder-optional-site"><summary>Optional site details</summary>
         <p>Leave these blank if you’re unsure—the builder can help identify what’s needed.</p>
         <div className="builder-questions">

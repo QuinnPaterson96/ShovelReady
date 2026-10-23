@@ -1,10 +1,10 @@
 # ShovelReady
 
-Optional local prototype: [budget and cost scope](docs/project-budget-prototype.md)
-reuses captured model prices and explicit user allowances to show priced components,
-missing costs and useful enquiry questions. It does not establish installed cost or
-affordability. [Same-facts enquiry comparison](docs/samples/budget-scope/comparison.html)
-is prepared for a future builder/homeowner study; customer validation remains open.
+Review implementation: [optional homeowner budget journey](docs/project-budget-journey.md)
+connects captured prices, editable cost assumptions and unpriced work to the existing
+419 Cecelia / Model 300 walkthrough and unsent enquiry. It does not establish installed
+cost or affordability. [Same-facts enquiry comparison](docs/samples/budget-journey/comparison.html)
+retains the 435-word before and 348-word after; actual customer validation remains open.
 
 Current review branch: [property selection, uncertainty and enquiry PDF integration](docs/integration-homeowner-ux-round2.md) (prepared for review; not merged/deployed).
 

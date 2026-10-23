@@ -2,6 +2,12 @@
 
 ## Optional budget scope — October 19, 2026
 
+The [October 23 journey follow-up](project-budget-journey.md) connects that same
+boundary to an optional navigation/walkthrough stage and concise recipient prose.
+Victoria's building-permit component remains a source-backed unresolved reference,
+not a fee calculator. The existing controller now uses the retained 419 Cecelia
+capture. No additional financial API, persistence layer or service is introduced.
+
 The existing browser journey now has a small versioned budget-draft boundary:
 catalogue Price/user entry → strict validation → draft items → exact deterministic
 decimal calculation → display/enquiry/evidence. Ordinary frontend modules reuse the

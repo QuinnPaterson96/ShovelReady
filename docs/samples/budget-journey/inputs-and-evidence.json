@@ -1,0 +1,164 @@
+{
+  "baseline": "a573522715894e66f5c976f377b0004320ff3420",
+  "method": "Before is the retained generated PR #326 after-enquiry.txt. After uses the same owner/model/source/allowance facts and frozen calculation date. Synthetic case, no real quote or participant.",
+  "input": {
+    "intendedUse": "Unknown",
+    "relationship": "Unknown",
+    "nextStep": "I would like an initial call.",
+    "timing": "",
+    "budget": "Around CAD 250,000 for the whole project, as an owner preference rather than a cost estimate.",
+    "question": "I have a CAD 2,500.25 planning allowance for delivery and lift, not a quote. Can you help establish the next information needed?",
+    "access": "",
+    "services": ""
+  },
+  "evidence": {
+    "draft": {
+      "schema_version": "project-budget.draft.v1",
+      "scope": "whole_project",
+      "items": [
+        {
+          "id": "catalogue:sr-40.2026-10-06.provider-pages.v2:aux-300:0",
+          "category": "unit",
+          "label": "aux box Model 300",
+          "state": "priced",
+          "money": {
+            "minimum": "187000",
+            "maximum": null,
+            "currency": "CAD",
+            "precision": 0
+          },
+          "basis": "starting",
+          "included_in": null,
+          "alternative_group": "building-offer",
+          "selected": true,
+          "inclusions": [
+            "Full bathroom and complete kitchen described on the model page"
+          ],
+          "exclusions": [
+            "Permitting",
+            "Foundations",
+            "Site services",
+            "Shipping",
+            "Installation"
+          ],
+          "tax_basis": null,
+          "tax_status": "unknown",
+          "rationale": "Provider model claim; configuration: Public Model 300 one-bedroom page; upgrades not fixed. Model starting price, not total project cost. Upgrades are listed separately; their prices and a fixed configuration are not supplied. The page lists North America delivery; regional pricing is not stated.",
+          "recheck_reason": null,
+          "treatment": "capital_cost",
+          "context": {
+            "model_id": "aux-300",
+            "model_revision": null,
+            "snapshot_id": "sr-40.2026-10-06.provider-pages.v2",
+            "configuration": "Public one-bedroom product page; upgrades not fixed",
+            "property_key": "Synthetic homeowner case; no real site or quote",
+            "scenario_key": "Unknown use; no measured placement"
+          },
+          "evidence": {
+            "origin": "catalogue",
+            "provider": "aux box",
+            "label": "Model 300 price claim",
+            "locator": "https://www.auxbox.ca/model-300 — Starting price; Layout & Specs > Materials, Upgrades, Site Prep, Delivery + Installation",
+            "captured_at": "2026-10-06",
+            "effective_at": null,
+            "expires_at": null,
+            "recorded_at": "2026-10-19",
+            "review_status": "unreviewed",
+            "original_record": "{\"snapshot_id\":\"sr-40.2026-10-06.provider-pages.v2\",\"model_id\":\"aux-300\",\"model_revision\":null,\"model_configuration\":\"Public one-bedroom product page; upgrades not fixed\",\"source\":{\"source_id\":\"aux-300-commercial\",\"url\":\"https://www.auxbox.ca/model-300\",\"locator\":\"Starting price; Layout & Specs > Materials, Upgrades, Site Prep, Delivery + Installation\",\"captured_at\":\"2026-10-06\",\"sha256\":null,\"artifact_status\":\"capture_gap\",\"upstream_revision\":null,\"updated_at\":null},\"claim\":{\"source_id\":\"aux-300-commercial\",\"wording\":\"Starting at $187,000 CAD. On-site prep including permitting, foundations, site services, shipping, and install at additional cost\",\"scope\":\"model\",\"configuration\":\"Public Model 300 one-bedroom page; upgrades not fixed\",\"region\":null,\"qualifications\":[\"Model starting price, not total project cost.\",\"Upgrades are listed separately; their prices and a fixed configuration are not supplied.\",\"The page lists North America delivery; regional pricing is not stated.\"],\"amount\":{\"minimum\":\"187000\",\"maximum\":null},\"currency\":\"CAD\",\"basis\":\"starting\",\"inclusions\":[\"Full bathroom and complete kitchen described on the model page\"],\"exclusions\":[\"Permitting\",\"Foundations\",\"Site services\",\"Shipping\",\"Installation\"],\"tax_treatment\":null}}"
+          }
+        },
+        {
+          "id": "manual:delivery",
+          "category": "delivery",
+          "label": "Delivery and lift",
+          "state": "priced",
+          "money": {
+            "minimum": "2500.25",
+            "maximum": "2500.25",
+            "currency": "CAD",
+            "precision": 2
+          },
+          "basis": "allowance",
+          "included_in": null,
+          "alternative_group": null,
+          "selected": true,
+          "inclusions": [],
+          "exclusions": [],
+          "tax_basis": null,
+          "tax_status": "unknown",
+          "rationale": "Synthetic owner planning allowance, no reviewed site or provider quote",
+          "recheck_reason": null,
+          "treatment": "capital_cost",
+          "context": {
+            "model_id": "aux-300",
+            "model_revision": null,
+            "snapshot_id": "sr-40.2026-10-06.provider-pages.v2",
+            "configuration": "Public one-bedroom product page; upgrades not fixed",
+            "property_key": "Synthetic homeowner case; no real site or quote",
+            "scenario_key": "Unknown use; no measured placement"
+          },
+          "evidence": {
+            "origin": "user_allowance",
+            "provider": "Synthetic homeowner",
+            "label": "User planning allowance",
+            "locator": "Same supplied facts as comparator question",
+            "captured_at": null,
+            "effective_at": null,
+            "expires_at": null,
+            "recorded_at": "2026-10-19",
+            "review_status": "unreviewed",
+            "original_record": "{\"id\":\"manual:delivery\",\"category\":\"delivery\",\"label\":\"Delivery and lift\",\"state\":\"priced\",\"basis\":\"allowance\",\"minimum\":\"2500.25\",\"maximum\":\"\",\"bound\":\"exact\",\"currency\":\"CAD\",\"included_in\":\"\",\"rationale\":\"Synthetic owner planning allowance, no reviewed site or provider quote\",\"tax_basis\":\"\",\"provider\":\"Synthetic homeowner\",\"locator\":\"Same supplied facts as comparator question\",\"captured_at\":\"\",\"effective_at\":\"\",\"expires_at\":\"\",\"inclusions\":[],\"exclusions\":[],\"treatment\":\"capital_cost\",\"tax_status\":\"unknown\"}"
+          }
+        }
+      ]
+    },
+    "current_context": {
+      "model_id": "aux-300",
+      "model_revision": null,
+      "snapshot_id": "sr-40.2026-10-06.provider-pages.v2",
+      "configuration": "Public one-bedroom product page; upgrades not fixed",
+      "property_key": "Synthetic homeowner case; no real site or quote",
+      "scenario_key": "Unknown use; no measured placement"
+    },
+    "calculated_at": "2026-10-19",
+    "calculation": {
+      "scope": "whole_project",
+      "complete": false,
+      "subtotals": [
+        {
+          "currency": "CAD",
+          "precision": 2,
+          "minimum": "189500.25",
+          "maximum": null
+        }
+      ],
+      "missing": [
+        "upgrades",
+        "site",
+        "services",
+        "professional",
+        "fees",
+        "tax",
+        "contingency"
+      ],
+      "included": [],
+      "issues": [],
+      "counted_ids": [
+        "catalogue:sr-40.2026-10-06.provider-pages.v2:aux-300:0",
+        "manual:delivery"
+      ],
+      "outside_scope": [],
+      "limitations": [
+        "Tax basis is unstated on priced work; specify whether tax is included or separately allowed.",
+        "At least one priced line has no finite upper amount. A starting price cannot bound the project."
+      ]
+    },
+    "source_accuracy": "unreviewed",
+    "accepted_publication": false,
+    "recency_policy": "Catalogue captures older than 90 days are withheld pending explicit refresh. No background refresh."
+  },
+  "words": {
+    "before": 435,
+    "after": 348
+  }
+}

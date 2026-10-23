@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 
-// Six stops, five narrated phases: placement has a before and an after.
-export type WalkthroughStop = 'model' | 'property' | 'initial' | 'moved' | 'result' | 'enquiry'
-export const walkthroughStops: WalkthroughStop[] = ['model', 'property', 'initial', 'moved', 'result', 'enquiry']
-export const walkthroughPhase: Record<WalkthroughStop, number> = { model: 1, property: 2, initial: 3, moved: 3, result: 4, enquiry: 5 }
+// Seven stops, six narrated phases: placement has a before and an after.
+export type WalkthroughStop = 'model' | 'property' | 'initial' | 'moved' | 'result' | 'budget' | 'enquiry'
+export const walkthroughStops: WalkthroughStop[] = ['model', 'property', 'initial', 'moved', 'result', 'budget', 'enquiry']
+export const walkthroughPhase: Record<WalkthroughStop, number> = { model: 1, property: 2, initial: 3, moved: 3, result: 4, budget: 5, enquiry: 6 }
 export function useWalkthrough(visible: boolean, isReady: (stop: WalkthroughStop) => boolean, failed = false) {
   const [state, setState] = useState<{ stop: WalkthroughStop; finished: boolean; skipping: boolean; run: number } | null>(null)
   const ready = !!state && (!failed || state.stop === 'model' || state.stop === 'property') && isReady(state.stop)
