@@ -1,0 +1,203 @@
+{
+  "type": "FeatureCollection",
+  "queryAddress": "4225 Cedar Hill Rd, Saanich, BC",
+  "encoding": "ascii",
+  "searchTimestamp": "2026-10-07T17:42:11",
+  "executionTime": 16.647,
+  "version": "4.5.4",
+  "baseDataDate": "2026-07-07T20:10:43Z",
+  "crs": {
+    "type": "EPSG",
+    "properties": {
+      "code": 4326
+    }
+  },
+  "interpolation": "adaptive",
+  "echo": "true",
+  "locationDescriptor": "any",
+  "setBack": 0,
+  "minScore": 0,
+  "maxResults": 3,
+  "disclaimer": "https://www2.gov.bc.ca/gov/content?id=79F93E018712422FBC8E674A67A70535",
+  "privacyStatement": "https://www2.gov.bc.ca/gov/content?id=9E890E16955E4FF4BF3B0E07B4722932",
+  "copyrightNotice": "Copyright \u00a9 2024 Province of British Columbia",
+  "copyrightLicense": "https://www2.gov.bc.ca/gov/content?id=A519A56BC2BF44E4A008B33FCF527F61",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "crs": {
+          "type": "EPSG",
+          "properties": {
+            "code": 4326
+          }
+        },
+        "coordinates": [
+          -123.3390256,
+          48.4812382
+        ]
+      },
+      "properties": {
+        "fullAddress": "4225 Cedar Hill Rd, Saanich, BC",
+        "score": 100,
+        "matchPrecision": "CIVIC_NUMBER",
+        "precisionPoints": 100,
+        "faults": [],
+        "siteName": "",
+        "unitDesignator": "",
+        "unitNumber": "",
+        "unitNumberSuffix": "",
+        "civicNumber": 4225,
+        "civicNumberSuffix": "",
+        "streetName": "Cedar Hill",
+        "streetType": "Rd",
+        "isStreetTypePrefix": "false",
+        "streetDirection": "",
+        "isStreetDirectionPrefix": "false",
+        "streetQualifier": "",
+        "localityName": "Saanich",
+        "streetAddress": "4225 Cedar Hill Rd",
+        "localityType": "District Municipality",
+        "electoralArea": "",
+        "provinceCode": "BC",
+        "locationPositionalAccuracy": "high",
+        "locationDescriptor": "parcelPoint",
+        "siteID": "52bbb4cb-dd65-47b3-984e-e8a7b7f04959",
+        "blockID": 2151139,
+        "fullSiteDescriptor": "",
+        "accessNotes": "\"",
+        "siteStatus": "active",
+        "siteRetireDate": "9999-12-31",
+        "changeDate": "2026-07-07",
+        "isOfficial": "true"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "crs": {
+          "type": "EPSG",
+          "properties": {
+            "code": 4326
+          }
+        },
+        "coordinates": [
+          -123.3426391,
+          48.4812445
+        ]
+      },
+      "properties": {
+        "fullAddress": "4225 Cedarglen Rd, Saanich, BC",
+        "score": 92,
+        "matchPrecision": "BLOCK",
+        "precisionPoints": 99,
+        "faults": [
+          {
+            "value": "RD",
+            "element": "LOCALITY_GARBAGE",
+            "fault": "notAllowed",
+            "penalty": 3
+          },
+          {
+            "value": "CEDAR",
+            "element": "STREET_NAME",
+            "fault": "partialMatch",
+            "penalty": 1
+          },
+          {
+            "value": "HILL",
+            "element": "STREET_TYPE",
+            "fault": "notMatched",
+            "penalty": 3
+          }
+        ],
+        "siteName": "",
+        "unitDesignator": "",
+        "unitNumber": "",
+        "unitNumberSuffix": "",
+        "civicNumber": 4225,
+        "civicNumberSuffix": "",
+        "streetName": "Cedarglen",
+        "streetType": "Rd",
+        "isStreetTypePrefix": "false",
+        "streetDirection": "",
+        "isStreetDirectionPrefix": "false",
+        "streetQualifier": "",
+        "localityName": "Saanich",
+        "streetAddress": "4225 Cedarglen Rd",
+        "localityType": "District Municipality",
+        "electoralArea": "",
+        "provinceCode": "BC",
+        "locationPositionalAccuracy": "low",
+        "locationDescriptor": "accessPoint",
+        "siteID": "",
+        "blockID": 302070,
+        "fullSiteDescriptor": "",
+        "accessNotes": "",
+        "siteStatus": "",
+        "siteRetireDate": "",
+        "changeDate": "",
+        "isOfficial": "true"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "crs": {
+          "type": "EPSG",
+          "properties": {
+            "code": 4326
+          }
+        },
+        "coordinates": [
+          -123.3348768,
+          48.4713787
+        ]
+      },
+      "properties": {
+        "fullAddress": "Cedar Hill Rd, Saanich, BC",
+        "score": 77,
+        "matchPrecision": "STREET",
+        "precisionPoints": 78,
+        "faults": [
+          {
+            "value": 4225,
+            "element": "CIVIC_NUMBER",
+            "fault": "notInAnyBlock",
+            "penalty": 1
+          }
+        ],
+        "siteName": "",
+        "unitDesignator": "",
+        "unitNumber": "",
+        "unitNumberSuffix": "",
+        "civicNumber": "",
+        "civicNumberSuffix": "",
+        "streetName": "Cedar Hill",
+        "streetType": "Rd",
+        "isStreetTypePrefix": "false",
+        "streetDirection": "",
+        "isStreetDirectionPrefix": "false",
+        "streetQualifier": "",
+        "localityName": "Saanich",
+        "streetAddress": "Cedar Hill Rd",
+        "localityType": "District Municipality",
+        "electoralArea": "",
+        "provinceCode": "BC",
+        "locationPositionalAccuracy": "coarse",
+        "locationDescriptor": "streetPoint",
+        "siteID": "",
+        "blockID": "",
+        "fullSiteDescriptor": "",
+        "accessNotes": "",
+        "siteStatus": "",
+        "siteRetireDate": "",
+        "changeDate": "",
+        "isOfficial": "true"
+      }
+    }
+  ]
+}

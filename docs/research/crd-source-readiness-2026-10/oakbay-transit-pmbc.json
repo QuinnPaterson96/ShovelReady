@@ -1,0 +1,71 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "WHSE_CADASTRE.PMBC_PARCEL_POLY_SV.fid-35b26df0_1a118efc01f_-74f3",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1199533.9109,
+              381879.4577
+            ],
+            [
+              1199533.884,
+              381861.2261
+            ],
+            [
+              1199580.3107,
+              381861.241
+            ],
+            [
+              1199583.3684,
+              381864.2764
+            ],
+            [
+              1199583.3899,
+              381879.491
+            ],
+            [
+              1199533.9109,
+              381879.4577
+            ]
+          ]
+        ]
+      },
+      "geometry_name": "SHAPE",
+      "properties": {
+        "PMBC_PP_SYSID": 4804901,
+        "PARCEL_NAME": "006163424",
+        "PLAN_NUMBER": "VIP4004",
+        "PIN": null,
+        "PID": "006163424",
+        "PID_FORMATTED": "006-163-424",
+        "PID_NUMBER": 6163424,
+        "PARCEL_STATUS": "Active",
+        "PARCEL_CLASS": "Subdivision",
+        "OWNER_TYPE": "Private",
+        "PARCEL_START_DATE": null,
+        "MUNICIPALITY": "Oak Bay, The Corporation of the District of",
+        "REGIONAL_DISTRICT": "Capital Regional District",
+        "WHEN_UPDATED": "2019-01-05Z",
+        "FEATURE_AREA_SQM": 897.8891,
+        "FEATURE_LENGTH_M": 133.6604,
+        "OBJECTID": 197127668,
+        "SE_ANNO_CAD_DATA": null
+      }
+    }
+  ],
+  "totalFeatures": 1,
+  "numberMatched": 1,
+  "numberReturned": 1,
+  "timeStamp": "2026-10-08T00:42:09.848Z",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:EPSG::3005"
+    }
+  }
+}

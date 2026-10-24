@@ -1,0 +1,481 @@
+{
+  "AddressCSV.zip": {
+    "url": "https://map.saanich.ca/gisdata/Address/AddressCSV.zip",
+    "accessed_utc": "2026-10-08T00:44:15.312530+00:00",
+    "bytes": 1459132,
+    "sha256": "425eb3c6bc960d13cf1d0c56129bc517990b993c3ecc0e3cd7ddd4a804e11ef4",
+    "matches_september_25": false,
+    "members": [
+      "AddressMetadata.pdf",
+      "CivicAddress.csv",
+      "SaanichDataCatalogueLicence.pdf",
+      "SubAddress.csv"
+    ],
+    "count": 32963,
+    "fields": [
+      "FACILITYID",
+      "DEPENDANTS",
+      "FULLADDRESS",
+      "STREETNUMBERPREFIX",
+      "STREETNUMBER",
+      "STREETNUMBERSUFFIX",
+      "STREETDIRPREFIX",
+      "STREETNAME",
+      "STREETTYPE",
+      "STREETDIRSUFFIX",
+      "NORTHING",
+      "EASTING",
+      "LATITUDE",
+      "LONGITUDE"
+    ],
+    "selected": [
+      {
+        "FACILITYID": "LCA014101",
+        "DEPENDANTS": "No",
+        "FULLADDRESS": "4225 CEDAR HILL RD",
+        "STREETNUMBERPREFIX": "",
+        "STREETNUMBER": "4225",
+        "STREETNUMBERSUFFIX": "",
+        "STREETDIRPREFIX": "",
+        "STREETNAME": "CEDAR HILL",
+        "STREETTYPE": "RD",
+        "STREETDIRSUFFIX": "",
+        "NORTHING": "5369846.00000000",
+        "EASTING": "474946.28100000",
+        "LATITUDE": "48.48120000",
+        "LONGITUDE": "-123.33900000",
+        "parcel_point_contacts": [
+          "002-559-790"
+        ]
+      },
+      {
+        "FACILITYID": "LCA003199",
+        "DEPENDANTS": "No",
+        "FULLADDRESS": "3325 KINGSLEY ST",
+        "STREETNUMBERPREFIX": "",
+        "STREETNUMBER": "3325",
+        "STREETNUMBERSUFFIX": "",
+        "STREETDIRPREFIX": "",
+        "STREETNAME": "KINGSLEY",
+        "STREETTYPE": "ST",
+        "STREETDIRSUFFIX": "",
+        "NORTHING": "5366579.50000000",
+        "EASTING": "475483.79700000",
+        "LATITUDE": "48.45190000",
+        "LONGITUDE": "-123.33160000",
+        "parcel_point_contacts": [
+          "000-554-294"
+        ]
+      }
+    ]
+  },
+  "ParcelsSHP.zip": {
+    "url": "https://map.saanich.ca/gisdata/Parcels/ParcelsSHP.zip",
+    "accessed_utc": "2026-10-08T00:44:18.449850+00:00",
+    "bytes": 11975165,
+    "sha256": "1620387722d3e8c96d242595681fc6c4f3251785c0f3538b979cd52564523906",
+    "matches_september_25": false,
+    "members": [
+      "Parcels.cpg",
+      "Parcels.dbf",
+      "Parcels.prj",
+      "Parcels.shp",
+      "Parcels.shx",
+      "ParcelsMetadata.pdf",
+      "SaanichDataCatalogueLicence.pdf"
+    ],
+    "count": 42927,
+    "fields": [
+      [
+        "SUBTYPE",
+        "C",
+        25,
+        0
+      ],
+      [
+        "JURISDICT",
+        "C",
+        5,
+        0
+      ],
+      [
+        "FOLIO",
+        "C",
+        16,
+        0
+      ],
+      [
+        "PID",
+        "C",
+        11,
+        0
+      ],
+      [
+        "ADDRESS",
+        "C",
+        130,
+        0
+      ],
+      [
+        "STRUNIT",
+        "C",
+        20,
+        0
+      ],
+      [
+        "STRNUMBER",
+        "C",
+        12,
+        0
+      ],
+      [
+        "STRNAME",
+        "C",
+        37,
+        0
+      ],
+      [
+        "LEGLOT",
+        "C",
+        15,
+        0
+      ],
+      [
+        "LEGBLOCK",
+        "C",
+        5,
+        0
+      ],
+      [
+        "LEGSECTION",
+        "C",
+        25,
+        0
+      ],
+      [
+        "LEGDISTRIC",
+        "C",
+        10,
+        0
+      ],
+      [
+        "LEGPLAN",
+        "C",
+        20,
+        0
+      ],
+      [
+        "AREASQM",
+        "N",
+        38,
+        8
+      ],
+      [
+        "AREAHECT",
+        "N",
+        38,
+        8
+      ]
+    ],
+    "shape_type": "POLYGON",
+    "crs_wkt": "PROJCS[\"NAD_1983_CSRS_UTM_Zone_10N\",GEOGCS[\"GCS_North_American_1983_CSRS\",DATUM[\"D_North_American_1983_CSRS\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",500000.0],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"Central_Meridian\",-123.0],PARAMETER[\"Scale_Factor\",0.9996],PARAMETER[\"Latitude_Of_Origin\",0.0],UNIT[\"Meter\",1.0]]",
+    "selected": [
+      {
+        "source_index": 9619,
+        "attributes": {
+          "SUBTYPE": "Parcel",
+          "JURISDICT": "308",
+          "FOLIO": "70-3403-000",
+          "PID": "000-554-294",
+          "ADDRESS": "3325 KINGSLEY ST",
+          "STRUNIT": "",
+          "STRNUMBER": "3325",
+          "STRNAME": "KINGSLEY ST",
+          "LEGLOT": "25",
+          "LEGBLOCK": "5",
+          "LEGSECTION": "35",
+          "LEGDISTRIC": "VICTORIA",
+          "LEGPLAN": "1372",
+          "AREASQM": 518.3,
+          "AREAHECT": 0.05183
+        },
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                475500.86190625,
+                5366586.5821
+              ],
+              [
+                475500.60610000044,
+                5366571.356068751
+              ],
+              [
+                475466.5891937502,
+                5366571.919074999
+              ],
+              [
+                475466.8481874997,
+                5366587.148499999
+              ],
+              [
+                475500.86190625,
+                5366586.5821
+              ]
+            ]
+          ]
+        },
+        "valid": true
+      },
+      {
+        "source_index": 37057,
+        "attributes": {
+          "SUBTYPE": "Parcel",
+          "JURISDICT": "308",
+          "FOLIO": "55-5153-070",
+          "PID": "002-559-790",
+          "ADDRESS": "4225 CEDAR HILL RD",
+          "STRUNIT": "",
+          "STRNUMBER": "4225",
+          "STRNAME": "CEDAR HILL RD",
+          "LEGLOT": "7",
+          "LEGBLOCK": "",
+          "LEGSECTION": "54",
+          "LEGDISTRIC": "VICTORIA",
+          "LEGPLAN": "27257",
+          "AREASQM": 849.9,
+          "AREAHECT": 0.08499
+        },
+        "geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                474971.8010999998,
+                5369855.0473
+              ],
+              [
+                474969.0089999996,
+                5369845.3248
+              ],
+              [
+                474966.48699999973,
+                5369836.543
+              ],
+              [
+                474921.62662499957,
+                5369836.8019375
+              ],
+              [
+                474925.13008125033,
+                5369855.3691437505
+              ],
+              [
+                474971.8010999998,
+                5369855.0473
+              ]
+            ]
+          ]
+        },
+        "valid": true
+      }
+    ]
+  },
+  "BuildingsSHP.zip": {
+    "url": "https://map.saanich.ca/gisdata/Buildings/BuildingsSHP.zip",
+    "accessed_utc": "2026-10-08T00:44:22.004450+00:00",
+    "bytes": 9672260,
+    "sha256": "0785fef5c52a136d3ad31cd9c7c6f1cf16555df62c6929afd9ef9c3a281cb708",
+    "matches_september_25": true,
+    "members": [
+      "Buildings.cpg",
+      "Buildings.dbf",
+      "Buildings.prj",
+      "Buildings.shp",
+      "Buildings.shx",
+      "SaanichDataCatalogueLicence.pdf",
+      "BuildingsMetadata.pdf"
+    ],
+    "count": 62320,
+    "fields": [
+      [
+        "Buildin_ID",
+        "C",
+        5,
+        0
+      ]
+    ],
+    "shape_type": "POLYGONZ",
+    "crs_wkt": "PROJCS[\"NAD_1983_CSRS_UTM_Zone_10N\",GEOGCS[\"GCS_North_American_1983_CSRS\",DATUM[\"D_North_American_1983_CSRS\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",500000.0],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"Central_Meridian\",-123.0],PARAMETER[\"Scale_Factor\",0.9996],PARAMETER[\"Latitude_Of_Origin\",0.0],UNIT[\"Meter\",1.0]]",
+    "selected_roof_contacts": {
+      "000-554-294": [
+        {
+          "source_index": 43244,
+          "attributes": {
+            "Buildin_ID": ""
+          },
+          "valid": true,
+          "xy_overlap_m2": 132.83638000262937
+        },
+        {
+          "source_index": 55381,
+          "attributes": {
+            "Buildin_ID": ""
+          },
+          "valid": true,
+          "xy_overlap_m2": 69.77728648143957
+        }
+      ],
+      "002-559-790": [
+        {
+          "source_index": 53031,
+          "attributes": {
+            "Buildin_ID": ""
+          },
+          "valid": true,
+          "xy_overlap_m2": 0.040011941892509055
+        },
+        {
+          "source_index": 53086,
+          "attributes": {
+            "Buildin_ID": ""
+          },
+          "valid": true,
+          "xy_overlap_m2": 208.76463010433213
+        },
+        {
+          "source_index": 55066,
+          "attributes": {
+            "Buildin_ID": ""
+          },
+          "valid": true,
+          "xy_overlap_m2": 0.2136058005566219
+        }
+      ]
+    }
+  },
+  "ZoningSHP.zip": {
+    "url": "https://map.saanich.ca/gisdata/Zoning/ZoningSHP.zip",
+    "accessed_utc": "2026-10-08T00:44:24.045633+00:00",
+    "bytes": 1423477,
+    "sha256": "ea7dee9823bc6d206c0173defc7dea8a311bd8dae12bfe20ae8f03bfb75e01d3",
+    "matches_september_25": false,
+    "members": [
+      "SaanichDataCatalogueLicence.pdf",
+      "Zoning.cpg",
+      "Zoning.dbf",
+      "Zoning.prj",
+      "Zoning.shp",
+      "Zoning.shx",
+      "ZoningMetadata.pdf"
+    ],
+    "count": 1890,
+    "fields": [
+      [
+        "TYPE",
+        "C",
+        20,
+        0
+      ],
+      [
+        "CLASS",
+        "C",
+        50,
+        0
+      ],
+      [
+        "BYLAW",
+        "C",
+        100,
+        0
+      ]
+    ],
+    "shape_type": "POLYGON",
+    "crs_wkt": "PROJCS[\"NAD_1983_CSRS_UTM_Zone_10N\",GEOGCS[\"GCS_North_American_1983_CSRS\",DATUM[\"D_North_American_1983_CSRS\",SPHEROID[\"GRS_1980\",6378137.0,298.257222101]],PRIMEM[\"Greenwich\",0.0],UNIT[\"Degree\",0.0174532925199433]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"False_Easting\",500000.0],PARAMETER[\"False_Northing\",0.0],PARAMETER[\"Central_Meridian\",-123.0],PARAMETER[\"Scale_Factor\",0.9996],PARAMETER[\"Latitude_Of_Origin\",0.0],UNIT[\"Meter\",1.0]]",
+    "prior_record_audit": [
+      {
+        "index": 1853,
+        "attributes": {
+          "TYPE": "RS-8",
+          "CLASS": "Single Family",
+          "BYLAW": "https://www.saanich.ca/assets/Local~Government/Documents/Planning/zone8200.pdf#page=110"
+        },
+        "valid": true,
+        "validity": "Valid Geometry"
+      },
+      {
+        "index": 1475,
+        "attributes": {
+          "TYPE": "RS-F",
+          "CLASS": "Single Family",
+          "BYLAW": "https://www.saanich.ca/assets/Local~Government/Documents/Planning/zone8200.pdf#page=351"
+        },
+        "valid": true,
+        "validity": "Valid Geometry"
+      },
+      {
+        "index": 1659,
+        "attributes": {
+          "TYPE": "RS-6",
+          "CLASS": "Single Family",
+          "BYLAW": "https://www.saanich.ca/assets/Local~Government/Documents/Planning/zone8200.pdf#page=107"
+        },
+        "valid": true,
+        "validity": "Valid Geometry"
+      },
+      {
+        "index": 1790,
+        "attributes": {
+          "TYPE": "C-1",
+          "CLASS": "Commercial",
+          "BYLAW": "https://www.saanich.ca/assets/Local~Government/Documents/Planning/zone8200.pdf#page=199"
+        },
+        "valid": true,
+        "validity": "Valid Geometry"
+      }
+    ],
+    "current_contacts": {
+      "000-554-294": [
+        {
+          "source_index": 1854,
+          "attributes": {
+            "TYPE": "RS-6",
+            "CLASS": "Single Family",
+            "BYLAW": "https://www.saanich.ca/assets/Local~Government/Documents/Planning/zone8200.pdf#page=107"
+          },
+          "valid": false,
+          "validity": "Ring Self-intersection[472859.9729 5367369.0368]",
+          "xy_overlap_m2": null,
+          "contact_basis": "envelope_only"
+        }
+      ],
+      "002-559-790": [
+        {
+          "source_index": 1465,
+          "attributes": {
+            "TYPE": "RS-10",
+            "CLASS": "Single Family",
+            "BYLAW": "https://www.saanich.ca/assets/Local~Government/Documents/Planning/zone8200.pdf#page=113"
+          },
+          "valid": true,
+          "validity": "Valid Geometry",
+          "xy_overlap_m2": 849.5816619350558,
+          "contact_basis": "intersection"
+        },
+        {
+          "source_index": 1775,
+          "attributes": {
+            "TYPE": "RS-6",
+            "CLASS": "Single Family",
+            "BYLAW": "https://www.saanich.ca/assets/Local~Government/Documents/Planning/zone8200.pdf#page=107"
+          },
+          "valid": false,
+          "validity": "Ring Self-intersection[475498.0385 5369753.7208]",
+          "xy_overlap_m2": null,
+          "contact_basis": "envelope_only"
+        }
+      ]
+    }
+  }
+}
