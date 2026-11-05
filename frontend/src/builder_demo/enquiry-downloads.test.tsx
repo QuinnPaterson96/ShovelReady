@@ -56,7 +56,7 @@ test('failed export gives retry and independent copy recovery without exposing a
     const message = exportFailureMessage(error)
     assert.match(message, /Your enquiry is still here/)
     assert.match(message, /Try saving again/)
-    assert.match(message, /Copy enquiry text/)
+    assert.match(message, /Copy text/)
     assert.doesNotMatch(message, /https:|reload|downloaded/)
   }
   assert.match(exportFailureMessage(new Error('Inputs changed during export. Save the updated enquiry when checks finish.')), /Inputs changed during export/)

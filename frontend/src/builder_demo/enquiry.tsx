@@ -49,7 +49,7 @@ export function enquiryPlainText(document: EnquiryDocument) {
 export function exportFailureMessage(error: unknown): string {
   const changed = error instanceof Error && /^(Inputs|Placement) changed during export\./.test(error.message)
     ? `${error.message} ` : ''
-  return `${changed}The download could not be prepared. Your enquiry is still here. Try saving again, or use Copy enquiry text below to keep your message.`
+  return `${changed}The download could not be prepared. Your enquiry is still here. Try saving again, or use Copy text below to keep your enquiry.`
 }
 
 export function enquiryMarkdown(document: EnquiryDocument) {

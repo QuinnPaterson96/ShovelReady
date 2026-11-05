@@ -1,0 +1,16 @@
+{
+  "identity": {
+    "schema_version": "sr-21.identity.v1",
+    "application_commit": "a27c2f511d4087cddb307590f21bd4ea9c57e432",
+    "frontend_commit": "a27c2f511d4087cddb307590f21bd4ea9c57e432",
+    "spatial_revision": null,
+    "screening_status": "not_performed"
+  },
+  "requests": [
+    "https://www.shovelready.ca/assets/index-GmgFaJhd.js",
+    "https://www.shovelready.ca/assets/index-BSqjiPrV.css",
+    "https://www.shovelready.ca/assets/jspdf.es.min-BP8KvqnK.js"
+  ],
+  "errors": [],
+  "boundary": "Fresh Chrome session read-only public demo; downloaded locally, no enquiry sent"
+}
