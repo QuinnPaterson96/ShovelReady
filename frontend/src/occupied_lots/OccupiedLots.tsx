@@ -15,7 +15,8 @@ import type { Case, Check, Result } from './contract'
 import ScenarioHandoff from '../scenario_handoff/ScenarioHandoff'
 import { BoundaryActionTabs, BoundaryMapTools, BoundaryOverlay, BoundaryRoleHelp, type BoundaryMapInteraction } from '../zoning_site_assumptions/BoundaryMapTools'
 
-type Placement = { x: string; y: string; width: string; depth: string; angle: string }
+import type { RetainedPlacementDraft } from '../builder_demo/retainedAlternatives'
+type Placement = RetainedPlacementDraft['position']
 const number = (value: string) => value.trim() !== '' && Number.isFinite(Number(value)) ? Number(value) : null
 const show = (value: number | null) => measurementWithUnit(value, 'length')
 const roofName = (selected: Case, id: string) => {
@@ -149,6 +150,8 @@ export function OccupiedLotPreview({ selected, placement, onMove, nudgeMetres, c
 
 export type OccupiedMeasurement = { site: Case; model: (typeof bundledCatalogue.models)[number] | null; result: Result; widthOrigin: 'catalogue' | 'user'; depthOrigin: 'catalogue' | 'user' }
 export type OccupiedLotsProps = {
+  initialDraft?: RetainedPlacementDraft | null
+  onDraftChange?: (draft: RetainedPlacementDraft) => void
   catalogue?: Pick<Catalogue, 'models'>
   placementSummary?: ReactNode
   placementConcerns?: ReactNode
@@ -167,7 +170,7 @@ export type OccupiedLotsProps = {
   boundaryInteraction?: BoundaryMapInteraction
 }
 
-export default function OccupiedLots({ catalogue = bundledCatalogue, allowedModelIds, initialModelId = '', onMeasurement, onAssessmentPending, showHandoff = true, suppliedCase, boundaryInteraction, compactPlacement = false, evidenceTargetId, moveSuggestion, placementSummary, placementContinuation, placementConcerns, showPlacementConcerns = true, onContinueUnresolved }: OccupiedLotsProps) {
+export default function OccupiedLots({ catalogue = bundledCatalogue, initialDraft, onDraftChange, allowedModelIds, initialModelId = '', onMeasurement, onAssessmentPending, showHandoff = true, suppliedCase, boundaryInteraction, compactPlacement = false, evidenceTargetId, moveSuggestion, placementSummary, placementContinuation, placementConcerns, showPlacementConcerns = true, onContinueUnresolved }: OccupiedLotsProps) {
   const initialModel = catalogue.models.find(m => m.model_id === initialModelId && (!allowedModelIds || allowedModelIds.includes(m.model_id)))
   const initialDimension = (name: string) => {
     const quantity = initialModel?.measurements.find(m => m.name === name)?.quantity
@@ -179,9 +182,11 @@ export default function OccupiedLots({ catalogue = bundledCatalogue, allowedMode
   const [reload, setReload] = useState(0)
   const [caseId, setCaseId] = useState('')
   const [modelId, setModelId] = useState(initialModel?.model_id ?? '')
-  const [placement, setPlacement] = useState<Placement>({ x: '', y: '', width: initialDimension('nominal_exterior_width'), depth: initialDimension('nominal_exterior_depth'), angle: '0' })
-  const [dimensionOrigins, setDimensionOrigins] = useState<{ width: 'catalogue' | 'user'; depth: 'catalogue' | 'user' }>({ width: initialModel ? 'catalogue' : 'user', depth: initialModel ? 'catalogue' : 'user' })
-  const [assumptions, setAssumptions] = useState({ parcel: '', building: '' })
+  const [placement, setPlacement] = useState<Placement>(() => initialDraft?.position ?? { x: '', y: '', width: initialDimension('nominal_exterior_width'), depth: initialDimension('nominal_exterior_depth'), angle: '0' })
+  const [dimensionOrigins, setDimensionOrigins] = useState<{ width: 'catalogue' | 'user'; depth: 'catalogue' | 'user' }>({ width: initialDraft?.widthOrigin ?? (initialModel ? 'catalogue' : 'user'), depth: initialDraft?.depthOrigin ?? (initialModel ? 'catalogue' : 'user') })
+  const [assumptions, setAssumptions] = useState(initialDraft?.minima ?? { parcel: '', building: '' })
+  const draftCallback = useRef(onDraftChange); draftCallback.current = onDraftChange
+  useEffect(() => { draftCallback.current?.({ position: placement, minima: assumptions, widthOrigin: dimensionOrigins.width, depthOrigin: dimensionOrigins.depth }) }, [placement, assumptions, dimensionOrigins])
   const [nudgeMetres, setNudgeMetres] = useState(1)
   const [result, setResult] = useState<Result | null>(null)
   const [assessing, setAssessing] = useState(false)
@@ -211,7 +216,7 @@ export default function OccupiedLots({ catalogue = bundledCatalogue, allowedMode
     setLoading(true); setError(''); setCases([]); setCaseId(''); setResult(null); onMeasurement?.(null)
     if (suppliedCase) {
       setCases([suppliedCase]); setCaseId(suppliedCase.case_id); setLoading(false)
-      setPlacement(current => ({ ...current, x: '', y: '', angle: startingAngle(suppliedCase) }))
+      setPlacement(current => initialDraft?.position ?? { ...current, x: '', y: '', angle: startingAngle(suppliedCase) })
       return () => { active = false; version.current++ }
     }
     const timer = setTimeout(() => controller.abort(), 10000)
@@ -222,7 +227,7 @@ export default function OccupiedLots({ catalogue = bundledCatalogue, allowedMode
         const found = parseSites(await response.json())
         if (!active) return
         setCases(found); setCaseId(found[0].case_id)
-        setPlacement(current => ({ ...current, x: '', y: '', angle: startingAngle(found[0]) }))
+        setPlacement(current => initialDraft?.position ?? { ...current, x: '', y: '', angle: startingAngle(found[0]) })
       } catch (e) { if (!active) return; if (!controller.signal.aborted) setError(e instanceof Error ? e.message : 'Retained sites unavailable.')
         else setError('Retained site request timed out.') }
       finally { clearTimeout(timer); if (active) setLoading(false) }

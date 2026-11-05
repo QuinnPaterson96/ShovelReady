@@ -12,17 +12,18 @@ import type { Result } from '../occupied_lots/contract'
 import { emptyExampleAssumptions, exampleCase, exampleOrientation, exampleObservation, exampleRequest, initialExamplePosition, parseExampleResult } from './example'
 import type { ExampleAssumptions, ExamplePosition } from './example'
 import { type BoundaryMapInteraction } from '../zoning_site_assumptions/BoundaryMapTools'
+import type { RetainedPlacementDraft } from './retainedAlternatives'
 
 const source = exampleCase.site.parcel.source
 const roofSource = exampleCase.site.buildings[0]?.source
 const show = (value: number | null, dimension: 'length' | 'area') => measurementWithUnit(value, dimension)
 
 
-export function ExampleProperty({ model = defaultJourneyModel, onMeasurement, onAssessmentPending, boundaryInteraction, placementSummary, placementContinuation, evidenceTargetId, moveSuggestion, placementConcerns, showPlacementConcerns = true, onContinueUnresolved, onFailureChange, playbackPosition }: { onFailureChange?: (failed: boolean) => void; playbackPosition?: { token: number; position: ExamplePosition }; model?: CatalogueModel; onAssessmentPending?: (pending: boolean) => void; placementConcerns?: ReactNode; showPlacementConcerns?: boolean; onContinueUnresolved?: () => void; onMeasurement: (value: OccupiedMeasurement | null) => void; boundaryInteraction?: BoundaryMapInteraction; placementSummary?: ReactNode; placementContinuation?: ReactNode; evidenceTargetId?: string; moveSuggestion?: { dx: number; dy: number; token: number } }) {
+export function ExampleProperty({ model = defaultJourneyModel, initialDraft, onDraftChange, onMeasurement, onAssessmentPending, boundaryInteraction, placementSummary, placementContinuation, evidenceTargetId, moveSuggestion, placementConcerns, showPlacementConcerns = true, onContinueUnresolved, onFailureChange, playbackPosition }: { initialDraft?: RetainedPlacementDraft | null; onDraftChange?: (draft: RetainedPlacementDraft) => void; onFailureChange?: (failed: boolean) => void; playbackPosition?: { token: number; position: ExamplePosition }; model?: CatalogueModel; onAssessmentPending?: (pending: boolean) => void; placementConcerns?: ReactNode; showPlacementConcerns?: boolean; onContinueUnresolved?: () => void; onMeasurement: (value: OccupiedMeasurement | null) => void; boundaryInteraction?: BoundaryMapInteraction; placementSummary?: ReactNode; placementContinuation?: ReactNode; evidenceTargetId?: string; moveSuggestion?: { dx: number; dy: number; token: number } }) {
   const initialPosition = () => ({ ...initialExamplePosition(),
     width: model.measurements.find(item => item.name === 'nominal_exterior_width')?.quantity?.value ?? '',
     depth: model.measurements.find(item => item.name === 'nominal_exterior_depth')?.quantity?.value ?? '' })
-  const [position, setPosition] = useState(initialPosition)
+  const [position, setPosition] = useState(() => initialDraft?.position ?? initialPosition())
   const appliedMove = useRef<number | null>(null)
   useEffect(() => {
     if (!moveSuggestion || appliedMove.current === moveSuggestion.token) return
@@ -37,12 +38,14 @@ export function ExampleProperty({ model = defaultJourneyModel, onMeasurement, on
     invalidate()
     setPosition(playbackPosition.position)
   }, [playbackPosition])
-  const [assumptions, setAssumptions] = useState(emptyExampleAssumptions)
+  const [assumptions, setAssumptions] = useState(() => initialDraft ? { parcel: initialDraft.minima.parcel, roofline: initialDraft.minima.building } : emptyExampleAssumptions())
   const [result, setResult] = useState<Result | null>(null)
   const [phase, setPhase] = useState<'measuring' | 'stale' | 'unresolved' | 'current'>('measuring')
   const [message, setMessage] = useState('')
   const [busy, setBusy] = useState(false)
-  const [editedDimensions, setEditedDimensions] = useState({ width: false, depth: false })
+  const [editedDimensions, setEditedDimensions] = useState({ width: initialDraft?.widthOrigin === 'user', depth: initialDraft?.depthOrigin === 'user' })
+  const draftCallback = useRef(onDraftChange); draftCallback.current = onDraftChange
+  useEffect(() => { draftCallback.current?.({ position, minima: { parcel: assumptions.parcel, building: assumptions.roofline }, widthOrigin: editedDimensions.width ? 'user' : 'catalogue', depthOrigin: editedDimensions.depth ? 'user' : 'catalogue' }) }, [position, assumptions, editedDimensions])
   const [step, setStep] = useState(1)
   const [rotationFocused, setRotationFocused] = useState(false)
   const activeCheck = useRef<AbortController | null>(null)
