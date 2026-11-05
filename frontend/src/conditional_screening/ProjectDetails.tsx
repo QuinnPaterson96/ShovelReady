@@ -4,17 +4,21 @@ import { formatMeasurement } from '../measurements'
 import { changeProjectSetting, confirmProjectSetting, supportedGardenSuiteZone, type MappedZoning, type ProjectSettings, type SettingEvidence } from './projectSettings'
 import type { Pathway } from './model'
 import type { ZoningLookup } from './victoriaZoning'
+import { MunicipalityCoverage } from '../municipality_coverage/MunicipalityCoverage'
+import { hasVictoriaCoverage, type MunicipalityContext } from '../municipality_coverage/model'
 
 const originLabel = (item: SettingEvidence) => item.origin === 'user_confirmed' ? 'User-confirmed · not independently verified' : item.origin === 'journey_default' ? 'Journey default · editable' :
   item.origin === 'municipal_lookup' ? 'Municipal observation · unreviewed' :
     item.origin === 'user' ? 'Entered by you · unverified' : item.origin === 'derived' ? 'Derived from your choice' : 'Unknown'
 const choice = (value: boolean | null) => value === null ? '' : String(value)
 
-export function ProjectDetails({ settings, mapped, lookup, busy, error, onRetry, onChange }: {
+export function ProjectDetails({ settings, mapped, lookup, busy, error, onRetry, onChange, municipality, onMunicipalityChange }: {
   settings: ProjectSettings; mapped: MappedZoning | null; lookup: ZoningLookup | null; busy: boolean; error: string; onRetry: () => void; onChange: (next: ProjectSettings) => void
+  municipality?: MunicipalityContext | null; onMunicipalityChange?: (next: MunicipalityContext) => void
 }) {
   useEffect(() => { void import('./project-details.css') }, [])
   const proposal = settings.proposal
+  const usesVictoria = municipality === undefined || hasVictoriaCoverage(municipality)
   const change = <K extends keyof Pathway>(key: K, value: Pathway[K]) => onChange(changeProjectSetting(settings, key, value))
   const mappedZoneChoice = supportedGardenSuiteZone(mapped?.zone) ? mapped.zone : 'other'
   const mappedBylawChoice = mapped?.instrument === 'Zoning Bylaw 2018 (No. 18-072)' ? 'Zoning Bylaw 2018' : 'other'
@@ -27,20 +31,21 @@ export function ProjectDetails({ settings, mapped, lookup, busy, error, onRetry,
   const coverageText = lookup ? `${lookup.zones.length ? lookup.zones.map(zone => `${zone.source_fields.Zoning ?? 'unknown zone'} · ${zone.bylaw_name ?? zone.source_fields.ZoningBylaw ?? 'unknown bylaw'} · ${Math.round(zone.parcel_coverage_fraction * 1000) / 10}% of parcel`).join('; ') : 'No zone polygon returned.'} ${lookup.uncovered_area_m2 !== null ? `Uncovered area: ${formatMeasurement(lookup.uncovered_area_m2, 'area')} m².` : 'Coverage unresolved.'}` : ''
   return <section className="project-details" aria-label="Project details">
     <h3>Project details</h3>
+    {municipality !== undefined && <MunicipalityCoverage id="municipality-settings" value={municipality} onChange={onMunicipalityChange} />}
     <div className="project-details__summary"><strong>Using these settings</strong>
       <p>Use: {proposal.proposed_use === 'garden_suite' ? 'garden suite' : proposal.proposed_use === 'other' ? 'other use' : 'unknown'} ({originLabel(settings.evidence.proposed_use)}). Foundation: {proposal.foundation_attached === true ? 'permanent-foundation scenario' : proposal.foundation_attached === false ? 'not attached' : 'unknown'} ({originLabel(settings.evidence.foundation_attached)}).</p>
-      <p>Zoning: {proposal.confirmed_zone ?? 'unknown'} ({originLabel(settings.evidence.confirmed_zone)}). Bylaw: {proposal.confirmed_instrument ?? 'unknown'} ({originLabel(settings.evidence.confirmed_instrument)}).</p>
+      {usesVictoria && <><p>Zoning: {proposal.confirmed_zone ?? 'unknown'} ({originLabel(settings.evidence.confirmed_zone)}). Bylaw: {proposal.confirmed_instrument ?? 'unknown'} ({originLabel(settings.evidence.confirmed_instrument)}).</p>
       <p>{mappedText}</p>
       {manualConflict && <p role="status"><strong>Your entered zoning differs from the mapped observation.</strong> Both remain visible for review; the entered choice is used only as an unverified scenario assumption.</p>}
       {lookup && <details><summary>Zoning observation and sources</summary><p>{coverageText}</p>{lookup.source_records.map((source, index) => <p key={`${source.sha256}:${index}`}>{source.provider} · {source.record_label} · captured {readableDate(source.captured_at_utc)} · {source.review_status.replace(/_/g, ' ')}. {source.source_date_limit} <a href={source.source_url} target="_blank" rel="noreferrer">City source record</a></p>)}
-        {lookup.issues.length > 0 && <TechnicalDetails title="Zoning lookup notes"><p>Source-reported issues (technical): {lookup.issues.join('; ')}.</p></TechnicalDetails>}</details>}
+        {lookup.issues.length > 0 && <TechnicalDetails title="Zoning lookup notes"><p>Source-reported issues (technical): {lookup.issues.join('; ')}.</p></TechnicalDetails>}</details>}</>}
     </div>
     <details><summary>Adjust settings</summary>
       <p>Change only what you know. A default lets you explore this garden-suite question; it is not a manufacturer or site confirmation.</p>
       <label>Proposed use <select value={proposal.proposed_use ?? ''} onChange={event => change('proposed_use', event.target.value === '' ? null : event.target.value as Pathway['proposed_use'])}><option value="">Unknown</option><option value="garden_suite">Garden suite</option><option value="other">Another use</option></select></label>
       <label>Installation scenario <select value={choice(proposal.foundation_attached)} onChange={event => change('foundation_attached', event.target.value === '' ? null : event.target.value === 'true')}><option value="">Unknown</option><option value="true">Attached to a permanent foundation</option><option value="false">Not attached to a permanent foundation</option></select></label>
       {(['proposed_use', 'foundation_attached'] as const).map(key => <label key={key}><input type="checkbox" disabled={proposal[key] === null} checked={settings.evidence[key].origin === 'user_confirmed'} onChange={event => onChange(confirmProjectSetting(settings, key, event.target.checked))} /> I confirm the {key === 'proposed_use' ? 'use' : 'foundation'} scenario · optional, not independently verified</label>)}
-      <div className="project-details__municipal"><strong>Mapped zoning</strong><p>{mappedText}</p>
+      {usesVictoria && <><div className="project-details__municipal"><strong>Mapped zoning</strong><p>{mappedText}</p>
         {(error || lookup?.status === 'unavailable') && <button id="zoning-retry" type="button" onClick={onRetry}>Retry zoning lookup</button>}
         {mapped?.source && <p>{mapped.source.provider} · {mapped.source.record_label} · {mapped.source.locator} · captured {readableDate(mapped.source.capture_date)} · {mapped.source.review_status.replace(/_/g, ' ')}. <a href={mapped.source.url} target="_blank" rel="noreferrer">Municipal source</a></p>}
       </div>
@@ -51,7 +56,7 @@ export function ProjectDetails({ settings, mapped, lookup, busy, error, onRetry,
         <label>Legal lot boundary <select value={choice(proposal.legal_lot_confirmed)} onChange={event => change('legal_lot_confirmed', event.target.value === '' ? null : event.target.value === 'true')}><option value="">Unknown</option><option value="true">I have evidence this outline matches one legal lot</option><option value="false">Known mismatch or multiple lots</option></select></label>
         <label>Projections affecting setbacks <select value={choice(proposal.no_relevant_projections)} onChange={event => change('no_relevant_projections', event.target.value === '' ? null : event.target.value === 'true')}><option value="">Unknown</option><option value="true">I have evidence no relevant projections apply</option><option value="false">Relevant eaves or other projections may apply</option></select></label>
       </details>
-      <p>A model's published footprint does not resolve roof overhangs, eaves or Victoria's legal measurement basis. Unknown projections remain open in affected checks.</p>
+      <p>A model's published footprint does not resolve roof overhangs, eaves or Victoria's legal measurement basis. Unknown projections remain open in affected checks.</p></>}
     </details>
   </section>
 }

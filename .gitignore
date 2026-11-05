@@ -13,5 +13,7 @@ node_modules/
 .venv/
 .pytest_cache/
 .ruff_cache/
+/.local/placement-demo-verification/
+/.local/placement-walkthrough/
 .env.*
 !.env.example

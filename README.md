@@ -1,5 +1,7 @@
 # ShovelReady
 
+The homeowner demo now [suggests an editable starting position, shows setback margins and selects local rules from the address](docs/integration-placement-guidance.md). For places outside current coverage, visitors can request their municipality or continue with a manual sketch.
+
 Review implementation: [optional homeowner budget journey](docs/project-budget-journey.md)
 connects captured prices, editable cost assumptions and unpriced work to the existing
 419 Cecelia / Model 300 walkthrough and unsent enquiry. It does not establish installed

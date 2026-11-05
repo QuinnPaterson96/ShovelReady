@@ -1,5 +1,11 @@
 # Quality engineering agreement
 
+## Placement and city routing — November 2026
+
+The [combined browser journey and reproduction steps](integration-placement-guidance.md#verification) exercise captured Victoria and Saanich addresses against the local production build and real calculation APIs. On desktop and mobile-width Edge, the placement remained editable, a late suggestion did not undo a keyboard move, the setback guides remained visible outside the lot, and a city correction cleared the old jurisdiction from findings and report wording. A fresh Saanich address offered a city-only request and an independent manual sketch. No issue was submitted. Container CI runs this same journey against the packaged app.
+
+Local verification: 194 frontend tests passed, TypeScript and production build completed, and Python reported 561 passed, 28 subtests passed and 37 skipped with no database or native lifecycle setup. CI separately covers disposable PostgreSQL, the Windows native lifecycle and container startup. The saved-example walkthrough exercised keyboard takeover, failure recovery, mobile navigation and an explicit PDF download. Developer review of the [generated enquiry](samples/placement-guidance/enquiry.txt) checked the provider’s next questions, product measurements, preliminary jurisdiction basis and separation of demo-supplied answers from property facts. Software and developer review do not establish authority acceptance or homeowner understanding. Remaining product and data owners are listed in the [handoff](integration-placement-guidance.md#still-open).
+
 ## Backend CI registry correction — October 23, 2026
 
 PR #328's backend job repeatedly failed before tests while pulling PostgreSQL 17

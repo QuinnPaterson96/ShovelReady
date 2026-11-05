@@ -28,6 +28,7 @@ const inputGaps: Record<string, FindingGap> = {
 
 // Bounded Victoria packet adapter; the renderer consumes jurisdiction-neutral findings.
 export function homeownerSummary(input: {
+  municipality?: { name: string | null; rule_coverage: 'victoria_candidate' | 'unavailable' | 'unresolved' } | null
   geometry: GeometryResult | null; geometryComplete: boolean; scenario: ScenarioResult | null; screening: ScreeningResult | null
   assumptions: SiteAssumptions | null; settings: ProjectSettings; mapped: MappedZoning | null; lookup: ZoningLookup | null
   propertyScan?: PropertyScanResult | null; propertyScanBusy?: boolean; propertyScanError?: string
@@ -47,6 +48,15 @@ export function homeownerSummary(input: {
     ? { label: 'Space within the property', status: 'conflict', detail: 'The current approximate placement has a parcel, roofline or chosen clearance conflict.', action: { label: 'Adjust placement', target: 'placement-map' } }
     : contained && geometryComplete ? { label: 'Space within the property', status: 'checked', detail: 'The footprint is inside the captured parcel and no overlap with captured rooflines was observed. Captured geometry is approximate.' }
       : { label: 'Space within the property', status: 'unknown', detail: geometry ? 'The parcel or roofline observation is incomplete.' : 'Place the model to check the captured parcel and rooflines.', action: { label: geometry ? 'Review placement' : 'Place model', target: 'placement-map' } })
+
+  if (input.municipality !== undefined && input.municipality?.rule_coverage !== 'victoria_candidate') {
+    const name = input.municipality?.name
+    checks.push({ label: 'Municipality rules', status: name ? 'unsupported' : 'unknown',
+      detail: name ? `Rules for ${name} are not covered yet. The map measurements remain available.` : 'The municipality is unresolved. Map measurements remain available while local rule coverage is identified.',
+      action: { label: 'Review municipality', target: 'municipality-settings' } })
+    return { conclusion: geometryConflict ? 'This placement has a conflict' : geometry ? 'Explore this placement with local advice' : 'Place the unit to explore the possibilities',
+      next: geometryConflict ? 'Adjust the placement or carry the mapped concern into your enquiry. Local planning rules still need investigation.' : 'Keep the useful site sketch and ask the provider or municipality which local planning requirements to investigate.', checks }
+  }
 
   const legalDistanceConflict = screening?.checks.some(check => check.rule.kind === 'boundary_min' && check.status === 'apparent_conflict_under_assumptions') ?? false
   checks.push(assumptions?.street_adjacency && !assumptions.street_adjacency.all_marked

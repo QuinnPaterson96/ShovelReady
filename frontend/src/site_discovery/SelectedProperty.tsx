@@ -3,16 +3,21 @@ import { StepInfo } from '../StepInfo'
 import { publicSourceUrl, readableDate, TechnicalDetails } from '../ReadableProvenance'
 import type { Confirmed } from './flow'
 import { parcelDescription, roofParcelDetails } from './parcelComparison'
+import { MunicipalityCoverage } from '../municipality_coverage/MunicipalityCoverage'
+import { municipalityFromProperty, type MunicipalityContext } from '../municipality_coverage/model'
 
-export function SelectedProperty({ value, onChangeProperty, onInspectAlternatives, onRetryObservation }: {
-  value: Confirmed; onChangeProperty: () => void; onInspectAlternatives?: () => void; onRetryObservation?: () => void
+export function SelectedProperty({ value, onChangeProperty, onInspectAlternatives, onRetryObservation, municipality }: {
+  value: Confirmed; onChangeProperty: () => void; onInspectAlternatives?: () => void; onRetryObservation?: () => void; municipality?: MunicipalityContext | null
 }) {
   useEffect(() => { void import('./site-discovery.css') }, [])
   const roofDetails = roofParcelDetails(value.observation)
   const sourceUrl = publicSourceUrl(value.observation.source.url)
+  const sourceMunicipality = municipalityFromProperty(value)
   return <section className="site-discovery sd-property-summary" aria-label="Selected property">
     <div className="sd-selected"><p><strong>{value.address.label}</strong><br />{parcelDescription(value.parcel) || value.parcel.label}</p>
       <button type="button" onClick={onChangeProperty}>Change address</button><StepInfo label="Changing your property">Changing property clears its placement, street marks, measurements, property answers and enquiry question/response. Your model, intended use, timing, budget and contact preferences stay.</StepInfo></div>
+    <MunicipalityCoverage value={municipality === undefined ? sourceMunicipality : municipality} />
+    {municipality?.origin === 'user' && municipality.name !== sourceMunicipality.name && <p className="sd-notice">The selected outline still comes from {sourceMunicipality.name ?? 'the address source'}. Check the address if it belongs to a different municipality.</p>}
     {value.parcel.identityConcern && <p className="sd-notice">{value.parcel.identityConcern}</p>}
     {onInspectAlternatives && value.parcel.identityConcern && <button type="button" onClick={onInspectAlternatives}>Inspect another parcel candidate</button>}
     <details><summary>Property source and outline help</summary>

@@ -14,6 +14,8 @@ import { overlapFinding } from './observations'
 import type { Case, Check, Result } from './contract'
 import ScenarioHandoff from '../scenario_handoff/ScenarioHandoff'
 import { BoundaryActionTabs, BoundaryMapTools, BoundaryOverlay, BoundaryRoleHelp, type BoundaryMapInteraction } from '../zoning_site_assumptions/BoundaryMapTools'
+import { SuggestionControls, usePlacementSuggestion, type PlacementSuggestion, type SuggestionContext, type SuggestionGeometry } from '../placement_suggestion/usePlacementSuggestion'
+import { useSetbackMap } from '../setback_overlays/SetbackMap'
 
 type Placement = { x: string; y: string; width: string; depth: string; angle: string }
 const number = (value: string) => value.trim() !== '' && Number.isFinite(Number(value)) ? Number(value) : null
@@ -51,7 +53,7 @@ export function PlacementConcerns({ site, result, additional, onContinueUnresolv
   </section>
 }
 
-export function OccupiedLotPreview({ selected, placement, onMove, nudgeMetres, conflictIds, boundaryInteraction, placementSummary, placementContinuation, placementControls, placementConcerns, modelLabel = 'Proposed unit', showBoundaryTools = true }: { placementControls?: ReactNode; placementSummary?: ReactNode; placementContinuation?: ReactNode; placementConcerns?: ReactNode; modelLabel?: string; showBoundaryTools?: boolean; selected: Case; placement: Placement; onMove: (x: number, y: number) => void; nudgeMetres: number; conflictIds?: Set<string>; boundaryInteraction?: BoundaryMapInteraction }) {
+export function OccupiedLotPreview({ selected, placement, onMove, nudgeMetres, conflictIds, boundaryInteraction, placementSummary, placementContinuation, placementControls, placementConcerns, preferredScenarioKey, modelLabel = 'Proposed unit', showBoundaryTools = true }: { preferredScenarioKey?: string; placementControls?: ReactNode; placementSummary?: ReactNode; placementContinuation?: ReactNode; placementConcerns?: ReactNode; modelLabel?: string; showBoundaryTools?: boolean; selected: Case; placement: Placement; onMove: (x: number, y: number) => void; nudgeMetres: number; conflictIds?: Set<string>; boundaryInteraction?: BoundaryMapInteraction }) {
   const svg = useRef<SVGSVGElement>(null)
   const preview = useRef<HTMLDialogElement>(null)
   const playback = useContext(PlaybackLayout)
@@ -76,8 +78,10 @@ export function OccupiedLotPreview({ selected, placement, onMove, nudgeMetres, c
   const scale = extent < 50 ? 5 : extent < 100 ? 10 : 20
   const scaleX = minX - pad * .65, scaleY = -minY + pad * .55
   const px = number(placement.x), py = number(placement.y), w = number(placement.width), d = number(placement.depth), a = number(placement.angle)
+  const setbacks = useSetbackMap(boundaryInteraction?.setbackContext, preferredScenarioKey)
   const mapLayers = <>
       <path d={path(site.parcel)} fill="var(--map-parcel-fill)" stroke={conflictIds?.has(site.parcel.id) ? 'var(--danger)' : 'var(--map-parcel-stroke)'} strokeDasharray={conflictIds?.has(site.parcel.id) ? '7 4' : undefined} fillRule="evenodd" vectorEffect="non-scaling-stroke" strokeWidth={conflictIds?.has(site.parcel.id) ? '4' : '2'} />
+      {setbacks.layer}
       {site.buildings.map((b, i) => {
         const coords = points(b), centreX = (Math.min(...coords.map(p => p[0])) + Math.max(...coords.map(p => p[0]))) / 2, centreY = (Math.min(...coords.map(p => p[1])) + Math.max(...coords.map(p => p[1]))) / 2
         const main = b.id === boundaryInteraction?.mainBuilding?.id
@@ -130,7 +134,8 @@ export function OccupiedLotPreview({ selected, placement, onMove, nudgeMetres, c
       onPointerCancel={() => { drag.current = false; suppressClick.current = false }}>
       {mapLayers}
     </svg>
-    <p className="occupied-map-legend"><span>Teal · captured parcel</span><span>Purple · rooflines, not walls</span>{conflictIds && <span>Red dashed outline · current conflict</span>}<span>Copper · proposed unit</span><span>North ↑</span>{!!boundaryInteraction?.streetIds?.length && <span>Grey road bands · your marks, diagram only</span>}</p>
+    <p className="occupied-map-legend"><span>Teal · captured parcel</span><span>Purple · rooflines, not walls</span>{!!conflictIds?.size && <span>Red dashed outline · current conflict</span>}<span>Copper · proposed unit</span><span>North ↑</span>{!!boundaryInteraction?.streetIds?.length && <span>Grey road bands · your marks, diagram only</span>}</p>
+    {setbacks.legend}
     <dialog ref={preview} className="occupied-map-preview" aria-label="Full-size approximate placement preview">
       <div className="occupied-preview-heading"><h3>Approximate placement plan</h3><button type="button" onClick={() => preview.current?.close()}>Close preview</button></div>
       <svg className="occupied-preview-drawing" viewBox={view} role="img" aria-label={`${modelLabel} proposed position, captured parcel and numbered rooflines. North is up.`}>{mapLayers}</svg>
@@ -147,8 +152,10 @@ export function OccupiedLotPreview({ selected, placement, onMove, nudgeMetres, c
   </div>
 }
 
-export type OccupiedMeasurement = { site: Case; model: (typeof bundledCatalogue.models)[number] | null; result: Result; widthOrigin: 'catalogue' | 'user'; depthOrigin: 'catalogue' | 'user' }
+export type OccupiedMeasurement = { startingSuggestion?: PlacementSuggestion; site: Case; model: (typeof bundledCatalogue.models)[number] | null; result: Result; widthOrigin: 'catalogue' | 'user'; depthOrigin: 'catalogue' | 'user' }
 export type OccupiedLotsProps = {
+  suggestionContext?: SuggestionContext | null
+  autoSuggest?: boolean
   catalogue?: Pick<Catalogue, 'models'>
   placementSummary?: ReactNode
   placementConcerns?: ReactNode
@@ -167,7 +174,7 @@ export type OccupiedLotsProps = {
   boundaryInteraction?: BoundaryMapInteraction
 }
 
-export default function OccupiedLots({ catalogue = bundledCatalogue, allowedModelIds, initialModelId = '', onMeasurement, onAssessmentPending, showHandoff = true, suppliedCase, boundaryInteraction, compactPlacement = false, evidenceTargetId, moveSuggestion, placementSummary, placementContinuation, placementConcerns, showPlacementConcerns = true, onContinueUnresolved }: OccupiedLotsProps) {
+export default function OccupiedLots({ catalogue = bundledCatalogue, allowedModelIds, initialModelId = '', onMeasurement, onAssessmentPending, showHandoff = true, suppliedCase, boundaryInteraction, compactPlacement = false, evidenceTargetId, moveSuggestion, placementSummary, placementContinuation, placementConcerns, showPlacementConcerns = true, onContinueUnresolved, suggestionContext, autoSuggest = true }: OccupiedLotsProps) {
   const initialModel = catalogue.models.find(m => m.model_id === initialModelId && (!allowedModelIds || allowedModelIds.includes(m.model_id)))
   const initialDimension = (name: string) => {
     const quantity = initialModel?.measurements.find(m => m.name === name)?.quantity
@@ -187,6 +194,7 @@ export default function OccupiedLots({ catalogue = bundledCatalogue, allowedMode
   const [assessing, setAssessing] = useState(false)
   const [assessmentError, setAssessmentError] = useState('')
   const [rotationFocused, setRotationFocused] = useState(false)
+  const [startingSuggestion, setStartingSuggestion] = useState<PlacementSuggestion | null>(null)
   const activeCheck = useRef<AbortController | null>(null)
   const version = useRef(0)
   const selected = cases.find(c => c.case_id === caseId) ?? null
@@ -202,13 +210,13 @@ export default function OccupiedLots({ catalogue = bundledCatalogue, allowedMode
     if (!placement.x.trim() || !placement.y.trim()) return
     changePlacement({ x: String(Number(placement.x) + moveSuggestion.dx), y: String(Number(placement.y) + moveSuggestion.dy) })
   }, [moveSuggestion])
-  function changePlacement(patch: Partial<Placement>) { invalidate(); setPlacement(p => ({ ...p, ...patch })) }
-  function changeAssumption(key: 'parcel' | 'building', value: string) { invalidate(); setAssumptions(p => ({ ...p, [key]: value })) }
+  function changePlacement(patch: Partial<Placement>) { setStartingSuggestion(null); suggestion.cancel(); invalidate(); setPlacement(p => ({ ...p, ...patch })) }
+  function changeAssumption(key: 'parcel' | 'building', value: string) { suggestion.cancel(); invalidate(); setAssumptions(p => ({ ...p, [key]: value })) }
   useEffect(() => {
     const controller = new AbortController()
     let active = true
     version.current++
-    setLoading(true); setError(''); setCases([]); setCaseId(''); setResult(null); onMeasurement?.(null)
+    setStartingSuggestion(null); setLoading(true); setError(''); setCases([]); setCaseId(''); setResult(null); onMeasurement?.(null)
     if (suppliedCase) {
       setCases([suppliedCase]); setCaseId(suppliedCase.case_id); setLoading(false)
       setPlacement(current => ({ ...current, x: '', y: '', angle: startingAngle(suppliedCase) }))
@@ -230,7 +238,7 @@ export default function OccupiedLots({ catalogue = bundledCatalogue, allowedMode
     return () => { active = false; version.current++; controller.abort(); clearTimeout(timer) }
   }, [reload, suppliedCase])
   function chooseCase(id: string) {
-    invalidate(); setCaseId(id)
+    setStartingSuggestion(null); suggestion.cancel(); invalidate(); setCaseId(id)
     const next = cases.find(item => item.case_id === id)
     setPlacement(current => ({ ...current, x: '', y: '', angle: next ? startingAngle(next) : '0' }))
   }
@@ -265,6 +273,16 @@ export default function OccupiedLots({ catalogue = bundledCatalogue, allowedMode
   const buildingMinimum = assumptions.building.trim() ? number(assumptions.building) : null
   const assumptionsValid = (parcelMinimum === null ? !assumptions.parcel.trim() : parcelMinimum >= 0) &&
     (buildingMinimum === null ? !assumptions.building.trim() : buildingMinimum >= 0)
+  const suggestionGeometry: SuggestionGeometry | null = selected && width !== null && width > 0 && depth !== null && depth > 0 && angle !== null && assumptionsValid ? {
+    schema_version: 'scouting-geometry.v1', ...selected.site,
+    placement: { id: 'starting-position-search', centre_xy: [x ?? 0, y ?? 0], width_m: width, depth_m: depth, angle_degrees: angle },
+    requirements: [...(parcelMinimum === null ? [] : [{ id: 'user-parcel-minimum', target: 'parcel_boundary', minimum_m: parcelMinimum, status: 'user_assumption' }]),
+      ...(buildingMinimum === null ? [] : [{ id: 'user-building-minimum', target: 'nearest_building', minimum_m: buildingMinimum, status: 'user_assumption' }])],
+  } : null
+  const suggestion = usePlacementSuggestion({ geometry: suggestionGeometry, context: suggestionContext,
+    propertyKey: selected ? JSON.stringify([selected.case_id, selected.site.parcel.shape]) : null,
+    enabled: !compactPlacement || suggestionContext !== undefined, auto: autoSuggest,
+    onApply: (next, evidence) => { setStartingSuggestion(evidence); invalidate(); setPlacement(current => ({ ...current, x: String(next.centre_xy[0]), y: String(next.centre_xy[1]), angle: String(next.angle_degrees) })) } })
   const geometryPending = !!valid && assumptionsValid && !result && !assessmentError
   useEffect(() => { onAssessmentPending?.(geometryPending) }, [geometryPending])
   async function assess() {
@@ -273,7 +291,7 @@ export default function OccupiedLots({ catalogue = bundledCatalogue, allowedMode
     const requestVersion = version.current
     setAssessing(true)
     const request = { schema_version: 'scouting-geometry.v1', ...selected.site,
-      placement: { id: 'user-supplied-placement', centre_xy: [x, y], width_m: width, depth_m: depth, angle_degrees: angle },
+      placement: { id: startingSuggestion ? 'suggested-starting-placement' : 'user-supplied-placement', centre_xy: [x, y], width_m: width, depth_m: depth, angle_degrees: angle },
       requirements: [
         ...(parcelMinimum === null ? [] : [{ id: 'user-parcel-minimum', target: 'parcel_boundary', minimum_m: parcelMinimum, status: 'user_assumption' }]),
         ...(buildingMinimum === null ? [] : [{ id: 'user-building-minimum', target: 'nearest_building', minimum_m: buildingMinimum, status: 'user_assumption' }]),
@@ -289,7 +307,7 @@ export default function OccupiedLots({ catalogue = bundledCatalogue, allowedMode
             JSON.stringify(parsed.input.placement.centre_xy) !== JSON.stringify([x, y]) || parsed.input.placement.width_m !== width || parsed.input.placement.depth_m !== depth || parsed.input.placement.angle_degrees !== angle)
           throw new Error('Assessment returned a different placement.')
         setResult(parsed)
-        onMeasurement?.({ site: selected, model: model ?? null, result: parsed, widthOrigin: dimensionOrigins.width, depthOrigin: dimensionOrigins.depth })
+        onMeasurement?.({ ...(startingSuggestion ? { startingSuggestion } : {}), site: selected, model: model ?? null, result: parsed, widthOrigin: dimensionOrigins.width, depthOrigin: dimensionOrigins.depth })
       }
     } catch (e) { if (version.current === requestVersion) setAssessmentError(controller.signal.aborted ? 'Assessment timed out. Try again.' : e instanceof Error ? e.message : 'Assessment failed.') }
     finally { clearTimeout(timer); if (version.current === requestVersion) setAssessing(false) }
@@ -321,10 +339,11 @@ export default function OccupiedLots({ catalogue = bundledCatalogue, allowedMode
     `Coverage: ${selected.site.capture.scope}; ${selected.site.capture.completeness.replace(/_/g, ' ')}. Captured rooflines are not walls; unmapped obstructions and legal conditions remain unknown. This tests only the supplied placement.`,
     `Next: verify legal parcel lines, building walls and roles, siting pathway, provider dimensions and other site constraints.`,
   ].join('\n') : ''
-  const startingPositionControls = <><div className="occupied-map-actions" hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}><button onClick={placeAtCentre}>{compactPlacement ? 'Place or reset at parcel centre' : 'Recenter rectangle on parcel'}</button>
+  const startingPositionControls = <><div className="occupied-map-actions" hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}><button onClick={placeAtCentre}>{compactPlacement ? 'Place at parcel centre' : 'Recenter rectangle on parcel'}</button>
             <button disabled={number(placement.x) === null && number(placement.y) === null} onClick={() => changePlacement({ x: '', y: '' })}>Clear placement</button></div>
-          <details><summary>About the starting position</summary><p>Recenter uses the parcel drawing's bounding-box centre as a sketch starting point. It does not search for a suitable location.</p></details></>
+          <details><summary>About recentering</summary><p>Recenter uses the parcel drawing's bounding-box centre. Use Suggest a placement to search the mapped open space instead.</p></details></>
   const footprintControls = selected && <div className="occupied-controls" hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}>
+            <SuggestionControls suggestion={suggestion} />
             {!compactPlacement && <><h3>2 · Adjust the position</h3><p className="metadata">Click the map or drag the rectangle. Checks update automatically after movement settles.</p></>}
             <div className="occupied-main-actions"><label htmlFor="occupied-angle">Rotation (degrees)</label><input id="occupied-angle" type="number" step="any" value={rotationFocused || !placement.angle.trim() || !Number.isFinite(Number(placement.angle)) ? placement.angle : String(Number(Number(placement.angle).toFixed(2)))} onFocus={() => setRotationFocused(true)} onBlur={() => setRotationFocused(false)} onChange={e => changePlacement({ angle: e.target.value })} />
             <button type="button" disabled={orientation?.status !== 'suggested'} onClick={() => { if (orientation?.status === 'suggested') changePlacement({ angle: String(orientation.angle_degrees) }) }}>Align to lot</button></div>
@@ -383,7 +402,7 @@ export default function OccupiedLots({ catalogue = bundledCatalogue, allowedMode
       {compactPlacement && <div className="occupied-compact-summary"><strong>{model ? `${model.name} · ` : 'Manual footprint · '}{show(width)} wide × {show(depth)} long</strong><span>Nominal exterior rectangle · {dimensionOrigin('width').toLowerCase()} width, {dimensionOrigin('depth').toLowerCase()} length.</span><span>{source?.provider} · {source?.record_label} · captured {readableDate(source?.capture_date)} · {source?.review_status}. {publicSourceUrl(source?.reference) && <a href={publicSourceUrl(source?.reference)!} target="_blank" rel="noreferrer">Parcel source</a>}</span></div>}
       <div className="occupied-workspace">
         <div className="occupied-map-column">
-          <OccupiedLotPreview modelLabel={model?.name ?? 'Proposed unit'} placementConcerns={currentConcerns} placementControls={compactPlacement ? <div className="occupied-placement-controls" hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}>{footprintControls}</div> : undefined} placementContinuation={placementContinuation} placementSummary={placementSummary} showBoundaryTools selected={selected} placement={placement} nudgeMetres={nudgeMetres} conflictIds={compactPlacement ? conflictIds : undefined} onMove={(x, y) => changePlacement({ x: String(x), y: String(y) })} boundaryInteraction={boundaryInteraction} />
+          <OccupiedLotPreview preferredScenarioKey={suggestion.preferredScenarioKey} modelLabel={model?.name ?? 'Proposed unit'} placementConcerns={currentConcerns} placementControls={compactPlacement ? <div className="occupied-placement-controls" hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}>{footprintControls}</div> : undefined} placementContinuation={placementContinuation} placementSummary={placementSummary} showBoundaryTools selected={selected} placement={placement} nudgeMetres={nudgeMetres} conflictIds={compactPlacement ? conflictIds : undefined} onMove={(x, y) => changePlacement({ x: String(x), y: String(y) })} boundaryInteraction={boundaryInteraction} />
           {!compactPlacement && startingPositionControls}
         </div>
         <div className="occupied-side">

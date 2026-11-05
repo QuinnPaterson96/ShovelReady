@@ -8,6 +8,8 @@ import { liveTransport } from './transport'
 import { CandidateChoices, harmlessCompletion, leadingAddressIndex, leadingParcelIndex } from './CandidateChoices'
 import { SelectedProperty } from './SelectedProperty'
 import { parcelDescription } from './parcelComparison'
+import { MunicipalityCoverage } from '../municipality_coverage/MunicipalityCoverage'
+import type { MunicipalityContext } from '../municipality_coverage/model'
 
 function SourceLine({ source }: { source: Source }) {
   const url = publicSourceUrl(source.url)
@@ -27,26 +29,30 @@ export function AddressCandidates({ addresses, selectedId, onChoose }: { address
     </>} />
   </section>
 }
-export function SiteDiscovery({ onConfirm, transport = liveTransport, onManual, autoProceed = false, resetKey = 0, inspectKey = 0 }: { onConfirm: (value: Confirmed | null) => void; transport?: Transport; onManual?: () => void; autoProceed?: boolean; resetKey?: number; inspectKey?: number }) {
+export function SiteDiscovery({ onConfirm, onMunicipalityChange, municipality: municipalityOverride, transport = liveTransport, onManual, autoProceed = false, resetKey = 0, inspectKey = 0 }: { onConfirm: (value: Confirmed | null) => void; onMunicipalityChange?: (value: MunicipalityContext | null) => void; municipality?: MunicipalityContext | null; transport?: Transport; onManual?: () => void; autoProceed?: boolean; resetKey?: number; inspectKey?: number }) {
   const [state, setState] = useState<State>(initial)
   const [addressOpen, setAddressOpen] = useState(true)
   const [parcelOpen, setParcelOpen] = useState(true)
   const [observationOpen, setObservationOpen] = useState(true)
   const onConfirmRef = useRef(onConfirm)
   onConfirmRef.current = onConfirm
-  const [flow] = useState(() => new DiscoveryFlow(transport, setState, value => onConfirmRef.current(value), autoProceed))
+  const onMunicipalityRef = useRef(onMunicipalityChange)
+  onMunicipalityRef.current = onMunicipalityChange
+  const [flow] = useState(() => new DiscoveryFlow(transport, setState, value => onConfirmRef.current(value), autoProceed, value => onMunicipalityRef.current?.(value)))
   useEffect(() => { void import('./site-discovery.css'); return () => flow.dispose() }, [flow])
   useEffect(() => { if (resetKey) { flow.reject(); setAddressOpen(true); setParcelOpen(true); setObservationOpen(true) } }, [resetKey, flow])
   useEffect(() => { if (inspectKey) setParcelOpen(true) }, [inspectKey])
   useEffect(() => { if (parcelOpen && state.parcels.length > 1) document.getElementById('sd-parcels')?.focus() }, [parcelOpen, state.parcels.length, inspectKey])
-  const { query, busy, addresses, address, parcels, parcel, observation, confirmed, message } = state
-  if (autoProceed && confirmed && (parcels.length === 1 || !parcelOpen)) return <SelectedProperty value={confirmed}
+  const { query, busy, addresses, address, municipality, parcels, parcel, observation, confirmed, message } = state
+  const displayedMunicipality = municipalityOverride === undefined ? municipality : municipalityOverride
+  if (autoProceed && confirmed && (parcels.length === 1 || !parcelOpen)) return <SelectedProperty value={confirmed} municipality={displayedMunicipality}
     onChangeProperty={() => { flow.changeProperty(); setAddressOpen(true); setParcelOpen(true); setObservationOpen(true) }}
     onInspectAlternatives={parcels.length > 1 ? () => setParcelOpen(true) : undefined}
     onRetryObservation={() => void flow.chooseParcel(confirmed.parcel.id)} />
   return <section className="site-discovery" aria-labelledby="site-discovery-title">
     <div className="sd-address-heading"><h4 id="site-discovery-title">Enter your address</h4><StepInfo label="Address search and property outlines"><p>Choose an address result. A sole usable Victoria parcel opens placement automatically; several parcels require your choice.</p><p>Address suggestions and municipal outlines are unreviewed source leads. Neither a geocoder score nor a nearby point proves parcel identity. Rooflines are mapped roof outlines, not legal building walls. Check the property identity and source dates independently.</p></StepInfo></div>
     {address && !addressOpen && <div className="sd-selected"><p><strong>Address lead:</strong> {address.label}{address.locality ? ` · ${address.locality}` : ''}. Parcel identity is still separate.</p><button type="button" onClick={() => setAddressOpen(true)}>Change address</button></div>}
+    {displayedMunicipality && <MunicipalityCoverage value={displayedMunicipality} onManual={onManual} />}
     {addressOpen && <form onSubmit={event => { event.preventDefault(); setParcelOpen(true); setObservationOpen(true); void flow.search() }}>
       <label htmlFor="sd-address">Street address in British Columbia</label>
       <div className="sd-search"><input id="sd-address" value={query} maxLength={160} onChange={event => { setParcelOpen(true); setObservationOpen(true); flow.edit(event.target.value) }} placeholder="Street address, city" autoComplete="street-address" />
@@ -55,7 +61,7 @@ export function SiteDiscovery({ onConfirm, transport = liveTransport, onManual, 
     {busy && <p role="status">{state.stage === 'addresses' ? 'Searching addresses…' : state.stage === 'parcels' ? 'Searching Victoria parcels…' : 'Fetching parcel and rooflines…'}</p>}
     {message && <p className="sd-notice" role="status">{message}</p>}
     {addressOpen && addresses.length > 0 && <AddressCandidates addresses={addresses} selectedId={address?.id ?? null} onChoose={id => { setAddressOpen(false); setParcelOpen(true); setObservationOpen(true); void flow.chooseAddress(id) }} />}
-    {address && !busy && parcels.length === 0 && <p><button type="button" onClick={() => void flow.chooseAddress(address.id)}>Retry Victoria parcel search</button></p>}
+    {address && municipality?.rule_coverage === 'victoria_candidate' && !busy && parcels.length === 0 && <p><button type="button" onClick={() => void flow.chooseAddress(address.id)}>Retry Victoria parcel search</button></p>}
     {!autoProceed && parcel && !parcelOpen && <div className="sd-selected"><p><strong>Parcel lead:</strong> {parcel.label}. {parcel.match} Property confirmation is still required.</p><button type="button" onClick={() => setParcelOpen(true)}>Change parcel</button></div>}
     {parcelOpen && parcels.length > 0 && (!autoProceed || parcels.length > 1) && <section id="sd-parcels" tabIndex={-1} aria-label="Parcel choices"><h5>2 · Choose a parcel to inspect</h5><p>{parcels.length > 1 ? 'Compare the parcel identifiers and mapped outlines, then choose the parcel your project concerns.' : 'Choose the parcel to inspect its mapped outline.'}</p>
       <CandidateChoices candidates={parcels} selectedId={parcel?.id ?? null} leadingIndex={leadingParcelIndex(parcels)} kind="parcel" render={(candidate, label) => <>
@@ -73,7 +79,7 @@ export function SiteDiscovery({ onConfirm, transport = liveTransport, onManual, 
       <TechnicalDetails title="Complete observation and exact source records"><pre>{JSON.stringify(observation.raw, null, 2)}</pre></TechnicalDetails>
     </section>}
     {parcel && !busy && (!observation || observation.buildingsState === 'partial') && <p><button type="button" onClick={() => void flow.chooseParcel(parcel.id)}>Retry parcel and rooflines</button> Retrying clears the selected property and placement result.</p>}
-    {onManual ? <p className="sd-fallback"><button className="sd-manual-link" type="button" onClick={onManual}>Can’t find your address? Enter details manually</button></p> :
+    {onManual ? (!displayedMunicipality || displayedMunicipality.rule_coverage === 'victoria_candidate') && <p className="sd-fallback"><button className="sd-manual-link" type="button" onClick={onManual}>Can’t find your address? Enter details manually</button></p> :
       <p className="sd-fallback">You can continue with the retained lookup or <a href="#manual-address">manual site details below</a> if this search is wrong, outside Victoria or unavailable. This demonstration does not fill those fields or affect the prepared summary yet.</p>}
   </section>
 }
