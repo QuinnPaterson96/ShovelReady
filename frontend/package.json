@@ -13,7 +13,8 @@
     "preview": "vite preview --host 127.0.0.1",
     "test": "node tools/run_tests.mjs",
     "check:draft-contract": "cd .. && python -m uv run --locked python frontend/tools/export_draft_evaluations.py --check",
-    "test:walkthrough": "node tools/walkthrough_browser.mjs"
+    "test:walkthrough": "node tools/walkthrough_browser.mjs",
+    "test:placement-demo": "node tools/placement_demo_browser.mjs"
   },
   "dependencies": {
     "ajv": "8.18.0",

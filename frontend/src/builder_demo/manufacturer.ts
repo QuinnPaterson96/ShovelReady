@@ -14,14 +14,16 @@ import type { BudgetDraft, Context } from '../project_budget/contract'
 import { budgetQuestions, budgetEnquiryParagraph, calculateBudget } from '../project_budget/pipeline'
 
 export type EnquiryInput = {
+  localComparisonsAvailable?: boolean
   budgetDraft?: { draft: BudgetDraft; context: Context; today?: string }
   demoAnswers?: Partial<Record<'intendedUse' | 'relationship' | 'nextStep' | 'streetContext', string>>; question?: string; propertyConcern?: string; intendedUse: string; timing: string; budget: string; access: string; services: string
   relationship?: string; stage?: string; configuration?: string; nextStep?: string; contact?: string
 }
 
-export function enquiryUseQualification(intendedUse: string, scenarioUse: Pathway['proposed_use'] = 'garden_suite'): string {
+export function enquiryUseQualification(intendedUse: string, scenarioUse: Pathway['proposed_use'] = 'garden_suite', localComparisonsAvailable = true): string {
   const use = intendedUse.trim().toLowerCase()
   const unconfirmed = !use || ['unknown', 'not sure', 'still deciding', 'undecided', 'prefer not to say'].includes(use)
+  if (!localComparisonsAvailable) return `${unconfirmed ? 'Intended use is unconfirmed.' : `Intended use supplied: ${intendedUse.trim()}.`} No local rule comparison was run for this site. Ask the municipality which rules apply; the placement sketch can support that conversation.`
   if (scenarioUse !== 'garden_suite') return `${unconfirmed ? 'Intended use is unconfirmed.' : `Intended use supplied: ${intendedUse.trim()}.`} The selected ${scenarioUse === 'other' ? 'other-use' : 'unknown-use'} scenario is outside the supported garden-suite comparisons. Ask City staff or a qualified local professional about applicable rules; physical observations remain approximate.`
   return unconfirmed
     ? 'Intended use is unconfirmed. The planning comparisons assume a garden suite and may not apply to the eventual use. Physical placement observations remain approximate.'
@@ -199,7 +201,7 @@ export function manufacturerDocument(input: EnquiryInput, address: string | null
         ...(!input.budgetDraft ? [`4. What is the current ${supplied(input.configuration) ? 'price for the options described above' : `starting price for the standard ${model.name}`}, and what is included? Please confirm currency and identify additional costs for tax, upgrades, transport, crane, installation, foundations, utility connections and permits.`] : []),
         `${input.budgetDraft ? '3' : '5'}. What is the current lead time, when does it start, and what decisions, permits and site preparation must be complete before booking or delivery?`,
       ]),
-      section('Planning questions to resolve separately', [enquiryUseQualification(input.intendedUse, scenarioUse),
+      section('Planning questions to resolve separately', [enquiryUseQualification(input.intendedUse, scenarioUse, input.localComparisonsAvailable),
         'The property contact needs to confirm the main home, existing suites and waterfront context. City staff or a qualified local professional needs to check the applicable rules, legal measurement basis and any permit or title conditions. Please advise what product information you can provide to support that review.'], true),
       section('Site information', [...placement, ...positivePropertyFindings(scan),
         ...(!measured ? ['No current measured placement is available; the proposed position and delivery access remain to be established.'] : []),

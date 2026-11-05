@@ -1,5 +1,9 @@
 # Architecture direction
 
+## Municipality and starting placement
+
+The [placement guidance integration](integration-placement-guidance.md) connects a sourced, correctable municipality to the demo’s existing rule and placement engines. `POST /api/placement-suggestions/v1/suggest` proposes one rectangle without changing the evaluator for visitor-supplied positions. The map draws a single scenario’s clipped setbacks separately from extra planning margins and model geometry. No new data store, background service, source publication or migration is required.
+
 ## Optional budget scope — October 19, 2026
 
 The [October 23 journey follow-up](project-budget-journey.md) connects that same

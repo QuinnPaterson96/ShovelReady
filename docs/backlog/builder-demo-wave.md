@@ -1,5 +1,7 @@
 # Builder demonstration task wave
 
+Demo follow-up: [starting placement, setback guides and city coverage](../integration-placement-guidance.md) now share one homeowner journey. The optional map of every location a particular model may fit, review of further municipal rule sets and testing with demo participants remain separate work.
+
 September 27, 2026. Combined outcome: a visitor explores aux box Model 300, supplies
 site facts through supported APIs or manual entry, investigates an explicitly scaled
 placement where possible, and leaves with a readable unsent enquiry. Useful partial

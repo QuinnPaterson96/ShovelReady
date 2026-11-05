@@ -34,9 +34,9 @@ await context.route('**/*', async route => {
     if (hold) { heldStarted?.(); await new Promise(resolve => { release = resolve }) }
     if (fail) return route.fulfill({ status: 503, body: 'offline' })
   }
-  if (/zoning-lookup|property-scan/.test(url.pathname)) return route.fulfill({ status: 503, body: 'offline municipal boundary' })
+  if (/^\/api\/victoria-zoning\/(lookup|property-scan)$/.test(url.pathname)) return route.fulfill({ status: 503, body: 'offline municipal boundary' })
   // Unknown external discovery routes are not needed for this saved example.
-  if (!['/health', '/api/scouting-geometry/assess', '/api/conditional-screening/v1/evaluate', '/api/conditional-screening/v1/placement-scenarios'].includes(url.pathname)) return route.fulfill({ status: 503, body: 'offline boundary' })
+  if (!['/health', '/api/scouting-geometry/assess', '/api/conditional-screening/v1/evaluate', '/api/conditional-screening/v1/placement-scenarios', '/api/placement-suggestions/v1/suggest'].includes(url.pathname)) return route.fulfill({ status: 503, body: 'offline boundary' })
   // Independent transport lets obsolete responses finish even after browser cancellation.
   const response = await fetch(api + url.pathname, { method: request.method(), body: request.postData() || undefined, headers: { 'Content-Type': 'application/json' } })
   let body = await response.text()
@@ -100,7 +100,9 @@ try {
   await page.screenshot({ path: `${output}/desktop-enquiry.png` })
   await click('Let me try')
   assert.equal(await page.locator('[data-playback-controls]').count(), 0)
+  await page.waitForFunction(() => document.activeElement?.id === 'builder-use')
   await page.locator('#builder-relationship').fill('I am helping the owner')
+  await wait(async () => (await evidence()).enquiry_inputs.relationship === 'I am helping the owner')
   e = await evidence()
   assert.equal(e.demo_answer_provenance.relationship, undefined)
   assert.equal(e.demo_answer_provenance.intendedUse.origin, 'demo_supplied')
@@ -164,7 +166,7 @@ try {
   await button('Next').focus(); await page.keyboard.press('Enter'); await settled()
   await page.screenshot({ path: `${output}/mobile-enquiry.png` })
   await button('Let me try').focus(); await page.keyboard.press('Enter')
-  assert.equal(await page.locator('#builder-use').evaluate(node => node === document.activeElement), true)
+  await page.waitForFunction(() => document.activeElement?.id === 'builder-use')
   // With normal motion, waiting longer than the old dwell cannot advance a step.
   await page.emulateMedia({ reducedMotion: 'no-preference' })
   await page.goto(frontend + '/#home'); await page.reload(); await click('Watch the demo')
@@ -190,7 +192,7 @@ try {
   // Edge can open its own download hub for an explicitly requested PDF download.
   // Allow that exact internal UI only during export, with no document/network requests.
   assert.ok(popups.every(popup => popup.duringExport && ['', 'about:blank', 'edge://downloads-hub/'].includes(popup.url) && popup.requests.length === 0), JSON.stringify(popups))
-  const readOnlyPosts = ['/api/scouting-geometry/assess', '/api/conditional-screening/v1/evaluate', '/api/conditional-screening/v1/placement-scenarios', '/api/victoria-zoning/lookup', '/api/victoria-zoning/property-scan']
+  const readOnlyPosts = ['/api/scouting-geometry/assess', '/api/conditional-screening/v1/evaluate', '/api/conditional-screening/v1/placement-scenarios', '/api/victoria-zoning/lookup', '/api/victoria-zoning/property-scan', '/api/placement-suggestions/v1/suggest']
   assert.ok(requests.every(r => r.method === 'GET' || r.method === 'POST' && readOnlyPosts.includes(r.path)))
   await page.goto(frontend + '/#home'); await page.reload(); await click('Watch the demo')
   await page.getByRole('button', { name: 'Home', exact: true }).click()

@@ -2,11 +2,10 @@ import { useEffect, useId, useState } from 'react'
 import { readableDate, publicSourceUrl } from '../ReadableProvenance'
 import { coverageRequestUrl, userMunicipality, type MunicipalityContext } from './model'
 
-export function MunicipalityCoverage({ value, onChange, onCorrectAddress, onManual, id }: {
+export function MunicipalityCoverage({ value, onChange, onManual, id }: {
   value: MunicipalityContext | null
   id?: string
   onChange?: (next: MunicipalityContext) => void
-  onCorrectAddress?: () => void
   onManual?: () => void
 }) {
   const inputId = useId()
@@ -19,10 +18,9 @@ export function MunicipalityCoverage({ value, onChange, onCorrectAddress, onManu
   return <section id={id} tabIndex={id ? -1 : undefined} className="municipality-coverage" aria-label="Municipality and rule coverage">
     <p className="municipality-coverage__title"><strong>{supported ? 'Using City of Victoria rules' : value?.name ? `We don’t cover ${value.name}’s rules yet` : 'Choose a municipality for local rules'}</strong></p>
     <p>{supported ? 'Preliminary garden-suite comparisons use the available Victoria rule subset.' : 'You can still explore a manual site sketch. Local rule checks are not available for this selection.'}</p>
-    {(request || onManual || onCorrectAddress) && <div className="municipality-coverage__actions">
+    {(request || (!supported && onManual)) && <div className="municipality-coverage__actions">
       {request && <a className="municipality-coverage__request" href={request} target="_blank" rel="noreferrer">Request {value?.name} coverage</a>}
       {!supported && onManual && <button type="button" onClick={onManual}>Continue with a site sketch</button>}
-      {onCorrectAddress && <button type="button" onClick={onCorrectAddress}>Correct address or city</button>}
     </div>}
     {request && <p className="municipality-coverage__note">Opens a public GitHub request form; sign-in may be required. Only the municipality name is prefilled. Submit the form there to send your request.</p>}
     {onChange && <details><summary>{value?.name ? 'Change municipality' : 'Select municipality'}</summary>
