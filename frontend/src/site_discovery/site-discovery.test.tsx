@@ -21,6 +21,8 @@ import cityRoofs from './buildings_87.json'
 import municipalApi from './municipal-api.fixture.json'
 import { placementCase } from './placement'
 import { enquiry } from '../builder_demo/BuilderDemo'
+import { MunicipalityCoverage } from '../municipality_coverage/MunicipalityCoverage'
+import { coverageRequestUrl, municipalityFromAddress, municipalityFromProperty, type MunicipalityContext } from '../municipality_coverage/model'
 
 const source = { provider: 'Public source', record: 'test record', capturedAt: '2026-09-28', sourceDate: null, url: null, review: 'unreviewed' }
 const address: Address = { id: 'a', label: 'Corrected address', locality: 'Victoria', precision: 'CIVIC_NUMBER', issues: [], point: [-123, 48], crs: 'EPSG:4326', source, raw: { original: 'record' } }
@@ -243,6 +245,63 @@ test('actual complete and municipality variants preserve address identity bounda
   assert.equal(wrongCity[0].locality, 'Victoria')
   assert.equal(wrongCity[0].providerFaults?.[0].element, 'LOCALITY')
   assert.equal(leadingAddressIndex(wrongCity), null)
+  assert.equal(municipalityFromAddress(wrongCity[0]).name, 'City of Victoria', 'route from the selected provider locality, not the original Saanich search')
+})
+
+test('city routing follows selected source evidence, clears old selection and never calls Victoria for unsupported cities', async () => {
+  // Independent expectation: selecting a returned Saanich record must never reuse
+  // Victoria parcel/rule coverage, even if the search text says Victoria.
+  const contexts: (MunicipalityContext | null)[] = []
+  const confirmed: (Confirmed | null)[] = []
+  const unsupported = { ...address, id: 'saanich', locality: 'Saanich', label: 'A Saanich address, Victoria postal area' }
+  const unknown = { ...address, id: 'unknown', locality: null, label: 'Victoria in display text only' }
+  const municipalParcel = parseParcels(municipalApi.search).candidates[0]
+  const municipalObservation = parseObservation(municipalApi.observation, municipalParcel)
+  let parcelQueries = 0
+  const transport: Transport = { async addresses() { return { status: 'ok', candidates: [address, unsupported, unknown] } },
+    async parcels() { parcelQueries++; return { status: 'ok', candidates: [municipalParcel] } }, async observe() { return municipalObservation } }
+  const flow = new DiscoveryFlow(transport, () => {}, value => confirmed.push(value), true, value => contexts.push(value))
+  flow.edit('address, Victoria'); await flow.search(); await flow.chooseAddress(address.id)
+  assert.equal(contexts[0]?.origin, 'geocoder_locality')
+  assert.equal(contexts.at(-1)?.origin, 'municipal_parcel')
+  assert.equal(municipalityFromProperty(flow.state.confirmed!).rule_coverage, 'victoria_candidate')
+  await flow.chooseAddress(unsupported.id)
+  assert.equal(parcelQueries, 1)
+  assert.equal(flow.state.confirmed, null)
+  assert.equal(confirmed.at(-1), null)
+  assert.equal(contexts.at(-1)?.name, 'Saanich')
+  assert.equal(contexts.at(-1)?.rule_coverage, 'unavailable')
+  assert.equal(flow.state.address?.id, unsupported.id)
+  const request = new URL(coverageRequestUrl(flow.state.municipality!)!)
+  assert.equal(request.origin, 'https://github.com')
+  assert.equal(request.pathname, '/QuinnPaterson96/ShovelReady/issues/new')
+  assert.match(request.searchParams.get('title')!, /Saanich/)
+  assert.ok(!request.toString().includes(encodeURIComponent(unsupported.label)), 'request prefills municipality only, not property details')
+  const html = renderToStaticMarkup(createElement(MunicipalityCoverage, { value: flow.state.municipality, onManual() {} }))
+  assert.match(html, /Request Saanich coverage/)
+  assert.match(html, /Continue with a site sketch/)
+  assert.match(html, /Submit the form there to send your request/)
+  await flow.chooseAddress(unknown.id)
+  assert.equal(parcelQueries, 1)
+  assert.equal(contexts.at(-1)?.rule_coverage, 'unresolved')
+  assert.equal(coverageRequestUrl(flow.state.municipality!), null)
+  flow.edit('new search')
+  assert.equal(contexts.at(-1), null)
+})
+
+test('late Victoria parcel results cannot overwrite a newly selected unsupported municipality', async () => {
+  const late = deferred<SearchResult<Parcel>>()
+  const unsupported = { ...address, id: 'langford', locality: 'Langford' }
+  const flow = new DiscoveryFlow({ async addresses() { return { status: 'ok', candidates: [address, unsupported] } },
+    parcels() { return late.promise }, async observe() { return observation } }, () => {}, () => {}, true)
+  flow.edit('Victoria'); await flow.search()
+  const pending = flow.chooseAddress(address.id)
+  await flow.chooseAddress(unsupported.id)
+  late.resolve({ status: 'ok', candidates: [parcel] }); await pending
+  assert.equal(flow.state.municipality?.name, 'Langford')
+  assert.equal(flow.state.municipality?.rule_coverage, 'unavailable')
+  assert.equal(flow.state.confirmed, null)
+  assert.deepEqual(flow.state.parcels, [])
 })
 
 test('saved Saanich response and material civic, tie and unit alternatives stay expanded', () => {

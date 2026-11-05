@@ -4,7 +4,8 @@ import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import type { Confirmed } from '../site_discovery/flow'
 import { ProjectDetails } from './ProjectDetails'
-import { applyMappedZoning, changeProjectSetting, initialProjectSettings, withFloorAreaBasis } from './projectSettings'
+import { applyMappedZoning, changeProjectSetting, initialProjectSettings, withFloorAreaBasis, resetMunicipalProjectSettings } from './projectSettings'
+import { municipalitySummary, savedExampleMunicipality, userMunicipality } from '../municipality_coverage/model'
 import { parseZoningLookup, selectedParcelRef, zoningProjection, type ZoningLookup } from './victoriaZoning'
 
 const ref = { source: 'city-of-victoria-pid-parcels' as const, object_id: 87 }
@@ -57,4 +58,28 @@ test('mixed, stale and malformed observations stay unresolved; manual choice sta
   const conflicting = applyMappedZoning(manual, zoningProjection(lookup, 'geometry-a'), 'geometry-a')
   const html = renderToStaticMarkup(createElement(ProjectDetails, { settings: conflicting, mapped: zoningProjection(lookup, 'geometry-a'), lookup, busy: false, error: '', onRetry: () => {}, onChange: () => {} }))
   assert.match(html, /Your entered zoning differs from the mapped observation/)
+})
+
+test('changing city preserves project intent and removes Victoria facts and controls from unsupported context', () => {
+  const mapped = zoningProjection(lookup, 'geometry-a')
+  const old = applyMappedZoning(changeProjectSetting(initialProjectSettings(), 'proposed_use', 'other'), mapped, 'geometry-a')
+  const next = resetMunicipalProjectSettings(old)
+  assert.equal(next.proposal.proposed_use, 'other')
+  assert.deepEqual(next.evidence.proposed_use, old.evidence.proposed_use)
+  assert.equal(next.proposal.foundation_attached, true)
+  assert.equal(next.proposal.confirmed_zone, null)
+  assert.equal(next.proposal.confirmed_instrument, null)
+  const municipality = userMunicipality('Saanich')
+  // Rendering also withholds stale data if an asynchronous lookup's prior result
+  // is still handed to the component during the parent transition.
+  const html = renderToStaticMarkup(createElement(ProjectDetails, { settings: old, mapped, lookup, municipality,
+    onMunicipalityChange() {}, busy: false, error: '', onRetry() {}, onChange() {} }))
+  assert.match(html, /Request Saanich coverage/)
+  assert.match(html, /id="municipality-settings"/)
+  assert.doesNotMatch(html, /GRD-1|Zoning Bylaw 2018|Zone, if you have verified it/)
+  assert.match(html, /Proposed use/)
+  assert.match(municipalitySummary(municipality), /local rule comparisons are unavailable/)
+  const example = savedExampleMunicipality()
+  assert.equal(example.rule_coverage, 'victoria_candidate')
+  assert.ok(example.source?.capturedAt)
 })

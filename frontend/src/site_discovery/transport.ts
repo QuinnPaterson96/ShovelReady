@@ -169,7 +169,7 @@ export const liveTransport: Transport = {
     return parseAddresses(await post('/api/address-search', { schemaVersion: 'sr-address-search.v1', query, maxResults: 5 }, signal))
   },
   async parcels(address: Address, signal: AbortSignal): Promise<SearchResult<Parcel>> {
-    if (address.locality?.trim().toLowerCase() !== 'victoria') return { status: 'outside_coverage', candidates: [], message: 'This address is outside the City of Victoria parcel demonstration. Continue manually.' }
+    if (!['victoria', 'city of victoria'].includes(address.locality?.trim().toLowerCase() ?? '')) return { status: 'outside_coverage', candidates: [], message: 'This address is outside the City of Victoria parcel demonstration. Continue manually.' }
     const street = object(address.raw) && object(address.raw.candidate) && object(address.raw.candidate.address) ? address.raw.candidate.address.streetAddress : null
     const query = string(street) ? street : address.label.split(',')[0]
     if (query.length < 3 || query.length > 120) return { status: 'no_match', candidates: [], message: 'Address is too long for the City parcel search. Correct it or continue manually.' }

@@ -14,6 +14,7 @@ import { parseAddresses, parseObservation, parseParcels, liveTransport } from '.
 import { SelectedProperty } from './SelectedProperty'
 import { SiteDiscovery } from './SiteDiscovery'
 import { placementCase } from './placement'
+import { userMunicipality } from '../municipality_coverage/model'
 
 const address = parseAddresses(suit.address).candidates[0]
 const parcels = parseParcels(suit.search).candidates.map((parcel, i) => ({ ...parcel, inspection: parseObservation(suit.observations[i], parcel) }))
@@ -43,6 +44,9 @@ test('captured 601 Su’it source replay retains materially distinct parcels and
   assert.match(html, /Inspect another parcel candidate/)
   assert.match(html, /<details><summary>Property source and outline help/)
   assert.match(html, /008-094-772/)
+  const corrected = renderToStaticMarkup(createElement(SelectedProperty, { value: flow.state.confirmed!, municipality: userMunicipality('Saanich'), onChangeProperty() {} }))
+  assert.match(corrected, /Request Saanich coverage/)
+  assert.doesNotMatch(corrected, /Using City of Victoria rules/)
   flow.changeProperty()
   assert.equal(flow.state.confirmed, null)
   assert.match(flow.state.message, /Choose the property/)
