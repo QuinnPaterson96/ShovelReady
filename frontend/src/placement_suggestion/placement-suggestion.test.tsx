@@ -5,6 +5,9 @@ import { JSDOM } from 'jsdom'
 import { act, createElement } from 'react'
 import { createRoot } from 'react-dom/client'
 import { ExampleProperty } from '../builder_demo/ExampleProperty'
+import { exampleCase } from '../builder_demo/example'
+import { initialAssumptions } from '../zoning_site_assumptions/model'
+import { emptyPathway } from '../conditional_screening/model'
 import type { SuggestionGeometry } from './usePlacementSuggestion'
 
 register('../../tools/css-test-loader.mjs', import.meta.url)
@@ -37,18 +40,25 @@ test('a late starting suggestion cannot undo a manual move; retry applies only a
     await act(async () => root.render(createElement(ExampleProperty, { suggestionContext: null, onMeasurement() {} })))
     await act(async () => { await new Promise(resolve => setTimeout(resolve, 220)) })
     assert.equal(pending.length, 1)
+    const context = { assumptions: initialAssumptions(exampleCase, 'fixture-geom', 'placement-unmeasured'),
+      model_revision: 'test-model', proposal: emptyPathway(), street_edge_id: null, rear_edge_id: null, street_pattern: 'unknown' as const }
+    // Municipal facts arrive while the initial untouched map is still waiting.
+    await act(async () => root.render(createElement(ExampleProperty, { suggestionContext: context, onMeasurement() {} })))
+    await act(async () => { await new Promise(resolve => setTimeout(resolve, 220)) })
+    assert.equal(pending.length, 2)
     const initialAngle = angle()
     await act(async () => button('East').click())
     await act(async () => pending[0].respond(success(0)))
+    await act(async () => pending[1].respond(success(1)))
     assert.equal(angle(), initialAngle)
     assert.doesNotMatch(document.body.textContent!, /Mapped starting position\./)
     await act(async () => button('Suggest a placement').click())
-    assert.equal(pending.length, 2)
-    await act(async () => pending[1].respond(success(1)))
+    assert.equal(pending.length, 3)
+    await act(async () => pending[2].respond(success(2)))
     assert.equal(angle(), 33.25)
     assert.match(document.body.textContent!, /Mapped starting position\./)
     await act(async () => button('Suggest a placement').click())
-    await act(async () => pending[2].respond({ ...success(2), capture: null, selected_scenario: { checks: null } }))
+    await act(async () => pending[3].respond({ ...success(3), capture: null, selected_scenario: { checks: null } }))
     assert.equal(angle(), 33.25)
     assert.match(document.body.textContent!, /response did not match/)
   } finally {

@@ -70,6 +70,7 @@ export function usePlacementSuggestion({ geometry, context, propertyKey, enabled
   const [error, setError] = useState('')
   const sequence = useRef(0)
   const active = useRef<AbortController | null>(null)
+  const automaticRequest = useRef(false)
   const started = useRef<string | null>(null)
   const edited = useRef<string | null>(null)
   const latest = useRef({ geometry, context, onApply })
@@ -82,15 +83,16 @@ export function usePlacementSuggestion({ geometry, context, propertyKey, enabled
 
   function cancel() {
     edited.current = propertyKey
-    sequence.current++; active.current?.abort(); setBusy(false); setResult(null); setError('')
+    sequence.current++; active.current?.abort(); active.current = null; setBusy(false); setResult(null); setError('')
   }
-  async function run() {
+  async function run(automatic = false) {
     const current = latest.current
     if (!enabled || !current.geometry) return
     started.current = propertyKey
     active.current?.abort()
     const controller = new AbortController(), requestSequence = ++sequence.current
     active.current = controller
+    automaticRequest.current = automatic
     setBusy(true); setError(''); setResult(null)
     const timer = setTimeout(() => controller.abort(), 15000)
     try {
@@ -109,13 +111,16 @@ export function usePlacementSuggestion({ geometry, context, propertyKey, enabled
         : error instanceof Error ? error.message : 'Placement suggestion unavailable. Continue manually.')
     } finally {
       clearTimeout(timer)
-      if (sequence.current === requestSequence) setBusy(false)
+      if (sequence.current === requestSequence) { active.current = null; setBusy(false) }
     }
   }
   useEffect(() => {
-    sequence.current++; active.current?.abort(); setBusy(false); setResult(null); setError('')
+    // A municipal lookup may finish while the first untouched search is pending.
+    // Retry it against the arriving context; never move an already placed unit.
+    if (active.current && automaticRequest.current) started.current = null
+    sequence.current++; active.current?.abort(); active.current = null; setBusy(false); setResult(null); setError('')
     if (!auto || !enabled || !geometry || !propertyKey || started.current === propertyKey || edited.current === propertyKey) return
-    const timer = setTimeout(() => { if (edited.current !== propertyKey) void run() }, 180)
+    const timer = setTimeout(() => { if (edited.current !== propertyKey) void run(true) }, 180)
     return () => clearTimeout(timer)
     // Requests read the latest closure; keys deliberately exclude the position.
     // eslint-disable-next-line react-hooks/exhaustive-deps
