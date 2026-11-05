@@ -1,0 +1,17 @@
+.setback-map-layer { pointer-events: none; }
+.setback-map-margin { fill: var(--primary); opacity: .1; }
+.setback-map-planning-margin { fill: var(--copper); opacity: .1; }
+.setback-map-line { stroke: var(--primary); stroke-width: 2; stroke-dasharray: 7 4; }
+.setback-map-planning-line { stroke: var(--copper); stroke-width: 2; stroke-dasharray: 2 4; }
+.setback-map-label { fill: var(--ink); font-weight: 650; paint-order: stroke; stroke: var(--surface); stroke-width: .25px; }
+.setback-map-status, .setback-map-legend { color: var(--ink-muted); font-size: .9rem; margin: .5rem 0 1rem; }
+.setback-map-legend > p { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; margin: .25rem 0; }
+.setback-map-key { display: inline-flex; align-items: center; gap: .4rem; }
+.setback-map-swatch { display: inline-block; width: 1.75rem; border-top: 2px dashed var(--primary); }
+.setback-map-swatch--planning { border-top: 2px dotted var(--copper); }
+.setback-map-legend label { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.setback-map-legend select { min-height: 44px; max-width: 100%; }
+.setback-map-legend summary { min-height: 44px; align-content: center; cursor: pointer; color: var(--ink); }
+.setback-map-legend details > :not(summary) { max-width: 72ch; }
+.setback-map-legend :is(summary, select, a):focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.setback-map-legend p, .setback-map-legend li { overflow-wrap: anywhere; }
