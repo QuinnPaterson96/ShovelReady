@@ -6,10 +6,10 @@ import { emptyPathway, expectedPropertyRevision } from '../conditional_screening
 import type { ScenarioResult } from '../conditional_screening/scenarios'
 import type { Case } from '../occupied_lots/contract'
 import { initialAssumptions } from '../zoning_site_assumptions/model'
-import { buildSetbackDrawing, setbackScenarioKey, type SetbackContext } from './geometry'
+import { buildSetbackDrawing, resolveSetbackGuides, drawSetbackGuides, setbackGuideKey, setbackScenarioKey, type SetbackContext } from './geometry'
 import { SetbackLayer, SetbackLegend, useSetbackMap } from './SetbackMap'
 
-function context({ reverse = false, origin = 0 } = {}): SetbackContext {
+function context({ reverse = false, origin = 0 } = {}): SetbackContext & { request: NonNullable<SetbackContext['request']> } {
   const source = { provider: 'Synthetic geometry fixture', record_label: 'Analytic 20 m by 30 m rectangle', capture_date: null, review_status: 'synthetic', reference: null }
   const ring = [[0, 0], [20, 0], [20, 30], [0, 30], [0, 0]].map(([x, y]) => [x + origin, y + origin])
   if (reverse) ring.reverse()
@@ -66,7 +66,7 @@ test('selecting another scenario changes the complete assignment, and suggested 
   const html = renderToStaticMarkup(createElement(PreferredMap))
   assert.match(html, /front at edge 2/)
   assert.match(html, /selected=""[^>]*>Scenario 2 of 2 · front edge 2/)
-  assert.match(html, /No front setback line/)
+  assert.match(html, /Several front edges are plausible/)
   assert.match(html, /extra planning margin/)
   assert.match(html, /not a model-fit area/)
 })
@@ -94,4 +94,51 @@ test('the drawing and accessible legend retain source, scope and full-distance b
   assert.match(html, /Synthetic fixture/)
   assert.match(html, /https:\/\/example.com\/fixture/)
   assert.match(html, /3 m candidate setback, plus 1 m extra planning margin \(4 m from the mapped edge\)/)
+})
+
+test('moving or rotating retains only the rule guides, and a changed city, role or buffer clears them', () => {
+  const input = context()
+  input.illustrative = true
+  input.guideKey = setbackGuideKey('Victoria', true, input.request)
+  const original = resolveSetbackGuides(input)
+  assert.equal(original.status, 'ready')
+  assert.doesNotMatch(JSON.stringify(original), /"(?:distance_m|observed|outcome|meets|centre_xy|placement_revision)":/)
+  input.request.geometry.placement.centre_xy = [-1, -1]
+  input.request.geometry.placement.angle_degrees = 90
+  input.request.assumptions.placement_revision = 'moved'
+  const movedKey = setbackGuideKey('Victoria', true, input.request)
+  assert.equal(movedKey, input.guideKey)
+  const pending = { ...input, request: null, result: null, guideKey: movedKey }
+  assert.deepEqual(resolveSetbackGuides(pending, original), original)
+  const outside = { ...input, placementOutsideParcel: true, result: { ...input.result!, status: 'unresolved' as const,
+    scenarios: [], edge_distances_m: {}, placement_revision: 'moved' } }
+  assert.deepEqual(resolveSetbackGuides(outside, original), original)
+  assert.equal(resolveSetbackGuides({ ...outside, result: { ...outside.result, packet_revision: 'revised' } }, original).status, 'unavailable')
+  const drawing = drawSetbackGuides(resolveSetbackGuides(pending, original))
+  assert.match(renderToStaticMarkup(<SetbackLegend drawing={drawing} onScenario={() => {}} />), /Illustrative garden-suite setbacks/)
+  const role = structuredClone(input.request); role.assumptions.edges[0].role.value = 'rear'
+  const buffer = structuredClone(input.request); buffer.assumptions.planning_buffers_m![buffer.assumptions.edges[0].id] = 2
+  for (const key of [setbackGuideKey('Saanich', true, input.request), setbackGuideKey('Victoria', false, input.request), setbackGuideKey('Victoria', true, role), setbackGuideKey('Victoria', true, buffer)]) {
+    assert.equal(resolveSetbackGuides({ ...pending, guideKey: key }, original).status, 'pending')
+  }
+})
+
+test('a supported measured front check maps to its unique edge using its source threshold and optional buffer', () => {
+  const input = context(), result = input.result!
+  const front = result.scenarios[0].front_edge_id
+  result.scenarios = [result.scenarios[0]]
+  result.additional_revision = 'candidate-scouting-2026-10-06-1'
+  result.additional_checks = ['height', 'rear_occupancy', 'separation', 'rear_location', 'front'].map(id => ({ id, label: id,
+    status: id === 'front' ? 'checked' : 'unknown', detail: 'Synthetic front threshold', action_target: null,
+    observed: id === 'front' ? 13 : null, threshold: id === 'front' ? 4 : null, unit: id === 'front' ? 'm' : null,
+    basis: 'Synthetic test input', source: { provider: 'Synthetic example', record_label: 'Synthetic front comparison',
+      url: 'https://www.victoria.ca/media/file/zoning-bylaw-2018', locator: 'Synthetic front clause', review_status: 'test' } }))
+  const line = () => { const drawing = buildSetbackDrawing(input); assert.equal(drawing.status, 'ready'); return drawing.status === 'ready' ? drawing.lines.find(item => item.role === 'front') : undefined }
+  assert.deepEqual(line()?.candidate?.map(point => point[1]), [4, 4])
+  assert.deepEqual(line()?.planning?.map(point => point[1]), [5, 5])
+  input.request.assumptions.measurements.boundary[front] = { value: 11, unit: 'm', basis: 'proposed_wall_to_lot_line', origin: 'user', note: null, placement_revision: 'placement' }
+  assert.equal(line()?.planning, null)
+  result.additional_checks.at(-1)!.observed = null
+  result.additional_checks.at(-1)!.status = 'unknown'
+  assert.equal(line(), undefined)
 })
