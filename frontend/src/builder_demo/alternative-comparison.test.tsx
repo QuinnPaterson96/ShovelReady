@@ -50,6 +50,7 @@ test('same-property comparison preserves qualified findings, cost evidence and m
     assert.equal(document.querySelectorAll('article').length, 3, 'other properties are excluded defensively')
     assert.match(lane(first.model.name).textContent!, /Roof overlap.*Preliminary concern.*overlaps/s)
     assert.match(lane(first.model.name).textContent!, /Assuming no existing garden suite/)
+    assert.ok([...lane(first.model.name).querySelectorAll('p')].some(paragraph => paragraph.closest('details') === panel && /Priority questions: Installed height/.test(paragraph.textContent!)), 'decision-relevant questions stay named outside collapsed details')
     assert.match(lane(first.model.name).textContent!, /CAD 187,000/)
     assert.match(lane(first.model.name).textContent!, /CAD 210,000/)
     assert.match(lane(first.model.name).textContent!, /Test provider.*User-entered quote fact.*2026-11-01/s)

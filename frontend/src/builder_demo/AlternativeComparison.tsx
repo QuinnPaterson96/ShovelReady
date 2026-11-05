@@ -28,6 +28,7 @@ function ScenarioFindings({ alternative }: { alternative: ComparisonAlternative 
   const findings = summary ? summaryFindings(summary) : []
   const concerns = findings.filter(check => check.status === 'conflict')
   const open = findings.filter(check => ['review', 'unknown', 'unsupported'].includes(check.status))
+  const questions = findings.filter(check => ['review', 'unknown'].includes(check.status))
   const plausible = findings.filter(check => ['checked', 'probable'].includes(check.status))
   const p = measurement?.result.input.placement
   return <>
@@ -35,6 +36,7 @@ function ScenarioFindings({ alternative }: { alternative: ComparisonAlternative 
       : summary ? <><p><strong>{summary.conclusion}</strong></p><p>{summary.next}</p>
         {concerns.length > 0 && <ul className="alternative-comparison__concerns">{concerns.map(check => <li key={check.label}><strong>{check.label} · {statusLabels[check.status]}.</strong> {check.detail}</li>)}</ul>}
         <p>{plausible.length} checks looking plausible; {open.length} questions or checks not covered. These counts describe coverage, not a suitability score.</p>
+        {questions.length > 0 && <p><strong>Priority questions:</strong> {questions.slice(0, 3).map(check => check.label).join('; ')}{questions.length > 3 ? `; ${questions.length - 3} more in the details below` : ''}.</p>}
         {findings.some(check => check.status === 'probable') && <ul>{findings.filter(check => check.status === 'probable').map(check => <li key={check.label}><strong>{check.label} · Likely fine.</strong> {check.detail}</li>)}</ul>}
         {open.length > 0 && <details><summary>Open questions and coverage</summary><ul>{open.map(check => <li key={check.label}><strong>{check.label} · {statusLabels[check.status]}.</strong> {check.detail}{check.gap && <> Next: {check.gap.next} · {check.gap.owner}.</>}</li>)}</ul></details>}
       </> : <p>No current suitability findings. Missing checks do not establish a better fit.</p>}
