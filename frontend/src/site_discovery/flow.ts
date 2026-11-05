@@ -1,3 +1,5 @@
+import { municipalityFromAddress, municipalityFromProperty, type MunicipalityContext } from '../municipality_coverage/model'
+
 export type Source = { provider: string; record: string; capturedAt: string | null; sourceDate: string | null; url: string | null; review: string }
 export type Address = { id: string; label: string; locality: string | null; precision: string; issues: string[]; point: [number, number] | null; crs: string | null; source: Source; raw: unknown }
 export type Parcel = { id: string; label: string; match: string; source: Source; raw: unknown; inspection?: Observation; identityConcern?: string }
@@ -12,8 +14,8 @@ export type Transport = {
   observe(parcel: Parcel, signal: AbortSignal): Promise<Observation>
 }
 export class DiscoveryProblem extends Error {}
-export type State = { query: string; stage: 'idle' | 'addresses' | 'parcels' | 'observation'; busy: boolean; message: string; addresses: Address[]; address: Address | null; parcels: Parcel[]; parcel: Parcel | null; observation: Observation | null; confirmed: Confirmed | null }
-export const initial: State = { query: '', stage: 'idle', busy: false, message: '', addresses: [], address: null, parcels: [], parcel: null, observation: null, confirmed: null }
+export type State = { query: string; stage: 'idle' | 'addresses' | 'parcels' | 'observation'; busy: boolean; message: string; addresses: Address[]; address: Address | null; municipality: MunicipalityContext | null; parcels: Parcel[]; parcel: Parcel | null; observation: Observation | null; confirmed: Confirmed | null }
+export const initial: State = { query: '', stage: 'idle', busy: false, message: '', addresses: [], address: null, municipality: null, parcels: [], parcel: null, observation: null, confirmed: null }
 
 export class DiscoveryFlow {
   state: State = initial
@@ -22,11 +24,18 @@ export class DiscoveryFlow {
   private transport: Transport
   private notify: (state: State) => void
   private onConfirm: (value: Confirmed | null) => void
+  private onMunicipalityChange: (value: MunicipalityContext | null) => void
   private autoProceed: boolean
-  constructor(transport: Transport, notify: (state: State) => void, onConfirm: (value: Confirmed | null) => void, autoProceed = false) {
+  constructor(transport: Transport, notify: (state: State) => void, onConfirm: (value: Confirmed | null) => void, autoProceed = false, onMunicipalityChange: (value: MunicipalityContext | null) => void = () => {}) {
     this.autoProceed = autoProceed; this.transport = transport; this.notify = notify; this.onConfirm = onConfirm
+    this.onMunicipalityChange = onMunicipalityChange
   }
-  private publish(patch: Partial<State>) { this.state = { ...this.state, ...patch }; this.notify(this.state) }
+  private publish(patch: Partial<State>) {
+    const previous = this.state.municipality
+    this.state = { ...this.state, ...patch }
+    if (this.state.municipality !== previous) this.onMunicipalityChange(this.state.municipality)
+    this.notify(this.state)
+  }
   private invalidate() { this.generation++; this.controller?.abort(); this.controller = null; if (this.state.confirmed) this.onConfirm(null) }
   private request() { this.invalidate(); const controller = new AbortController(); this.controller = controller; return { controller, generation: this.generation } }
   private current(generation: number) { return generation === this.generation }
@@ -35,7 +44,7 @@ export class DiscoveryFlow {
     const query = this.state.query.trim()
     if (query.length < 3 || query.length > 160) { this.publish({ message: 'Enter 3 to 160 characters to search.' }); return }
     const { controller, generation } = this.request()
-    this.publish({ stage: 'addresses', busy: true, message: '', addresses: [], address: null, parcels: [], parcel: null, observation: null, confirmed: null })
+    this.publish({ stage: 'addresses', busy: true, message: '', addresses: [], address: null, municipality: null, parcels: [], parcel: null, observation: null, confirmed: null })
     try {
       const result = await this.transport.addresses(query, controller.signal)
       if (!this.current(generation)) return
@@ -46,7 +55,12 @@ export class DiscoveryFlow {
     const address = this.state.addresses.find(candidate => candidate.id === id)
     if (!address) return
     const { controller, generation } = this.request()
-    this.publish({ stage: 'parcels', busy: true, message: '', address, parcels: [], parcel: null, observation: null, confirmed: null })
+    const municipality = municipalityFromAddress(address)
+    this.publish({ stage: 'parcels', busy: true, message: '', address, municipality, parcels: [], parcel: null, observation: null, confirmed: null })
+    if (municipality.rule_coverage !== 'victoria_candidate') {
+      this.publish({ busy: false, message: '' })
+      return
+    }
     try {
       const result = await this.transport.parcels(address, controller.signal)
       if (!this.current(generation)) return
@@ -71,7 +85,7 @@ export class DiscoveryFlow {
         const address = this.state.address
         if (!address) return
         const confirmed: Confirmed = { schema_version: 'site-discovery.selected.v1', selection_basis: this.state.parcels.length === 1 ? 'sole_candidate' : 'user_choice', identity_attestation: 'not_confirmed', address, parcel, observation, review: 'unreviewed', screening: 'not_performed' }
-        this.publish({ confirmed, message: '' })
+        this.publish({ confirmed, municipality: municipalityFromProperty(confirmed), message: '' })
         this.onConfirm(confirmed)
       }
     } catch (error) { if (this.current(generation)) this.publish({ busy: false, message: error instanceof DiscoveryProblem ? error.message : 'Parcel response invalid. Retry this parcel or continue manually.' }) }
@@ -80,7 +94,7 @@ export class DiscoveryFlow {
     const { address, parcel, observation } = this.state
     if (!address || !parcel || !observation || this.state.busy) return
     const confirmed: Confirmed = { schema_version: 'site-discovery.confirmed.v1', address, parcel, observation, review: 'unreviewed', screening: 'not_performed' }
-    this.publish({ confirmed, message: 'Property observation confirmed for this demonstration. No fit checks were run.' })
+    this.publish({ confirmed, municipality: municipalityFromProperty(confirmed), message: 'Property observation confirmed for this demonstration. No fit checks were run.' })
     this.onConfirm(confirmed)
   }
   changeProperty() { this.invalidate(); this.publish({ ...initial, query: this.state.query, message: 'Choose the property you want to explore.' }) }

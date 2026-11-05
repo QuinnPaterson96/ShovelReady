@@ -23,6 +23,13 @@ export function initialProjectSettings(): ProjectSettings {
   }
 }
 
+/** A city/property change retains project intent, never the former jurisdiction's facts. */
+export function resetMunicipalProjectSettings(settings: ProjectSettings): ProjectSettings {
+  const next = initialProjectSettings()
+  return { proposal: { ...next.proposal, proposed_use: settings.proposal.proposed_use, foundation_attached: settings.proposal.foundation_attached },
+    evidence: { ...next.evidence, proposed_use: settings.evidence.proposed_use, foundation_attached: settings.evidence.foundation_attached } }
+}
+
 export function changeProjectSetting<K extends keyof Pathway>(settings: ProjectSettings, key: K, value: Pathway[K]): ProjectSettings {
   return { proposal: { ...settings.proposal, [key]: value }, evidence: { ...settings.evidence,
     [key]: value === null ? unknown() : { value, origin: 'user', source: null, note: 'Entered in Project details; unverified.' } } }
