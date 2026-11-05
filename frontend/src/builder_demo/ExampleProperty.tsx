@@ -11,6 +11,7 @@ import type { OccupiedMeasurement } from '../occupied_lots/OccupiedLots'
 import type { Result } from '../occupied_lots/contract'
 import { emptyExampleAssumptions, exampleCase, exampleOrientation, exampleObservation, exampleRequest, initialExamplePosition, parseExampleResult } from './example'
 import type { ExampleAssumptions, ExamplePosition } from './example'
+import { SuggestionControls, usePlacementSuggestion, type PlacementSuggestion, type SuggestionContext, type SuggestionGeometry } from '../placement_suggestion/usePlacementSuggestion'
 import { type BoundaryMapInteraction } from '../zoning_site_assumptions/BoundaryMapTools'
 
 const source = exampleCase.site.parcel.source
@@ -18,15 +19,17 @@ const roofSource = exampleCase.site.buildings[0]?.source
 const show = (value: number | null, dimension: 'length' | 'area') => measurementWithUnit(value, dimension)
 
 
-export function ExampleProperty({ model = defaultJourneyModel, onMeasurement, onAssessmentPending, boundaryInteraction, placementSummary, placementContinuation, evidenceTargetId, moveSuggestion, placementConcerns, showPlacementConcerns = true, onContinueUnresolved, onFailureChange, playbackPosition }: { onFailureChange?: (failed: boolean) => void; playbackPosition?: { token: number; position: ExamplePosition }; model?: CatalogueModel; onAssessmentPending?: (pending: boolean) => void; placementConcerns?: ReactNode; showPlacementConcerns?: boolean; onContinueUnresolved?: () => void; onMeasurement: (value: OccupiedMeasurement | null) => void; boundaryInteraction?: BoundaryMapInteraction; placementSummary?: ReactNode; placementContinuation?: ReactNode; evidenceTargetId?: string; moveSuggestion?: { dx: number; dy: number; token: number } }) {
+export function ExampleProperty({ model = defaultJourneyModel, onMeasurement, onAssessmentPending, boundaryInteraction, placementSummary, placementContinuation, evidenceTargetId, moveSuggestion, placementConcerns, showPlacementConcerns = true, onContinueUnresolved, onFailureChange, playbackPosition, suggestionContext, autoSuggest = true }: { suggestionContext?: SuggestionContext | null; autoSuggest?: boolean; onFailureChange?: (failed: boolean) => void; playbackPosition?: { token: number; position: ExamplePosition }; model?: CatalogueModel; onAssessmentPending?: (pending: boolean) => void; placementConcerns?: ReactNode; showPlacementConcerns?: boolean; onContinueUnresolved?: () => void; onMeasurement: (value: OccupiedMeasurement | null) => void; boundaryInteraction?: BoundaryMapInteraction; placementSummary?: ReactNode; placementContinuation?: ReactNode; evidenceTargetId?: string; moveSuggestion?: { dx: number; dy: number; token: number } }) {
   const initialPosition = () => ({ ...initialExamplePosition(),
     width: model.measurements.find(item => item.name === 'nominal_exterior_width')?.quantity?.value ?? '',
     depth: model.measurements.find(item => item.name === 'nominal_exterior_depth')?.quantity?.value ?? '' })
   const [position, setPosition] = useState(initialPosition)
+  const [startingSuggestion, setStartingSuggestion] = useState<PlacementSuggestion | null>(null)
   const appliedMove = useRef<number | null>(null)
   useEffect(() => {
     if (!moveSuggestion || appliedMove.current === moveSuggestion.token) return
     appliedMove.current = moveSuggestion.token
+    setStartingSuggestion(null); suggestion.cancel()
     invalidate()
     setPosition(current => ({ ...current, x: String(Number(current.x) + moveSuggestion.dx), y: String(Number(current.y) + moveSuggestion.dy) }))
   }, [moveSuggestion])
@@ -34,6 +37,7 @@ export function ExampleProperty({ model = defaultJourneyModel, onMeasurement, on
   useEffect(() => {
     if (!playbackPosition || appliedPlayback.current === playbackPosition.token) return
     appliedPlayback.current = playbackPosition.token
+    setStartingSuggestion(null); suggestion.cancel()
     invalidate()
     setPosition(playbackPosition.position)
   }, [playbackPosition])
@@ -48,6 +52,10 @@ export function ExampleProperty({ model = defaultJourneyModel, onMeasurement, on
   const activeCheck = useRef<AbortController | null>(null)
   const version = useRef(0)
   const request = exampleRequest(position, assumptions)
+  const suggestion = usePlacementSuggestion({ geometry: request as SuggestionGeometry | null,
+    context: suggestionContext, propertyKey: exampleCase.case_id, enabled: suggestionContext !== undefined,
+    auto: autoSuggest && !playbackPosition, onApply: (next, evidence) => { setStartingSuggestion(evidence); invalidate(); setPosition(current => ({ ...current,
+      x: String(next.centre_xy[0]), y: String(next.centre_xy[1]), angle: String(next.angle_degrees) })) } })
   const geometryPending = !!request && (phase === 'stale' || phase === 'measuring');
   useEffect(() => { onAssessmentPending?.(geometryPending) }, [geometryPending])
 
@@ -62,17 +70,20 @@ export function ExampleProperty({ model = defaultJourneyModel, onMeasurement, on
   }
 
   function edit(key: keyof ExamplePosition, value: string) {
+    setStartingSuggestion(null); suggestion.cancel()
     setPosition(current => ({ ...current, [key]: value }))
     if (key === 'width' || key === 'depth') setEditedDimensions(current => ({ ...current, [key]: true }))
     invalidate()
   }
 
   function editAssumption(key: keyof ExampleAssumptions, value: string) {
+    suggestion.cancel()
     setAssumptions(current => ({ ...current, [key]: value }))
     invalidate()
   }
 
   function move(x: number, y: number) {
+    setStartingSuggestion(null); suggestion.cancel()
     setPosition(current => ({ ...current, x: String(x), y: String(y) }))
     invalidate()
   }
@@ -84,6 +95,7 @@ export function ExampleProperty({ model = defaultJourneyModel, onMeasurement, on
   }
 
   function reset() {
+    setStartingSuggestion(null); suggestion.cancel()
     setPosition(initialPosition())
     setAssumptions(emptyExampleAssumptions())
     setEditedDimensions({ width: false, depth: false })
@@ -94,6 +106,7 @@ export function ExampleProperty({ model = defaultJourneyModel, onMeasurement, on
   async function measure(next: ExamplePosition, minima: ExampleAssumptions) {
     const payload = exampleRequest(next, minima)
     if (!payload) { setPhase('unresolved'); setMessage('Enter a position, positive width and length, rotation, and nonnegative optional minimum distances before measuring.'); return }
+    if (startingSuggestion) payload.placement.id = 'suggested-starting-placement'
     const sequence = ++version.current
     setResult(null); onMeasurement(null); setPhase('measuring')
     setBusy(true); setMessage('Measuring the saved example placement…')
@@ -108,7 +121,7 @@ export function ExampleProperty({ model = defaultJourneyModel, onMeasurement, on
       const measured = parseExampleResult(await response.json(), payload)
       if (sequence !== version.current) return
       setResult(measured); setPhase('current'); setMessage('Current measurement for this illustrative placement.')
-      onMeasurement({ site: exampleCase, model, result: measured,
+      onMeasurement({ ...(startingSuggestion ? { startingSuggestion } : {}), site: exampleCase, model, result: measured,
         widthOrigin: editedDimensions.width ? 'user' : 'catalogue',
         depthOrigin: editedDimensions.depth ? 'user' : 'catalogue' })
     } catch (error) {
@@ -139,7 +152,8 @@ export function ExampleProperty({ model = defaultJourneyModel, onMeasurement, on
 
   return <section className="builder-example" aria-label="Saved example property">
     <p className="builder-example-summary"><strong>{model.name} · {show(Number(position.width), 'length')} wide × {show(Number(position.depth), 'length')} long</strong><span>Nominal exterior rectangle · saved Victoria example · {source.provider}, {source.record_label} · captured {readableDate(source.capture_date)} · {source.review_status} · <a href={publicSourceUrl(source.reference) ?? '#builder-example-evidence'} target="_blank" rel="noreferrer">Parcel source</a></span></p>
-    <OccupiedLotPreview selected={exampleCase} placement={position} modelLabel={model.name} onMove={move} nudgeMetres={step} conflictIds={conflictIds} boundaryInteraction={boundaryInteraction} placementSummary={placementSummary} placementContinuation={placementContinuation} placementControls={<div className="builder-footprint-controls" hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}>
+    <OccupiedLotPreview preferredScenarioKey={suggestion.preferredScenarioKey} selected={exampleCase} placement={position} modelLabel={model.name} onMove={move} nudgeMetres={step} conflictIds={conflictIds} boundaryInteraction={boundaryInteraction} placementSummary={placementSummary} placementContinuation={placementContinuation} placementControls={<div className="builder-footprint-controls" hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}>
+        <SuggestionControls suggestion={suggestion} />
         <div className="builder-example-main-actions"><div><label htmlFor="builder-example-angle">Rotation (degrees)</label><input id="builder-example-angle" type="number" step="any" value={rotationFocused || !position.angle.trim() || !Number.isFinite(Number(position.angle)) ? position.angle : String(Number(Number(position.angle).toFixed(2)))} onFocus={() => setRotationFocused(true)} onBlur={() => setRotationFocused(false)} onChange={event => edit('angle', event.target.value)} /></div>
         <button type="button" disabled={exampleOrientation.status !== 'suggested'} onClick={() => { if (exampleOrientation.status === 'suggested') edit('angle', String(exampleOrientation.angle_degrees)) }}>Align to lot</button>
 </div>
