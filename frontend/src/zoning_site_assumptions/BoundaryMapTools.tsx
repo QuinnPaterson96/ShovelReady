@@ -38,6 +38,7 @@ export function BoundaryRoleHelp({ compact = false }: { compact?: boolean }) {
 }
 
 export type BoundaryMapInteraction = {
+  setbackContext?: import('../setback_overlays/geometry').SetbackContext
   showPropertyDetails?: boolean
   mainBuilding?: Feature
   mainBuildingAssumed?: boolean
