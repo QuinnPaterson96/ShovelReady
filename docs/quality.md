@@ -1,5 +1,23 @@
 # Quality engineering agreement
 
+## Integrated financial comparison — November 6, 2026
+
+The [four-model walkthrough](usability/financial-integrated-2026-11-06/README.md)
+passed in four fresh Chrome sessions: 390 × 844 with touch and 1440 × 1000,
+each with both financial interests selected and with the question skipped.
+In every session the homeowner could revisit each model's own position, budget
+and authored enquiry, prepare a quote request, and download the current Quadra
+enquiry. The initial quote action began 396 px from the top of the open
+comparison on phone and 276 px on desktop. No horizontal overflow, browser
+errors or external requests were observed in the recorded checks.
+
+The original and newly downloaded PDFs show the complete “Site information”
+heading. The separate [pagination follow-up (#342)](https://github.com/QuinnPaterson96/ShovelReady/issues/342)
+tracks a sparse page before the map. The local run used the bundled example
+and real stateless calculation endpoints. It does not verify a hosted update
+across an open session (#329), physical-device behavior, homeowner understanding
+of rental returns (#340), or accepted quotes, site inputs or regulatory evidence.
+
 ## Placement and city routing — November 2026
 
 The [combined browser journey and reproduction steps](integration-placement-guidance.md#verification) exercise captured Victoria and Saanich addresses against the local production build and real calculation APIs. On desktop and mobile-width Edge, the placement remained editable, a late suggestion did not undo a keyboard move, the setback guides remained visible outside the lot, and a city correction cleared the old jurisdiction from findings and report wording. A fresh Saanich address offered a city-only request and an independent manual sketch. No issue was submitted. Container CI runs this same journey against the packaged app.
