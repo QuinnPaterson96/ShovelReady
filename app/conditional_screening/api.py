@@ -99,17 +99,43 @@ class ObservedBuilding(Strict):
     source: dict
 
 
-class StreetAdjacency(Strict):
+class StreetMapSource(Strict):
+    provider: str
+    record_label: str
+    captured_at_utc: str
+    source_url: str
+
+
+class StreetSelection(Strict):
     edge_ids: tuple[str, ...] = Field(max_length=64)
     all_marked: bool
+
+
+class StreetAdjacency(StreetSelection):
     completion_method: Literal["marking", "explicit_confirmation", "advance"] | None = None
     origin: Literal["user"]
+
+
+class MappedStreetAdjacency(StreetSelection):
+    completion_method: Literal["marking", "map_prefill"]
+    origin: Literal["municipal_map", "edited_map"]
+    mapped_names: dict[str, str] = Field(min_length=1, max_length=64)
+    map_source: StreetMapSource
+
+    @model_validator(mode="after")
+    def mapped_edges_belong_to_selection(self):
+        selected = set(self.edge_ids)
+        if self.mapped_names.keys() - selected:
+            raise ValueError("mapped names must refer to selected street edges")
+        if self.origin == "municipal_map" and self.mapped_names.keys() != selected:
+            raise ValueError("each suggested street edge needs its map name")
+        return self
 
 
 class BoundaryRoleSuggestions(Strict):
     roles: dict[str, Literal["front", "rear", "side", "flanking_street"]] = Field(max_length=64)
     conflicts: tuple[str, ...] = Field(max_length=8)
-    basis: Literal["user_marks"]
+    basis: Literal["user_marks", "map_and_marks"]
 
 
 class Assumptions(Strict):
@@ -117,7 +143,7 @@ class Assumptions(Strict):
     waterfront_edge_ids: tuple[str, ...] = Field(default=(), max_length=64)
     infer_principal_building: bool = True
     boundary_role_suggestions: BoundaryRoleSuggestions | None = None
-    street_adjacency: StreetAdjacency | None = None
+    street_adjacency: StreetAdjacency | MappedStreetAdjacency | None = None
     schema_version: Literal["sr.zoning-site-assumptions.v1"]
     property: Property
     observed_buildings: tuple[ObservedBuilding, ...] = Field(max_length=64)

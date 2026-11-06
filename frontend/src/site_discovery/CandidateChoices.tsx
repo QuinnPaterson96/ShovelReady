@@ -6,7 +6,7 @@ import type { Address, Parcel } from './flow'
 export type ProviderFault = { element: string; fault: string; value: string }
 export type ProviderAddress = { civicNumber: string; streetName: string; streetType: string; localityName: string; unitDesignator: string; unitNumber: string; unitNumberSuffix: string }
 export type RankedAddress = Address & { providerScore?: number; providerFaults?: ProviderFault[]; providerProvince?: string; providerAddress?: ProviderAddress }
-export type RelatedParcel = Parcel & { relation?: 'pid_exact' | 'gislink_join' | 'spatial_lead' }
+export type RelatedParcel = Parcel & { relation?: 'pid_exact' | 'gislink_join' | 'spatial_lead' | 'parcel_address' }
 
 export function harmlessCompletion(address: Address): boolean {
   const candidate = address as RankedAddress

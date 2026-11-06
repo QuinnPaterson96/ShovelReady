@@ -12,6 +12,9 @@ const fixture = async name => JSON.parse(await readFile(new URL(`../src/site_dis
 const [may, outside, municipal] = await Promise.all([
   fixture('may-street-api.fixture.json'), fixture('address-api.fixture.json'), fixture('municipal-api.fixture.json'),
 ])
+const streets = JSON.parse(await readFile(new URL('./fixtures/municipal-street-edges.json', import.meta.url), 'utf8'))
+let releaseStreets
+const delayedStreets = new Promise(resolve => { releaseStreets = resolve })
 const browser = await chromium.launch({ headless: true, ...(process.env.WALKTHROUGH_BROWSER ? { channel: process.env.WALKTHROUGH_BROWSER } : {}) })
 const context = await browser.newContext({ viewport: { width: 1280, height: 900 }, reducedMotion: 'reduce' })
 const page = await context.newPage()
@@ -26,8 +29,13 @@ await context.route('**/*', async route => {
   const body = request.postDataJSON()
   const json = value => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(value) })
   if (url.pathname === '/api/address-search') return json({ ...(body.query.includes('Gorge') ? outside : may), query: body.query })
-  if (url.pathname === '/api/municipal-sites/search') return json(municipal.search)
-  if (url.pathname === '/api/municipal-sites/observe') return json(municipal.observation)
+  if (url.pathname === '/api/municipal-sites/search') return json(body.municipality === 'saanich' ? streets.saanich.search : municipal.search)
+  if (url.pathname === '/api/municipal-sites/observe') return json(body.parcel_ref.source === 'district-of-saanich-parcels' ? streets.saanich.observation : municipal.observation)
+  if (url.pathname === '/api/municipal-sites/street-edges') {
+    if (body.parcel_ref.source === 'district-of-saanich-parcels') return json(streets.saanich.streets)
+    await delayedStreets
+    return json(streets.victoria)
+  }
   if (url.pathname.startsWith('/api/victoria-zoning/')) return route.fulfill({ status: 503, body: 'Offline municipal source boundary' })
   if (url.pathname === '/api/placement-suggestions/v1/suggest') {
     if (failSuggestion) return route.fulfill({ status: 503, body: 'Controlled suggestion outage' })
@@ -93,6 +101,10 @@ try {
   await page.locator('#placement-action-front').click()
   await page.getByText('Mark without the map', { exact: true }).click()
   await page.getByRole('button', { name: 'Edge 1 borders a street', exact: true }).click()
+  releaseStreets()
+  await until(async () => (await current()).street_prefill?.status === 'suggested', 'Victoria prefill did not arrive')
+  assert.equal((await current()).zoning_site_assumptions.street_adjacency.origin, 'user')
+  assert.equal((await current()).zoning_site_assumptions.street_adjacency.edge_ids.length, 1, 'late map results must preserve the manual mark')
   await page.locator('a[href="#builder-purpose"]').first().click()
   await page.locator('#builder-intended-use').selectOption('Garden suite')
   await settled()
@@ -137,24 +149,41 @@ try {
   assert.ok(!requestUrl.toString().includes('1144'))
   evidence.push({ phase: 'municipality correction', municipality: value.municipality, retainedPlacement: value.measurement.result.input.placement })
 
-  // Address selection outside coverage never starts Victoria parcel requests.
+  // Saanich supports parcel and street observations independently of rule coverage.
   await page.getByRole('button', { name: 'Change address', exact: true }).filter({ visible: true }).first().click()
-  const before = requests.filter(path => path === '/api/municipal-sites/search').length
+  const before = requests.length
   await search('200 Gorge Rd W')
   await page.getByRole('button', { name: /200 Gorge Rd W, Saanich/ }).click()
-  await page.getByRole('link', { name: 'Request Saanich coverage' }).waitFor()
-  assert.equal(requests.filter(path => path === '/api/municipal-sites/search').length, before)
-  await page.screenshot({ path: `${output}/mobile-unsupported-city.png` })
-  await page.getByRole('button', { name: 'Continue with a site sketch', exact: true }).click()
-  await page.locator('#manual-address').fill('Manual scenario for Saanich')
-  await page.getByRole('button', { name: 'Confirm my site description' }).click()
-  assert.equal((await current()).municipality.name, 'Saanich')
-  assert.equal((await current()).measurement, null)
+  await until(async () => (await current()).zoning_site_assumptions?.street_adjacency?.origin === 'municipal_map', 'Missing Saanich prefill')
+  const observed = await current()
+  assert.equal(observed.municipality.jurisdiction_id, 'ca-bc-saanich')
+  assert.equal(observed.municipality.rule_coverage, 'unavailable')
+  const original = observed.zoning_site_assumptions.street_adjacency
+  assert.equal(original.edge_ids.length, 3)
+  assert.ok(Object.values(original.mapped_names).includes('GORGE RD W'))
+  assert.ok(!requests.slice(before).some(path => path.startsWith('/api/victoria-zoning/')))
+  await page.locator('#placement-action-front').click()
+  await page.getByText('Mark without the map', { exact: true }).click()
+  const edge = page.getByRole('button', { name: 'Edge 3 borders a street', exact: true })
+  assert.equal(await edge.getAttribute('aria-pressed'), 'true')
+  const sourceLink = await page.getByRole('link', { name: 'Street map source' }).getAttribute('href')
+  assert.match(sourceLink, /Streets\/FeatureServer\/0$/)
+  await page.screenshot({ path: `${output}/saanich-editable-streets.png` })
+  await edge.click()
+  await until(async () => (await current()).zoning_site_assumptions?.street_adjacency?.edge_ids.length === 2, 'Street removal lost')
+  assert.equal((await current()).zoning_site_assumptions.street_adjacency.origin, 'edited_map')
+  await edge.click()
+  await until(async () => (await current()).zoning_site_assumptions?.street_adjacency?.edge_ids.length === 3, 'Street addition lost')
+  assert.ok(!Object.values((await current()).zoning_site_assumptions.street_adjacency.mapped_names).includes('GORGE RD W'), 'Manually re-added edge keeps its origin')
+  await until(async () => (await report.textContent())?.includes('The visitor edited the street selection.'), 'Report lost edit provenance')
+  await page.getByRole('button', { name: 'Not sure · clear street marks' }).click()
+  await until(async () => !(await current()).zoning_site_assumptions?.street_adjacency?.edge_ids.length, 'Clear did not persist')
+  evidence.push({ phase: 'Saanich editable prefill', suggested: original, afterClear: (await current()).zoning_site_assumptions.street_adjacency })
   assert.deepEqual(errors, [])
   await writeFile(`${output}/evidence.json`, JSON.stringify({ checks: evidence, requests, browserErrors: errors }, null, 2))
-  console.log('PASS: connected city routing, smart placement, setback overlays, edit race, recovery, municipality invalidation and narrow layout')
+  console.log('PASS: Victoria/Saanich street prefill, editable marks, connected city routing, smart placement, setback overlays, edit race, recovery, municipality invalidation and narrow layout')
 } catch (error) {
   await page.screenshot({ path: `${output}/failure.png`, fullPage: true }).catch(() => {})
   await writeFile(`${output}/failure.txt`, `${error.stack}\n\n${(await page.locator('body').innerText()).slice(0,22000)}`)
   throw error
-} finally { releaseSuggestion?.(); await browser.close() }
+} finally { releaseStreets(); releaseSuggestion?.(); await browser.close() }

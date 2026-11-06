@@ -1,3 +1,4 @@
+import { municipalityFromAddress, parcelCoverage, parcelSources } from '../municipality_coverage/model'
 import { DiscoveryProblem } from './flow'
 import type { Address, Observation, Parcel, Polygon, SearchResult, Source, Transport } from './flow'
 import type { RankedAddress, RelatedParcel } from './CandidateChoices'
@@ -113,14 +114,15 @@ export function parseParcels(value: unknown): SearchResult<Parcel> {
     value.candidates.length > 25 || !Array.isArray(value.evidence)) throw Error('Malformed municipal search response')
   const source = municipalSource(value.evidence[0])
   const candidates = value.candidates.map((candidate, index) => {
-    if (!object(candidate) || !object(candidate.parcel_ref) || candidate.parcel_ref.source !== 'city-of-victoria-pid-parcels' ||
+    if (!object(candidate) || !object(candidate.parcel_ref) || !Object.values(parcelSources).some(config => config.source === (candidate.parcel_ref as Record<string, unknown>).source) ||
       !Number.isInteger(candidate.parcel_ref.object_id) || (candidate.parcel_ref.object_id as number) < 1 ||
-      !['gislink_join', 'pid_exact', 'spatial_lead'].includes(String(candidate.relation)) || !object(candidate.attributes) ||
+      !['gislink_join', 'pid_exact', 'spatial_lead', 'parcel_address'].includes(String(candidate.relation)) || !object(candidate.attributes) ||
       !optionalString(candidate.pid) || !optionalString(candidate.address)) throw Error('Malformed parcel candidate')
     const label = candidate.address || (candidate.pid ? `PID ${candidate.pid}` : `Parcel option ${index + 1}`)
-    const parsed: RelatedParcel = { id: `${candidate.parcel_ref.object_id}:${index}`, label,
+    const parsed: RelatedParcel = { id: `${candidate.parcel_ref.source === parcelSources['ca-bc-victoria'].source ? '' : `${candidate.parcel_ref.source}:`}${candidate.parcel_ref.object_id}:${index}`, label,
       relation: candidate.relation as RelatedParcel['relation'],
       match: candidate.relation === 'spatial_lead' ? 'Nearby spatial lead only; identity unverified.' :
+        candidate.relation === 'parcel_address' ? 'District parcel record matches the selected street address; unreviewed.' :
         candidate.relation === 'gislink_join' ? 'City address-to-parcel record join; unreviewed.' : 'City PID exact record match; unreviewed.',
       source: { ...source, record: `City parcel ${label}` }, raw: { candidate, evidence: value.evidence },
     }
@@ -169,11 +171,13 @@ export const liveTransport: Transport = {
     return parseAddresses(await post('/api/address-search', { schemaVersion: 'sr-address-search.v1', query, maxResults: 5 }, signal))
   },
   async parcels(address: Address, signal: AbortSignal): Promise<SearchResult<Parcel>> {
-    if (!['victoria', 'city of victoria'].includes(address.locality?.trim().toLowerCase() ?? '')) return { status: 'outside_coverage', candidates: [], message: 'This address is outside the City of Victoria parcel demonstration. Continue manually.' }
+    const coverage = parcelCoverage(municipalityFromAddress(address))
+    if (!coverage) return { status: 'outside_coverage', candidates: [], message: 'This address is outside mapped parcel coverage. Continue manually.' }
     const street = object(address.raw) && object(address.raw.candidate) && object(address.raw.candidate.address) ? address.raw.candidate.address.streetAddress : null
     const query = string(street) ? street : address.label.split(',')[0]
     if (query.length < 3 || query.length > 120) return { status: 'no_match', candidates: [], message: 'Address is too long for the City parcel search. Correct it or continue manually.' }
-    const result = parseParcels(await post('/api/municipal-sites/search', { schema_version: 'municipal-sites.v1', address: query }, signal, 25000))
+    const result = parseParcels(await post('/api/municipal-sites/search', { schema_version: 'municipal-sites.v1', address: query, ...(coverage.municipality === 'victoria' ? {} : { municipality: coverage.municipality }) }, signal, 25000))
+    if (result.candidates.some(parcel => (parcel.raw as { candidate: { parcel_ref: { source: string } } }).candidate.parcel_ref.source !== coverage.source)) throw new DiscoveryProblem('Parcel response was from a different municipality.')
     // Only potentially equivalent identities need geometry fetched before grouping.
     // Distinct PIDs/types/statuses never collapse merely because labels match.
     const keys = result.candidates.map(parcelIdentityKey)

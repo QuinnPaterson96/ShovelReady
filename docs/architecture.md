@@ -2,6 +2,8 @@
 
 ## Municipality and starting placement
 
+[Street prefill](municipal-street-prefill.md) resolves physical parcel and street coverage independently of local rules. One stateless municipal observation route and the existing map editor serve Victoria and Saanich. Source-specific geometry tests and attribution live with the municipal adapters.
+
 The [placement guidance integration](integration-placement-guidance.md) connects a sourced, correctable municipality to the demo’s existing rule and placement engines. `POST /api/placement-suggestions/v1/suggest` proposes one rectangle without changing the evaluator for visitor-supplied positions. The map draws a single scenario’s clipped setbacks separately from extra planning margins and model geometry. No new data store, background service, source publication or migration is required.
 
 ## Optional budget scope — October 19, 2026
