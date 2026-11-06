@@ -3,7 +3,7 @@ import { StepInfo } from '../StepInfo'
 import { roadBands } from './roads'
 import { useId, type ReactNode } from 'react'
 import { type Feature } from '../occupied_lots/contract'
-import { streetRuns, ordinaryFourEdgeBoundary, type BoundaryEdge, type BoundaryMapMode } from './model'
+import { namedEdgeRuns, ordinaryFourEdgeBoundary, type BoundaryEdge, type BoundaryMapMode } from './model'
 
 /** Sketch vocabulary only; the legal classification remains a separate reviewed fact. */
 export function BoundaryRoleHelp({ compact = false }: { compact?: boolean }) {
@@ -45,6 +45,9 @@ export type BoundaryMapInteraction = {
   mainBuildingAssumed?: boolean
   waterfront?: boolean
   waterfrontIds?: string[]
+  suggestedWaterNames?: Record<string, string>
+  onWaterGroup?: (ids: string[]) => void
+  waterfrontMap?: Record<string, import('./model').ShoreSource>
   suggestedRoles?: Record<string, import('./model').EdgeRole>
   streetSource?: import('./model').StreetAdjacency['map_source']
   streetNames?: Record<string, string>
@@ -76,10 +79,16 @@ export function BoundaryOverlay({ interaction }: { interaction: BoundaryMapInter
     const length = (item: BoundaryEdge) => Math.hypot(item.end[0] - item.start[0], item.end[1] - item.start[1])
     if (!previous || length(edge) > length(previous)) labelEdges.set(name, edge)
   }
+  const waterEdges = interaction.edges.filter(edge => interaction.waterfrontIds?.includes(edge.id))
+  const waterLabels = new Map<string, string>()
+  for (const edge of waterEdges) {
+    const label = interaction.waterfrontMap?.[edge.id]?.record_label ?? 'Waterfront · your mark'
+    if (!waterLabels.has(label)) waterLabels.set(label, edge.id)
+  }
   return <g className="boundary-map-overlay" aria-hidden="true">
-    {interaction.edges.filter(edge => interaction.waterfrontIds?.includes(edge.id)).map(edge => <g key={`water-${edge.id}`} className="waterfront-mark">
+    {waterEdges.map(edge => <g key={`water-${edge.id}`} className="waterfront-mark">
       <line x1={edge.start[0]} y1={-edge.start[1]} x2={edge.end[0]} y2={-edge.end[1]} stroke="var(--primary)" strokeWidth="7" strokeDasharray="3 4" vectorEffect="non-scaling-stroke" />
-      <text transform={`translate(${(edge.start[0] + edge.end[0]) / 2} ${-(edge.start[1] + edge.end[1]) / 2 - 2})`} x="0" y="0" textAnchor="middle" className="boundary-map-edge-label">Waterfront · your mark</text>
+      {[...waterLabels.values()].includes(edge.id) && <text transform={`translate(${(edge.start[0] + edge.end[0]) / 2} ${-(edge.start[1] + edge.end[1]) / 2 - 2})`} x="0" y="0" textAnchor="middle" className="boundary-map-edge-label">{interaction.waterfrontMap?.[edge.id] ? 'Waterfront · map' : 'Waterfront · your mark'}</text>}
     </g>)}
     {roads.map(road => <g key={road.id} className="street-road" data-road-edge={road.id}>
       <polygon points={road.corners.map(([x, y]) => `${x},${-y}`).join(' ')} />
@@ -118,7 +127,7 @@ export function BoundaryMapTools({ interaction }: { interaction: BoundaryMapInte
       {interaction.prefillStatus === 'no_match' && <p>The map found no clear street-facing edge. You can mark one below.</p>}
       {interaction.prefillStatus === 'partial' && <p>Some street edges are uncertain. You can add a missing edge or continue with the available marks.</p>}
       <p>{interaction.streetSource ? 'Keep these suggestions or select an edge to change it.' : 'Select each edge that borders a road or lane, or choose Not sure.'}</p>
-      {interaction.onStreetGroup && streetRuns(edges, interaction.suggestedStreetNames ?? {}).map(run =>
+      {interaction.onStreetGroup && namedEdgeRuns(edges, interaction.suggestedStreetNames ?? {}).map(run =>
         <button key={run.ids[0]} type="button" aria-pressed={run.ids.every(id => marked.includes(id))} onClick={() => interaction.onStreetGroup?.(run.ids)}>
           {run.name} · {run.ids.length} adjoining edges
         </button>)}
@@ -136,9 +145,15 @@ export function BoundaryMapTools({ interaction }: { interaction: BoundaryMapInte
       <p role="status" className="boundary-street-status">{complete ? marked.length ? `${marked.length} ${marked.length === 1 ? 'street' : 'streets'} marked · saved` : 'No street-adjoining edges · your answer saved' : marked.length ? `${marked.length} marked · completeness unknown` : 'Street context unknown · you can continue'}</p>
     </>}
     {mode === 'waterfront' && <>
+      {[...new Map(Object.values(interaction.waterfrontMap ?? {}).map(s => [s.url + s.record_label, s])).values()].map(s =>
+        <p key={s.url + s.record_label}><strong>{s.record_label}</strong> · <a href={s.url} target="_blank" rel="noreferrer">{s.provider}</a> · captured {readableDate(s.capture_date)} · unreviewed.</p>)}
       <p>Mark every edge adjoining water. Click again to remove a mark. Waterfront edges are separate from street edges and front/rear roles.</p>
+      {interaction.onWaterGroup && namedEdgeRuns(edges, interaction.suggestedWaterNames ?? {}).map(run =>
+        <button key={run.ids[0]} type="button" aria-pressed={run.ids.every(id => interaction.waterfrontIds?.includes(id))} onClick={() => interaction.onWaterGroup?.(run.ids)}>
+          {run.name} · {run.ids.length} adjoining edges
+        </button>)}
       <div className="boundary-map-buttons">{exterior.map((edge, index) => <button key={edge.id} type="button" aria-pressed={interaction.waterfrontIds?.includes(edge.id) ?? false} onClick={() => onSelect(edge.id)}>Edge {index + 1} adjoins water</button>)}<button type="button" onClick={() => onSelect(null)}>Not sure · clear waterfront marks</button></div>
-      <p>These marks record your observations. Waterfront front-line classification and special siting provisions still need a reviewed property plan.</p>
+      <p>These marks describe possible shoreline contact. Waterfront front-line classification and special siting provisions still need a reviewed property plan.</p>
     </>}
     <div hidden={mode !== 'rear' && !interaction.showPropertyDetails}>{interaction.editor}</div>
   </div>

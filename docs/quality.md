@@ -346,3 +346,6 @@ Tags retain their existing update behavior and are not digest-pinned. Matching
 manifests establish image equivalence at this check; full final-head CI must separately
 verify pulls, disposable database checks, build and container application behavior.
 Railway build/startup verification remains pending until deployment.
+
+
+The [waterfront prefill verification](municipal-waterfront-prefill.md) distinguishes the live coastal and lake address checks, constructed geometry controls, editable mark and report checks from independent source review and user validation.

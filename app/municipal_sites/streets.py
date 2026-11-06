@@ -13,14 +13,14 @@ from shapely.geometry import LineString, Polygon, mapping
 
 from app.spatial.geometry import xy_polygon
 
-from .api import Evidence, MunicipalParcelRef, ObserveRequest, StrictModel, _fetch, _rows
+from .api import Evidence, ObserveRequest, _fetch, _rows
+from .edges import EdgeResult, nearby, selected_parcel
 from .sources import STREET_SOURCES, StreetSource
 
 router = APIRouter(prefix="/api/municipal-sites", tags=["municipal-sites"])
 
 REACH_M = 22.0
 MIN_EDGE_M = 2.0
-MAX_SEGMENTS = 64
 
 
 class StreetEdge(BaseModel):
@@ -30,32 +30,9 @@ class StreetEdge(BaseModel):
     feature_ids: list[int]
 
 
-class StreetResult(StrictModel):
+class StreetResult(EdgeResult):
     schema_version: Literal["parcel-streets.v1"] = "parcel-streets.v1"
-    parcel_ref: MunicipalParcelRef
-    status: Literal["suggested", "partial", "no_match", "unavailable"]
-    parcel_geometry: dict | None = None
     suggestions: list[StreetEdge] = Field(default_factory=list)
-    evidence: list[Evidence] = Field(default_factory=list)
-
-
-def _nearby(layer, bounds, fields):
-    left, bottom, right, top = bounds
-    envelope = (left - REACH_M, bottom - REACH_M, right + REACH_M, top + REACH_M)
-    return _fetch(
-        layer,
-        {
-            "geometry": ",".join(map(str, envelope)),
-            "geometryType": "esriGeometryEnvelope",
-            "inSR": 3157,
-            "outSR": 3157,
-            "returnGeometry": "true",
-            "returnZ": "false",
-            "outFields": fields,
-            "spatialRel": "esriSpatialRelIntersects",
-            "resultRecordCount": 100,
-        },
-    )
 
 
 def _street_segments(value, source):
@@ -188,41 +165,21 @@ def street_edges(request: ObserveRequest) -> StreetResult:
     source = STREET_SOURCES[ref.source]
     result = StreetResult(parcel_ref=ref, status="unavailable")
     try:
-        data, record = _fetch(
-            source.parcel,
-            {
-                "objectIds": ref.object_id,
-                "outSR": 3157,
-                "outFields": "OBJECTID,PID",
-                "returnGeometry": "true",
-                "returnZ": "false",
-            },
-        )
-        result.evidence.append(Evidence.model_validate(record))
-        rows = _rows(data, ("OBJECTID", "PID"))
-        if len(rows) != 1 or rows[0]["attributes"]["OBJECTID"] != ref.object_id:
-            return result
-        if request.expected_pid and rows[0]["attributes"]["PID"] != request.expected_pid:
-            return result
-        parcel, issue = xy_polygon(rows[0].get("geometry"))
-        if (
-            issue
-            or not isinstance(parcel, Polygon)
-            or len(parcel.exterior.coords) > MAX_SEGMENTS + 1
-        ):
+        parcel = selected_parcel(request, source.parcel, result.evidence)
+        if parcel is None:
             return result
         result.parcel_geometry = mapping(parcel)
-        street_data, record = _nearby(
+        street_data, record = nearby(
             source.streets, parcel.bounds, f"OBJECTID,{source.name_field},{source.class_field}"
         )
         result.evidence.append(Evidence.model_validate(record))
         streets = _street_segments(street_data, source)
-        nearby, record = _nearby(source.blocks or source.parcel, parcel.bounds, "OBJECTID")
+        neighbours, record = nearby(source.blocks or source.parcel, parcel.bounds, "OBJECTID")
         result.evidence.append(Evidence.model_validate(record))
         barriers = []
         containing = []
         selected_seen = False
-        for feature in _rows(nearby, ("OBJECTID",)):
+        for feature in _rows(neighbours, ("OBJECTID",)):
             polygon, issue = xy_polygon(feature.get("geometry"))
             if polygon is None or issue:
                 return result

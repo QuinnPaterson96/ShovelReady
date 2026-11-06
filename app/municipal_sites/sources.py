@@ -29,6 +29,13 @@ DISTRICT = Provider(
 )
 
 
+PROVINCE = Provider(
+    "Province of British Columbia (GeoBC)",
+    "https://www2.gov.bc.ca/gov/content/data/open-data/open-government-licence-bc",
+    "Contains information licensed under the Open Government Licence - British Columbia.",
+)
+
+
 @dataclass(frozen=True)
 class Layer:
     url: str
@@ -40,6 +47,18 @@ LAYERS = {
     "address": Layer(f"{LAND}/0", "esriGeometryPoint", CITY),
     "parcel": Layer(f"{LAND}/11", "esriGeometryPolygon", CITY),
     "building": Layer(f"{LAND}/1", "esriGeometryPolygon", CITY),
+    "BC marine coastline": Layer(
+        "https://delivery.maps.gov.bc.ca/arcgis/rest/services/whse/"
+        "bcgw_pub_whse_basemapping/MapServer/91",
+        "esriGeometryPolyline",
+        PROVINCE,
+    ),
+    "Victoria water bodies": Layer(
+        VICTORIA_ROOT + "OpenData_Environment/MapServer/5", "esriGeometryPolygon", CITY
+    ),
+    "Saanich water bodies": Layer(
+        f"{SAANICH_ROOT}Waterbody/FeatureServer/0", "esriGeometryPolygon", DISTRICT
+    ),
     "Victoria streets": Layer(f"{TRANSPORT}/25", "esriGeometryPolyline", CITY),
     "Victoria road areas": Layer(f"{TRANSPORT}/2", "esriGeometryPolygon", CITY),
     "Victoria blocks": Layer(f"{LAND}/9", "esriGeometryPolygon", CITY),
@@ -96,5 +115,38 @@ STREET_SOURCES = {
         "FULLSTREETNAME",
         "CLASS",
         frozenset({"Residential", "Major", "Collector", "Highway"}),
+    ),
+}
+
+
+@dataclass(frozen=True)
+class WaterArea:
+    layer: str
+    name_field: str
+    # When supplied, only this named feature, corroborated by the marine coastline,
+    # is eligible. Otherwise named inland water bodies supply their own labels.
+    marine_record: str | None = None
+
+
+@dataclass(frozen=True)
+class WaterSource:
+    parcel: str
+    coast: str
+    direct_coast: bool
+    areas: tuple[WaterArea, ...]
+
+
+WATER_SOURCES = {
+    VICTORIA: WaterSource(
+        "parcel",
+        "BC marine coastline",
+        direct_coast=False,
+        areas=(WaterArea("Victoria water bodies", "Name", marine_record="Water"),),
+    ),
+    SAANICH: WaterSource(
+        "Saanich parcels",
+        "BC marine coastline",
+        direct_coast=True,
+        areas=(WaterArea("Saanich water bodies", "NAME"),),
     ),
 }

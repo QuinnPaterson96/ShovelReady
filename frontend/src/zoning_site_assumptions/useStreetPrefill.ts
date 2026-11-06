@@ -1,10 +1,7 @@
-import { useEffect, useState } from 'react'
-import { parcelCoverage, type MunicipalityContext } from '../municipality_coverage/model'
 import type { Case } from '../occupied_lots/contract'
-import type { Confirmed } from '../site_discovery/flow'
+import { object, sameParcel, sameGeometry, useEdgePrefill, type ParcelRef, type PrefillInputs } from './useEdgePrefill'
 import { parcelEdges, type StreetAdjacency } from './model'
 
-type ParcelRef = { source: string; object_id: number }
 type Prefill = {
   status: 'suggested' | 'partial' | 'no_match' | 'unavailable'
   selection?: StreetAdjacency
@@ -12,16 +9,12 @@ type Prefill = {
   observations?: { segment: number; name: string; road_class: string; feature_ids: number[] }[]
 }
 const unavailable: Prefill = { status: 'unavailable' }
-const object = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object'
 
 export function readStreetPrefill(value: unknown, ref: ParcelRef, site: Case, revision: string): Prefill {
-  if (!object(value) || value.schema_version !== 'parcel-streets.v1' || !object(value.parcel_ref)
-    || value.parcel_ref.source !== ref.source || value.parcel_ref.object_id !== ref.object_id
+  if (!object(value) || value.schema_version !== 'parcel-streets.v1' || !sameParcel(value, ref)
     || !Array.isArray(value.evidence) || !Array.isArray(value.suggestions)) return unavailable
   if (value.status === 'unavailable') return { ...unavailable, evidence: value.evidence }
-  const geometry = site.site.parcel.shape.geometry
-  if (!object(value.parcel_geometry) || geometry.type !== 'Polygon' || value.parcel_geometry.type !== geometry.type
-    || JSON.stringify(value.parcel_geometry.coordinates) !== JSON.stringify(geometry.coordinates)) return unavailable
+  if (!sameGeometry(value.parcel_geometry, site)) return unavailable
   if (value.status === 'no_match' && !value.suggestions.length) return { status: 'no_match', evidence: value.evidence }
   if (value.status !== 'suggested' && value.status !== 'partial') return unavailable
   if (!value.suggestions.length) return value.status === 'partial' ? { status: 'partial', evidence: value.evidence } : unavailable
@@ -46,31 +39,6 @@ export function readStreetPrefill(value: unknown, ref: ParcelRef, site: Case, re
   } }
 }
 
-export function useStreetPrefill(site: Case | null, revision: string | null, municipality: MunicipalityContext | null,
-  property: Confirmed | null, example: boolean) {
-  const candidate = (property?.parcel.raw as { candidate?: { parcel_ref?: ParcelRef; pid?: string } } | null)?.candidate
-  const ref = example ? { source: 'city-of-victoria-pid-parcels', object_id: 10573 } : candidate?.parcel_ref
-  const source = ref?.source, oid = ref?.object_id, pid = example ? undefined : candidate?.pid
-  const eligible = !!ref && parcelCoverage(municipality)?.source === source
-  const key = eligible && revision ? JSON.stringify([revision, source, oid, pid]) : null
-  const [state, setState] = useState<{ key: string; result: Prefill } | null>(null)
-  useEffect(() => {
-    if (!key || !source || !oid || !site || !revision) return
-    let current = true
-    const controller = new AbortController()
-    const timer = window.setTimeout(() => controller.abort(), 20000)
-    const load = async () => {
-      try {
-        const response = await fetch('/api/municipal-sites/street-edges', { method: 'POST',
-          headers: { 'Content-Type': 'application/json' }, signal: controller.signal,
-          body: JSON.stringify({ schema_version: 'municipal-sites.v1', parcel_ref: { source, object_id: oid }, expected_pid: pid }) })
-        const result = response.ok ? readStreetPrefill(await response.json(), { source, object_id: oid }, site, revision) : unavailable
-        if (current) setState({ key, result })
-      } catch { if (current) setState({ key, result: unavailable }) }
-      finally { window.clearTimeout(timer) }
-    }
-    void load()
-    return () => { current = false; controller.abort(); window.clearTimeout(timer) }
-  }, [key, source, oid, pid, site, revision])
-  return key && state?.key === key ? state.result : null
+export function useStreetPrefill(...inputs: PrefillInputs) {
+  return useEdgePrefill('street-edges', readStreetPrefill, unavailable, inputs)
 }

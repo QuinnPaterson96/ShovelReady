@@ -118,6 +118,27 @@ def test_existing_suite_conflicts_and_waterfront_blocks_ordinary_setbacks():
     assert checks["floor_area"]["status"] == "meets_under_assumptions"
 
 
+def test_mapped_waterfront_keeps_ordinary_setbacks_out_of_scope_with_source():
+    body = payload()
+    a = body["assumptions"]
+    source = {"provider": "Constructed map", "record_label": "Marine shoreline",
+              "url": "https://example.org/coast", "locator": "Feature 2",
+              "review_status": "unreviewed_live_observation"}
+    edge = a["edges"][1]["id"]
+    a.update(waterfront={"value": True, "origin": "municipal_map", "evidence_state": "assumed",
+                         "source": source, "note": "Mapped edge; unreviewed."},
+             waterfront_edge_ids=[edge], waterfront_map={edge: source})
+    response = post(body)
+    assert response.status_code == 200, response.text
+    result = response.json()
+    fact = next(f for f in result["request"]["facts"] if f["id"] == "waterfront")
+    assert fact["origin"] == "municipal_observation" and fact["source"]["locator"] == "Feature 2"
+    assert next(c for c in result["checks"] if c["rule"]["fact_id"] == "boundary:" + edge)[
+        "status"] == "unsupported"
+    a["waterfront"]["evidence_state"] = "user_confirmed"
+    assert post(body).status_code == 422
+
+
 def test_unknown_real_style_input_does_not_gain_false_matches():
     body = payload()
     body["proposal"] = {

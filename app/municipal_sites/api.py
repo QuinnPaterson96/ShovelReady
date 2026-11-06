@@ -156,7 +156,8 @@ def _evidence(layer: str, url: str, raw: bytes, value: dict) -> dict:
     legacy_layer = layer in {"parcel", "address", "building"}
     return {
         "provider": provider.name,
-        "record_label": f"{layer.title()} municipal map response"
+        "record_label": "Freshwater Atlas – Coastlines" if layer == "BC marine coastline"
+        else f"{layer.title()} municipal map response"
         if not legacy_layer
         else f"{layer.title()} MapServer response",
         "source_url": url,
@@ -215,7 +216,8 @@ def _fetch(layer: str, params: dict) -> tuple[dict, dict]:
             limit = 100 if params.get("resultRecordCount") == 100 else MAX_FEATURES
             if not isinstance(rows, list) or len(rows) >= limit:
                 raise ValueError("invalid or excessive feature rows")
-            if params.get("returnGeometry") == "true":
+            # Hosted FeatureServer omits CRS and geometry type on an empty feature set.
+            if params.get("returnGeometry") == "true" and rows:
                 if value.get("spatialReference", {}).get("wkid") != 3157:
                     raise ValueError("unexpected response CRS")
                 if value.get("geometryType") != LAYERS[layer].geometry:
