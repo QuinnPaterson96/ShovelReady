@@ -58,7 +58,7 @@ on a phone. No physical phone or screen-reader participant was used.
 8. Download the actual enquiry PDF. The file is a non-empty `%PDF` document,
    `652187` bytes, with three pages verified by Poppler; all rendered pages were
    visually inspected. It contains the current message, preserved custom question,
-   partial cost scope and approximate placement plan. See the rendering gap below.
+   partial cost scope and approximate placement plan. See the November 6 heading reinspection below.
 9. Navigate Home → Check my property: the question remains. Refresh the page and
    open historical enquiry recovery: the prior unsent message is available while
    editable alternatives/current findings start again.
@@ -111,12 +111,10 @@ the script deliberately does not contact providers or live municipal sources.
 
 ## Remaining gaps and owners
 
-- **PDF rendering:** page 2 visibly loses the initial “S” in “Site information”
-  while the copied source text retains it. The document is readable and downloads,
-  but its rendering is not flawless. The export worker has the actual PDF/page
-  evidence to diagnose the page-splitting behaviour; integration owner must carry
-  the finding forward or verify its repair. Raster text also remains untagged and
-  non-searchable; copied text/Markdown remain the accessible/editable forms.
+- **PDF heading reinspection, November 6:** the previous missing-letter finding
+  was a visual inspection error. The embedded page image and a separately rendered
+  enlargement show the full “Site information” heading. See the [retained crop](../financial-integrated-2026-11-06/original-site-heading.png).
+  The raster PDF remains untagged and non-searchable. The draft also offers editable text.
 - **Hosted/device coverage:** local production-preview success does not establish
   a hosted deployment rollover, actual phone browser, native share UI or broad
   assistive-technology support. Release/QA owner should repeat affected paths on

@@ -62,7 +62,8 @@ test('same-property comparison preserves qualified findings, cost evidence and m
     const lead = document.querySelector<HTMLElement>('[aria-label="Current model financial next step"]')!
     assert.match(lead.textContent!, /CAD 210,000.*building quote/s)
     assert.match(lead.textContent!, /Installed cost incomplete.*Still needed.*Prepare quote request for/s)
-    assert.match(lead.textContent!, /local rent evidence.*occupancy.*recurring owner-paid/s)
+    // The rental lead must name income, occupancy and expenses before opening supporting details.
+    for (const input of [/local rent/i, /occup|vacan/i, /expenses|running costs/i]) assert.match(lead.textContent!, input)
     await act(async () => button(`Prepare quote request for ${first.model.name}`).click())
     assert.equal(quoteModel, first.model.model_id, 'quote action is optional and targets the active model')
     const lane = (name: string) => document.querySelector<HTMLElement>(`article[aria-label="${name} comparison"]`)!

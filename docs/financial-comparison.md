@@ -6,7 +6,18 @@ the next action is to open that model or prepare its provider enquiry. A rental
 prediction, numerical return calculator, financial winner and professional
 assessment checklist are outside this increment.
 
-## Behaviour
+## November 6 integration
+
+The optional financial question appears for each property project and supports project cost,
+potential rental income, both, or skip. An explicit rental-use answer can supply an editable
+interest. The choices stay with the project when switching models and can be changed later.
+The active model now leads with its cost basis, missing scope, material suitability findings
+and a direct action to prepare its unsent quote request. A compact overview of the explored
+models precedes the complete records. Changing the active alternative restores its authored
+inputs and position, with current checks recomputed. Fresh models can use main's editable
+suggested placements. See the [four-model acceptance walkthrough](usability/financial-integrated-2026-11-06/).
+
+## Worker-branch behaviour before integration
 
 An optional **Compare models for this property** disclosure sits beside the model
 selector. It shows the current and previously explored models from this property
@@ -86,10 +97,9 @@ were made. Combined browser evidence is recorded under
 
 The independent finish reviewer marked the priority-question finding resolved on
 the corrected build. This bounded verdict does not certify the whole surface or
-human usefulness. The inspected PDF still loses the initial “S” of “Site
-information” on page 2 while copied text retains it. The export worker is
-investigating; the integration owner must carry this visible rendering gap forward
-or verify a repaired download. Successful export is not flawless rendering.
+human usefulness. November 6 reinspection of the original PDF's embedded image and an
+independent render confirmed the complete “Site information” heading on page 2.
+The earlier missing-letter finding is withdrawn.
 
 Real configuration-specific quotes and site-cost scope remain missing: totals
 cannot yet support a rental-return decision. Providers/property contacts own that

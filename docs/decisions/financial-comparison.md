@@ -30,6 +30,13 @@ exploration. Missing inputs must remain visible, and comparisons must use consis
 assumptions rather than inventing a winner. This wave does not add rental prediction,
 finance adapters or numerical profitability ranking.
 
+**November 6 clarification — Ask about financial goals once per project.** Offer every
+project an optional choice of project cost, potential rental income, or both. Keep skip
+and edit available. An explicit rental answer can be reused. A building type alone cannot
+establish a financial goal. The choice follows the homeowner between models, while each
+model shows its own costs and questions. This also accommodates a future project with
+both owner-occupied and rented units without requiring plex evaluation in this release.
+
 ## Delivery and evidence
 
 The review reported PDF export failure (#329), lost authored questions (#330), and

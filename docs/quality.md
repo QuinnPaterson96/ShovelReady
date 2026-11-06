@@ -37,10 +37,10 @@ width remained 390 with no overflow or browser errors. A separate 1440 × 1000
 comparison capture was inspected. This is agent/software evidence, not human
 validation, accepted legal/source review or publication.
 
-The downloaded three-page PDF was rendered and inspected: page 2 loses the initial
-“S” in “Site information”, although copied text retains it. The export worker has
-the reproducible artifact; integration must retain this rendering gap or verify
-its repair. Hosted rollout, actual phone/assistive-technology coverage and final
+November 6 correction: the original page 2 embedded image and an enlarged independent
+render both show the complete “Site information” heading. The earlier visual
+inspection misread the first letter. See [the enlargement](usability/financial-integrated-2026-11-06/original-site-heading.png).
+Hosted rollout, actual phone/assistive-technology coverage and final
 combined CI remain release/QA-owner follow-ups. Current matching quotes/site costs
 remain with providers/property contacts under #124/#125; source/site review and
 accepted publication remain separate real-evaluation gates. Homeowner usefulness
