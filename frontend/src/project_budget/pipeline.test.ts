@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { categories, parseBudget, type BudgetDraft, type Category, type Context, type CostItem } from './contract'
-import { budgetEvidence, budgetQuestions, budgetSummary, calculateBudget, catalogueSuggestions, emptyBudget, manualItem, reconcile, replaceItem, type ManualEntry } from './pipeline'
+import { budgetEvidence, budgetQuestions, budgetSummary, calculateBudget, catalogueSuggestions, emptyBudget, manualItem, reconcile, replaceItem, recipientBudget, type ManualEntry } from './pipeline'
 import { defaultJourneyModel, journeyCatalogue, modelSnapshot } from '../model_catalogue/demo'
 import { manufacturerDocument } from '../builder_demo/manufacturer'
 import { enquiryEmailBody, enquiryMarkdown, enquiryPlainText } from '../builder_demo/enquiry'
@@ -159,4 +159,52 @@ test('incomplete cost draft still makes a useful unknown-context contact and ret
   const building = { ...draft, scope: 'building' as const }
   const questions = budgetQuestions(building, calculate(building), model.name)
   assert.ok(questions.some(question => /access\/crane.*foundation.*utility/.test(question.question)), 'building-only pricing must not remove installation questions outside that cost scope')
+})
+
+// Reproduces #331 through the assembled recipient formats and complete export.
+// Model/provider identity is taken from the existing catalogue; no live quotes.
+test('other models, configurations and properties stay in recovery evidence, outside the active provider message', () => {
+  const studio = journeyCatalogue.models.find(candidate => candidate.model_id === 'wcch-ch-studio')!
+  const quadra = journeyCatalogue.models.find(candidate => candidate.provider === 'Hewing Haus')!
+  const otherAux = journeyCatalogue.models.find(candidate => candidate.provider === model.provider && candidate.model_id !== model.model_id)!
+  for (const selected of [quadra, otherAux]) {
+    const active: Context = { ...context, model_id: selected.model_id, configuration: selected.configuration }
+    const oldCosts = [source(), ...catalogueSuggestions(studio, modelSnapshot(studio), { ...context, model_id: studio.model_id, configuration: studio.configuration }, today),
+      { ...manual('delivery', { label: 'Old configuration access quote' }), id: 'old-config', context: { ...active, configuration: 'another configuration' } },
+      { ...manual('site', { label: 'Other property foundations' }), id: 'old-site', context: { ...active, property_key: 'another property' } }]
+    const draft: BudgetDraft = { ...emptyBudget(), scope: 'whole_project', items: oldCosts }
+    const before = JSON.stringify(draft), original = calculate(draft, active)
+    const view = recipientBudget(draft, active, today)
+    assert.deepEqual(view.result.subtotals, original.subtotals, 'recipient filtering does not recalculate or improve pricing')
+    const doc = manufacturerDocument({ intendedUse: 'Not sure', nextStep: 'Please arrange a discovery call.', timing: '', budget: '', access: '', services: '', budgetDraft: { draft, context: active, today } }, null, false, null, null, null, null, false, false, null, selected)
+    for (const text of [enquiryPlainText(doc), enquiryMarkdown(doc), enquiryEmailBody(doc, true)]) {
+      assert.ok(text.includes(selected.name) && text.includes(selected.provider))
+      assert.doesNotMatch(text, /Model 300|West Coast Container Homes|Currency unknown|Old configuration access quote|Other property foundations|Affected cost entries|Costs for this model need rechecking/)
+      assert.match(text, /Installed total unavailable|No usable priced components/)
+      assert.match(text, /Foundation and site work/)
+    }
+    const evidence = budgetEvidence(draft, active, today)
+    assert.equal(evidence.draft.items.length, oldCosts.length)
+    assert.deepEqual(evidence.calculation, original)
+    assert.equal(evidence.recipient_exclusions.length, oldCosts.length)
+    assert.ok(evidence.recipient_exclusions.some(item => item.reasons.includes('Different model')))
+    assert.ok(evidence.recipient_exclusions.some(item => item.reasons.includes('Different configuration')))
+    assert.ok(evidence.recipient_exclusions.some(item => item.reasons.includes('Different property')))
+    const files = enquiryPackageFiles(doc, null, [], { project_budget: evidence }, null)
+    assert.match(new TextDecoder().decode(files['prefab-technical-evidence.json']), /West Coast Container Homes|wcch/)
+    assert.equal(JSON.stringify(draft), before, 'composition must not mutate recovery state')
+  }
+})
+
+test('active model costs invalidated by a placement or source change remain intelligible without recovering a price', () => {
+  const changed = { ...context, scenario_key: 'edited placement' }
+  const draft = reconcile(replaceItem({ ...emptyBudget(), scope: 'whole_project' }, source()), changed)
+  const doc = manufacturerDocument({ intendedUse: 'Not sure', timing: '', budget: '', access: '', services: '', budgetDraft: { draft, context: changed, today } }, null, false, null, null, null, null, false, false, null, model)
+  for (const text of [enquiryPlainText(doc), enquiryMarkdown(doc), enquiryEmailBody(doc, true)]) {
+    assert.match(text, /Costs for this model need rechecking against the current project assumptions/)
+    assert.match(text, /Installed total unavailable/)
+    assert.doesNotMatch(text, /187,000|Priced-components subtotal/)
+  }
+  assert.equal(budgetEvidence(draft, changed, today).recipient_exclusions.length, 0)
+  assert.deepEqual(recipientBudget(draft, changed, today).result.subtotals, calculate(draft, changed).subtotals)
 })

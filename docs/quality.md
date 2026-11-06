@@ -1,5 +1,23 @@
 # Quality engineering agreement
 
+## Integrated financial comparison — November 6, 2026
+
+The [four-model walkthrough](usability/financial-integrated-2026-11-06/README.md)
+passed in four fresh Chrome sessions: 390 × 844 with touch and 1440 × 1000,
+each with both financial interests selected and with the question skipped.
+In every session the homeowner could revisit each model's own position, budget
+and authored enquiry, prepare a quote request, and download the current Quadra
+enquiry. The initial quote action began 396 px from the top of the open
+comparison on phone and 276 px on desktop. No horizontal overflow, browser
+errors or external requests were observed in the recorded checks.
+
+The original and newly downloaded PDFs show the complete “Site information”
+heading. The separate [pagination follow-up (#342)](https://github.com/QuinnPaterson96/ShovelReady/issues/342)
+tracks a sparse page before the map. The local run used the bundled example
+and real stateless calculation endpoints. It does not verify a hosted update
+across an open session (#329), physical-device behavior, homeowner understanding
+of rental returns (#340), or accepted quotes, site inputs or regulatory evidence.
+
 ## Placement and city routing — November 2026
 
 The [combined browser journey and reproduction steps](integration-placement-guidance.md#verification) exercise captured Victoria and Saanich addresses against the local production build and real calculation APIs. On desktop and mobile-width Edge, the placement remained editable, a late suggestion did not undo a keyboard move, the setback guides remained visible outside the lot, and a city correction cleared the old jurisdiction from findings and report wording. A fresh Saanich address offered a city-only request and an independent manual sketch. No issue was submitted. Container CI runs this same journey against the packaged app.
@@ -20,6 +38,32 @@ neither public registry is guaranteed free of rate limits. Final-head CI is the
 verification gate before merge, and supersedes the historical registry choice below.
 
 Status: initial working agreement, September 17, 2026. These are acceptance criteria for future work, not claims about current test coverage.
+
+## Same-property comparison verification — November 4, 2026
+
+The [comparison handoff](financial-comparison.md) and
+[measured browser record](usability/financial-comparison-2026-11-04/README.md)
+record the optional retained-model comparison, its typed host interface and
+same-site cost/suitability coverage. The preintegration frontend suite passed
+185/185; the state worker reports 188/188 combined checks. The extended comparison
+behaviour check and combined TypeScript/Vite build passed after the independent
+review's priority-question correction. At actual 390 × 844, the production-build
+browser journey verified model switching/return, authored question, placement,
+budget scope/price retention, missing price/unknown currency, keyboard/touch
+controls, copy fallback, real PDF download and navigation/refresh recovery. Page
+width remained 390 with no overflow or browser errors. A separate 1440 × 1000
+comparison capture was inspected. This is agent/software evidence, not human
+validation, accepted legal/source review or publication.
+
+November 6 correction: the original page 2 embedded image and an enlarged independent
+render both show the complete “Site information” heading. The earlier visual
+inspection misread the first letter. See [the enlargement](usability/financial-integrated-2026-11-06/original-site-heading.png).
+Hosted rollout, actual phone/assistive-technology coverage and final
+combined CI remain release/QA-owner follow-ups. Current matching quotes/site costs
+remain with providers/property contacts under #124/#125; source/site review and
+accepted publication remain separate real-evaluation gates. Homeowner usefulness
+and comprehension remain unmeasured under #16/#147. No enquiry was sent, and no
+merge or deployment was performed.
 
 ## Budget-journey review checkpoint — October 23, 2026
 

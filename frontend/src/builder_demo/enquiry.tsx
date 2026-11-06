@@ -44,6 +44,14 @@ export function enquiryPlainText(document: EnquiryDocument) {
     document.closing].filter(Boolean).join('\n\n')
 }
 
+/** Do not tell a visitor to reload and lose their unsaved enquiry after a failed
+ * asset request. Copy works independently of PDF rendering and network assets. */
+export function exportFailureMessage(error: unknown): string {
+  const changed = error instanceof Error && /^(Inputs|Placement) changed during export\./.test(error.message)
+    ? `${error.message} ` : ''
+  return `${changed}The download could not be prepared. Your enquiry is still here. Try saving again, or use Copy text below to keep your enquiry.`
+}
+
 export function enquiryMarkdown(document: EnquiryDocument) {
   return [`# ${markdownEscape(document.title)}`, ...(document.example ? ['SAVED EXAMPLE ONLY — not my property.'] : []), markdownParagraph(document.question),
     ...document.sections.map(section => `## ${markdownEscape(section.heading)}\n\n${section.paragraphs.map(markdownParagraph).join('\n\n')}`),

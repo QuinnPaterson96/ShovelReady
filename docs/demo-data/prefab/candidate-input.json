@@ -1,6 +1,6 @@
 {
   "schema_version": "sr-40.catalogue.v1",
-  "snapshot_id": "demo.prefab-journey.2026-10-07.v1",
+  "snapshot_id": "demo.prefab-journey.2026-11-06.source-labels.v2",
   "captured_at": "2026-10-07",
   "provenance": "manual_transcription_of_public_provider_specs",
   "review_status": "unreviewed",
@@ -182,7 +182,7 @@
         {
           "source_id": "yarrow-model",
           "url": "https://nexusmodular.ca/the-yarrow",
-          "locator": "Model specifications and offer; browser inspection for Quadra price",
+          "locator": "Yarrow model specifications",
           "captured_at": "2026-10-07",
           "sha256": null,
           "artifact_status": "capture_gap",
@@ -291,7 +291,7 @@
         {
           "source_id": "wcch-model",
           "url": "https://westcoastcontainerhomes.ca/c-h-studio-pod/",
-          "locator": "Model specifications and offer; browser inspection for Quadra price",
+          "locator": "C.H. Studio Pod specifications and advertised starting price",
           "captured_at": "2026-10-07",
           "sha256": null,
           "artifact_status": "capture_gap",

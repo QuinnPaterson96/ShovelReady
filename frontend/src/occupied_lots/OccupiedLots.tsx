@@ -17,7 +17,8 @@ import { BoundaryActionTabs, BoundaryMapTools, BoundaryOverlay, BoundaryRoleHelp
 import { SuggestionControls, usePlacementSuggestion, type PlacementSuggestion, type SuggestionContext, type SuggestionGeometry } from '../placement_suggestion/usePlacementSuggestion'
 import { useSetbackMap } from '../setback_overlays/SetbackMap'
 
-type Placement = { x: string; y: string; width: string; depth: string; angle: string }
+import type { RetainedPlacementDraft } from '../builder_demo/retainedAlternatives'
+type Placement = RetainedPlacementDraft['position']
 const number = (value: string) => value.trim() !== '' && Number.isFinite(Number(value)) ? Number(value) : null
 const show = (value: number | null) => measurementWithUnit(value, 'length')
 const roofName = (selected: Case, id: string) => {
@@ -156,6 +157,8 @@ export type OccupiedMeasurement = { startingSuggestion?: PlacementSuggestion; si
 export type OccupiedLotsProps = {
   suggestionContext?: SuggestionContext | null
   autoSuggest?: boolean
+  initialDraft?: RetainedPlacementDraft | null
+  onDraftChange?: (draft: RetainedPlacementDraft) => void
   catalogue?: Pick<Catalogue, 'models'>
   placementSummary?: ReactNode
   placementConcerns?: ReactNode
@@ -174,7 +177,7 @@ export type OccupiedLotsProps = {
   boundaryInteraction?: BoundaryMapInteraction
 }
 
-export default function OccupiedLots({ catalogue = bundledCatalogue, allowedModelIds, initialModelId = '', onMeasurement, onAssessmentPending, showHandoff = true, suppliedCase, boundaryInteraction, compactPlacement = false, evidenceTargetId, moveSuggestion, placementSummary, placementContinuation, placementConcerns, showPlacementConcerns = true, onContinueUnresolved, suggestionContext, autoSuggest = true }: OccupiedLotsProps) {
+export default function OccupiedLots({ catalogue = bundledCatalogue, initialDraft, onDraftChange, allowedModelIds, initialModelId = '', onMeasurement, onAssessmentPending, showHandoff = true, suppliedCase, boundaryInteraction, compactPlacement = false, evidenceTargetId, moveSuggestion, placementSummary, placementContinuation, placementConcerns, showPlacementConcerns = true, onContinueUnresolved, suggestionContext, autoSuggest = true }: OccupiedLotsProps) {
   const initialModel = catalogue.models.find(m => m.model_id === initialModelId && (!allowedModelIds || allowedModelIds.includes(m.model_id)))
   const initialDimension = (name: string) => {
     const quantity = initialModel?.measurements.find(m => m.name === name)?.quantity
@@ -186,15 +189,17 @@ export default function OccupiedLots({ catalogue = bundledCatalogue, allowedMode
   const [reload, setReload] = useState(0)
   const [caseId, setCaseId] = useState('')
   const [modelId, setModelId] = useState(initialModel?.model_id ?? '')
-  const [placement, setPlacement] = useState<Placement>({ x: '', y: '', width: initialDimension('nominal_exterior_width'), depth: initialDimension('nominal_exterior_depth'), angle: '0' })
-  const [dimensionOrigins, setDimensionOrigins] = useState<{ width: 'catalogue' | 'user'; depth: 'catalogue' | 'user' }>({ width: initialModel ? 'catalogue' : 'user', depth: initialModel ? 'catalogue' : 'user' })
-  const [assumptions, setAssumptions] = useState({ parcel: '', building: '' })
+  const [placement, setPlacement] = useState<Placement>(() => initialDraft?.position ?? { x: '', y: '', width: initialDimension('nominal_exterior_width'), depth: initialDimension('nominal_exterior_depth'), angle: '0' })
+  const [dimensionOrigins, setDimensionOrigins] = useState<{ width: 'catalogue' | 'user'; depth: 'catalogue' | 'user' }>({ width: initialDraft?.widthOrigin ?? (initialModel ? 'catalogue' : 'user'), depth: initialDraft?.depthOrigin ?? (initialModel ? 'catalogue' : 'user') })
+  const [assumptions, setAssumptions] = useState(initialDraft?.minima ?? { parcel: '', building: '' })
+  const [startingSuggestion, setStartingSuggestion] = useState<PlacementSuggestion | null>(initialDraft?.startingSuggestion ?? null)
+  const draftCallback = useRef(onDraftChange); draftCallback.current = onDraftChange
+  useEffect(() => { draftCallback.current?.({ startingSuggestion, position: placement, minima: assumptions, widthOrigin: dimensionOrigins.width, depthOrigin: dimensionOrigins.depth }) }, [placement, assumptions, dimensionOrigins, startingSuggestion])
   const [nudgeMetres, setNudgeMetres] = useState(1)
   const [result, setResult] = useState<Result | null>(null)
   const [assessing, setAssessing] = useState(false)
   const [assessmentError, setAssessmentError] = useState('')
   const [rotationFocused, setRotationFocused] = useState(false)
-  const [startingSuggestion, setStartingSuggestion] = useState<PlacementSuggestion | null>(null)
   const activeCheck = useRef<AbortController | null>(null)
   const version = useRef(0)
   const selected = cases.find(c => c.case_id === caseId) ?? null
@@ -216,10 +221,10 @@ export default function OccupiedLots({ catalogue = bundledCatalogue, allowedMode
     const controller = new AbortController()
     let active = true
     version.current++
-    setStartingSuggestion(null); setLoading(true); setError(''); setCases([]); setCaseId(''); setResult(null); onMeasurement?.(null)
+    setStartingSuggestion(initialDraft?.startingSuggestion ?? null); setLoading(true); setError(''); setCases([]); setCaseId(''); setResult(null); onMeasurement?.(null)
     if (suppliedCase) {
       setCases([suppliedCase]); setCaseId(suppliedCase.case_id); setLoading(false)
-      setPlacement(current => ({ ...current, x: '', y: '', angle: startingAngle(suppliedCase) }))
+      setPlacement(current => initialDraft?.position ?? { ...current, x: '', y: '', angle: startingAngle(suppliedCase) })
       return () => { active = false; version.current++ }
     }
     const timer = setTimeout(() => controller.abort(), 10000)
@@ -230,7 +235,7 @@ export default function OccupiedLots({ catalogue = bundledCatalogue, allowedMode
         const found = parseSites(await response.json())
         if (!active) return
         setCases(found); setCaseId(found[0].case_id)
-        setPlacement(current => ({ ...current, x: '', y: '', angle: startingAngle(found[0]) }))
+        setPlacement(current => initialDraft?.position ?? { ...current, x: '', y: '', angle: startingAngle(found[0]) })
       } catch (e) { if (!active) return; if (!controller.signal.aborted) setError(e instanceof Error ? e.message : 'Retained sites unavailable.')
         else setError('Retained site request timed out.') }
       finally { clearTimeout(timer); if (active) setLoading(false) }
@@ -281,7 +286,7 @@ export default function OccupiedLots({ catalogue = bundledCatalogue, allowedMode
   } : null
   const suggestion = usePlacementSuggestion({ geometry: suggestionGeometry, context: suggestionContext,
     propertyKey: selected ? JSON.stringify([selected.case_id, selected.site.parcel.shape]) : null,
-    enabled: !compactPlacement || suggestionContext !== undefined, auto: autoSuggest,
+    enabled: !compactPlacement || suggestionContext !== undefined, auto: autoSuggest && !initialDraft,
     onApply: (next, evidence) => { setStartingSuggestion(evidence); invalidate(); setPlacement(current => ({ ...current, x: String(next.centre_xy[0]), y: String(next.centre_xy[1]), angle: String(next.angle_degrees) })) } })
   const geometryPending = !!valid && assumptionsValid && !result && !assessmentError
   useEffect(() => { onAssessmentPending?.(geometryPending) }, [geometryPending])

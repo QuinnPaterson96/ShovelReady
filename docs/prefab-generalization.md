@@ -90,6 +90,11 @@ Research #292 remains separate, unmerged; this PR can run without merging it.
 
 ## Remaining gaps and next actions
 
+November 6 follow-up: [corrected demo source labels](model-catalogue/source-label-correction.md)
+removes copied Quadra attribution from Studio and Yarrow, regenerates the demo
+bundle under a new snapshot identity and preserves the original commercial facts
+and capture dates. This does not publish accepted data.
+
 | Gap | Practical impact | Next action / owner |
 |---|---|---|
 | Controlled drawing/revision, measurement faces/projections, regulatory height datum, defined interior/footprint area | Blocks accepted real evaluation; displayed body rectangle is preliminary only | Product/data owner obtains provider drawings and reviews source mapping before publication |

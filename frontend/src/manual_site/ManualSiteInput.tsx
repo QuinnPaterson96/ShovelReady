@@ -7,6 +7,9 @@ import { parseResult } from '../occupied_lots/contract'
 export type ManualSiteInputProps = {
   onChange: (output: ManualSiteOutput) => void
   footprint?: { widthM: number | null; depthM: number | null; label?: string }
+  alternativeKey?: string
+  initialPlacement?: PlacementDraft | null
+  onPlacementDraftChange?: (draft: PlacementDraft) => void
 }
 
 const emptyFacts: ManualFacts = { address: '', statedAreaM2: '', notes: '' }
@@ -14,7 +17,7 @@ const emptyPlacement: PlacementDraft = { x: '', y: '', width: '', depth: '', ang
 const blankBuilding = (): RectangleDraft => ({ label: '', x: '', y: '', width: '', depth: '' })
 const validFootprint = (n: number | null | undefined) => typeof n === 'number' && Number.isFinite(n) && n > 0 ? String(n) : ''
 
-export function ManualSiteInput({ onChange, footprint }: ManualSiteInputProps) {
+export function ManualSiteInput({ onChange, footprint, alternativeKey, initialPlacement, onPlacementDraftChange }: ManualSiteInputProps) {
   useEffect(() => { void import('./manual-site.css') }, [])
   const [facts, setFacts] = useState(emptyFacts)
   const [siteWidth, setSiteWidth] = useState('')
@@ -28,6 +31,7 @@ export function ManualSiteInput({ onChange, footprint }: ManualSiteInputProps) {
   const revision = useRef(0)
   const onChangeRef = useRef(onChange)
   onChangeRef.current = onChange
+  const placementCallback = useRef(onPlacementDraftChange); placementCallback.current = onPlacementDraftChange
   const site = buildSite(siteWidth, siteDepth, buildings, coverage)
   const placed = buildPlacement(placement)
 
@@ -38,8 +42,10 @@ export function ManualSiteInput({ onChange, footprint }: ManualSiteInputProps) {
 
   useEffect(() => {
     invalidate()
-    setPlacement(old => ({ ...old, width: validFootprint(footprint?.widthM), depth: validFootprint(footprint?.depthM) }))
-  }, [footprint?.widthM, footprint?.depthM, footprint?.label])
+    setPlacement(previous => initialPlacement ?? { ...(alternativeKey === undefined ? previous : emptyPlacement), width: validFootprint(footprint?.widthM), depth: validFootprint(footprint?.depthM) })
+  }, [footprint?.widthM, footprint?.depthM, footprint?.label, alternativeKey])
+
+  useEffect(() => { placementCallback.current?.(placement) }, [placement])
 
   useEffect(() => { onChangeRef.current({ facts, site, placement: site ? placed : null, assessment }) }, [facts, siteWidth, siteDepth, buildings, coverage, placement, assessment])
 

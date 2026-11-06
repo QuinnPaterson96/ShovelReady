@@ -1,0 +1,141 @@
+{
+  "codeRevision": "87a27e1085232ef9880afc4c0b600fb0dc8b661a",
+  "entryAsset": "/assets/index-DzOSmtP_.js",
+  "entrySha256": "62abb6153a61fb3bdb2fad74b511bd0e780cd55a7a7a1e8a702e4035a4931dde",
+  "representativeDownload": "phone-interests-quadra-enquiry.pdf",
+  "rendering": "Poppler pdftoppm -png -scale-to 1600; each original download independently rendered before deduplication",
+  "visualInspection": "All four page-1 renders inspected at readable magnification; Site information intact. All three representative pages inspected. Every other page is pixel-identical to its representative page.",
+  "downloads": [
+    {
+      "route": "phone-interests",
+      "actualSuggestedFilename": "prefab-enquiry.pdf",
+      "originalLocalDownload": "phone-interests-quadra-enquiry.pdf",
+      "bytes": 638773,
+      "sha256": "4f52883a2b106e1ade98e50cef20e0b21f2b29a397b0281e52e9e9baf28769d8",
+      "renderPageCount": 3,
+      "renderedPageSha256": [
+        "4c9edc8a6d401083a2541ae625b4c04a887a73c9be10d16974d6a4ef8b2e7572",
+        "d6a340157bfd6cd545facba77626c7986e07a286b5b513103e22213c94ae49ef",
+        "d7cd5e117f42836c5631e36251d9b7535d311b4f9d1e1902bd7671de589f1e14"
+      ],
+      "completeSiteInformationHeadingPainted": true,
+      "retainedRepresentative": "phone-interests-quadra-enquiry.pdf",
+      "originalRetained": true
+    },
+    {
+      "route": "phone-skip",
+      "actualSuggestedFilename": "prefab-enquiry.pdf",
+      "originalLocalDownload": "phone-skip-quadra-enquiry.pdf",
+      "bytes": 638773,
+      "sha256": "eb19dfc6091bbe7c60164b9c8f0878c0fb16a4983cfd0796f8e4c6d92157aa60",
+      "renderPageCount": 3,
+      "renderedPageSha256": [
+        "4c9edc8a6d401083a2541ae625b4c04a887a73c9be10d16974d6a4ef8b2e7572",
+        "d6a340157bfd6cd545facba77626c7986e07a286b5b513103e22213c94ae49ef",
+        "d7cd5e117f42836c5631e36251d9b7535d311b4f9d1e1902bd7671de589f1e14"
+      ],
+      "completeSiteInformationHeadingPainted": true,
+      "retainedRepresentative": "phone-interests-quadra-enquiry.pdf",
+      "originalRetained": false
+    },
+    {
+      "route": "desktop-interests",
+      "actualSuggestedFilename": "prefab-enquiry.pdf",
+      "originalLocalDownload": "desktop-interests-quadra-enquiry.pdf",
+      "bytes": 638773,
+      "sha256": "95caca8c71208d6d79f5ee291c7b1053cc92cd4b541ea5e784b9ea94f34d82d6",
+      "renderPageCount": 3,
+      "renderedPageSha256": [
+        "4c9edc8a6d401083a2541ae625b4c04a887a73c9be10d16974d6a4ef8b2e7572",
+        "d6a340157bfd6cd545facba77626c7986e07a286b5b513103e22213c94ae49ef",
+        "d7cd5e117f42836c5631e36251d9b7535d311b4f9d1e1902bd7671de589f1e14"
+      ],
+      "completeSiteInformationHeadingPainted": true,
+      "retainedRepresentative": "phone-interests-quadra-enquiry.pdf",
+      "originalRetained": false
+    },
+    {
+      "route": "desktop-skip",
+      "actualSuggestedFilename": "prefab-enquiry.pdf",
+      "originalLocalDownload": "desktop-skip-quadra-enquiry.pdf",
+      "bytes": 638773,
+      "sha256": "1e818b0720001b04d685bd4598b757f8f457523fe554e65e170b4e484bd1080b",
+      "renderPageCount": 3,
+      "renderedPageSha256": [
+        "4c9edc8a6d401083a2541ae625b4c04a887a73c9be10d16974d6a4ef8b2e7572",
+        "d6a340157bfd6cd545facba77626c7986e07a286b5b513103e22213c94ae49ef",
+        "d7cd5e117f42836c5631e36251d9b7535d311b4f9d1e1902bd7671de589f1e14"
+      ],
+      "completeSiteInformationHeadingPainted": true,
+      "retainedRepresentative": "phone-interests-quadra-enquiry.pdf",
+      "originalRetained": false
+    }
+  ],
+  "pruned": [
+    {
+      "file": "phone-skip-quadra-enquiry.pdf",
+      "reason": "Independent render verified pixel-identical PDF content to representative; actual download identity preserved above"
+    },
+    {
+      "file": "phone-skip-enquiry-page-1.png",
+      "reason": "Independent render verified pixel-identical PDF content to representative; actual download identity preserved above"
+    },
+    {
+      "file": "phone-skip-enquiry-page-2.png",
+      "reason": "Independent render verified pixel-identical PDF content to representative; actual download identity preserved above"
+    },
+    {
+      "file": "phone-skip-enquiry-page-3.png",
+      "reason": "Independent render verified pixel-identical PDF content to representative; actual download identity preserved above"
+    },
+    {
+      "file": "desktop-interests-quadra-enquiry.pdf",
+      "reason": "Independent render verified pixel-identical PDF content to representative; actual download identity preserved above"
+    },
+    {
+      "file": "desktop-interests-enquiry-page-1.png",
+      "reason": "Independent render verified pixel-identical PDF content to representative; actual download identity preserved above"
+    },
+    {
+      "file": "desktop-interests-enquiry-page-2.png",
+      "reason": "Independent render verified pixel-identical PDF content to representative; actual download identity preserved above"
+    },
+    {
+      "file": "desktop-interests-enquiry-page-3.png",
+      "reason": "Independent render verified pixel-identical PDF content to representative; actual download identity preserved above"
+    },
+    {
+      "file": "desktop-skip-quadra-enquiry.pdf",
+      "reason": "Independent render verified pixel-identical PDF content to representative; actual download identity preserved above"
+    },
+    {
+      "file": "desktop-skip-enquiry-page-1.png",
+      "reason": "Independent render verified pixel-identical PDF content to representative; actual download identity preserved above"
+    },
+    {
+      "file": "desktop-skip-enquiry-page-2.png",
+      "reason": "Independent render verified pixel-identical PDF content to representative; actual download identity preserved above"
+    },
+    {
+      "file": "desktop-skip-enquiry-page-3.png",
+      "reason": "Independent render verified pixel-identical PDF content to representative; actual download identity preserved above"
+    },
+    {
+      "file": "phone-interests-failure.png",
+      "reason": "Superseded harness investigation"
+    },
+    {
+      "file": "phone-interests-failure.txt",
+      "reason": "Superseded harness investigation"
+    },
+    {
+      "file": "phone-skip-comparison.png",
+      "reason": "Full details duplicated by selected-interest screenshots; skip-specific first panel and complete text retained"
+    },
+    {
+      "file": "desktop-skip-comparison.png",
+      "reason": "Full details duplicated by selected-interest screenshots; skip-specific first panel and complete text retained"
+    }
+  ],
+  "softwareAssertions": "Four fresh contexts completed, 16 exact authored placements and 16 restoration/quote/copy checks. Current material property-space concerns and CAD187000/CAD175000 controls present in every retained comparison text."
+}

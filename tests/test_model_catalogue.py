@@ -22,8 +22,19 @@ def test_demo_export_keeps_research_unknowns_separate_from_active_catalogue():
     assert candidate.snapshot_id != active.snapshot_id
     assert {m.model_id for m in active.models} == {"click-landing", "aux-240", "aux-300"}
     studio = next(m for m in candidate.models if m.model_id == "wcch-ch-studio")
+    assert studio.prices[0].amount.minimum == Decimal("96860")
     assert studio.prices[0].currency is None
     assert "permanent residential suitability unknown" in studio.intended_use_note.lower()
+    # #339 reproduced a copied Quadra price locator on Studio and Yarrow. The
+    # retained October 7 model sheets support each model's own source label;
+    # Yarrow still has no price and Studio's currency remains unknown.
+    yarrow = next(m for m in candidate.models if m.model_id == "nexus-yarrow")
+    assert yarrow.prices == ()
+    for model in (studio, yarrow):
+        assert model.name in model.sources[0].locator
+        assert all("quadra" not in source.locator.lower() for source in model.sources)
+    quadra = next(m for m in candidate.models if m.model_id == "hewing-quadra4")
+    assert "browser inspection for Quadra price" in quadra.sources[0].locator
     for model in candidate.models:
         assert model.review_status == "unreviewed" and model.source_revision is None
         for field in ["roof_height", "manufacturer_interior_area", "manufacturer_footprint"]:
