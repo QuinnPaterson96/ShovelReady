@@ -13,6 +13,8 @@ const [may, outside, municipal] = await Promise.all([
   fixture('may-street-api.fixture.json'), fixture('address-api.fixture.json'), fixture('municipal-api.fixture.json'),
 ])
 const streets = JSON.parse(await readFile(new URL('./fixtures/municipal-street-edges.json', import.meta.url), 'utf8'))
+const lake = JSON.parse(await readFile(new URL('./fixtures/prospect-lake-waterfront.json', import.meta.url), 'utf8'))
+let lakeSelected = false
 let releaseStreets
 const delayedStreets = new Promise(resolve => { releaseStreets = resolve })
 const browser = await chromium.launch({ headless: true, ...(process.env.WALKTHROUGH_BROWSER ? { channel: process.env.WALKTHROUGH_BROWSER } : {}) })
@@ -28,7 +30,19 @@ await context.route('**/*', async route => {
   requests.push(url.pathname)
   const body = request.postDataJSON()
   const json = value => route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(value) })
-  if (url.pathname === '/api/address-search') return json({ ...(body.query.includes('Gorge') ? outside : may), query: body.query })
+  if (url.pathname === '/api/address-search') {
+    lakeSelected = body.query.includes('Prospect')
+    return json({ ...(lakeSelected ? lake.address : body.query.includes('Gorge') ? outside : may), query: body.query })
+  }
+  if (url.pathname === '/api/municipal-sites/waterfront-edges') {
+    if (body.parcel_ref.object_id === lake.waterfront.parcel_ref.object_id) return json(lake.waterfront)
+    return route.fulfill({status: 503, body: 'Offline shoreline source'})
+  }
+  if (lakeSelected) {
+    if (url.pathname === '/api/municipal-sites/search') return json(lake.search)
+    if (url.pathname === '/api/municipal-sites/observe') return json(lake.observation)
+    if (url.pathname === '/api/municipal-sites/street-edges') return route.fulfill({status: 503, body: 'Offline streets'})
+  }
   if (url.pathname === '/api/municipal-sites/search') return json(body.municipality === 'saanich' ? streets.saanich.search : municipal.search)
   if (url.pathname === '/api/municipal-sites/observe') return json(body.parcel_ref.source === 'district-of-saanich-parcels' ? streets.saanich.observation : municipal.observation)
   if (url.pathname === '/api/municipal-sites/street-edges') {
@@ -179,9 +193,31 @@ try {
   await page.getByRole('button', { name: 'Not sure · clear street marks' }).click()
   await until(async () => !(await current()).zoning_site_assumptions?.street_adjacency?.edge_ids.length, 'Clear did not persist')
   evidence.push({ phase: 'Saanich editable prefill', suggested: original, afterClear: (await current()).zoning_site_assumptions.street_adjacency })
+  // Replay an actual lake parcel through the same editor. Keeping one mark and
+  // replacing another must give the drawing and enquiry the correct provenance.
+  await page.getByRole('button', { name: 'Change address', exact: true }).filter({ visible: true }).first().click()
+  await search('5015 Prospect Lake Rd')
+  await page.getByRole('button', { name: /5015 Prospect Lake Rd, Saanich/ }).click()
+  await until(async () => (await current()).zoning_site_assumptions?.waterfront?.origin === 'municipal_map', 'Lake marks did not arrive')
+  const lakeSite = (await current()).zoning_site_assumptions
+  assert.equal(lakeSite.waterfront.source.record_label, 'Prospect Lake')
+  assert.equal(lakeSite.waterfront_edge_ids.length, 4)
+  await page.locator('#placement-action-waterfront').click()
+  const shore = page.getByRole('button', { name: 'Edge 2 adjoins water', exact: true })
+  assert.equal(await shore.getAttribute('aria-pressed'), 'true')
+  await shore.click()
+  await until(async () => (await current()).zoning_site_assumptions?.waterfront_edge_ids.length === 3, 'Lake edit did not persist')
+  await shore.click()
+  await until(async () => (await current()).zoning_site_assumptions?.waterfront_edge_ids.length === 4, 'Lake addition did not persist')
+  assert.equal(Object.keys((await current()).zoning_site_assumptions.waterfront_map).length, 3)
+  await until(async () => (await report.textContent())?.includes('3 map-suggested waterfront edges: Prospect Lake'), 'Report lost waterfront provenance')
+  await page.getByRole('button', { name: 'Prospect Lake · 4 adjoining edges' }).click()
+  await until(async () => (await current()).zoning_site_assumptions?.waterfront.value === null, 'Removing the last mapped edge must not affirm inland status')
+  assert.equal((await current()).municipality.rule_coverage, 'unavailable')
+  evidence.push({phase: 'editable lake edge and grouped removal', suggested: lakeSite.waterfront, count: 4})
   assert.deepEqual(errors, [])
   await writeFile(`${output}/evidence.json`, JSON.stringify({ checks: evidence, requests, browserErrors: errors }, null, 2))
-  console.log('PASS: Victoria/Saanich street prefill, editable marks, connected city routing, smart placement, setback overlays, edit race, recovery, municipality invalidation and narrow layout')
+  console.log('PASS: Victoria/Saanich street prefill, Prospect Lake waterfront prefill, editable marks, connected city routing, smart placement, setback overlays, edit race, recovery, municipality invalidation and narrow layout')
 } catch (error) {
   await page.screenshot({ path: `${output}/failure.png`, fullPage: true }).catch(() => {})
   await writeFile(`${output}/failure.txt`, `${error.stack}\n\n${(await page.locator('body').innerText()).slice(0,22000)}`)

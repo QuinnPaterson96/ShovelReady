@@ -47,6 +47,21 @@ class UserFact(Strict):
         return self
 
 
+class MappedWaterfront(Strict):
+    value: Literal[True] | None
+    origin: Literal["municipal_map"]
+    evidence_state: Literal["assumed", "unknown"]
+    note: str = Field(max_length=1000)
+    source: Source
+
+    @model_validator(mode="after")
+    def provisional(self):
+        if ((self.value is None) != (self.evidence_state == "unknown")
+                or self.source.review_status != "unreviewed_live_observation"):
+            raise ValueError("mapped waterfront must remain unreviewed or unresolved")
+        return self
+
+
 class Edge(Strict):
     id: str = Field(min_length=1, max_length=240)
     ring: int = Field(ge=0)
@@ -151,7 +166,8 @@ class Assumptions(Strict):
     building_type: UserFact
     existing_garden_suites: UserFact
     principal_building_id: UserFact
-    waterfront: UserFact
+    waterfront: UserFact | MappedWaterfront
+    waterfront_map: dict[str, Source] = Field(default_factory=dict, max_length=64)
     measurements: Measurements
     placement_revision: str = Field(min_length=1, max_length=240)
     limitations: tuple[str, ...] = Field(max_length=32)
@@ -196,6 +212,14 @@ class Assumptions(Strict):
         if (len(self.waterfront_edge_ids) != len(set(self.waterfront_edge_ids))
                 or not set(self.waterfront_edge_ids) <= exterior_ids):
             raise ValueError("waterfront marks must reference distinct exterior edges")
+        if (not self.waterfront_map.keys() <= set(self.waterfront_edge_ids)
+                or any(s.review_status != "unreviewed_live_observation"
+                       for s in self.waterfront_map.values())):
+            raise ValueError("shoreline sources must refer to currently marked exterior edges")
+        if isinstance(self.waterfront, MappedWaterfront) and self.waterfront.value and (
+            not self.waterfront_map or self.waterfront.source not in self.waterfront_map.values()
+        ):
+            raise ValueError("positive map suggestion needs a sourced shoreline edge")
         if self.waterfront.value is False and self.waterfront_edge_ids:
             raise ValueError("a non-waterfront lot cannot have water-adjoining edge marks")
         if self.street_adjacency:
@@ -438,7 +462,9 @@ def _assemble(body: ApiRequest) -> Request:
                                 if name == "principal_building" else name)
             evidence = SettingEvidence(
                 value=user_fact.value,
-                origin="journey_default" if user_fact.origin == "journey_default"
+                source=user_fact.source if isinstance(user_fact, MappedWaterfront) else None,
+                origin="municipal_lookup" if isinstance(user_fact, MappedWaterfront)
+                else "journey_default" if user_fact.origin == "journey_default"
                 else "user_confirmed" if user_fact.evidence_state == "user_confirmed"
                 else "user",
                 note=user_fact.note,

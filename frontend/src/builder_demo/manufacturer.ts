@@ -52,7 +52,7 @@ export function conditionalObservation(check: ScreeningCheck): string {
 }
 
 export function assumptionsDescription(input: EnquiryInput, assumptions: SiteAssumptions | null, pathway: Pathway | null, settings: ProjectSettings | null): string {
-  const provenance = (item: { value: unknown; origin: string; evidence_state?: string }) => item.value === null ? 'not supplied' : item.evidence_state === 'user_confirmed' ? 'user-confirmed, not independently verified' : item.origin === 'journey_default' ? 'default assumption, unconfirmed' : 'user assumption, unverified'
+  const provenance = (item: { value: unknown; origin: string; evidence_state?: string }) => item.origin === 'municipal_map' ? 'map observation, unreviewed' : item.value === null ? 'not supplied' : item.evidence_state === 'user_confirmed' ? 'user-confirmed, not independently verified' : item.origin === 'journey_default' ? 'default assumption, unconfirmed' : 'user assumption, unverified'
   const use = settings?.evidence.proposed_use
   const foundation = settings?.evidence.foundation_attached
   return [`Intended use: ${input.intendedUse.trim() || 'not supplied'}.`,

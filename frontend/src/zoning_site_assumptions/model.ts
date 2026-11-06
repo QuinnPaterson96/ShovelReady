@@ -10,7 +10,7 @@ export type StreetAdjacency = { edge_ids: string[]; all_marked: boolean; complet
   mapped_names?: Record<string, string>
   map_source?: { provider: string; record_label: string; captured_at_utc: string; source_url: string } }
 export type BoundaryRoleSuggestions = { roles: Record<string, EdgeRole>; conflicts: string[]; basis: 'user_marks' | 'map_and_marks' }
-export function streetRuns(edges: BoundaryEdge[], names: Record<string, string>) {
+export function namedEdgeRuns(edges: BoundaryEdge[], names: Record<string, string>) {
   const exterior = edges.filter(edge => edge.ring === 0)
   const runs: { name: string; ids: string[] }[] = []
   let previous: string | undefined
@@ -26,6 +26,10 @@ export function streetRuns(edges: BoundaryEdge[], names: Record<string, string>)
   return runs.filter(run => run.ids.length > 1)
 }
 
+export type ShoreSource = { provider: string; record_label: string; url: string; capture_date: string; locator: string; review_status: 'unreviewed_live_observation' }
+export type WaterfrontFact = UserFact<boolean> | { value: true | null; origin: 'municipal_map'; evidence_state: 'assumed' | 'unknown'; note: string; source: ShoreSource }
+export type WaterfrontSelection = { waterfront: WaterfrontFact; waterfront_edge_ids: string[]; waterfront_map?: Record<string, ShoreSource> }
+
 export type SiteAssumptions = {
   planning_buffers_m?: Record<string, number>
   waterfront_edge_ids?: string[]
@@ -39,7 +43,8 @@ export type SiteAssumptions = {
   building_type: UserFact<'single_detached' | 'duplex' | 'other'>
   existing_garden_suites: UserFact<0 | 1 | 'two_or_more'>
   principal_building_id: UserFact<string>
-  waterfront: UserFact<boolean>
+  waterfront: WaterfrontFact
+  waterfront_map?: Record<string, ShoreSource>
   measurements: { boundary: Record<string, UserMeasurement>; principal_separation: UserMeasurement | null; floor_area: UserMeasurement | null }
   placement_revision: string
   limitations: string[]
