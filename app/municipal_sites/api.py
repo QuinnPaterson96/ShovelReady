@@ -16,11 +16,19 @@ from shapely.geometry import mapping
 
 from app.spatial.geometry import xy_polygon
 
+from .sources import (
+    CITY,
+    LAND,
+    LAYERS,
+    SAANICH,
+    SAANICH_PARCEL_FIELDS,
+    VICTORIA_PARCEL_FIELDS,
+)
+
 VERSION = "municipal-sites.v1"
-ROOT = "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer"
-LAYERS = {"address": f"{ROOT}/0", "building": f"{ROOT}/1", "parcel": f"{ROOT}/11"}
-LICENCE = "https://opendata.victoria.ca/pages/open-data-licence"
-ATTRIBUTION = "Contains information licensed under the Open Government Licence - City of Victoria."
+ROOT = LAND
+LICENCE = CITY.licence
+ATTRIBUTION = CITY.attribution
 EXTENT = (470734.7, 5360122.9, 476191.5, 5366422.8)
 MAX_FEATURES = 25
 MAX_BYTES = 1_000_000
@@ -50,6 +58,7 @@ class SearchRequest(StrictModel):
     address: str | None = Field(default=None, max_length=120)
     pid: str | None = None
     point_hint: PointHint | None = None
+    municipality: Literal["victoria", "saanich"] = "victoria"
 
     @model_validator(mode="after")
     def one_query(self):
@@ -71,9 +80,17 @@ class ParcelRef(StrictModel):
     object_id: int = Field(ge=1, le=10_000_000)
 
 
+class SaanichParcelRef(StrictModel):
+    source: Literal["district-of-saanich-parcels"]
+    object_id: int = Field(ge=1, le=10_000_000)
+
+
+MunicipalParcelRef = ParcelRef | SaanichParcelRef
+
+
 class ObserveRequest(StrictModel):
     schema_version: Literal["municipal-sites.v1"]
-    parcel_ref: ParcelRef
+    parcel_ref: MunicipalParcelRef
     expected_pid: str | None = None
 
 
@@ -92,12 +109,12 @@ class Evidence(StrictModel):
 
 
 class Candidate(StrictModel):
-    parcel_ref: ParcelRef
+    parcel_ref: MunicipalParcelRef
     pid: str | None
     gislink: str | None
     address: str | None
     address_object_id: int | None
-    relation: Literal["pid_exact", "gislink_join", "spatial_lead"]
+    relation: Literal["pid_exact", "gislink_join", "spatial_lead", "parcel_address"]
     attributes: dict[str, Any]
     identity_status: Literal["spatial_lead_unverified", "source_join_unreviewed"]
 
@@ -127,7 +144,7 @@ class Roofline(GeometryFeature):
 class ObserveResponse(StrictModel):
     schema_version: Literal["municipal-sites.v1"]
     status: Literal["available", "partial", "missing", "invalid", "stale"]
-    parcel_ref: ParcelRef
+    parcel_ref: MunicipalParcelRef
     parcel: GeometryFeature | None
     rooflines: list[Roofline]
     issues: list[str]
@@ -135,15 +152,20 @@ class ObserveResponse(StrictModel):
 
 
 def _evidence(layer: str, url: str, raw: bytes, value: dict) -> dict:
+    provider = LAYERS[layer].provider
+    legacy_layer = layer in {"parcel", "address", "building"}
     return {
-        "provider": "City of Victoria Open Data",
-        "record_label": f"{layer.title()} MapServer response",
+        "provider": provider.name,
+        "record_label": f"{layer.title()} municipal map response"
+        if not legacy_layer
+        else f"{layer.title()} MapServer response",
         "source_url": url,
         "captured_at_utc": datetime.now(UTC).isoformat(),
         "review_status": "unreviewed_live_observation",
-        "licence_url": LICENCE,
-        "attribution": ATTRIBUTION,
-        "source_date_limit": (
+        "licence_url": provider.licence,
+        "attribution": provider.attribution,
+        "source_date_limit": "Feature update date and positional accuracy were not established."
+        if not legacy_layer else (
             "Feature update date and positional accuracy not supplied; "
             "rooflines derive from aerial imagery, not surveyed walls."
         ),
@@ -155,11 +177,11 @@ def _evidence(layer: str, url: str, raw: bytes, value: dict) -> dict:
 
 def _fetch(layer: str, params: dict) -> tuple[dict, dict]:
     # Only fixed layer URLs and internally constructed query keys are permitted.
-    url = f"{LAYERS[layer]}/query?{urlencode({'f': 'json', **params})}"
+    url = f"{LAYERS[layer].url}/query?{urlencode({'f': 'json', **params})}"
     for attempt in range(2):
         try:
             with urlopen(url, timeout=5) as response:
-                if response.url.split("?")[0] != f"{LAYERS[layer]}/query":
+                if response.url.split("?")[0] != f"{LAYERS[layer].url}/query":
                     raise ValueError("unexpected provider redirect")
                 raw = response.read(MAX_BYTES + 1)
             if len(raw) > MAX_BYTES:
@@ -173,8 +195,10 @@ def _fetch(layer: str, params: dict) -> tuple[dict, dict]:
                 # This exact ArcGIS 400 was observed alternating with valid replies
                 # for the same bounded request. Other 400s may be query mistakes.
                 pagination_fault = code == 400 and message == "Pagination is not supported."
-                retryable = pagination_fault or code == 429 or (
-                    isinstance(code, int) and 500 <= code <= 599
+                retryable = (
+                    pagination_fault
+                    or code == 429
+                    or (isinstance(code, int) and 500 <= code <= 599)
                 )
                 if attempt == 0 and retryable:
                     time.sleep(0.25)
@@ -182,21 +206,19 @@ def _fetch(layer: str, params: dict) -> tuple[dict, dict]:
                 status = 503 if retryable else 502
                 error_code = code if isinstance(code, int) else "unknown"
                 reason = (
-                    "pagination unsupported"
-                    if pagination_fault
-                    else f"ArcGIS error {error_code}"
+                    "pagination unsupported" if pagination_fault else f"ArcGIS error {error_code}"
                 )
                 raise HTTPException(status, f"City {layer} source {reason}")
             if value.get("exceededTransferLimit"):
                 raise ValueError("provider transfer limit exceeded")
             rows = value.get("features")
-            if not isinstance(rows, list) or len(rows) >= MAX_FEATURES:
+            limit = 100 if params.get("resultRecordCount") == 100 else MAX_FEATURES
+            if not isinstance(rows, list) or len(rows) >= limit:
                 raise ValueError("invalid or excessive feature rows")
             if params.get("returnGeometry") == "true":
                 if value.get("spatialReference", {}).get("wkid") != 3157:
                     raise ValueError("unexpected response CRS")
-                expected_type = "esriGeometryPoint" if layer == "address" else "esriGeometryPolygon"
-                if value.get("geometryType") != expected_type:
+                if value.get("geometryType") != LAYERS[layer].geometry:
                     raise ValueError("unexpected geometry type")
             return value, _evidence(layer, url, raw, value)
         except HTTPError as exc:
@@ -244,6 +266,41 @@ def _parcel_query(where: str) -> tuple[list[dict], dict]:
 
 @router.post("/search", response_model=SearchResponse)
 def search(request: SearchRequest) -> dict:
+    if request.municipality == "saanich":
+        field = "PID" if request.pid else "ADDRESS"
+        key = request.pid or " ".join((request.address or "").upper().split())
+        value, receipt = _fetch(
+            "Saanich parcels",
+            {
+                "where": f"{field}={_literal(key)}",
+                "outFields": SAANICH_PARCEL_FIELDS,
+                "returnGeometry": "false",
+            },
+        )
+        candidates = []
+        for row in _rows(value, ("OBJECTID", "ADDRESS", "PID")):
+            attrs = row["attributes"]
+            if attrs[field] != key:
+                raise HTTPException(502, "District parcel record did not match the search")
+            candidates.append(
+                {
+                    "parcel_ref": {"source": SAANICH, "object_id": attrs["OBJECTID"]},
+                    "pid": attrs["PID"],
+                    "address": attrs["ADDRESS"],
+                    "gislink": None,
+                    "address_object_id": None,
+                    "attributes": attrs,
+                    "relation": "pid_exact" if request.pid else "parcel_address",
+                    "identity_status": "source_join_unreviewed",
+                }
+            )
+        return {
+            "schema_version": VERSION,
+            "candidates": candidates,
+            "evidence": [receipt],
+            "status": "candidates" if candidates else "no_match_in_live_query",
+            "note": "Exact District parcel record match; property identity is unreviewed.",
+        }
     evidence = []
     joined = []
     if request.pid is not None:
@@ -340,16 +397,17 @@ def search(request: SearchRequest) -> dict:
 @router.post("/observe", response_model=ObserveResponse)
 def observe(request: ObserveRequest) -> dict:
     oid = request.parcel_ref.object_id
+    saanich = request.parcel_ref.source == SAANICH
     value, parcel_evidence = _fetch(
-        "parcel",
+        "Saanich parcels" if saanich else "parcel",
         {
             "objectIds": oid,
-            "outFields": "OBJECTID,PID,VicPID,GISLINK,ParcelType,ParcelStatus,Shape_Area",
+            "outFields": SAANICH_PARCEL_FIELDS if saanich else VICTORIA_PARCEL_FIELDS,
             "returnGeometry": "true",
             "outSR": 3157,
         },
     )
-    rows = _rows(value, ("OBJECTID", "PID", "GISLINK"))
+    rows = _rows(value, ("OBJECTID", "PID"))
     if len(rows) != 1 or rows[0]["attributes"]["OBJECTID"] != oid:
         return {
             "schema_version": VERSION,
@@ -409,7 +467,7 @@ def observe(request: ObserveRequest) -> dict:
     }
     try:
         buildings_value, building_evidence = _fetch(
-            "building",
+            "Saanich buildings" if saanich else "building",
             {
                 "geometry": json.dumps(
                     {"spatialReference": {"wkid": 3157}, **raw_geometry}, separators=(",", ":")
@@ -418,12 +476,12 @@ def observe(request: ObserveRequest) -> dict:
                 "inSR": 3157,
                 "outSR": 3157,
                 "spatialRel": "esriSpatialRelIntersects",
-                "outFields": "OBJECTID,LAYER,SHAPE_Area",
+                "outFields": "OBJECTID" if saanich else "OBJECTID,LAYER,SHAPE_Area",
                 "returnGeometry": "true",
                 "returnZ": "true",
             },
         )
-        buildings = _rows(buildings_value, ("OBJECTID", "LAYER"))
+        buildings = _rows(buildings_value, ("OBJECTID",) if saanich else ("OBJECTID", "LAYER"))
     except HTTPException as exc:
         return {
             "schema_version": VERSION,

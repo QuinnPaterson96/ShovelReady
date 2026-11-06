@@ -30,8 +30,11 @@ export function publicSourceUrl(url: string | null | undefined) {
   if (!url) return null
   try {
     const parsed = new URL(url)
-    return parsed.protocol === 'https:' && !parsed.pathname.endsWith('/query') ? parsed.href :
-      parsed.protocol === 'https:' && parsed.hostname === 'maps.victoria.ca' ? `${parsed.origin}${parsed.pathname.replace(/\/query$/, '')}` : null
+    if (parsed.protocol !== 'https:') return null
+    if (!parsed.pathname.endsWith('/query')) return parsed.href
+    const municipalLayer = parsed.hostname === 'maps.victoria.ca' || (parsed.hostname === 'services7.arcgis.com'
+      && parsed.pathname.startsWith('/g5PyWjvBbQnqjM1q/arcgis/rest/services/'))
+    return municipalLayer ? `${parsed.origin}${parsed.pathname.slice(0, -'/query'.length)}` : null
   } catch { return null }
 }
 

@@ -1,5 +1,7 @@
 # Quality engineering agreement
 
+[Municipal street prefill verification](municipal-street-prefill.md#verification-and-remaining-work) records the live Victoria and Saanich browser checks, the offline correction and source-failure cases, and the remaining independent accuracy and homeowner validation work. On November 6 the stateless verification covered 97 focused backend cases, 194 frontend tests, the TypeScript/Vite build, the placement-demo browser journey and the saved-example walkthrough. The live browser selection/edit check used Kingsley St and May St. No municipal rule release was published.
+
 ## Placement and city routing — November 2026
 
 The [combined browser journey and reproduction steps](integration-placement-guidance.md#verification) exercise captured Victoria and Saanich addresses against the local production build and real calculation APIs. On desktop and mobile-width Edge, the placement remained editable, a late suggestion did not undo a keyboard move, the setback guides remained visible outside the lot, and a city correction cleared the old jurisdiction from findings and report wording. A fresh Saanich address offered a city-only request and an independent manual sketch. No issue was submitted. Container CI runs this same journey against the packaged app.

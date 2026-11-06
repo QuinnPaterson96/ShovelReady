@@ -1,0 +1,845 @@
+{
+  "note": "Public Nov 6, 2026 municipal records for the browser journey. Evidence entries keep receipt metadata and omit raw bodies. Original queries and hashes are retained.",
+  "saanich": {
+    "search": {
+      "schema_version": "municipal-sites.v1",
+      "candidates": [
+        {
+          "parcel_ref": {
+            "source": "district-of-saanich-parcels",
+            "object_id": 3937
+          },
+          "pid": "008-347-042",
+          "address": "200 GORGE RD W",
+          "gislink": null,
+          "address_object_id": null,
+          "attributes": {
+            "OBJECTID": 3937,
+            "PID": "008-347-042",
+            "ADDRESS": "200 GORGE RD W",
+            "SUBTYPE": 1,
+            "JURISDICTION": "308",
+            "GLOBALID": "0486e814-b08e-45ea-bde3-8d11f4d69006"
+          },
+          "relation": "parcel_address",
+          "identity_status": "source_join_unreviewed"
+        }
+      ],
+      "evidence": [
+        {
+          "provider": "District of Saanich Open Data",
+          "record_label": "Saanich Parcels municipal map response",
+          "source_url": "https://services7.arcgis.com/g5PyWjvBbQnqjM1q/arcgis/rest/services/Parcel/FeatureServer/0/query?f=json&where=ADDRESS%3D%27200+GORGE+RD+W%27&outFields=OBJECTID%2CPID%2CADDRESS%2CSUBTYPE%2CJURISDICTION%2CGLOBALID&returnGeometry=false",
+          "captured_at_utc": "2026-11-06T20:17:30.918186+00:00",
+          "review_status": "unreviewed_live_observation",
+          "licence_url": "https://www.saanich.ca/assets/Local~Government/Documents/SaanichDataCatalogueLicence.pdf",
+          "attribution": "Contains information licenced under the Open Government Licence – District of Saanich.",
+          "source_date_limit": "Feature update date and positional accuracy were not established.",
+          "sha256": "8fed84c4df71259153d0b87da0abfa99adbc2639976d225a5cdd5da90ee13d4a"
+        }
+      ],
+      "status": "candidates",
+      "note": "Exact District parcel record match; property identity is unreviewed."
+    },
+    "observation": {
+      "schema_version": "municipal-sites.v1",
+      "status": "available",
+      "parcel_ref": {
+        "source": "district-of-saanich-parcels",
+        "object_id": 3937
+      },
+      "parcel": {
+        "attributes": {
+          "OBJECTID": 3937,
+          "PID": "008-347-042",
+          "ADDRESS": "200 GORGE RD W",
+          "SUBTYPE": 1,
+          "JURISDICTION": "308",
+          "GLOBALID": "0486e814-b08e-45ea-bde3-8d11f4d69006"
+        },
+        "geometry": {
+          "rings": [
+            [
+              [
+                470696.939,
+                5366128.0195
+              ],
+              [
+                470729.3308,
+                5366103.6815
+              ],
+              [
+                470703.2415,
+                5366068.9892
+              ],
+              [
+                470626.7328,
+                5366102.0034
+              ],
+              [
+                470664.5472,
+                5366152.3575
+              ],
+              [
+                470696.939,
+                5366128.0195
+              ]
+            ]
+          ]
+        },
+        "planar_geometry": {
+          "type": "Polygon",
+          "coordinates": [
+            [
+              [
+                470696.939,
+                5366128.0195
+              ],
+              [
+                470729.3308,
+                5366103.6815
+              ],
+              [
+                470703.2415,
+                5366068.9892
+              ],
+              [
+                470626.7328,
+                5366102.0034
+              ],
+              [
+                470664.5472,
+                5366152.3575
+              ],
+              [
+                470696.939,
+                5366128.0195
+              ]
+            ]
+          ]
+        },
+        "horizontal_crs": "EPSG:3157",
+        "area_m2": 4309.176874143913,
+        "geometry_issue": null
+      },
+      "rooflines": [
+        {
+          "attributes": {
+            "OBJECTID": 12861
+          },
+          "geometry": {
+            "hasZ": true,
+            "rings": [
+              [
+                [
+                  470666.6124,
+                  5366123.9521,
+                  30.48
+                ],
+                [
+                  470667.0264,
+                  5366123.5211,
+                  30.524
+                ],
+                [
+                  470668.7664,
+                  5366124.2521,
+                  30.529
+                ],
+                [
+                  470672.4474,
+                  5366121.7251,
+                  30.469
+                ],
+                [
+                  470672.2724,
+                  5366119.7571,
+                  30.474
+                ],
+                [
+                  470672.8064,
+                  5366119.3411,
+                  30.485
+                ],
+                [
+                  470674.5714,
+                  5366120.0231,
+                  30.474
+                ],
+                [
+                  470678.0704,
+                  5366117.4651,
+                  30.469
+                ],
+                [
+                  470677.9734,
+                  5366115.3891,
+                  30.474
+                ],
+                [
+                  470678.4824,
+                  5366115.0291,
+                  30.48
+                ],
+                [
+                  470680.2354,
+                  5366115.6701,
+                  30.469
+                ],
+                [
+                  470684.3534,
+                  5366112.7781,
+                  30.474
+                ],
+                [
+                  470684.1704,
+                  5366110.8001,
+                  30.48
+                ],
+                [
+                  470684.7084,
+                  5366110.3771,
+                  30.48
+                ],
+                [
+                  470686.4124,
+                  5366111.0361,
+                  30.485
+                ],
+                [
+                  470692.0794,
+                  5366106.8431,
+                  30.485
+                ],
+                [
+                  470691.9654,
+                  5366104.8891,
+                  30.485
+                ],
+                [
+                  470692.5334,
+                  5366104.4791,
+                  30.491
+                ],
+                [
+                  470694.2044,
+                  5366105.1501,
+                  30.491
+                ],
+                [
+                  470699.6024,
+                  5366101.1861,
+                  30.431
+                ],
+                [
+                  470699.7414,
+                  5366098.9911,
+                  30.463
+                ],
+                [
+                  470689.0374,
+                  5366084.6281,
+                  30.409
+                ],
+                [
+                  470688.8004,
+                  5366084.5471,
+                  30.396
+                ],
+                [
+                  470686.9704,
+                  5366083.9171,
+                  30.294
+                ],
+                [
+                  470681.2674,
+                  5366088.2011,
+                  30.463
+                ],
+                [
+                  470681.4344,
+                  5366089.9561,
+                  30.518
+                ],
+                [
+                  470680.9574,
+                  5366090.4371,
+                  30.524
+                ],
+                [
+                  470679.2094,
+                  5366089.7731,
+                  30.474
+                ],
+                [
+                  470675.0614,
+                  5366092.8601,
+                  30.42
+                ],
+                [
+                  470675.2264,
+                  5366094.7301,
+                  30.463
+                ],
+                [
+                  470674.7184,
+                  5366095.1211,
+                  30.469
+                ],
+                [
+                  470672.8594,
+                  5366094.5601,
+                  30.453
+                ],
+                [
+                  470667.4204,
+                  5366098.7671,
+                  30.447
+                ],
+                [
+                  470667.5084,
+                  5366100.5151,
+                  30.453
+                ],
+                [
+                  470662.6144,
+                  5366104.1751,
+                  30.496
+                ],
+                [
+                  470657.6034,
+                  5366097.5401,
+                  30.491
+                ],
+                [
+                  470655.4974,
+                  5366096.9521,
+                  30.447
+                ],
+                [
+                  470650.0504,
+                  5366101.2271,
+                  30.447
+                ],
+                [
+                  470649.5944,
+                  5366100.7491,
+                  30.447
+                ],
+                [
+                  470646.3724,
+                  5366103.0411,
+                  30.453
+                ],
+                [
+                  470646.7624,
+                  5366103.5491,
+                  30.469
+                ],
+                [
+                  470643.1654,
+                  5366106.2051,
+                  30.42
+                ],
+                [
+                  470643.1914,
+                  5366108.5301,
+                  30.414
+                ],
+                [
+                  470649.1914,
+                  5366116.5921,
+                  30.409
+                ],
+                [
+                  470648.5124,
+                  5366118.2971,
+                  30.403
+                ],
+                [
+                  470652.8184,
+                  5366124.0741,
+                  30.463
+                ],
+                [
+                  470654.6474,
+                  5366123.8451,
+                  30.48
+                ],
+                [
+                  470658.9714,
+                  5366129.4801,
+                  30.474
+                ],
+                [
+                  470658.9924,
+                  5366129.5081,
+                  30.474
+                ],
+                [
+                  470660.9144,
+                  5366130.1581,
+                  30.463
+                ],
+                [
+                  470666.7384,
+                  5366126.0211,
+                  30.496
+                ],
+                [
+                  470666.6124,
+                  5366123.9521,
+                  30.48
+                ]
+              ]
+            ]
+          },
+          "planar_geometry": {
+            "type": "Polygon",
+            "coordinates": [
+              [
+                [
+                  470666.6124,
+                  5366123.9521
+                ],
+                [
+                  470667.0264,
+                  5366123.5211
+                ],
+                [
+                  470668.7664,
+                  5366124.2521
+                ],
+                [
+                  470672.4474,
+                  5366121.7251
+                ],
+                [
+                  470672.2724,
+                  5366119.7571
+                ],
+                [
+                  470672.8064,
+                  5366119.3411
+                ],
+                [
+                  470674.5714,
+                  5366120.0231
+                ],
+                [
+                  470678.0704,
+                  5366117.4651
+                ],
+                [
+                  470677.9734,
+                  5366115.3891
+                ],
+                [
+                  470678.4824,
+                  5366115.0291
+                ],
+                [
+                  470680.2354,
+                  5366115.6701
+                ],
+                [
+                  470684.3534,
+                  5366112.7781
+                ],
+                [
+                  470684.1704,
+                  5366110.8001
+                ],
+                [
+                  470684.7084,
+                  5366110.3771
+                ],
+                [
+                  470686.4124,
+                  5366111.0361
+                ],
+                [
+                  470692.0794,
+                  5366106.8431
+                ],
+                [
+                  470691.9654,
+                  5366104.8891
+                ],
+                [
+                  470692.5334,
+                  5366104.4791
+                ],
+                [
+                  470694.2044,
+                  5366105.1501
+                ],
+                [
+                  470699.6024,
+                  5366101.1861
+                ],
+                [
+                  470699.7414,
+                  5366098.9911
+                ],
+                [
+                  470689.0374,
+                  5366084.6281
+                ],
+                [
+                  470688.8004,
+                  5366084.5471
+                ],
+                [
+                  470686.9704,
+                  5366083.9171
+                ],
+                [
+                  470681.2674,
+                  5366088.2011
+                ],
+                [
+                  470681.4344,
+                  5366089.9561
+                ],
+                [
+                  470680.9574,
+                  5366090.4371
+                ],
+                [
+                  470679.2094,
+                  5366089.7731
+                ],
+                [
+                  470675.0614,
+                  5366092.8601
+                ],
+                [
+                  470675.2264,
+                  5366094.7301
+                ],
+                [
+                  470674.7184,
+                  5366095.1211
+                ],
+                [
+                  470672.8594,
+                  5366094.5601
+                ],
+                [
+                  470667.4204,
+                  5366098.7671
+                ],
+                [
+                  470667.5084,
+                  5366100.5151
+                ],
+                [
+                  470662.6144,
+                  5366104.1751
+                ],
+                [
+                  470657.6034,
+                  5366097.5401
+                ],
+                [
+                  470655.4974,
+                  5366096.9521
+                ],
+                [
+                  470650.0504,
+                  5366101.2271
+                ],
+                [
+                  470649.5944,
+                  5366100.7491
+                ],
+                [
+                  470646.3724,
+                  5366103.0411
+                ],
+                [
+                  470646.7624,
+                  5366103.5491
+                ],
+                [
+                  470643.1654,
+                  5366106.2051
+                ],
+                [
+                  470643.1914,
+                  5366108.5301
+                ],
+                [
+                  470649.1914,
+                  5366116.5921
+                ],
+                [
+                  470648.5124,
+                  5366118.2971
+                ],
+                [
+                  470652.8184,
+                  5366124.0741
+                ],
+                [
+                  470654.6474,
+                  5366123.8451
+                ],
+                [
+                  470658.9714,
+                  5366129.4801
+                ],
+                [
+                  470658.9924,
+                  5366129.5081
+                ],
+                [
+                  470660.9144,
+                  5366130.1581
+                ],
+                [
+                  470666.7384,
+                  5366126.0211
+                ],
+                [
+                  470666.6124,
+                  5366123.9521
+                ]
+              ]
+            ]
+          },
+          "horizontal_crs": "EPSG:3157",
+          "area_m2": 1224.104607991535,
+          "intersection_area_m2": 1224.1046079915354,
+          "geometry_issue": null,
+          "relationship": "spatial_intersection_not_ownership"
+        }
+      ],
+      "issues": [],
+      "evidence": [
+        {
+          "provider": "District of Saanich Open Data",
+          "record_label": "Saanich Parcels municipal map response",
+          "source_url": "https://services7.arcgis.com/g5PyWjvBbQnqjM1q/arcgis/rest/services/Parcel/FeatureServer/0/query?f=json&objectIds=3937&outFields=OBJECTID%2CPID%2CADDRESS%2CSUBTYPE%2CJURISDICTION%2CGLOBALID&returnGeometry=true&outSR=3157",
+          "captured_at_utc": "2026-11-06T20:17:32.518774+00:00",
+          "review_status": "unreviewed_live_observation",
+          "licence_url": "https://www.saanich.ca/assets/Local~Government/Documents/SaanichDataCatalogueLicence.pdf",
+          "attribution": "Contains information licenced under the Open Government Licence – District of Saanich.",
+          "source_date_limit": "Feature update date and positional accuracy were not established.",
+          "sha256": "a9cb23d2a358d958919ab5ab5fbc33a6359d9e67b7a2d88f3436c447fc052362"
+        },
+        {
+          "provider": "District of Saanich Open Data",
+          "record_label": "Saanich Buildings municipal map response",
+          "source_url": "https://services7.arcgis.com/g5PyWjvBbQnqjM1q/arcgis/rest/services/Building/FeatureServer/0/query?f=json&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%2C%22rings%22%3A%5B%5B%5B470696.939%2C5366128.0195%5D%2C%5B470729.3308%2C5366103.6815%5D%2C%5B470703.2415%2C5366068.9892%5D%2C%5B470626.7328%2C5366102.0034%5D%2C%5B470664.5472%2C5366152.3575%5D%2C%5B470696.939%2C5366128.0195%5D%5D%5D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID&returnGeometry=true&returnZ=true",
+          "captured_at_utc": "2026-11-06T20:17:33.178514+00:00",
+          "review_status": "unreviewed_live_observation",
+          "licence_url": "https://www.saanich.ca/assets/Local~Government/Documents/SaanichDataCatalogueLicence.pdf",
+          "attribution": "Contains information licenced under the Open Government Licence – District of Saanich.",
+          "source_date_limit": "Feature update date and positional accuracy were not established.",
+          "sha256": "9699757f0cbccdecd15ee73642e57b127d01cea45c3b60e8c2c4e23b30c4e017"
+        }
+      ]
+    },
+    "streets": {
+      "schema_version": "parcel-streets.v1",
+      "parcel_ref": {
+        "source": "district-of-saanich-parcels",
+        "object_id": 3937
+      },
+      "status": "suggested",
+      "parcel_geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              470696.939,
+              5366128.0195
+            ],
+            [
+              470729.3308,
+              5366103.6815
+            ],
+            [
+              470703.2415,
+              5366068.9892
+            ],
+            [
+              470626.7328,
+              5366102.0034
+            ],
+            [
+              470664.5472,
+              5366152.3575
+            ],
+            [
+              470696.939,
+              5366128.0195
+            ]
+          ]
+        ]
+      },
+      "suggestions": [
+        {
+          "segment": 1,
+          "name": "DONALD ST",
+          "road_class": "Residential",
+          "feature_ids": [
+            690
+          ]
+        },
+        {
+          "segment": 2,
+          "name": "GORGE RD W",
+          "road_class": "Major",
+          "feature_ids": [
+            2025
+          ]
+        },
+        {
+          "segment": 3,
+          "name": "ORILLIA ST",
+          "road_class": "Residential",
+          "feature_ids": [
+            693
+          ]
+        }
+      ],
+      "evidence": [
+        {
+          "provider": "District of Saanich Open Data",
+          "record_label": "Saanich Parcels municipal map response",
+          "source_url": "https://services7.arcgis.com/g5PyWjvBbQnqjM1q/arcgis/rest/services/Parcel/FeatureServer/0/query?f=json&objectIds=3937&outSR=3157&outFields=OBJECTID%2CPID&returnGeometry=true&returnZ=false",
+          "captured_at_utc": "2026-11-06T20:17:33.753370+00:00",
+          "review_status": "unreviewed_live_observation",
+          "licence_url": "https://www.saanich.ca/assets/Local~Government/Documents/SaanichDataCatalogueLicence.pdf",
+          "attribution": "Contains information licenced under the Open Government Licence – District of Saanich.",
+          "source_date_limit": "Feature update date and positional accuracy were not established.",
+          "sha256": "8e9c95d39e093992487b5869cb3dad568e2b5ad1e4bf0c8d8c72c8aaaf446129"
+        },
+        {
+          "provider": "District of Saanich Open Data",
+          "record_label": "Saanich Streets municipal map response",
+          "source_url": "https://services7.arcgis.com/g5PyWjvBbQnqjM1q/arcgis/rest/services/Streets/FeatureServer/0/query?f=json&geometry=470604.7328%2C5366046.9892%2C470751.3308%2C5366174.3575&geometryType=esriGeometryEnvelope&inSR=3157&outSR=3157&returnGeometry=true&returnZ=false&outFields=OBJECTID%2CFULLSTREETNAME%2CCLASS&spatialRel=esriSpatialRelIntersects&resultRecordCount=100",
+          "captured_at_utc": "2026-11-06T20:17:34.479252+00:00",
+          "review_status": "unreviewed_live_observation",
+          "licence_url": "https://www.saanich.ca/assets/Local~Government/Documents/SaanichDataCatalogueLicence.pdf",
+          "attribution": "Contains information licenced under the Open Government Licence – District of Saanich.",
+          "source_date_limit": "Feature update date and positional accuracy were not established.",
+          "sha256": "9e6b2680f1aeb995660ab69b974ac1a0c4d7f64ab42c77b5e14b9f63b23345a1"
+        },
+        {
+          "provider": "District of Saanich Open Data",
+          "record_label": "Saanich Parcels municipal map response",
+          "source_url": "https://services7.arcgis.com/g5PyWjvBbQnqjM1q/arcgis/rest/services/Parcel/FeatureServer/0/query?f=json&geometry=470604.7328%2C5366046.9892%2C470751.3308%2C5366174.3575&geometryType=esriGeometryEnvelope&inSR=3157&outSR=3157&returnGeometry=true&returnZ=false&outFields=OBJECTID&spatialRel=esriSpatialRelIntersects&resultRecordCount=100",
+          "captured_at_utc": "2026-11-06T20:17:35.985284+00:00",
+          "review_status": "unreviewed_live_observation",
+          "licence_url": "https://www.saanich.ca/assets/Local~Government/Documents/SaanichDataCatalogueLicence.pdf",
+          "attribution": "Contains information licenced under the Open Government Licence – District of Saanich.",
+          "source_date_limit": "Feature update date and positional accuracy were not established.",
+          "sha256": "e448caf5e151b2dfbda677be3175bb7912366e028865d9af704093ebb1ab1660"
+        }
+      ]
+    }
+  },
+  "victoria": {
+    "schema_version": "parcel-streets.v1",
+    "parcel_ref": {
+      "source": "city-of-victoria-pid-parcels",
+      "object_id": 87
+    },
+    "status": "suggested",
+    "parcel_geometry": {
+      "type": "Polygon",
+      "coordinates": [
+        [
+          [
+            473704.5708999997,
+            5362207.274800001
+          ],
+          [
+            473697.6003999999,
+            5362165.7161
+          ],
+          [
+            473682.57519999985,
+            5362168.232999999
+          ],
+          [
+            473689.5469000004,
+            5362209.7984
+          ],
+          [
+            473704.5708999997,
+            5362207.274800001
+          ]
+        ]
+      ]
+    },
+    "suggestions": [
+      {
+        "segment": 1,
+        "name": "May St",
+        "road_class": "Collector B",
+        "feature_ids": [
+          1358
+        ]
+      },
+      {
+        "segment": 3,
+        "name": "Lane 229-2",
+        "road_class": "Lane",
+        "feature_ids": [
+          2492
+        ]
+      }
+    ],
+    "evidence": [
+      {
+        "provider": "City of Victoria Open Data",
+        "record_label": "Parcel MapServer response",
+        "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=json&objectIds=87&outSR=3157&outFields=OBJECTID%2CPID&returnGeometry=true&returnZ=false",
+        "captured_at_utc": "2026-11-06T20:27:23.654282+00:00",
+        "review_status": "unreviewed_live_observation",
+        "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+        "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+        "source_date_limit": "Feature update date and positional accuracy not supplied; rooflines derive from aerial imagery, not surveyed walls.",
+        "sha256": "17cbe0efda6ebfb18e89b6c7527b61a2b30be15f2f581c8a5310ca7549f74837"
+      },
+      {
+        "provider": "City of Victoria Open Data",
+        "record_label": "Victoria Streets municipal map response",
+        "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Transportation/MapServer/25/query?f=json&geometry=473660.57519999985%2C5362143.7161%2C473726.5708999997%2C5362231.7984&geometryType=esriGeometryEnvelope&inSR=3157&outSR=3157&returnGeometry=true&returnZ=false&outFields=OBJECTID%2CStreetName%2CClass&spatialRel=esriSpatialRelIntersects&resultRecordCount=100",
+        "captured_at_utc": "2026-11-06T20:27:24.721317+00:00",
+        "review_status": "unreviewed_live_observation",
+        "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+        "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+        "source_date_limit": "Feature update date and positional accuracy were not established.",
+        "sha256": "ab484c13fdac22461a322d6acae18c1a1aee711fc860017230ca44e54860aaeb"
+      },
+      {
+        "provider": "City of Victoria Open Data",
+        "record_label": "Victoria Blocks municipal map response",
+        "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/9/query?f=json&geometry=473660.57519999985%2C5362143.7161%2C473726.5708999997%2C5362231.7984&geometryType=esriGeometryEnvelope&inSR=3157&outSR=3157&returnGeometry=true&returnZ=false&outFields=OBJECTID&spatialRel=esriSpatialRelIntersects&resultRecordCount=100",
+        "captured_at_utc": "2026-11-06T20:27:25.471090+00:00",
+        "review_status": "unreviewed_live_observation",
+        "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+        "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+        "source_date_limit": "Feature update date and positional accuracy were not established.",
+        "sha256": "96108758cf37c171b4886f258c93e5366b1ff4cbd31b993d99df833ad02bf59c"
+      },
+      {
+        "provider": "City of Victoria Open Data",
+        "record_label": "Victoria Road Areas municipal map response",
+        "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Transportation/MapServer/2/query?f=json&geometry=%7B%22points%22%3A%5B%5B473693.6789%2C5362165.3591%5D%2C%5B473689.9226%2C5362165.9883%5D%2C%5B473686.1663%2C5362166.6175%5D%2C%5B473693.4686%2C5362210.1537%5D%2C%5B473697.2246%2C5362209.5228%5D%2C%5B473700.9806%2C5362208.8919%5D%5D%7D&inSR=3157&geometryType=esriGeometryMultipoint&spatialRel=esriSpatialRelWithin&outFields=OBJECTID&returnGeometry=false",
+        "captured_at_utc": "2026-11-06T20:27:25.973178+00:00",
+        "review_status": "unreviewed_live_observation",
+        "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+        "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+        "source_date_limit": "Feature update date and positional accuracy were not established.",
+        "sha256": "9f0a1eb60d4d44823028cffdb95f179d34eab499ddb9c5d9f31381877da1f7e5"
+      }
+    ]
+  }
+}

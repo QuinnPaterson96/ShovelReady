@@ -192,7 +192,7 @@ try {
   // Edge can open its own download hub for an explicitly requested PDF download.
   // Allow that exact internal UI only during export, with no document/network requests.
   assert.ok(popups.every(popup => popup.duringExport && ['', 'about:blank', 'edge://downloads-hub/'].includes(popup.url) && popup.requests.length === 0), JSON.stringify(popups))
-  const readOnlyPosts = ['/api/scouting-geometry/assess', '/api/conditional-screening/v1/evaluate', '/api/conditional-screening/v1/placement-scenarios', '/api/victoria-zoning/lookup', '/api/victoria-zoning/property-scan', '/api/placement-suggestions/v1/suggest']
+  const readOnlyPosts = ['/api/municipal-sites/street-edges', '/api/scouting-geometry/assess', '/api/conditional-screening/v1/evaluate', '/api/conditional-screening/v1/placement-scenarios', '/api/victoria-zoning/lookup', '/api/victoria-zoning/property-scan', '/api/placement-suggestions/v1/suggest']
   assert.ok(requests.every(r => r.method === 'GET' || r.method === 'POST' && readOnlyPosts.includes(r.path)))
   await page.goto(frontend + '/#home'); await page.reload(); await click('Watch the demo')
   await page.getByRole('button', { name: 'Home', exact: true }).click()

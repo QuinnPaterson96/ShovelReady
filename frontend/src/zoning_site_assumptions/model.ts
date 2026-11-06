@@ -5,8 +5,27 @@ export type BoundaryMapMode = 'place' | 'front' | 'rear' | 'waterfront'
 export type UserFact<T> = { value: T | null; origin: 'user' | 'journey_default'; note: string | null; evidence_state?: 'assumed' | 'user_confirmed' | 'unknown' }
 export type BoundaryEdge = { id: string; ring: number; segment: number; start: [number, number]; end: [number, number]; role: UserFact<EdgeRole> }
 export type UserMeasurement = { value: number; unit: 'm' | 'm2'; basis: 'proposed_wall_to_lot_line' | 'principal_wall_to_proposed_wall' | 'regulatory_floor_area' | 'rough_floor_area_estimate'; origin: 'user'; note: string | null; placement_revision: string }
-export type StreetAdjacency = { edge_ids: string[]; all_marked: boolean; completion_method?: 'marking' | 'explicit_confirmation' | 'advance'; origin: 'user' }
-export type BoundaryRoleSuggestions = { roles: Record<string, EdgeRole>; conflicts: string[]; basis: 'user_marks' }
+export type StreetAdjacency = { edge_ids: string[]; all_marked: boolean; completion_method?: 'marking' | 'explicit_confirmation' | 'advance' | 'map_prefill'
+  origin: 'user' | 'municipal_map' | 'edited_map'
+  mapped_names?: Record<string, string>
+  map_source?: { provider: string; record_label: string; captured_at_utc: string; source_url: string } }
+export type BoundaryRoleSuggestions = { roles: Record<string, EdgeRole>; conflicts: string[]; basis: 'user_marks' | 'map_and_marks' }
+export function streetRuns(edges: BoundaryEdge[], names: Record<string, string>) {
+  const exterior = edges.filter(edge => edge.ring === 0)
+  const runs: { name: string; ids: string[] }[] = []
+  let previous: string | undefined
+  for (const edge of exterior) {
+    const name = names[edge.id]
+    if (name && name === previous) runs[runs.length - 1].ids.push(edge.id)
+    else if (name) runs.push({ name, ids: [edge.id] })
+    previous = name
+  }
+  if (runs.length > 1 && previous && previous === names[exterior[0].id]) {
+    runs[0].ids.unshift(...runs.pop()!.ids)
+  }
+  return runs.filter(run => run.ids.length > 1)
+}
+
 export type SiteAssumptions = {
   planning_buffers_m?: Record<string, number>
   waterfront_edge_ids?: string[]
@@ -132,7 +151,7 @@ export function suggestedBoundaryRoles(edges: BoundaryEdge[], frontId: string | 
 /** Display proposals may assume the currently marked streets are the only streets.
  * They preserve explicit roles; street completeness and evaluation applicability stay separate. */
 export function inferBoundaryRoles(edges: BoundaryEdge[], streets?: StreetAdjacency): BoundaryRoleSuggestions {
-  const result: BoundaryRoleSuggestions = { roles: {}, conflicts: [], basis: 'user_marks' }
+  const result: BoundaryRoleSuggestions = { roles: {}, conflicts: [], basis: streets && streets.origin !== 'user' ? 'map_and_marks' : 'user_marks' }
   if (!ordinaryFourEdgeBoundary(edges)) return result
   const ordered = [...edges].sort((a, b) => a.segment - b.segment)
   const fronts = ordered.filter(edge => edge.role.value === 'front'), rears = ordered.filter(edge => edge.role.value === 'rear')

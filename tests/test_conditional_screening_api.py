@@ -243,13 +243,22 @@ def test_evidence_states_cannot_forge_confirmation_or_favourable_legal_defaults(
     assert post(body).status_code == 422
 
 
-@pytest.mark.parametrize("complete,method", [(False, None), (True, None), (True, "marking")])
+@pytest.mark.parametrize("complete,method", [(False, None), (True, None), (True, "marking"),
+                                              (True, "map_prefill")])
 def test_street_observations_survive_http_without_becoming_boundary_roles(complete, method):
     body = payload()
     for item in body["assumptions"]["edges"]:
         item["role"] = user("unknown")
     marks = {"edge_ids": [edge(0, "unknown")["id"], edge(1, "unknown")["id"]],
              "all_marked": complete, "origin": "user", "completion_method": method}
+    if method == "map_prefill":
+        marks.update(
+            origin="municipal_map",
+            mapped_names=dict.fromkeys(marks["edge_ids"], "May St"),
+            map_source={"provider": "City of Victoria Open Data", "record_label": "Streets",
+                        "captured_at_utc": "2026-11-06T12:00:00Z",
+                        "source_url": "https://maps.victoria.ca/"},
+        )
     body["assumptions"]["street_adjacency"] = marks
     response = post(body)
     assert response.status_code == 200, response.text
