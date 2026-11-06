@@ -1,0 +1,146 @@
+{
+  "completed": true,
+  "mode": "combined journey",
+  "capturedAt": "2026-11-05T03:36:31.032Z",
+  "buildCommit": "5dfe188",
+  "application": "local frontend + stateless API; not deployed",
+  "browser": "Chrome 156.0.8078.80",
+  "agentInspection": true,
+  "observations": [
+    {
+      "phase": "home",
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "devicePixelRatio": 1,
+      "scrollWidth": 390,
+      "clientWidth": 390,
+      "touchPoints": 1,
+      "overflowing": []
+    },
+    {
+      "phase": "authored-question",
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "devicePixelRatio": 1,
+      "scrollWidth": 390,
+      "clientWidth": 390,
+      "touchPoints": 1,
+      "overflowing": []
+    },
+    {
+      "phase": "whole-project-model300",
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "devicePixelRatio": 1,
+      "scrollWidth": 390,
+      "clientWidth": 390,
+      "touchPoints": 1,
+      "overflowing": []
+    },
+    {
+      "phase": "missing-price-model240",
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "devicePixelRatio": 1,
+      "scrollWidth": 390,
+      "clientWidth": 390,
+      "touchPoints": 1,
+      "overflowing": []
+    },
+    {
+      "phase": "unknown-currency-studio",
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "devicePixelRatio": 1,
+      "scrollWidth": 390,
+      "clientWidth": 390,
+      "touchPoints": 1,
+      "overflowing": []
+    },
+    {
+      "phase": "comparison-open",
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "devicePixelRatio": 1,
+      "scrollWidth": 390,
+      "clientWidth": 390,
+      "touchPoints": 1,
+      "overflowing": []
+    },
+    {
+      "phase": "returned-model300-budget",
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "devicePixelRatio": 1,
+      "scrollWidth": 390,
+      "clientWidth": 390,
+      "touchPoints": 1,
+      "overflowing": []
+    },
+    {
+      "phase": "keyboard-after-price-help",
+      "activeTag": "SUMMARY",
+      "touchTarget": {
+        "x": 34.59375,
+        "y": 3091.234375,
+        "width": 155.828125,
+        "height": 44
+      }
+    },
+    {
+      "phase": "desktop-comparison",
+      "innerWidth": 1440,
+      "innerHeight": 1000,
+      "scrollWidth": 1440,
+      "clientWidth": 1440
+    },
+    {
+      "phase": "copy-recovery",
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "devicePixelRatio": 1,
+      "scrollWidth": 390,
+      "clientWidth": 390,
+      "touchPoints": 1,
+      "overflowing": []
+    },
+    {
+      "phase": "export",
+      "filename": "prefab-enquiry.pdf",
+      "bytes": 652187,
+      "contentSignature": "%PDF"
+    },
+    {
+      "phase": "export-complete",
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "devicePixelRatio": 1,
+      "scrollWidth": 390,
+      "clientWidth": 390,
+      "touchPoints": 1,
+      "overflowing": []
+    },
+    {
+      "phase": "navigation-return",
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "devicePixelRatio": 1,
+      "scrollWidth": 390,
+      "clientWidth": 390,
+      "touchPoints": 1,
+      "overflowing": []
+    },
+    {
+      "phase": "refresh-recovery",
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "devicePixelRatio": 1,
+      "scrollWidth": 390,
+      "clientWidth": 390,
+      "touchPoints": 1,
+      "overflowing": []
+    }
+  ],
+  "errors": [],
+  "externalRequests": []
+}

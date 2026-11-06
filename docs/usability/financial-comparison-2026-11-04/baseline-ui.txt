@@ -1,0 +1,202 @@
+ShovelReady
+Home
+Start assessment
+Research
+▾
+
+PREFAB MODEL JOURNEY
+
+01
+Model
+✓Complete
+02
+Property
+✓Complete
+03
+Placement
+✓Complete
+04
+Street edges
+To do
+05
+Boundaries
+To do
+06
+Property details
+To do
+07
+Intended purpose
+To do
+08
+Quick checks
+To do
+09
+Budget (optional)
+Optional
+10
+Prepare enquiry
+To do
+11
+Contact provider
+To do
+Ticks show workflow progress, not passing checks. You submit the provider form or send the email yourself.
+Replay walkthrough
+Choose a model
+aux box · Model 300
+aux box · Model 240
+West Coast Container Homes · C.H. Studio Pod
+Hewing Haus · Quadra 4
+
+EXAMPLE ASSESSMENT · AUX BOX
+
+Explore Model 300 on your site
+
+Explore a placement, review potential concerns, and prepare a question for the provider.
+
+Preliminary exploration · nothing is sent automatically.
+
+Model 300 · 10 ft × 30 ft · advertised height 10 ft 6 in. Provider dimensions are unreviewed.
+
+About Model 300 · photos, price and specifications
+
+PROPERTY
+
+Could this fit on your property?
+
+Saved Victoria example selected.
+
+Review or change property
+Property: 419 Cecelia Road · saved example, not your property
+Approximate and unreviewed
+Wrong property? Change
+
+PLACEMENT
+
+Explore one approximate placement
+
+Place the unit and see what is worth exploring.
+
+Collapse placement
+
+Model 300 · 3.05 m wide × 9.14 m long
+Nominal exterior rectangle · saved Victoria example · City of Victoria Open Data, Parcel MapServer response · captured 2026-10-07 · unreviewed · Parcel source
+
+Move unit
+Mark street edges
+Adjust boundaries
+Place the footprint
+
+Click the map to place its centre. Drag the copper rectangle to adjust it.
+
+Open full-size placement preview
+Map
+i
+R1
+Main building · assumed · R1
+R2
+Model 300 · proposed position
+5 m
+
+Teal · captured parcel
+Purple · rooflines, not walls
+Red dashed outline · current conflict
+Copper · proposed unit
+North ↑
+
+Rotation (degrees)
+Align to lot
+More placement controls
+
+Position saved. Next, mark the street edges you know, or choose Not sure.
+
+Next: Mark street edges
+→
+i
+
+Your preliminary checks will appear after property details and intended purpose.
+
+Conflict at this position
+
+The unit overlaps or touches a mapped roofline. Move the unit on the map and recheck. This finding applies to this position only.
+
+Preliminary property scan
+
+City map flags and linked application history. Issued permit conditions, title covenants, projections and service capacity still need review.
+
+Property scan unavailable (503). Unsearched records remain unknown.
+
+Refresh property scan
+
+Yes: City records found. No: none found in the searched City sources. Maybe: unknown or not checked.
+
+Heritage properties
+Maybe · Not established
+No source finding established
+Hover or tap for details
+Heritage conservation areas
+Maybe · Not established
+No source finding established
+Hover or tap for details
+Development permit areas
+Maybe · Not established
+No source finding established
+Hover or tap for details
+Mapped special restrictions
+Maybe · Not established
+No source finding established
+Hover or tap for details
+Mapped development applications
+Maybe · Not established
+No source finding established
+Hover or tap for details
+Development application history
+Maybe · Not established
+No source finding established
+Hover or tap for details
+Permit conditions
+Maybe · Not checked
+Property-specific records needed
+Hover or tap for details
+Title restrictions
+Maybe · Not checked
+Property-specific records needed
+Hover or tap for details
+Projections
+Maybe · Not checked
+Property-specific records needed
+Hover or tap for details
+Service capacity
+Maybe · Not checked
+Property-specific records needed
+Hover or tap for details
+
+Development Tracker · Property Information Portal · Permit records · LTSA title records
+
+Project details
+Using these settings
+
+Use: unknown (Unknown). Foundation: permanent-foundation scenario (Journey default · editable).
+
+Zoning: unknown (Unknown). Bylaw: unknown (Unknown).
+
+Zoning lookup unavailable: City zoning lookup unavailable (503).. Zone and bylaw remain unresolved.
+
+Adjust settings
+Illustrate model height and foundation
+Explore budget (optional)
+Prepare enquiry
+
+TAKE AWAY · LOCAL DRAFT
+
+Prepare a useful question
+
+Review your enquiry, then copy it into the provider’s website form or use an email contact you already have. Nothing is sent automatically.
+
+Review enquiry
+
+CONTACT PROVIDER · UNSENT ENQUIRY
+
+Contact aux box
+Review provider contact
+Sources & technical evidence
+Technical build and API health · not assessment status

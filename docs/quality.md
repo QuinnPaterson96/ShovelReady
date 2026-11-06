@@ -21,6 +21,32 @@ verification gate before merge, and supersedes the historical registry choice be
 
 Status: initial working agreement, September 17, 2026. These are acceptance criteria for future work, not claims about current test coverage.
 
+## Same-property comparison verification — November 4, 2026
+
+The [comparison handoff](financial-comparison.md) and
+[measured browser record](usability/financial-comparison-2026-11-04/README.md)
+record the optional retained-model comparison, its typed host interface and
+same-site cost/suitability coverage. The preintegration frontend suite passed
+185/185; the state worker reports 188/188 combined checks. The extended comparison
+behaviour check and combined TypeScript/Vite build passed after the independent
+review's priority-question correction. At actual 390 × 844, the production-build
+browser journey verified model switching/return, authored question, placement,
+budget scope/price retention, missing price/unknown currency, keyboard/touch
+controls, copy fallback, real PDF download and navigation/refresh recovery. Page
+width remained 390 with no overflow or browser errors. A separate 1440 × 1000
+comparison capture was inspected. This is agent/software evidence, not human
+validation, accepted legal/source review or publication.
+
+The downloaded three-page PDF was rendered and inspected: page 2 loses the initial
+“S” in “Site information”, although copied text retains it. The export worker has
+the reproducible artifact; integration must retain this rendering gap or verify
+its repair. Hosted rollout, actual phone/assistive-technology coverage and final
+combined CI remain release/QA-owner follow-ups. Current matching quotes/site costs
+remain with providers/property contacts under #124/#125; source/site review and
+accepted publication remain separate real-evaluation gates. Homeowner usefulness
+and comprehension remain unmeasured under #16/#147. No enquiry was sent, and no
+merge or deployment was performed.
+
 ## Budget-journey review checkpoint — October 23, 2026
 
 The existing integration coverage now includes optional-budget navigation, the

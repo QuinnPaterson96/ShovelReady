@@ -1,0 +1,136 @@
+{
+  "error": "TimeoutError: page.waitForEvent: Timeout 30000ms exceeded while waiting for event \"download\"\n=========================== logs ===========================\nwaiting for event \"download\"\n============================================================",
+  "entryA": "/assets/index-BEYqk5px.js",
+  "entryB": "/replacement/assets/index-CrWE4WAn.js",
+  "errors": [],
+  "requests": [
+    {
+      "phase": "before replacement",
+      "path": "/"
+    },
+    {
+      "phase": "before replacement",
+      "path": "/assets/index-BEYqk5px.js"
+    },
+    {
+      "phase": "before replacement",
+      "path": "/assets/index-BSqjiPrV.css"
+    },
+    {
+      "phase": "before replacement",
+      "path": "/assets/parcel-mark-vdGNjqvd.svg"
+    },
+    {
+      "phase": "before replacement",
+      "path": "/assets/home-placement-XLaKroY6.svg"
+    },
+    {
+      "phase": "before replacement",
+      "path": "/api/identity"
+    },
+    {
+      "phase": "before replacement",
+      "path": "/health"
+    },
+    {
+      "phase": "before replacement",
+      "path": "/assets/parcel-mark-vdGNjqvd.svg"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/assets/step-info-DAkj1gFA.css"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/assets/site-discovery-DFqpmkmu.css"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/assets/parcel-mark-vdGNjqvd.svg"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/assets/site-assumptions-DhQ6oYBW.css"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/assets/conditional-screen-CVyf1pPC.css"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/assets/property-scan-Bc7YLvQz.css"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/assets/project-details-Cw3eoG9d.css"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/api/victoria-zoning/property-scan"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/api/victoria-zoning/lookup"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/api/scouting-geometry/assess"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/api/conditional-screening/v1/placement-scenarios"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/api/conditional-screening/v1/evaluate"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/assets/homeowner-summary-BwPeslQu.css"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/api/scouting-geometry/assess"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/api/conditional-screening/v1/placement-scenarios"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/api/conditional-screening/v1/evaluate"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/api/conditional-screening/v1/placement-scenarios"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/api/conditional-screening/v1/evaluate"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/assets/enquiry-save-options-LB8Rf86m.css"
+    },
+    {
+      "phase": "after replacement",
+      "path": "http://127.0.0.1:52881/af0eaa47-4950-404d-9605-1d6c05e39300"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/assets/jspdf.es.min-D3qNu3W9.js"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/assets/browser-BzBbrBKd.js"
+    },
+    {
+      "phase": "after replacement",
+      "path": "http://127.0.0.1:52881/d98e719e-2e4d-4bbe-ad2a-0b9d60bcc627"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/assets/jspdf.es.min-D3qNu3W9.js"
+    }
+  ]
+}

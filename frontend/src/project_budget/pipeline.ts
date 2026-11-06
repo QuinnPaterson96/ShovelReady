@@ -176,6 +176,25 @@ export function budgetQuestions(draft: BudgetDraft, result: BudgetResult, modelN
     questions.push({ answerer: 'Builder/provider', question: 'Who will confirm professional-work, permit-fee and tax scope, including any applicable waiver or credit?' })
   return questions.slice(0, 3)
 }
+/** Recipient relevance is narrower than homeowner recovery. A changed placement,
+ * source revision or expiry still needs discussion for this model; a different
+ * model, configuration or property belongs to another enquiry. */
+export function recipientCostExclusions(draft: BudgetDraft, context: Context) {
+  return draft.items.flatMap(item => {
+    const reasons = [item.context.model_id !== context.model_id ? 'Different model' : null,
+      item.context.configuration !== context.configuration ? 'Different configuration' : null,
+      item.context.property_key !== context.property_key ? 'Different property' : null].filter((value): value is string => !!value)
+    return reasons.length ? [{ item_id: item.id, label: item.label, provider: item.evidence.provider, reasons }] : []
+  })
+}
+export function recipientBudget(draft: BudgetDraft, context: Context, today = utcToday()): { draft: BudgetDraft; result: BudgetResult } {
+  const result = calculateBudget(draft, context, today)
+  const excluded = new Set(recipientCostExclusions(draft, context).map(item => item.item_id))
+  return { draft: { ...draft, items: draft.items.filter(item => !excluded.has(item.id)) },
+    // Keep the original calculation, including incomplete coverage and subtotals.
+    // Filtering prose must never make an overlapping or withheld amount usable.
+    result: { ...result, issues: result.issues.filter(issue => !excluded.has(issue.item_id)) } }
+}
 /** Recipient prose is deliberately separate from the full calculation report. */
 export function budgetEnquiryParagraph(draft: BudgetDraft, result: BudgetResult): string {
   const sources = draft.items.filter(item => result.counted_ids.includes(item.id))
@@ -187,12 +206,15 @@ export function budgetEnquiryParagraph(draft: BudgetDraft, result: BudgetResult)
     result.subtotals.length ? result.subtotals.map(money => `${result.complete ? 'Scenario range under supplied assumptions' : 'Priced-components subtotal'}: ${displayMoney(money)}.`).join(' ') : 'No usable priced components supplied.',
     origins.length ? `Based on ${origins.join(' and ')}.` : '',
     result.missing.length ? `Unpriced or unresolved: ${result.missing.map(c => categories[c]).join(', ')}.` : '',
-    result.issues.length ? 'Affected cost entries are withheld pending scope recheck.' : '',
+    result.issues.length ? draft.items.some(item => result.issues.some(issue => issue.item_id === item.id) && item.recheck_reason)
+      ? 'Costs for this model need rechecking against the current project assumptions and remain outside the subtotal.'
+      : 'Affected cost entries are withheld pending scope recheck.' : '',
     result.complete ? 'This is an assumption-based scenario, not a quote.' : 'Installed total unavailable; please help establish the missing scope.',
     draft.scope === 'building' ? 'Site and delivery work are outside this building-only scope.' : '',
   ].filter(Boolean).join(' ')
 }
 export function budgetEvidence(draft: BudgetDraft, context: Context, today = utcToday()) {
   return { draft: parseBudget(draft), current_context: context, calculated_at: today, calculation: calculateBudget(draft, context, today),
+    recipient_exclusions: recipientCostExclusions(draft, context),
     source_accuracy: 'unreviewed', accepted_publication: false, recency_policy: 'Catalogue captures older than 90 days are withheld pending explicit refresh. No background refresh.' }
 }

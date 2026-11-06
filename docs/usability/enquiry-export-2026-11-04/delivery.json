@@ -1,0 +1,230 @@
+{
+  "entryA": "/assets/index-B1I68H8F.js",
+  "entryB": "/replacement/assets/index-sU01N1fV.js",
+  "errors": [],
+  "requests": [
+    {
+      "phase": "before replacement",
+      "path": "/"
+    },
+    {
+      "phase": "before replacement",
+      "path": "/assets/index-B1I68H8F.js"
+    },
+    {
+      "phase": "before replacement",
+      "path": "/assets/index-CrWRyX5r.css"
+    },
+    {
+      "phase": "before replacement",
+      "path": "/assets/parcel-mark-vdGNjqvd.svg"
+    },
+    {
+      "phase": "before replacement",
+      "path": "/assets/home-placement-XLaKroY6.svg"
+    },
+    {
+      "phase": "before replacement",
+      "path": "/api/identity"
+    },
+    {
+      "phase": "before replacement",
+      "path": "/health"
+    },
+    {
+      "phase": "before replacement",
+      "path": "/assets/parcel-mark-vdGNjqvd.svg"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/assets/step-info-DAkj1gFA.css"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/assets/site-discovery-DFqpmkmu.css"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/assets/parcel-mark-vdGNjqvd.svg"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/assets/site-assumptions-DhQ6oYBW.css"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/assets/conditional-screen-CVyf1pPC.css"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/assets/property-scan-Bc7YLvQz.css"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/assets/project-details-Cw3eoG9d.css"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/api/victoria-zoning/property-scan"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/api/victoria-zoning/lookup"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/api/scouting-geometry/assess"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/api/conditional-screening/v1/placement-scenarios"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/api/conditional-screening/v1/evaluate"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/assets/homeowner-summary-BwPeslQu.css"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/api/scouting-geometry/assess"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/api/conditional-screening/v1/placement-scenarios"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/api/conditional-screening/v1/evaluate"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/api/conditional-screening/v1/placement-scenarios"
+    },
+    {
+      "phase": "after replacement",
+      "path": "/api/conditional-screening/v1/evaluate"
+    },
+    {
+      "phase": "after replacement",
+      "path": "http://127.0.0.1:61781/39688f1d-0955-47b7-804a-39e8d494904f"
+    }
+  ],
+  "painted": {
+    "open-session": [
+      "Model 300 feasibility enquiry - 419 Cecelia Rd, Victoria,",
+      "BC",
+      "SAVED EXAMPLE ONLY - not my property.",
+      "Please advise what information is needed for initial suitability advice.",
+      "Example answers",
+      "Demo-supplied answers: street context, intended use, relationship, requested response. These illustrate an",
+      "example enquiry; they are not facts about your property. Other answers retain their stated defaults or user",
+      "attribution.",
+      "Project",
+      "I’m exploring aux box Model 300 at 419 Cecelia Rd, Victoria, BC. I would use it for Garden suite.",
+      "Cost scope for discussion",
+      "Cost scope: Whole project. Priced-components subtotal: CAD 187,000 or more; upper amount unknown.",
+      "Based on aux box published starting price (captured 2026-10-06, unreviewed;",
+      "https://www.auxbox.ca/model-300). Unpriced or unresolved: Upgrades, Delivery and lift, Foundation and site",
+      "work, Service connections, Professional work, Fees, Tax, Contingency. Installed total unavailable; please",
+      "help establish the missing scope.",
+      "Builder/provider: For Model 300, which current configuration, currency and dated price apply, and what",
+      "upgrades, delivery/lift and tax are included or excluded?",
+      "Builder/provider: Which access/crane, foundation and utility facts would let you or a local contractor scope",
+      "installation, and who coordinates that work?",
+      "Builder/provider: Who will confirm professional-work, permit-fee and tax scope, including any applicable",
+      "waiver or credit?",
+      "Questions for aux box",
+      "For open-session, can you assess crane access from my photos?",
+      "1. Can you share current dimensioned plans with their date/version, overhangs, interior floor area, height",
+      "measurement reference and foundation requirements?",
+      "2. Do you service this locality?",
+      "3. What is the current lead time, when does it start, and what decisions, permits and site preparation must",
+      "be complete before booking or delivery?",
+      "Planning questions to resolve separately",
+      "Intended use supplied: Garden suite. The planning comparisons use a garden-suite scenario; City or",
+      "professional review must establish whether that scenario applies.",
+      "The property contact needs to confirm the main home, existing suites and waterfront context. City staff or a",
+      "qualified local professional needs to check the applicable rules, legal measurement basis and any permit or",
+      "title conditions. Please advise what product information you can provide to support that review.",
+      "Unsent preliminary enquiry | Page 1",
+      "Site information",
+      "The preliminary rectangle is 3.05 m × 9.14 m using published nominal dimensions. It excludes unconfirmed",
+      "overhangs and installation space.",
+      "Thank you.",
+      "Unsent preliminary enquiry | Page 2",
+      "Approximate mapped outlines and a nominal unit rectangle. This is a discussion sketch, not a survey or",
+      "approved site plan.",
+      "Parcel source: City of Victoria Open Data · Parcel MapServer response · captured 2026-10-07 ·",
+      "unreviewed. https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11",
+      "Building source: City of Victoria Open Data · Building MapServer response · captured 2026-10-07 ·",
+      "unreviewed. https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1",
+      "Candidate comparison source: City of Victoria · Zoning Bylaw 2018, No. 18-072 · Part 3.1(28)(f), PDF",
+      "pp27-28; Part 2.1 Setback and Side Lot Line, PDF p19 · captured 2026-10-06 · candidate.",
+      "https://www.victoria.ca/media/file/zoning-bylaw-2018",
+      "Candidate comparison source: City of Victoria · Zoning Bylaw 2018, No. 18-072 · Part 3.1(28)(g), PDF",
+      "pp27-28; Part 2.1 Flanking Street Lot Line and Setback, PDF pp15-16 and p19 · captured 2026-10-06 ·",
+      "candidate. https://www.victoria.ca/media/file/zoning-bylaw-2018",
+      "Unsent preliminary enquiry | Page 3"
+    ],
+    "fresh-session": [
+      "Model 300 feasibility enquiry - 419 Cecelia Rd, Victoria,",
+      "BC",
+      "SAVED EXAMPLE ONLY - not my property.",
+      "Please advise what information is needed for initial suitability advice.",
+      "Example answers",
+      "Demo-supplied answers: street context, intended use, relationship, requested response. These illustrate an",
+      "example enquiry; they are not facts about your property. Other answers retain their stated defaults or user",
+      "attribution.",
+      "Project",
+      "I’m exploring aux box Model 300 at 419 Cecelia Rd, Victoria, BC. I would use it for Garden suite.",
+      "Cost scope for discussion",
+      "Cost scope: Whole project. Priced-components subtotal: CAD 187,000 or more; upper amount unknown.",
+      "Based on aux box published starting price (captured 2026-10-06, unreviewed;",
+      "https://www.auxbox.ca/model-300). Unpriced or unresolved: Upgrades, Delivery and lift, Foundation and site",
+      "work, Service connections, Professional work, Fees, Tax, Contingency. Installed total unavailable; please",
+      "help establish the missing scope.",
+      "Builder/provider: For Model 300, which current configuration, currency and dated price apply, and what",
+      "upgrades, delivery/lift and tax are included or excluded?",
+      "Builder/provider: Which access/crane, foundation and utility facts would let you or a local contractor scope",
+      "installation, and who coordinates that work?",
+      "Builder/provider: Who will confirm professional-work, permit-fee and tax scope, including any applicable",
+      "waiver or credit?",
+      "Questions for aux box",
+      "For fresh-session, can you assess crane access from my photos?",
+      "1. Can you share current dimensioned plans with their date/version, overhangs, interior floor area, height",
+      "measurement reference and foundation requirements?",
+      "2. Do you service this locality?",
+      "3. What is the current lead time, when does it start, and what decisions, permits and site preparation must",
+      "be complete before booking or delivery?",
+      "Planning questions to resolve separately",
+      "Intended use supplied: Garden suite. The planning comparisons use a garden-suite scenario; City or",
+      "professional review must establish whether that scenario applies.",
+      "The property contact needs to confirm the main home, existing suites and waterfront context. City staff or a",
+      "qualified local professional needs to check the applicable rules, legal measurement basis and any permit or",
+      "title conditions. Please advise what product information you can provide to support that review.",
+      "Unsent preliminary enquiry | Page 1",
+      "Site information",
+      "The preliminary rectangle is 3.05 m × 9.14 m using published nominal dimensions. It excludes unconfirmed",
+      "overhangs and installation space.",
+      "Thank you.",
+      "Unsent preliminary enquiry | Page 2",
+      "Approximate mapped outlines and a nominal unit rectangle. This is a discussion sketch, not a survey or",
+      "approved site plan.",
+      "Parcel source: City of Victoria Open Data · Parcel MapServer response · captured 2026-10-07 ·",
+      "unreviewed. https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11",
+      "Building source: City of Victoria Open Data · Building MapServer response · captured 2026-10-07 ·",
+      "unreviewed. https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1",
+      "Candidate comparison source: City of Victoria · Zoning Bylaw 2018, No. 18-072 · Part 3.1(28)(f), PDF",
+      "pp27-28; Part 2.1 Setback and Side Lot Line, PDF p19 · captured 2026-10-06 · candidate.",
+      "https://www.victoria.ca/media/file/zoning-bylaw-2018",
+      "Candidate comparison source: City of Victoria · Zoning Bylaw 2018, No. 18-072 · Part 3.1(28)(g), PDF",
+      "pp27-28; Part 2.1 Flanking Street Lot Line and Setback, PDF pp15-16 and p19 · captured 2026-10-06 ·",
+      "candidate. https://www.victoria.ca/media/file/zoning-bylaw-2018",
+      "Unsent preliminary enquiry | Page 3"
+    ]
+  },
+  "boundary": "Controlled local release replacement, not a hosted deployment"
+}
