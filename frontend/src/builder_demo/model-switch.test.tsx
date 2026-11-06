@@ -49,6 +49,12 @@ test('switching models recovers independent questions, placements and costs with
   try {
     await act(async () => root.render(createElement<{ presetRequest?: number }>(BuilderDemo, { presetRequest: 1 })))
     await settle()
+    await edit('builder-use', 'a rental suite')
+    const interests = () => document.querySelector('[aria-label="Financial interests"]')!
+    assert.match(interests().textContent!, /Financial interests: Potential rental income/, 'an explicit rental answer is reflected without repeating the question')
+    await click('Edit financial interests')
+    await click('Skip for now')
+    assert.match(interests().textContent!, /skipped for now/, 'an explicit skip takes precedence over a previous rental answer')
     await edit('builder-use', 'Unknown'); await edit('builder-relationship', 'I own the property'); await edit('builder-nextStep', 'Please advise the next step.')
     const parcel = evidence().measurement.site.site.parcel.id
     for (const [id, answer] of [['building-type', 'Yes'], ['existing-suites', 'None'], ['waterfront-lot', 'No']]) {
@@ -168,6 +174,7 @@ test('switching models recovers independent questions, placements and costs with
     await settle()
     assert.equal(evidence().model_catalogue.model.model_id, 'hewing-quadra4')
     assert.ok(evidence().live?.parcel, 'live source fixture selected')
+    assert.ok(interests().querySelector('input[type="checkbox"]'), 'a new property starts its own optional financial question')
     assert.equal(evidence().live.parcel.id, '87:0', 'a different May Street source parcel was selected')
     assert.notEqual(evidence().live.parcel.id, parcel, 'May Street is a genuinely different parcel from the Cecelia example')
     assert.equal(evidence().measurement, null, 'different property has no transferred placement')
@@ -183,14 +190,14 @@ test('switching models recovers independent questions, placements and costs with
     assert.equal(evidence().project_settings.proposal.foundation_attached, null)
     assert.equal(evidence().project_settings.evidence.proposed_use.origin, 'user')
     assert.equal(evidence().project_settings.evidence.foundation_attached.origin, 'unknown')
-    await click('Place or reset at parcel centre')
+    await click('Place at parcel centre')
     await edit('occupied-angle', '13')
     await edit('occupied-parcel-minimum', '0.75')
     await settle()
     const livePlacement = evidence().measurement.result.input.placement
     await switchTo('aux-240'); await settle()
     assert.equal(evidence().measurement, null, 'new model on May Street has no old Cecelia placement')
-    await click('Place or reset at parcel centre')
+    await click('Place at parcel centre')
     await edit('occupied-angle', '32')
     await settle()
     await switchTo('hewing-quadra4')

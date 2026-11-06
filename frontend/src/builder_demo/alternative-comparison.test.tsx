@@ -5,7 +5,7 @@ import { test } from 'node:test'
 import { JSDOM } from 'jsdom'
 import { act, createElement } from 'react'
 import { createRoot } from 'react-dom/client'
-import { AlternativeComparison, type ComparisonAlternative } from './AlternativeComparison'
+import { AlternativeComparison, type ComparisonAlternative, type FinancialGoal } from './AlternativeComparison'
 import { journeyCatalogue, modelSnapshot } from '../model_catalogue/demo'
 import { catalogueSuggestions, emptyBudget, manualItem, replaceItem } from '../project_budget/pipeline'
 
@@ -39,13 +39,32 @@ test('same-property comparison preserves qualified findings, cost evidence and m
   currency.budget.draft = replaceItem(currency.budget.draft, catalogueSuggestions(currency.model, modelSnapshot(currency.model), currency.budget.context, '2026-11-04')[0])
   const other = { ...alternative('hewing-quadra4'), propertyKey: 'other-property', propertyLabel: 'Must not compare' }
   let selected = ''
-  const render = async (alternatives: ComparisonAlternative[], activeModelId = 'aux-300') => act(async () => root.render(createElement(AlternativeComparison, { alternatives, activeModelId, onSelectModel: id => { selected = id } })))
+  let goals: FinancialGoal[] | null = null
+  let quoteModel = ''
+  const render = async (alternatives: ComparisonAlternative[], activeModelId = 'aux-300') => act(async () => root.render(createElement(AlternativeComparison, { alternatives, activeModelId,
+    onSelectModel: id => { selected = id }, financialGoals: goals, onFinancialGoalsChange: next => { goals = next }, onPrepareQuote: id => { quoteModel = id } })))
   try {
     await render([first, missing, currency, other])
     const document = dom.window.document
     const panel = document.querySelector<HTMLDetailsElement>('#builder-alternative-comparison')!
     assert.equal(panel.open, false, 'comparison is optional and closed initially')
+    const interests = document.querySelector<HTMLElement>('[aria-label="Financial interests"]')!
+    assert.equal(interests.closest('details'), null, 'everyone can discover the optional question with the comparison closed')
+    assert.match(interests.textContent!, /What would you like to understand about the finances/)
+    const button = (label: string) => [...document.querySelectorAll<HTMLButtonElement>('button')].find(item => item.textContent === label)!
+    await act(async () => { interests.querySelectorAll<HTMLInputElement>('input')[0].click(); interests.querySelectorAll<HTMLInputElement>('input')[1].click() })
+    await act(async () => button('Save interests').click())
+    assert.deepEqual(goals, ['cost', 'rental'], 'financial interests can coexist without changing planning use')
+    await render([first, missing, currency, other])
+    assert.equal(interests.querySelector('fieldset'), null, 'saved interests do not repeat the question')
+    assert.match(interests.textContent!, /Project cost and Potential rental income/)
     panel.open = true
+    const lead = document.querySelector<HTMLElement>('[aria-label="Current model financial next step"]')!
+    assert.match(lead.textContent!, /CAD 210,000.*building quote/s)
+    assert.match(lead.textContent!, /Installed cost incomplete.*Still needed.*Prepare quote request for/s)
+    assert.match(lead.textContent!, /local rent evidence.*occupancy.*recurring owner-paid/s)
+    await act(async () => button(`Prepare quote request for ${first.model.name}`).click())
+    assert.equal(quoteModel, first.model.model_id, 'quote action is optional and targets the active model')
     const lane = (name: string) => document.querySelector<HTMLElement>(`article[aria-label="${name} comparison"]`)!
     assert.equal(document.querySelectorAll('article').length, 3, 'other properties are excluded defensively')
     assert.match(lane(first.model.name).textContent!, /Roof overlap.*Preliminary concern.*overlaps/s)
@@ -65,11 +84,48 @@ test('same-property comparison preserves qualified findings, cost evidence and m
     assert.match(panel.textContent!, /Homeowner with local rental evidence.*occupancy/s)
     assert.match(panel.textContent!, /property manager.*recurring owner-paid/s)
     assert.match(panel.textContent!, /lender.*if financing matters/s)
+    const overview = document.querySelector<HTMLElement>('[aria-label="Explored model overview"]')!
+    assert.ok(overview.compareDocumentPosition(lane(first.model.name)) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING, 'overview precedes every full model record')
+    const row = (name: string) => [...overview.querySelectorAll('tbody tr')].find(item => item.querySelector('th strong')?.textContent === name)!
+    assert.match(row(missing.model.name).textContent!, /Model price unknown/)
+    assert.match(row(currency.model.name).textContent!, /Currency unknown 96,860.*currency needs confirmation/s)
+    assert.match(row(first.model.name).textContent!, /Roof overlap.*Preliminary concern|Preliminary concern.*Roof overlap/s)
     await act(async () => [...lane(missing.model.name).querySelectorAll<HTMLButtonElement>('button')].find(button => button.textContent === `Open ${missing.model.name}`)!.click())
     assert.equal(selected, missing.model.model_id, 'comparison opens the retained alternative through the host')
     await render([{ ...first, placement: 'needs_recheck' }, missing], missing.model.model_id)
+    assert.equal(interests.querySelector('fieldset'), null, 'model switching retains project interests without asking again')
+    assert.match(lead.textContent!, /Model price unknown/)
+    await act(async () => button(`Prepare quote request for ${missing.model.name}`).click())
+    assert.equal(quoteModel, missing.model.model_id, 'quote handoff follows the newly active model')
     assert.match(lane(first.model.name).textContent!, /Recheck this scenario/)
     assert.doesNotMatch(lane(first.model.name).textContent!, /Worth exploring with the provider/, 'stale findings cannot stay affirmative')
+    assert.match(row(first.model.name).textContent!, /Recheck this scenario/)
+    assert.doesNotMatch(row(first.model.name).textContent!, /Worth exploring with the provider/)
+    await act(async () => button('Edit financial interests').click())
+    await act(async () => button('Skip for now').click())
+    assert.deepEqual(goals, [], 'skip is an explicit project answer, distinct from unanswered')
+    await render([missing], missing.model.model_id)
+    assert.match(interests.textContent!, /skipped for now/)
+    assert.equal(overview.querySelectorAll('tbody tr').length, 1, 'overview works before a second model is explored')
+    assert.ok(button(`Prepare quote request for ${missing.model.name}`), 'skip preserves enquiry access')
+    assert.doesNotMatch(lead.textContent!, /For rental income/)
+    goals = ['rental']
+    const quadra = alternative('hewing-quadra4')
+    currency.summary = { conclusion: 'Footprint explored', next: 'Ask the provider about residential use.', checks: [
+      { label: 'Permanent dwelling suitability', status: 'unknown', detail: 'Permanent residential suitability has not been established.' },
+    ] }
+    await render([first, missing, currency, quadra])
+    assert.equal(interests.querySelector('fieldset'), null, 'an explicitly supplied rental interest is reflected without repeating the question')
+    assert.match(interests.textContent!, /Potential rental income/)
+    assert.equal(overview.querySelectorAll('tbody tr').length, 4)
+    assert.match(row(quadra.model.name).textContent!, /Starting at CAD/)
+    assert.match(row(currency.model.name).textContent!, /Permanent dwelling suitability.*Missing information/s)
+    const evidenceLink = row(currency.model.name).querySelector<HTMLAnchorElement>('a')!
+    assert.ok(document.querySelector(evidenceLink.hash), 'each compact row links to its own full evidence')
+    first.budget.draft.items[0].recheck_reason = 'Configuration changed'
+    await render([first, missing, currency, quadra])
+    assert.doesNotMatch(lead.textContent!, /building quote/, 'a stale quote is withheld from the financial lead')
+    assert.match(lead.textContent!, /Starting at CAD 187,000/, 'attributed captured price remains distinct from a matching quote')
     await render([], 'missing')
     assert.match(panel.textContent!, /Select a property/)
   } finally {

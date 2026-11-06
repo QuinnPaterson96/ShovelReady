@@ -221,7 +221,7 @@ export default function OccupiedLots({ catalogue = bundledCatalogue, initialDraf
     const controller = new AbortController()
     let active = true
     version.current++
-    setStartingSuggestion(null); setLoading(true); setError(''); setCases([]); setCaseId(''); setResult(null); onMeasurement?.(null)
+    setStartingSuggestion(initialDraft?.startingSuggestion ?? null); setLoading(true); setError(''); setCases([]); setCaseId(''); setResult(null); onMeasurement?.(null)
     if (suppliedCase) {
       setCases([suppliedCase]); setCaseId(suppliedCase.case_id); setLoading(false)
       setPlacement(current => initialDraft?.position ?? { ...current, x: '', y: '', angle: startingAngle(suppliedCase) })

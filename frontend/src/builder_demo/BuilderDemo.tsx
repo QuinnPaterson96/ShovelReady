@@ -54,12 +54,15 @@ import { EnquiryPreview, withPlacementSketch, emailDraftUrl, enquiryEmailBody, e
 import { preparationChecklist } from './manufacturer'
 import { EnquirySaveOptions } from './EnquirySaveOptions'
 import type { AlternativeDraft, RetainedPlacementDraft } from './retainedAlternatives'
-import { AlternativeComparison, type ComparisonAlternative } from './AlternativeComparison'
+import { AlternativeComparison, type ComparisonAlternative, type FinancialGoal } from './AlternativeComparison'
 import { BudgetSection } from '../project_budget/BudgetSection'
 import type { BudgetDraft, Context as BudgetContext } from '../project_budget/contract'
 import { budgetEvidence, budgetSummary, calculateBudget, catalogueSuggestions, emptyBudget, reconcile, replaceItem } from '../project_budget/pipeline'
 import { victoriaBuildingPermitReference } from '../project_budget/victoriaFee'
 import { placementDrawing, renderDrawing, renderEnquiryPdf, downloadFile, attachedEmail, enquiryPackageFiles, type DrawingAssets } from './placementExport'
+
+// Only explicit rental answers suggest this interest. A planning pathway alone supplies no financial intent.
+const rentalInterest: FinancialGoal[] = ['rental']
 
 const modelValues = (model: CatalogueModel) => {
   const measurement = (name: string) => modelMeasure(model, name)
@@ -246,6 +249,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const [scoutingHeight, setScoutingHeight] = useState<{ key: string; value: number | null } | null>(null)
   const [revision, setRevision] = useState(0)
   const [use, setUse] = useState('')
+  const [financialGoals, setFinancialGoals] = useState<FinancialGoal[] | null>(null)
   const [timing, setTiming] = useState('')
   const [budget, setBudget] = useState('')
   const [budgetDraft, setBudgetDraft] = useState<BudgetDraft>(emptyBudget)
@@ -272,6 +276,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const [alternatives, setAlternatives] = useState<Record<string, { draft: AlternativeDraft; comparison: ComparisonAlternative; sharedKey: string }>>({})
   function placementEdited(next: RetainedPlacementDraft) { setPlacementDraft(previous => JSON.stringify(previous) === JSON.stringify(next) ? previous : next) }
   function resetPropertyAlternatives() {
+    setFinancialGoals(null)
     questions.current[modelId] = question
     setAlternatives({}); setPlacementSeed(null); setPlacementDraft(null)
     setBudget(''); setBudgetDraft(emptyBudget()); setProjectContext(previous => ({ ...previous, configuration: '' }))
@@ -279,7 +284,13 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     setEstimateBuffers({ area: 10, height: 10 }); setScoutingHeight(null)
   }
   function clearDemoAnswer(key: 'intendedUse' | 'relationship' | 'nextStep' | 'streetContext') { setDemoAnswers(previous => { const next = { ...previous }; delete next[key]; return next }) }
-  function changeIntendedUse(value: string, demo = false) { if (!demo) clearDemoAnswer('intendedUse'); if (value !== use) setReviewedPurposeFor(null); setUse(value); setProjectSettings(previous => applyIntendedUse(previous, value)); setReadyFor(null) }
+  function changeIntendedUse(value: string, demo = false) {
+    if (!demo) clearDemoAnswer('intendedUse')
+    if (value !== use) setReviewedPurposeFor(null)
+    setUse(value)
+    setProjectSettings(previous => applyIntendedUse(previous, value))
+    setReadyFor(null)
+  }
   function siteEdited() { resetPropertyAlternatives(); setDemoBudgetSetup(false); const retainedUse = demoAnswers?.intendedUse === use ? '' : use; setUse(retainedUse); setGeometryFailure(false); setDemoAnswers({}); setStreetDecisionFor(null); setStreetSkipTarget(null); setChecksRevealed(false); setBufferSuggestion(undefined); setMoveSuggestion(undefined); setAcknowledgedConflicts([]); setSelection(null); setImported(false); setMeasurementResult(null); setSiteAssumptions(null); setProjectSettings(applyIntendedUse(modelProjectSettings(model), retainedUse)); setGeometryPending(false); setAccess(''); setServices(''); setProjectContext(previous => ({ ...previous, relationship: '', nextStep: '' })); setWaterfrontMarks({ revision: null, ids: [] }); setDrawingExport(null); setStreetMarks({ revision: null, data: { edge_ids: [], all_marked: false, origin: 'user' } }); setRearEdge(null); setSelectedBoundary(null); setBoundaryMark(null); setMarkingRole(null); setBoundaryMode('place'); setReadyFor(null); setRevision(value => value + 1) }
   function changeMode(next: typeof mode) {
     if (next !== 'example' && window.location.hash.startsWith('#examples/')) window.history.replaceState(null, '', '#assessment')
@@ -373,7 +384,10 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
       main: siteAssumptions.principal_building_id, waterfront: siteAssumptions.waterfront,
       edges: siteAssumptions.edges, buffers: siteAssumptions.planning_buffers_m,
     }, projectSettings.proposal.confirmed_zone, projectSettings.proposal.confirmed_instrument, projectSettings.proposal.legal_lot_confirmed])
-  const costScenarioKey = (placement: RetainedPlacementDraft | null, foundation: string | null, buffers: typeof estimateBuffers, height: number | null) => JSON.stringify([use, placement, foundation, buffers, height, sharedAlternativeKey])
+  const costScenarioKey = (placement: RetainedPlacementDraft | null, foundation: string | null, buffers: typeof estimateBuffers, height: number | null) => JSON.stringify([
+    use, placement && { position: placement.position, minima: placement.minima, widthOrigin: placement.widthOrigin, depthOrigin: placement.depthOrigin },
+    foundation, buffers, height, sharedAlternativeKey,
+  ])
   const budgetContext: BudgetContext = {
     model_id: model.model_id, model_revision: model.source_revision, snapshot_id: modelSnapshot(model),
     configuration: projectContext.configuration.trim() || model.configuration,
@@ -710,6 +724,8 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   }, [playbackActive])
   const currentDemoAnswers = Object.fromEntries(Object.entries(demoAnswers ?? {}).filter(([key, value]) =>
     value === (key === 'streetContext' ? streetDecisionFor === geometryRevision && !streetAdjacency.all_marked && streetAdjacency.edge_ids.length === 0 ? 'Not sure' : '' : key === 'intendedUse' ? use : projectContext[key as 'relationship' | 'nextStep']))) as EnquiryInput['demoAnswers']
+  const explicitlyRenting = !currentDemoAnswers?.intendedUse && /^(?:a rental suite|rental suite|rental|to rent out|rent it out)$/i.test(use.trim())
+  const effectiveFinancialGoals = financialGoals ?? (explicitlyRenting ? rentalInterest : null)
   const contextComplete = !!(use.trim() && projectContext.relationship.trim() && projectContext.nextStep.trim())
   const enquiryDoc = contextComplete && !checksPending ? makeEnquiryDoc() : null
   const exportMeasurement: OccupiedMeasurement | null = checksPending ? null : measurementResult ?? (manual?.assessment && manual.site ? {
@@ -1021,7 +1037,9 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
       <h1 id="builder-title">Explore {model.name} on your site</h1>
       <p>Explore a placement, review potential concerns, and prepare a question for the provider.</p>
       <p className="metadata">Model questions, placements, configuration and budget drafts stay in this open assessment. Changing property starts fresh placements and budgets; reloading clears these drafts.</p>
-      {hasSite && <AlternativeComparison alternatives={currentPropertyAlternatives} activeModelId={modelId} onSelectModel={switchModel} />}
+      {hasSite && <AlternativeComparison alternatives={currentPropertyAlternatives} activeModelId={modelId} onSelectModel={switchModel}
+        financialGoals={effectiveFinancialGoals} onFinancialGoalsChange={setFinancialGoals}
+        onPrepareQuote={id => { switchModel(id); openJourneyStep('enquiry') }} />}
       <p className="notice">Preliminary exploration · nothing is sent automatically.</p>
       <p><strong>{model.name}</strong> · {original('nominal_exterior_width')} × {original('nominal_exterior_depth')} · advertised height {original('advertised_overall_height')}. Provider dimensions are unreviewed.</p>
       <details className="builder-model-overview"><summary>About {model.name} · photos, price and specifications</summary>

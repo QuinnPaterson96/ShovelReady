@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import type { CatalogueModel } from '../model_catalogue/model'
 import { priceSummary } from '../model_catalogue/PriceTiming'
 import { publicSourceUrl, readableDate } from '../ReadableProvenance'
@@ -21,6 +21,59 @@ export type ComparisonAlternative = {
   placement: 'not_placed' | 'needs_recheck' | 'current'
   summary: Summary | null
   budget: { draft: BudgetDraft; context: Context }
+}
+
+export type FinancialGoal = 'cost' | 'rental'
+
+function FinancialInterests({ goals, onChange }: { goals: FinancialGoal[] | null; onChange: (goals: FinancialGoal[]) => void }) {
+  const [editing, setEditing] = useState(false)
+  const [draft, setDraft] = useState<FinancialGoal[]>(goals ?? [])
+  useEffect(() => { setDraft(goals ?? []); setEditing(false) }, [goals])
+  return <section className="alternative-comparison__interests" aria-label="Financial interests">
+    {goals === null || editing ? <fieldset>
+      <legend>What would you like to understand about the finances?</legend>
+      <p>Optional · choose either or both for this project. You can change this as you explore.</p>
+      <div className="alternative-comparison__choices">{([['cost', 'Project cost'], ['rental', 'Potential rental income']] as const).map(([value, label]) => <label key={value}>
+        <input type="checkbox" checked={draft.includes(value)} onChange={event => setDraft(previous => event.target.checked ? [...previous, value] : previous.filter(goal => goal !== value))} />{label}
+      </label>)}</div>
+      <div className="alternative-comparison__actions"><button type="button" onClick={() => { onChange(draft); setEditing(false) }}>Save interests</button>
+        <button type="button" onClick={() => { onChange([]); setEditing(false) }}>Skip for now</button></div>
+    </fieldset> : <div className="alternative-comparison__interest-answer"><p><strong>Financial interests:</strong> {goals.length ? goals.map(goal => goal === 'cost' ? 'Project cost' : 'Potential rental income').join(' and ') : 'Still exploring · skipped for now'}.</p><button type="button" onClick={() => setEditing(true)}>Edit financial interests</button></div>}
+  </section>
+}
+
+function CostBasis({ alternative }: { alternative: ComparisonAlternative }) {
+  const { model, budget } = alternative
+  const result = calculateBudget({ ...budget.draft, scope: 'whole_project' }, budget.context)
+  const quotes = budget.draft.items.filter(item => item.category === 'unit' && item.basis === 'quote' && result.counted_ids.includes(item.id))
+  return quotes.length ? <>{quotes.map(quote => <div key={quote.id}><p><strong>{displayMoney(quote.money!)} · building quote</strong></p>
+    <p className="metadata">{quote.evidence.provider} · {quote.evidence.label} · captured {readableDate(quote.evidence.captured_at)} · unreviewed.</p>
+    <p>Included: {quote.inclusions.join(', ') || 'not specified'}. Excluded: {quote.exclusions.join(', ') || 'not specified'}. Tax: {quote.tax_status}.</p>
+  </div>)}</> : model.prices?.length ? <>{model.prices.map((price, index) => <div key={index}><p><strong>{priceSummary(price)}</strong> · {model.provider} {price.scope === 'model' ? 'model price' : 'provider-wide claim'}{!price.currency && '; currency needs confirmation'}.</p>
+    <p className="metadata">Captured {readableDate(model.sources.find(source => source.source_id === price.source_id)?.captured_at)} · {model.review_status}. Scope and exclusions in model details.</p></div>)}</>
+    : <p><strong>Model price unknown</strong> · {model.provider} has no price in the captured sources.</p>
+}
+
+function CostCoverage({ alternative }: { alternative: ComparisonAlternative }) {
+  const { draft, context } = alternative.budget
+  const result = calculateBudget(draft, context)
+  const whole = calculateBudget({ ...draft, scope: 'whole_project' }, context)
+  return whole.complete ? <p><strong>Whole-project estimate: {whole.subtotals.map(displayMoney).join('; ')}.</strong> Under supplied assumptions.</p>
+    : <><p><strong>Installed cost incomplete.</strong> {result.subtotals.length ? `Priced-components subtotal (${scopeLabels[draft.scope]}): ${result.subtotals.map(displayMoney).join('; ')}.` : 'No usable priced-components subtotal.'}</p>
+      <p>Still needed: {whole.missing.length ? whole.missing.slice(0, 3).map(category => categories[category]).join(', ') : 'reconciled scope, tax or bounded amounts'}{whole.missing.length > 3 ? `, plus ${whole.missing.length - 3} cost areas in the details` : ''}.</p></>
+}
+
+function CompactFindings({ alternative }: { alternative: ComparisonAlternative }) {
+  if (alternative.placement === 'needs_recheck') return <p><strong>Recheck this scenario.</strong> Property inputs changed or checks are updating; retained findings are not current.</p>
+  if (!alternative.summary) return <p>No current suitability findings. Open this model to explore a position.</p>
+  const findings = summaryFindings(alternative.summary)
+  const concerns = findings.filter(check => check.status === 'conflict')
+  const questions = findings.filter(check => ['review', 'unknown', 'unsupported'].includes(check.status))
+    .sort((a, b) => Number(b.status === 'unknown') - Number(a.status === 'unknown'))
+  return <>{concerns.length ? <p className="alternative-comparison__concerns"><strong>Preliminary concern: {concerns.map(check => check.label).join('; ')}.</strong></p> : <p>{alternative.summary.conclusion}</p>}
+    {questions.length > 0 && <p>Open questions: {questions.slice(0, 2).map(check => `${check.label} · ${statusLabels[check.status]}`).join('; ')}{questions.length > 2 ? `; ${questions.length - 2} more in model details` : ''}.</p>}
+    {findings.some(check => check.status === 'probable') && <p>Likely fine under disclosed assumptions; see this model’s findings.</p>}
+  </>
 }
 
 function ScenarioFindings({ alternative }: { alternative: ComparisonAlternative }) {
@@ -84,8 +137,9 @@ function Costs({ alternative }: { alternative: ComparisonAlternative }) {
   </>
 }
 
-export function AlternativeComparison({ alternatives, activeModelId, onSelectModel }: {
+export function AlternativeComparison({ alternatives, activeModelId, onSelectModel, financialGoals, onFinancialGoalsChange, onPrepareQuote }: {
   alternatives: ComparisonAlternative[]; activeModelId: string; onSelectModel: (modelId: string) => void
+  financialGoals: FinancialGoal[] | null; onFinancialGoalsChange: (goals: FinancialGoal[]) => void; onPrepareQuote: (modelId: string) => void
 }) {
   useEffect(() => { void import('./alternative-comparison.css') }, [])
   const active = alternatives.find(item => item.model.model_id === activeModelId)
@@ -93,14 +147,46 @@ export function AlternativeComparison({ alternatives, activeModelId, onSelectMod
   const sameSite = active ? alternatives.filter(item => item.propertyKey === active.propertyKey) : []
   const positions = sameSite.map(item => item.measurement?.result.input.placement).filter(item => item !== undefined)
   const differentPositions = new Set(positions.map(p => JSON.stringify([p.centre_xy, p.angle_degrees]))).size > 1
-  return <details className="alternative-comparison" id="builder-alternative-comparison">
-    <summary>Compare models for this property{sameSite.length > 1 ? ` · ${sameSite.length} explored` : ''}</summary>
+  const rental = financialGoals?.includes('rental') ?? false
+  return <div className="alternative-comparison-workspace">
+    <FinancialInterests goals={financialGoals} onChange={onFinancialGoalsChange} />
+    <details className="alternative-comparison" id="builder-alternative-comparison">
+    <summary>Compare model costs and suitability{sameSite.length > 1 ? ` · ${sameSite.length} explored` : ''}</summary>
     <div className="alternative-comparison__body">
-      <h3>Choose what to investigate next</h3>
-      <p>{active?.propertyLabel || 'Select a property to compare retained alternatives.'} · preliminary suitability and cost coverage. Your model work stays in this open assessment; reloading starts again.</p>
-      {sameSite.length < 2 && <p>Explore another model using the selector above, then return here. Your enquiry remains available without completing a comparison.</p>}
+      {active && <section className="alternative-comparison__lead" aria-label="Current model financial next step">
+        <h3>{rental ? `What could I earn from renting ${active.model.name}?` : `What would it cost to build ${active.model.name}?`}</h3>
+        <CostBasis alternative={active} />
+        <CostCoverage alternative={active} />
+        <div className="alternative-comparison__quote"><button type="button" onClick={() => onPrepareQuote(active.model.model_id)}>Prepare quote request for {active.model.name}</button><span>Optional · opens your unsent enquiry.</span></div>
+        {rental && <p><strong>For rental income:</strong> estimate local rent, when the unit could be occupied and your running costs. Compare what you could keep against the cost to install the unit.</p>}
+        <CompactFindings alternative={active} />
+      </section>}
+      <section className="alternative-comparison__overview" aria-label="Explored model overview">
+        <h3>Explored models at a glance</h3>
+        <p>{active?.propertyLabel || 'Select a property to compare retained alternatives.'} · preliminary costs and suitability. Prices keep their own scope; no return ranking.</p>
+        {sameSite.length < 2 && <p>Explore another model using the selector above, then return here. Your enquiry remains available without completing a comparison.</p>}
+        {sameSite.length > 0 && <table><thead><tr><th scope="col">Model</th><th scope="col">Price basis</th><th scope="col">Installed-cost coverage</th><th scope="col">Suitability and placement</th></tr></thead>
+          <tbody>{sameSite.map(alternative => <tr key={alternative.model.model_id}>
+            <th scope="row"><span>{alternative.model.provider}</span><strong>{alternative.model.name}</strong>{alternative.model.model_id === activeModelId && <span className="alternative-comparison__active">Currently open</span>}
+              <a href={`#comparison-evidence-${alternative.model.model_id}`}>Details and sources</a>
+              {alternative.model.model_id !== activeModelId && <button type="button" onClick={() => onSelectModel(alternative.model.model_id)}>Open {alternative.model.name}</button>}
+            </th>
+            <td><span className="alternative-comparison__cell-label">Price basis</span><CostBasis alternative={alternative} /></td>
+            <td><span className="alternative-comparison__cell-label">Installed-cost coverage</span><CostCoverage alternative={alternative} /></td>
+            <td><span className="alternative-comparison__cell-label">Suitability and placement</span><CompactFindings alternative={alternative} />
+              <p>{alternative.measurement ? `Retained trial position · rotation ${Number(alternative.measurement.result.input.placement.angle_degrees.toFixed(2))}°.` : 'No measured placement retained.'}</p></td>
+          </tr>)}</tbody></table>}
+      </section>
       {sameSite.length > 1 && <p>{differentPositions ? 'These models use different retained positions or rotations. Their findings are not an equivalent fit test.' : 'Each model uses its own dimensions and scenario. A shared position alone does not make the suitability checks equivalent.'} Compare the use, configuration and foundation assumptions alongside the findings.</p>}
+      <p className="metadata">Your model work and financial interests stay in this open assessment; reloading starts again. Starting prices, partial subtotals and owner preferences remain separate from whole-project estimates. Missing costs are not zero.</p>
+      {rental && <details className="alternative-comparison__next"><summary>Inputs for a rental-return comparison later</summary><p>First choose the question, such as annual cash flow or return on total project cost, then gather consistent assumptions for the plausible alternatives:</p>
+        <ul><li><strong>Provider and local installer:</strong> a matching dated quote, currency, inclusions and site-specific delivery, foundation, connections, fees and tax scope.</li>
+          <li><strong>Homeowner with local rental evidence:</strong> achievable rent, occupancy and when renting could start for the intended use.</li>
+          <li><strong>Homeowner or property manager:</strong> recurring owner-paid expenses, maintenance and replacement allowances.</li>
+          <li><strong>Homeowner and lender, if financing matters to the chosen measure:</strong> equity, borrowing terms and debt payments.</li></ul></details>}
+      <h3>Model details and evidence</h3>
       <div className="alternative-comparison__options">{sameSite.map(alternative => <article key={alternative.model.model_id} aria-label={`${alternative.model.name} comparison`}>
+        <span id={`comparison-evidence-${alternative.model.model_id}`} tabIndex={-1} />
         <header><h4>{alternative.model.provider} · {alternative.model.name}</h4>{alternative.model.model_id === activeModelId ? <p className="alternative-comparison__active">Currently open</p> : <button type="button" onClick={() => onSelectModel(alternative.model.model_id)}>Open {alternative.model.name}</button>}</header>
         <dl><dt>Scenario</dt><dd><p>Use: {alternative.intendedUse.trim() || 'not supplied'}. Configuration: {alternative.configuration.trim() || alternative.model.configuration}.</p><p>Foundation allowance: {alternative.foundationAllowanceM === null ? 'not supplied' : `${measurementWithUnit(alternative.foundationAllowanceM, 'length')} · planning assumption`}.</p><p>Affordability preference: {alternative.affordabilityPreference.trim() || 'not supplied'} · owner preference, separate from estimated cost.</p></dd>
           <dt>Provisional suitability and placement</dt><dd><ScenarioFindings alternative={alternative} /></dd>
@@ -108,12 +194,6 @@ export function AlternativeComparison({ alternatives, activeModelId, onSelectMod
           <dt>Cost coverage</dt><dd><Costs alternative={alternative} /></dd>
         </dl>
       </article>)}</div>
-      {sameSite.length > 0 && <div className="alternative-comparison__next"><h4>For a rental-return comparison later</h4><p>These prices and partial costs do not identify a rental-return winner. First choose the question, such as annual cash flow or return on total project cost, then gather consistent assumptions for the plausible alternatives:</p>
-        <ul><li><strong>Provider and local installer:</strong> a matching dated quote, currency, inclusions and site-specific delivery, foundation, connections, fees and tax scope.</li>
-          <li><strong>Homeowner with local rental evidence:</strong> achievable rent, occupancy and when renting could start for the intended use.</li>
-          <li><strong>Homeowner or property manager:</strong> recurring owner-paid expenses, maintenance and replacement allowances.</li>
-          <li><strong>Homeowner and lender, if financing matters to the chosen measure:</strong> equity, borrowing terms and debt payments.</li></ul>
-        <p>Ask providers what they need for an initial discussion; you can prepare an enquiry now with these questions still open.</p></div>}
     </div>
-  </details>
+  </details></div>
 }
