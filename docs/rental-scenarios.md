@@ -1,5 +1,9 @@
 # Rental scenarios use regional evidence and keep each model's assumptions
 
+November 9 update: [Project economics](decisions/project-economics.md) adds the
+shared estimate editor and scoped subtotal payback. The earlier delivery record
+below retains its original verification scope.
+
 ```mermaid
 flowchart LR
   Source[Statistics Canada quarterly CSV] -->|Explicit import command| Bundle[Versioned rental benchmark snapshot]

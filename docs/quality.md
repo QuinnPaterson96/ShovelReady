@@ -412,6 +412,14 @@ The [waterfront prefill verification](municipal-waterfront-prefill.md) distingui
 
 ## Project economics verification — November 9, 2026
 
+The [independent visual review and correction confirmation](usability/project-economics-2026-11-09/README.md)
+records desktop and phone inspection, the initial 27/40 and corrected 31/40
+heuristic assessments, the clean seven-file Impeccable scan and remaining
+physical-device, screen-reader and homeowner-validation gaps. Valid grouped
+amounts, malformed edits, rental inclusion focus, mobile result proximity and
+return-to-project focus/scroll passed the bounded confirmation. Source acceptance
+and complete site costs remain separate from software usability.
+
 The [project economics decision](decisions/project-economics.md) records the
 starting amounts, source boundaries and remaining work. From `frontend/`, run
 `npm run build` and `npm test`. For local browser verification, set

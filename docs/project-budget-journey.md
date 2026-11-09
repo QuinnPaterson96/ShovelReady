@@ -1,5 +1,9 @@
 # Homeowner budget journey — review handoff
 
+November 9 update: the [Project economics decision](decisions/project-economics.md)
+supersedes the spending-preference field and main budget editor described in this
+historical delivery record. Detailed cost evidence remains in the expanded estimate.
+
 October 23, 2026. Follow-up [#327](https://github.com/QuinnPaterson96/ShovelReady/issues/327)
 to merged PR #326, based on `a573522715894e66f5c976f377b0004320ff3420`.
 Implemented for review, not merged or deployed. No provider contact or enquiry submission.

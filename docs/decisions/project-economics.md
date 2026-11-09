@@ -1,5 +1,16 @@
 # Project economics
 
+```mermaid
+flowchart LR
+  Host[BuilderDemo: retained model drafts] -->|Current costs and rental assumptions| Calc[calculateEconomics]
+  Calc -->|Same estimate| Summary[ProjectEconomicsSummary]
+  Calc -->|Same estimate| Detail[ProjectEconomicsDetail]
+  Summary -->|View and adjust estimate| Detail
+  Detail -->|Edit this model's assumptions| Host
+  Detail -->|Restore focus and scroll| Summary
+  Host -->|Scoped costs and source evidence| Export[Supporting report and technical record]
+```
+
 Decision recorded November 9, 2026. The estimate supports choosing whether to
 explore a model or talk to its provider. The project assessment shows a compact
 cost subtotal and optional rental figures. The estimate view keeps project costs,

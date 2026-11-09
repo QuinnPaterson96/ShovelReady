@@ -1,0 +1,66 @@
+{
+  "phone": {
+    "jumps": {
+      "Project costs": {
+        "x": 29,
+        "y": 15.890625,
+        "width": 332,
+        "height": 27.84375
+      },
+      "Running costs and financing": {
+        "x": 29,
+        "y": 15.78125,
+        "width": 332,
+        "height": 27.84375
+      },
+      "Rental income": {
+        "x": 29,
+        "y": 16.171875,
+        "width": 332,
+        "height": 27.84375
+      }
+    },
+    "rentFigures": "Expected monthly rent\n$2,200\nYour rent assumption\nAnnual income after running costs\n$18,810\nBefore financing and income tax\nSimple payback\n13.3 years\nCost subtotal ÷ annual income",
+    "fieldBox": {
+      "x": 29,
+      "y": 89.546875,
+      "width": 332,
+      "height": 44
+    },
+    "localBox": {
+      "x": 29,
+      "y": 316.546875,
+      "width": 332,
+      "height": 252.09375
+    },
+    "scrollBefore": 2303,
+    "display": {
+      "width": 390,
+      "height": 844,
+      "doc": 390,
+      "client": 390,
+      "y": 2303
+    }
+  },
+  "desktop": {
+    "type": {
+      "cost": "33.6px",
+      "figures": [
+        "18.4px",
+        "18.4px",
+        "18.4px"
+      ],
+      "label": "14.8px"
+    },
+    "summaryText": "Project economics\nView and adjust estimate\n→\n\nProject cost subtotal CAD\n$250,000\n\nPrefab building\n$187,000\nDevelopment and permit fees\n$8,000\nInstallation\n$55,000\nExpected monthly rent\n$2,040\nVictoria metro · 1-bedroom apartments\nAnnual income after running costs\n$17,442\nBefore financing and income tax\nSimple payback\n14.3 years\nCost subtotal ÷ annual income\n\nPrefab starting price · site and fee allowances · some project costs still open · Statistics Canada Q2 2026.\n\nRental scenario included\n\nChange rental preference\nContinue to enquiry →",
+    "plain": "Project cost subtotal CAD\n$251,000\n\nSubtotal for the priced work in this scenario.\n\nExpected monthly rent\n$2,040\nVictoria metro · 1-bedroom apartments\nAnnual income after running costs\n$17,442\nBefore financing and income tax\nSimple payback\n14.4 years\nCost subtotal ÷ annual income",
+    "grouped": "Project cost subtotal CAD\n$251,000\n\nSubtotal for the priced work in this scenario.\n\nExpected monthly rent\n$2,040\nVictoria metro · 1-bedroom apartments\nAnnual income after running costs\n$17,442\nBefore financing and income tax\nSimple payback\n14.4 years\nCost subtotal ÷ annual income",
+    "hint": "Enter a valid CAD amount. The previous value still applies.",
+    "cleared": "Project cost subtotal CAD\n$242,000\n\nSubtotal for the priced work in this scenario.\n\nExpected monthly rent\n$2,040\nVictoria metro · 1-bedroom apartments\nAnnual income after running costs\n$17,442\nBefore financing and income tax\nSimple payback\nNot estimated\nAdd the missing project costs",
+    "focus": "economics-rental-title"
+  },
+  "outcomes": [
+    "pass",
+    "pass"
+  ]
+}
