@@ -37,7 +37,7 @@ try {
   await button('Watch the demo').click()
   await button('Skip to result').click(); await current()
   await button('Next').click(); await current()
-  assert.match(await page.locator('[data-playback-controls] p').textContent(), /starting price and site allowances.*planning subtotal/)
+  assert.match(await page.locator('[data-playback-controls] p').first().textContent(), /starting price and site allowances.*planning subtotal/)
   assert.equal(await page.locator('#builder-budget-stage').isVisible(), true)
   assert.equal((await evidence()).project_budget.draft.items.length, 5)
   assert.equal((await evidence()).project_budget.calculation.subtotals[0].maximum, '250000')

@@ -1,5 +1,6 @@
 /** Workflow milestones supplied by BuilderDemo, not assessment outcomes. */
 export type BuilderJourneyCompletion = Readonly<{
+  walkthroughActive?: boolean
   checksAvailable?: boolean
   reviewReadiness?: { total: number; addressed: number; busy: boolean; ready: boolean; targetId?: string }
   model: boolean
@@ -43,6 +44,7 @@ const steps: readonly Step[] = [
 
 /** Keep this inside the builder workspace's hidden-but-mounted wrapper. */
 export function BuilderJourneyNav({ completion }: { completion: BuilderJourneyCompletion }) {
+  if (completion.walkthroughActive) return null
   return <aside className="sr-workspace-rail builder-journey-rail">
     <nav aria-label="Prefab model steps">
       <p>Prefab model journey</p>

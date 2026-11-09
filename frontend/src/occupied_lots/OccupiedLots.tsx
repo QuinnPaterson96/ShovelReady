@@ -1,8 +1,8 @@
-import { PlaybackLayout } from '../FloatingNext'
+import { FloatingNext } from '../FloatingNext'
 import { EvidenceAtFooter } from '../EvidenceAtFooter'
 import { MapSourceHelp } from '../zoning_site_assumptions/MapSourceHelp'
 import { suggestPlacementOrientation } from '../placement_orientation'
-import { useContext, useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { bundledCatalogue, type Catalogue } from '../model_catalogue/model'
 import { PublishedDimensions } from '../model_catalogue/PublishedDimensions'
 import { MeasurementLabel } from '../model_catalogue/MeasurementLabel'
@@ -57,17 +57,6 @@ export function PlacementConcerns({ site, result, additional, onContinueUnresolv
 export function OccupiedLotPreview({ selected, placement, onMove, nudgeMetres, conflictIds, boundaryInteraction, placementSummary, placementContinuation, placementControls, placementConcerns, preferredScenarioKey, modelLabel = 'Proposed unit', showBoundaryTools = true }: { preferredScenarioKey?: string; placementControls?: ReactNode; placementSummary?: ReactNode; placementContinuation?: ReactNode; placementConcerns?: ReactNode; modelLabel?: string; showBoundaryTools?: boolean; selected: Case; placement: Placement; onMove: (x: number, y: number) => void; nudgeMetres: number; conflictIds?: Set<string>; boundaryInteraction?: BoundaryMapInteraction }) {
   const svg = useRef<SVGSVGElement>(null)
   const preview = useRef<HTMLDialogElement>(null)
-  const playback = useContext(PlaybackLayout)
-  const [mapVisible, setMapVisible] = useState(false)
-  const [actionBounds, setActionBounds] = useState({ left: 8, width: 320 })
-  useEffect(() => {
-    if (!svg.current || typeof IntersectionObserver === 'undefined') return
-    const measure = () => { const box = svg.current?.getBoundingClientRect(); if (box) setActionBounds({ left: Math.max(8, box.left), width: Math.min(box.width, document.documentElement.clientWidth - 16) }) }
-    const observer = new IntersectionObserver(([entry]) => { setMapVisible(entry.isIntersecting); measure() }, { threshold: 0 })
-    observer.observe(svg.current)
-    window.addEventListener('resize', measure)
-    return () => { observer.disconnect(); window.removeEventListener('resize', measure) }
-  }, [])
   const drag = useRef(false)
   const suppressClick = useRef(false)
   const site = selected.site
@@ -115,7 +104,7 @@ export function OccupiedLotPreview({ selected, placement, onMove, nudgeMetres, c
   return <div className="occupied-map-panel" id={boundaryInteraction ? 'placement-map' : undefined}>
     {boundaryInteraction && <BoundaryActionTabs interaction={boundaryInteraction} />}
     <div className="boundary-action-panel" data-mode={boundaryInteraction?.mode} id="placement-action-panel" role={boundaryInteraction ? 'tabpanel' : undefined} aria-labelledby={boundaryInteraction ? `placement-action-${boundaryInteraction.mode}` : undefined}>
-    <div className="occupied-map-heading"><h3>{boundaryInteraction?.mode === 'waterfront' ? 'Mark waterfront edges' : boundaryInteraction?.mode === 'front' ? 'Mark street edges' : boundaryInteraction?.mode === 'rear' ? 'Adjust boundary facts' : 'Place the footprint'}</h3><p className="metadata">{boundaryInteraction && boundaryInteraction.mode !== 'place' ? boundaryInteraction.mode === 'waterfront' ? 'Mark the edges adjoining water. Your placement stays in position.' : boundaryInteraction.mode === 'rear' ? 'Choose a mark on the right, then click an edge. Your placement stays in position.' : 'Click every edge adjoining a street.' : 'Click the map to place its centre. Drag the copper rectangle to adjust it.'}</p></div>
+    <div className="occupied-map-heading"><h3>{boundaryInteraction?.mode === 'waterfront' ? 'Mark waterfront edges' : boundaryInteraction?.mode === 'front' ? 'Mark street edges' : boundaryInteraction?.mode === 'rear' ? 'Adjust boundary facts' : 'Place the footprint'}</h3><p className="metadata">{boundaryInteraction && boundaryInteraction.mode !== 'place' ? boundaryInteraction.mode === 'waterfront' ? 'Mark the edges adjoining water. Your placement stays in position.' : boundaryInteraction.mode === 'rear' ? 'Choose a boundary mark, then click an edge on the map. Your placement stays in position.' : 'Click every edge adjoining a street.' : 'Click the map to place its centre. Drag the copper rectangle to adjust it.'}</p></div>
     <div className="occupied-map-toolbar">
       {boundaryInteraction && boundaryInteraction.mode !== 'place' && <BoundaryRoleHelp compact />}
       <button type="button" onClick={() => preview.current?.showModal()}>Open full-size placement preview</button>
@@ -145,11 +134,11 @@ export function OccupiedLotPreview({ selected, placement, onMove, nudgeMetres, c
     </dialog>
     {placementControls}
     {placementConcerns && <div className="builder-placement-concerns">{placementConcerns}</div>}
-    {placementContinuation && <div className={`builder-placement-next${mapVisible && !playback ? ' builder-placement-next--floating' : ''}`} style={{ '--placement-action-left': `${actionBounds.left}px`, '--placement-action-width': `${actionBounds.width}px` } as CSSProperties}>{placementContinuation}</div>}
+    </div>
+    {placementContinuation && <FloatingNext active className="builder-placement-next">{placementContinuation}</FloatingNext>}
     {boundaryInteraction && <div id="property-details-below-map" className="property-details-below-map" />}
     {boundaryInteraction && <div id="intended-purpose-below-map" className="intended-purpose-below-map" />}
     {placementSummary && <div className="builder-map-summary">{placementSummary}</div>}
-    </div>
   </div>
 }
 

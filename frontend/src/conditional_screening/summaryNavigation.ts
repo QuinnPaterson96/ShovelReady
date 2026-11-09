@@ -1,5 +1,5 @@
 /** Reveal the actual input behind a summary action without changing its value. */
-export function focusSummaryTarget(document: Document, target: string, block: ScrollLogicalPosition = 'center'): boolean {
+export function focusSummaryTarget(document: Document, target: string, block: ScrollLogicalPosition = 'center', behavior?: ScrollBehavior): boolean {
   const control = target === 'placement-map'
     ? document.querySelector<HTMLElement>('#placement-map svg, .occupied-lots svg[tabindex]')
     : document.getElementById(target)
@@ -10,7 +10,7 @@ export function focusSummaryTarget(document: Document, target: string, block: Sc
     parent = parent.parentElement
   }
   if (!control.matches('input, select, textarea, button, a[href], [tabindex]')) control.setAttribute('tabindex', '-1')
-  control.scrollIntoView?.({ block, behavior: document.defaultView?.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
+  control.scrollIntoView?.({ block, behavior: behavior ?? (document.defaultView?.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth') })
   control.focus({ preventScroll: true })
   return true
 }

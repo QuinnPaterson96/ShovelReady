@@ -31,25 +31,10 @@
 .zsa--marking .zsa__boundaries { order: -1; margin-top: 0; }
 .zsa__mark-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; margin-top: .5rem; }
 .zsa__mark-buttons button[aria-pressed="true"] { background: var(--primary); color: var(--surface); }
-.boundary-action-panel[data-mode="rear"] { display: grid; grid-template-columns: minmax(0, 1fr) 18rem; gap: .75rem; align-items: start; }
-.boundary-action-panel[data-mode="rear"] > .occupied-map-heading { grid-column: 1 / -1; }
-.boundary-action-panel[data-mode="rear"] > .occupied-map { grid-column: 1; grid-row: 2; }
-.boundary-action-panel[data-mode="rear"] > .occupied-map-legend { grid-column: 1; grid-row: 3; }
-.boundary-action-panel[data-mode="rear"] > .boundary-map-tools { grid-column: 2; grid-row: 2 / 4; }
-.boundary-action-panel[data-mode="rear"] > .builder-map-summary { grid-column: 1 / -1; }
-.builder-example-layout.boundary-action-panel[data-mode="rear"] > figure { grid-column: 1; }
-.builder-example-layout.boundary-action-panel[data-mode="rear"] > .builder-example-controls { grid-column: 2; grid-row: 1; }
-.builder-example-layout.boundary-action-panel[data-mode="rear"] > .builder-map-summary { grid-row: 2; }
-@media (max-width: 760px) { .boundary-action-panel[data-mode="rear"] { grid-template-columns: 1fr; } .boundary-action-panel[data-mode="rear"] > :is(.boundary-map-tools, .occupied-map, .occupied-map-legend, .builder-map-summary, .builder-example-controls, figure) { grid-column: 1; grid-row: auto; } }
-
-.boundary-action-panel[data-mode="rear"] .zsa__edge-row { grid-template-columns: 1fr; }
-.builder-example-layout.boundary-action-panel[data-mode="rear"] > figure { grid-row: 1; }
-@media (max-width: 760px) { .builder-example-layout.boundary-action-panel[data-mode="rear"] > :is(figure, .builder-example-controls, .builder-map-summary) { grid-column: 1; grid-row: auto; } }
-
-.builder-demo .builder-example-layout[data-mode="rear"] > .builder-example-controls { padding: 0; border: 0; }
-.boundary-action-panel[data-mode="rear"] .zsa__boundaries { padding: .6rem; }
-.boundary-action-panel[data-mode="rear"] .zsa__edge-row { padding: .4rem; }
-
+.boundary-map-tools[data-mode="rear"],
+.boundary-map-tools[data-mode="rear"] .zsa { margin: 0; padding: 0; border: 0; background: transparent; }
+.boundary-action-panel[data-mode="rear"] .zsa__boundaries { margin: 0; padding: .6rem; }
+.boundary-action-panel[data-mode="rear"] .zsa__edge-row { grid-template-columns: 1fr; padding: .4rem; }
 .zsa__offset-grid label { display: grid; grid-template-columns: minmax(0, 1fr) minmax(4rem, 5rem); gap: .5rem; align-items: center; }
 .zsa__offset-grid input { width: 100%; min-width: 0; box-sizing: border-box; }
 .zsa__offset-grid small { display: block; color: var(--ink-muted); font-weight: 400; font-size: .8rem; }
@@ -65,45 +50,30 @@
 .zsa__answer:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 .zsa #existing-suites .zsa__answer-buttons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
-.boundary-action-panel[data-mode="rear"] > .builder-placement-next { grid-column: 1 / -1; grid-row: 4; }
-.boundary-action-panel[data-mode="rear"] > .builder-map-summary { grid-row: 5; }
-.builder-example-layout.boundary-action-panel[data-mode="rear"] > .builder-placement-next { grid-row: 2; }
-.builder-example-layout.boundary-action-panel[data-mode="rear"] > .builder-map-summary { grid-row: 3; }
 .zsa .zsa__save-buffers { background: var(--primary); color: var(--surface); font-weight: 700; width: 100%; }
-@media (max-width: 760px) { .boundary-action-panel[data-mode="rear"] > :is(.builder-placement-next, .builder-map-summary), .builder-example-layout.boundary-action-panel[data-mode="rear"] > :is(.builder-placement-next, .builder-map-summary) { grid-row: auto; } }
-
-/* Boundary tools retain their right-hand position; property details follow Next. */
-.boundary-action-panel[data-mode="rear"] > .boundary-map-tools { grid-column: 2; grid-row: 2 / 4; }
-.builder-example-layout.boundary-action-panel[data-mode="rear"] > .builder-example-controls { grid-column: 2; grid-row: 1; }
-@media (max-width: 760px) { .boundary-action-panel[data-mode="rear"] > .boundary-map-tools, .builder-example-layout.boundary-action-panel[data-mode="rear"] > .builder-example-controls { grid-column: 1; grid-row: auto; } }
 
 .map-source-help { display: flex; align-items: center; gap: .5rem; color: var(--ink-muted); font-size: .85rem; margin: .4rem 0; }
 .occupied-map-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin-block: .5rem; }
 .occupied-map-toolbar > .boundary-role-help { flex-basis: 100%; }
-.boundary-action-panel[data-mode="rear"] > .occupied-map-toolbar { grid-column: 1 / -1; grid-row: 2; }
-.boundary-action-panel[data-mode="rear"] > .occupied-map { grid-row: 3; }
-.boundary-action-panel[data-mode="rear"] > .occupied-map-legend { grid-row: 4; }
-.boundary-action-panel[data-mode="rear"] > .boundary-map-tools { grid-row: 3 / 5; }
-@media (max-width: 760px) { .boundary-action-panel[data-mode="rear"] > :is(.occupied-map-toolbar, .occupied-map, .occupied-map-legend, .boundary-map-tools) { grid-column: 1; grid-row: auto; } }
-.boundary-action-panel[data-mode="rear"] > .builder-placement-concerns { grid-column: 1 / -1; grid-row: 5; min-width: 0; }
-.boundary-action-panel[data-mode="rear"] > .map-source-help { grid-column: 1; grid-row: 4; }
-.boundary-action-panel[data-mode="rear"] > .builder-placement-next { grid-row: 6; }
-.boundary-action-panel[data-mode="rear"] > .builder-map-summary { grid-row: 7; }
-.builder-example-layout.boundary-action-panel[data-mode="rear"] > .builder-placement-next { grid-row: 2; }
-.builder-example-layout.boundary-action-panel[data-mode="rear"] > .builder-map-summary { grid-row: 3; }
-.zsa .homeowner-summary__continue .builder-continue { flex: 1; text-align: left; }
-@media (max-width: 760px) { .boundary-action-panel[data-mode="rear"] > :is(.map-source-help, .builder-placement-concerns, .builder-placement-next, .builder-map-summary), .builder-example-layout.boundary-action-panel[data-mode="rear"] > :is(.builder-placement-next, .builder-map-summary) { grid-row: auto; } }
+@media (min-width: 761px) {
+  .boundary-action-panel[data-mode="rear"] { display: grid; grid-template-columns: minmax(0, 1fr) 18rem; gap: .75rem; align-items: start; }
+  .boundary-action-panel[data-mode="rear"] > :is(.occupied-map-heading, .occupied-map-toolbar, .builder-placement-concerns) { grid-column: 1 / -1; }
+  .boundary-action-panel[data-mode="rear"] > .boundary-map-tools { grid-column: 2; grid-row: 3 / 6; min-width: 0; }
+  .boundary-action-panel[data-mode="rear"] > :is(.occupied-map, .occupied-map-legend, .setback-map-legend) { grid-column: 1; }
+  .boundary-action-panel[data-mode="rear"] > .occupied-map { grid-row: 3; }
+  .boundary-action-panel[data-mode="rear"] > .occupied-map-legend { grid-row: 4; }
+  .boundary-action-panel[data-mode="rear"] > .setback-map-legend { grid-row: 5; }
+}
 
-.property-details-below-map { grid-column: 1 / -1; order: 4; min-width: 0; }
+.property-details-below-map, .intended-purpose-below-map { min-width: 0; }
+/* These steps already sit inside the placement panel on narrow screens. */
+@media (max-width: 540px) {
+  .property-details-below-map > .zsa__property-details,
+  .intended-purpose-below-map > #builder-purpose { padding: 0; border: 0; }
+}
 .main-building-preview { margin: .6rem 0; }
 .main-building-preview svg { display: block; width: 100%; height: 240px; background: var(--map-canvas); border: 1px solid var(--border); border-radius: var(--radius-sm); }
 .main-building-preview [role="button"] { cursor: pointer; }
 .main-building-preview [role="button"]:focus-visible path { stroke: var(--focus); stroke-width: 5; }
 .main-building-preview text { pointer-events: none; font-weight: 750; }
 .main-building-preview figcaption { font-size: .85rem; color: var(--ink-muted); }
-.boundary-action-panel[data-mode="rear"] > .property-details-below-map { grid-row: 7; }
-.boundary-action-panel[data-mode="rear"] > .builder-map-summary { grid-row: 8; }
-
-.intended-purpose-below-map { grid-column: 1 / -1; order: 4; min-width: 0; }
-.boundary-action-panel[data-mode="rear"] > .intended-purpose-below-map { grid-row: 8; }
-.boundary-action-panel[data-mode="rear"] > .builder-map-summary { grid-row: 9; }

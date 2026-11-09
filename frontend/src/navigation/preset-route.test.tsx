@@ -14,12 +14,26 @@ test('one assessment supports fresh, demo and model links without history resets
   Object.assign(dom.window.HTMLElement.prototype, { attachEvent: () => {}, detachEvent: () => {} })
   Object.assign(dom.window.HTMLDialogElement.prototype, { showModal(this: HTMLDialogElement) { this.open = true }, close(this: HTMLDialogElement) { this.open = false } })
   const originals = new Map<string, PropertyDescriptor | undefined>()
-  for (const [name, value] of Object.entries({ window: dom.window, document: dom.window.document, navigator: dom.window.navigator, HTMLElement: dom.window.HTMLElement, Element: dom.window.Element, requestAnimationFrame: (fn: () => void) => setTimeout(fn, 0), IS_REACT_ACT_ENVIRONMENT: true, fetch: async (url: string) => url === '/health' ? { ok: true, json: async () => ({ status: 'ok' }) } : { ok: false, status: 503 } })) {
+  for (const [name, value] of Object.entries({ window: dom.window, document: dom.window.document, navigator: dom.window.navigator, HTMLElement: dom.window.HTMLElement, Element: dom.window.Element, requestAnimationFrame: (fn: () => void) => setTimeout(fn, 0), cancelAnimationFrame: clearTimeout, IS_REACT_ACT_ENVIRONMENT: true, fetch: async (url: string) => url === '/health' ? { ok: true, json: async () => ({ status: 'ok' }) } : { ok: false, status: 503 } })) {
     originals.set(name, Object.getOwnPropertyDescriptor(globalThis, name)); Object.defineProperty(globalThis, name, { value, configurable: true, writable: true })
   }
   const document = dom.window.document
   const root = createRoot(document.getElementById('root')!)
-  const click = async (text: string) => act(async () => { const button = [...document.querySelectorAll<HTMLButtonElement>('button')].find(node => node.textContent === text); assert.ok(button, text); button.click(); await new Promise(resolve => setTimeout(resolve, 20)) })
+  const click = async (text: string) => {
+    await act(async () => {
+      const button = [...document.querySelectorAll<HTMLButtonElement>('button')].find(node => node.textContent === text)
+      assert.ok(button, text)
+      button.click()
+    })
+    // Destination focus is scheduled after React commits the newly visible form.
+    await act(async () => { await new Promise<void>(resolve => requestAnimationFrame(() => resolve())) })
+  }
+  const enterText = (id: string, value: string) => act(async () => {
+    const input = document.getElementById(id) as HTMLInputElement
+    input.focus()
+    Object.getOwnPropertyDescriptor(dom.window.HTMLInputElement.prototype, 'value')!.set!.call(input, value)
+    input.dispatchEvent(new dom.window.KeyboardEvent('keyup', { key: 'a', bubbles: true }))
+  })
   try {
     await act(async () => root.render(createElement(StrictMode, null, createElement(App))))
     assert.match(document.querySelector('.builder-hero')!.textContent!, /Example assessment/)
@@ -51,19 +65,31 @@ test('one assessment supports fresh, demo and model links without history resets
     assert.ok(document.querySelector('#placement-map'))
     await click('Wrong property? Change')
     assert.ok(document.querySelector('#sd-address'), 'changing the preset opens address search')
+    assert.equal(document.activeElement?.id, 'sd-address')
     assert.doesNotMatch(document.querySelector('#builder-property-content')!.textContent!, /Try an example property|How would you like to enter/)
     await click('Can’t find your address? Enter details manually')
     assert.ok(document.querySelector('.manual-site'), 'manual fallback remains reachable')
+    assert.equal(document.activeElement?.id, 'manual-address')
     await click('Back to address search')
-    assert.ok(document.querySelector('#sd-address'))
+    assert.equal(document.activeElement?.id, 'sd-address')
     await act(async () => { document.querySelector<HTMLAnchorElement>('a[href="#builder-model"]')!.click(); await new Promise(resolve => setTimeout(resolve, 20)) })
     assert.equal(document.querySelector('#sd-address')!.closest('[hidden]'), null, 'navigation cannot hide empty address entry')
     assert.ok(![...document.querySelectorAll('button')].some(node => ['Collapse property', 'Review or change property'].includes(node.textContent ?? '')), 'empty location has no collapse toggle')
     assert.equal(document.querySelector('#placement-map'), null, 'switching to own property clears example geometry and results')
     assert.doesNotMatch(document.querySelector('.builder-hero')!.textContent!, /Example assessment/, 'saved example identity is cleared')
     assert.equal(document.querySelector('#builder-enquiry-text'), null, 'old example enquiry is unavailable')
-    await act(async () => { dom.window.history.replaceState(null, '', '#assessment'); root.render(createElement(App, { key: 'fresh' })) })
-    assert.ok(document.querySelector('#sd-address'))
+    await act(async () => { dom.window.history.replaceState(null, '', '#home'); root.render(createElement(App, { key: 'fresh' })) })
+    await click('Check my property →')
+    assert.equal(document.activeElement?.id, 'sd-address', 'the homepage property action starts at the address field')
+    await enterText('sd-address', 'Unsubmitted search text')
+    await click('Can’t find your address? Enter details manually')
+    await enterText('manual-address', 'Manual site draft')
+    await click('Back to address search')
+    assert.equal((document.activeElement as HTMLInputElement).value, 'Unsubmitted search text')
+    await click('Can’t find your address? Enter details manually')
+    await click('Home'); await click('Check my property →')
+    assert.equal(document.activeElement?.id, 'manual-address', 'reopening resumes the current entry mode')
+    assert.equal((document.activeElement as HTMLInputElement).value, 'Manual site draft')
     assert.equal(document.querySelector('#placement-map'), null, 'fresh assessment never loads example geometry')
     assert.ok(![...document.querySelectorAll('[aria-label="Main navigation"] button')].some(node => /Prefab models|General assessment|Demo/.test(node.textContent ?? '')))
     await click('Home'); await click('Try an example')
@@ -71,7 +97,9 @@ test('one assessment supports fresh, demo and model links without history resets
     await click('Load example assessment')
     assert.ok(document.querySelector('#placement-map'))
     await act(async () => { dom.window.history.replaceState(null, '', '#assessment?model=hewing-quadra4'); root.render(createElement(App, { key: 'model-link' })) })
+    await act(async () => { await new Promise(resolve => setTimeout(resolve, 20)) })
     assert.equal(document.querySelector<HTMLSelectElement>('#builder-model-choice')!.value, 'hewing-quadra4')
+    assert.equal(document.activeElement?.id, 'builder-model-choice', 'a direct model link focuses the selected model')
     assert.equal(document.querySelector('#placement-map'), null, 'builder model link selects a model without example data')
     await act(async () => { dom.window.history.replaceState(null, '', '#builder'); root.render(createElement(App, { key: 'old-builder' })) })
     assert.ok(document.querySelector('#sd-address'), 'old builder URL opens shared empty journey')

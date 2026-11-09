@@ -18,6 +18,8 @@ import './assessment/assessment.css'
 import './evidence_checklist/evidence-checklist.css'
 import './model_catalogue/model-inputs.css'
 import './site_preparations/site-preparation.css'
+import './site_discovery/site-discovery.css'
+import './manual_site/manual-site.css'
 import './case_preparations/pilot.css'
 import './builder_demo/builder-demo.css'
 import './builder_demo/alternative-comparison.css'
@@ -29,7 +31,7 @@ import './builder_demo/height_view/height-view.css'
 import './occupied_lots/occupied-lots.css'
 import './scenario_handoff/scenario-handoff.css'
 import './navigation/navigation.css'
-import { assessmentEntry, type AssessmentEntry } from './navigation/assessmentEntry'
+import { assessmentEntry, assessmentLanding, type AssessmentEntry, type AssessmentLanding } from './navigation/assessmentEntry'
 
 export default function App() {
   type Page = 'home' | 'builder' | 'inputs' | 'summary' | 'evidence' | 'pilot' | 'occupied'
@@ -37,6 +39,7 @@ export default function App() {
   const initialPage = (): Page => initialEntry.current ? 'builder' : window.location.hash === '#inputs' ? 'inputs' : 'home'
   const [page, setPage] = useState<Page>(initialPage)
   const [entryRequest, setEntryRequest] = useState<AssessmentEntry | null>(initialEntry.current)
+  const [builderLanding, setBuilderLanding] = useState<AssessmentLanding>(() => assessmentLanding(window.location.hash, initialEntry.current))
   const [occupiedOpened, setOccupiedOpened] = useState(false)
   const [builderCompletion, setBuilderCompletion] = useState(emptyBuilderJourneyCompletion)
   const [builderOpened, setBuilderOpened] = useState(() => !!initialEntry.current)
@@ -46,9 +49,15 @@ export default function App() {
     setPage(destination)
   }
   const openHome = () => navigate('home', '#home')
-  const openBuilder = () => { builderVisited.current = true; setBuilderOpened(true); navigate('builder', '#assessment') }
+  const openBuilder = () => {
+    builderVisited.current = true
+    setBuilderOpened(true)
+    setBuilderLanding('property')
+    navigate('builder', '#assessment')
+  }
   const openDemo = (walkthrough = false) => {
     builderVisited.current = true; setBuilderOpened(true)
+    setBuilderLanding('example')
     setEntryRequest({ example: true, modelId: 'aux-300', walkthrough })
     navigate('builder', '#assessment')
   }
@@ -59,6 +68,7 @@ export default function App() {
         // History and step links reopen the mounted journey; only a new explicit
         // entry (or cold URL load) initializes a preset.
         if (!builderVisited.current) setEntryRequest(entry)
+        setBuilderLanding(assessmentLanding(window.location.hash, builderVisited.current && entry.example ? null : entry))
         builderVisited.current = true; setBuilderOpened(true); setPage('builder')
       } else if (['#inputs', '#summary', '#evidence', '#pilot', '#occupied'].includes(window.location.hash)) {
         const destination = window.location.hash.slice(1) as Page
@@ -85,9 +95,11 @@ export default function App() {
   const [health, setHealth] = useState('Checking backend…')
   useEffect(() => {
     if (researchMenu.current) researchMenu.current.open = false
+    // The assessment owns focus after its current entry step renders.
+    if (page === 'builder' && builderLanding !== 'example') return
     content.current?.focus({ preventScroll: true })
-    window.scrollTo({ top: 0 })
-  }, [page])
+    window.scrollTo({ top: 0, behavior: 'instant' })
+  }, [page, builderLanding])
 
   useEffect(() => {
     const controller = new AbortController()
@@ -143,7 +155,7 @@ export default function App() {
       {page === 'home' && <Homepage onAssessment={openBuilder} onDemo={() => openDemo()} onWalkthrough={() => openDemo(true)} />}
       {builderOpened && <div hidden={page !== 'builder'} className="sr-workspace">
         <BuilderJourneyNav completion={builderCompletion} />
-        <BuilderDemo visible={page === 'builder'} onProgressChange={setBuilderCompletion} entryRequest={entryRequest} />
+        <BuilderDemo visible={page === 'builder'} onProgressChange={setBuilderCompletion} entryRequest={entryRequest} landing={builderLanding} />
       </div>}
       {(page === 'inputs' || page === 'summary') && <div className="sr-workspace">
         <aside className="sr-workspace-rail"><nav aria-label="Input preparation steps">

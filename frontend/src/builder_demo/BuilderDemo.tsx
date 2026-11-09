@@ -1,7 +1,7 @@
 import { calculateRental, defaultMarket, rentalForProperty, rentalEvidence, withRentalReport, type RentalDraft } from '../rental_scenario/model'
-import type { AssessmentEntry } from '../navigation/assessmentEntry'
+import { focusAssessmentField, type AssessmentEntry, type AssessmentLanding } from '../navigation/assessmentEntry'
 import { buildingClearanceMove } from './buildingMove'
-import { useWalkthrough, walkthroughPhase } from './walkthrough'
+import { useWalkthrough, walkthroughProgress } from './walkthrough'
 import { FloatingNext, PlaybackLayout } from '../FloatingNext'
 import { findingAcknowledgementKey } from './journeyState'
 import { enquiryUseQualification, manufacturerDocument, placementConcerns, boundaryObservations, additionalObservation, conditionalObservation, assumptionsDescription, type EnquiryInput } from './manufacturer'
@@ -177,7 +177,7 @@ export function enquiry(...args: Parameters<typeof enquiryDocument>) { return en
 export type BuilderProgress = import('../navigation/BuilderJourneyNav').BuilderJourneyCompletion
 type JourneyStep = import('../navigation/BuilderJourneyNav').JourneyStep
 
-export default function BuilderDemo({ onProgressChange, presetRequest = 0, entryRequest, visible = true }: { visible?: boolean; entryRequest?: AssessmentEntry | null; presetRequest?: number; onProgressChange?: (progress: BuilderProgress) => void } = {}) {
+export default function BuilderDemo({ onProgressChange, presetRequest = 0, entryRequest, visible = true, landing }: { visible?: boolean; entryRequest?: AssessmentEntry | null; presetRequest?: number; onProgressChange?: (progress: BuilderProgress) => void; landing?: AssessmentLanding } = {}) {
   const [modelId, setModelId] = useState(defaultJourneyModel.model_id)
   const model = journeyCatalogue.models.find(item => item.model_id === modelId)!
   const MODEL_ID = model.model_id
@@ -185,6 +185,8 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const suggestedQuestion = `Could ${model.name} be suitable for this property?`
   const [expanded, setExpanded] = useState({ property: true, placement: false, next: false, email: false })
   const playbackLayoutRef = useRef(false)
+  const builder = useRef<HTMLDivElement>(null)
+  const playbackControls = useRef<HTMLElement>(null)
   const journeyVisible = useRef(visible)
   journeyVisible.current = visible
   const [journeyStep, setJourneyStep] = useState<JourneyStep>('property')
@@ -201,6 +203,11 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const [estimateBuffers, setEstimateBuffers] = useState({ area: 10, height: 10 })
   const [heightRevision, setHeightRevision] = useState(0)
   const [mode, setMode] = useState<'live' | 'manual' | 'retained' | 'example'>('live')
+  const addressQuery = useRef('')
+  const manualMunicipality = useRef<MunicipalityContext | null>(null)
+  const [manualOpened, setManualOpened] = useState(false)
+  const [propertyFocusRequest, setPropertyFocusRequest] = useState(0)
+  const focusedPropertyRequest = useRef(0)
   const [propertyReset, setPropertyReset] = useState(0)
   const [propertyInspect, setPropertyInspect] = useState(0)
   const [live, setLive] = useState<Confirmed | null>(null)
@@ -339,8 +346,20 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   function siteEdited() { resetPropertyAlternatives(); const retainedUse = demoAnswers?.intendedUse === use ? '' : use; setUse(retainedUse); setGeometryFailure(false); setDemoAnswers({}); setStreetDecisionFor(null); setStreetSkipTarget(null); setChecksRevealed(false); setBufferSuggestion(undefined); setMoveSuggestion(undefined); setAcknowledgedConflicts([]); setSelection(null); setImported(false); setMeasurementResult(null); setSiteAssumptions(null); setProjectSettings(applyIntendedUse(modelProjectSettings(model), retainedUse)); setGeometryPending(false); setAccess(''); setServices(''); setProjectContext(previous => ({ ...previous, relationship: '', nextStep: '' })); setWaterfrontMarks(null); setDrawingExport(null); setStreetMarks({ revision: null, data: { edge_ids: [], all_marked: false, origin: 'user' } }); setRearEdge(null); setSelectedBoundary(null); setBoundaryMark(null); setMarkingRole(null); setBoundaryMode('place'); setReadyFor(null); setRevision(value => value + 1) }
   function changeMode(next: typeof mode) {
     if (next !== 'example' && window.location.hash.startsWith('#examples/')) window.history.replaceState(null, '', '#assessment')
+    if (mode === 'manual' && next === 'live') manualMunicipality.current = currentMunicipality
     setExpanded({ property: next !== 'example', placement: next === 'example', next: false, email: false })
     setMode(next); siteEdited(); setLive(null); setManual(null)
+    if (next === 'example') {
+      addressQuery.current = ''
+      setManualOpened(false)
+    } else {
+      if (next === 'manual') {
+        if (manualOpened) setMunicipality(manualMunicipality.current)
+        setManualOpened(true)
+      }
+      setJourneyStep('property')
+      setPropertyFocusRequest(previous => previous + 1)
+    }
     if (next !== 'manual') setMunicipality(next === 'example' ? savedExampleMunicipality() : null)
     setDraft({ ...emptySiteInput, kind: 'address' })
     setDrawingExport(null)
@@ -634,7 +653,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     previousPropertyComplete.current = propertyComplete
   }, [propertyComplete])
   useEffect(() => {
-    if (!playbackLayoutRef.current && journeyStep === 'placement' && propertyComplete) requestAnimationFrame(() => { if (!playbackLayoutRef.current && journeyVisible.current) focusSummaryTarget(document, 'builder-placement-title', 'start') })
+    if (!playbackLayoutRef.current && journeyStep === 'placement' && propertyComplete) requestAnimationFrame(() => { if (!playbackLayoutRef.current && journeyVisible.current) focusSummaryTarget(document, 'builder-placement-title', 'start', 'instant') })
   }, [journeyStep, propertyComplete])
   useEffect(() => {
     function revealStep(event: MouseEvent) {
@@ -919,13 +938,21 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
       !['checked', 'probable'].includes(item.status) && !acknowledgedConflicts.includes(conflictKey(item)))
     requestAnimationFrame(() => focusSummaryTarget(document, next?.targetId ?? 'builder-enquiry-title', 'start'))
   }
-  const summaryPanel = summary && <>{!checksRevealed && <p className="builder-checks-preview">Your preliminary checks will appear after property details and intended purpose.</p>}<div id="builder-checks-disclosure" hidden={!checksRevealed}><HomeownerSummary updating={displayResult.updating} useQualification={displayResult.result?.useQualification} onApplyBuffer={applyBuffer} onMove={applyMove} actionsDisabled={buffersPending || checksPending} acknowledged={includedFindings.map(check => check.label)} onAcknowledge={acknowledgeFinding} summary={summary} onNavigate={navigateFlag} continuation={{ ...continuation, onContinue: () => advanceJourneyStep(nextJourneyStep) }} />{journeyStep === 'checks' && <FloatingNext active sectionId="builder-quick-checks"><div className="homeowner-summary__continue"><p>{continuation.hint}</p><button className="builder-continue" type="button" disabled={buffersPending || checksPending} onClick={() => advanceJourneyStep(nextJourneyStep)}>Next: {continuation.label}<span aria-hidden="true"> →</span></button></div></FloatingNext>}</div></>
-  const placementContinuation = summary && ['placement', 'streets', 'boundaries'].includes(journeyStep) && <div className="homeowner-summary__continue"><p className="placement-action-status">{buffersPending ? 'Save planning buffers before continuing' : journeyStep === 'streets' ? streetAdjacency.all_marked ? `${streetAdjacency.edge_ids.length} street${streetAdjacency.edge_ids.length === 1 ? '' : 's'} marked · saved` : 'Mark the streets you know, or choose Not sure. Unknown street context can continue.' : journeyStep === 'boundaries' ? 'Review or accept suggested roles and buffers. Unknown roles can remain unresolved; save any buffer edits to continue.' : continuation.hint}</p><div className="step-action"><button className="builder-continue" type="button" disabled={buffersPending} onClick={() => advanceJourneyStep(nextJourneyStep)}>Next: {continuation.label}<span aria-hidden="true"> →</span></button><StepInfo label={continuation.label}>{continuation.hint} You can continue with open questions. Existing findings and unanswered questions remain in your enquiry.</StepInfo></div></div>
+  const summaryPanel = summary && <>{!checksRevealed && <p className="builder-checks-preview">Your preliminary checks will appear after property details and intended purpose.</p>}<div id="builder-checks-disclosure" hidden={!checksRevealed}><HomeownerSummary updating={displayResult.updating} useQualification={displayResult.result?.useQualification} onApplyBuffer={applyBuffer} onMove={applyMove} actionsDisabled={buffersPending || checksPending} acknowledged={includedFindings.map(check => check.label)} onAcknowledge={acknowledgeFinding} summary={summary} onNavigate={navigateFlag} continuation={{ ...continuation, onContinue: () => advanceJourneyStep(nextJourneyStep) }} />{journeyStep === 'checks' && <>
+      <p>{continuation.hint}</p>
+      <FloatingNext active><button className="builder-continue" type="button" disabled={buffersPending || checksPending} onClick={() => advanceJourneyStep(nextJourneyStep)}>Next: {continuation.label}<span aria-hidden="true"> →</span></button></FloatingNext>
+    </>}</div></>
+  const placementContinuation = summary && ['placement', 'streets', 'boundaries'].includes(journeyStep) && <div className="homeowner-summary__continue">{buffersPending && <p className="placement-action-status">Save planning buffers before continuing</p>}<div className="step-action"><button className="builder-continue" type="button" disabled={buffersPending} onClick={() => advanceJourneyStep(nextJourneyStep)}>Next: {continuation.label}<span aria-hidden="true"> →</span></button><StepInfo label={continuation.label}>{continuation.hint} You can continue with open questions. Existing findings and unanswered questions remain in your enquiry.</StepInfo></div></div>
   function changeProperty() {
-    if (mode === 'live') { siteEdited(); setLive(null); setPropertyReset(value => value + 1) }
-    else changeMode('live')
+    if (mode === 'live') {
+      siteEdited(); setLive(null); setPropertyReset(value => value + 1)
+      setPropertyFocusRequest(previous => previous + 1)
+    } else {
+      setManualOpened(false)
+      addressQuery.current = ''
+      changeMode('live')
+    }
     setExpanded({ property: true, placement: false, next: false, email: false })
-    requestAnimationFrame(() => focusSummaryTarget(document, 'sd-address'))
   }
   function advanceJourneyStep(step: JourneyStep) {
     if (journeyStep === 'streets' && ['boundaries', 'details', 'purpose', 'checks', 'budget', 'enquiry', 'email'].includes(step) && !hasStreetAnswer) { setStreetSkipTarget(step); return }
@@ -945,15 +972,43 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     if (step === 'boundaries') changeBoundaryMode('rear', true)
     if (step === 'placement' || step === 'details' || step === 'purpose') setBoundaryMode('place')
     setExpanded({ property: step === 'property', placement: !['property', 'model', 'budget', 'enquiry', 'email'].includes(step), next: step === 'enquiry', email: step === 'email' })
-    const targets: Record<JourneyStep, string> = { model: 'builder-title', property: 'sd-address', placement: 'builder-placement-title', streets: 'placement-action-front', boundaries: 'placement-action-rear', details: 'builder-property-details', purpose: 'builder-intended-use', checks: 'builder-quick-checks', budget: 'builder-budget-title', enquiry: 'builder-enquiry-title', email: contextComplete ? 'builder-provider-website' : 'builder-contact-context' }
     if (playbackTransition) return // Playback owns one scroll after the target renders.
     requestAnimationFrame(() => {
       if (playbackActive || !visible) return
-      focusSummaryTarget(document, step === 'details' ? 'building-type' : targets[step], 'start')
-      if (step === 'purpose') document.getElementById('builder-purpose')?.scrollIntoView({ block: 'center', behavior: window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
+      focusJourneyStep(step)
       if (step === 'checks') { const details = document.querySelector<HTMLDetailsElement>('.homeowner-summary__checks'); if (details) details.open = true }
     })
   }
+  function focusJourneyStep(step: JourneyStep) {
+    if (step === 'property') {
+      const focused = mode === 'manual' ? focusAssessmentField('manual-address', 'center') : focusAssessmentField('sd-address')
+      if (!focused) focusSummaryTarget(document, 'builder-property-title', 'start', 'instant')
+      return
+    }
+    if (step === 'model') { focusAssessmentField('builder-model-choice'); return }
+    const targets: Record<Exclude<JourneyStep, 'property' | 'model'>, string> = {
+      placement: 'builder-placement-title', streets: 'placement-action-front',
+      boundaries: 'placement-action-rear', details: 'building-type', purpose: 'builder-intended-use',
+      checks: 'builder-quick-checks', budget: 'builder-budget-title', enquiry: 'builder-enquiry-title',
+      email: contextComplete ? 'builder-provider-website' : 'builder-contact-context',
+    }
+    // Step changes reveal a new task immediately; a pending page reset must not
+    // compete with a smooth scroll and strand its focused control offscreen.
+    focusSummaryTarget(document, targets[step], step === 'purpose' ? 'center' : 'start', 'instant')
+  }
+  useEffect(() => {
+    const focusProperty = propertyFocusRequest !== focusedPropertyRequest.current
+    if (!visible || (!focusProperty && (!landing || landing === 'example'))) return
+    let active = true
+    requestAnimationFrame(() => {
+      if (!active || playbackLayoutRef.current || economicsOpen || pendingEntry) return
+      focusedPropertyRequest.current = propertyFocusRequest
+      if (focusProperty) focusJourneyStep('property')
+      else if (landing === 'model') focusJourneyStep('model')
+      else focusJourneyStep(propertyComplete ? journeyStep : 'property')
+    })
+    return () => { active = false }
+  }, [visible, landing, propertyFocusRequest])
   function navigateFlag(target: string) {
     const propertyFact = ['building-type', 'existing-suites', 'principal-building', 'waterfront-lot', 'zsa-floor-area', 'separation-measurement-choice', 'scouting-height', 'scouting-area-buffer'].includes(target)
     if (!propertyFact && !['street-side', 'boundary-roles', 'boundary-offsets', 'placement-map', 'builder-intended-use'].includes(target)) setChecksRevealed(true)
@@ -975,7 +1030,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const enquiryReady = !!enquiryDoc && readyFor === draftText
   const progressCallback = useRef(onProgressChange)
   progressCallback.current = onProgressChange
-  useEffect(() => { progressCallback.current?.({ reviewReadiness, checksAvailable: checksRevealed, model: true, property: propertyComplete, placement: placementComplete, streets: !!geometryRevision && hasStreetAnswer, boundaries: reviewedBoundariesFor === boundaryReviewRevision, details: reviewedDetailsFor === detailsReviewRevision, purpose: reviewedPurposeFor === use, checks: reviewedChecksFor === reviewRevision, enquiry: enquiryReady, email: !!draftText && (websiteRequestedFor === draftText || emailRequestedFor === JSON.stringify([draftText, recipient, includeSiteDetails])), handoff: websiteRequestedFor === draftText ? 'website' : 'email', current: journeyStep, mapAvailable: propertyComplete ? !!zoningCase : undefined }) }, [checksRevealed, zoningCase, propertyComplete, placementComplete, enquiryReady, geometryRevision, hasStreetAnswer, reviewedBoundariesFor, reviewedDetailsFor, reviewedChecksFor, reviewRevision, detailsReviewRevision, boundaryReviewRevision, reviewedPurposeFor, use, websiteRequestedFor, emailRequestedFor, draftText, recipient, includeSiteDetails, journeyStep, readinessSignature])
+  useEffect(() => { progressCallback.current?.({ walkthroughActive: playbackActive, reviewReadiness, checksAvailable: checksRevealed, model: true, property: propertyComplete, placement: placementComplete, streets: !!geometryRevision && hasStreetAnswer, boundaries: reviewedBoundariesFor === boundaryReviewRevision, details: reviewedDetailsFor === detailsReviewRevision, purpose: reviewedPurposeFor === use, checks: reviewedChecksFor === reviewRevision, enquiry: enquiryReady, email: !!draftText && (websiteRequestedFor === draftText || emailRequestedFor === JSON.stringify([draftText, recipient, includeSiteDetails])), handoff: websiteRequestedFor === draftText ? 'website' : 'email', current: journeyStep, mapAvailable: propertyComplete ? !!zoningCase : undefined }) }, [playbackActive, checksRevealed, zoningCase, propertyComplete, placementComplete, enquiryReady, geometryRevision, hasStreetAnswer, reviewedBoundariesFor, reviewedDetailsFor, reviewedChecksFor, reviewRevision, detailsReviewRevision, boundaryReviewRevision, reviewedPurposeFor, use, websiteRequestedFor, emailRequestedFor, draftText, recipient, includeSiteDetails, journeyStep, readinessSignature])
   useEffect(() => { setReadyFor(null) }, [draftText])
   const emailBody = enquiryDoc ? enquiryEmailBody(enquiryDoc, includeSiteDetails) : ''
   const emailSubject = enquiryDoc?.example ? `Saved example only — ${model.name} question` : includeSiteDetails ? enquiryDoc?.title ?? `${model.name} feasibility enquiry` : `${model.name} feasibility enquiry`
@@ -1074,33 +1129,55 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     const scrollKey = `${playbackRun}:${playbackStop}`
     if (playbackScrolled.current === scrollKey) return
     if (!playbackActive || !playbackStop) return
-    const target = playbackStop === 'model' ? 'builder-title' : playbackStop === 'property' ? 'builder-property-title' : playbackStop === 'result' ? 'builder-quick-checks' : playbackStop === 'budget' ? 'builder-budget-title' : playbackStop === 'enquiry' ? 'builder-unsent-preview' : 'placement-map'
+    const target = playbackStop === 'model' ? '#builder-title' : playbackStop === 'property' ? '#builder-property-title'
+      : playbackStop === 'result' ? '#builder-quick-checks' : playbackStop === 'budget' ? '#builder-budget-title'
+      : playbackStop === 'enquiry' ? '#builder-unsent-preview' : '#placement-map .occupied-map-heading'
     const frame = requestAnimationFrame(() => {
-      if (!playbackLayoutRef.current || !journeyVisible.current) return
-      const element = target === 'placement-map' ? document.querySelector<HTMLElement>('#placement-map svg') : document.getElementById(target)
-      if (element && !element.closest('[hidden]')) { playbackScrolled.current = scrollKey; element.scrollIntoView?.({ block: 'start', behavior: 'auto' }) }
+      const controls = playbackControls.current
+      if (!controls || !playbackLayoutRef.current || !journeyVisible.current) return
+      const element = builder.current?.querySelector(target)
+      if (!element || element.closest('[hidden]')) return
+      builder.current?.style.setProperty('--playback-height', `${controls.getBoundingClientRect().height}px`)
+      playbackScrolled.current = scrollKey
+      element.scrollIntoView?.({ block: 'start', behavior: 'instant' })
     })
     return () => { if (typeof cancelAnimationFrame !== 'undefined') cancelAnimationFrame(frame) }
   }, [playbackActive, playbackStop, playbackRun, journeyStep, expanded, !!enquiryDoc])
-  return <PlaybackLayout.Provider value={playbackActive}><div className="builder-demo" data-playback={playbackActive || undefined}>
+  const playbackFinished = playback.state?.finished
+  const playbackCanAdvance = playback.ready && !playback.state?.skipping
+  const playbackCanSkip = !playback.state?.skipping && playbackStop !== 'result'
+  function takeOverWalkthrough(trigger: HTMLButtonElement) {
+    playback.cancel()
+    const target = playbackStop === 'model' ? 'builder-model-choice' : playbackStop === 'property' ? 'builder-property-title'
+      : playbackStop === 'result' ? 'builder-quick-checks' : playbackStop === 'budget' ? 'builder-economics-open'
+      : playbackStop === 'enquiry' ? 'builder-use' : 'placement-map'
+    requestAnimationFrame(() => {
+      if (journeyVisible.current && (document.activeElement === document.body || document.activeElement === trigger)) focusSummaryTarget(document, target)
+    })
+  }
+  const modelOverview = <>
+    <p><strong>{model.name}</strong> · {original('nominal_exterior_width')} × {original('nominal_exterior_depth')} · advertised height {original('advertised_overall_height')}. Provider dimensions are unreviewed.</p>
+    <p>Explore a placement, review potential concerns, and prepare a question for the provider.</p>
+    <p className="metadata">Model questions, placements, configuration and budget drafts stay in this open assessment. Changing property starts fresh placements and estimates. Reloading clears the current assessment. If a recovery copy was saved, you can recover the prepared enquiry text in this tab.</p>
+  </>
+  return <PlaybackLayout.Provider value={playbackActive}><div ref={builder} className="builder-demo" data-playback={playbackActive || undefined}>
     <div hidden={economicsOpen}>
 
-    {playbackActive && <section data-playback-controls className="builder-playback" aria-label="Walkthrough controls">
-      <span className="builder-playback-progress">Step {walkthroughPhase[playbackStop!]} of 6</span>
-      <p aria-live="polite">{playback.state!.finished ? 'Walkthrough complete. ' : ''}{playbackCaptions[playbackStop!]}{geometryFailure ? ' Placement check unavailable. Retry in the assessment or take over.' : !playback.ready ? ' Waiting for current checks; you can go back or take over.' : ''}</p>
-      <div className="sr-actions">
-        <button type="button" disabled={playbackStop === 'model'} onClick={playback.back}>Back</button>
-        {!playback.state!.finished && <button className="builder-continue" type="button" disabled={!playback.ready || playback.state!.skipping} onClick={playback.next}>Next</button>}
-        <button hidden={playback.state!.finished || playbackStop === 'result'} type="button" onClick={playback.skip}>Skip to result</button>
-        <button type="button" onClick={event => {
-          const trigger = event.currentTarget
-          playback.cancel()
-          requestAnimationFrame(() => {
-            if (document.activeElement === document.body || document.activeElement === trigger)
-              focusSummaryTarget(document, playbackStop === 'enquiry' ? 'builder-use' : playbackStop === 'budget' ? 'builder-economics-open' : playbackStop === 'model' ? 'builder-model-choice' : 'placement-map')
-          })
-        }}>Let me try</button>
+    {playbackActive && playbackStop && <section ref={playbackControls} data-playback-controls className="builder-playback" aria-label="Walkthrough controls" onKeyDown={event => {
+      if (event.repeat && (event.key === 'Enter' || event.key === ' ')) event.preventDefault()
+    }}>
+      <span className="builder-playback-progress">{walkthroughProgress(playbackStop)}</span>
+      <div className="builder-playback-actions">
+        <button type="button" aria-disabled={playbackStop === 'model' || undefined} tabIndex={playbackStop === 'model' ? -1 : undefined} onClick={playback.back}>Back</button>
+        <button className="builder-continue" type="button" aria-disabled={!playbackFinished && !playbackCanAdvance || undefined} onClick={event => {
+          if (playbackFinished) takeOverWalkthrough(event.currentTarget)
+          else playback.next()
+        }}>{playbackFinished ? 'Let me try' : 'Next'}</button>
+        <button hidden={playbackFinished} type="button" aria-disabled={!playbackCanSkip || undefined} tabIndex={playbackCanSkip ? undefined : -1} onClick={playback.skip}>Skip to result</button>
+        <button hidden={playbackFinished} type="button" onClick={event => takeOverWalkthrough(event.currentTarget)}>Let me try</button>
       </div>
+      <p aria-live="polite">{playbackFinished ? 'Walkthrough complete. ' : ''}{playbackCaptions[playbackStop]}</p>
+      <p className="builder-playback-status" role="status">{playbackStop === 'model' || playbackStop === 'property' ? '' : geometryFailure ? 'Placement check unavailable.' : playback.ready ? 'Current checks ready.' : 'Waiting for current checks…'}</p>
     </section>}
     {mode === 'example' && !playbackActive && <button type="button" onClick={() => setPendingEntry({ example: true, modelId: 'aux-300', walkthrough: true })}>Replay walkthrough</button>}
     <dialog ref={streetDialog} aria-labelledby="street-context-title" aria-describedby="street-context-reason" className="builder-street-dialog" onCancel={() => setStreetSkipTarget(null)}>
@@ -1118,16 +1195,17 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
       <p>This replaces your selected model, property, placement and property review answers with Model 300 on a saved Victoria property. Example inputs replace the local project answers too. Nothing is sent; you can keep your current assessment.</p>
       <div className="sr-actions"><button type="button" autoFocus onClick={() => { entryDialog.current?.close(); setPendingEntry(null); document.getElementById('builder-model-choice')?.focus() }}>Keep current assessment</button><button type="button" onClick={() => { if (pendingEntry) applyEntry(pendingEntry); entryDialog.current?.close(); setPendingEntry(null); document.getElementById('builder-model-choice')?.focus() }}>Load example assessment</button></div>
     </dialog>
-    <section className="builder-hero" id="builder-model" aria-labelledby="builder-title">
-      <label htmlFor="builder-model-choice">Choose a model</label>
-      <select id="builder-model-choice" value={modelId} onChange={event => switchModel(event.target.value)}>{journeyCatalogue.models.map(item => <option key={item.model_id} value={item.model_id}>{item.provider} · {item.name}</option>)}</select>
+    <section className={mode === 'example' ? 'builder-hero' : 'builder-hero builder-entry-model'} id="builder-model" aria-labelledby="builder-title">
       <p className="eyebrow">{mode === 'example' ? 'Example assessment' : 'Assessment'} · {model.provider}</p>
       <h1 id="builder-title">Explore {model.name} on your site</h1>
-      <p>Explore a placement, review potential concerns, and prepare a question for the provider.</p>
-      <p className="metadata">Model questions, placements, configuration and budget drafts stay in this open assessment. Changing property starts fresh placements and estimates; reloading clears these drafts.</p>
-      <p className="notice">Preliminary exploration · nothing is sent automatically.</p>
-      <p><strong>{model.name}</strong> · {original('nominal_exterior_width')} × {original('nominal_exterior_depth')} · advertised height {original('advertised_overall_height')}. Provider dimensions are unreviewed.</p>
+      <div className="builder-entry-model-choice">
+        <label htmlFor="builder-model-choice">Choose a model</label>
+        <select id="builder-model-choice" value={modelId} onChange={event => switchModel(event.target.value)}>{journeyCatalogue.models.map(item => <option key={item.model_id} value={item.model_id}>{item.provider} · {item.name}</option>)}</select>
+      </div>
+      <p className={mode === 'example' ? 'notice' : 'metadata builder-entry-scope'}>Preliminary exploration · nothing is sent automatically.</p>
+      {mode === 'example' && modelOverview}
       <details className="builder-model-overview"><summary>About {model.name} · photos, price and specifications</summary>
+      {mode !== 'example' && modelOverview}
       <ModelImage model={model} />
       <PriceTiming model={model} />
       {model.model_id === 'wcch-ch-studio' && <p className="notice">Observational footprint comparison only. Permanent dwelling suitability is unconfirmed; ask West Coast Container Homes about this exact configuration before pursuing residential use.</p>}
@@ -1148,16 +1226,16 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     {checksPending && <p role="status">Updating checks. {summary ? 'Previous findings are shown for reference; ' : ''}copy and save will use the updated results when ready.</p>}
     <EnquiryRecovery enquiry={!checksPending && (expanded.next || enquiryReady) ? draftText : null} report={reportDoc ? enquiryPlainText(reportDoc) : null} technicalEvidence={JSON.stringify(technicalEvidence, null, 2)} />
     <section className="builder-stage" id="builder-property" aria-labelledby="builder-property-title">
-    <p className="eyebrow">Property</p><h2 id="builder-property-title">Could this fit on your property?</h2>
+    <p className="eyebrow">Property</p><h2 id="builder-property-title">{mode === 'example' ? 'Could this fit on your property?' : 'Find your property'}</h2>
     <p>{propertyComplete ? (mode === 'example' ? 'Saved Victoria example selected.' : live ? live.address.label : `${manual?.facts.address || selection?.candidate?.address.value || selection?.manual.address.value || 'Site description'} · user-supplied; unverified.`) : 'Choose an address result or confirm a manual site description to continue.'}</p>
     {propertyComplete && <button type="button" aria-expanded={expanded.property} aria-controls="builder-property-content" onClick={() => toggleStep('property')}>{expanded.property ? 'Collapse property' : 'Review or change property'}</button>}
     <div id="builder-property-content" hidden={propertyComplete && !expanded.property}>
-    {mode === 'live' && <SiteDiscovery autoProceed municipality={currentMunicipality} onMunicipalityChange={changeMunicipality} resetKey={propertyReset} inspectKey={propertyInspect} onConfirm={next => { siteEdited(); setLive(next) }} onManual={() => changeMode('manual')} />}
+    {mode === 'live' && <SiteDiscovery autoProceed municipality={currentMunicipality} onMunicipalityChange={changeMunicipality} resetKey={propertyReset} inspectKey={propertyInspect} initialQuery={addressQuery.current} onQueryChange={query => { addressQuery.current = query }} onConfirm={next => { siteEdited(); setLive(next); if (next) setManualOpened(false) }} onManual={() => changeMode('manual')} />}
     {mode === 'example' && <p>Example property—not your property. <button type="button" onClick={() => changeMode('live')}>Enter your address instead</button></p>}
     {mode === 'manual' && <><button type="button" onClick={() => changeMode('live')}>Back to address search</button><MunicipalityCoverage value={currentMunicipality} onChange={changeMunicipality} />{victoriaCoverage && <p>Manual sketches provide geometry checks. Choose a supported mapped property for city-specific rule comparisons.</p>}</>}
     {mode === 'retained' && <SitePreparation draft={draft} onDraftChange={next => { setDraft(next); setReadyFor(null) }} selection={selection}
       onEdit={siteEdited} onConfirm={next => { setSelection(next); setImported(false); setMeasurementResult(null); setReadyFor(null); setRevision(value => value + 1) }} />}
-      {mode === 'manual' && <ManualSiteInput key={propertyReset} alternativeKey={modelId} initialPlacement={placementSeed?.position} onPlacementDraftChange={position => placementEdited({ position, widthOrigin: "user", depthOrigin: "user", minima: { parcel: "", building: "" } })} onChange={value => { if (JSON.stringify(value) !== JSON.stringify(manual)) { setManual(value); setReadyFor(null) } }} footprint={{ widthM: Number(measurement('nominal_exterior_width')?.quantity?.value) || null, depthM: Number(measurement('nominal_exterior_depth')?.quantity?.value) || null, label: `${model.provider} ${model.name} · unreviewed nominal dimensions` }} />}
+      {manualOpened && <div hidden={mode !== 'manual'}><ManualSiteInput active={mode === 'manual'} key={propertyReset} alternativeKey={modelId} initialPlacement={placementSeed?.position} onPlacementDraftChange={position => placementEdited({ position, widthOrigin: "user", depthOrigin: "user", minima: { parcel: "", building: "" } })} onChange={value => { if (JSON.stringify(value) !== JSON.stringify(manual)) { setManual(value); setReadyFor(null) } }} footprint={{ widthM: Number(measurement('nominal_exterior_width')?.quantity?.value) || null, depthM: Number(measurement('nominal_exterior_depth')?.quantity?.value) || null, label: `${model.provider} ${model.name} · unreviewed nominal dimensions` }} /></div>}
       {mode === 'manual' && hasSite && <button type="button" onClick={() => setManualConfirmedFor(manualSignature)} disabled={propertyComplete}>Confirm my site description</button>}
     </div>
     </section>
@@ -1176,7 +1254,8 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
         {journeyStep !== 'purpose' && <button type="button" onClick={() => openJourneyStep('purpose')}>Review intended purpose</button>}
         <div hidden={journeyStep !== 'purpose'}>
           <IntendedUseControl value={use} onChange={changeIntendedUse} />
-          <FloatingNext active={journeyStep === 'purpose'} sectionId="builder-purpose"><div className="homeowner-summary__continue"><p>Choose an intended use if known, or keep Not sure or unanswered and continue. Dependent planning checks remain unresolved.</p><button className="builder-continue" type="button" onClick={() => advanceJourneyStep(zoningCase ? 'checks' : 'enquiry')}>Next: {zoningCase ? 'Review quick checks' : 'Prepare enquiry'}<span aria-hidden="true"> →</span></button></div></FloatingNext>
+          <p>Choose an intended use if known, or keep Not sure or unanswered and continue. Dependent planning checks remain unresolved.</p>
+          <FloatingNext active={journeyStep === 'purpose'}><button className="builder-continue" type="button" onClick={() => advanceJourneyStep(zoningCase ? 'checks' : 'enquiry')}>Next: {zoningCase ? 'Review quick checks' : 'Prepare enquiry'}<span aria-hidden="true"> →</span></button></FloatingNext>
         </div>
       </section></EvidenceAtFooter>}
       {mode === 'example' && <ExampleProperty initialDraft={placementSeed} onDraftChange={placementEdited} suggestionContext={suggestionContext} autoSuggest={!playback.state && !estimatePlacementLocks.includes(modelId)} onFailureChange={setGeometryFailure} playbackPosition={playbackStop === 'initial' || playbackStop === 'moved' ? { token: playbackRun!, position: playbackStop === 'initial' ? initialExamplePosition() : movedExamplePosition() } : undefined} model={model} showPlacementConcerns={journeyStep === 'boundaries'} placementConcerns={placementConcernsPanel} onContinueUnresolved={checksPending ? undefined : continueWithPlacementConcerns} moveSuggestion={moveSuggestion?.geometryRevision === geometryRevision ? moveSuggestion : undefined} evidenceTargetId="builder-geometry-evidence" key={revision} placementContinuation={placementContinuation} placementSummary={summaryPanel} boundaryInteraction={boundaryInteraction} onAssessmentPending={setGeometryPending} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} />}
@@ -1216,13 +1295,13 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
       <div id="builder-enquiry-content" hidden={!expanded.next}>
       {!hasSite && <p>Add a property or your known site facts above to prepare an unsent enquiry. Your answers stay local to this journey.</p>}
       {hasSite && <><p>Complete the three required fields to prepare your draft. Unknown, Not sure or Prefer not to say are accepted answers. All other fields are optional. These answers stay local until you share the enquiry.</p>
-      <p id="builder-required-help">Highlighted fields still need an answer. You can explicitly choose Unknown rather than supplying details you don’t know.</p>
+      {!contextComplete && <p id="builder-required-help">Highlighted fields still need an answer.</p>}
       <div className="builder-questions">
-        <label className="builder-required-label" htmlFor="builder-use">How would you use {model.name}? <span>Required</span></label><input required aria-describedby="builder-required-help" className={`builder-required-input${!use.trim() ? ' is-missing' : ''}`} id="builder-use" list="builder-use-options" value={use} onChange={event => changeIntendedUse(event.target.value)} placeholder="Choose a suggestion or type your answer" />
+        <label className="builder-required-label" htmlFor="builder-use">How would you use {model.name}? <span>Required</span></label><input required aria-describedby={contextComplete ? undefined : 'builder-required-help'} className={`builder-required-input${!use.trim() ? ' is-missing' : ''}`} id="builder-use" list="builder-use-options" value={use} onChange={event => changeIntendedUse(event.target.value)} placeholder="Choose a suggestion or type your answer" />
         <datalist id="builder-use-options">{['a home for myself', 'family accommodation', 'a rental suite', 'an office', 'Still deciding', 'Unknown', 'Prefer not to say'].map(value => <option key={value} value={value} />)}</datalist>
-        <label className="builder-required-label" htmlFor="builder-relationship">Relationship to the property <span>Required</span></label><input required aria-describedby="builder-required-help" className={`builder-required-input${!projectContext.relationship.trim() ? ' is-missing' : ''}`} id="builder-relationship" list="builder-relationship-options" value={projectContext.relationship} onChange={event => { clearDemoAnswer('relationship'); setProjectContext(previous => ({ ...previous, relationship: event.target.value })) }} placeholder="Choose a suggestion or type your answer" />
+        <label className="builder-required-label" htmlFor="builder-relationship">Relationship to the property <span>Required</span></label><input required aria-describedby={contextComplete ? undefined : 'builder-required-help'} className={`builder-required-input${!projectContext.relationship.trim() ? ' is-missing' : ''}`} id="builder-relationship" list="builder-relationship-options" value={projectContext.relationship} onChange={event => { clearDemoAnswer('relationship'); setProjectContext(previous => ({ ...previous, relationship: event.target.value })) }} placeholder="Choose a suggestion or type your answer" />
         <datalist id="builder-relationship-options">{['I own the property', 'I am considering buying it', 'I am helping the owner', 'Unknown', 'Prefer not to say'].map(value => <option key={value} value={value} />)}</datalist>
-        <label className="builder-required-label" htmlFor="builder-nextStep">What response would be most useful? <span>Required</span></label><input required aria-describedby="builder-required-help" className={`builder-required-input${!projectContext.nextStep.trim() ? ' is-missing' : ''}`} id="builder-nextStep" list="builder-response-options" value={projectContext.nextStep} onChange={event => { clearDemoAnswer('nextStep'); setProjectContext(previous => ({ ...previous, nextStep: event.target.value })) }} placeholder="Choose a suggestion or type your answer" />
+        <label className="builder-required-label" htmlFor="builder-nextStep">What response would be most useful? <span>Required</span></label><input required aria-describedby={contextComplete ? undefined : 'builder-required-help'} className={`builder-required-input${!projectContext.nextStep.trim() ? ' is-missing' : ''}`} id="builder-nextStep" list="builder-response-options" value={projectContext.nextStep} onChange={event => { clearDemoAnswer('nextStep'); setProjectContext(previous => ({ ...previous, nextStep: event.target.value })) }} placeholder="Choose a suggestion or type your answer" />
         <datalist id="builder-response-options">{['Please advise whether this is worth investigating further.', 'I would like to arrange an initial call.', 'Please share standard pricing and inclusions.', 'Unknown', 'Prefer not to say'].map(value => <option key={value} value={value} />)}</datalist>
         <label htmlFor="builder-question">Your question for the builder (optional)</label><textarea id="builder-question" value={question} onChange={event => setQuestion(event.target.value)} placeholder="Ask about suitability, next steps or additional costs." />
         <label htmlFor="builder-timing">Possible timing (optional)</label><input id="builder-timing" value={timing} onChange={event => setTiming(event.target.value)} placeholder="e.g. next year; unknown is fine" />
@@ -1252,11 +1331,13 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
         <CopyableRecord id="builder-enquiry-text" label="Plain-text enquiry to copy" value={draftText} />
         </>}
       </div>
-      <FloatingNext active={journeyStep === 'enquiry'} sectionId="builder-enquiry-content"><div className="builder-enquiry-confirm">
+      <div className="builder-enquiry-confirm">
         <h3>Happy with your enquiry?</h3><p>Complete the three required answers and review your draft to continue. Explicit unknown answers are accepted.</p>
+      </div>
+      <FloatingNext active={journeyStep === 'enquiry'}>
         <button className="builder-continue" type="button" disabled={!contextComplete || checksPending || exportBusy} onClick={() => { if (!enquiryDoc || checksPending) return; setReadyFor(draftText); openJourneyStep('email') }}>Confirm enquiry &amp; continue →</button>
-        <p role="status">{enquiryReady ? 'Enquiry confirmed. No message has been sent.' : 'Draft in progress. Review before continuing.'}</p>
-      </div></FloatingNext>
+      </FloatingNext>
+      <p role="status">{enquiryReady ? 'Enquiry confirmed. No message has been sent.' : 'Draft in progress. Review before continuing.'}</p>
       <TechnicalDetails title="Complete site selection, sources and measurements"><CopyableRecord id="builder-technical-record" label="Complete technical evidence export" value={JSON.stringify(technicalEvidence, null, 2)} /></TechnicalDetails>
       </>}
       </div>

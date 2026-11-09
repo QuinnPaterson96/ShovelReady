@@ -52,7 +52,8 @@ test('explicit walkthrough steps, back, skip and edit takeover reject an obsolet
     hold = true; await click('Skip to result'); await tick(550)
     assert.ok(held)
     assert.match(caption()!, /Move away/)
-    assert.equal(button('Next').disabled, true, 'pending moved measurement cannot advance')
+    assert.equal(button('Next').getAttribute('aria-disabled'), 'true', 'pending moved measurement cannot advance')
+    await click('Next'); assert.match(caption()!, /Move away/)
     hold = false
     await click('Back'); await tick(100)
     assert.match(caption()!, /starting position/)

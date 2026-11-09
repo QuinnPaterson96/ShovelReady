@@ -1,46 +1,42 @@
-import { createContext, useContext, useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useRef, type ReactNode } from 'react'
 
 export const PlaybackLayout = createContext(false)
 
-/** One action, docked while its active section is visible; never duplicates a button. */
-export function FloatingNext({ active, sectionId, children }: { active: boolean; sectionId: string; children: ReactNode }) {
+/** The same in-flow action can stick to the viewport within its active step. */
+export function FloatingNext({ active, children, className = '' }: { active: boolean; children: ReactNode; className?: string }) {
   const playback = useContext(PlaybackLayout)
-  const end = useRef<HTMLDivElement>(null)
-  const action = useRef<HTMLDivElement>(null)
-  const [height, setHeight] = useState(128)
-  const [floating, setFloating] = useState(false)
-  const [bounds, setBounds] = useState({ left: 8, width: 320 })
+  const sticky = active && !playback
+  const bar = useRef<HTMLDivElement>(null)
+
   useEffect(() => {
-    if (!action.current) return
-    const measure = () => { if (action.current) setHeight(action.current.getBoundingClientRect().height) }
-    measure()
-    if (typeof ResizeObserver === 'undefined') return
-    const observer = new ResizeObserver(measure)
-    observer.observe(action.current)
-    return () => observer.disconnect()
-  }, [])
-  useEffect(() => {
-    const section = document.getElementById(sectionId)
-    if (playback || !active || !section || !end.current || typeof IntersectionObserver === 'undefined') { setFloating(false); return }
-    let sectionVisible = false, endVisible = false
-    const update = () => {
-      const box = section.getBoundingClientRect()
-      const viewportWidth = document.documentElement.clientWidth
-      setBounds(viewportWidth <= 760
-        ? { left: 8, width: Math.max(0, viewportWidth - 16) }
-        : { left: Math.max(8, box.left), width: Math.max(0, Math.min(box.width, viewportWidth - 16)) })
-      setFloating(sectionVisible && !endVisible)
+    const footer = bar.current
+    if (!sticky || !footer?.parentElement) return
+    const section = footer.parentElement
+
+    // A browser may consider a tab target visible even when the sticky footer covers it.
+    let frame = 0
+    const revealFocus = (event: FocusEvent) => {
+      const target = event.target
+      if (!(target instanceof Element) || footer.contains(target)) return
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(() => {
+        if (document.activeElement !== target) return
+        const field = target.getBoundingClientRect()
+        const action = footer.getBoundingClientRect()
+        if (field.bottom > action.top && field.top < action.bottom &&
+            field.right > action.left && field.left < action.right) {
+          target.scrollIntoView({ block: 'center', behavior: 'instant' })
+        }
+      })
     }
-    const observer = new IntersectionObserver(entries => {
-      for (const entry of entries) {
-        if (entry.target === section) sectionVisible = entry.isIntersecting
-        else endVisible = entry.isIntersecting && entry.intersectionRatio >= .95
-      }
-      update()
-    }, { threshold: [0, .95] })
-    observer.observe(section); observer.observe(end.current)
-    window.addEventListener('resize', update)
-    return () => { observer.disconnect(); window.removeEventListener('resize', update) }
-  }, [active, sectionId, playback])
-  return <div ref={end} className={`floating-next${active && floating ? ' floating-next--docked' : ''}`} style={{ minHeight: height || undefined, '--next-left': `${bounds.left}px`, '--next-width': `${bounds.width}px` } as CSSProperties}><div ref={action} className="floating-next__action">{children}</div></div>
+    section.addEventListener('focusin', revealFocus)
+    return () => {
+      cancelAnimationFrame(frame)
+      section.removeEventListener('focusin', revealFocus)
+    }
+  }, [sticky])
+
+  return <div ref={bar} className={['floating-next', sticky && 'floating-next--active', className].filter(Boolean).join(' ')}>
+    {children}
+  </div>
 }
