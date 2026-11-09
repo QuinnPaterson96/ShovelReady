@@ -14,12 +14,20 @@ test('one assessment supports fresh, demo and model links without history resets
   Object.assign(dom.window.HTMLElement.prototype, { attachEvent: () => {}, detachEvent: () => {} })
   Object.assign(dom.window.HTMLDialogElement.prototype, { showModal(this: HTMLDialogElement) { this.open = true }, close(this: HTMLDialogElement) { this.open = false } })
   const originals = new Map<string, PropertyDescriptor | undefined>()
-  for (const [name, value] of Object.entries({ window: dom.window, document: dom.window.document, navigator: dom.window.navigator, HTMLElement: dom.window.HTMLElement, Element: dom.window.Element, requestAnimationFrame: (fn: () => void) => setTimeout(fn, 0), IS_REACT_ACT_ENVIRONMENT: true, fetch: async (url: string) => url === '/health' ? { ok: true, json: async () => ({ status: 'ok' }) } : { ok: false, status: 503 } })) {
+  for (const [name, value] of Object.entries({ window: dom.window, document: dom.window.document, navigator: dom.window.navigator, HTMLElement: dom.window.HTMLElement, Element: dom.window.Element, requestAnimationFrame: (fn: () => void) => setTimeout(fn, 0), cancelAnimationFrame: clearTimeout, IS_REACT_ACT_ENVIRONMENT: true, fetch: async (url: string) => url === '/health' ? { ok: true, json: async () => ({ status: 'ok' }) } : { ok: false, status: 503 } })) {
     originals.set(name, Object.getOwnPropertyDescriptor(globalThis, name)); Object.defineProperty(globalThis, name, { value, configurable: true, writable: true })
   }
   const document = dom.window.document
   const root = createRoot(document.getElementById('root')!)
-  const click = async (text: string) => act(async () => { const button = [...document.querySelectorAll<HTMLButtonElement>('button')].find(node => node.textContent === text); assert.ok(button, text); button.click(); await new Promise(resolve => setTimeout(resolve, 20)) })
+  const click = async (text: string) => {
+    await act(async () => {
+      const button = [...document.querySelectorAll<HTMLButtonElement>('button')].find(node => node.textContent === text)
+      assert.ok(button, text)
+      button.click()
+    })
+    // Destination focus is scheduled after React commits the newly visible form.
+    await act(async () => { await new Promise<void>(resolve => requestAnimationFrame(() => resolve())) })
+  }
   const enterText = (id: string, value: string) => act(async () => {
     const input = document.getElementById(id) as HTMLInputElement
     input.focus()
