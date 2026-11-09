@@ -46,7 +46,7 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     await act(async () => { await new Promise(resolve => setTimeout(resolve, 550)) })
     await act(async () => { await new Promise(resolve => setTimeout(resolve, 450)) })
     assert.match(document.querySelector('#builder-quick-checks')!.textContent!, /Review this placement/)
-    assert.deepEqual(lastScroll, { id: 'builder-placement-title', options: { block: 'start', behavior: 'smooth' } }, 'automatic placement entry scrolls to its heading')
+    assert.deepEqual(lastScroll, { id: 'builder-placement-title', options: { block: 'start', behavior: 'instant' } }, 'automatic placement entry cannot race a pending smooth page reset')
     assert.equal(document.getElementById('builder-purpose')!.hidden, true, 'purpose stays out of placement until its later step')
     assert.equal(document.getElementById('builder-checks-disclosure')!.hidden, true, 'detailed findings are not shown while entering placement')
     assert.equal(document.querySelector('[aria-label="Review readiness"]'), null, 'readiness counts are deferred with the checks')
@@ -129,7 +129,7 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     for (const id of ['building-type', 'principal-building', 'existing-suites', 'waterfront-lot']) {
       assert.equal(document.getElementById(id)!.closest('[hidden]'), null, `${id} must not be hidden by a map-controls wrapper during property review`)
     }
-    assert.deepEqual(lastScroll, { id: 'building-type', options: { block: 'start', behavior: 'smooth' } })
+    assert.deepEqual(lastScroll, { id: 'building-type', options: { block: 'start', behavior: 'instant' } })
     const factsSectionElement = document.getElementById('builder-property-details')!
     assert.equal(factsSectionElement.querySelectorAll('.builder-continue').length, 1, 'property details have a single continuation')
     assert.equal(document.querySelector<HTMLDetailsElement>('#builder-property-details > details')!.open, true)
@@ -155,7 +155,7 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     assert.equal(document.getElementById('builder-property-details')!.hidden, false)
     await click('Next: Intended purpose →')
     assert.equal(document.activeElement?.id, 'builder-intended-use')
-    assert.deepEqual(lastScroll, { id: 'builder-purpose', options: { block: 'center', behavior: 'smooth' } }, 'center the full purpose card, retaining focus on its control')
+    assert.deepEqual(lastScroll, { id: 'builder-intended-use', options: { block: 'center', behavior: 'instant' } }, 'one destination scroll centers the focused purpose control')
     assert.equal(document.querySelector('.builder-journey-rail [aria-current="step"]')?.getAttribute('href'), '#builder-purpose')
     assert.equal(document.getElementById('builder-purpose')!.compareDocumentPosition(summary) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING, dom.window.Node.DOCUMENT_POSITION_FOLLOWING)
     await click('Next: Review quick checks →')
