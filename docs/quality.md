@@ -420,6 +420,14 @@ amounts, malformed edits, rental inclusion focus, mobile result proximity and
 return-to-project focus/scroll passed the bounded confirmation. Source acceptance
 and complete site costs remain separate from software usability.
 
+Implementation revision `796d2b38b0f936e61461047e3a502a020c7feb7d` passed the
+200-case frontend suite, TypeScript/Vite production build, placement-demo, guided
+walkthrough, advanced budget and comparison browser checks. The
+[measured financial walkthrough](usability/project-economics-2026-11-09/financial-walkthrough.json)
+completed phone/desktop × rental-included/skipped, each across four models, with
+no page errors or external requests. This is pre-merge evidence; CI and the
+separate Sol test of the merged commit remain distinct verification steps.
+
 The [project economics decision](decisions/project-economics.md) records the
 starting amounts, source boundaries and remaining work. From `frontend/`, run
 `npm run build` and `npm test`. For local browser verification, set

@@ -97,6 +97,14 @@ unknown cost scope and consolidates source lines in the supporting report;
 its compiled CSS matches the confirmed presentation. Final-revision software
 verification is recorded separately in the PR and quality agreement.
 
+The [four-model acceptance record](financial-walkthrough.json) passed on that
+implementation commit, with production asset `index-B0_4W6Ev.js`: phone 390 × 844
+and desktop 1440 × 1000, each with rental included and skipped. All sixteen model
+visits completed without page errors or external requests. The frontend suite
+passed 200 cases; build, placement-demo, guided walkthrough, advanced budget and
+comparison browser checks also passed. These checks used the real stateless local
+API, not a database or provider contact.
+
 ## Remaining gaps
 
 | Gap | Practical impact | Next owner/action |

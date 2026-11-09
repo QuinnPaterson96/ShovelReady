@@ -1,0 +1,972 @@
+{
+  "capturedAt": "2026-11-09T19:31:39.442Z",
+  "buildCommit": "796d2b38b0f936e61461047e3a502a020c7feb7d",
+  "entryAsset": "/assets/index-B0_4W6Ev.js",
+  "entrySha256": "a15bdb328a1aad2e11c1a154dc8705c756fe9afffe3b80821fa863680320a009",
+  "browser": "156.0.8078.80",
+  "scope": "local bundled example; real stateless API; no source publication, database or provider contact",
+  "runs": [
+    {
+      "label": "phone-interests",
+      "completed": true,
+      "modelIds": [
+        "aux-300",
+        "aux-240",
+        "wcch-ch-studio",
+        "hewing-quadra4"
+      ],
+      "errors": [],
+      "externalRequests": [],
+      "observations": [
+        {
+          "phase": "home",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "rental-choice",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "initial-financial-overview",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "estimate-editor",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "aux-300-rental",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "aux-300-authored",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "aux-240-rental",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "aux-240-authored",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "wcch-ch-studio-rental",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "wcch-ch-studio-authored",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "hewing-quadra4-rental",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "hewing-quadra4-authored",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "four-model-comparison",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "aux-300-restored-quote",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "aux-240-restored-quote",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "wcch-ch-studio-restored-quote",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "hewing-quadra4-restored-quote",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "download-complete",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        }
+      ],
+      "download": {
+        "filename": "prefab-enquiry.pdf",
+        "bytes": 600537,
+        "painted": [
+          "Quadra 4 feasibility enquiry - 419 Cecelia Rd, Victoria, BC",
+          "SAVED EXAMPLE ONLY - not my property.",
+          "Please advise what is needed for an initial call.",
+          "Project",
+          "I’m exploring Hewing Haus Quadra 4 at 419 Cecelia Rd, Victoria, BC. I would use it for Garden suite.",
+          "My configuration preference is Quadra 4 custom options for QA.",
+          "Cost scope for discussion",
+          "Cost scope: Whole project. Priced-components subtotal: CAD 288,000. Based on Building owner allowance",
+          "(CAD 225,000). Includes editable planning amounts for the captured scope. Please confirm actual pricing",
+          "and inclusions. Unpriced or unresolved: Upgrades, Professional work, Tax, Contingency. Installed total",
+          "unavailable; please help establish the missing scope.",
+          "Builder/provider: Which access/crane, foundation and utility facts would let you or a local contractor scope",
+          "installation, and who coordinates that work?",
+          "Builder/provider: Who will confirm professional-work, permit-fee and tax scope, including any applicable",
+          "waiver or credit?",
+          "Questions for Hewing Haus",
+          "For Quadra 4, please confirm the matching quote and foundation scope.",
+          "Keep this authored question for hewing-quadra4.",
+          "1. Can you share current dimensioned plans with their date/version, overhangs, interior floor area, height",
+          "measurement reference and foundation requirements?",
+          "2. Do you service this locality?",
+          "3. What is the current lead time, when does it start, and what decisions, permits and site preparation must",
+          "be complete before booking or delivery?",
+          "Planning questions to resolve separately",
+          "Intended use supplied: Garden suite. The planning comparisons use a garden-suite scenario; City or",
+          "professional review must establish whether that scenario applies.",
+          "The property contact needs to confirm the main home, existing suites and waterfront context. City staff or a",
+          "qualified local professional needs to check the applicable rules, legal measurement basis and any permit or",
+          "title conditions. Please advise what product information you can provide to support that review.",
+          "Site information",
+          "The preliminary rectangle is 6.3 m × 6.12 m; dimensions have been edited and availability needs your",
+          "confirmation. It excludes unconfirmed overhangs and installation space.",
+          "Municipality and rule coverage",
+          "Municipality: City of Victoria (selected municipal parcel source, unverified); preliminary comparisons use the",
+          "available Victoria garden-suite rule subset.",
+          "Unsent preliminary enquiry | Page 1",
+          "Approximate mapped outlines and a nominal unit rectangle. This is a discussion sketch, not a survey or",
+          "approved site plan.",
+          "Parcel source: City of Victoria Open Data · Parcel MapServer response · captured 2026-10-07 ·",
+          "unreviewed. https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11",
+          "Building source: City of Victoria Open Data · Building MapServer response · captured 2026-10-07 ·",
+          "unreviewed. https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1",
+          "Candidate comparison source: City of Victoria · Zoning Bylaw 2018, No. 18-072 · Part 3.1(28)(f), PDF",
+          "pp27-28; Part 2.1 Setback and Side Lot Line, PDF p19 · captured 2026-10-06 · candidate.",
+          "https://www.victoria.ca/media/file/zoning-bylaw-2018",
+          "Candidate comparison source: City of Victoria · Zoning Bylaw 2018, No. 18-072 · Part 3.1(28)(g), PDF",
+          "pp27-28; Part 2.1 Flanking Street Lot Line and Setback, PDF pp15-16 and p19 · captured 2026-10-06 ·",
+          "candidate. https://www.victoria.ca/media/file/zoning-bylaw-2018",
+          "Unsent preliminary enquiry | Page 2"
+        ]
+      },
+      "rentalPackage": {
+        "report": "# Quadra 4 supporting screening report\n\nSAVED EXAMPLE ONLY — not my property.\n\nPreliminary supplied-placement screening; source observations and candidate rules remain unreviewed. Intended use supplied: Garden suite. The planning comparisons use a garden-suite scenario; City or professional review must establish whether that scenario applies. Exact values and complete identifiers are retained in the accompanying technical evidence.\n\n## Overall account\n\nNo concerns identified in the included checks; missing information and unsupported conditions remain unresolved.\n\nMapped estimates and supplied measurements have different bases. None establishes legal feasibility.\n\n## Boundary planning assumptions\n\nStreet-adjoining edge selection is incomplete. Candidate front and street-side alternatives remain unresolved; complete the known street marks or keep the context unknown before relying on boundary comparisons. Individual candidate distances remain in the technical evidence.\n\n## Additional scouting checks\n\nDistance from the main building: not assessed. Main-home identification or usable building geometry is unresolved. Source: City of Victoria, Zoning Bylaw 2018, No. 18-072, candidate; [https://www.victoria.ca/media/file/zoning-bylaw-2018](https://www.victoria.ca/media/file/zoning-bylaw-2018) (Part 3.1(28)(h), PDF p28; approximate roofline-to-nominal comparison only; legal endpoints unresolved).\n\nFront boundary distance: not assessed. Front-line classification or waterfront applicability is unresolved. Source: City of Victoria, Zoning Bylaw 2018, No. 18-072, candidate; [https://www.victoria.ca/media/file/zoning-bylaw-2018](https://www.victoria.ca/media/file/zoning-bylaw-2018) (Part 4.1(4)(a), PDF p31, buildings with less than three dwelling units; Part 2.1 Setback, PDF p19).\n\nLocated behind the main building: not assessed. The main home, rear boundary or waterfront status is unresolved. Source: City of Victoria, Zoning Bylaw 2018, No. 18-072, candidate; [https://www.victoria.ca/media/file/zoning-bylaw-2018](https://www.victoria.ca/media/file/zoning-bylaw-2018) (Part 3.1(28)(a), PDF p27; Part 2.1 Rear Yard, PDF p19; approximate parallel rear-face construction only).\n\nShare of the rear yard: not assessed. The main home or rear-yard area is unresolved. Source: City of Victoria, Zoning Bylaw 2018, No. 18-072, candidate; [https://www.victoria.ca/media/file/zoning-bylaw-2018](https://www.victoria.ca/media/file/zoning-bylaw-2018) (Part 3.1(28)(i), PDF p28; nominal footprint divided by approximate rear-yard area, not lot area).\n\nHeight: not assessed. Installed height, grade and the measurement datum are unresolved. Source: City of Victoria, Zoning Bylaw 2018, No. 18-072, candidate; [https://www.victoria.ca/media/file/zoning-bylaw-2018](https://www.victoria.ca/media/file/zoning-bylaw-2018) (Part 3.1(28)(e), PDF p27; Part 2.1 Height, PDF p17; Average Grade, PDF p12).\n\nFloor area: not assessed. Regulatory floor area and its inclusions are unresolved. Source: City of Victoria, Zoning Bylaw 2018, No. 18-072, candidate; [https://www.victoria.ca/media/file/zoning-bylaw-2018](https://www.victoria.ca/media/file/zoning-bylaw-2018) (Part 3.1(28)(d), PDF p27; Part 2.1 Floor Area, PDF p16).\n\n## Price & timing\n\nModel price is not total project cost. Installation duration is not the full project timeline. Confirm a current quote and site-specific schedule with the provider.\n\nStarting at CAD 224,000. Configuration: not specified. Region: not specified. Customization pricing requires confirmation Inclusions: not specified. Additional costs/exclusions: Permitting; Foundations; Site services; Shipping; Installation. Tax treatment: unknown. Manufacturer wording: “Starting at CAD $224,000.00 observed in live browser product page.”. Hewing Haus · Quadra 4 · Model specifications and offer; browser inspection for Quadra price · captured 2026-10-07 · unreviewed; source revision unknown; updated date unknown. Source: [https://hewinghaus.com/product/quadra-4-400-sqft-home/](https://hewinghaus.com/product/quadra-4-400-sqft-home/)\n\nContract to delivery: Delivery may be possible as soon as 12 weeks after purchase; confirm a project-specific schedule.. Configuration: Research-only public offer; controlled configuration and revision unconfirmed.. Region: not specified. Earliest provider claim, not a promised duration or occupancy schedule. No scalar range inferred. Clock starts: Purchase; exact prerequisites unconfirmed. Prerequisites/dependencies: Confirm permitting, site readiness and configuration with provider.. Manufacturer wording: “Delivery may be possible as soon as 12 weeks after purchase; confirm a project-specific schedule.”. Hewing Haus · Quadra 4 · Model specifications and offer; browser inspection for Quadra price · captured 2026-10-07 · unreviewed; source revision unknown; updated date unknown. Source: [https://hewinghaus.com/product/quadra-4-400-sqft-home/](https://hewinghaus.com/product/quadra-4-400-sqft-home/)\n\nProduction lead time: unknown in the captured catalogue sources.\n\nDelivery transit: unknown in the captured catalogue sources.\n\nOn-site installation: unknown in the captured catalogue sources.\n\n## Project cost draft\n\nBudget scope: Whole project. Cost coverage is incomplete; a complete scenario range is unavailable.\n\nPriced-components subtotal: CAD 288,000.\n\nPriced work: Building CAD 225,000, Foundation and site work CAD 25,000, Service connections CAD 15,000, Delivery and lift CAD 15,000, Fees CAD 8,000.\n\nPrice source: Evolv Modular, What Your Lot Decides · Vancouver Island site costs, captured 2026-11-09, unreviewed. [https://evolvmodular.ca/](https://evolvmodular.ca/)\n\nStill unpriced or unresolved: Upgrades, Professional work, Tax, Contingency.\n\nTax basis is unstated on priced work; specify whether tax is included or separately allowed.\n\nPlanning allowances and homeowner entries are scenario assumptions. Source claims and quote facts remain unreviewed.\n\n## Model\n\nPrepared independently with ShovelReady; no affiliation with or contact to Hewing Haus.\n\nDesign: Hewing Haus Quadra 4; public page captured 2026-10-07; unreviewed; manufacturer revision unknown. Nominal exterior 20 ft 1 in × 20 ft 1 in (6.12 m × 6.12 m). Advertised exterior height unknown; regulatory installed height and datum unknown. Source: [https://hewinghaus.com/product/quadra-4-400-sqft-home/](https://hewinghaus.com/product/quadra-4-400-sqft-home/).\n\nProvider service/installation: North America including islands is a provider offer, not a confirmed Victoria project. Crane; foundation, permitting, services, shipping and install at additional cost.\n\n## Property\n\nExample property / saved data: 419 Cecelia Rd, Victoria, BC; City of Victoria Parcel MapServer response; captured 2026-10-07; unreviewed. Parcel source: [https://maps.victoria.ca/server/rest/services/OpenData/OpenData\\_Land/MapServer/11/query](https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11) (Parcel MapServer response). Roofline source: [https://maps.victoria.ca/server/rest/services/OpenData/OpenData\\_Land/MapServer/1/query](https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1) (Building MapServer response). Contains information licensed under the Open Government Licence – City of Victoria: [https://opendata.victoria.ca/pages/open-data-licence](https://opendata.victoria.ca/pages/open-data-licence). Full source record links are in the technical evidence export. This is not the sender's property or a verified address.\n\nUse: Garden suite. Timing: unknown. Budget, if shared: unknown.\n\nAccess and crane questions/known facts: unknown. Utility/services questions/known facts: unknown.\n\n## Placement\n\nIllustrative placement on the saved example 419 Cecelia Rd, Victoria, BC: nominal rectangle 6.3 m × 6.12 m (width user edited; depth catalogue nominal), rotation 53°. The rectangle lies inside the mapped parcel. No overlap with the captured rooflines was observed; other obstructions remain unknown. Observed parcel boundary distance 2.22 m. Captured 2026-10-07; unreviewed; approximate captured geometry only.\n\nFoundation scenario allowance: not supplied. This allowance is used only in the labelled preliminary height estimate; installed height remains unverified.\n\n## Approximate setbacks\n\nSide, rear and street-side boundary comparison: not assessed. This subset excludes front distance, rear-yard location/share and height/area; those results are listed separately. Source: City of Victoria, Zoning Bylaw 2018, No. 18-072, captured 2026-10-06, candidate; [https://www.victoria.ca/media/file/zoning-bylaw-2018](https://www.victoria.ca/media/file/zoning-bylaw-2018)\n\n## Conditional zoning\n\nIntended use: Garden suite. Screening use: garden suite (scenario assumption, unverified). Foundation attachment: not supplied (unverified assumption). Main-building type: not supplied (user answer, unverified). Existing garden suites: 0 (default assumption, unconfirmed). Waterfront status: no (default assumption, unconfirmed). Main outline: Outline 1, assumed from the largest mapped outline, not verified as the main house. Main-home identification and legal boundaries remain unverified. Intended use supplied: Garden suite. The planning comparisons use a garden-suite scenario; City or professional review must establish whether that scenario applies.\n\nCandidate Victoria garden-suite comparison for this supplied placement: 1 checks meet under stated assumptions; no concerns identified in the supplied-facts comparisons; 14 need information; 0 outside scope. Candidate source/currentness and site facts remain unreviewed; no approval or complete bylaw review.\n\nConflicting PDF consolidation labels; exact effective interval is unresolved. Independent legal interpretation and parcel applicability review are pending.\n\nLegal lot: not assessed: a required measurement or property fact is missing. The source-selected parcel does not establish legal lot identity; title or survey records and the property contact can confirm it.\n\nCurrent zoning: not assessed: a required measurement or property fact is missing. The property contact and City staff need to confirm the relevant property fact and its applicability.\n\nApplicable zoning bylaw: not assessed: a required measurement or property fact is missing. The property contact and City staff need to confirm the relevant property fact and its applicability.\n\nProposed use: meets under the supplied facts. This records the screening scenario; it does not confirm the intended project or property fact.\n\nFoundation attachment: not assessed: a required measurement or property fact is missing. The property contact and City staff need to confirm the relevant property fact and its applicability. This records the screening scenario; it does not confirm the intended project or property fact.\n\nExisting main building type: not assessed: a required measurement or property fact is missing. The property contact and City staff need to confirm the relevant property fact and its applicability. This records the screening scenario; it does not confirm the intended project or property fact.\n\nMain building selection: not assessed: a required measurement or property fact is missing. The mapped main home is an assumption; the property contact can confirm its identity on the plan. This records the screening scenario; it does not confirm the intended project or property fact.\n\nGarden suite count: not assessed: a required measurement or property fact is missing. Existing suites and the lot’s eligibility need confirmation by the property contact and City staff.\n\nParcel edge 1 role: not assessed: a required measurement or property fact is missing. The property contact and City staff need to confirm the relevant property fact and its applicability.\n\nParcel edge 2 role: not assessed: a required measurement or property fact is missing. The property contact and City staff need to confirm the relevant property fact and its applicability.\n\nParcel edge 3 role: not assessed: a required measurement or property fact is missing. The property contact and City staff need to confirm the relevant property fact and its applicability.\n\nParcel edge 4 role: not assessed: a required measurement or property fact is missing. The property contact and City staff need to confirm the relevant property fact and its applicability.\n\nFlanking street line presence: not assessed: a required measurement or property fact is missing. This comparison needs compatible wall-to-legal-line measurements and review of projections and waterfront conditions; a surveyor and City staff can establish these.\n\nSeparation from main building: not assessed: a required measurement or property fact is missing. The mapped roof gap is reported separately. Legal wall/projection endpoints and their separation need a survey or approved plans and City review.\n\nGarden suite floor area: not assessed: a required measurement or property fact is missing. The manufacturer’s plans need a compatible floor-area calculation, including the relevant levels and inclusions; the buffered footprint estimate is reported separately.\n\nCandidate source: City of Victoria, Zoning Bylaw 2018, No. 18-072, captured 2026-10-06, candidate; [https://www.victoria.ca/media/file/zoning-bylaw-2018](https://www.victoria.ca/media/file/zoning-bylaw-2018). Clause references: Part 4.1(1)(h),(1.1)(b), PDF p30; Part 2.2 Residential and Garden Suite, PDF pp21-22; Part 3.1(28)(b), PDF p27; Part 3.1(28)(f), PDF pp27-28; Part 2.1 Setback and Side Lot Line, PDF p19; Part 3.1(28)(g), PDF pp27-28; Part 2.1 Flanking Street Lot Line and Setback, PDF pp15-16 and p19; Part 3.1(28)(h), PDF p28; Part 3.1(28)(d), PDF p27; Part 2.1 Floor Area, PDF p16.\n\n## Still to confirm\n\nQuestions: Please confirm the current controlled Quadra 4 drawing/revision, installed envelope and height datum; roof projections and site clearances; local delivery/crane access, foundation and utility requirements; and what site information you need before discussing this property.\n\nLegal lot lines, building walls and roles, other obstructions, zoning and setbacks, installed height and datum, current controlled provider dimensions, access and services remain unresolved.\n\n## Rental planning scenario\n\nQuadra 4: long-term rental planning scenario, 1 bedroom. Monthly rent: $2,200 CAD, entered by homeowner. This assumes the chosen configuration can be used as a self-contained rental dwelling; it does not establish suitability or achievable rent.\n\nFull rental year: $25,080 after 5% vacancy; $18,810 after running costs; $6,810 cash flow after debt payments, before income tax. Running costs: 25% of collected rent (planning allowance). Financing: $1,000 CAD/month debt payments.\n\nVacancy and running-cost allowances are editable scenario choices, not measured local rates. Expenses should cover incremental property tax, insurance, owner-paid utilities, management, maintenance and replacement reserves. Installed costs and acquisition/construction time are separate; no profit or return ranking is established.\n\nBenchmark: Statistics Canada, table 46-10-0092-01, Victoria, 1 bedroom, Q2 2026; captured 2026-11-09, unreviewed. [https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=4610009201](https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=4610009201) Asking rents are not signed leases; no suite-size, utilities, parking or furnishing adjustment has been applied.\n\n## Simple payback\n\n15.3 years using the priced project subtotal divided by annual income after running costs. Before financing and income tax.\n\n## Municipality and rule coverage\n\nMunicipality: City of Victoria (selected municipal parcel source, unverified); preliminary comparisons use the available Victoria garden-suite rule subset.\n\nPlanning feasibility remains unconfirmed. Manufacturer drawings, property confirmation and City or professional review are separate next steps.\n\nFull technical evidence: [prefab-technical-evidence.json](prefab-technical-evidence.json).\n\nApproximate drawing: [PNG](prefab-placement.png) · [PDF](prefab-placement.pdf). These are not surveys or approved site plans.\n",
+        "rentalEvidence": {
+          "schema_version": "rental-evidence.v1",
+          "model_id": "hewing-quadra4",
+          "model_revision": null,
+          "draft": {
+            "schema_version": "rental-scenario.v1",
+            "marketId": "2021S0503935",
+            "marketOrigin": "municipality",
+            "bedrooms": 1,
+            "layoutOrigin": "catalogue_description",
+            "monthlyRent": "2200",
+            "vacancyPercent": "5",
+            "expenseMode": "allowance",
+            "expenses": "25",
+            "financing": "payment",
+            "monthlyDebt": "1000"
+          },
+          "result": {
+            "benchmark": {
+              "market_id": "2021S0503935",
+              "market": "Victoria, Census metropolitan area (CMA)",
+              "bedrooms": 1,
+              "monthly_cad": 2040,
+              "vector": "v1675425162",
+              "status": "",
+              "symbol": ""
+            },
+            "rent": 2200,
+            "vacancy": 5,
+            "expenses": 25,
+            "debt": 1000,
+            "gross": 26400,
+            "collected": 25080,
+            "runningCosts": 6270,
+            "operating": 18810,
+            "cashFlow": 6810,
+            "errors": {}
+          },
+          "currency": "CAD",
+          "period": "2026-04",
+          "source": {
+            "provider": "Statistics Canada",
+            "table": "46-10-0092-01",
+            "url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=4610009201",
+            "captured_at": "2026-11-08T18:01:34.707644-07:00",
+            "source_sha256": "0f38c4cb7550ecd7719f15aacdc61d6f2b2342b892dc43e63db8a960a4009e0a",
+            "review_status": "unreviewed"
+          },
+          "assumption_policy": "rental-planning.v1: 5% vacancy and 25% of collected rent for running costs are editable illustrative allowances, not local observed rates.",
+          "scope": "Stabilized full rental year; apartment asking-rent proxy, not a suite forecast. Before income tax. No appreciation, rent growth, partial first year or return on installed cost."
+        }
+      }
+    },
+    {
+      "label": "phone-skip",
+      "completed": true,
+      "modelIds": [
+        "aux-300",
+        "aux-240",
+        "wcch-ch-studio",
+        "hewing-quadra4"
+      ],
+      "errors": [],
+      "externalRequests": [],
+      "observations": [
+        {
+          "phase": "home",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "rental-choice",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "initial-financial-overview",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "estimate-editor",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "aux-300-authored",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "aux-240-authored",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "wcch-ch-studio-authored",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "hewing-quadra4-authored",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "four-model-comparison",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "aux-300-restored-quote",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "aux-240-restored-quote",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "wcch-ch-studio-restored-quote",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "hewing-quadra4-restored-quote",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "download-complete",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        }
+      ],
+      "download": {
+        "filename": "prefab-enquiry.pdf",
+        "bytes": 600537,
+        "painted": [
+          "Quadra 4 feasibility enquiry - 419 Cecelia Rd, Victoria, BC",
+          "SAVED EXAMPLE ONLY - not my property.",
+          "Please advise what is needed for an initial call.",
+          "Project",
+          "I’m exploring Hewing Haus Quadra 4 at 419 Cecelia Rd, Victoria, BC. I would use it for Garden suite.",
+          "My configuration preference is Quadra 4 custom options for QA.",
+          "Cost scope for discussion",
+          "Cost scope: Whole project. Priced-components subtotal: CAD 288,000. Based on Building owner allowance",
+          "(CAD 225,000). Includes editable planning amounts for the captured scope. Please confirm actual pricing",
+          "and inclusions. Unpriced or unresolved: Upgrades, Professional work, Tax, Contingency. Installed total",
+          "unavailable; please help establish the missing scope.",
+          "Builder/provider: Which access/crane, foundation and utility facts would let you or a local contractor scope",
+          "installation, and who coordinates that work?",
+          "Builder/provider: Who will confirm professional-work, permit-fee and tax scope, including any applicable",
+          "waiver or credit?",
+          "Questions for Hewing Haus",
+          "For Quadra 4, please confirm the matching quote and foundation scope.",
+          "Keep this authored question for hewing-quadra4.",
+          "1. Can you share current dimensioned plans with their date/version, overhangs, interior floor area, height",
+          "measurement reference and foundation requirements?",
+          "2. Do you service this locality?",
+          "3. What is the current lead time, when does it start, and what decisions, permits and site preparation must",
+          "be complete before booking or delivery?",
+          "Planning questions to resolve separately",
+          "Intended use supplied: Garden suite. The planning comparisons use a garden-suite scenario; City or",
+          "professional review must establish whether that scenario applies.",
+          "The property contact needs to confirm the main home, existing suites and waterfront context. City staff or a",
+          "qualified local professional needs to check the applicable rules, legal measurement basis and any permit or",
+          "title conditions. Please advise what product information you can provide to support that review.",
+          "Site information",
+          "The preliminary rectangle is 6.3 m × 6.12 m; dimensions have been edited and availability needs your",
+          "confirmation. It excludes unconfirmed overhangs and installation space.",
+          "Municipality and rule coverage",
+          "Municipality: City of Victoria (selected municipal parcel source, unverified); preliminary comparisons use the",
+          "available Victoria garden-suite rule subset.",
+          "Unsent preliminary enquiry | Page 1",
+          "Approximate mapped outlines and a nominal unit rectangle. This is a discussion sketch, not a survey or",
+          "approved site plan.",
+          "Parcel source: City of Victoria Open Data · Parcel MapServer response · captured 2026-10-07 ·",
+          "unreviewed. https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11",
+          "Building source: City of Victoria Open Data · Building MapServer response · captured 2026-10-07 ·",
+          "unreviewed. https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1",
+          "Candidate comparison source: City of Victoria · Zoning Bylaw 2018, No. 18-072 · Part 3.1(28)(f), PDF",
+          "pp27-28; Part 2.1 Setback and Side Lot Line, PDF p19 · captured 2026-10-06 · candidate.",
+          "https://www.victoria.ca/media/file/zoning-bylaw-2018",
+          "Candidate comparison source: City of Victoria · Zoning Bylaw 2018, No. 18-072 · Part 3.1(28)(g), PDF",
+          "pp27-28; Part 2.1 Flanking Street Lot Line and Setback, PDF pp15-16 and p19 · captured 2026-10-06 ·",
+          "candidate. https://www.victoria.ca/media/file/zoning-bylaw-2018",
+          "Unsent preliminary enquiry | Page 2"
+        ]
+      },
+      "rentalPackage": null
+    },
+    {
+      "label": "desktop-interests",
+      "completed": true,
+      "modelIds": [
+        "aux-300",
+        "aux-240",
+        "wcch-ch-studio",
+        "hewing-quadra4"
+      ],
+      "errors": [],
+      "externalRequests": [],
+      "observations": [
+        {
+          "phase": "home",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "rental-choice",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "initial-financial-overview",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "estimate-editor",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "aux-300-rental",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "aux-300-authored",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "aux-240-rental",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "aux-240-authored",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "wcch-ch-studio-rental",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "wcch-ch-studio-authored",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "hewing-quadra4-rental",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "hewing-quadra4-authored",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "four-model-comparison",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "aux-300-restored-quote",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "aux-240-restored-quote",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "wcch-ch-studio-restored-quote",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "hewing-quadra4-restored-quote",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "download-complete",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        }
+      ],
+      "download": {
+        "filename": "prefab-enquiry.pdf",
+        "bytes": 600537,
+        "painted": [
+          "Quadra 4 feasibility enquiry - 419 Cecelia Rd, Victoria, BC",
+          "SAVED EXAMPLE ONLY - not my property.",
+          "Please advise what is needed for an initial call.",
+          "Project",
+          "I’m exploring Hewing Haus Quadra 4 at 419 Cecelia Rd, Victoria, BC. I would use it for Garden suite.",
+          "My configuration preference is Quadra 4 custom options for QA.",
+          "Cost scope for discussion",
+          "Cost scope: Whole project. Priced-components subtotal: CAD 288,000. Based on Building owner allowance",
+          "(CAD 225,000). Includes editable planning amounts for the captured scope. Please confirm actual pricing",
+          "and inclusions. Unpriced or unresolved: Upgrades, Professional work, Tax, Contingency. Installed total",
+          "unavailable; please help establish the missing scope.",
+          "Builder/provider: Which access/crane, foundation and utility facts would let you or a local contractor scope",
+          "installation, and who coordinates that work?",
+          "Builder/provider: Who will confirm professional-work, permit-fee and tax scope, including any applicable",
+          "waiver or credit?",
+          "Questions for Hewing Haus",
+          "For Quadra 4, please confirm the matching quote and foundation scope.",
+          "Keep this authored question for hewing-quadra4.",
+          "1. Can you share current dimensioned plans with their date/version, overhangs, interior floor area, height",
+          "measurement reference and foundation requirements?",
+          "2. Do you service this locality?",
+          "3. What is the current lead time, when does it start, and what decisions, permits and site preparation must",
+          "be complete before booking or delivery?",
+          "Planning questions to resolve separately",
+          "Intended use supplied: Garden suite. The planning comparisons use a garden-suite scenario; City or",
+          "professional review must establish whether that scenario applies.",
+          "The property contact needs to confirm the main home, existing suites and waterfront context. City staff or a",
+          "qualified local professional needs to check the applicable rules, legal measurement basis and any permit or",
+          "title conditions. Please advise what product information you can provide to support that review.",
+          "Site information",
+          "The preliminary rectangle is 6.3 m × 6.12 m; dimensions have been edited and availability needs your",
+          "confirmation. It excludes unconfirmed overhangs and installation space.",
+          "Municipality and rule coverage",
+          "Municipality: City of Victoria (selected municipal parcel source, unverified); preliminary comparisons use the",
+          "available Victoria garden-suite rule subset.",
+          "Unsent preliminary enquiry | Page 1",
+          "Approximate mapped outlines and a nominal unit rectangle. This is a discussion sketch, not a survey or",
+          "approved site plan.",
+          "Parcel source: City of Victoria Open Data · Parcel MapServer response · captured 2026-10-07 ·",
+          "unreviewed. https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11",
+          "Building source: City of Victoria Open Data · Building MapServer response · captured 2026-10-07 ·",
+          "unreviewed. https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1",
+          "Candidate comparison source: City of Victoria · Zoning Bylaw 2018, No. 18-072 · Part 3.1(28)(f), PDF",
+          "pp27-28; Part 2.1 Setback and Side Lot Line, PDF p19 · captured 2026-10-06 · candidate.",
+          "https://www.victoria.ca/media/file/zoning-bylaw-2018",
+          "Candidate comparison source: City of Victoria · Zoning Bylaw 2018, No. 18-072 · Part 3.1(28)(g), PDF",
+          "pp27-28; Part 2.1 Flanking Street Lot Line and Setback, PDF pp15-16 and p19 · captured 2026-10-06 ·",
+          "candidate. https://www.victoria.ca/media/file/zoning-bylaw-2018",
+          "Unsent preliminary enquiry | Page 2"
+        ]
+      },
+      "rentalPackage": {
+        "report": "# Quadra 4 supporting screening report\n\nSAVED EXAMPLE ONLY — not my property.\n\nPreliminary supplied-placement screening; source observations and candidate rules remain unreviewed. Intended use supplied: Garden suite. The planning comparisons use a garden-suite scenario; City or professional review must establish whether that scenario applies. Exact values and complete identifiers are retained in the accompanying technical evidence.\n\n## Overall account\n\nNo concerns identified in the included checks; missing information and unsupported conditions remain unresolved.\n\nMapped estimates and supplied measurements have different bases. None establishes legal feasibility.\n\n## Boundary planning assumptions\n\nStreet-adjoining edge selection is incomplete. Candidate front and street-side alternatives remain unresolved; complete the known street marks or keep the context unknown before relying on boundary comparisons. Individual candidate distances remain in the technical evidence.\n\n## Additional scouting checks\n\nDistance from the main building: not assessed. Main-home identification or usable building geometry is unresolved. Source: City of Victoria, Zoning Bylaw 2018, No. 18-072, candidate; [https://www.victoria.ca/media/file/zoning-bylaw-2018](https://www.victoria.ca/media/file/zoning-bylaw-2018) (Part 3.1(28)(h), PDF p28; approximate roofline-to-nominal comparison only; legal endpoints unresolved).\n\nFront boundary distance: not assessed. Front-line classification or waterfront applicability is unresolved. Source: City of Victoria, Zoning Bylaw 2018, No. 18-072, candidate; [https://www.victoria.ca/media/file/zoning-bylaw-2018](https://www.victoria.ca/media/file/zoning-bylaw-2018) (Part 4.1(4)(a), PDF p31, buildings with less than three dwelling units; Part 2.1 Setback, PDF p19).\n\nLocated behind the main building: not assessed. The main home, rear boundary or waterfront status is unresolved. Source: City of Victoria, Zoning Bylaw 2018, No. 18-072, candidate; [https://www.victoria.ca/media/file/zoning-bylaw-2018](https://www.victoria.ca/media/file/zoning-bylaw-2018) (Part 3.1(28)(a), PDF p27; Part 2.1 Rear Yard, PDF p19; approximate parallel rear-face construction only).\n\nShare of the rear yard: not assessed. The main home or rear-yard area is unresolved. Source: City of Victoria, Zoning Bylaw 2018, No. 18-072, candidate; [https://www.victoria.ca/media/file/zoning-bylaw-2018](https://www.victoria.ca/media/file/zoning-bylaw-2018) (Part 3.1(28)(i), PDF p28; nominal footprint divided by approximate rear-yard area, not lot area).\n\nHeight: not assessed. Installed height, grade and the measurement datum are unresolved. Source: City of Victoria, Zoning Bylaw 2018, No. 18-072, candidate; [https://www.victoria.ca/media/file/zoning-bylaw-2018](https://www.victoria.ca/media/file/zoning-bylaw-2018) (Part 3.1(28)(e), PDF p27; Part 2.1 Height, PDF p17; Average Grade, PDF p12).\n\nFloor area: not assessed. Regulatory floor area and its inclusions are unresolved. Source: City of Victoria, Zoning Bylaw 2018, No. 18-072, candidate; [https://www.victoria.ca/media/file/zoning-bylaw-2018](https://www.victoria.ca/media/file/zoning-bylaw-2018) (Part 3.1(28)(d), PDF p27; Part 2.1 Floor Area, PDF p16).\n\n## Price & timing\n\nModel price is not total project cost. Installation duration is not the full project timeline. Confirm a current quote and site-specific schedule with the provider.\n\nStarting at CAD 224,000. Configuration: not specified. Region: not specified. Customization pricing requires confirmation Inclusions: not specified. Additional costs/exclusions: Permitting; Foundations; Site services; Shipping; Installation. Tax treatment: unknown. Manufacturer wording: “Starting at CAD $224,000.00 observed in live browser product page.”. Hewing Haus · Quadra 4 · Model specifications and offer; browser inspection for Quadra price · captured 2026-10-07 · unreviewed; source revision unknown; updated date unknown. Source: [https://hewinghaus.com/product/quadra-4-400-sqft-home/](https://hewinghaus.com/product/quadra-4-400-sqft-home/)\n\nContract to delivery: Delivery may be possible as soon as 12 weeks after purchase; confirm a project-specific schedule.. Configuration: Research-only public offer; controlled configuration and revision unconfirmed.. Region: not specified. Earliest provider claim, not a promised duration or occupancy schedule. No scalar range inferred. Clock starts: Purchase; exact prerequisites unconfirmed. Prerequisites/dependencies: Confirm permitting, site readiness and configuration with provider.. Manufacturer wording: “Delivery may be possible as soon as 12 weeks after purchase; confirm a project-specific schedule.”. Hewing Haus · Quadra 4 · Model specifications and offer; browser inspection for Quadra price · captured 2026-10-07 · unreviewed; source revision unknown; updated date unknown. Source: [https://hewinghaus.com/product/quadra-4-400-sqft-home/](https://hewinghaus.com/product/quadra-4-400-sqft-home/)\n\nProduction lead time: unknown in the captured catalogue sources.\n\nDelivery transit: unknown in the captured catalogue sources.\n\nOn-site installation: unknown in the captured catalogue sources.\n\n## Project cost draft\n\nBudget scope: Whole project. Cost coverage is incomplete; a complete scenario range is unavailable.\n\nPriced-components subtotal: CAD 288,000.\n\nPriced work: Building CAD 225,000, Foundation and site work CAD 25,000, Service connections CAD 15,000, Delivery and lift CAD 15,000, Fees CAD 8,000.\n\nPrice source: Evolv Modular, What Your Lot Decides · Vancouver Island site costs, captured 2026-11-09, unreviewed. [https://evolvmodular.ca/](https://evolvmodular.ca/)\n\nStill unpriced or unresolved: Upgrades, Professional work, Tax, Contingency.\n\nTax basis is unstated on priced work; specify whether tax is included or separately allowed.\n\nPlanning allowances and homeowner entries are scenario assumptions. Source claims and quote facts remain unreviewed.\n\n## Model\n\nPrepared independently with ShovelReady; no affiliation with or contact to Hewing Haus.\n\nDesign: Hewing Haus Quadra 4; public page captured 2026-10-07; unreviewed; manufacturer revision unknown. Nominal exterior 20 ft 1 in × 20 ft 1 in (6.12 m × 6.12 m). Advertised exterior height unknown; regulatory installed height and datum unknown. Source: [https://hewinghaus.com/product/quadra-4-400-sqft-home/](https://hewinghaus.com/product/quadra-4-400-sqft-home/).\n\nProvider service/installation: North America including islands is a provider offer, not a confirmed Victoria project. Crane; foundation, permitting, services, shipping and install at additional cost.\n\n## Property\n\nExample property / saved data: 419 Cecelia Rd, Victoria, BC; City of Victoria Parcel MapServer response; captured 2026-10-07; unreviewed. Parcel source: [https://maps.victoria.ca/server/rest/services/OpenData/OpenData\\_Land/MapServer/11/query](https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11) (Parcel MapServer response). Roofline source: [https://maps.victoria.ca/server/rest/services/OpenData/OpenData\\_Land/MapServer/1/query](https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1) (Building MapServer response). Contains information licensed under the Open Government Licence – City of Victoria: [https://opendata.victoria.ca/pages/open-data-licence](https://opendata.victoria.ca/pages/open-data-licence). Full source record links are in the technical evidence export. This is not the sender's property or a verified address.\n\nUse: Garden suite. Timing: unknown. Budget, if shared: unknown.\n\nAccess and crane questions/known facts: unknown. Utility/services questions/known facts: unknown.\n\n## Placement\n\nIllustrative placement on the saved example 419 Cecelia Rd, Victoria, BC: nominal rectangle 6.3 m × 6.12 m (width user edited; depth catalogue nominal), rotation 53°. The rectangle lies inside the mapped parcel. No overlap with the captured rooflines was observed; other obstructions remain unknown. Observed parcel boundary distance 2.22 m. Captured 2026-10-07; unreviewed; approximate captured geometry only.\n\nFoundation scenario allowance: not supplied. This allowance is used only in the labelled preliminary height estimate; installed height remains unverified.\n\n## Approximate setbacks\n\nSide, rear and street-side boundary comparison: not assessed. This subset excludes front distance, rear-yard location/share and height/area; those results are listed separately. Source: City of Victoria, Zoning Bylaw 2018, No. 18-072, captured 2026-10-06, candidate; [https://www.victoria.ca/media/file/zoning-bylaw-2018](https://www.victoria.ca/media/file/zoning-bylaw-2018)\n\n## Conditional zoning\n\nIntended use: Garden suite. Screening use: garden suite (scenario assumption, unverified). Foundation attachment: not supplied (unverified assumption). Main-building type: not supplied (user answer, unverified). Existing garden suites: 0 (default assumption, unconfirmed). Waterfront status: no (default assumption, unconfirmed). Main outline: Outline 1, assumed from the largest mapped outline, not verified as the main house. Main-home identification and legal boundaries remain unverified. Intended use supplied: Garden suite. The planning comparisons use a garden-suite scenario; City or professional review must establish whether that scenario applies.\n\nCandidate Victoria garden-suite comparison for this supplied placement: 1 checks meet under stated assumptions; no concerns identified in the supplied-facts comparisons; 14 need information; 0 outside scope. Candidate source/currentness and site facts remain unreviewed; no approval or complete bylaw review.\n\nConflicting PDF consolidation labels; exact effective interval is unresolved. Independent legal interpretation and parcel applicability review are pending.\n\nLegal lot: not assessed: a required measurement or property fact is missing. The source-selected parcel does not establish legal lot identity; title or survey records and the property contact can confirm it.\n\nCurrent zoning: not assessed: a required measurement or property fact is missing. The property contact and City staff need to confirm the relevant property fact and its applicability.\n\nApplicable zoning bylaw: not assessed: a required measurement or property fact is missing. The property contact and City staff need to confirm the relevant property fact and its applicability.\n\nProposed use: meets under the supplied facts. This records the screening scenario; it does not confirm the intended project or property fact.\n\nFoundation attachment: not assessed: a required measurement or property fact is missing. The property contact and City staff need to confirm the relevant property fact and its applicability. This records the screening scenario; it does not confirm the intended project or property fact.\n\nExisting main building type: not assessed: a required measurement or property fact is missing. The property contact and City staff need to confirm the relevant property fact and its applicability. This records the screening scenario; it does not confirm the intended project or property fact.\n\nMain building selection: not assessed: a required measurement or property fact is missing. The mapped main home is an assumption; the property contact can confirm its identity on the plan. This records the screening scenario; it does not confirm the intended project or property fact.\n\nGarden suite count: not assessed: a required measurement or property fact is missing. Existing suites and the lot’s eligibility need confirmation by the property contact and City staff.\n\nParcel edge 1 role: not assessed: a required measurement or property fact is missing. The property contact and City staff need to confirm the relevant property fact and its applicability.\n\nParcel edge 2 role: not assessed: a required measurement or property fact is missing. The property contact and City staff need to confirm the relevant property fact and its applicability.\n\nParcel edge 3 role: not assessed: a required measurement or property fact is missing. The property contact and City staff need to confirm the relevant property fact and its applicability.\n\nParcel edge 4 role: not assessed: a required measurement or property fact is missing. The property contact and City staff need to confirm the relevant property fact and its applicability.\n\nFlanking street line presence: not assessed: a required measurement or property fact is missing. This comparison needs compatible wall-to-legal-line measurements and review of projections and waterfront conditions; a surveyor and City staff can establish these.\n\nSeparation from main building: not assessed: a required measurement or property fact is missing. The mapped roof gap is reported separately. Legal wall/projection endpoints and their separation need a survey or approved plans and City review.\n\nGarden suite floor area: not assessed: a required measurement or property fact is missing. The manufacturer’s plans need a compatible floor-area calculation, including the relevant levels and inclusions; the buffered footprint estimate is reported separately.\n\nCandidate source: City of Victoria, Zoning Bylaw 2018, No. 18-072, captured 2026-10-06, candidate; [https://www.victoria.ca/media/file/zoning-bylaw-2018](https://www.victoria.ca/media/file/zoning-bylaw-2018). Clause references: Part 4.1(1)(h),(1.1)(b), PDF p30; Part 2.2 Residential and Garden Suite, PDF pp21-22; Part 3.1(28)(b), PDF p27; Part 3.1(28)(f), PDF pp27-28; Part 2.1 Setback and Side Lot Line, PDF p19; Part 3.1(28)(g), PDF pp27-28; Part 2.1 Flanking Street Lot Line and Setback, PDF pp15-16 and p19; Part 3.1(28)(h), PDF p28; Part 3.1(28)(d), PDF p27; Part 2.1 Floor Area, PDF p16.\n\n## Still to confirm\n\nQuestions: Please confirm the current controlled Quadra 4 drawing/revision, installed envelope and height datum; roof projections and site clearances; local delivery/crane access, foundation and utility requirements; and what site information you need before discussing this property.\n\nLegal lot lines, building walls and roles, other obstructions, zoning and setbacks, installed height and datum, current controlled provider dimensions, access and services remain unresolved.\n\n## Rental planning scenario\n\nQuadra 4: long-term rental planning scenario, 1 bedroom. Monthly rent: $2,200 CAD, entered by homeowner. This assumes the chosen configuration can be used as a self-contained rental dwelling; it does not establish suitability or achievable rent.\n\nFull rental year: $25,080 after 5% vacancy; $18,810 after running costs; $6,810 cash flow after debt payments, before income tax. Running costs: 25% of collected rent (planning allowance). Financing: $1,000 CAD/month debt payments.\n\nVacancy and running-cost allowances are editable scenario choices, not measured local rates. Expenses should cover incremental property tax, insurance, owner-paid utilities, management, maintenance and replacement reserves. Installed costs and acquisition/construction time are separate; no profit or return ranking is established.\n\nBenchmark: Statistics Canada, table 46-10-0092-01, Victoria, 1 bedroom, Q2 2026; captured 2026-11-09, unreviewed. [https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=4610009201](https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=4610009201) Asking rents are not signed leases; no suite-size, utilities, parking or furnishing adjustment has been applied.\n\n## Simple payback\n\n15.3 years using the priced project subtotal divided by annual income after running costs. Before financing and income tax.\n\n## Municipality and rule coverage\n\nMunicipality: City of Victoria (selected municipal parcel source, unverified); preliminary comparisons use the available Victoria garden-suite rule subset.\n\nPlanning feasibility remains unconfirmed. Manufacturer drawings, property confirmation and City or professional review are separate next steps.\n\nFull technical evidence: [prefab-technical-evidence.json](prefab-technical-evidence.json).\n\nApproximate drawing: [PNG](prefab-placement.png) · [PDF](prefab-placement.pdf). These are not surveys or approved site plans.\n",
+        "rentalEvidence": {
+          "schema_version": "rental-evidence.v1",
+          "model_id": "hewing-quadra4",
+          "model_revision": null,
+          "draft": {
+            "schema_version": "rental-scenario.v1",
+            "marketId": "2021S0503935",
+            "marketOrigin": "municipality",
+            "bedrooms": 1,
+            "layoutOrigin": "catalogue_description",
+            "monthlyRent": "2200",
+            "vacancyPercent": "5",
+            "expenseMode": "allowance",
+            "expenses": "25",
+            "financing": "payment",
+            "monthlyDebt": "1000"
+          },
+          "result": {
+            "benchmark": {
+              "market_id": "2021S0503935",
+              "market": "Victoria, Census metropolitan area (CMA)",
+              "bedrooms": 1,
+              "monthly_cad": 2040,
+              "vector": "v1675425162",
+              "status": "",
+              "symbol": ""
+            },
+            "rent": 2200,
+            "vacancy": 5,
+            "expenses": 25,
+            "debt": 1000,
+            "gross": 26400,
+            "collected": 25080,
+            "runningCosts": 6270,
+            "operating": 18810,
+            "cashFlow": 6810,
+            "errors": {}
+          },
+          "currency": "CAD",
+          "period": "2026-04",
+          "source": {
+            "provider": "Statistics Canada",
+            "table": "46-10-0092-01",
+            "url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=4610009201",
+            "captured_at": "2026-11-08T18:01:34.707644-07:00",
+            "source_sha256": "0f38c4cb7550ecd7719f15aacdc61d6f2b2342b892dc43e63db8a960a4009e0a",
+            "review_status": "unreviewed"
+          },
+          "assumption_policy": "rental-planning.v1: 5% vacancy and 25% of collected rent for running costs are editable illustrative allowances, not local observed rates.",
+          "scope": "Stabilized full rental year; apartment asking-rent proxy, not a suite forecast. Before income tax. No appreciation, rent growth, partial first year or return on installed cost."
+        }
+      }
+    },
+    {
+      "label": "desktop-skip",
+      "completed": true,
+      "modelIds": [
+        "aux-300",
+        "aux-240",
+        "wcch-ch-studio",
+        "hewing-quadra4"
+      ],
+      "errors": [],
+      "externalRequests": [],
+      "observations": [
+        {
+          "phase": "home",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "rental-choice",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "initial-financial-overview",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "estimate-editor",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "aux-300-authored",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "aux-240-authored",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "wcch-ch-studio-authored",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "hewing-quadra4-authored",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "four-model-comparison",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "aux-300-restored-quote",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "aux-240-restored-quote",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "wcch-ch-studio-restored-quote",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "hewing-quadra4-restored-quote",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "download-complete",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        }
+      ],
+      "download": {
+        "filename": "prefab-enquiry.pdf",
+        "bytes": 600537,
+        "painted": [
+          "Quadra 4 feasibility enquiry - 419 Cecelia Rd, Victoria, BC",
+          "SAVED EXAMPLE ONLY - not my property.",
+          "Please advise what is needed for an initial call.",
+          "Project",
+          "I’m exploring Hewing Haus Quadra 4 at 419 Cecelia Rd, Victoria, BC. I would use it for Garden suite.",
+          "My configuration preference is Quadra 4 custom options for QA.",
+          "Cost scope for discussion",
+          "Cost scope: Whole project. Priced-components subtotal: CAD 288,000. Based on Building owner allowance",
+          "(CAD 225,000). Includes editable planning amounts for the captured scope. Please confirm actual pricing",
+          "and inclusions. Unpriced or unresolved: Upgrades, Professional work, Tax, Contingency. Installed total",
+          "unavailable; please help establish the missing scope.",
+          "Builder/provider: Which access/crane, foundation and utility facts would let you or a local contractor scope",
+          "installation, and who coordinates that work?",
+          "Builder/provider: Who will confirm professional-work, permit-fee and tax scope, including any applicable",
+          "waiver or credit?",
+          "Questions for Hewing Haus",
+          "For Quadra 4, please confirm the matching quote and foundation scope.",
+          "Keep this authored question for hewing-quadra4.",
+          "1. Can you share current dimensioned plans with their date/version, overhangs, interior floor area, height",
+          "measurement reference and foundation requirements?",
+          "2. Do you service this locality?",
+          "3. What is the current lead time, when does it start, and what decisions, permits and site preparation must",
+          "be complete before booking or delivery?",
+          "Planning questions to resolve separately",
+          "Intended use supplied: Garden suite. The planning comparisons use a garden-suite scenario; City or",
+          "professional review must establish whether that scenario applies.",
+          "The property contact needs to confirm the main home, existing suites and waterfront context. City staff or a",
+          "qualified local professional needs to check the applicable rules, legal measurement basis and any permit or",
+          "title conditions. Please advise what product information you can provide to support that review.",
+          "Site information",
+          "The preliminary rectangle is 6.3 m × 6.12 m; dimensions have been edited and availability needs your",
+          "confirmation. It excludes unconfirmed overhangs and installation space.",
+          "Municipality and rule coverage",
+          "Municipality: City of Victoria (selected municipal parcel source, unverified); preliminary comparisons use the",
+          "available Victoria garden-suite rule subset.",
+          "Unsent preliminary enquiry | Page 1",
+          "Approximate mapped outlines and a nominal unit rectangle. This is a discussion sketch, not a survey or",
+          "approved site plan.",
+          "Parcel source: City of Victoria Open Data · Parcel MapServer response · captured 2026-10-07 ·",
+          "unreviewed. https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11",
+          "Building source: City of Victoria Open Data · Building MapServer response · captured 2026-10-07 ·",
+          "unreviewed. https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/1",
+          "Candidate comparison source: City of Victoria · Zoning Bylaw 2018, No. 18-072 · Part 3.1(28)(f), PDF",
+          "pp27-28; Part 2.1 Setback and Side Lot Line, PDF p19 · captured 2026-10-06 · candidate.",
+          "https://www.victoria.ca/media/file/zoning-bylaw-2018",
+          "Candidate comparison source: City of Victoria · Zoning Bylaw 2018, No. 18-072 · Part 3.1(28)(g), PDF",
+          "pp27-28; Part 2.1 Flanking Street Lot Line and Setback, PDF pp15-16 and p19 · captured 2026-10-06 ·",
+          "candidate. https://www.victoria.ca/media/file/zoning-bylaw-2018",
+          "Unsent preliminary enquiry | Page 2"
+        ]
+      },
+      "rentalPackage": null
+    }
+  ]
+}

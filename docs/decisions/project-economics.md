@@ -45,7 +45,9 @@ still require the existing category coverage, tax treatment and currency checks.
 [Evolv Modular, “What Your Lot Decides”](https://evolvmodular.ca/) was checked
 November 9, 2026. Its model line starts at 640 sq ft, and its published bands are
 provider observations without a reported sample or estimate confidence. These are
-ShovelReady scenario points inside the separate ranges. No aggregate range was
+ShovelReady scenario points inside the separate ranges. The page uses dollar
+symbols; CAD is our disclosed planning denomination based on its Vancouver Island
+context, not an explicit source currency declaration. No aggregate range was
 derived from the page. [ORCA's FAQ](https://www.orcalgs.ca/faqs/) checked the
 same day describes $25,000–$40,000 for excavation, foundation and utilities and
 $10,000–$30,000 for delivery, cranage and anchoring on flat BC lots. Its $40,000

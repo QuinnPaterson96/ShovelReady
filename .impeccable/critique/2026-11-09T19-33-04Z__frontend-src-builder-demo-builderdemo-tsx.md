@@ -2,7 +2,7 @@
 target: Project economics summary and expanded estimate
 total_score: 31
 max_score: 40
-na_heuristics: 
+na_heuristics: ""
 p0_count: 0
 p1_count: 0
 target_identity: "file:C:\\Users\\quinn\\.codex\\worktrees\\project-economics\\ShovelReady\\frontend\\src\\builder_demo\\BuilderDemo.tsx"
