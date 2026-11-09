@@ -157,6 +157,7 @@
   border: 0;
 }
 .economics-cost-group + .economics-cost-group { margin-top: .35rem; }
+.economics-cost-group--single { border-block-start: 1px solid var(--border); }
 .economics-cost-group legend {
   width: 100%;
   border-bottom: 1px solid var(--border);

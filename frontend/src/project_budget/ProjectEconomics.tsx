@@ -19,6 +19,10 @@ function costText(estimate: EconomicsEstimate) {
     : estimate.budget.subtotals.length > 1 ? 'Separate currencies' : 'Not estimated'
 }
 
+function spokenMoney(amount: number | null) {
+  return amount !== null && amount < 0 ? `negative ${money(-amount)}` : money(amount)
+}
+
 function costSource(estimate: EconomicsEstimate) {
   const prefab = estimate.counted.find(item => item.category === 'unit')
   const hasSiteReference = estimate.counted.some(item => item.category !== 'unit' && item.evidence.origin === 'planning_reference')
@@ -92,7 +96,10 @@ export function ProjectEconomicsSummary({ estimate, rental, rentalDraft, interes
 
 const quickCostLabels: Record<Category, string> = { ...categories, unit: 'Prefab building', services: 'On-site service connections', fees: 'Development and permit fees', tax: 'Taxes' }
 
-function CostAmount({ items, category, estimate, onChange }: { items: CostItem[]; category: Category; estimate: EconomicsEstimate; onChange: (value: string) => void }) {
+function CostAmount({ items, category, estimate, onChange, onInvalid }: {
+  items: CostItem[]; category: Category; estimate: EconomicsEstimate
+  onChange: (value: string) => void; onInvalid: () => void
+}) {
   const item = items.length === 1 ? items[0] : undefined
   const usable = item && !estimate.budget.issues.some(issue => issue.item_id === item.id)
   const amount = usable && item.money?.currency === 'CAD' && item.money.minimum === item.money.maximum ? item.money.minimum : ''
@@ -115,11 +122,12 @@ function CostAmount({ items, category, estimate, onChange }: { items: CostItem[]
     </p></> : <>
       <label htmlFor={id}>{quickCostLabels[category]}</label>
       <div className="economics-money-input"><span aria-hidden="true">$</span><input id={id} type="text" inputMode="decimal" placeholder="Unknown" ref={input} value={value}
-        aria-invalid={invalid || undefined} aria-describedby={`${id}-hint`} onChange={event => {
+        aria-invalid={invalid || undefined} aria-describedby={`economics-cost-currency ${id}-hint`} onChange={event => {
           const raw = event.target.value
           setValue(raw)
           const next = usablePlanningAmount(raw)
           if (next || !raw.trim()) onChange(next)
+          else onInvalid()
         }} /></div>
       <p id={`${id}-hint`} className={invalid ? 'economics-field-error' : 'metadata'}>{invalid ? 'Enter a valid CAD amount. The previous value still applies.' : source}</p>
     </>}
@@ -136,6 +144,36 @@ export function ProjectEconomicsDetail({ model, propertyLabel, draft, context, e
   const hasLocalAllowance = sourceItems.some(item => item.category !== 'unit')
   const focusRental = useRef(false)
   const rentalVisible = !!rental
+  const [announcement, setAnnouncement] = useState('')
+  const [invalidCostEdit, setInvalidCostEdit] = useState(false)
+  const costSummary = invalidCostEdit ? null : `${costLabel(estimate)} ${costText(estimate)}${estimate.subtotal ? ' CAD' : ''}.`
+  const operatingValid = rental && !rental.errors.rent && !rental.errors.vacancy && !rental.errors.expenses
+  const runningCostsValid = rental && (rentalDraft.expenseMode === 'monthly' ? !rental.errors.expenses : operatingValid)
+  const rentSummary = rental && !rental.errors.rent ? `Expected monthly rent ${money(rental.rent)}.` : null
+  const runningCostsSummary = runningCostsValid ? `Annual running costs and reserves ${money(rental.runningCosts)}.` : null
+  const incomeSummary = operatingValid ? `Annual income after running costs ${spokenMoney(rental.operating)}. Before financing and income tax.` : null
+  const paybackSummary = operatingValid && !invalidCostEdit ? `Simple payback${estimate.payback?.basis === 'subtotal' ? ' on priced costs' : ''} ${paybackText(estimate.payback)}.` : null
+  const cashFlowSummary = operatingValid && !rental.errors.debt ? `Annual cash flow after debt payments ${spokenMoney(rental.cashFlow)}. Before income tax.` : null
+  const lastResult = useRef([costSummary, rentSummary, runningCostsSummary, incomeSummary, paybackSummary, cashFlowSummary])
+
+  useEffect(() => {
+    const summaries = [costSummary, rentSummary, runningCostsSummary, incomeSummary, paybackSummary, cashFlowSummary]
+    // A null summary is withheld during malformed input. An accepted blank is
+    // represented by the same "Not estimated" text as the visible result.
+    const changes = summaries.filter((summary, index) => summary !== null && summary !== lastResult.current[index])
+    if (!changes.length) return
+    const timer = window.setTimeout(() => {
+      lastResult.current = summaries.map((summary, index) => summary ?? lastResult.current[index])
+      setAnnouncement(changes.join(' '))
+    }, 700)
+    return () => window.clearTimeout(timer)
+  }, [costSummary, rentSummary, runningCostsSummary, incomeSummary, paybackSummary, cashFlowSummary])
+
+  function changeCosts(next: BudgetDraft) {
+    setInvalidCostEdit(false)
+    onChange(next)
+  }
+
   function goToSection(id: string) {
     const heading = document.getElementById(id)
     heading?.focus({ preventScroll: true })
@@ -157,8 +195,9 @@ export function ProjectEconomicsDetail({ model, propertyLabel, draft, context, e
       {[['economics-cost-title', 'Project costs'], ['economics-rental-title', 'Rental income'], ['economics-running-title', 'Running costs and financing']].map(([id, label]) =>
         <a key={id} href={`#${id}`} onClick={event => { event.preventDefault(); goToSection(id) }}>{label}</a>)}
     </nav>}
+    <p className="sr-visually-hidden" role="status" aria-live="polite" aria-atomic="true">{announcement}</p>
     <div className="economics-detail-layout">
-      <aside className="economics-live" aria-label="Live estimate" aria-live="polite" aria-atomic="true">
+      <aside className="economics-live" aria-label="Live estimate">
         <p className="economics-total"><span>{costLabel(estimate)} {estimate.subtotal && <small>CAD</small>}</span><strong>{costText(estimate)}</strong></p>
         <p className="metadata">{estimate.wholeProject ? 'Whole project under your stated assumptions.' : 'Subtotal for the priced work in this scenario.'}</p>
         {rental && <RentFigures estimate={estimate} draft={rentalDraft} rental={rental} />}
@@ -166,24 +205,30 @@ export function ProjectEconomicsDetail({ model, propertyLabel, draft, context, e
       <div className="economics-editors">
         <section className="economics-editor-group" aria-labelledby="economics-cost-title">
           <h2 id="economics-cost-title" tabIndex={-1}>Project costs</h2>
-          <p>Amounts in CAD. Change any allowance to see its effect on the estimate.</p>
+          <p><span id="economics-cost-currency">Amounts in CAD.</span> Change any allowance to see its effect on the estimate.</p>
           {hasLocalAllowance && <p className="metadata">Installation assumes a level, accessible lot and nearby usable services. Fee allowances can change with the property and application.</p>}
           {estimate.budget.scope === 'building' && <p className="metadata">The current subtotal covers building costs only. Change scope under detailed cost entries to include site work and fees.</p>}
-          {costGroups.map(group => <fieldset key={group.label} className="economics-cost-group">
-            <legend>{group.label}</legend>
-            <div className="economics-cost-fields">
+          {costGroups.map(group => {
+            const fields = <div className="economics-cost-fields">
               {group.categories.map(category => <CostAmount key={category} category={category} estimate={estimate}
                 items={draft.items.filter(item => item.category === category && item.selected)}
-                onChange={amount => onChange(changePlanningAmount(draft, context, category, amount))} />)}
+                onChange={amount => changeCosts(changePlanningAmount(draft, context, category, amount))}
+                onInvalid={() => setInvalidCostEdit(true)} />)}
             </div>
-          </fieldset>)}
+            return group.categories.length === 1
+              ? <div key={group.label} className="economics-cost-group economics-cost-group--single">{fields}</div>
+              : <fieldset key={group.label} className="economics-cost-group">
+                <legend>{group.label === 'Prefab building' ? 'Prefab package' : group.label}</legend>
+                {fields}
+              </fieldset>
+          })}
           <p className="economics-mobile-result"><strong>{costText(estimate)}</strong> <span>{costLabel(estimate)}</span></p>
           {missing.length > 0 && <p className="metadata">Still open in this scope: {missing.join(', ')}.</p>}
           {sourceItems.length > 0 && <details className="economics-planning-source"><summary>Where the starting amounts come from</summary>
             {sourceItems.some(item => item.category === 'unit') && <p>The estimate uses the published prefab starting price as a scenario amount. Ask the provider to confirm the price and options for your configuration.</p>}
             {hasLocalAllowance && <p>The site and fee amounts are illustrative values within the ranges published by <a href="https://evolvmodular.ca/#:~:text=What%20Your%20Lot%20Decides" target="_blank" rel="noreferrer">Evolv Modular</a> for its Vancouver Island work, captured {readableDate('2026-11-09')} · unreviewed. Budget separately for major service upgrades, difficult access, stairs, decks, landscaping, professional work, taxes and contingency as applicable.</p>}
           </details>}
-          <BudgetEvidenceEditor draft={draft} onChange={onChange} onImport={onImport} context={context} model={model} victoria={victoria} />
+          <BudgetEvidenceEditor draft={draft} onChange={changeCosts} onImport={next => { setInvalidCostEdit(false); onImport(next) }} context={context} model={model} victoria={victoria} />
         </section>
         {rental ? <RentalScenario draft={rentalDraft} result={rental} model={model} onChange={onRental}
           localResult={<div className="economics-mobile-result economics-mobile-rental"><RentFigures estimate={estimate} draft={rentalDraft} rental={rental} /></div>} /> :

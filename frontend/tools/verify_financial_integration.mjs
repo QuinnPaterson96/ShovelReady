@@ -21,6 +21,91 @@ const browser = await chromium.launch({ channel: 'chrome', headless: true })
 const builtIndex = await readFile('dist/index.html', 'utf8')
 const entryAsset = builtIndex.match(/src="([^"]+\.js)"/)[1]
 const results = { capturedAt: new Date().toISOString(), buildCommit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(), entryAsset, entrySha256: createHash('sha256').update(await readFile(`dist${entryAsset}`)).digest('hex'), browser: browser.version(), scope: 'local bundled example; real stateless API; no source publication, database or provider contact', runs: [] }
+
+async function verifyEstimateStatus(page, context) {
+  const detail = page.locator('#builder-economics-estimate')
+  const status = detail.getByRole('status')
+  const fees = detail.getByRole('textbox', { name: 'Development and permit fees', exact: true })
+  const rent = detail.getByRole('textbox', { name: 'Monthly rent (CAD)', exact: true })
+  const expenses = detail.locator('#rental-aux-300-expenses')
+  const expenseBasis = detail.getByLabel('Running-cost basis')
+  const financing = detail.getByLabel('Financing', { exact: true })
+  const debt = detail.getByRole('textbox', { name: 'Monthly debt payments (CAD)' })
+  const totals = detail.getByLabel('Live estimate')
+  assert.equal(await status.count(), 1, 'one status for the expanded estimate')
+  assert.equal(await status.textContent(), '', 'opening the estimate is quiet')
+  assert.equal(await detail.getByText('Development and permit fees', { exact: true }).count(), 1)
+  assert.equal(await detail.getByRole('group', { name: 'Prefab package' }).getByRole('textbox', { name: 'Prefab building' }).count(), 1)
+  const cdp = await context.newCDPSession(page)
+  try {
+    const { nodes } = await cdp.send('Accessibility.getFullAXTree')
+    const updates = nodes.filter(node => !node.ignored && node.role.value === 'status' && node.properties?.some(prop => prop.name === 'live' && prop.value.value === 'polite'))
+    assert.equal(updates.length, 1, 'one polite status exposed in Chrome accessibility')
+    assert.ok(updates[0].properties.some(prop => prop.name === 'atomic' && prop.value.value === true))
+    const feeNode = nodes.find(node => node.role.value === 'textbox' && node.name.value === 'Development and permit fees')
+    assert.match(feeNode?.description?.value ?? '', /Amounts in CAD/)
+    assert.equal(nodes.filter(node => !node.ignored && node.role.value === 'StaticText' && node.name?.value === 'Expected monthly rent').length, 1)
+  } finally { await cdp.detach() }
+
+  await status.evaluate(element => {
+    window.estimateStatusChanges = []
+    new MutationObserver(() => window.estimateStatusChanges.push(element.textContent))
+      .observe(element, { childList: true, subtree: true, characterData: true })
+  })
+  const changes = () => page.evaluate(() => window.estimateStatusChanges)
+  let count = 0
+  const next = async (expected, focus) => {
+    await page.waitForFunction(previous => window.estimateStatusChanges.length > previous, count)
+    const observed = await changes()
+    assert.equal(observed.length, ++count, 'one announcement per settled edit')
+    assert.match(observed.at(-1), expected)
+    assert.doesNotMatch(observed.at(-1), /Statistics Canada|Evolv Modular/)
+    if (focus) assert.equal(await focus.evaluate(element => element === document.activeElement), true, 'announcement preserves input focus')
+  }
+  const quiet = async () => {
+    await page.waitForTimeout(900)
+    assert.equal((await changes()).length, count, 'malformed text does not produce a new estimate')
+  }
+
+  await fees.fill('9000')
+  await fees.fill('9x')
+  await quiet()
+  assert.match(await totals.innerText(), /251,000/, 'the last accepted cost remains visible')
+  await fees.fill('9000')
+  await next(/Project cost subtotal \$251,000 CAD.*Simple payback on priced costs 14\.4 years/, fees)
+  await fees.fill('')
+  await next(/Project cost subtotal \$242,000 CAD.*Simple payback Not estimated/, fees)
+  await fees.fill('8000')
+  await next(/Project cost subtotal \$250,000 CAD/)
+
+  await rent.fill('')
+  await rent.pressSequentially('2400', { delay: 35 })
+  await next(/Expected monthly rent \$2,400.*Annual income after running costs \$20,520.*Simple payback on priced costs 12\.2 years/, rent)
+  await rent.fill('2600')
+  await rent.fill('26x')
+  await quiet()
+  await rent.fill('')
+  await next(/Expected monthly rent Not estimated.*Annual income after running costs Not estimated.*Simple payback Not estimated/, rent)
+  await detail.getByRole('button', { name: 'Use regional rent again' }).click()
+  await next(/Expected monthly rent \$2,040.*Annual income after running costs \$17,442/)
+
+  await expenseBasis.selectOption('monthly')
+  await expenses.fill('2000')
+  // 2040 × 12 × 0.95 - 2000 × 12 = -744.
+  await next(/Annual running costs and reserves \$24,000.*Annual income after running costs negative \$744.*Simple payback Not estimated/, expenses)
+  await expenseBasis.selectOption('allowance')
+  await expenses.fill('25')
+  await next(/Annual income after running costs \$17,442/)
+  await financing.selectOption('payment')
+  await debt.fill('3000')
+  // A $3,000 monthly debt payment subtracts $36,000 from the known income.
+  await next(/^Annual cash flow after debt payments negative \$18,558\. Before income tax\.$/, debt)
+  await debt.fill('')
+  await next(/^Annual cash flow after debt payments Not estimated/, debt)
+  await financing.selectOption('unknown')
+  return changes()
+}
+
 try {
   for (const size of [{ label: 'phone', width: 390, height: 844, mobile: true }, { label: 'desktop', width: 1440, height: 1000, mobile: false }]) {
     for (const selected of [true, false]) {
@@ -141,6 +226,10 @@ try {
           assert.equal(await page.locator('#economics-detail-title').evaluate(element => element === document.activeElement), true)
           assert.equal(await economics.isVisible(), false, 'the dedicated view replaces the visible assessment')
           assert.equal(await page.locator('.economics-editors').getByRole('heading', { name: 'Project costs' }).isVisible(), true)
+          if (rentalAcceptance && selected && model.id === 'aux-300') {
+            await page.screenshot({ path: `${output}/${label}-accessible-editor.png` })
+            run.estimateStatus = await verifyEstimateStatus(page, context)
+          }
           const prefab = page.locator('#economics-cost-unit')
           const starting = model.id === 'aux-300' ? '187000' : ''
           assert.equal(await prefab.inputValue(), starting, 'custom configurations and missing currency or price do not acquire a prefab price')
