@@ -60,7 +60,7 @@ test('mixed, stale and malformed observations stay unresolved; manual choice sta
   assert.match(html, /Your entered zoning differs from the mapped observation/)
 })
 
-test('changing city preserves project intent and removes Victoria facts and controls from unsupported context', () => {
+test('changing city preserves project intent and removes Victoria facts and controls from the Saanich context', () => {
   const mapped = zoningProjection(lookup, 'geometry-a')
   const old = applyMappedZoning(changeProjectSetting(initialProjectSettings(), 'proposed_use', 'other'), mapped, 'geometry-a')
   const next = resetMunicipalProjectSettings(old)
@@ -74,11 +74,11 @@ test('changing city preserves project intent and removes Victoria facts and cont
   // is still handed to the component during the parent transition.
   const html = renderToStaticMarkup(createElement(ProjectDetails, { settings: old, mapped, lookup, municipality,
     onMunicipalityChange() {}, busy: false, error: '', onRetry() {}, onChange() {} }))
-  assert.match(html, /Request Saanich coverage/)
+  assert.match(html, /Saanich rules/)
   assert.match(html, /id="municipality-settings"/)
   assert.doesNotMatch(html, /GRD-1|Zoning Bylaw 2018|Zone, if you have verified it/)
   assert.match(html, /Proposed use/)
-  assert.match(municipalitySummary(municipality), /local rule comparisons are unavailable/)
+  assert.match(municipalitySummary(municipality), /Saanich garden suite/)
   const example = savedExampleMunicipality()
   assert.equal(example.rule_coverage, 'victoria_candidate')
   assert.ok(example.source?.capturedAt)

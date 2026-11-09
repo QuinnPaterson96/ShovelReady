@@ -21,7 +21,7 @@ assert.ok(entryB.startsWith('/replacement/'), 'Build B with --base=/replacement/
 await mkdir(output, { recursive: true })
 let active = original
 const requests = [], errors = [], painted = {}
-const allowed = new Set(['/api/scouting-geometry/assess', '/api/conditional-screening/v1/evaluate', '/api/conditional-screening/v1/placement-scenarios'])
+const allowed = new Set(['/api/scouting-geometry/assess', '/api/municipal-rules/v1/evaluate', '/api/municipal-rules/v1/placement-scenarios'])
 const server = createServer(async (request, response) => {
   try {
     const path = new URL(request.url, 'http://127.0.0.1').pathname

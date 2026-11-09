@@ -126,7 +126,7 @@ try {
         const request = route.request(), url = new URL(request.url())
         if (url.origin !== new URL(origin).origin) { run.externalRequests.push(url.origin); return route.abort() }
         if (!url.pathname.startsWith('/api/') && url.pathname !== '/health') return route.continue()
-        if (!['/api/scouting-geometry/assess', '/api/conditional-screening/v1/evaluate', '/api/conditional-screening/v1/placement-scenarios', '/api/placement-suggestions/v1/suggest'].includes(url.pathname))
+        if (!['/api/scouting-geometry/assess', '/api/municipal-rules/v1/evaluate', '/api/municipal-rules/v1/placement-scenarios', '/api/placement-suggestions/v1/suggest'].includes(url.pathname))
           return route.fulfill({ status: 503, body: 'Offline source boundary for repeatable acceptance QA' })
         run.apiRequests.push(url.pathname)
         const response = await fetch(api + url.pathname, { method: request.method(), body: request.postData() || undefined, headers: { 'Content-Type': 'application/json' } })

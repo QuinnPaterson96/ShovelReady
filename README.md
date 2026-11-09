@@ -4,7 +4,7 @@ The homeowner journey now uses [stable continuation controls, guided demo progre
 and task-directed entry focus](docs/navigation-reliability.md). The integration
 record distinguishes browser checks from physical-device and homeowner validation.
 
-The homeowner map prefills editable [street](docs/municipal-street-prefill.md) and [waterfront](docs/municipal-waterfront-prefill.md) edges in Victoria and Saanich. Both municipalities support mapped placement. Victoria has a separate preliminary zoning comparison.
+The homeowner map prefills editable [street](docs/municipal-street-prefill.md) and [waterfront](docs/municipal-waterfront-prefill.md) edges in Victoria and Saanich. Both municipalities support mapped placement. [Shared municipal screening](docs/multi-city-screening.md) preserves Victoria's existing comparisons and adds bounded Saanich lot-area, defined-width, floor-area and landscaped-share checks, with city-specific definitions and an unsent enquiry.
 
 The homeowner demo now [suggests an editable starting position, shows setback margins and selects local rules from the address](docs/integration-placement-guidance.md). For places outside current coverage, visitors can request their municipality or continue with a manual sketch.
 

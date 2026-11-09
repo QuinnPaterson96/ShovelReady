@@ -18,7 +18,7 @@ await page.route('**/*', async route => {
   if (url.origin !== new URL(frontend).origin) { errors.push(`unexpected external request: ${url.origin}`); return route.abort() }
   if (!url.pathname.startsWith('/api/') && url.pathname !== '/health') return route.continue()
   requests.push(`${request.method()} ${url.pathname}`)
-  if (!['/health', '/api/scouting-geometry/assess', '/api/conditional-screening/v1/evaluate', '/api/conditional-screening/v1/placement-scenarios'].includes(url.pathname)) return route.fulfill({ status: 503, body: 'Offline municipal boundary' })
+  if (!['/health', '/api/scouting-geometry/assess', '/api/municipal-rules/v1/evaluate', '/api/municipal-rules/v1/placement-scenarios'].includes(url.pathname)) return route.fulfill({ status: 503, body: 'Offline municipal boundary' })
   // Node fetch is independent of browser navigation cancellation.
   const response = await fetch(api + url.pathname, { method: request.method(), body: request.postData() || undefined,
     headers: { 'Content-Type': 'application/json' } })

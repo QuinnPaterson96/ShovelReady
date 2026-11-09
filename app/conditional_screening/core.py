@@ -12,6 +12,7 @@ _FACTORS = {
     "m2": (Decimal("1"), "m2"),
     "ft2": (Decimal("0.09290304"), "m2"),
     "count": (Decimal("1"), "count"),
+    "fraction": (Decimal("1"), "fraction"),
 }
 
 

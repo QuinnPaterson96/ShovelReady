@@ -14,6 +14,7 @@ import type { BudgetDraft, Context } from '../project_budget/contract'
 import { budgetQuestions, budgetEnquiryParagraph, recipientBudget } from '../project_budget/pipeline'
 
 export type EnquiryInput = {
+  municipalResult?: import('../municipal_rules/model').MunicipalResult | null
   localComparisonsAvailable?: boolean
   budgetDraft?: { draft: BudgetDraft; context: Context; today?: string }
   demoAnswers?: Partial<Record<'intendedUse' | 'relationship' | 'nextStep' | 'streetContext', string>>; question?: string; propertyConcern?: string; intendedUse: string; timing: string; budget: string; access: string; services: string

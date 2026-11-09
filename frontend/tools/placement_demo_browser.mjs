@@ -23,6 +23,7 @@ const page = await context.newPage()
 const errors = [], requests = [], evidence = []
 page.on('pageerror', error => errors.push(error.message))
 let failSuggestion = false, holdSuggestion = false, heldStarted = false, releaseSuggestion
+let holdMunicipal = false, municipalStarted = false, releaseMunicipal
 await context.route('**/*', async route => {
   const request = route.request(), url = new URL(request.url())
   if (url.origin !== new URL(base).origin) { errors.push(`Unexpected external request: ${url.origin}`); return route.abort() }
@@ -51,6 +52,13 @@ await context.route('**/*', async route => {
     return json(streets.victoria)
   }
   if (url.pathname.startsWith('/api/victoria-zoning/')) return route.fulfill({ status: 503, body: 'Offline municipal source boundary' })
+  if (url.pathname === '/api/municipal-rules/v1/evaluate' && holdMunicipal) {
+    municipalStarted = true
+    const response = await fetch(base + url.pathname, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: request.postData() })
+    const text = await response.text()
+    await new Promise(resolve => { releaseMunicipal = resolve })
+    return route.fulfill({ status: response.status, contentType: 'application/json', body: text }).catch(() => {})
+  }
   if (url.pathname === '/api/placement-suggestions/v1/suggest') {
     if (failSuggestion) return route.fulfill({ status: 503, body: 'Controlled suggestion outage' })
     if (holdSuggestion) {
@@ -161,12 +169,11 @@ try {
   const report = page.locator('details').filter({ has: page.locator(':scope > summary', { hasText: 'Supporting screening report' }) }).last()
   await until(async () => (await report.textContent())?.includes('No local rule comparison was run for this site.'), 'Corrected report must drop Victoria rule wording')
   assert.doesNotMatch(await report.textContent(), /planning comparisons use a garden-suite scenario/)
-  const requestUrl = new URL(await coverage.getByRole('link', { name: 'Request Saanich coverage' }).getAttribute('href'))
-  assert.equal(requestUrl.hostname, 'github.com')
-  assert.ok(!requestUrl.toString().includes('1144'))
+  assert.equal(value.municipality.rule_coverage, 'unresolved', 'Changing the city does not relabel a Victoria parcel as Saanich')
+  assert.equal(value.municipal_evaluation, null)
   evidence.push({ phase: 'municipality correction', municipality: value.municipality, retainedPlacement: value.measurement.result.input.placement })
 
-  // Saanich supports parcel and street observations independently of rule coverage.
+  // Saanich reuses discovery, street observations and the common evaluation flow.
   await page.getByRole('button', { name: 'Change address', exact: true }).filter({ visible: true }).first().click()
   const before = requests.length
   await search('200 Gorge Rd W')
@@ -174,7 +181,7 @@ try {
   await until(async () => (await current()).zoning_site_assumptions?.street_adjacency?.origin === 'municipal_map', 'Missing Saanich prefill')
   const observed = await current()
   assert.equal(observed.municipality.jurisdiction_id, 'ca-bc-saanich')
-  assert.equal(observed.municipality.rule_coverage, 'unavailable')
+  assert.equal(observed.municipality.rule_coverage, 'candidate')
   const original = observed.zoning_site_assumptions.street_adjacency
   assert.equal(original.edge_ids.length, 3)
   assert.ok(Object.values(original.mapped_names).includes('GORGE RD W'))
@@ -196,6 +203,83 @@ try {
   await page.getByRole('button', { name: 'Not sure · clear street marks' }).click()
   await until(async () => !(await current()).zoning_site_assumptions?.street_adjacency?.edge_ids.length, 'Clear did not persist')
   evidence.push({ phase: 'Saanich editable prefill', suggested: original, afterClear: (await current()).zoning_site_assumptions.street_adjacency })
+
+  await page.locator('a[href="#builder-purpose"]').first().click()
+  await page.locator('#builder-intended-use').selectOption('Garden suite')
+  await page.locator('a[href="#builder-property-details"]').first().click()
+  await page.getByText('Add or correct local property facts', { exact: true }).click()
+  const localInput = name => page.locator(`#municipal-input-${name}`)
+  await localInput('lot_width').fill('12')
+  await localInput('floor_area').fill('93')
+  await localInput('open_space').fill('45')
+  await localInput('zone_permits').selectOption('true')
+  await localInput('sewer_service_area').selectOption('true')
+  await settled()
+  const scalar = async key => (await current()).municipal_evaluation?.screening.checks.find(check => check.rule.fact_id === key)
+  for (const key of ['lot_area', 'lot_width', 'floor_area', 'open_space']) assert.equal((await scalar(key)).status, 'meets_under_assumptions', key)
+  assert.equal((await current()).conditional_screening, null)
+  assert.equal((await current()).placement_scenario_result, null)
+  assert.equal((await scalar('floor_area')).fact.measurement_definition.includes('Gross Floor Area (R)'), true)
+  await page.locator('#existing-suites').getByRole('button', { name: 'One', exact: true }).click()
+  await until(async () => (await current()).zoning_site_assumptions?.existing_garden_suites.value === 1, 'Existing-suite edit did not reach the assessment')
+  await settled()
+  assert.equal((await scalar('no_existing_suite')).status, 'apparent_conflict_under_assumptions')
+  assert.equal((await scalar('lot_area')).status, 'unsupported', 'Known existing suite must not be ignored')
+  await page.locator('#existing-suites').getByRole('button', { name: 'None', exact: true }).click()
+  await until(async () => (await current()).zoning_site_assumptions?.existing_garden_suites.value === 0, 'Existing-suite correction did not reach the assessment')
+  await settled()
+  await localInput('open_space').fill('44.999999999999999999')
+  await settled()
+  assert.equal((await scalar('open_space')).status, 'apparent_conflict_under_assumptions', 'Exact percentage below 45% cannot round into a match')
+  await localInput('open_space').fill('45')
+  await localInput('lot_area').fill('-1')
+  await until(async () => (await current()).municipal_evaluation === null, 'Invalid override must not regain the mapped-area match')
+  await localInput('lot_area').fill('399.99')
+  await settled()
+  assert.equal((await scalar('lot_area')).status, 'apparent_conflict_under_assumptions')
+  assert.match(await report.textContent(), /exact values differ despite rounding/)
+  assert.match(await report.textContent(), /District of Saanich.*unreviewed/)
+  assert.doesNotMatch(await report.textContent(), /Candidate Victoria garden-suite comparison|GRD-1/)
+  await localInput('lot_width').focus()
+  await page.getByRole('button', { name: 'About Lot width definition', exact: true }).click()
+  assert.match(await page.getByRole('tooltip').innerText(), /perpendicular line/)
+  await page.screenshot({ path: `${output}/saanich-facts-mobile.png` })
+  assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1), 'Saanich facts must fit a phone')
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await localInput('lot_width').scrollIntoViewIfNeeded()
+  await page.screenshot({ path: `${output}/saanich-facts-desktop.png` })
+  evidence.push({phase: 'Saanich measured comparisons and enquiry concern', result: (await current()).municipal_evaluation, report: await report.textContent()})
+
+  await page.locator('a[href="#builder-next"]').first().click()
+  await page.locator('#builder-relationship').fill('I am helping the owner')
+  await page.locator('#builder-nextStep').fill('Please advise whether this is worth investigating further.')
+  const enquiry = page.locator('#builder-unsent-preview')
+  await until(async () => (await enquiry.textContent())?.includes('Local planning comparisons'), 'Saanich enquiry did not compose')
+  const message = await enquiry.innerText()
+  assert.match(message, /Lot area:.*conflicts with the candidate threshold/)
+  assert.match(message, /District of Saanich.*unreviewed/)
+  assert.doesNotMatch(message, /No local rule comparison was run|Candidate Victoria|GRD-1|saanich-gs-min-lot-area/)
+  evidence.push({phase: 'Saanich unsent provider enquiry', message})
+  await page.locator('a[href="#builder-property-details"]').first().click()
+
+  // An obsolete response must not restore city-specific facts or findings.
+  holdMunicipal = true
+  await localInput('lot_width').fill('13')
+  await until(async () => municipalStarted && !!releaseMunicipal, 'No delayed municipal response')
+  await coverage.getByText('Change municipality', { exact: true }).click()
+  await coverage.getByLabel('City or municipality in British Columbia').fill('Burnaby')
+  await coverage.getByRole('button', { name: 'Use municipality', exact: true }).click()
+  holdMunicipal = false; releaseMunicipal()
+  await page.waitForTimeout(450)
+  assert.equal((await current()).municipal_evaluation, null)
+  assert.deepEqual((await current()).municipal_input_draft.values, {})
+  const requestUrl = new URL(await coverage.getByRole('link', { name: 'Request Burnaby coverage' }).getAttribute('href'))
+  assert.equal(requestUrl.hostname, 'github.com')
+  assert.ok(!requestUrl.toString().includes('Gorge'))
+  await coverage.getByLabel('City or municipality in British Columbia').fill('Saanich')
+  await coverage.getByRole('button', { name: 'Use municipality', exact: true }).click()
+  await settled()
+  assert.equal((await scalar('lot_width')).status, 'needs_information', 'Switching back must not resurrect old local inputs')
   // Replay an actual lake parcel through the same editor. Keeping one mark and
   // replacing another must give the drawing and enquiry the correct provenance.
   await page.getByRole('button', { name: 'Change address', exact: true }).filter({ visible: true }).first().click()
@@ -216,7 +300,8 @@ try {
   await until(async () => (await report.textContent())?.includes('3 map-suggested waterfront edges: Prospect Lake'), 'Report lost waterfront provenance')
   await page.getByRole('button', { name: 'Prospect Lake · 4 adjoining edges' }).click()
   await until(async () => (await current()).zoning_site_assumptions?.waterfront.value === null, 'Removing the last mapped edge must not affirm inland status')
-  assert.equal((await current()).municipality.rule_coverage, 'unavailable')
+  assert.equal((await current()).municipality.rule_coverage, 'candidate')
+  assert.deepEqual((await current()).municipal_input_draft.values, {}, 'Local facts cannot transfer to another property')
   evidence.push({phase: 'editable lake edge and grouped removal', suggested: lakeSite.waterfront, count: 4})
   assert.deepEqual(errors, [])
   await writeFile(`${output}/evidence.json`, JSON.stringify({ checks: evidence, requests, browserErrors: errors }, null, 2))
@@ -225,4 +310,4 @@ try {
   await page.screenshot({ path: `${output}/failure.png`, fullPage: true }).catch(() => {})
   await writeFile(`${output}/failure.txt`, `${error.stack}\n\n${(await page.locator('body').innerText()).slice(0,22000)}`)
   throw error
-} finally { releaseStreets(); releaseSuggestion?.(); await browser.close() }
+} finally { releaseStreets(); releaseSuggestion?.(); releaseMunicipal?.(); await browser.close() }

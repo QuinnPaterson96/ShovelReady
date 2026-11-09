@@ -7,8 +7,8 @@ const base = process.env.CONTINUATION_URL ?? 'http://127.0.0.1:18138'
 const origin = new URL(base).origin
 assert.equal(new URL(base).hostname, '127.0.0.1', 'Use an isolated local preview')
 const localApis = new Set([
-  '/api/identity', '/api/scouting-geometry/assess', '/api/conditional-screening/v1/evaluate',
-  '/api/conditional-screening/v1/placement-scenarios', '/api/placement-suggestions/v1/suggest',
+  '/api/identity', '/api/scouting-geometry/assess', '/api/municipal-rules/v1/evaluate',
+  '/api/municipal-rules/v1/placement-scenarios', '/api/placement-suggestions/v1/suggest',
 ])
 const browser = await chromium.launch({
   headless: true,

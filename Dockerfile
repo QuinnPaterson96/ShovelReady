@@ -16,6 +16,7 @@ COPY pyproject.toml uv.lock ./
 RUN uv sync --locked --no-dev
 COPY app ./app
 COPY docs/rule-packets/victoria-garden-suite-scouting/packet.json ./docs/rule-packets/victoria-garden-suite-scouting/packet.json
+COPY docs/municipality-transfer/saanich/rules/candidates.json ./docs/municipality-transfer/saanich/rules/candidates.json
 COPY docs/research/public-cases/cases.json ./docs/research/public-cases/cases.json
 COPY alembic.ini ./
 COPY migrations ./migrations
