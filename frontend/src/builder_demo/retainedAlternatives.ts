@@ -20,7 +20,6 @@ export type AlternativeDraft = {
   installedHeight: number | null
   settings: ProjectSettings
   measurements: SiteAssumptions['measurements'] | null
-  budget: string
   budgetDraft: BudgetDraft
   placement: RetainedPlacementDraft | null
 }

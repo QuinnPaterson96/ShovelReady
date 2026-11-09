@@ -409,3 +409,42 @@ Railway build/startup verification remains pending until deployment.
 
 
 The [waterfront prefill verification](municipal-waterfront-prefill.md) distinguishes the live coastal and lake address checks, constructed geometry controls, editable mark and report checks from independent source review and user validation.
+
+## Project economics verification — November 9, 2026
+
+The [independent visual review and correction confirmation](usability/project-economics-2026-11-09/README.md)
+records desktop and phone inspection, the initial 27/40 and corrected 31/40
+heuristic assessments, the clean seven-file Impeccable scan and remaining
+physical-device, screen-reader and homeowner-validation gaps. Valid grouped
+amounts, malformed edits, rental inclusion focus, mobile result proximity and
+return-to-project focus/scroll passed the bounded confirmation. Source acceptance
+and complete site costs remain separate from software usability.
+
+Implementation revision `796d2b38b0f936e61461047e3a502a020c7feb7d` passed the
+200-case frontend suite, TypeScript/Vite production build, placement-demo, guided
+walkthrough, advanced budget and comparison browser checks. The
+[measured financial walkthrough](usability/project-economics-2026-11-09/financial-walkthrough.json)
+completed phone/desktop × rental-included/skipped, each across four models, with
+no page errors or external requests. This is pre-merge evidence; CI and the
+separate Sol test of the merged commit remain distinct verification steps.
+
+The [project economics decision](decisions/project-economics.md) records the
+starting amounts, source boundaries and remaining work. From `frontend/`, run
+`npm run build` and `npm test`. For local browser verification, set
+`COMPARISON_URL`, `COMPARISON_API`, `WALKTHROUGH_URL`, `WALKTHROUGH_API` and
+`PLACEMENT_DEMO_URL` to the same loopback stateless app serving the built frontend.
+Use `RENTAL_ACCEPTANCE=1 node tools/verify_financial_integration.mjs` for the
+1440px desktop and 390px phone include/skip journeys across four models. That
+check exercises current placement, retained questions and model-specific amounts,
+cost scope, valid and malformed amount edits, positive-income payback, focus and
+scroll recovery, enquiry and the downloadable report/evidence package. It uses
+the real local placement and screening APIs and blocks external data requests.
+
+`node tools/budget_browser.mjs` exercises keyboard takeover, advanced cost scope,
+ambiguous overlapping entries, draft JSON validation and import, and cost evidence
+in the PDF/ZIP handoff. `node tools/verify_financial_comparison.mjs` checks touch
+model switching, desktop and narrow comparison, copy failure and enquiry recovery.
+`npm run test:walkthrough` and `npm run test:placement-demo` cover adjacent demo
+and discovery behavior. These are software checks on a stateless local app.
+Provider quote scope, municipal applicability, achievable rent and user
+understanding remain separate evidence gaps.

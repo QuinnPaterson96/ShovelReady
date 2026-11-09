@@ -1,0 +1,225 @@
+.project-economics {
+  box-shadow: none;
+  min-width: 0;
+}
+.economics-summary-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: .35rem 1.5rem;
+}
+.economics-summary-header h2 { margin: 0; }
+.economics-summary-header a, .economics-back {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  min-height: 44px;
+  font-weight: 650;
+}
+.economics-summary-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 1.5rem;
+  padding-top: 1rem;
+  margin-top: .65rem;
+  border-top: 1px solid var(--border);
+}
+.economics-summary-body--cost {
+  grid-template-columns: 1fr;
+}
+.economics-summary-body--cost .economics-cost {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  align-items: start;
+  gap: 1.25rem;
+}
+.economics-total {
+  margin: 0 0 .65rem;
+  line-height: 1.25;
+}
+.economics-total span {
+  display: block;
+  font-size: .95rem;
+  font-weight: 650;
+}
+.economics-total small {
+  margin-inline-start: .25rem;
+  color: var(--ink-muted);
+  font-weight: 500;
+}
+.economics-total strong {
+  display: block;
+  margin-top: .25rem;
+  font-size: clamp(1.45rem, 3vw, 2.1rem);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.025em;
+  overflow-wrap: anywhere;
+}
+.economics-breakdown, .economics-rent-figures { margin: 0; }
+.economics-breakdown > div, .economics-rent-figures > div {
+  border-bottom: 1px solid var(--border);
+  padding-block: .45rem;
+}
+.economics-breakdown > div:last-child, .economics-rent-figures > div:last-child { border-bottom: 0; }
+.economics-breakdown > div {
+  display: flex;
+  justify-content: space-between;
+  gap: .65rem;
+  font-size: .925rem;
+}
+.economics-breakdown dt, .economics-rent-figures dt {
+  text-transform: none;
+  font-weight: 550;
+}
+.economics-breakdown dd, .economics-rent-figures dd { font-variant-numeric: tabular-nums; }
+.economics-breakdown dd { text-align: end; }
+.economics-rent-figures > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: .15rem .75rem;
+  line-height: 1.35;
+}
+.economics-rent-figures dt { font-size: .925rem; }
+.economics-rent-figures dd:not(.metadata) { font-weight: 700; }
+.project-economics .economics-rent-figures dd:not(.metadata) { font-size: 1.15rem; }
+.economics-rent-figures .metadata { grid-column: 1 / -1; }
+.economics-source-line { margin: .85rem 0 .7rem; }
+.economics-interest {
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .2rem .75rem;
+  padding-top: .5rem;
+}
+.economics-interest p { margin: 0; font-size: .925rem; }
+.economics-interest button { margin: 0 .35rem 0 0; }
+.economics-continue { margin: 1rem 0 0; }
+.sr-workspace:has(.project-economics-detail) { grid-template-columns: minmax(0, 1fr); }
+.sr-workspace:has(.project-economics-detail) .builder-journey-rail { display: none; }
+.project-economics-detail {
+  max-width: 67rem;
+  margin: 0 auto;
+  overflow-wrap: anywhere;
+}
+.economics-detail-header { margin: 1.15rem 0 1.5rem; }
+.economics-detail-header h1 {
+  margin: 0 0 .4rem;
+  font-size: clamp(2rem, 4.5vw, 3.2rem);
+  letter-spacing: -.035em;
+}
+.economics-detail-header p { margin: 0; color: var(--ink-muted); }
+.economics-detail-header p span { color: var(--border-strong); margin-inline: .25rem; }
+.economics-jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 .9rem;
+  margin: -.65rem 0 .8rem;
+}
+.economics-jump a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: .925rem;
+  font-weight: 650;
+}
+.economics-detail-layout {
+  display: grid;
+  align-items: start;
+  grid-template-columns: minmax(0, 2fr) minmax(15rem, 1fr);
+  gap: clamp(1rem, 3vw, 2.25rem);
+}
+.economics-editors { grid-column: 1; grid-row: 1; min-width: 0; }
+.economics-live {
+  position: sticky;
+  top: 1rem;
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+  padding: 1.2rem;
+  background: var(--primary-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+}
+.economics-live > .metadata { margin: .3rem 0 .65rem; }
+.economics-editor-group {
+  margin: 0 0 1.2rem;
+  box-shadow: none;
+}
+.economics-editor-group h2 { margin-bottom: .5rem; scroll-margin-block-start: 1rem; }
+.economics-editor-group > p { margin-top: .4rem; }
+.economics-cost-group {
+  min-width: 0;
+  margin: 0;
+  padding: .7rem 0 1.1rem;
+  border: 0;
+}
+.economics-cost-group + .economics-cost-group { margin-top: .35rem; }
+.economics-cost-group legend {
+  width: 100%;
+  border-bottom: 1px solid var(--border);
+  padding: .15rem 0 .4rem;
+  font-weight: 700;
+}
+.economics-cost-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .85rem 1rem;
+}
+.economics-cost-field label, .economics-cost-label { margin: 0 0 .35rem; font-size: .925rem; }
+.economics-cost-label { font-weight: 650; }
+.economics-cost-field p:not(.economics-cost-label) { margin: .35rem 0 0; }
+.economics-money-input { position: relative; }
+.economics-money-input span {
+  position: absolute;
+  inset-inline-start: .8rem;
+  top: 50%;
+  translate: 0 -50%;
+  color: var(--ink-muted);
+  pointer-events: none;
+}
+.economics-money-input input {
+  width: 100%;
+  padding: .55rem .65rem .55rem 1.8rem;
+  caret-color: var(--primary);
+  font-variant-numeric: tabular-nums;
+}
+.economics-money-input input[aria-invalid="true"] { border-color: var(--danger); }
+.economics-field-error { color: var(--danger-ink); font-size: .875rem; }
+.economics-planning-source, .budget-advanced { margin-top: .75rem; }
+.economics-back--bottom { margin-top: .6rem; }
+.economics-add-rental { margin: 0; }
+.project-economics-detail .project-budget { margin: 0; padding: 0; border: 0; }
+.project-economics-detail .rental-field label { margin-top: 0; }
+.project-economics-detail .rental-field select { margin: 0; }
+.project-economics-detail .rental-field input { padding: .6rem .75rem; }
+
+.economics-mobile-result { display: none; }
+
+@media (max-width: 780px) {
+  .economics-detail-layout { grid-template-columns: minmax(0, 1fr); }
+  .economics-live { grid-column: 1; grid-row: 1; position: static; }
+  .economics-editors { grid-row: 2; }
+  .economics-live .economics-rent-figures { display: none; }
+  .economics-mobile-result {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: .25rem .65rem;
+    background: var(--primary-soft);
+    border-radius: var(--radius-sm);
+    padding: .65rem .8rem;
+    color: var(--ink);
+    margin: .65rem 0 1rem;
+  }
+  .economics-mobile-result strong { font-variant-numeric: tabular-nums; }
+  .economics-mobile-rental { display: block; }
+  .economics-mobile-rental .economics-rent-figures { border-top: 0; padding: 0; }
+}
+@media (max-width: 620px) {
+  .economics-summary-body, .economics-summary-body--cost .economics-cost { grid-template-columns: minmax(0, 1fr); gap: .65rem; }
+  .economics-rent-figures { border-top: 1px solid var(--border); padding-top: .25rem; }
+  .economics-cost-fields { grid-template-columns: minmax(0, 1fr); }
+}

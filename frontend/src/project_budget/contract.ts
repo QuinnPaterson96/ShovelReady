@@ -13,7 +13,7 @@ export type Context = {
 }
 export type Money = { minimum: string; maximum: string | null; currency: string | null; precision: number }
 export type Evidence = {
-  origin: 'catalogue' | 'user_allowance' | 'user_quote'; provider: string; label: string; locator: string
+  origin: 'catalogue' | 'planning_reference' | 'user_allowance' | 'user_quote'; provider: string; label: string; locator: string
   captured_at: string | null; effective_at: string | null; expires_at: string | null; recorded_at: string
   review_status: 'unreviewed'; original_record: string
 }
@@ -52,7 +52,7 @@ export const budgetSchema = record({
     inclusions: { type: 'array', maxItems: 40, items: requiredText }, exclusions: { type: 'array', maxItems: 40, items: requiredText },
     tax_basis: nullableText, tax_status: { enum: ['included', 'excluded', 'unknown'] }, rationale: text, recheck_reason: nullableText,
     treatment: { enum: ['capital_cost', 'refundable_security'] }, context: contextSchema,
-    evidence: record({ origin: { enum: ['catalogue', 'user_allowance', 'user_quote'] }, provider: requiredText, label: requiredText,
+    evidence: record({ origin: { enum: ['catalogue', 'planning_reference', 'user_allowance', 'user_quote'] }, provider: requiredText, label: requiredText,
       locator: requiredText, captured_at: date, effective_at: date, expires_at: date, recorded_at: { type: 'string', format: 'date' },
       review_status: { const: 'unreviewed' }, original_record: { type: 'string', maxLength: 100000 } }),
   }) },
@@ -78,7 +78,7 @@ export function parseBudget(value: unknown): BudgetDraft {
     if (['included', 'not_applicable'].includes(item.state) && !item.rationale.trim())
       throw new Error('Budget draft was not changed. Included and not-applicable items need a reason.')
     if (item.evidence.origin === 'catalogue' && (item.basis === 'allowance' || item.basis === 'quote') ||
-        item.evidence.origin === 'user_allowance' && item.basis !== 'allowance' || item.evidence.origin === 'user_quote' && item.basis !== 'quote')
+        ['planning_reference', 'user_allowance'].includes(item.evidence.origin) && item.basis !== 'allowance' || item.evidence.origin === 'user_quote' && item.basis !== 'quote')
       throw new Error('Budget draft was not changed. Price basis and source origin disagree.')
     if (item.money) {
       const { minimum, maximum, precision } = item.money
