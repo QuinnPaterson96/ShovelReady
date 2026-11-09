@@ -653,7 +653,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     previousPropertyComplete.current = propertyComplete
   }, [propertyComplete])
   useEffect(() => {
-    if (!playbackLayoutRef.current && journeyStep === 'placement' && propertyComplete) requestAnimationFrame(() => { if (!playbackLayoutRef.current && journeyVisible.current) focusSummaryTarget(document, 'builder-placement-title', 'start') })
+    if (!playbackLayoutRef.current && journeyStep === 'placement' && propertyComplete) requestAnimationFrame(() => { if (!playbackLayoutRef.current && journeyVisible.current) focusSummaryTarget(document, 'builder-placement-title', 'start', 'instant') })
   }, [journeyStep, propertyComplete])
   useEffect(() => {
     function revealStep(event: MouseEvent) {
@@ -976,14 +976,13 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     requestAnimationFrame(() => {
       if (playbackActive || !visible) return
       focusJourneyStep(step)
-      if (step === 'purpose') document.getElementById('builder-purpose')?.scrollIntoView({ block: 'center', behavior: window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
       if (step === 'checks') { const details = document.querySelector<HTMLDetailsElement>('.homeowner-summary__checks'); if (details) details.open = true }
     })
   }
   function focusJourneyStep(step: JourneyStep) {
     if (step === 'property') {
       const focused = mode === 'manual' ? focusAssessmentField('manual-address', 'center') : focusAssessmentField('sd-address')
-      if (!focused) focusSummaryTarget(document, 'builder-property-title', 'start')
+      if (!focused) focusSummaryTarget(document, 'builder-property-title', 'start', 'instant')
       return
     }
     if (step === 'model') { focusAssessmentField('builder-model-choice'); return }
@@ -993,7 +992,9 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
       checks: 'builder-quick-checks', budget: 'builder-budget-title', enquiry: 'builder-enquiry-title',
       email: contextComplete ? 'builder-provider-website' : 'builder-contact-context',
     }
-    focusSummaryTarget(document, targets[step], 'start')
+    // Step changes reveal a new task immediately; a pending page reset must not
+    // compete with a smooth scroll and strand its focused control offscreen.
+    focusSummaryTarget(document, targets[step], step === 'purpose' ? 'center' : 'start', 'instant')
   }
   useEffect(() => {
     const focusProperty = propertyFocusRequest !== focusedPropertyRequest.current

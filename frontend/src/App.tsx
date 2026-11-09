@@ -98,7 +98,7 @@ export default function App() {
     // The assessment owns focus after its current entry step renders.
     if (page === 'builder' && builderLanding !== 'example') return
     content.current?.focus({ preventScroll: true })
-    window.scrollTo({ top: 0 })
+    window.scrollTo({ top: 0, behavior: 'instant' })
   }, [page, builderLanding])
 
   useEffect(() => {
