@@ -2,6 +2,8 @@
 
 ## Municipality and starting placement
 
+[Street](municipal-street-prefill.md) and [waterfront](municipal-waterfront-prefill.md) prefill share parcel selection, source profiles, geometry identity and the editable map. Each observation has its own source requirements and route. Neither enables local zoning coverage.
+
 The [placement guidance integration](integration-placement-guidance.md) connects a sourced, correctable municipality to the demo’s existing rule and placement engines. `POST /api/placement-suggestions/v1/suggest` proposes one rectangle without changing the evaluator for visitor-supplied positions. The map draws a single scenario’s clipped setbacks separately from extra planning margins and model geometry. No new data store, background service, source publication or migration is required.
 
 ## Optional budget scope — October 19, 2026

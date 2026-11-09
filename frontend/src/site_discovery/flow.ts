@@ -1,4 +1,4 @@
-import { municipalityFromAddress, municipalityFromProperty, type MunicipalityContext } from '../municipality_coverage/model'
+import { parcelCoverage, municipalityFromAddress, municipalityFromProperty, type MunicipalityContext } from '../municipality_coverage/model'
 
 export type Source = { provider: string; record: string; capturedAt: string | null; sourceDate: string | null; url: string | null; review: string }
 export type Address = { id: string; label: string; locality: string | null; precision: string; issues: string[]; point: [number, number] | null; crs: string | null; source: Source; raw: unknown }
@@ -48,7 +48,7 @@ export class DiscoveryFlow {
     try {
       const result = await this.transport.addresses(query, controller.signal)
       if (!this.current(generation)) return
-      this.publish({ busy: false, addresses: result.candidates, message: result.message ?? (result.status === 'no_match' ? 'No address match. Correct the address or continue with manual site details.' : result.status === 'outside_coverage' ? 'Outside this Victoria parcel demonstration. Continue with manual site details.' : '') })
+      this.publish({ busy: false, addresses: result.candidates, message: result.message ?? (result.status === 'no_match' ? 'No address match. Correct the address or continue with manual site details.' : result.status === 'outside_coverage' ? 'Outside mapped parcel coverage. Continue with manual site details.' : '') })
     } catch { if (this.current(generation)) this.publish({ busy: false, message: 'Address service unavailable or response invalid. Correct the address or continue manually.' }) }
   }
   async chooseAddress(id: string) {
@@ -57,14 +57,14 @@ export class DiscoveryFlow {
     const { controller, generation } = this.request()
     const municipality = municipalityFromAddress(address)
     this.publish({ stage: 'parcels', busy: true, message: '', address, municipality, parcels: [], parcel: null, observation: null, confirmed: null })
-    if (municipality.rule_coverage !== 'victoria_candidate') {
+    if (!parcelCoverage(municipality)) {
       this.publish({ busy: false, message: '' })
       return
     }
     try {
       const result = await this.transport.parcels(address, controller.signal)
       if (!this.current(generation)) return
-      this.publish({ busy: false, parcels: result.candidates, message: result.message ?? (result.status === 'outside_coverage' ? 'This address is outside the Victoria parcel demonstration. Continue manually.' : result.status === 'no_match' ? 'No parcel match. Continue manually or correct the address.' : '') })
+      this.publish({ busy: false, parcels: result.candidates, message: result.message ?? (result.status === 'outside_coverage' ? 'This address is outside mapped parcel coverage. Continue manually.' : result.status === 'no_match' ? 'No parcel match. Continue manually or correct the address.' : '') })
       if (this.autoProceed && result.status === 'ok' && result.candidates.length === 1) await this.chooseParcel(result.candidates[0].id)
     } catch (error) { if (this.current(generation)) this.publish({ busy: false, message: error instanceof DiscoveryProblem ? error.message : 'Parcel response invalid. Choose the address again or continue manually.' }) }
   }

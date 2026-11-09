@@ -4,19 +4,29 @@ import savedExample from '../builder_demo/example-site.json'
 export type MunicipalityContext = {
   schema_version: 'municipality-context.v1'
   name: string | null
-  jurisdiction_id: 'ca-bc-victoria' | null
+  jurisdiction_id: 'ca-bc-victoria' | 'ca-bc-saanich' | null
   rule_coverage: 'victoria_candidate' | 'unavailable' | 'unresolved'
   origin: 'geocoder_locality' | 'municipal_parcel' | 'user' | 'unknown'
   source: Source | null
 }
 
 const cleanName = (value: string | null) => value?.replace(/[\u0000-\u001f\u007f]/g, '').trim().slice(0, 80) || null
-const victoria = (value: string | null) => value !== null && ['victoria', 'city of victoria'].includes(value.toLowerCase())
+export const parcelSources = {
+  'ca-bc-victoria': { id: 'ca-bc-victoria', name: 'City of Victoria', alternate: 'city of victoria',
+    municipality: 'victoria', source: 'city-of-victoria-pid-parcels', ruleCoverage: 'victoria_candidate' },
+  'ca-bc-saanich': { id: 'ca-bc-saanich', name: 'Saanich', alternate: 'district of saanich',
+    municipality: 'saanich', source: 'district-of-saanich-parcels', ruleCoverage: 'unavailable' },
+} as const
+
+export function parcelCoverage(value: MunicipalityContext | null) {
+  return value?.jurisdiction_id ? parcelSources[value.jurisdiction_id] : null
+}
+
 function context(name: string | null, origin: MunicipalityContext['origin'], source: Source | null): MunicipalityContext {
-  const cleaned = cleanName(name), supported = victoria(cleaned)
-  return { schema_version: 'municipality-context.v1', name: supported ? 'City of Victoria' : cleaned,
-    jurisdiction_id: supported ? 'ca-bc-victoria' : null,
-    rule_coverage: supported ? 'victoria_candidate' : cleaned ? 'unavailable' : 'unresolved',
+  const cleaned = cleanName(name), locality = cleaned?.toLowerCase()
+  const profile = Object.values(parcelSources).find(item => item.municipality === locality || item.alternate === locality)
+  return { schema_version: 'municipality-context.v1', name: profile?.name ?? cleaned, jurisdiction_id: profile?.id ?? null,
+    rule_coverage: profile?.ruleCoverage ?? (cleaned ? 'unavailable' : 'unresolved'),
     origin: cleaned ? origin : 'unknown', source }
 }
 
@@ -28,9 +38,8 @@ export function municipalityFromAddress(address: Address): MunicipalityContext {
 /** Prefer the selected municipal parcel adapter to the address provider's locality hint. */
 export function municipalityFromProperty(property: Confirmed): MunicipalityContext {
   const raw = property.parcel.raw as { candidate?: { parcel_ref?: { source?: unknown } } } | null
-  return raw?.candidate?.parcel_ref?.source === 'city-of-victoria-pid-parcels'
-    ? context('City of Victoria', 'municipal_parcel', property.observation.source)
-    : municipalityFromAddress(property.address)
+  const profile = Object.values(parcelSources).find(item => item.source === raw?.candidate?.parcel_ref?.source)
+  return profile ? context(profile.name, 'municipal_parcel', property.observation.source) : municipalityFromAddress(property.address)
 }
 
 export function userMunicipality(name: string): MunicipalityContext { return context(name, 'user', null) }

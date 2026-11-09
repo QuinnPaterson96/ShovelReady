@@ -1,5 +1,7 @@
 # ShovelReady
 
+The homeowner map prefills editable [street](docs/municipal-street-prefill.md) and [waterfront](docs/municipal-waterfront-prefill.md) edges in Victoria and Saanich. Both municipalities support mapped placement. Victoria has a separate preliminary zoning comparison.
+
 The homeowner demo now [suggests an editable starting position, shows setback margins and selects local rules from the address](docs/integration-placement-guidance.md). For places outside current coverage, visitors can request their municipality or continue with a manual sketch.
 
 Review implementation: [optional homeowner budget journey](docs/project-budget-journey.md)

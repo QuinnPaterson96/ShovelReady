@@ -1,6 +1,6 @@
 import { useEffect, useId, useState } from 'react'
 import { readableDate, publicSourceUrl } from '../ReadableProvenance'
-import { coverageRequestUrl, userMunicipality, type MunicipalityContext } from './model'
+import { coverageRequestUrl, parcelCoverage, userMunicipality, type MunicipalityContext } from './model'
 
 export function MunicipalityCoverage({ value, onChange, onManual, id }: {
   value: MunicipalityContext | null
@@ -16,8 +16,8 @@ export function MunicipalityCoverage({ value, onChange, onManual, id }: {
   const request = value ? coverageRequestUrl(value) : null
   const sourceUrl = publicSourceUrl(value?.source?.url ?? null)
   return <section id={id} tabIndex={id ? -1 : undefined} className="municipality-coverage" aria-label="Municipality and rule coverage">
-    <p className="municipality-coverage__title"><strong>{supported ? 'Using City of Victoria rules' : value?.name ? `We don’t cover ${value.name}’s rules yet` : 'Choose a municipality for local rules'}</strong></p>
-    <p>{supported ? 'Preliminary garden-suite comparisons use the available Victoria rule subset.' : 'You can still explore a manual site sketch. Local rule checks are not available for this selection.'}</p>
+    <p className="municipality-coverage__title"><strong>{supported ? 'Using City of Victoria rules' : value?.name && value.rule_coverage === 'unresolved' ? 'Check the municipality for this parcel' : value?.name ? `We don’t cover ${value.name}’s rules yet` : 'Choose a municipality for local rules'}</strong></p>
+    <p>{supported ? 'Preliminary garden-suite comparisons use the available Victoria rule subset.' : value?.name && value.rule_coverage === 'unresolved' ? 'The selected parcel source and municipality differ. Choose the matching parcel to use local rules.' : parcelCoverage(value) ? 'Explore the mapped parcel and editable street edges. Local rule comparisons are unavailable.' : 'You can still explore a manual site sketch. Local rule checks are not available for this selection.'}</p>
     {(request || (!supported && onManual)) && <div className="municipality-coverage__actions">
       {request && <a className="municipality-coverage__request" href={request} target="_blank" rel="noreferrer">Request {value?.name} coverage</a>}
       {!supported && onManual && <button type="button" onClick={onManual}>Continue with a site sketch</button>}
@@ -31,7 +31,7 @@ export function MunicipalityCoverage({ value, onChange, onManual, id }: {
       </form>
     </details>}
     {value?.name && <details><summary>Municipality source and coverage</summary>
-      <p>{value.origin === 'municipal_parcel' ? 'Municipality follows the selected City of Victoria parcel source.' : value.origin === 'geocoder_locality' ? 'Municipality is suggested from the selected address record’s locality. It remains a provisional jurisdiction choice.' : 'Municipality entered by you; not independently verified.'} A municipality selection does not determine the property’s zone or applicable pathway.</p>
+      <p>{value.origin === 'municipal_parcel' ? 'Municipality follows the selected municipal parcel source.' : value.origin === 'geocoder_locality' ? 'Municipality is suggested from the selected address record’s locality. It remains a provisional jurisdiction choice.' : 'Municipality entered by you; not independently verified.'} A municipality selection does not determine the property’s zone or applicable pathway.</p>
       {value.source && <p>{value.source.provider} · captured {readableDate(value.source.capturedAt)} · {value.source.review}. {sourceUrl && <a href={sourceUrl} target="_blank" rel="noreferrer">Municipality source record</a>}</p>}
     </details>}
   </section>

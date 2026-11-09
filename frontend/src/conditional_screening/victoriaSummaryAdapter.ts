@@ -69,12 +69,27 @@ export function homeownerSummary(input: {
       ? { label: 'Distance to boundaries', status: scenario.scenarios?.some(s => s.checks.some(c => c.planning_meets === false)) ? 'review' : scenario.scenarios?.some(s => s.checks.some(c => (c.planning_buffer_m ?? 0) > 0)) ? 'probable' : 'checked', detail: scenario.scenarios?.some(s => s.checks.some(c => c.planning_meets === false)) ? 'Captured distances clear the candidate minimums, but the planning buffers do not. Review buffers or supply measured offsets; no observed distance conflict is established.' : 'Tested side and rear distances clear the candidate minimums after any stated planning buffers. Approximate geometry; front and legal-line distances remain separate.', action: { label: 'Review planning buffers', target: 'boundary-offsets' } }
       : { label: 'Distance to boundaries', status: 'unknown', detail: scenario?.status === 'clarify' ? 'The possible boundary roles change the result.' : 'A useful boundary comparison needs a current placement and boundary context.', action: { label: 'Review boundary offsets', target: 'boundary-offsets' } })
 
-  if (assumptions?.street_adjacency) checks.push({ label: 'Street edges', status: assumptions.street_adjacency.all_marked ? 'checked' : 'unknown', detail: assumptions.street_adjacency.all_marked ? `${assumptions.street_adjacency.completion_method === 'marking' ? 'Your marked streets are saved; remaining edges are assumed not to adjoin a street' : assumptions.street_adjacency.completion_method === 'advance' ? 'Advancing treated your street selection as complete' : 'You confirmed all street edges are marked'}. Reopen the street tab to revise it. These are adjacency assumptions, not verified legal roles.` : 'Street context is unknown. Mark known street edges to save an answer, or keep Not sure. Dependent boundary comparisons remain unresolved.', action: { label: 'Review street edges', target: 'street-side' } })
+  const streets = assumptions?.street_adjacency
+  if (streets) {
+    let detail = 'Street context is unknown. Mark known street edges to save an answer, or keep Not sure. Dependent boundary comparisons remain unresolved.'
+    if (streets.all_marked) {
+      let basis = 'You confirmed all street edges are marked'
+      if (streets.origin === 'municipal_map') basis = 'The municipal map suggested these street edges; remaining edges are assumed not to adjoin a street'
+      else if (streets.origin === 'edited_map') basis = 'Street edges use your edits and retained map suggestions'
+      else if (streets.completion_method === 'marking') basis = 'Your marked streets are saved; remaining edges are assumed not to adjoin a street'
+      else if (streets.completion_method === 'advance') basis = 'Advancing treated your street selection as complete'
+      detail = `${basis}. Reopen the street tab to revise it. These are preliminary adjacency assumptions.`
+    } else if (streets.edge_ids.length) {
+      detail = 'Some street edges are marked. Other sides remain unresolved. You can edit the street selection.'
+    }
+    checks.push({ label: 'Street edges', status: streets.all_marked ? 'checked' : 'unknown', detail,
+      action: { label: 'Review street edges', target: 'street-side' } })
+  }
 
   const suiteCount = assumptions?.existing_garden_suites.value
   const countConflict = screening?.checks.some(check => check.rule.kind === 'count_max' && check.status === 'apparent_conflict_under_assumptions') ?? false
   if (assumptions?.waterfront) checks.push({ label: 'Waterfront rules', status: outsideScope ? 'unsupported' : assumptions.waterfront.value === null ? 'unknown' : assumptions.waterfront.value ? 'review' : assumptions.waterfront.origin === 'journey_default' ? 'probable' : 'checked',
-    detail: outsideScope ? 'Waterfront rules for this zoning are not covered.' : assumptions.waterfront.origin === 'journey_default' ? 'Assuming not waterfront for preliminary scouting. If your property adjoins water, choose Yes and mark those edges. Legal waterfront status and special rules are not established by this default.' : assumptions.waterfront.value === null ? 'Waterfront status is unknown. Choose the answer you know, or keep Not sure.' : assumptions.waterfront.value ? 'You selected waterfront. Mark water-adjoining edges; legal front-line classification and special siting rules need a reviewed property plan.' : 'You selected not waterfront. This records your answer, not independently verified legal waterfront status.',
+    detail: outsideScope ? 'Waterfront rules for this zoning are not covered.' : assumptions.waterfront.origin === 'municipal_map' ? assumptions.waterfront.note : assumptions.waterfront.origin === 'journey_default' ? 'Assuming not waterfront for preliminary scouting. If your property adjoins water, choose Yes and mark those edges. Legal waterfront status and special rules are not established by this default.' : assumptions.waterfront.value === null ? 'Waterfront status is unknown. Choose the answer you know, or keep Not sure.' : assumptions.waterfront.value ? 'You selected waterfront. Mark water-adjoining edges; legal front-line classification and special siting rules need a reviewed property plan.' : 'You selected not waterfront. This records your answer, not independently verified legal waterfront status.',
     ...(!outsideScope ? { action: { label: 'Review waterfront status', target: 'waterfront-lot' } } : {}) })
   const countChecked = screening?.checks.some(check => check.rule.kind === 'count_max' && check.status === 'meets_under_assumptions') ?? false
   checks.push(outsideScope

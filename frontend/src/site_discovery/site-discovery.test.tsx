@@ -249,11 +249,11 @@ test('actual complete and municipality variants preserve address identity bounda
 })
 
 test('city routing follows selected source evidence, clears old selection and never calls Victoria for unsupported cities', async () => {
-  // Independent expectation: selecting a returned Saanich record must never reuse
+  // Independent expectation: selecting a returned Langford record must never reuse
   // Victoria parcel/rule coverage, even if the search text says Victoria.
   const contexts: (MunicipalityContext | null)[] = []
   const confirmed: (Confirmed | null)[] = []
-  const unsupported = { ...address, id: 'saanich', locality: 'Saanich', label: 'A Saanich address, Victoria postal area' }
+  const unsupported = { ...address, id: 'langford', locality: 'Langford', label: 'A Langford address, Victoria postal area' }
   const unknown = { ...address, id: 'unknown', locality: null, label: 'Victoria in display text only' }
   const municipalParcel = parseParcels(municipalApi.search).candidates[0]
   const municipalObservation = parseObservation(municipalApi.observation, municipalParcel)
@@ -269,16 +269,16 @@ test('city routing follows selected source evidence, clears old selection and ne
   assert.equal(parcelQueries, 1)
   assert.equal(flow.state.confirmed, null)
   assert.equal(confirmed.at(-1), null)
-  assert.equal(contexts.at(-1)?.name, 'Saanich')
+  assert.equal(contexts.at(-1)?.name, 'Langford')
   assert.equal(contexts.at(-1)?.rule_coverage, 'unavailable')
   assert.equal(flow.state.address?.id, unsupported.id)
   const request = new URL(coverageRequestUrl(flow.state.municipality!)!)
   assert.equal(request.origin, 'https://github.com')
   assert.equal(request.pathname, '/QuinnPaterson96/ShovelReady/issues/new')
-  assert.match(request.searchParams.get('title')!, /Saanich/)
+  assert.match(request.searchParams.get('title')!, /Langford/)
   assert.ok(!request.toString().includes(encodeURIComponent(unsupported.label)), 'request prefills municipality only, not property details')
   const html = renderToStaticMarkup(createElement(MunicipalityCoverage, { value: flow.state.municipality, onManual() {} }))
-  assert.match(html, /Request Saanich coverage/)
+  assert.match(html, /Request Langford coverage/)
   assert.match(html, /Continue with a site sketch/)
   assert.match(html, /Submit the form there to send your request/)
   await flow.chooseAddress(unknown.id)
@@ -429,7 +429,7 @@ test('municipal contracts keep joined identity, projected geometry and partial r
     await liveTransport.observe(found.candidates[0], new AbortController().signal)
     assert.deepEqual(calls[0], ['/api/municipal-sites/search', { schema_version: 'municipal-sites.v1', address: '1144 May St' }])
     assert.deepEqual(calls[1], ['/api/municipal-sites/observe', { schema_version: 'municipal-sites.v1', parcel_ref: ref, expected_pid: '001-328-107' }])
-    assert.equal((await liveTransport.parcels({ ...victoria, locality: 'Saanich' }, new AbortController().signal)).status, 'outside_coverage')
+    assert.equal((await liveTransport.parcels({ ...victoria, locality: 'Langford' }, new AbortController().signal)).status, 'outside_coverage')
   } finally { globalThis.fetch = originalFetch }
 })
 

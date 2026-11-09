@@ -18,6 +18,8 @@ and real stateless calculation endpoints. It does not verify a hosted update
 across an open session (#329), physical-device behavior, homeowner understanding
 of rental returns (#340), or accepted quotes, site inputs or regulatory evidence.
 
+[Municipal street prefill verification](municipal-street-prefill.md#verification-and-remaining-work) records the live Victoria and Saanich browser checks, the offline correction and source-failure cases, and the remaining independent accuracy and homeowner validation work. On November 6 the stateless verification covered 97 focused backend cases, 194 frontend tests, the TypeScript/Vite build, the placement-demo browser journey and the saved-example walkthrough. The live browser selection/edit check used Kingsley St and May St. No municipal rule release was published.
+
 ## Placement and city routing — November 2026
 
 The [combined browser journey and reproduction steps](integration-placement-guidance.md#verification) exercise captured Victoria and Saanich addresses against the local production build and real calculation APIs. On desktop and mobile-width Edge, the placement remained editable, a late suggestion did not undo a keyboard move, the setback guides remained visible outside the lot, and a city correction cleared the old jurisdiction from findings and report wording. A fresh Saanich address offered a city-only request and an independent manual sketch. No issue was submitted. Container CI runs this same journey against the packaged app.
@@ -388,3 +390,6 @@ Tags retain their existing update behavior and are not digest-pinned. Matching
 manifests establish image equivalence at this check; full final-head CI must separately
 verify pulls, disposable database checks, build and container application behavior.
 Railway build/startup verification remains pending until deployment.
+
+
+The [waterfront prefill verification](municipal-waterfront-prefill.md) distinguishes the live coastal and lake address checks, constructed geometry controls, editable mark and report checks from independent source review and user validation.

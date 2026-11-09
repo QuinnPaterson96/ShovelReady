@@ -135,7 +135,7 @@ export function OccupiedLotPreview({ selected, placement, onMove, nudgeMetres, c
       onPointerCancel={() => { drag.current = false; suppressClick.current = false }}>
       {mapLayers}
     </svg>
-    <p className="occupied-map-legend"><span>Teal · captured parcel</span><span>Purple · rooflines, not walls</span>{!!conflictIds?.size && <span>Red dashed outline · current conflict</span>}<span>Copper · proposed unit</span><span>North ↑</span>{!!boundaryInteraction?.streetIds?.length && <span>Grey road bands · your marks, diagram only</span>}</p>
+    <p className="occupied-map-legend"><span>Teal · captured parcel</span><span>Purple · rooflines, not walls</span>{!!conflictIds?.size && <span>Red dashed outline · current conflict</span>}<span>Copper · proposed unit</span><span>North ↑</span>{!!boundaryInteraction?.streetIds?.length && <span>{boundaryInteraction.streetSource ? 'Grey · suggested street edges and current marks' : 'Grey road bands · your marks, diagram only'}</span>}</p>
     {setbacks.legend}
     <dialog ref={preview} className="occupied-map-preview" aria-label="Full-size approximate placement preview">
       <div className="occupied-preview-heading"><h3>Approximate placement plan</h3><button type="button" onClick={() => preview.current?.close()}>Close preview</button></div>

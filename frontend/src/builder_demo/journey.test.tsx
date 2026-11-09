@@ -366,8 +366,19 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
     }
     return { schema_version: 'placement-scenarios.result.v1', status: !scenarios.length ? 'unresolved' : scenarios.every(s => s.outcome === 'pass') ? 'bounded_pass' : scenarios.every(s => s.outcome === 'fail') ? 'apparent_conflict' : 'clarify', reason: 'Retained coherent distance subset.', property_revision: expectedPropertyRevision(request.assumptions), placement_revision: request.assumptions.placement_revision, model_revision: request.model_revision, packet_id: 'fixture', packet_revision: 'fixture-1', scope: 'supplied placement', edge_distances_m: Object.fromEntries(edges.map(edge => [edge.id, 1.25])), thresholds_m: { side_rear: .6, flanking_street: 3.5 }, scenarios, sources: [{ provider: 'City of Victoria', record_label: 'Fixture source', capture_date: '2026-10-05', review_status: 'candidate', url: 'https://www.victoria.ca/', locator: 'Fixture' }], limitations: ['Front, rear-yard and height omitted.'] }
   }
+  let releaseShore!: () => void
+  const delayedShore = new Promise<void>(resolve => { releaseShore = resolve })
   expose('fetch', async (url: string, options: RequestInit) => {
     const request = JSON.parse(String(options.body))
+    if (url.endsWith('/waterfront-edges')) {
+      await delayedShore
+      const parcel = JSON.parse(readFileSync('src/builder_demo/example-site.json', 'utf8')).site.parcel
+      return { ok: true, json: async () => ({ schema_version: 'parcel-waterfront.v1', parcel_ref: request.parcel_ref,
+        parcel_geometry: parcel.shape.geometry, status: 'suggested',
+        suggestions: [{ segment: 0, label: 'Constructed shoreline', feature_id: 1, evidence_index: 0 }],
+        evidence: [{ provider: 'Constructed source', record_label: 'Fixture', captured_at_utc: '2026-11-06',
+          source_url: 'https://example.org/shore', review_status: 'unreviewed_live_observation' }] }) }
+    }
     if (url === '/api/scouting-geometry/assess') return { ok: true, json: async () => ({ ...geometry, input: request, checks: geometry.checks.filter((check: {kind: string}) => check.kind !== 'requirement') }) }
     if (url.endsWith('/placement-scenarios')) {
       latest = request; scenarioCalls++
@@ -635,6 +646,13 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
     await act(async () => [...document.querySelectorAll<HTMLButtonElement>('#waterfront-lot button')].find(node => node.textContent === 'No')!.click()); await settle()
     assert.equal([...document.querySelectorAll('[role="tab"]')].some(tab => tab.textContent === 'Mark waterfront'), false)
     assert.deepEqual(latest.assumptions.waterfront_edge_ids, [])
+    await act(async () => releaseShore()); await settle()
+    const afterShore = JSON.parse(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value)
+    assert.equal(afterShore.waterfront_prefill.selection.waterfront.value, true, 'late reply contained a usable map suggestion')
+    assert.equal(afterShore.zoning_site_assumptions.waterfront.origin, 'user')
+    assert.equal(afterShore.zoning_site_assumptions.waterfront.value, false)
+    assert.deepEqual(afterShore.zoning_site_assumptions.waterfront_edge_ids, [])
+
 
     // Changing use must reconcile the screen and both human-facing documents;
     // unknown input does not inherit a garden-suite scenario.

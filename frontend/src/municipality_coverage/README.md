@@ -2,12 +2,11 @@
 
 `MunicipalityContext` distinguishes source-attributed city selection from supported
 rule coverage. The selected geocoder locality provides a provisional hint; the
-selected City of Victoria parcel adapter takes precedence once available. Typed
+selected municipal parcel adapter takes precedence once available. Typed
 address display text and the search query never supply municipality identity.
 
 `SiteDiscovery.onMunicipalityChange` reports selection and reset immediately,
-before the observed-property callback. Unsupported/unknown cities do not call the
-Victoria parcel adapter. The host must gate Victoria zoning, property scan,
+before the observed-property callback. Victoria and Saanich have parcel and street coverage. Each uses its own municipal source, while other and unknown municipalities keep the manual route. See the [street prefill and evidence](../../../docs/municipal-street-prefill.md). The host must gate Victoria zoning, property scan,
 conditional screening and placement scenarios with `hasVictoriaCoverage`, clear
 jurisdiction-dependent findings when context changes, and carry context into
 reports/evidence. `resetMunicipalProjectSettings` retains use/foundation intent

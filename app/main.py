@@ -14,6 +14,8 @@ from app.draft_evaluations.api import router as draft_evaluations_router
 from app.identity import AppIdentity, capture_identity
 from app.investigation import router
 from app.municipal_sites.api import router as municipal_sites_router
+from app.municipal_sites.streets import router as parcel_edges_router
+from app.municipal_sites.waterfront import router as waterfront_router
 from app.placement_suggestion.api import router as placement_suggestion_router
 from app.reference_cases import router as reference_cases_router
 from app.scouting_geometry.api import router as scouting_geometry_router
@@ -43,6 +45,8 @@ def create_app(*, frontend_dist: Path = FRONTEND_DIST) -> FastAPI:
 
     application.include_router(address_search_router)
     application.include_router(municipal_sites_router)
+    application.include_router(parcel_edges_router)
+    application.include_router(waterfront_router)
     application.include_router(victoria_zoning_router)
     application.include_router(property_scan_router)
     application.include_router(case_preparations_router)
