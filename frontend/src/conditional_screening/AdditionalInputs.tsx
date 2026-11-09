@@ -2,12 +2,13 @@ import { useState } from 'react'
 import { MeasurementInput } from '../MeasurementInput'
 import type { ScenarioResult } from './scenarios'
 
-export function AdditionalInputs({ onHeight, result, buffers, onBuffers, foundation, onFoundation }: {
+export function AdditionalInputs({ onHeight, initialHeight = null, result, buffers, onBuffers, foundation, onFoundation }: {
+  initialHeight?: number | null
   onHeight: (height: number | null) => void; result: ScenarioResult | null
   buffers: { area: number; height: number }; onBuffers: (value: { area: number; height: number }) => void
   foundation: string | null; onFoundation: (value: string | null) => void
 }) {
-  const [height, setHeight] = useState('')
+  const [height, setHeight] = useState(initialHeight === null ? '' : String(initialHeight))
   return <section className="project-details" aria-label="Planning buffers and installed height">
     <h3>Planning buffers &amp; installed height</h3>
     <div id="scouting-area-buffer" tabIndex={-1}>

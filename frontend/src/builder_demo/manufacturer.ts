@@ -11,7 +11,7 @@ import { measurementWithUnit } from '../measurements'
 import { defaultJourneyModel } from '../model_catalogue/demo'
 import type { CatalogueModel } from '../model_catalogue/model'
 import type { BudgetDraft, Context } from '../project_budget/contract'
-import { budgetQuestions, budgetEnquiryParagraph, calculateBudget } from '../project_budget/pipeline'
+import { budgetQuestions, budgetEnquiryParagraph, recipientBudget } from '../project_budget/pipeline'
 
 export type EnquiryInput = {
   localComparisonsAvailable?: boolean
@@ -177,9 +177,9 @@ export function manufacturerDocument(input: EnquiryInput, address: string | null
   const question = withheld(input.question) ? '' : input.question!.trim()
   const sameRequest = (a: string, b: string) => a.toLowerCase().replace(/\s+/g, ' ').replace(/[.!?]+$/, '') === b.toLowerCase().replace(/\s+/g, ' ').replace(/[.!?]+$/, '')
   const additionalQuestion = next && question && !sameRequest(question, next) && !sameRequest(question, `Could ${model.name} be suitable for this property?`) ? question : null
-  const budgetResult = input.budgetDraft ? calculateBudget(input.budgetDraft.draft, input.budgetDraft.context, input.budgetDraft.today) : null
-  const budgetLines = budgetResult && input.budgetDraft ? [budgetEnquiryParagraph(input.budgetDraft.draft, budgetResult)] : []
-  const budgetNext = budgetResult && input.budgetDraft ? budgetQuestions(input.budgetDraft.draft, budgetResult, model.name) : []
+  const budgetView = input.budgetDraft ? recipientBudget(input.budgetDraft.draft, input.budgetDraft.context, input.budgetDraft.today) : null
+  const budgetLines = budgetView ? [budgetEnquiryParagraph(budgetView.draft, budgetView.result)] : []
+  const budgetNext = budgetView ? budgetQuestions(budgetView.draft, budgetView.result, model.name) : []
   return {
     title: `${model.name} feasibility enquiry${address ? ` — ${address}` : ''}`,
     example,

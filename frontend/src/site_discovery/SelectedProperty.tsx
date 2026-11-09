@@ -15,7 +15,7 @@ export function SelectedProperty({ value, onChangeProperty, onInspectAlternative
   const sourceMunicipality = municipalityFromProperty(value)
   return <section className="site-discovery sd-property-summary" aria-label="Selected property">
     <div className="sd-selected"><p><strong>{value.address.label}</strong><br />{parcelDescription(value.parcel) || value.parcel.label}</p>
-      <button type="button" onClick={onChangeProperty}>Change address</button><StepInfo label="Changing your property">Changing property clears its placement, street marks, measurements, property answers and enquiry question/response. Your model, intended use, timing, budget and contact preferences stay.</StepInfo></div>
+      <button type="button" onClick={onChangeProperty}>Change address</button><StepInfo label="Changing your property">Changing property clears its model placements, configurations, cost drafts, spending preferences, street marks, measurements and property answers. Your authored model questions, selected model, intended use, timing and contact details stay.</StepInfo></div>
     <MunicipalityCoverage value={municipality === undefined ? sourceMunicipality : municipality} />
     {municipality?.origin === 'user' && municipality.name !== sourceMunicipality.name && <p className="sd-notice">The selected outline still comes from {sourceMunicipality.name ?? 'the address source'}. Check the address if it belongs to a different municipality.</p>}
     {value.parcel.identityConcern && <p className="sd-notice">{value.parcel.identityConcern}</p>}

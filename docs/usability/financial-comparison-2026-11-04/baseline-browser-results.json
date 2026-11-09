@@ -1,0 +1,30 @@
+{
+  "commit": "778e69c7beecc681dbf3b85302522af2c8e909b7",
+  "application": "local Vite + stateless API; not deployed",
+  "browser": "Chrome 156.0.8078.80",
+  "agentInspection": true,
+  "observations": [
+    {
+      "phase": "home",
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "devicePixelRatio": 1,
+      "scrollWidth": 390,
+      "clientWidth": 390,
+      "touchPoints": 1,
+      "overflowing": []
+    },
+    {
+      "phase": "example-baseline",
+      "innerWidth": 390,
+      "innerHeight": 844,
+      "devicePixelRatio": 1,
+      "scrollWidth": 390,
+      "clientWidth": 390,
+      "touchPoints": 1,
+      "overflowing": []
+    }
+  ],
+  "errors": [],
+  "externalRequests": []
+}

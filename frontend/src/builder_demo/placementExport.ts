@@ -7,6 +7,9 @@ import { measurementWithUnit } from '../measurements'
 import { roadBands } from '../zoning_site_assumptions/roads'
 import { readableDate, publicSourceUrl } from '../ReadableProvenance'
 import { enquiryMarkdown, withPlacementSketch, type EnquiryDocument } from './enquiry'
+// Load with the assessment, while its versioned assets still exist. A delayed
+// import can request a removed chunk when an open session outlives a deployment.
+import { jsPDF } from 'jspdf'
 
 const escape = (value: string) => value.replace(/[<>&"']/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&apos;' }[c]!))
 export type PlacementDrawing = { svg: string; width: number; height: number; breaks: number[]; mapNotes?: string[] }
@@ -115,7 +118,6 @@ export async function renderDrawing(drawing: PlacementDrawing): Promise<DrawingA
     const mapCanvas = document.createElement('canvas'); mapCanvas.width = canvas.width; mapCanvas.height = Math.min(canvas.height, 1760)
     mapCanvas.getContext('2d')!.drawImage(canvas, 0, 0)
     const mapPngUrl = mapCanvas.toDataURL('image/png')
-    const { jsPDF } = await import('jspdf')
     const pdf = new jsPDF({ unit: 'mm', format: 'a4', compress: true })
     // Page one contains the whole map; supporting rows continue at readable size.
     const pageHeightPx = 1338, page = document.createElement('canvas'); page.width = canvas.width; page.height = pageHeightPx * 2
@@ -145,7 +147,6 @@ export function downloadFile(name: string, bytes: BlobPart, type: string) {
  * Browser-rendered system text preserves Unicode names and free answers without
  * substituting the limited built-in PDF font. Markdown remains the editable copy. */
 export async function renderEnquiryPdf(enquiry: EnquiryDocument, assets: DrawingAssets | null): Promise<Uint8Array> {
-  const { jsPDF } = await import('jspdf')
   const pdf = new jsPDF({ unit: 'mm', format: 'a4', compress: true })
   pdf.setProperties({ title: enquiry.title, subject: 'Unsent preliminary prefab enquiry' })
   const canvas = document.createElement('canvas'); canvas.width = 1240; canvas.height = 1754

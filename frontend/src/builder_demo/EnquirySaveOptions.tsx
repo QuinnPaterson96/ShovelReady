@@ -1,11 +1,8 @@
-import { useEffect } from 'react'
-
 export type EnquirySaveKind = 'enquiry-pdf' | 'png' | 'pdf' | 'package' | 'markdown'
 
 export function EnquirySaveOptions({ onSave, disabled = false, busy = false, hasPlacement }: {
   onSave: (kind: EnquirySaveKind) => void; disabled?: boolean; busy?: boolean; hasPlacement: boolean
 }) {
-  useEffect(() => { void import('./enquiry-save-options.css') }, [])
   return <section className="enquiry-save-options" aria-label="Save your enquiry">
     <button className="sr-primary" type="button" disabled={disabled || busy} onClick={() => onSave('enquiry-pdf')}>
       {busy ? 'Preparing download…' : 'Save enquiry PDF'}

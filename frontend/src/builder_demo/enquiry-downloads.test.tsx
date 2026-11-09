@@ -3,7 +3,7 @@ import { test } from 'node:test'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { manufacturerDocument } from './manufacturer'
-import { enquiryPlainText, enquiryMarkdown, enquiryEmailBody, withPlacementSketch } from './enquiry'
+import { enquiryPlainText, enquiryMarkdown, enquiryEmailBody, withPlacementSketch, exportFailureMessage } from './enquiry'
 import { journeyCatalogue } from '../model_catalogue/demo'
 import { reviewScenarios, reviewAssumptions } from './manufacturer-review.fixture'
 import { EnquirySaveOptions } from './EnquirySaveOptions'
@@ -49,6 +49,17 @@ test('enquiry PDF remains the enabled primary save when no current plan is avail
   assert.match(html, /disabled="">Placement image/)
   assert.match(html, /disabled="">Placement plan only/)
   assert.doesNotMatch(html, /disabled="">Save enquiry PDF/)
+})
+
+test('failed export gives retry and independent copy recovery without exposing a removed chunk URL', () => {
+  for (const error of [new Error('Failed to fetch dynamically imported module: https://example.test/assets/old-jspdf.js'), new Error('PDF export is unavailable in this browser.'), null]) {
+    const message = exportFailureMessage(error)
+    assert.match(message, /Your enquiry is still here/)
+    assert.match(message, /Try saving again/)
+    assert.match(message, /Copy text/)
+    assert.doesNotMatch(message, /https:|reload|downloaded/)
+  }
+  assert.match(exportFailureMessage(new Error('Inputs changed during export. Save the updated enquiry when checks finish.')), /Inputs changed during export/)
 })
 
 // The same garden-suite packet must not become a claim about an unknown use.
