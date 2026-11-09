@@ -57,7 +57,7 @@ test('switching models recovers independent questions, placements and costs with
     const interests = () => document.querySelector('[aria-label="Rental interest"]')!
     assert.match(interests().textContent!, /Rental scenario included/, 'an explicit rental answer is reflected without repeating the question')
     await click('Change rental preference')
-    await click('Skip for now')
+    await click('Skip rental estimate')
     assert.match(interests().textContent!, /Rental income skipped/, 'an explicit skip takes precedence over a previous rental answer')
     await edit('builder-use', 'Unknown'); await edit('builder-relationship', 'I own the property'); await edit('builder-nextStep', 'Please advise the next step.')
     const parcel = evidence().measurement.site.site.parcel.id

@@ -116,7 +116,7 @@ try {
   assert.ok(checks.some(c => c.kind === 'building_overlap' && c.relation === 'positive_area_overlap'))
   results.push({ phase: 'initial', placement: e.measurement.result.input.placement, checks })
   await page.screenshot({ path: `${output}/desktop-initial.png` })
-  assert.equal(await page.locator('.builder-placement-next--floating, .floating-next--docked').count(), 0)
+  assert.equal(await page.locator('.floating-next--active:visible').count(), 0, 'playback owns the visible navigation')
   await page.keyboard.press('Enter'); await settled()
   assert.match(await progress(), /Step 3 of 6 · Placement/)
   assert.match(await caption().textContent(), /Move away/)

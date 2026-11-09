@@ -21,14 +21,6 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
   const originals = new Map<string, PropertyDescriptor | undefined>()
   const expose = (name: string, value: unknown) => { originals.set(name, Object.getOwnPropertyDescriptor(globalThis, name)); Object.defineProperty(globalThis, name, { configurable: true, writable: true, value }) }
   for (const [name, value] of Object.entries({ Element: dom.window.Element, HTMLElement: dom.window.HTMLElement, MutationObserver: dom.window.MutationObserver, window: dom.window, document: dom.window.document, navigator: dom.window.navigator, requestAnimationFrame: (cb: () => void) => setTimeout(cb, 0), IS_REACT_ACT_ENVIRONMENT: true })) expose(name, value)
-  let mapVisibility!: (visible: boolean) => void
-  const visibility = new Map<Element, (visible: boolean) => void>()
-  expose('IntersectionObserver', class {
-    callback: (entries: { target: Element; isIntersecting: boolean; intersectionRatio: number }[]) => void
-    constructor(callback: (entries: { target: Element; isIntersecting: boolean; intersectionRatio: number }[]) => void) { this.callback = callback }
-    observe(target: Element) { const notify = (visible: boolean) => this.callback([{ target, isIntersecting: visible, intersectionRatio: visible ? 1 : 0 }]); visibility.set(target, notify); if (target.tagName === 'svg') mapVisibility = notify }
-    disconnect() {}
-  })
   const fixture = JSON.parse(readFileSync('src/scenario_handoff/retained-assessment.fixture.json', 'utf8'))
   let releaseLate!: () => void
   let geometryCalls = 0
@@ -63,12 +55,7 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     assert.ok(map.compareDocumentPosition(summary) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING)
     assert.ok(document.querySelector('.boundary-map-tools')!.compareDocumentPosition(document.querySelector('.builder-placement-next')!) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING)
     assert.equal(document.querySelector('.occupied-map-concerns'), null, 'movement is not interrupted by an acknowledgement panel')
-    const beforeFloating = document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value
-    await act(async () => mapVisibility(true))
-    assert.ok(document.querySelector('.builder-placement-next--floating'), 'Next floats while the map is in view')
-    await act(async () => mapVisibility(false))
-    assert.equal(document.querySelector('.builder-placement-next--floating'), null, 'Next returns to the document when the map leaves view')
-    assert.equal(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value, beforeFloating, 'presentation changes do not edit the scenario')
+    assert.equal(document.querySelectorAll('.builder-placement-next .builder-continue').length, 1, 'placement has a single continuation')
     assert.ok(document.querySelector('.builder-placement-next')!.compareDocumentPosition(summary) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING)
     assert.equal(document.querySelector<HTMLDetailsElement>('.homeowner-summary__checks')!.open, true)
     await act(async () => document.querySelector<HTMLButtonElement>('.homeowner-summary__counts .homeowner-summary__review')!.click())
@@ -144,14 +131,7 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     }
     assert.deepEqual(lastScroll, { id: 'building-type', options: { block: 'start', behavior: 'smooth' } })
     const factsSectionElement = document.getElementById('builder-property-details')!
-    const factsEnd = factsSectionElement.querySelector('.floating-next')!
-    const beforeDock = document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value
-    await act(async () => { visibility.get(factsSectionElement)!(true); visibility.get(factsEnd)!(false) })
-    assert.ok(factsSectionElement.querySelector('.floating-next--docked'), 'Next docks while reviewing long property details')
-    assert.equal(factsSectionElement.querySelectorAll('.builder-continue').length, 1, 'docking does not duplicate the action')
-    await act(async () => visibility.get(factsEnd)!(true))
-    assert.equal(factsSectionElement.querySelector('.floating-next--docked'), null, 'Next settles into flow at the section end')
-    assert.equal(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value, beforeDock, 'docking changes no answers or findings')
+    assert.equal(factsSectionElement.querySelectorAll('.builder-continue').length, 1, 'property details have a single continuation')
     assert.equal(document.querySelector<HTMLDetailsElement>('#builder-property-details > details')!.open, true)
     assert.equal(document.querySelector('.builder-placement-next'), null)
     assert.equal(document.querySelector<HTMLSelectElement>('#builder-purpose #builder-intended-use')!.value, 'Garden suite')
