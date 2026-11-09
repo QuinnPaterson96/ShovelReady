@@ -1,3 +1,4 @@
+import { rentalForProperty, rentalEvidence, withRentalReport, type RentalDraft } from '../rental_scenario/model'
 import type { AssessmentEntry } from '../navigation/assessmentEntry'
 import { buildingClearanceMove } from './buildingMove'
 import { useWalkthrough, walkthroughPhase } from './walkthrough'
@@ -256,6 +257,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const [revision, setRevision] = useState(0)
   const [use, setUse] = useState('')
   const [financialGoals, setFinancialGoals] = useState<FinancialGoal[] | null>(null)
+  const [rentalDrafts, setRentalDrafts] = useState<Record<string, RentalDraft>>({})
   const [timing, setTiming] = useState('')
   const [budget, setBudget] = useState('')
   const [budgetDraft, setBudgetDraft] = useState<BudgetDraft>(emptyBudget)
@@ -283,6 +285,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   function placementEdited(next: RetainedPlacementDraft) { setPlacementDraft(previous => JSON.stringify(previous) === JSON.stringify(next) ? previous : next) }
   function resetPropertyAlternatives() {
     setFinancialGoals(null)
+    setRentalDrafts({})
     questions.current[modelId] = question
     setAlternatives({}); setPlacementSeed(null); setPlacementDraft(null)
     setBudget(''); setBudgetDraft(emptyBudget()); setProjectContext(previous => ({ ...previous, configuration: '' }))
@@ -647,6 +650,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const propertyLabel = mode === 'example' ? '419 Cecelia Road · saved example' : live?.address.label ?? manual?.facts.address ?? 'User-supplied property'
   const currentAlternative: ComparisonAlternative = {
     model, propertyKey: budgetContext.property_key, propertyLabel, intendedUse: use,
+    rental: rentalForProperty(rentalDrafts[model.model_id], model, currentMunicipality?.name),
     configuration: projectContext.configuration, affordabilityPreference: budget, foundationAllowanceM,
     measurement: measurementResult, placement: !placementDraft?.position.x.trim() || !placementDraft.position.y.trim() ? 'not_placed' : checksPending || !measurementResult ? 'needs_recheck' : 'current',
     summary: checksPending ? null : computedSummary,
@@ -656,7 +660,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     ...Object.entries(alternatives).filter(([id, saved]) => id !== modelId && saved.comparison.propertyKey === budgetContext.property_key).map(([, saved]) => {
       const sharedChanged = saved.sharedKey !== sharedAlternativeKey
       const context = { ...saved.comparison.budget.context, scenario_key: costScenarioKey(saved.draft.placement, saved.draft.foundationAllowanceM, saved.draft.estimateBuffers, saved.draft.installedHeight) }
-      return { ...saved.comparison, intendedUse: use, placement: sharedChanged && saved.comparison.placement !== 'not_placed' ? 'needs_recheck' as const : saved.comparison.placement,
+      return { ...saved.comparison, rental: rentalForProperty(rentalDrafts[saved.comparison.model.model_id], saved.comparison.model, currentMunicipality?.name), intendedUse: use, placement: sharedChanged && saved.comparison.placement !== 'not_placed' ? 'needs_recheck' as const : saved.comparison.placement,
         summary: sharedChanged ? null : saved.comparison.summary, budget: { context, draft: reconcile(saved.draft.budgetDraft, context) } }
     }),
   ]
@@ -784,7 +788,8 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     const paragraphs = ['I have an approximate proposed placement sketch available. Please let me know the best way to share it.']
     enquiryDoc.sections.push({ heading: 'Placement sketch', paragraphs, emailSummary: paragraphs[0], siteDetails: true })
   }
-  const reportDoc = hasSite && !checksPending ? screeningDocument(selection, { question, intendedUse: use, timing, budget, budgetDraft: budgetInput, access, services, ...projectContext, propertyConcern, localComparisonsAvailable }, measurementResult, imported, live, manual, mode === 'example', foundationAllowanceM, currentScreening, currentAssumptions, pathway, currentScenario, effectiveSettings, propertyScan.result, model) : null
+  const baseReportDoc = hasSite && !checksPending ? screeningDocument(selection, { question, intendedUse: use, timing, budget, budgetDraft: budgetInput, access, services, ...projectContext, propertyConcern, localComparisonsAvailable }, measurementResult, imported, live, manual, mode === 'example', foundationAllowanceM, currentScreening, currentAssumptions, pathway, currentScenario, effectiveSettings, propertyScan.result, model) : null
+  const reportDoc = withRentalReport(baseReportDoc, effectiveFinancialGoals?.includes('rental') ? currentAlternative.rental : undefined, model)
   if (reportDoc && !checksPending && currentAcknowledgements.length) {
     const paragraphs = currentAcknowledgements.map(check => `${check.label}: ${check.detail} Acknowledged by the user for discussion with the City/provider. The conflict remains unresolved; City agreement or an exception is not established.`)
     reportDoc.sections.push({ heading: 'Acknowledged conflicts for discussion', paragraphs, emailSummary: paragraphs.join(' ') })
@@ -959,7 +964,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
       setEmailMessage('Full email body copied.')
     } catch { setEmailMessage('Clipboard unavailable. Select and copy the email body above.') }
   }
-  const technicalEvidence = { schema_version: 'builder-evidence.v1', municipality: currentMunicipality, project_budget: budgetInput ? { ...budgetEvidence(currentBudget, budgetContext), demo_setup: demoBudgetSetup, fee_references: victoriaBudget ? [victoriaBuildingPermitReference] : [] } : null, demo_answer_provenance: Object.fromEntries(Object.entries(currentDemoAnswers ?? {}).map(([key, value]) => [key, { value, origin: 'demo_supplied' }])), evaluation_state: checksPending ? 'updating' : 'current', planning_comparison_scope: { selected_use: pathway.proposed_use, garden_suite_comparisons_applied: victoriaCoverage && pathway.proposed_use === 'garden_suite', raw_scenario_results: 'Exploratory candidate comparisons; withheld from homeowner findings and recipient documents when intended use is unknown or outside the garden-suite scenario.' }, enquiry_inputs: { question, intendedUse: use, timing, budget, access, services, ...projectContext }, model_catalogue: { snapshot_id: modelSnapshot(model), model }, acknowledged_conflicts_for_discussion: currentAcknowledgements, open_questions_for_discussion: currentOpenQuestions, review_readiness: reviewReadiness, foundation_scenario: { allowance_m: foundationAllowanceM, basis: 'planning_assumption', used_in_preliminary_height: currentScenario?.additional_checks?.some(check => check.id === 'height' && check.basis.startsWith('advertised height')) ?? false }, selection, live, manual, example: mode === 'example' ? exampleCase : null, measurement: measurementResult, zoning_site_assumptions: currentAssumptions, project_settings: zoningCase ? effectiveSettings : null, street_prefill: streetPrefill, waterfront_prefill: waterfrontPrefill, municipal_zoning_lookup: currentZoning, municipal_zoning_error: currentZoningError || null, property_scan: propertyScan.result, property_scan_error: propertyScan.error || null, placement_scenario_request: scenarioRequest, placement_scenario_result: currentScenario, conditional_screening: currentScreening }
+  const technicalEvidence = { schema_version: 'builder-evidence.v1', rental_scenario: effectiveFinancialGoals?.includes('rental') || rentalDrafts[model.model_id] ? rentalEvidence(currentAlternative.rental!, model) : null, municipality: currentMunicipality, project_budget: budgetInput ? { ...budgetEvidence(currentBudget, budgetContext), demo_setup: demoBudgetSetup, fee_references: victoriaBudget ? [victoriaBuildingPermitReference] : [] } : null, demo_answer_provenance: Object.fromEntries(Object.entries(currentDemoAnswers ?? {}).map(([key, value]) => [key, { value, origin: 'demo_supplied' }])), evaluation_state: checksPending ? 'updating' : 'current', planning_comparison_scope: { selected_use: pathway.proposed_use, garden_suite_comparisons_applied: victoriaCoverage && pathway.proposed_use === 'garden_suite', raw_scenario_results: 'Exploratory candidate comparisons; withheld from homeowner findings and recipient documents when intended use is unknown or outside the garden-suite scenario.' }, enquiry_inputs: { question, intendedUse: use, timing, budget, access, services, ...projectContext }, model_catalogue: { snapshot_id: modelSnapshot(model), model }, acknowledged_conflicts_for_discussion: currentAcknowledgements, open_questions_for_discussion: currentOpenQuestions, review_readiness: reviewReadiness, foundation_scenario: { allowance_m: foundationAllowanceM, basis: 'planning_assumption', used_in_preliminary_height: currentScenario?.additional_checks?.some(check => check.id === 'height' && check.basis.startsWith('advertised height')) ?? false }, selection, live, manual, example: mode === 'example' ? exampleCase : null, measurement: measurementResult, zoning_site_assumptions: currentAssumptions, project_settings: zoningCase ? effectiveSettings : null, street_prefill: streetPrefill, waterfront_prefill: waterfrontPrefill, municipal_zoning_lookup: currentZoning, municipal_zoning_error: currentZoningError || null, property_scan: propertyScan.result, property_scan_error: propertyScan.error || null, placement_scenario_request: scenarioRequest, placement_scenario_result: currentScenario, conditional_screening: currentScreening }
   const exportIdentity = JSON.stringify([geometryRevision, model.model_id, modelSnapshot(model), checksPending, enquiryDoc, reportDoc, drawingKey, technicalEvidence])
   const latestExportIdentity = useRef(exportIdentity); latestExportIdentity.current = exportIdentity
   function downloadMarkdown(report = false) {
@@ -1073,7 +1078,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
       <h1 id="builder-title">Explore {model.name} on your site</h1>
       <p>Explore a placement, review potential concerns, and prepare a question for the provider.</p>
       <p className="metadata">Model questions, placements, configuration and budget drafts stay in this open assessment. Changing property starts fresh placements and budgets; reloading clears these drafts.</p>
-      {hasSite && <AlternativeComparison alternatives={currentPropertyAlternatives} activeModelId={modelId} onSelectModel={switchModel}
+      {hasSite && <AlternativeComparison onRentalChange={(id, draft) => { setRentalDrafts(previous => ({ ...previous, [id]: draft })); setReadyFor(null) }} alternatives={currentPropertyAlternatives} activeModelId={modelId} onSelectModel={switchModel}
         financialGoals={effectiveFinancialGoals} onFinancialGoalsChange={setFinancialGoals}
         onPrepareQuote={id => { switchModel(id); openJourneyStep('enquiry') }} />}
       <p className="notice">Preliminary exploration · nothing is sent automatically.</p>

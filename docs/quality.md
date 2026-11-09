@@ -1,5 +1,21 @@
 # Quality engineering agreement
 
+## Regional rental scenarios — November 8, 2026
+
+The [rental scenario handoff](rental-scenarios.md) records the source cohort,
+editable allowances, calculation definitions and remaining gaps. The frontend
+suite passed 200 cases, TypeScript/Vite passed, and two filesystem-only ingestion
+checks verified unavailable rents and preservation of the active bundle on a
+rejected import. A local production-build replay passed all four routes (phone
+and desktop, financial interests selected and skipped), retained all four models'
+authored rental assumptions and preserved a negative cash-flow scenario. Those
+first-pass browser checks preceded the final source-link/copy refinement and ZIP
+assertions; exact merged-revision verification follows the workspace procedure.
+Software checks do not establish achievable suite rents or useful default
+expense rates. Rental data/product owners need relevant small-suite comparables;
+homeowner/provider/lender inputs remain under #124/#125, and research under
+#340/#16/#147. No source acceptance or regulatory publication is implied.
+
 ## Integrated financial comparison — November 6, 2026
 
 The [four-model walkthrough](usability/financial-integrated-2026-11-06/README.md)

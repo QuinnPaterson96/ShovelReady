@@ -8,6 +8,7 @@ import { createHash } from 'node:crypto'
 const origin = process.env.COMPARISON_URL ?? 'http://127.0.0.1:5236'
 const api = process.env.COMPARISON_API ?? 'http://127.0.0.1:8036'
 const output = process.env.COMPARISON_OUTPUT ?? '../docs/usability/financial-integrated-2026-11-06'
+const rentalAcceptance = process.env.RENTAL_ACCEPTANCE === '1'
 for (const url of [origin, api]) assert.equal(new URL(url).hostname, '127.0.0.1')
 await mkdir(output, { recursive: true })
 const models = [
@@ -157,14 +158,45 @@ try {
           if (model.id === 'aux-300') assert.match(await page.locator('.budget-summary').innerText(), /Priced-components subtotal: CAD 187,000/)
           assert.match(await page.locator('.budget-summary').innerText(), /Incomplete · installed total unavailable/)
           await settle()
+          if (rentalAcceptance && selected) {
+            await compare()
+            const prefix = `#rental-${model.id}`
+            const initial = (await evidence()).rental_scenario
+            const oneBedroom = ['aux-300', 'hewing-quadra4'].includes(model.id)
+            assert.equal(initial.result.rent, oneBedroom ? 2040 : 1670)
+            assert.equal(initial.result.cashFlow, null, 'omitted financing is not zero')
+            assert.equal(await page.locator(`${prefix}-rent`).inputValue(), String(initial.result.rent))
+            if (model.id === 'aux-300') {
+              await page.locator(`${prefix}-rent`).fill('-1')
+              assert.equal((await evidence()).rental_scenario.result.collected, null)
+              assert.equal(await page.locator(`${prefix}-rent`).getAttribute('aria-invalid'), 'true')
+              await button('Use regional rent again').click()
+              assert.equal((await evidence()).rental_scenario.result.rent, 2040)
+              await page.locator(`${prefix}-bedrooms`).selectOption('0')
+              assert.equal((await evidence()).rental_scenario.result.rent, 1670)
+              await page.locator(`${prefix}-bedrooms`).selectOption('1')
+            }
+            const rents = { 'aux-300': 2000, 'aux-240': 1500, 'wcch-ch-studio': 1400, 'hewing-quadra4': 2200 }
+            await page.locator(`${prefix}-rent`).fill(String(rents[model.id]))
+            await reveal(page.locator(`${prefix}-financing`))
+            await page.locator(`${prefix}-financing`).selectOption('payment')
+            await page.locator(`${prefix}-debt`).fill('1000')
+            const calculation = (await evidence()).rental_scenario.result
+            assert.equal(calculation.cashFlow, rents[model.id] * 12 * 0.95 * 0.75 - 12000)
+            if (model.id === 'wcch-ch-studio') assert.equal(calculation.cashFlow, -30)
+            await page.locator('.rental-scenario').screenshot({ path: `${output}/${label}-${model.id}-rental.png` })
+            await inspect(`${model.id}-rental`)
+          } else if (rentalAcceptance) {
+            assert.equal((await evidence()).rental_scenario, null, 'skipping does not manufacture a rental intention')
+          }
           const e = await evidence()
-          retained.set(model.id, { placement: e.measurement.result.input.placement, question, configuration: e.enquiry_inputs.configuration, budget: e.project_budget.draft, preference: model.preference })
+          retained.set(model.id, { rental: e.rental_scenario, placement: e.measurement.result.input.placement, question, configuration: e.enquiry_inputs.configuration, budget: e.project_budget.draft, preference: model.preference })
           await step('builder-next')
           const text = await page.locator('#builder-enquiry-text').inputValue()
           assert.ok(text.includes(question)); assert.ok(text.includes(model.name))
           if (!model.id.startsWith('aux-')) assert.doesNotMatch(text, /aux box|187,000|Model 300 custom/)
           await inspect(`${model.id}-authored`)
-          run.models.push({ id: model.id, question, placement: e.measurement.result.input.placement, budget: e.project_budget, enquiry: text })
+          run.models.push({ id: model.id, question, rental: e.rental_scenario, placement: e.measurement.result.input.placement, budget: e.project_budget, enquiry: text })
         }
         const comparison = await compare()
         assert.equal(await comparison.getByRole('article').count(), 4)
@@ -182,6 +214,7 @@ try {
           console.log(`${label}: restoring ${model.name}`)
           if (await page.locator('#builder-model-choice').inputValue() !== model.id) { await (await compare()).getByRole('button', { name: `Open ${model.name}`, exact: true }).first().click(); await settle() }
           const saved = retained.get(model.id), e = await evidence()
+          if (rentalAcceptance) assert.deepEqual(e.rental_scenario, saved.rental, 'each model restores its own rental assumptions and source')
           assert.deepEqual(e.measurement.result.input.placement, saved.placement, `${model.name} exact placement restored and remeasured`)
           assert.equal(e.enquiry_inputs.question, saved.question); assert.equal(e.enquiry_inputs.configuration, saved.configuration)
           assert.equal(e.enquiry_inputs.budget, saved.preference)
@@ -220,6 +253,26 @@ try {
         assert.ok(painted.includes('Site information'), 'download paints the complete Site information heading')
         assert.ok(!painted.some(line => /Model 300|West Coast Container Homes|Currency unknown/.test(line)), 'download excludes other-provider draft')
         run.download = { filename: download.suggestedFilename(), bytes: pdf.length, painted }
+        if (rentalAcceptance && selected) {
+          const savePackage = button('Enquiry and evidence package (ZIP)')
+          await reveal(savePackage)
+          const packagePending = page.waitForEvent('download')
+          await savePackage.click()
+          const packageDownload = await packagePending
+          assert.equal(await packageDownload.failure(), null)
+          const packageFile = `${output}/${label}-rental-evidence.zip`
+          await packageDownload.saveAs(packageFile)
+          const { unzipSync, strFromU8 } = await import('fflate')
+          const files = unzipSync(await readFile(packageFile))
+          const report = strFromU8(files['prefab-supporting-report.md'])
+          const technical = JSON.parse(strFromU8(files['prefab-technical-evidence.json']))
+          assert.match(report, /Rental planning scenario/)
+          assert.match(report, /6,810/)
+          assert.match(report, /Statistics Canada/)
+          assert.equal(technical.rental_scenario.result.cashFlow, 6810)
+          assert.doesNotMatch(strFromU8(files['prefab-enquiry.md']), /Rental planning scenario/, 'provider enquiry does not disclose homeowner financing')
+          run.rentalPackage = { report, rentalEvidence: technical.rental_scenario }
+        }
         await inspect('download-complete')
         assert.deepEqual(run.errors, []); assert.deepEqual(run.externalRequests, [])
         run.completed = true

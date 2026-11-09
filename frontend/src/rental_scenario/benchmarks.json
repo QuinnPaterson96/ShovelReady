@@ -1,0 +1,1527 @@
+{
+  "schema_version": "rental-benchmarks.v1",
+  "provider": "Statistics Canada",
+  "table": "46-10-0092-01",
+  "period": "2026-04",
+  "captured_at": "2026-11-09T01:01:34.707644+00:00",
+  "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=4610009201",
+  "licence_url": "https://www.statcan.gc.ca/en/terms-conditions/open-licence",
+  "source_sha256": "0f38c4cb7550ecd7719f15aacdc61d6f2b2342b892dc43e63db8a960a4009e0a",
+  "review_status": "unreviewed",
+  "measure": "Average monthly asking rent",
+  "currency": "CAD",
+  "records": [
+    {
+      "market_id": "2021S0503932",
+      "market": "Abbotsford - Mission, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": null,
+      "vector": "v1675425151",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503932",
+      "market": "Abbotsford - Mission, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1560.0,
+      "vector": "v1675425152",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503932",
+      "market": "Abbotsford - Mission, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 1890.0,
+      "vector": "v1675425153",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503932",
+      "market": "Abbotsford - Mission, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": null,
+      "vector": "v1675425154",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503568",
+      "market": "Barrie, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": null,
+      "vector": "v1675425086",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503568",
+      "market": "Barrie, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1830.0,
+      "vector": "v1675425087",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503568",
+      "market": "Barrie, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 2100.0,
+      "vector": "v1675425088",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503568",
+      "market": "Barrie, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": 2390.0,
+      "vector": "v1675425089",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503522",
+      "market": "Belleville - Quinte West, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": null,
+      "vector": "v1675425031",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503522",
+      "market": "Belleville - Quinte West, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1650.0,
+      "vector": "v1675425032",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503522",
+      "market": "Belleville - Quinte West, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 1900.0,
+      "vector": "v1675425033",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503522",
+      "market": "Belleville - Quinte West, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": null,
+      "vector": "v1675425034",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503543",
+      "market": "Brantford, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": null,
+      "vector": "v1675425066",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503543",
+      "market": "Brantford, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1610.0,
+      "vector": "v1675425067",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503543",
+      "market": "Brantford, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 1890.0,
+      "vector": "v1675425068",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503543",
+      "market": "Brantford, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": 2220.0,
+      "vector": "v1675425069",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503825",
+      "market": "Calgary, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": 1320.0,
+      "vector": "v1675425121",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503825",
+      "market": "Calgary, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1550.0,
+      "vector": "v1675425122",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503825",
+      "market": "Calgary, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 1890.0,
+      "vector": "v1675425123",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503825",
+      "market": "Calgary, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": 2180.0,
+      "vector": "v1675425124",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503930",
+      "market": "Chilliwack, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": null,
+      "vector": "v1675425146",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503930",
+      "market": "Chilliwack, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1410.0,
+      "vector": "v1675425147",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503930",
+      "market": "Chilliwack, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 1760.0,
+      "vector": "v1675425148",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503930",
+      "market": "Chilliwack, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": null,
+      "vector": "v1675425149",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503447",
+      "market": "Drummondville, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": null,
+      "vector": "v1675425016",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503447",
+      "market": "Drummondville, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": null,
+      "vector": "v1675425017",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503447",
+      "market": "Drummondville, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 1200.0,
+      "vector": "v1675425018",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503447",
+      "market": "Drummondville, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": null,
+      "vector": "v1675425019",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503835",
+      "market": "Edmonton, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": 1070.0,
+      "vector": "v1675425131",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503835",
+      "market": "Edmonton, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1260.0,
+      "vector": "v1675425132",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503835",
+      "market": "Edmonton, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 1570.0,
+      "vector": "v1675425133",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503835",
+      "market": "Edmonton, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": 1910.0,
+      "vector": "v1675425134",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503320",
+      "market": "Fredericton, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": null,
+      "vector": "v1675424986",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503320",
+      "market": "Fredericton, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1430.0,
+      "vector": "v1675424987",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503320",
+      "market": "Fredericton, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 1670.0,
+      "vector": "v1675424988",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503320",
+      "market": "Fredericton, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": 2070.0,
+      "vector": "v1675424989",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503580",
+      "market": "Greater Sudbury, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": null,
+      "vector": "v1675425091",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503580",
+      "market": "Greater Sudbury, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1630.0,
+      "vector": "v1675425092",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503580",
+      "market": "Greater Sudbury, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 1940.0,
+      "vector": "v1675425093",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503580",
+      "market": "Greater Sudbury, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": 2580.0,
+      "vector": "v1675425094",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503550",
+      "market": "Guelph, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": null,
+      "vector": "v1675425071",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503550",
+      "market": "Guelph, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1860.0,
+      "vector": "v1675425072",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503550",
+      "market": "Guelph, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 2190.0,
+      "vector": "v1675425073",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503550",
+      "market": "Guelph, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": 2540.0,
+      "vector": "v1675425074",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503205",
+      "market": "Halifax, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": 1560.0,
+      "vector": "v1675424966",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503205",
+      "market": "Halifax, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1880.0,
+      "vector": "v1675424967",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503205",
+      "market": "Halifax, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 2400.0,
+      "vector": "v1675424968",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503205",
+      "market": "Halifax, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": 2940.0,
+      "vector": "v1675424969",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503537",
+      "market": "Hamilton, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": 1470.0,
+      "vector": "v1675425051",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503537",
+      "market": "Hamilton, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1720.0,
+      "vector": "v1675425052",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503537",
+      "market": "Hamilton, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 2150.0,
+      "vector": "v1675425053",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503537",
+      "market": "Hamilton, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": 2540.0,
+      "vector": "v1675425054",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503925",
+      "market": "Kamloops, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": null,
+      "vector": "v1675425141",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503925",
+      "market": "Kamloops, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1590.0,
+      "vector": "v1675425142",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503925",
+      "market": "Kamloops, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 1960.0,
+      "vector": "v1675425143",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503925",
+      "market": "Kamloops, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": 2400.0,
+      "vector": "v1675425144",
+      "status": "E",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503915",
+      "market": "Kelowna, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": null,
+      "vector": "v1675425136",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503915",
+      "market": "Kelowna, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1880.0,
+      "vector": "v1675425137",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503915",
+      "market": "Kelowna, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 2330.0,
+      "vector": "v1675425138",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503915",
+      "market": "Kelowna, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": null,
+      "vector": "v1675425139",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503521",
+      "market": "Kingston, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": 1340.0,
+      "vector": "v1675425026",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503521",
+      "market": "Kingston, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1720.0,
+      "vector": "v1675425027",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503521",
+      "market": "Kingston, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 1940.0,
+      "vector": "v1675425028",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503521",
+      "market": "Kingston, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": null,
+      "vector": "v1675425029",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503541",
+      "market": "Kitchener - Cambridge - Waterloo, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": 1470.0,
+      "vector": "v1675425061",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503541",
+      "market": "Kitchener - Cambridge - Waterloo, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1740.0,
+      "vector": "v1675425062",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503541",
+      "market": "Kitchener - Cambridge - Waterloo, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 2120.0,
+      "vector": "v1675425063",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503541",
+      "market": "Kitchener - Cambridge - Waterloo, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": 2410.0,
+      "vector": "v1675425064",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503810",
+      "market": "Lethbridge, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": null,
+      "vector": "v1675425116",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503810",
+      "market": "Lethbridge, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1270.0,
+      "vector": "v1675425117",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503810",
+      "market": "Lethbridge, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 1480.0,
+      "vector": "v1675425118",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503810",
+      "market": "Lethbridge, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": 1880.0,
+      "vector": "v1675425119",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503555",
+      "market": "London, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": 1300.0,
+      "vector": "v1675425076",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503555",
+      "market": "London, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1560.0,
+      "vector": "v1675425077",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503555",
+      "market": "London, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 1920.0,
+      "vector": "v1675425078",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503555",
+      "market": "London, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": 2400.0,
+      "vector": "v1675425079",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503305",
+      "market": "Moncton, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": null,
+      "vector": "v1675424976",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503305",
+      "market": "Moncton, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1290.0,
+      "vector": "v1675424977",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503305",
+      "market": "Moncton, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 1460.0,
+      "vector": "v1675424978",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503305",
+      "market": "Moncton, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": 1810.0,
+      "vector": "v1675424979",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503462",
+      "market": "Montr\u00e9al, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": 1250.0,
+      "vector": "v1675425021",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503462",
+      "market": "Montr\u00e9al, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1480.0,
+      "vector": "v1675425022",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503462",
+      "market": "Montr\u00e9al, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 1820.0,
+      "vector": "v1675425023",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503462",
+      "market": "Montr\u00e9al, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": 2260.0,
+      "vector": "v1675425024",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503938",
+      "market": "Nanaimo, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": null,
+      "vector": "v1675425166",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503938",
+      "market": "Nanaimo, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1740.0,
+      "vector": "v1675425167",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503938",
+      "market": "Nanaimo, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 2080.0,
+      "vector": "v1675425168",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503938",
+      "market": "Nanaimo, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": null,
+      "vector": "v1675425169",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503532",
+      "market": "Oshawa, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": 1440.0,
+      "vector": "v1675425041",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503532",
+      "market": "Oshawa, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1720.0,
+      "vector": "v1675425042",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503532",
+      "market": "Oshawa, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 2000.0,
+      "vector": "v1675425043",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503532",
+      "market": "Oshawa, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": 2400.0,
+      "vector": "v1675425044",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S050535505",
+      "market": "Ottawa - Gatineau (Ontario part), Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": 1550.0,
+      "vector": "v1675424991",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S050535505",
+      "market": "Ottawa - Gatineau (Ontario part), Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1900.0,
+      "vector": "v1675424992",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S050535505",
+      "market": "Ottawa - Gatineau (Ontario part), Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 2360.0,
+      "vector": "v1675424993",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S050535505",
+      "market": "Ottawa - Gatineau (Ontario part), Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": 2740.0,
+      "vector": "v1675424994",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S050524505",
+      "market": "Ottawa - Gatineau (Quebec part), Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": 1070.0,
+      "vector": "v1675424971",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S050524505",
+      "market": "Ottawa - Gatineau (Quebec part), Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1440.0,
+      "vector": "v1675424972",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S050524505",
+      "market": "Ottawa - Gatineau (Quebec part), Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 1700.0,
+      "vector": "v1675424973",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S050524505",
+      "market": "Ottawa - Gatineau (Quebec part), Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": 1910.0,
+      "vector": "v1675424974",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503529",
+      "market": "Peterborough, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": null,
+      "vector": "v1675425036",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503529",
+      "market": "Peterborough, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1600.0,
+      "vector": "v1675425037",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503529",
+      "market": "Peterborough, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 1920.0,
+      "vector": "v1675425038",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503529",
+      "market": "Peterborough, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": 2270.0,
+      "vector": "v1675425039",
+      "status": "E",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503421",
+      "market": "Qu\u00e9bec, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": 960.0,
+      "vector": "v1675425001",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503421",
+      "market": "Qu\u00e9bec, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1210.0,
+      "vector": "v1675425002",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503421",
+      "market": "Qu\u00e9bec, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 1460.0,
+      "vector": "v1675425003",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503421",
+      "market": "Qu\u00e9bec, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": null,
+      "vector": "v1675425004",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503830",
+      "market": "Red Deer, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": null,
+      "vector": "v1675425126",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503830",
+      "market": "Red Deer, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1230.0,
+      "vector": "v1675425127",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503830",
+      "market": "Red Deer, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 1410.0,
+      "vector": "v1675425128",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503830",
+      "market": "Red Deer, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": 1690.0,
+      "vector": "v1675425129",
+      "status": "E",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503705",
+      "market": "Regina, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": 970.0,
+      "vector": "v1675425106",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503705",
+      "market": "Regina, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1250.0,
+      "vector": "v1675425107",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503705",
+      "market": "Regina, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 1480.0,
+      "vector": "v1675425108",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503705",
+      "market": "Regina, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": 1860.0,
+      "vector": "v1675425109",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503408",
+      "market": "Saguenay, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": null,
+      "vector": "v1675424996",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503408",
+      "market": "Saguenay, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": null,
+      "vector": "v1675424997",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503408",
+      "market": "Saguenay, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": null,
+      "vector": "v1675424998",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503408",
+      "market": "Saguenay, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": null,
+      "vector": "v1675424999",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503310",
+      "market": "Saint John, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": null,
+      "vector": "v1675424981",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503310",
+      "market": "Saint John, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1230.0,
+      "vector": "v1675424982",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503310",
+      "market": "Saint John, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 1530.0,
+      "vector": "v1675424983",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503310",
+      "market": "Saint John, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": 1660.0,
+      "vector": "v1675424984",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503725",
+      "market": "Saskatoon, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": 1140.0,
+      "vector": "v1675425111",
+      "status": "E",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503725",
+      "market": "Saskatoon, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1340.0,
+      "vector": "v1675425112",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503725",
+      "market": "Saskatoon, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 1620.0,
+      "vector": "v1675425113",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503725",
+      "market": "Saskatoon, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": 2020.0,
+      "vector": "v1675425114",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503433",
+      "market": "Sherbrooke, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": 790.0,
+      "vector": "v1675425006",
+      "status": "E",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503433",
+      "market": "Sherbrooke, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1040.0,
+      "vector": "v1675425007",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503433",
+      "market": "Sherbrooke, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 1300.0,
+      "vector": "v1675425008",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503433",
+      "market": "Sherbrooke, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": 1540.0,
+      "vector": "v1675425009",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503539",
+      "market": "St. Catharines - Niagara, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": 1300.0,
+      "vector": "v1675425056",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503539",
+      "market": "St. Catharines - Niagara, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1570.0,
+      "vector": "v1675425057",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503539",
+      "market": "St. Catharines - Niagara, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 1900.0,
+      "vector": "v1675425058",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503539",
+      "market": "St. Catharines - Niagara, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": 2250.0,
+      "vector": "v1675425059",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503001",
+      "market": "St. John's, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": null,
+      "vector": "v1675424961",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503001",
+      "market": "St. John's, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1270.0,
+      "vector": "v1675424962",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503001",
+      "market": "St. John's, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 1530.0,
+      "vector": "v1675424963",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503001",
+      "market": "St. John's, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": 2080.0,
+      "vector": "v1675424964",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503595",
+      "market": "Thunder Bay, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": null,
+      "vector": "v1675425096",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503595",
+      "market": "Thunder Bay, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1470.0,
+      "vector": "v1675425097",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503595",
+      "market": "Thunder Bay, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 1980.0,
+      "vector": "v1675425098",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503595",
+      "market": "Thunder Bay, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": null,
+      "vector": "v1675425099",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503535",
+      "market": "Toronto, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": 1750.0,
+      "vector": "v1675425046",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503535",
+      "market": "Toronto, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 2090.0,
+      "vector": "v1675425047",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503535",
+      "market": "Toronto, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 2650.0,
+      "vector": "v1675425048",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503535",
+      "market": "Toronto, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": 3270.0,
+      "vector": "v1675425049",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503442",
+      "market": "Trois-Rivi\u00e8res, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": null,
+      "vector": "v1675425011",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503442",
+      "market": "Trois-Rivi\u00e8res, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 970.0,
+      "vector": "v1675425012",
+      "status": "E",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503442",
+      "market": "Trois-Rivi\u00e8res, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": null,
+      "vector": "v1675425013",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503442",
+      "market": "Trois-Rivi\u00e8res, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": null,
+      "vector": "v1675425014",
+      "status": "..",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503933",
+      "market": "Vancouver, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": 2000.0,
+      "vector": "v1675425156",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503933",
+      "market": "Vancouver, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 2280.0,
+      "vector": "v1675425157",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503933",
+      "market": "Vancouver, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 3030.0,
+      "vector": "v1675425158",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503933",
+      "market": "Vancouver, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": 4150.0,
+      "vector": "v1675425159",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503935",
+      "market": "Victoria, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": 1670.0,
+      "vector": "v1675425161",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503935",
+      "market": "Victoria, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 2040.0,
+      "vector": "v1675425162",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503935",
+      "market": "Victoria, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 2640.0,
+      "vector": "v1675425163",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503935",
+      "market": "Victoria, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": 3260.0,
+      "vector": "v1675425164",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503559",
+      "market": "Windsor, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": 1190.0,
+      "vector": "v1675425081",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503559",
+      "market": "Windsor, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1520.0,
+      "vector": "v1675425082",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503559",
+      "market": "Windsor, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 1850.0,
+      "vector": "v1675425083",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503559",
+      "market": "Windsor, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": 2050.0,
+      "vector": "v1675425084",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503602",
+      "market": "Winnipeg, Census metropolitan area (CMA)",
+      "bedrooms": 0,
+      "monthly_cad": 1060.0,
+      "vector": "v1675425101",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503602",
+      "market": "Winnipeg, Census metropolitan area (CMA)",
+      "bedrooms": 1,
+      "monthly_cad": 1320.0,
+      "vector": "v1675425102",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503602",
+      "market": "Winnipeg, Census metropolitan area (CMA)",
+      "bedrooms": 2,
+      "monthly_cad": 1660.0,
+      "vector": "v1675425103",
+      "status": "",
+      "symbol": ""
+    },
+    {
+      "market_id": "2021S0503602",
+      "market": "Winnipeg, Census metropolitan area (CMA)",
+      "bedrooms": 3,
+      "monthly_cad": 1970.0,
+      "vector": "v1675425104",
+      "status": "",
+      "symbol": ""
+    }
+  ]
+}

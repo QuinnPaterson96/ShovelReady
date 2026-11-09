@@ -117,6 +117,9 @@ try {
   await page.getByRole('button', { name: 'Edge 1 borders a street', exact: true }).click()
   releaseStreets()
   await until(async () => (await current()).street_prefill?.status === 'suggested', 'Victoria prefill did not arrive')
+  // Source arrival and the resulting placement/assumption update are separate
+  // commits. Wait for the current record before checking manual-edit retention.
+  await until(async () => !!(await current()).zoning_site_assumptions, 'Current street assumptions did not settle')
   assert.equal((await current()).zoning_site_assumptions.street_adjacency.origin, 'user')
   assert.equal((await current()).zoning_site_assumptions.street_adjacency.edge_ids.length, 1, 'late map results must preserve the manual mark')
   await page.locator('a[href="#builder-purpose"]').first().click()
