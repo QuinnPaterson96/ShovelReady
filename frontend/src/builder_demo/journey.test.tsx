@@ -349,7 +349,8 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
   let releaseShore!: () => void
   const delayedShore = new Promise<void>(resolve => { releaseShore = resolve })
   expose('fetch', async (url: string, options: RequestInit) => {
-    const request = JSON.parse(String(options.body))
+    const envelope = JSON.parse(String(options.body))
+    const request = url.startsWith('/api/municipal-rules/') ? envelope.payload : envelope
     if (url.endsWith('/waterfront-edges')) {
       await delayedShore
       const parcel = JSON.parse(readFileSync('src/builder_demo/example-site.json', 'utf8')).site.parcel
@@ -368,12 +369,12 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
     }
     if (url.endsWith('/evaluate')) {
       if (++legalCalls === 1) await new Promise<void>(resolve => { finishLateLegal = resolve })
-      return { ok: true, json: async () => ({ ...legal, request: { ...legal.request, property_revision: expectedPropertyRevision(request.assumptions), placement_revision: request.assumptions.placement_revision, model_revision: request.model_revision }, checks: legal.checks.map((check: {rule: {fact_id: string}}) => {
+      return { ok: true, json: async () => ({ schema_version: 'municipal-screening.result.v1', jurisdiction_id: envelope.jurisdiction_id, pathway_id: envelope.pathway_id, package_revision: 'fixture', scope: 'Victoria fixture', findings: [], screening: { ...legal, request: { ...legal.request, property_revision: expectedPropertyRevision(request.assumptions), placement_revision: request.assumptions.placement_revision, model_revision: request.model_revision }, checks: legal.checks.map((check: {rule: {fact_id: string}}) => {
         const segment = /segment-(\d+)/.exec(check.rule.fact_id)
         if (!segment) return check
         const prefix = check.rule.fact_id.startsWith('edge_role:') ? 'edge_role:' : 'boundary:'
         return { ...check, rule: { ...check.rule, fact_id: prefix + request.assumptions.edges[Number(segment[1])].id }, status: 'needs_information', reasons: ['Fixture: legal role and regulatory measurement basis remain unresolved.'], normalized_observed: null, normalized_threshold: null, normalized_unit: null }
-      }) }) }
+      }) } }) }
     }
     return { ok: false, status: 503 }
   })

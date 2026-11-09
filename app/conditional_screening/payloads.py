@@ -12,7 +12,7 @@ class Boundary(BaseModel):
 
 class Quantity(Boundary):
     value: Decimal
-    unit: Literal["m", "ft", "m2", "ft2", "count"]
+    unit: Literal["m", "ft", "m2", "ft2", "count", "fraction"]
 
     @model_validator(mode="after")
     def finite(self):
@@ -37,7 +37,10 @@ class Source(Boundary):
 class Rule(Boundary):
     logical_id: str = Field(min_length=1)
     revision_id: str = Field(min_length=1)
-    kind: Literal["prerequisite", "boundary_min", "separation_min", "area_max", "count_max"]
+    kind: Literal[
+        "prerequisite", "boundary_min", "separation_min", "area_max", "count_max",
+        "area_min", "length_min", "ratio_min",
+    ]
     fact_id: str = Field(min_length=1)
     expected: bool | None = None
     threshold: Quantity | None = None
@@ -63,14 +66,17 @@ class Rule(Boundary):
             raise ValueError("numeric rule needs threshold and measurement definition")
         if (self.kind == "boundary_min") != (self.boundary_role is not None):
             raise ValueError("boundary role required only for boundary rule")
-        if self.kind in ("boundary_min", "separation_min") and self.threshold.unit not in (
-            "m", "ft"
+        if (
+            self.kind in ("boundary_min", "separation_min", "length_min")
+            and self.threshold.unit not in ("m", "ft")
         ):
             raise ValueError("distance rule needs length threshold")
-        if self.kind == "area_max" and self.threshold.unit not in ("m2", "ft2"):
+        if self.kind in ("area_max", "area_min") and self.threshold.unit not in ("m2", "ft2"):
             raise ValueError("area rule needs area threshold")
         if self.kind == "count_max" and self.threshold.unit != "count":
             raise ValueError("count rule needs count threshold")
+        if self.kind == "ratio_min" and self.threshold.unit != "fraction":
+            raise ValueError("ratio rule needs fraction threshold and explicit measurement basis")
         return self
 
 
@@ -142,7 +148,7 @@ class Check(Boundary):
     reasons: tuple[str, ...]
     normalized_observed: Decimal | None = None
     normalized_threshold: Decimal | None = None
-    normalized_unit: Literal["m", "m2", "count"] | None = None
+    normalized_unit: Literal["m", "m2", "count", "fraction"] | None = None
 
 
 class Coverage(Boundary):

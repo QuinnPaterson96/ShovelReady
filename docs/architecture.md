@@ -1,5 +1,25 @@
 # Architecture direction
 
+## Shared municipal screening — November 9, 2026
+
+```mermaid
+flowchart LR
+  Journey[Shared property / placement journey] --> Registry[Explicit municipal registry]
+  Registry --> Victoria[Victoria compatibility package]
+  Registry --> Saanich[Saanich scalar package]
+  Victoria --> Core[Shared exact comparisons and evidence]
+  Saanich --> Core
+  Core --> Output[Shared findings / enquiry / report]
+```
+
+[The implemented architecture and expansion limits](multi-city-screening.md)
+separate reusable geometry, typed site context, comparison and presentation from
+local sources, measurement definitions and pathways. Saanich now has four bounded
+candidate scalar checks plus explicit eligibility questions. Victoria retains its
+existing engines and compatible endpoints. This supersedes the proposed-only
+status of the October 6 second-city direction below; accepted legal coverage and
+additional cities remain separate work.
+
 ## Municipality and starting placement
 
 [Street](municipal-street-prefill.md) and [waterfront](municipal-waterfront-prefill.md) prefill share parcel selection, source profiles, geometry identity and the editable map. Each observation has its own source requirements and route. Neither enables local zoning coverage.

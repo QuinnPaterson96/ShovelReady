@@ -36,7 +36,7 @@ await context.route('**/*', async route => {
   }
   if (/^\/api\/victoria-zoning\/(lookup|property-scan)$/.test(url.pathname)) return route.fulfill({ status: 503, body: 'offline municipal boundary' })
   // Unknown external discovery routes are not needed for this saved example.
-  if (!['/health', '/api/scouting-geometry/assess', '/api/conditional-screening/v1/evaluate', '/api/conditional-screening/v1/placement-scenarios', '/api/placement-suggestions/v1/suggest'].includes(url.pathname)) return route.fulfill({ status: 503, body: 'offline boundary' })
+  if (!['/health', '/api/scouting-geometry/assess', '/api/municipal-rules/v1/evaluate', '/api/municipal-rules/v1/placement-scenarios', '/api/placement-suggestions/v1/suggest'].includes(url.pathname)) return route.fulfill({ status: 503, body: 'offline boundary' })
   // Independent transport lets obsolete responses finish even after browser cancellation.
   const response = await fetch(api + url.pathname, { method: request.method(), body: request.postData() || undefined, headers: { 'Content-Type': 'application/json' } })
   let body = await response.text()
@@ -278,6 +278,17 @@ try {
   await (await download).saveAs(`${output}/example-enquiry.pdf`)
   await writeFile(`${output}/example-enquiry.txt`, await page.locator('#builder-enquiry-text').inputValue())
   await writeFile(`${output}/example-evidence.json`, JSON.stringify(await evidence(), null, 2))
+  await page.locator('a[href="#builder-property-details"]').first().click()
+  const municipality = page.locator('#municipality-settings')
+  await municipality.getByText('Change municipality', { exact: true }).click()
+  await municipality.getByLabel('City or municipality in British Columbia').fill('Saanich')
+  await municipality.getByRole('button', { name: 'Use municipality', exact: true }).click()
+  await wait(async () => (await evidence()).municipality.rule_coverage === 'unresolved')
+  assert.equal((await evidence()).municipal_evaluation, null, 'Saved Victoria geometry cannot acquire Saanich rules through a city edit')
+  await municipality.getByLabel('City or municipality in British Columbia').fill('Victoria')
+  await municipality.getByRole('button', { name: 'Use municipality', exact: true }).click()
+  await settled()
+  results.push({ savedExampleCityMismatch: true })
   await click('Wrong property? Change')
   await click('Can’t find your address? Enter details manually')
   await page.locator('#manual-address').fill('My own property description')
@@ -286,7 +297,7 @@ try {
   // Edge can open its own download hub for an explicitly requested PDF download.
   // Allow that exact internal UI only during export, with no document/network requests.
   assert.ok(popups.every(popup => popup.duringExport && ['', 'about:blank', 'edge://downloads-hub/'].includes(popup.url) && popup.requests.length === 0), JSON.stringify(popups))
-  const readOnlyPosts = ['/api/municipal-sites/waterfront-edges', '/api/municipal-sites/street-edges', '/api/scouting-geometry/assess', '/api/conditional-screening/v1/evaluate', '/api/conditional-screening/v1/placement-scenarios', '/api/victoria-zoning/lookup', '/api/victoria-zoning/property-scan', '/api/placement-suggestions/v1/suggest']
+  const readOnlyPosts = ['/api/municipal-sites/waterfront-edges', '/api/municipal-sites/street-edges', '/api/scouting-geometry/assess', '/api/municipal-rules/v1/evaluate', '/api/municipal-rules/v1/placement-scenarios', '/api/victoria-zoning/lookup', '/api/victoria-zoning/property-scan', '/api/placement-suggestions/v1/suggest']
   const unexpectedRequests = requests.filter(r => r.method !== 'GET' && !(r.method === 'POST' && readOnlyPosts.includes(r.path)))
   assert.deepEqual(unexpectedRequests, [], 'only allowed read-only requests occur')
   await page.goto(frontend + '/#home'); await page.reload(); await click('Watch the demo')

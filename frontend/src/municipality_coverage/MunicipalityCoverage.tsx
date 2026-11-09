@@ -1,6 +1,6 @@
 import { useEffect, useId, useState } from 'react'
 import { readableDate, publicSourceUrl } from '../ReadableProvenance'
-import { coverageRequestUrl, parcelCoverage, userMunicipality, type MunicipalityContext } from './model'
+import { coverageRequestUrl, parcelCoverage, ruleProfile, userMunicipality, type MunicipalityContext } from './model'
 
 export function MunicipalityCoverage({ value, onChange, onManual, id }: {
   value: MunicipalityContext | null
@@ -12,12 +12,13 @@ export function MunicipalityCoverage({ value, onChange, onManual, id }: {
   const [name, setName] = useState(value?.name ?? '')
   useEffect(() => { void import('./municipality-coverage.css') }, [])
   useEffect(() => { setName(value?.name ?? '') }, [value?.name])
-  const supported = value?.rule_coverage === 'victoria_candidate'
+  const profile = ruleProfile(value)
+  const supported = !!profile
   const request = value ? coverageRequestUrl(value) : null
   const sourceUrl = publicSourceUrl(value?.source?.url ?? null)
   return <section id={id} tabIndex={id ? -1 : undefined} className="municipality-coverage" aria-label="Municipality and rule coverage">
-    <p className="municipality-coverage__title"><strong>{supported ? 'Using City of Victoria rules' : value?.name && value.rule_coverage === 'unresolved' ? 'Check the municipality for this parcel' : value?.name ? `We don’t cover ${value.name}’s rules yet` : 'Choose a municipality for local rules'}</strong></p>
-    <p>{supported ? 'Preliminary garden-suite comparisons use the available Victoria rule subset.' : value?.name && value.rule_coverage === 'unresolved' ? 'The selected parcel source and municipality differ. Choose the matching parcel to use local rules.' : parcelCoverage(value) ? 'Explore the mapped parcel and editable street edges. Local rule comparisons are unavailable.' : 'You can still explore a manual site sketch. Local rule checks are not available for this selection.'}</p>
+    <p className="municipality-coverage__title"><strong>{supported ? `Using ${profile.name} rules` : value?.name && value.rule_coverage === 'unresolved' ? 'Check the municipality for this parcel' : value?.name ? `We don’t cover ${value.name}’s rules yet` : 'Choose a municipality for local rules'}</strong></p>
+    <p>{profile?.scope ?? (value?.name && value.rule_coverage === 'unresolved' ? 'The selected parcel source and municipality differ. Choose the matching parcel to use local rules.' : parcelCoverage(value) ? 'Explore the mapped parcel and editable street edges. Local rule comparisons are unavailable.' : 'You can still explore a manual site sketch. Local rule checks are not available for this selection.')}</p>
     {(request || (!supported && onManual)) && <div className="municipality-coverage__actions">
       {request && <a className="municipality-coverage__request" href={request} target="_blank" rel="noreferrer">Request {value?.name} coverage</a>}
       {!supported && onManual && <button type="button" onClick={onManual}>Continue with a site sketch</button>}

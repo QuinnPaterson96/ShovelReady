@@ -20,7 +20,7 @@ await context.route('**/*', async route => {
   const request = route.request(), url = new URL(request.url())
   if (url.origin !== new URL(frontend).origin) { externalRequests.push(url.origin); return route.abort() }
   if (!url.pathname.startsWith('/api/') && url.pathname !== '/health') return route.continue()
-  if (!['/api/scouting-geometry/assess', '/api/conditional-screening/v1/evaluate', '/api/conditional-screening/v1/placement-scenarios'].includes(url.pathname))
+  if (!['/api/scouting-geometry/assess', '/api/municipal-rules/v1/evaluate', '/api/municipal-rules/v1/placement-scenarios'].includes(url.pathname))
     return route.fulfill({ status: 503, body: 'Offline source boundary for repeatable QA' })
   const response = await fetch(api + url.pathname, { method: request.method(), body: request.postData() || undefined, headers: { 'Content-Type': 'application/json' } })
   await route.fulfill({ status: response.status, contentType: 'application/json', body: await response.text() }).catch(error => { if (!/closed|disposed|cancel|intercept/i.test(error.message)) throw error })

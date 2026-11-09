@@ -51,13 +51,13 @@ export function parseScreeningResult(raw: unknown): ScreeningResult {
       typeof check.rule.revision_id === 'string' && typeof check.rule.fact_id === 'string' && typeof check.rule.kind === 'string' &&
       (check.rule.applicability === undefined || ['applicable', 'unknown', 'not_applicable', 'unsupported'].includes(String(check.rule.applicability))) &&
       object(check.rule.source) && typeof check.rule.source.provider === 'string' && typeof check.rule.source.record_label === 'string' &&
-      typeof check.rule.source.locator === 'string' && typeof check.rule.source.url === 'string' && /^https:\/\/www\.victoria\.ca\//.test(check.rule.source.url) &&
+      typeof check.rule.source.locator === 'string' && typeof check.rule.source.url === 'string' && /^https:\/\//.test(check.rule.source.url) &&
       typeof check.rule.source.review_status === 'string' && Array.isArray(check.rule.source.currentness_limitations) &&
       check.rule.source.currentness_limitations.every((item: unknown) => typeof item === 'string') &&
       statuses.includes(check.status as ScreeningStatus) && Array.isArray(check.reasons) && check.reasons.every((reason: unknown) => typeof reason === 'string') &&
       (check.normalized_observed === null || finiteDecimal(check.normalized_observed)) &&
       (check.normalized_threshold === null || finiteDecimal(check.normalized_threshold)) &&
-      (check.normalized_unit === null || ['m', 'm2', 'count'].includes(check.normalized_unit as string)))) {
+      (check.normalized_unit === null || ['m', 'm2', 'count', 'fraction'].includes(check.normalized_unit as string)))) {
     throw new Error('Conditional screening response is malformed or uses an unsupported version.')
   }
   return raw as ScreeningResult

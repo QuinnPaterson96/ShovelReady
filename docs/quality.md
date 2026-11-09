@@ -1,5 +1,22 @@
 # Quality engineering agreement
 
+## Shared municipal screening — November 9, 2026
+
+[The multi-city handoff](multi-city-screening.md) records the implemented shared
+registry, retained Victoria behavior, bounded Saanich comparisons and expansion
+limits. HTTP integration tests protect legacy/new Victoria equivalence, exact
+Saanich thresholds, three-valued location eligibility, incompatible definitions,
+invalid geometry and catalogue drift. The connected placement browser check now
+also covers Saanich inputs, near-threshold precision, invalid overrides, city and
+property invalidation, delayed responses, source help and an unsent provider enquiry.
+External maps are captured fixtures; calculations use the real local APIs.
+
+Source currentness/interpretation, accepted publication, excluded Saanich rules,
+human comprehension and further-city onboarding remain separate gaps with owners
+in that handoff. Local database tests skip without explicitly isolated disposable
+PostgreSQL; CI supplies it. Final-head CI and a Sol check of the merged revision
+are distinct from local software/browser evidence and belong in the PR handoff.
+
 ## Regional rental scenarios — November 8, 2026
 
 The [rental scenario handoff](rental-scenarios.md) records the source cohort,

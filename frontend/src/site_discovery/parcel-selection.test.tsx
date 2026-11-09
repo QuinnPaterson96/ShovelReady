@@ -45,7 +45,7 @@ test('captured 601 Su’it source replay retains materially distinct parcels and
   assert.match(html, /<details><summary>Property source and outline help/)
   assert.match(html, /008-094-772/)
   const corrected = renderToStaticMarkup(createElement(SelectedProperty, { value: flow.state.confirmed!, municipality: userMunicipality('Saanich'), onChangeProperty() {} }))
-  assert.match(corrected, /Request Saanich coverage/)
+  assert.match(corrected, /Saanich rules/)
   assert.doesNotMatch(corrected, /Using City of Victoria rules/)
   flow.changeProperty()
   assert.equal(flow.state.confirmed, null)
