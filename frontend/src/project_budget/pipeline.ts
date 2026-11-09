@@ -91,7 +91,7 @@ export function calculateBudget(candidate: BudgetDraft, context: Context, today 
     if (e.expires_at && e.expires_at < today) addIssue(item, 'Offer has expired; refresh before including it.')
     if (e.effective_at && e.effective_at > today || e.captured_at && e.captured_at > today) addIssue(item, 'Source date is in the future; applicability needs checking.')
     // Explicit prototype recency policy, not a claim about legal/contractual validity.
-    if (e.origin === 'catalogue' && (!e.captured_at || Date.parse(today) - Date.parse(e.captured_at) > 90 * 86400000))
+    if ((e.origin === 'catalogue' || (e.origin === 'planning_reference' && item.category === 'unit')) && (!e.captured_at || Date.parse(today) - Date.parse(e.captured_at) > 90 * 86400000))
       addIssue(item, 'Catalogue capture is missing or older than the prototype’s 90-day refresh window. Obtain a dated matching claim.')
     if (item.money && !item.money.currency) addIssue(item, 'Currency is unknown; this amount cannot enter a subtotal.')
     if (item.inclusions.some(s => item.exclusions.map(normalized).includes(normalized(s)))) addIssue(item, 'Inclusions and exclusions contradict each other; clarify scope.')
@@ -121,19 +121,12 @@ export function calculateBudget(candidate: BudgetDraft, context: Context, today 
     if (!blocked(item) && parent) included.push(`${item.label} included in ${parent.label} (${item.rationale})`)
   }
   const priced = selected.filter(item => item.state === 'priced' && !blocked(item))
-  const currencies = [...new Set(priced.map(item => item.money!.currency!))]
-  const subtotals = currencies.map(currency => {
-    const items = priced.filter(item => item.money!.currency === currency), precision = Math.max(...items.map(item => item.money!.precision))
-    const minimum = items.reduce((sum, item) => sum + minorUnits(item.money!.minimum, precision), 0n)
-    const bounded = items.every(item => item.basis !== 'starting' && item.money!.maximum !== null)
-    return { currency, precision, minimum: decimalString(minimum, precision), maximum: bounded
-      ? decimalString(items.reduce((sum, item) => sum + minorUnits(item.money!.maximum!, precision), 0n), precision) : null }
-  })
+  const subtotals = sumPricedCosts(priced)
   const missing = required.filter(category => !selected.some(item => item.category === category && !blocked(item) && item.state !== 'unknown'))
   // Free-text tax notes (including the literal “unknown”) never establish a resolved tax basis.
   const taxKnown = priced.every(item => item.category === 'tax' || item.tax_status !== 'unknown')
   const mixedTax = new Set(priced.filter(item => item.category !== 'tax').map(item => item.tax_status).filter(status => status !== 'unknown')).size > 1
-  return { scope: draft.scope, complete: draft.scope !== 'not_sure' && !missing.length && !issues.length && currencies.length === 1 &&
+  return { scope: draft.scope, complete: draft.scope !== 'not_sure' && !missing.length && !issues.length && subtotals.length === 1 &&
     subtotals[0]?.maximum !== null && taxKnown && !mixedTax, subtotals, missing, included, issues, counted_ids: priced.map(item => item.id),
     outside_scope: draft.items.filter(item => item.selected && !required.includes(item.category)).map(item => item.label),
     limitations: [
@@ -144,6 +137,17 @@ export function calculateBudget(candidate: BudgetDraft, context: Context, today 
     ] }
 }
 
+export function sumPricedCosts(priced: CostItem[]): Money[] {
+  const currencies = [...new Set(priced.map(item => item.money!.currency!))]
+  return currencies.map(currency => {
+    const items = priced.filter(item => item.money!.currency === currency), precision = Math.max(...items.map(item => item.money!.precision))
+    const minimum = items.reduce((sum, item) => sum + minorUnits(item.money!.minimum, precision), 0n)
+    const bounded = items.every(item => item.basis !== 'starting' && item.money!.maximum !== null)
+    return { currency, precision, minimum: decimalString(minimum, precision), maximum: bounded
+      ? decimalString(items.reduce((sum, item) => sum + minorUnits(item.money!.maximum!, precision), 0n), precision) : null }
+  })
+}
+
 export const displayMoney = (money: Money): string => {
   const group = (value: string) => {
     const [whole, fraction] = value.split('.')
@@ -152,17 +156,20 @@ export const displayMoney = (money: Money): string => {
   return `${money.currency ?? 'Currency unknown'} ${group(money.minimum)}${money.maximum === null ? ' or more; upper amount unknown' : money.maximum === money.minimum ? '' : `–${group(money.maximum)}`}`
 }
 export function budgetSummary(draft: BudgetDraft, result: BudgetResult): string[] {
+  const counted = draft.items.filter(item => result.counted_ids.includes(item.id))
+  const sourceNotes = [...new Set(counted.filter(item => item.evidence.origin !== 'user_allowance')
+    .map(item => `Price source: ${item.evidence.provider}, ${item.evidence.label}, captured ${item.evidence.captured_at ?? 'date unknown'}, unreviewed. ${item.evidence.origin !== 'user_quote' ? item.evidence.locator.split(' — ')[0] : 'User-entered quote fact; source details retained in the cost evidence.'}`))]
   return [`Budget scope: ${scopeLabels[draft.scope]}. ${result.complete ? 'Complete scenario range for the stated scope and supplied assumptions; not a quote guarantee or probability interval.' : 'Cost coverage is incomplete; a complete scenario range is unavailable.'}`,
     ...(result.subtotals.length ? result.subtotals.map(money => `${result.complete ? 'Scenario range' : 'Priced-components subtotal'}: ${displayMoney(money)}.`) : ['No usable priced components supplied. Unknown costs are not zero.']),
     ...(result.subtotals.length > 1 ? ['Currencies are shown separately; there is no combined subtotal.'] : []),
-    ...draft.items.filter(item => result.counted_ids.includes(item.id) && item.evidence.origin !== 'user_allowance')
-      .map(item => `Price source: ${item.evidence.provider}, ${item.evidence.label}, captured ${item.evidence.captured_at ?? 'date unknown'}, unreviewed. ${item.evidence.origin === 'catalogue' ? item.evidence.locator.split(' — ')[0] : 'User-entered quote fact; source details retained in the cost evidence.'}`),
+    ...(counted.length > 1 ? [`Priced work: ${counted.map(item => `${categories[item.category]} ${displayMoney(item.money!)}`).join(', ')}.`] : []),
+    ...sourceNotes,
     ...(result.missing.length ? [`Still unpriced or unresolved: ${result.missing.map(c => categories[c]).join(', ')}.`] : []),
     ...(result.included.length ? [`Included, without a second charge: ${result.included.join('; ')}.`] : []),
     ...(result.issues.length ? [`${new Set(result.issues.map(i => i.item_id)).size} cost entries need checking and are excluded from the subtotal. ${[...new Set(result.issues.map(i => `${draft.items.find(item => item.id === i.item_id)?.label}: ${i.message}`))].slice(0, 3).join(' ')}`] : []),
     ...(draft.scope === 'building' ? ['Building-only scope excludes delivery, foundation/site work, services, professional work and fees.'] : []),
     ...result.limitations,
-    'Allowances are user assumptions. Source claims and user-entered quote facts remain unreviewed; tax treatment and scope must be stated for a complete scenario.',
+    'Planning allowances and homeowner entries are scenario assumptions. Source claims and quote facts remain unreviewed.',
   ]
 }
 export type BudgetQuestion = { answerer: string; question: string }
@@ -198,13 +205,16 @@ export function recipientBudget(draft: BudgetDraft, context: Context, today = ut
 /** Recipient prose is deliberately separate from the full calculation report. */
 export function budgetEnquiryParagraph(draft: BudgetDraft, result: BudgetResult): string {
   const sources = draft.items.filter(item => result.counted_ids.includes(item.id))
-  const origins = sources.map(item => item.evidence.origin === 'user_allowance' ? `${categories[item.category]} owner allowance (${displayMoney(item.money!)})`
-    : item.evidence.origin === 'user_quote' ? `${categories[item.category]} owner-entered quote fact (${displayMoney(item.money!)})`
+  const planned = sources.filter(item => item.evidence.origin === 'planning_reference')
+  const origins = sources.filter(item => item.evidence.origin !== 'planning_reference').map(item =>
+    item.evidence.origin === 'user_allowance' ? `${categories[item.category]} owner allowance (${displayMoney(item.money!)})`
+      : item.evidence.origin === 'user_quote' ? `${categories[item.category]} owner-entered quote (${displayMoney(item.money!)})`
       : `${item.evidence.provider} published ${item.basis === 'starting' ? 'starting price' : 'price'} (captured ${item.evidence.captured_at ?? 'date unknown'}, unreviewed; ${item.evidence.locator.split(' — ')[0]})`)
   return [
     `Cost scope: ${scopeLabels[draft.scope]}.`,
     result.subtotals.length ? result.subtotals.map(money => `${result.complete ? 'Scenario range under supplied assumptions' : 'Priced-components subtotal'}: ${displayMoney(money)}.`).join(' ') : 'No usable priced components supplied.',
     origins.length ? `Based on ${origins.join(' and ')}.` : '',
+    planned.length ? 'Includes editable planning amounts for the captured scope. Please confirm actual pricing and inclusions.' : '',
     result.missing.length ? `Unpriced or unresolved: ${result.missing.map(c => categories[c]).join(', ')}.` : '',
     result.issues.length ? draft.items.some(item => result.issues.some(issue => issue.item_id === item.id) && item.recheck_reason)
       ? 'Costs for this model need rechecking against the current project assumptions and remain outside the subtotal.'

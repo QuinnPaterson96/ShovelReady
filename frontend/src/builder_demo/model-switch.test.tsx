@@ -17,6 +17,7 @@ import { enquiryDocument, screeningDocument } from './BuilderDemo'
 test('switching models recovers independent questions, placements and costs without transferring them to another property', async () => {
   const dom = new JSDOM('<div id="root"></div>', { url: 'http://localhost' })
   dom.window.HTMLElement.prototype.scrollIntoView = () => {}
+  dom.window.scrollTo = () => {}
   Object.assign(dom.window.HTMLElement.prototype, { attachEvent: () => {}, detachEvent: () => {} })
   const originals = new Map<string, PropertyDescriptor | undefined>()
   const expose = (name: string, value: unknown) => { originals.set(name, Object.getOwnPropertyDescriptor(globalThis, name)); Object.defineProperty(globalThis, name, { configurable: true, writable: true, value }) }
@@ -45,16 +46,19 @@ test('switching models recovers independent questions, placements and costs with
   const question300 = 'Could Model 300 support a rental?\nPlease price sound insulation and explain the next step.'
   const question240 = 'For Model 240, could we use my Model 300 research?\nPlease quote a different window configuration.'
   let position300: unknown, position240: unknown
+  const openEstimate = () => act(async () => document.querySelector<HTMLAnchorElement>('#builder-economics-open')!.click())
+  const backToProject = () => act(async () => document.querySelector<HTMLAnchorElement>('.economics-back')!.click())
+  const authoredCosts = () => evidence().project_budget.draft.items.filter((item: { selected: boolean; evidence: { origin: string } }) => item.selected && item.evidence.origin === 'user_allowance')
   const evidence = () => JSON.parse((document.getElementById('builder-technical-record') as HTMLTextAreaElement).value)
   try {
     await act(async () => root.render(createElement<{ presetRequest?: number }>(BuilderDemo, { presetRequest: 1 })))
     await settle()
     await edit('builder-use', 'a rental suite')
-    const interests = () => document.querySelector('[aria-label="Financial interests"]')!
-    assert.match(interests().textContent!, /Financial interests: Potential rental income/, 'an explicit rental answer is reflected without repeating the question')
-    await click('Edit financial interests')
+    const interests = () => document.querySelector('[aria-label="Rental interest"]')!
+    assert.match(interests().textContent!, /Rental scenario included/, 'an explicit rental answer is reflected without repeating the question')
+    await click('Change rental preference')
     await click('Skip for now')
-    assert.match(interests().textContent!, /skipped for now/, 'an explicit skip takes precedence over a previous rental answer')
+    assert.match(interests().textContent!, /Rental income skipped/, 'an explicit skip takes precedence over a previous rental answer')
     await edit('builder-use', 'Unknown'); await edit('builder-relationship', 'I own the property'); await edit('builder-nextStep', 'Please advise the next step.')
     const parcel = evidence().measurement.site.site.parcel.id
     for (const [id, answer] of [['building-type', 'Yes'], ['existing-suites', 'None'], ['waterfront-lot', 'No']]) {
@@ -64,13 +68,16 @@ test('switching models recovers independent questions, placements and costs with
     await edit('builder-configuration', 'Model 300 special options'); await settle()
     await edit('builder-email-recipient', 'old-provider@example.com')
     await edit('builder-question', question300)
-    await edit('builder-budget', 'CAD 310,000 whole project')
     await edit('height-view-allowance', '0.45')
     await edit('builder-example-width', '12')
     await click('East →')
     await edit('builder-example-angle', '27')
     await settle()
-    await click('Use this price suggestion')
+    await openEstimate()
+    await edit('economics-cost-unit', '210000')
+    await backToProject()
+    assert.equal(document.activeElement?.id, 'builder-economics-open')
+    assert.equal(authoredCosts()[0].money.minimum, '210000')
     position300 = evidence().measurement.result.input.placement
     // Initial source figures / exact conversions from the model sheets; tolerance
     // for Quadra's explicitly approximate decimal feet is representational only.
@@ -105,7 +112,7 @@ test('switching models recovers independent questions, placements and costs with
       for (const text of [recipient, supporting, actual]) { assert.ok(text.includes(model.name)); assert.doesNotMatch(text, /old-provider@example/); if (id !== 'aux-300') assert.doesNotMatch(text, /Model 300 special options/) }
       if (id === 'aux-300') {
         assert.deepEqual(current.measurement.result.input.placement, position300)
-        assert.equal(current.enquiry_inputs.budget, 'CAD 310,000 whole project')
+        assert.equal(authoredCosts()[0].money.minimum, '210000')
         assert.ok(current.project_budget.draft.items.length > 0)
         assert.ok(actual.includes(question300), 'preview restores the exact multiline question')
         await act(async () => (document.getElementById('builder-enquiry-text')!.parentElement!.querySelector('button') as HTMLButtonElement).click())
@@ -121,16 +128,13 @@ test('switching models recovers independent questions, placements and costs with
       if (id === 'aux-240') {
         await edit('builder-question', question240)
         await edit('builder-configuration', 'Model 240 custom glazing')
-        await edit('builder-budget', 'CAD 240,000 building preference')
         await edit('height-view-allowance', '0.15')
         await click('West ←')
         await edit('builder-example-angle', '41')
         await settle()
-        await act(async () => { const select = document.getElementById('budget-scope') as HTMLSelectElement; select.value = 'building'; select.dispatchEvent(new dom.window.Event('change', { bubbles: true })) })
-        await click('Edit building')
-        await edit('budget-minimum', '175000')
-        await edit('budget-currency', 'CAD')
-        await click('Save cost entry')
+        await openEstimate()
+        await edit('economics-cost-unit', '175000')
+        await backToProject()
         position240 = evidence().measurement.result.input.placement
       }
       assert.equal(document.querySelector('#builder-provider-website')?.getAttribute('href'), id.startsWith('aux-') ? 'https://www.auxbox.ca/contact' : id === 'wcch-ch-studio' ? 'https://westcoastcontainerhomes.ca/contact/' : 'https://hewinghaus.com/connect/')
@@ -148,17 +152,17 @@ test('switching models recovers independent questions, placements and costs with
     assert.equal(evidence().enquiry_inputs.question, question240)
     assert.equal(evidence().enquiry_inputs.configuration, 'Model 240 custom glazing')
     assert.equal(evidence().foundation_scenario.allowance_m, '0.15')
-    assert.equal(evidence().enquiry_inputs.budget, 'CAD 240,000 building preference')
-    assert.equal(evidence().project_budget.draft.items.length, 1)
+    assert.equal(authoredCosts().length, 1)
+    assert.equal(authoredCosts()[0].money.minimum, '175000')
     assert.ok(evidence().project_budget.draft.items.every((item: { context: { model_id: string } }) => item.context.model_id === 'aux-240'))
-    assert.equal(evidence().project_budget.draft.items[0].recheck_reason, null, 'unchanged same-property alternative keeps its cost context')
+    assert.equal(authoredCosts()[0].recheck_reason, null, 'unchanged same-property alternative keeps its cost context')
     await edit('builder-use', 'Home office')
     assert.equal(evidence().conditional_screening, null, 'use changes invalidate affected checks')
     await switchTo('aux-300'); await settle()
     assert.equal(evidence().enquiry_inputs.intendedUse, 'Home office', 'use remains shared property/project context')
     assert.equal(evidence().enquiry_inputs.question, question300, 'shared-context changes preserve authored questions')
     assert.deepEqual(evidence().measurement.result.input.placement, position300, 'physical placement survives a shared-context change')
-    assert.ok(evidence().project_budget.draft.items.every((item: { recheck_reason: string | null }) => item.recheck_reason), 'changed use withholds costs until reviewed')
+    assert.ok(authoredCosts().every((item: { recheck_reason: string | null }) => item.recheck_reason), 'changed use withholds costs until reviewed')
     assert.ok(![...document.querySelectorAll('#builder-model-choice option')].some(item => item.textContent?.includes('Yarrow')))
     // Reproduced defect: the mounted discovery flow kept its initial Model 300
     // callback after a model switch. A later selected property must use Quadra's
@@ -174,17 +178,17 @@ test('switching models recovers independent questions, placements and costs with
     await settle()
     assert.equal(evidence().model_catalogue.model.model_id, 'hewing-quadra4')
     assert.ok(evidence().live?.parcel, 'live source fixture selected')
-    assert.ok(interests().querySelector('input[type="checkbox"]'), 'a new property starts its own optional financial question')
+    assert.match(interests().textContent!, /Considering renting this suite/, 'a new property starts its own optional rental question')
     assert.equal(evidence().live.parcel.id, '87:0', 'a different May Street source parcel was selected')
     assert.notEqual(evidence().live.parcel.id, parcel, 'May Street is a genuinely different parcel from the Cecelia example')
     assert.equal(evidence().measurement, null, 'different property has no transferred placement')
-    assert.equal(evidence().project_budget, null, 'different property has no transferred cost draft')
+    assert.equal(authoredCosts().length, 0, 'different property has no transferred cost entries')
     assert.equal(evidence().enquiry_inputs.budget, '')
     await switchTo('aux-300'); await settle()
     assert.equal(evidence().enquiry_inputs.question, question300, 'authored provider question survives property changes')
     assert.equal(evidence().enquiry_inputs.configuration, '')
     assert.equal(evidence().measurement, null)
-    assert.equal(evidence().project_budget, null)
+    assert.equal(authoredCosts().length, 0)
     await switchTo('hewing-quadra4'); await settle()
     assert.equal(evidence().project_settings.proposal.proposed_use, 'other', 'explicit homeowner use survives a property change')
     assert.equal(evidence().project_settings.proposal.foundation_attached, null)

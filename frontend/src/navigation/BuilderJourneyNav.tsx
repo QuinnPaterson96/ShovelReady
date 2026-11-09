@@ -36,7 +36,7 @@ const steps: readonly Step[] = [
   { key: 'details', label: 'Property details', anchor: 'builder-property-details' },
   { key: 'purpose', label: 'Intended purpose', anchor: 'builder-purpose' },
   { key: 'checks', label: 'Quick checks', anchor: 'builder-quick-checks' },
-  { key: 'budget', label: 'Budget (optional)', anchor: 'builder-budget-stage' },
+  { key: 'budget', label: 'Project economics', anchor: 'builder-budget-stage' },
   { key: 'enquiry', label: 'Prepare enquiry', anchor: 'builder-next' },
   { key: 'email', label: 'Contact provider', anchor: 'builder-email' },
 ]

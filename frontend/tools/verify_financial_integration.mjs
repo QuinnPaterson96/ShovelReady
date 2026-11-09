@@ -7,15 +7,15 @@ import { createHash } from 'node:crypto'
 
 const origin = process.env.COMPARISON_URL ?? 'http://127.0.0.1:5236'
 const api = process.env.COMPARISON_API ?? 'http://127.0.0.1:8036'
-const output = process.env.COMPARISON_OUTPUT ?? '../docs/usability/financial-integrated-2026-11-06'
+const output = process.env.COMPARISON_OUTPUT ?? '../.local/project-economics-verification'
 const rentalAcceptance = process.env.RENTAL_ACCEPTANCE === '1'
 for (const url of [origin, api]) assert.equal(new URL(url).hostname, '127.0.0.1')
 await mkdir(output, { recursive: true })
 const models = [
-  { id: 'aux-300', name: 'Model 300', provider: 'aux box', width: '3.5', angle: '17', preference: 'CAD 310000 for Model 300', foundation: '0.45' },
-  { id: 'aux-240', name: 'Model 240', provider: 'aux box', width: '3.2', angle: '29', preference: 'CAD 240000 for Model 240', foundation: '0.15' },
-  { id: 'wcch-ch-studio', name: 'C.H. Studio Pod', provider: 'West Coast Container Homes', width: '2.6', angle: '41', preference: 'Studio cost scope to discuss', foundation: '0.25' },
-  { id: 'hewing-quadra4', name: 'Quadra 4', provider: 'Hewing Haus', width: '6.3', angle: '53', preference: 'CAD 340000 for Quadra', foundation: '0.35' },
+  { id: 'aux-300', name: 'Model 300', provider: 'aux box', width: '3.5', angle: '17', prefab: '187500', foundation: '0.45' },
+  { id: 'aux-240', name: 'Model 240', provider: 'aux box', width: '3.2', angle: '29', prefab: '175000', foundation: '0.15' },
+  { id: 'wcch-ch-studio', name: 'C.H. Studio Pod', provider: 'West Coast Container Homes', width: '2.6', angle: '41', prefab: '104000', foundation: '0.25' },
+  { id: 'hewing-quadra4', name: 'Quadra 4', provider: 'Hewing Haus', width: '6.3', angle: '53', prefab: '225000', foundation: '0.35' },
 ]
 const browser = await chromium.launch({ channel: 'chrome', headless: true })
 const builtIndex = await readFile('dist/index.html', 'utf8')
@@ -88,28 +88,23 @@ try {
         await inspect('home')
         await button('Try an example').click()
         await settle()
-        const interests = page.getByRole('region', { name: 'Financial interests', exact: true })
+        const interests = page.getByRole('region', { name: 'Rental interest', exact: true })
+        const economics = page.locator('.project-economics')
+        const openEstimate = page.getByRole('link', { name: 'View and adjust estimate' })
+        const back = page.getByRole('link', { name: 'Back to project', exact: true }).first()
         await interests.scrollIntoViewIfNeeded()
-        assert.equal(await page.locator('#builder-alternative-comparison').evaluate(element => element.open), false, 'financial choice is discoverable before opening details')
-        if (selected) {
-          await interests.getByRole('checkbox', { name: 'Project cost', exact: true }).check()
-          await interests.getByRole('checkbox', { name: 'Potential rental income', exact: true }).check()
-          await interests.getByRole('button', { name: 'Save interests', exact: true }).click()
-        } else await interests.getByRole('button', { name: 'Skip for now', exact: true }).click()
-        await inspect('financial-choice')
-        await page.screenshot({ path: `${output}/${label}-financial-choice.png` })
+        assert.equal(await page.locator('#builder-alternative-comparison').evaluate(element => element.open), false)
+        await interests.getByRole('button', { name: selected ? 'Include rental income' : 'Skip for now', exact: true }).click()
+        await inspect('rental-choice')
+        assert.match(await economics.innerText(), /Project cost subtotal.*250,000/s)
+        assert.match(await economics.innerText(), /187,000.*8,000.*55,000/s)
+        if (selected) assert.match(await economics.innerText(), /2,040.*17,442.*14.3 years/s)
+        else assert.doesNotMatch(await economics.innerText(), /Expected monthly rent/)
+        await economics.screenshot({ path: `${output}/${label}-summary.png` })
+        await writeFile(`${output}/${label}-summary.txt`, await economics.innerText())
         const initialComparison = await compare()
-        const initialLead = initialComparison.getByRole('region', { name: 'Current model financial next step', exact: true })
-        assert.match(await initialLead.innerText(), /187,000/)
-        assert.match(await initialLead.innerText(), /Installed cost incomplete/)
-        if (selected) assert.match(await initialLead.innerText(), /For rental income/)
-        else assert.doesNotMatch(await initialLead.innerText(), /For rental income/)
-        const comparisonBox = await initialComparison.boundingBox()
-        const quoteBox = await initialLead.getByRole('button', { name: 'Prepare quote request for Model 300', exact: true }).boundingBox()
+        const quoteBox = await initialComparison.getByRole('button', { name: 'Prepare quote request for Model 300', exact: true }).boundingBox()
         assert.ok(quoteBox.width >= 44 && quoteBox.height >= 44, 'quote handoff supports a touch target')
-        run.observations.push({ phase: 'initial-quote-position', fromOpenedComparisonTopPx: quoteBox.y - comparisonBox.y, quoteHeightPx: quoteBox.height, quoteWidthPx: quoteBox.width })
-        await initialLead.screenshot({ path: `${output}/${label}-initial-financial-overview.png` })
-        await writeFile(`${output}/${label}-initial-financial-overview.txt`, await initialLead.innerText())
         await inspect('initial-financial-overview')
         await step('builder-next')
         await page.locator('#builder-use').fill('Garden suite')
@@ -140,26 +135,44 @@ try {
           }
           await settle()
           await step('builder-budget-stage')
-          await page.locator('#builder-budget').fill(model.preference)
-          await page.locator('#budget-scope').selectOption('whole_project')
-          const suggestion = button('Use this price suggestion')
-          if (await suggestion.count()) { await reveal(suggestion); await suggestion.click() }
-          if (model.id === 'aux-240') {
-            assert.match(await page.locator('#project-budget').innerText(), /No price in this model/)
-            await reveal(button('Edit building')); await button('Edit building').click()
-            await page.locator('#budget-minimum').fill('175000'); await page.locator('#budget-currency').fill('CAD')
-            await page.locator('#budget-rationale').fill('Synthetic software QA planning allowance only')
-            await button('Save cost entry').click()
+          await openEstimate.scrollIntoViewIfNeeded()
+          const beforeScroll = await page.evaluate(() => window.scrollY)
+          await openEstimate.click()
+          assert.equal(await page.locator('#economics-detail-title').evaluate(element => element === document.activeElement), true)
+          assert.equal(await economics.isVisible(), false, 'the dedicated view replaces the visible assessment')
+          assert.equal(await page.locator('.economics-editors').getByRole('heading', { name: 'Project costs' }).isVisible(), true)
+          const prefab = page.locator('#economics-cost-unit')
+          const starting = model.id === 'aux-300' ? '187000' : ''
+          assert.equal(await prefab.inputValue(), starting, 'custom configurations and missing currency or price do not acquire a prefab price')
+          if (model.id === 'aux-300') {
+            const scope = page.locator('#budget-scope')
+            await reveal(scope)
+            await scope.selectOption('not_sure')
+            assert.equal(await scope.inputValue(), 'not_sure')
+            assert.equal((await evidence()).project_budget.payback, null, 'undefined cost scope cannot produce payback')
+            await scope.selectOption('whole_project')
+            await page.locator('.budget-advanced > summary').click()
           }
-          if (model.id === 'wcch-ch-studio') {
-            assert.match(await page.locator('.budget-summary').innerText(), /Currency is unknown/)
-            assert.match(await page.locator('.budget-summary').innerText(), /No usable priced components/)
+          await prefab.fill(model.prefab)
+          const expectedCost = Number(model.prefab) + 25000 + 15000 + 15000 + 8000
+          assert.equal((await evidence()).project_budget.calculation.subtotals[0].minimum, String(expectedCost))
+          assert.match(await page.locator('.economics-live').innerText(), /Project cost subtotal/)
+          assert.equal((await evidence()).project_budget.calculation.complete, false)
+          if (model.id === 'aux-300') {
+            assert.equal(await page.locator('#economics-cost-fees').inputValue(), '8000')
+            const fees = page.locator('#economics-cost-fees')
+            await fees.fill('8,500')
+            assert.equal((await evidence()).project_budget.calculation.subtotals[0].minimum, String(expectedCost + 500))
+            await fees.fill('8,50')
+            assert.equal(await fees.getAttribute('aria-invalid'), 'true')
+            assert.equal((await evidence()).project_budget.calculation.subtotals[0].minimum, String(expectedCost + 500), 'invalid text does not change the valid amount')
+            await fees.fill('')
+            assert.equal((await evidence()).project_budget.payback, null, 'clearing an amount makes the line unknown')
+            await fees.fill('8500')
+            await inspect('estimate-editor')
+            await page.screenshot({ path: `${output}/${label}-estimate.png` })
           }
-          if (model.id === 'aux-300') assert.match(await page.locator('.budget-summary').innerText(), /Priced-components subtotal: CAD 187,000/)
-          assert.match(await page.locator('.budget-summary').innerText(), /Incomplete · installed total unavailable/)
-          await settle()
           if (rentalAcceptance && selected) {
-            await compare()
             const prefix = `#rental-${model.id}`
             const initial = (await evidence()).rental_scenario
             const oneBedroom = ['aux-300', 'hewing-quadra4'].includes(model.id)
@@ -175,13 +188,19 @@ try {
               await page.locator(`${prefix}-bedrooms`).selectOption('0')
               assert.equal((await evidence()).rental_scenario.result.rent, 1670)
               await page.locator(`${prefix}-bedrooms`).selectOption('1')
+              await page.locator(`${prefix}-rent`).fill('0')
+              assert.equal((await evidence()).project_budget.payback, null, 'zero annual income cannot produce payback')
+              await button('Use regional rent again').click()
             }
             const rents = { 'aux-300': 2000, 'aux-240': 1500, 'wcch-ch-studio': 1400, 'hewing-quadra4': 2200 }
             await page.locator(`${prefix}-rent`).fill(String(rents[model.id]))
             await reveal(page.locator(`${prefix}-financing`))
             await page.locator(`${prefix}-financing`).selectOption('payment')
             await page.locator(`${prefix}-debt`).fill('1000')
-            const calculation = (await evidence()).rental_scenario.result
+            const estimated = await evidence()
+            const calculation = estimated.rental_scenario.result
+            assert.equal(estimated.project_budget.payback.basis, 'subtotal')
+            assert.equal(estimated.project_budget.payback.minimum, Number(estimated.project_budget.calculation.subtotals[0].minimum) / calculation.operating)
             assert.equal(calculation.cashFlow, rents[model.id] * 12 * 0.95 * 0.75 - 12000)
             if (model.id === 'wcch-ch-studio') assert.equal(calculation.cashFlow, -30)
             await page.locator('.rental-scenario').screenshot({ path: `${output}/${label}-${model.id}-rental.png` })
@@ -189,8 +208,15 @@ try {
           } else if (rentalAcceptance) {
             assert.equal((await evidence()).rental_scenario, null, 'skipping does not manufacture a rental intention')
           }
+          if (model.id === 'aux-300') await page.goBack()
+          else await back.click()
+          await openEstimate.waitFor()
+          assert.equal(await openEstimate.evaluate(element => element === document.activeElement), true, 'return restores the trigger focus')
+          assert.ok(Math.abs(await page.evaluate(() => window.scrollY) - beforeScroll) <= 4, 'return restores the project scroll')
           const e = await evidence()
-          retained.set(model.id, { rental: e.rental_scenario, placement: e.measurement.result.input.placement, question, configuration: e.enquiry_inputs.configuration, budget: e.project_budget.draft, preference: model.preference })
+          assert.deepEqual(e.measurement.result.input.placement, authoredPlacement, 'opening and closing the editor retains the authored placement')
+          assert.equal(e.enquiry_inputs.question, question)
+          retained.set(model.id, { rental: e.rental_scenario, placement: e.measurement.result.input.placement, question, configuration: e.enquiry_inputs.configuration, budget: e.project_budget.draft })
           await step('builder-next')
           const text = await page.locator('#builder-enquiry-text').inputValue()
           assert.ok(text.includes(question)); assert.ok(text.includes(model.name))
@@ -217,18 +243,11 @@ try {
           if (rentalAcceptance) assert.deepEqual(e.rental_scenario, saved.rental, 'each model restores its own rental assumptions and source')
           assert.deepEqual(e.measurement.result.input.placement, saved.placement, `${model.name} exact placement restored and remeasured`)
           assert.equal(e.enquiry_inputs.question, saved.question); assert.equal(e.enquiry_inputs.configuration, saved.configuration)
-          assert.equal(e.enquiry_inputs.budget, saved.preference)
           assert.deepEqual(e.project_budget.draft, saved.budget, `${model.name} cost draft restored`)
           assert.ok(e.project_budget.draft.items.every(item => item.context.model_id === model.id), 'cross-provider costs remain isolated')
-          await interests.getByRole('button', { name: 'Edit financial interests', exact: true }).click()
-          assert.equal(await interests.getByRole('checkbox', { name: 'Project cost', exact: true }).isChecked(), selected)
-          assert.equal(await interests.getByRole('checkbox', { name: 'Potential rental income', exact: true }).isChecked(), selected)
-          await interests.getByRole('button', { name: selected ? 'Save interests' : 'Skip for now', exact: true }).click()
+          assert.match(await interests.innerText(), selected ? /Rental scenario included/ : /Rental income skipped/)
           const activeComparison = await compare()
-          const nextStep = activeComparison.getByRole('region', { name: 'Current model financial next step', exact: true })
-          assert.ok((await nextStep.innerText()).includes(model.name))
-          assert.match(await nextStep.innerText(), /cost|quote|price/i)
-          await nextStep.getByRole('button', { name: `Prepare quote request for ${model.name}`, exact: true }).click()
+          await activeComparison.getByRole('button', { name: `Prepare quote request for ${model.name}`, exact: true }).click()
           assert.equal(await page.locator('#builder-question').inputValue(), saved.question, 'quote handoff preserves authored question')
           const enquiry = await page.locator('#builder-enquiry-text').inputValue()
           assert.ok(enquiry.includes(saved.question)); assert.ok(enquiry.includes(model.provider))
@@ -269,6 +288,10 @@ try {
           assert.match(report, /Rental planning scenario/)
           assert.match(report, /6,810/)
           assert.match(report, /Statistics Canada/)
+          assert.equal((report.match(/Price source: Evolv Modular/g) ?? []).length, 1, 'shared site-cost evidence is named once in the readable report')
+          assert.match(report, /Priced work:/)
+          assert.match(report, /Simple payback/)
+          assert.equal(technical.project_budget.payback.basis, 'subtotal')
           assert.equal(technical.rental_scenario.result.cashFlow, 6810)
           assert.doesNotMatch(strFromU8(files['prefab-enquiry.md']), /Rental planning scenario/, 'provider enquiry does not disclose homeowner financing')
           run.rentalPackage = { report, rentalEvidence: technical.rental_scenario }

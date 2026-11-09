@@ -91,7 +91,7 @@ try {
   assert.equal(e.zoning_site_assumptions.street_adjacency.all_marked, false)
   assert.equal(e.zoning_site_assumptions.existing_garden_suites.origin, 'journey_default')
   await next(); await settled()
-  assert.match(await caption().textContent(), /187,000/)
+  assert.match(await caption().textContent(), /planning subtotal/); assert.match(await page.locator('.project-economics').innerText(), /187,000/)
   assert.equal((await evidence()).project_budget.calculation.complete, false)
   await next(); await settled()
   assert.match(await page.locator('#builder-enquiry-text').inputValue(), /Demo-supplied answers/)
@@ -123,7 +123,7 @@ try {
   assert.equal(await button('Next').isEnabled(), false)
   hold = false; release(); await settled(); await page.waitForTimeout(200)
   assert.match(await caption().textContent(), /Not sure/)
-  await next(); assert.match(await caption().textContent(), /187,000/)
+  await next(); assert.match(await caption().textContent(), /planning subtotal/); assert.match(await page.locator('.project-economics').innerText(), /187,000/)
   await next(); assert.match(await caption().textContent(), /unsent enquiry/)
   console.log('Explicit skip and pending checks complete')
   // A failed request cannot enable Next. Retry/takeover stays usable.
@@ -192,8 +192,9 @@ try {
   // Edge can open its own download hub for an explicitly requested PDF download.
   // Allow that exact internal UI only during export, with no document/network requests.
   assert.ok(popups.every(popup => popup.duringExport && ['', 'about:blank', 'edge://downloads-hub/'].includes(popup.url) && popup.requests.length === 0), JSON.stringify(popups))
-  const readOnlyPosts = ['/api/municipal-sites/street-edges', '/api/scouting-geometry/assess', '/api/conditional-screening/v1/evaluate', '/api/conditional-screening/v1/placement-scenarios', '/api/victoria-zoning/lookup', '/api/victoria-zoning/property-scan', '/api/placement-suggestions/v1/suggest']
-  assert.ok(requests.every(r => r.method === 'GET' || r.method === 'POST' && readOnlyPosts.includes(r.path)))
+  const readOnlyPosts = ['/api/municipal-sites/waterfront-edges', '/api/municipal-sites/street-edges', '/api/scouting-geometry/assess', '/api/conditional-screening/v1/evaluate', '/api/conditional-screening/v1/placement-scenarios', '/api/victoria-zoning/lookup', '/api/victoria-zoning/property-scan', '/api/placement-suggestions/v1/suggest']
+  const unexpectedRequests = requests.filter(r => r.method !== 'GET' && !(r.method === 'POST' && readOnlyPosts.includes(r.path)))
+  assert.deepEqual(unexpectedRequests, [], 'only allowed read-only requests occur')
   await page.goto(frontend + '/#home'); await page.reload(); await click('Watch the demo')
   await page.getByRole('button', { name: 'Home', exact: true }).click()
   await page.waitForTimeout(100)
