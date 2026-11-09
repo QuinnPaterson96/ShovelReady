@@ -108,6 +108,19 @@ try {
       })
       const placementTarget = (await active.textContent()).includes('Mark street edges') ? 'Mark street edges' : 'Review boundaries'
       await reach(placementTarget, 'Placement')
+      await page.waitForFunction(() => document.activeElement?.id === 'builder-placement-map-title')
+      // Evaluate the arrival viewport directly; locator.click would scroll the preview into view.
+      const placementArrival = await page.getByRole('button', { name: 'Open full-size placement preview' }).evaluate(button => {
+        const preview = button.getBoundingClientRect()
+        const map = document.querySelector('#placement-map svg.occupied-map').getBoundingClientRect()
+        return {
+          mapY: map.top, previewY: preview.top, previewBottom: preview.bottom,
+          previewHit: button.contains(document.elementFromPoint(preview.x + preview.width / 2, preview.y + preview.height / 2)),
+        }
+      })
+      assert.ok(placementArrival.mapY >= 0 && placementArrival.mapY < viewport.height, 'Arrival shows the interactive map')
+      assert.ok(placementArrival.previewY >= 0 && placementArrival.previewBottom <= viewport.height && placementArrival.previewHit,
+        'The placement preview receives a pointer without scrolling')
       await pointerAdvance()
       await leaveStreetsUnknown()
       if ((await nav.locator('[aria-current="step"]').textContent()).includes('Street')) {
@@ -145,17 +158,40 @@ try {
 
       await reach('Review quick checks', 'Intended purpose')
       await steady('Intended purpose')
-      await active.press('Enter')
+      if (phone) await pointerAdvance()
+      else await active.press('Enter')
 
       await reach('Review project economics', 'Quick checks')
       await page.waitForFunction(() => !document.querySelector('.floating-next--active .builder-continue')?.disabled)
+      await page.waitForLoadState('networkidle')
+      const checksArrival = await page.locator('#builder-quick-checks').evaluate(section => {
+        const heading = section.querySelector('h3')
+        const counts = section.querySelector('[aria-label="Named check counts"]')
+        const footer = document.querySelector('#builder-checks-disclosure .floating-next')
+        const labelsFit = [...counts.querySelectorAll('button')].every(button => {
+          const bounds = button.getBoundingClientRect()
+          const range = document.createRange()
+          range.selectNodeContents(button.querySelector('strong'))
+          const text = range.getBoundingClientRect()
+          return text.left >= bounds.left && text.right <= bounds.right
+        })
+        return {
+          labelsFit, focus: document.activeElement === heading,
+          titleY: heading.getBoundingClientRect().top, countsY: counts.getBoundingClientRect().top,
+          countsBottom: counts.getBoundingClientRect().bottom,
+          footerY: Math.min(innerHeight, footer.getBoundingClientRect().top),
+        }
+      })
+      assert.ok(checksArrival.focus && checksArrival.titleY >= 0 && checksArrival.countsBottom <= checksArrival.footerY,
+        `Quick checks opens at the visible headline and counts: ${JSON.stringify(checksArrival)}`)
+      assert.ok(checksArrival.labelsFit, 'Check count labels fit inside their own buttons')
       await active.press('Enter')
 
       await reach('Continue to enquiry', 'Project economics')
       await pointerAdvance()
       await nav.locator('a[href="#builder-next"][aria-current="step"]').waitFor({ timeout: 5000 })
       assert.deepEqual(errors, [])
-      results.push({ viewport, reducedMotion, boundaryActionY: boundaryReach.y, boundaryMapY: boundaryMap.y })
+      results.push({ viewport, reducedMotion, placementArrival, checksArrival, boundaryActionY: boundaryReach.y, boundaryMapY: boundaryMap.y })
       await context.close()
     }
   }

@@ -103,10 +103,40 @@ and an emulated phone, including manual/address round trips and preserved drafts
 they were repeated after the scroll correction.
 
 The first four-model financial run passed phone/desktop × include/skip, but its
-last contexts overlapped the scroll-fix rebuild. It is mixed-build evidence, not
-an exact-final-revision claim. Exact merged-revision Sol verification and a fresh
-independent Impeccable review follow merge. CI and those post-merge results are
-recorded in the PR/handoff rather than inferred from earlier worker results.
+last contexts overlapped the scroll-fix rebuild. It is mixed-build evidence.
+Sol subsequently verified exact merge `8140ac6` (PR #348): all 200 frontend tests,
+four continuation contexts, placement and 20 entry observations passed. The
+four-model financial run passed all 16 visits and 64 layout observations, including
+four PDFs and two rental evidence ZIPs. Before/after identity and asset manifests
+matched the served production build. These exact-merge results supersede the
+mixed-build financial evidence.
+
+### Corrections from the fresh review
+
+The independent Impeccable review confirmed that the docking loop was gone, but
+found destination-focus problems that the initial checks did not catch. Quick
+checks could land halfway down a large section, final demo takeover could focus
+an offscreen input, and explicit Back from the estimate could lose its opener.
+The phone map also started below the initial viewport. A held-response test
+separately reproduced the Property heading moving under the demo controls when
+the redundant global pending banner disappeared. The original exact-merge
+walkthrough therefore had a real failure; its later retry was not a clearance.
+
+The follow-up uses compact destination headings, opens the checks before placing
+focus, limits footer avoidance to interactive controls and completes takeover
+after the assessment rail is committed. Mapped Placement opens at its map; manual
+Placement keeps its facts-entry destination. History inside an already open
+assessment preserves the estimate's own return-focus contract. During playback,
+the existing stable player status supplies readiness without a second disappearing
+banner above the destination. These are presentation corrections; calculations,
+assumptions, source provenance and accepted-data state are unchanged.
+
+Regression checks now measure settled heading and input visibility, hit-test the
+phone preview before automation can scroll it, and exercise keyboard Back to
+project before browser history. The delayed-response heading check failed the
+original merge and passed the isolated fix on desktop and phone. Follow-up CI,
+combined checks and exact-merge review confirmation are recorded in the follow-up
+PR, with the tested revisions distinguished from earlier worker evidence.
 
 Local premerge logs and screenshots are under `.local/navigation-verification/`
 in the integration checkout. No database, provider contact or submission was used.

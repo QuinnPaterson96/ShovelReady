@@ -68,11 +68,27 @@ const wait = async predicate => {
   for (let i = 0; i < 150; i++) { if (await predicate()) return; await page.waitForTimeout(100) }
   throw new Error('Current walkthrough result did not become ready')
 }
+const assertEnquiryTakeover = async () => {
+  await page.waitForFunction(() => document.activeElement?.id === 'builder-use')
+  // Wait past smooth-scroll and rail relayout, which used to strand the focused field.
+  await page.waitForTimeout(750)
+  const field = await page.locator('#builder-use').evaluate(input => {
+    const bounds = input.getBoundingClientRect()
+    return { focused: document.activeElement === input, top: bounds.top, bottom: bounds.bottom, height: innerHeight }
+  })
+  assert.ok(field.focused && field.top >= 0 && field.bottom <= field.height, `Takeover leaves the focused edit visible: ${JSON.stringify(field)}`)
+  results.push({ enquiryTakeover: field })
+}
 const settled = async () => { await page.waitForTimeout(150); await wait(async () => { const e = await evidence(); return e.evaluation_state === 'current' && e.measurement }); await page.waitForTimeout(150); await wait(async () => { const e = await evidence(); return e.evaluation_state === 'current' && e.measurement }) }
 const next = async () => { await wait(() => button('Next').isEnabled()); await click('Next') }
 try {
   await page.goto(frontend)
+  // Keep the initial measurement pending until Property is positioned. The
+  // real response must not remove a banner above it and hide its heading.
+  hold = true
+  const entryMeasurement = new Promise(resolve => { heldStarted = resolve })
   await click('Watch the demo')
+  await Promise.race([entryMeasurement, page.waitForTimeout(15000).then(() => { throw new Error('Initial held measurement did not start') })])
   assert.match(await caption().textContent(), /Model 300/)
   await page.waitForTimeout(800)
   assert.match(await caption().textContent(), /Model 300/)
@@ -83,6 +99,21 @@ try {
   assert.match(await caption().textContent(), /419 Cecelia/)
   await assertHeadingBelowPlayer('#builder-property-title')
   const propertyAction = await actionGeometry()
+  // Wait for the scheduled destination scroll before measuring stationarity.
+  await page.waitForFunction(() => {
+    const heading = document.getElementById('builder-property-title')?.getBoundingClientRect()
+    const player = document.querySelector('[data-playback-controls]')?.getBoundingClientRect()
+    return heading && player && heading.top >= player.bottom && heading.top - player.bottom <= 32
+  })
+  const pendingPropertyHeading = await page.locator('#builder-property-title').boundingBox()
+  hold = false
+  release()
+  await settled()
+  await assertHeadingBelowPlayer('#builder-property-title')
+  assertSameAction(propertyAction, await actionGeometry())
+  const readyPropertyHeading = await page.locator('#builder-property-title').boundingBox()
+  assert.ok(Math.abs(pendingPropertyHeading.y - readyPropertyHeading.y) <= 1, 'the Property heading stays in place when initial checks finish')
+  results.push({ kind: 'property-heading-after-initial-checks', before: pendingPropertyHeading, after: readyPropertyHeading })
   hold = true
   const initialMeasurement = new Promise(resolve => { heldStarted = resolve })
   await button('Next').focus(); await page.keyboard.press('Enter')
@@ -150,7 +181,7 @@ try {
   assert.equal(await player.count(), 0)
   await rail.waitFor({ state: 'visible' })
   assert.equal(await rail.locator('[aria-current="step"]').getAttribute('href'), '#builder-next')
-  await page.waitForFunction(() => document.activeElement?.id === 'builder-use')
+  await assertEnquiryTakeover()
   await page.locator('#builder-relationship').fill('I am helping the owner')
   await wait(async () => (await evidence()).enquiry_inputs.relationship === 'I am helping the owner')
   e = await evidence()
@@ -226,7 +257,7 @@ try {
   assert.equal(await page.getByText('Highlighted fields still need an answer.').count(), 0)
   await page.screenshot({ path: `${output}/mobile-enquiry.png` })
   await page.keyboard.press('Enter')
-  await page.waitForFunction(() => document.activeElement?.id === 'builder-use')
+  await assertEnquiryTakeover()
   assert.equal(await rail.locator('[aria-current="step"]').getAttribute('href'), '#builder-next')
   results.push({ narrowHeadings: true, takeoverProgress: true })
   // With normal motion, waiting longer than the old dwell cannot advance a step.
@@ -240,6 +271,7 @@ try {
   assert.match(await page.locator('#builder-enquiry-text').inputValue(), /Demo-supplied/)
   results.push({ explicitNavigation: true, normalMotionHoldMs: 7500 })
   await click('Let me try')
+  await assertEnquiryTakeover()
   verifyingExport = true
   const download = page.waitForEvent('download')
   await click('Save enquiry PDF')

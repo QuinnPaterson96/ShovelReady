@@ -176,7 +176,7 @@ try {
         const interests = page.getByRole('region', { name: 'Rental interest', exact: true })
         const economics = page.locator('.project-economics')
         const openEstimate = page.getByRole('link', { name: 'View and adjust estimate' })
-        const back = page.getByRole('link', { name: 'Back to project', exact: true }).first()
+        const back = page.getByRole('link', { name: 'Back to project', exact: true }).last()
         await interests.scrollIntoViewIfNeeded()
         assert.equal(await page.locator('#builder-alternative-comparison').evaluate(element => element.open), false)
         await interests.getByRole('button', { name: selected ? 'Include rental income' : 'Skip rental estimate', exact: true }).click()
@@ -222,6 +222,7 @@ try {
           await step('builder-budget-stage')
           await openEstimate.scrollIntoViewIfNeeded()
           const beforeScroll = await page.evaluate(() => window.scrollY)
+          const beforeHash = await page.evaluate(() => window.location.hash)
           await openEstimate.click()
           assert.equal(await page.locator('#economics-detail-title').evaluate(element => element === document.activeElement), true)
           assert.equal(await economics.isVisible(), false, 'the dedicated view replaces the visible assessment')
@@ -297,11 +298,23 @@ try {
           } else if (rentalAcceptance) {
             assert.equal((await evidence()).rental_scenario, null, 'skipping does not manufacture a rental intention')
           }
-          if (model.id === 'aux-300') await page.goBack()
-          else await back.click()
-          await openEstimate.waitFor()
-          assert.equal(await openEstimate.evaluate(element => element === document.activeElement), true, 'return restores the trigger focus')
+          const checkReturn = async () => {
+            await page.waitForFunction(hash => window.location.hash === hash, beforeHash)
+            await openEstimate.waitFor()
+            // Let any route-triggered landing focus run before checking the opener.
+            await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))))
+            assert.equal(await openEstimate.evaluate(element => element === document.activeElement), true, 'return restores the trigger focus after history settles')
+          }
+          if (model.id === 'aux-240') await page.goBack()
+          else await back.press('Enter')
+          await checkReturn()
           assert.ok(Math.abs(await page.evaluate(() => window.scrollY) - beforeScroll) <= 4, 'return restores the project scroll')
+          if (model.id === 'aux-300') {
+            await page.goForward()
+            await page.waitForFunction(() => document.activeElement?.id === 'economics-detail-title')
+            await page.goBack()
+            await checkReturn()
+          }
           const e = await evidence()
           assert.deepEqual(e.measurement.result.input.placement, authoredPlacement, 'opening and closing the editor retains the authored placement')
           assert.equal(e.enquiry_inputs.question, question)

@@ -187,6 +187,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const playbackLayoutRef = useRef(false)
   const builder = useRef<HTMLDivElement>(null)
   const playbackControls = useRef<HTMLElement>(null)
+  const takeoverFocus = useRef<{ target: string; trigger: HTMLButtonElement } | null>(null)
   const journeyVisible = useRef(visible)
   journeyVisible.current = visible
   const [journeyStep, setJourneyStep] = useState<JourneyStep>('property')
@@ -653,7 +654,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     previousPropertyComplete.current = propertyComplete
   }, [propertyComplete])
   useEffect(() => {
-    if (!playbackLayoutRef.current && journeyStep === 'placement' && propertyComplete) requestAnimationFrame(() => { if (!playbackLayoutRef.current && journeyVisible.current) focusSummaryTarget(document, 'builder-placement-title', 'start', 'instant') })
+    if (!playbackLayoutRef.current && journeyStep === 'placement' && propertyComplete) requestAnimationFrame(() => { if (!playbackLayoutRef.current && journeyVisible.current) focusJourneyStep('placement') })
   }, [journeyStep, propertyComplete])
   useEffect(() => {
     function revealStep(event: MouseEvent) {
@@ -976,7 +977,6 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     requestAnimationFrame(() => {
       if (playbackActive || !visible) return
       focusJourneyStep(step)
-      if (step === 'checks') { const details = document.querySelector<HTMLDetailsElement>('.homeowner-summary__checks'); if (details) details.open = true }
     })
   }
   function focusJourneyStep(step: JourneyStep) {
@@ -986,10 +986,14 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
       return
     }
     if (step === 'model') { focusAssessmentField('builder-model-choice'); return }
+    if (step === 'checks') {
+      const details = builder.current?.querySelector<HTMLDetailsElement>('.homeowner-summary__checks')
+      if (details) details.open = true
+    }
     const targets: Record<Exclude<JourneyStep, 'property' | 'model'>, string> = {
-      placement: 'builder-placement-title', streets: 'placement-action-front',
+      placement: zoningCase ? 'builder-placement-map-title' : 'builder-placement-title', streets: 'placement-action-front',
       boundaries: 'placement-action-rear', details: 'building-type', purpose: 'builder-intended-use',
-      checks: 'builder-quick-checks', budget: 'builder-budget-title', enquiry: 'builder-enquiry-title',
+      checks: 'builder-quick-checks-title', budget: 'builder-budget-title', enquiry: 'builder-enquiry-title',
       email: contextComplete ? 'builder-provider-website' : 'builder-contact-context',
     }
     // Step changes reveal a new task immediately; a pending page reset must not
@@ -1030,7 +1034,8 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const enquiryReady = !!enquiryDoc && readyFor === draftText
   const progressCallback = useRef(onProgressChange)
   progressCallback.current = onProgressChange
-  useEffect(() => { progressCallback.current?.({ walkthroughActive: playbackActive, reviewReadiness, checksAvailable: checksRevealed, model: true, property: propertyComplete, placement: placementComplete, streets: !!geometryRevision && hasStreetAnswer, boundaries: reviewedBoundariesFor === boundaryReviewRevision, details: reviewedDetailsFor === detailsReviewRevision, purpose: reviewedPurposeFor === use, checks: reviewedChecksFor === reviewRevision, enquiry: enquiryReady, email: !!draftText && (websiteRequestedFor === draftText || emailRequestedFor === JSON.stringify([draftText, recipient, includeSiteDetails])), handoff: websiteRequestedFor === draftText ? 'website' : 'email', current: journeyStep, mapAvailable: propertyComplete ? !!zoningCase : undefined }) }, [playbackActive, checksRevealed, zoningCase, propertyComplete, placementComplete, enquiryReady, geometryRevision, hasStreetAnswer, reviewedBoundariesFor, reviewedDetailsFor, reviewedChecksFor, reviewRevision, detailsReviewRevision, boundaryReviewRevision, reviewedPurposeFor, use, websiteRequestedFor, emailRequestedFor, draftText, recipient, includeSiteDetails, journeyStep, readinessSignature])
+  // Commit the assessment rail before a takeover measures its destination.
+  useLayoutEffect(() => { progressCallback.current?.({ walkthroughActive: playbackActive, reviewReadiness, checksAvailable: checksRevealed, model: true, property: propertyComplete, placement: placementComplete, streets: !!geometryRevision && hasStreetAnswer, boundaries: reviewedBoundariesFor === boundaryReviewRevision, details: reviewedDetailsFor === detailsReviewRevision, purpose: reviewedPurposeFor === use, checks: reviewedChecksFor === reviewRevision, enquiry: enquiryReady, email: !!draftText && (websiteRequestedFor === draftText || emailRequestedFor === JSON.stringify([draftText, recipient, includeSiteDetails])), handoff: websiteRequestedFor === draftText ? 'website' : 'email', current: journeyStep, mapAvailable: propertyComplete ? !!zoningCase : undefined }) }, [playbackActive, checksRevealed, zoningCase, propertyComplete, placementComplete, enquiryReady, geometryRevision, hasStreetAnswer, reviewedBoundariesFor, reviewedDetailsFor, reviewedChecksFor, reviewRevision, detailsReviewRevision, boundaryReviewRevision, reviewedPurposeFor, use, websiteRequestedFor, emailRequestedFor, draftText, recipient, includeSiteDetails, journeyStep, readinessSignature])
   useEffect(() => { setReadyFor(null) }, [draftText])
   const emailBody = enquiryDoc ? enquiryEmailBody(enquiryDoc, includeSiteDetails) : ''
   const emailSubject = enquiryDoc?.example ? `Saved example only — ${model.name} question` : includeSiteDetails ? enquiryDoc?.title ?? `${model.name} feasibility enquiry` : `${model.name} feasibility enquiry`
@@ -1147,14 +1152,24 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const playbackCanAdvance = playback.ready && !playback.state?.skipping
   const playbackCanSkip = !playback.state?.skipping && playbackStop !== 'result'
   function takeOverWalkthrough(trigger: HTMLButtonElement) {
-    playback.cancel()
     const target = playbackStop === 'model' ? 'builder-model-choice' : playbackStop === 'property' ? 'builder-property-title'
-      : playbackStop === 'result' ? 'builder-quick-checks' : playbackStop === 'budget' ? 'builder-economics-open'
-      : playbackStop === 'enquiry' ? 'builder-use' : 'placement-map'
-    requestAnimationFrame(() => {
-      if (journeyVisible.current && (document.activeElement === document.body || document.activeElement === trigger)) focusSummaryTarget(document, target)
-    })
+      : playbackStop === 'result' ? 'builder-quick-checks-title' : playbackStop === 'budget' ? 'builder-economics-open'
+      : playbackStop === 'enquiry' ? 'builder-use' : 'builder-placement-map-title'
+    takeoverFocus.current = { target, trigger }
+    playback.cancel()
   }
+  useLayoutEffect(() => {
+    if (playbackActive) return
+    const takeover = takeoverFocus.current
+    takeoverFocus.current = null
+    if (!takeover || !visible) return
+    const frame = requestAnimationFrame(() => {
+      if (document.activeElement !== document.body && document.activeElement !== takeover.trigger) return
+      if (takeover.target === 'builder-quick-checks-title') focusJourneyStep('checks')
+      else focusSummaryTarget(document, takeover.target, takeover.target === 'builder-use' ? 'center' : 'start', 'instant')
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [playbackActive, visible])
   const modelOverview = <>
     <p><strong>{model.name}</strong> · {original('nominal_exterior_width')} × {original('nominal_exterior_depth')} · advertised height {original('advertised_overall_height')}. Provider dimensions are unreviewed.</p>
     <p>Explore a placement, review potential concerns, and prepare a question for the provider.</p>
@@ -1223,7 +1238,8 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
       </details>
     </section>
 
-    {checksPending && <p role="status">Updating checks. {summary ? 'Previous findings are shown for reference; ' : ''}copy and save will use the updated results when ready.</p>}
+    {/* Playback reports readiness in its stable player; removing a second banner here would move its destination. */}
+    {checksPending && !playbackActive && <p role="status">Updating checks. {summary ? 'Previous findings are shown for reference; ' : ''}copy and save will use the updated results when ready.</p>}
     <EnquiryRecovery enquiry={!checksPending && (expanded.next || enquiryReady) ? draftText : null} report={reportDoc ? enquiryPlainText(reportDoc) : null} technicalEvidence={JSON.stringify(technicalEvidence, null, 2)} />
     <section className="builder-stage" id="builder-property" aria-labelledby="builder-property-title">
     <p className="eyebrow">Property</p><h2 id="builder-property-title">{mode === 'example' ? 'Could this fit on your property?' : 'Find your property'}</h2>
