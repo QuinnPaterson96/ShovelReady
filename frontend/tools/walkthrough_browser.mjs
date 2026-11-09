@@ -72,7 +72,12 @@ const settled = async () => { await page.waitForTimeout(150); await wait(async (
 const next = async () => { await wait(() => button('Next').isEnabled()); await click('Next') }
 try {
   await page.goto(frontend)
+  // Keep the initial measurement pending until Property is positioned. The
+  // real response must not remove a banner above it and hide its heading.
+  hold = true
+  const entryMeasurement = new Promise(resolve => { heldStarted = resolve })
   await click('Watch the demo')
+  await Promise.race([entryMeasurement, page.waitForTimeout(15000).then(() => { throw new Error('Initial held measurement did not start') })])
   assert.match(await caption().textContent(), /Model 300/)
   await page.waitForTimeout(800)
   assert.match(await caption().textContent(), /Model 300/)
@@ -83,6 +88,15 @@ try {
   assert.match(await caption().textContent(), /419 Cecelia/)
   await assertHeadingBelowPlayer('#builder-property-title')
   const propertyAction = await actionGeometry()
+  const pendingPropertyHeading = await page.locator('#builder-property-title').boundingBox()
+  hold = false
+  release()
+  await settled()
+  await assertHeadingBelowPlayer('#builder-property-title')
+  assertSameAction(propertyAction, await actionGeometry())
+  const readyPropertyHeading = await page.locator('#builder-property-title').boundingBox()
+  assert.ok(Math.abs(pendingPropertyHeading.y - readyPropertyHeading.y) <= 1, 'the Property heading stays in place when initial checks finish')
+  results.push({ kind: 'property-heading-after-initial-checks', before: pendingPropertyHeading, after: readyPropertyHeading })
   hold = true
   const initialMeasurement = new Promise(resolve => { heldStarted = resolve })
   await button('Next').focus(); await page.keyboard.press('Enter')

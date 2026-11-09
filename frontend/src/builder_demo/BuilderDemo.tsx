@@ -1223,7 +1223,8 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
       </details>
     </section>
 
-    {checksPending && <p role="status">Updating checks. {summary ? 'Previous findings are shown for reference; ' : ''}copy and save will use the updated results when ready.</p>}
+    {/* Playback reports readiness in its stable player; removing a second banner here would move its destination. */}
+    {checksPending && !playbackActive && <p role="status">Updating checks. {summary ? 'Previous findings are shown for reference; ' : ''}copy and save will use the updated results when ready.</p>}
     <EnquiryRecovery enquiry={!checksPending && (expanded.next || enquiryReady) ? draftText : null} report={reportDoc ? enquiryPlainText(reportDoc) : null} technicalEvidence={JSON.stringify(technicalEvidence, null, 2)} />
     <section className="builder-stage" id="builder-property" aria-labelledby="builder-property-title">
     <p className="eyebrow">Property</p><h2 id="builder-property-title">{mode === 'example' ? 'Could this fit on your property?' : 'Find your property'}</h2>
