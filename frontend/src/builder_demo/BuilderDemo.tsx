@@ -1,7 +1,7 @@
 import { calculateRental, defaultMarket, rentalForProperty, rentalEvidence, withRentalReport, type RentalDraft } from '../rental_scenario/model'
 import type { AssessmentEntry } from '../navigation/assessmentEntry'
 import { buildingClearanceMove } from './buildingMove'
-import { useWalkthrough, walkthroughPhase } from './walkthrough'
+import { useWalkthrough, walkthroughProgress } from './walkthrough'
 import { FloatingNext, PlaybackLayout } from '../FloatingNext'
 import { findingAcknowledgementKey } from './journeyState'
 import { enquiryUseQualification, manufacturerDocument, placementConcerns, boundaryObservations, additionalObservation, conditionalObservation, assumptionsDescription, type EnquiryInput } from './manufacturer'
@@ -185,6 +185,8 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const suggestedQuestion = `Could ${model.name} be suitable for this property?`
   const [expanded, setExpanded] = useState({ property: true, placement: false, next: false, email: false })
   const playbackLayoutRef = useRef(false)
+  const builder = useRef<HTMLDivElement>(null)
+  const playbackControls = useRef<HTMLElement>(null)
   const journeyVisible = useRef(visible)
   journeyVisible.current = visible
   const [journeyStep, setJourneyStep] = useState<JourneyStep>('property')
@@ -975,7 +977,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const enquiryReady = !!enquiryDoc && readyFor === draftText
   const progressCallback = useRef(onProgressChange)
   progressCallback.current = onProgressChange
-  useEffect(() => { progressCallback.current?.({ reviewReadiness, checksAvailable: checksRevealed, model: true, property: propertyComplete, placement: placementComplete, streets: !!geometryRevision && hasStreetAnswer, boundaries: reviewedBoundariesFor === boundaryReviewRevision, details: reviewedDetailsFor === detailsReviewRevision, purpose: reviewedPurposeFor === use, checks: reviewedChecksFor === reviewRevision, enquiry: enquiryReady, email: !!draftText && (websiteRequestedFor === draftText || emailRequestedFor === JSON.stringify([draftText, recipient, includeSiteDetails])), handoff: websiteRequestedFor === draftText ? 'website' : 'email', current: journeyStep, mapAvailable: propertyComplete ? !!zoningCase : undefined }) }, [checksRevealed, zoningCase, propertyComplete, placementComplete, enquiryReady, geometryRevision, hasStreetAnswer, reviewedBoundariesFor, reviewedDetailsFor, reviewedChecksFor, reviewRevision, detailsReviewRevision, boundaryReviewRevision, reviewedPurposeFor, use, websiteRequestedFor, emailRequestedFor, draftText, recipient, includeSiteDetails, journeyStep, readinessSignature])
+  useEffect(() => { progressCallback.current?.({ walkthroughActive: playbackActive, reviewReadiness, checksAvailable: checksRevealed, model: true, property: propertyComplete, placement: placementComplete, streets: !!geometryRevision && hasStreetAnswer, boundaries: reviewedBoundariesFor === boundaryReviewRevision, details: reviewedDetailsFor === detailsReviewRevision, purpose: reviewedPurposeFor === use, checks: reviewedChecksFor === reviewRevision, enquiry: enquiryReady, email: !!draftText && (websiteRequestedFor === draftText || emailRequestedFor === JSON.stringify([draftText, recipient, includeSiteDetails])), handoff: websiteRequestedFor === draftText ? 'website' : 'email', current: journeyStep, mapAvailable: propertyComplete ? !!zoningCase : undefined }) }, [playbackActive, checksRevealed, zoningCase, propertyComplete, placementComplete, enquiryReady, geometryRevision, hasStreetAnswer, reviewedBoundariesFor, reviewedDetailsFor, reviewedChecksFor, reviewRevision, detailsReviewRevision, boundaryReviewRevision, reviewedPurposeFor, use, websiteRequestedFor, emailRequestedFor, draftText, recipient, includeSiteDetails, journeyStep, readinessSignature])
   useEffect(() => { setReadyFor(null) }, [draftText])
   const emailBody = enquiryDoc ? enquiryEmailBody(enquiryDoc, includeSiteDetails) : ''
   const emailSubject = enquiryDoc?.example ? `Saved example only — ${model.name} question` : includeSiteDetails ? enquiryDoc?.title ?? `${model.name} feasibility enquiry` : `${model.name} feasibility enquiry`
@@ -1074,33 +1076,50 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     const scrollKey = `${playbackRun}:${playbackStop}`
     if (playbackScrolled.current === scrollKey) return
     if (!playbackActive || !playbackStop) return
-    const target = playbackStop === 'model' ? 'builder-title' : playbackStop === 'property' ? 'builder-property-title' : playbackStop === 'result' ? 'builder-quick-checks' : playbackStop === 'budget' ? 'builder-budget-title' : playbackStop === 'enquiry' ? 'builder-unsent-preview' : 'placement-map'
+    const target = playbackStop === 'model' ? '#builder-title' : playbackStop === 'property' ? '#builder-property-title'
+      : playbackStop === 'result' ? '#builder-quick-checks' : playbackStop === 'budget' ? '#builder-budget-title'
+      : playbackStop === 'enquiry' ? '#builder-unsent-preview' : '#placement-map .occupied-map-heading'
     const frame = requestAnimationFrame(() => {
-      if (!playbackLayoutRef.current || !journeyVisible.current) return
-      const element = target === 'placement-map' ? document.querySelector<HTMLElement>('#placement-map svg') : document.getElementById(target)
-      if (element && !element.closest('[hidden]')) { playbackScrolled.current = scrollKey; element.scrollIntoView?.({ block: 'start', behavior: 'auto' }) }
+      const controls = playbackControls.current
+      if (!controls || !playbackLayoutRef.current || !journeyVisible.current) return
+      const element = builder.current?.querySelector(target)
+      if (!element || element.closest('[hidden]')) return
+      builder.current?.style.setProperty('--playback-height', `${controls.getBoundingClientRect().height}px`)
+      playbackScrolled.current = scrollKey
+      element.scrollIntoView?.({ block: 'start', behavior: 'instant' })
     })
     return () => { if (typeof cancelAnimationFrame !== 'undefined') cancelAnimationFrame(frame) }
   }, [playbackActive, playbackStop, playbackRun, journeyStep, expanded, !!enquiryDoc])
-  return <PlaybackLayout.Provider value={playbackActive}><div className="builder-demo" data-playback={playbackActive || undefined}>
+  const playbackFinished = playback.state?.finished
+  const playbackCanAdvance = playback.ready && !playback.state?.skipping
+  const playbackCanSkip = !playback.state?.skipping && playbackStop !== 'result'
+  function takeOverWalkthrough(trigger: HTMLButtonElement) {
+    playback.cancel()
+    const target = playbackStop === 'model' ? 'builder-model-choice' : playbackStop === 'property' ? 'builder-property-title'
+      : playbackStop === 'result' ? 'builder-quick-checks' : playbackStop === 'budget' ? 'builder-economics-open'
+      : playbackStop === 'enquiry' ? 'builder-use' : 'placement-map'
+    requestAnimationFrame(() => {
+      if (journeyVisible.current && (document.activeElement === document.body || document.activeElement === trigger)) focusSummaryTarget(document, target)
+    })
+  }
+  return <PlaybackLayout.Provider value={playbackActive}><div ref={builder} className="builder-demo" data-playback={playbackActive || undefined}>
     <div hidden={economicsOpen}>
 
-    {playbackActive && <section data-playback-controls className="builder-playback" aria-label="Walkthrough controls">
-      <span className="builder-playback-progress">Step {walkthroughPhase[playbackStop!]} of 6</span>
-      <p aria-live="polite">{playback.state!.finished ? 'Walkthrough complete. ' : ''}{playbackCaptions[playbackStop!]}{geometryFailure ? ' Placement check unavailable. Retry in the assessment or take over.' : !playback.ready ? ' Waiting for current checks; you can go back or take over.' : ''}</p>
-      <div className="sr-actions">
-        <button type="button" disabled={playbackStop === 'model'} onClick={playback.back}>Back</button>
-        {!playback.state!.finished && <button className="builder-continue" type="button" disabled={!playback.ready || playback.state!.skipping} onClick={playback.next}>Next</button>}
-        <button hidden={playback.state!.finished || playbackStop === 'result'} type="button" onClick={playback.skip}>Skip to result</button>
-        <button type="button" onClick={event => {
-          const trigger = event.currentTarget
-          playback.cancel()
-          requestAnimationFrame(() => {
-            if (document.activeElement === document.body || document.activeElement === trigger)
-              focusSummaryTarget(document, playbackStop === 'enquiry' ? 'builder-use' : playbackStop === 'budget' ? 'builder-economics-open' : playbackStop === 'model' ? 'builder-model-choice' : 'placement-map')
-          })
-        }}>Let me try</button>
+    {playbackActive && playbackStop && <section ref={playbackControls} data-playback-controls className="builder-playback" aria-label="Walkthrough controls" onKeyDown={event => {
+      if (event.repeat && (event.key === 'Enter' || event.key === ' ')) event.preventDefault()
+    }}>
+      <span className="builder-playback-progress">{walkthroughProgress(playbackStop)}</span>
+      <div className="builder-playback-actions">
+        <button type="button" aria-disabled={playbackStop === 'model' || undefined} tabIndex={playbackStop === 'model' ? -1 : undefined} onClick={playback.back}>Back</button>
+        <button className="builder-continue" type="button" aria-disabled={!playbackFinished && !playbackCanAdvance || undefined} onClick={event => {
+          if (playbackFinished) takeOverWalkthrough(event.currentTarget)
+          else playback.next()
+        }}>{playbackFinished ? 'Let me try' : 'Next'}</button>
+        <button hidden={playbackFinished} type="button" aria-disabled={!playbackCanSkip || undefined} tabIndex={playbackCanSkip ? undefined : -1} onClick={playback.skip}>Skip to result</button>
+        <button hidden={playbackFinished} type="button" onClick={event => takeOverWalkthrough(event.currentTarget)}>Let me try</button>
       </div>
+      <p aria-live="polite">{playbackFinished ? 'Walkthrough complete. ' : ''}{playbackCaptions[playbackStop]}</p>
+      <p className="builder-playback-status" role="status">{playbackStop === 'model' || playbackStop === 'property' ? '' : geometryFailure ? 'Placement check unavailable.' : playback.ready ? 'Current checks ready.' : 'Waiting for current checks…'}</p>
     </section>}
     {mode === 'example' && !playbackActive && <button type="button" onClick={() => setPendingEntry({ example: true, modelId: 'aux-300', walkthrough: true })}>Replay walkthrough</button>}
     <dialog ref={streetDialog} aria-labelledby="street-context-title" aria-describedby="street-context-reason" className="builder-street-dialog" onCancel={() => setStreetSkipTarget(null)}>
@@ -1216,13 +1235,13 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
       <div id="builder-enquiry-content" hidden={!expanded.next}>
       {!hasSite && <p>Add a property or your known site facts above to prepare an unsent enquiry. Your answers stay local to this journey.</p>}
       {hasSite && <><p>Complete the three required fields to prepare your draft. Unknown, Not sure or Prefer not to say are accepted answers. All other fields are optional. These answers stay local until you share the enquiry.</p>
-      <p id="builder-required-help">Highlighted fields still need an answer. You can explicitly choose Unknown rather than supplying details you don’t know.</p>
+      {!contextComplete && <p id="builder-required-help">Highlighted fields still need an answer.</p>}
       <div className="builder-questions">
-        <label className="builder-required-label" htmlFor="builder-use">How would you use {model.name}? <span>Required</span></label><input required aria-describedby="builder-required-help" className={`builder-required-input${!use.trim() ? ' is-missing' : ''}`} id="builder-use" list="builder-use-options" value={use} onChange={event => changeIntendedUse(event.target.value)} placeholder="Choose a suggestion or type your answer" />
+        <label className="builder-required-label" htmlFor="builder-use">How would you use {model.name}? <span>Required</span></label><input required aria-describedby={contextComplete ? undefined : 'builder-required-help'} className={`builder-required-input${!use.trim() ? ' is-missing' : ''}`} id="builder-use" list="builder-use-options" value={use} onChange={event => changeIntendedUse(event.target.value)} placeholder="Choose a suggestion or type your answer" />
         <datalist id="builder-use-options">{['a home for myself', 'family accommodation', 'a rental suite', 'an office', 'Still deciding', 'Unknown', 'Prefer not to say'].map(value => <option key={value} value={value} />)}</datalist>
-        <label className="builder-required-label" htmlFor="builder-relationship">Relationship to the property <span>Required</span></label><input required aria-describedby="builder-required-help" className={`builder-required-input${!projectContext.relationship.trim() ? ' is-missing' : ''}`} id="builder-relationship" list="builder-relationship-options" value={projectContext.relationship} onChange={event => { clearDemoAnswer('relationship'); setProjectContext(previous => ({ ...previous, relationship: event.target.value })) }} placeholder="Choose a suggestion or type your answer" />
+        <label className="builder-required-label" htmlFor="builder-relationship">Relationship to the property <span>Required</span></label><input required aria-describedby={contextComplete ? undefined : 'builder-required-help'} className={`builder-required-input${!projectContext.relationship.trim() ? ' is-missing' : ''}`} id="builder-relationship" list="builder-relationship-options" value={projectContext.relationship} onChange={event => { clearDemoAnswer('relationship'); setProjectContext(previous => ({ ...previous, relationship: event.target.value })) }} placeholder="Choose a suggestion or type your answer" />
         <datalist id="builder-relationship-options">{['I own the property', 'I am considering buying it', 'I am helping the owner', 'Unknown', 'Prefer not to say'].map(value => <option key={value} value={value} />)}</datalist>
-        <label className="builder-required-label" htmlFor="builder-nextStep">What response would be most useful? <span>Required</span></label><input required aria-describedby="builder-required-help" className={`builder-required-input${!projectContext.nextStep.trim() ? ' is-missing' : ''}`} id="builder-nextStep" list="builder-response-options" value={projectContext.nextStep} onChange={event => { clearDemoAnswer('nextStep'); setProjectContext(previous => ({ ...previous, nextStep: event.target.value })) }} placeholder="Choose a suggestion or type your answer" />
+        <label className="builder-required-label" htmlFor="builder-nextStep">What response would be most useful? <span>Required</span></label><input required aria-describedby={contextComplete ? undefined : 'builder-required-help'} className={`builder-required-input${!projectContext.nextStep.trim() ? ' is-missing' : ''}`} id="builder-nextStep" list="builder-response-options" value={projectContext.nextStep} onChange={event => { clearDemoAnswer('nextStep'); setProjectContext(previous => ({ ...previous, nextStep: event.target.value })) }} placeholder="Choose a suggestion or type your answer" />
         <datalist id="builder-response-options">{['Please advise whether this is worth investigating further.', 'I would like to arrange an initial call.', 'Please share standard pricing and inclusions.', 'Unknown', 'Prefer not to say'].map(value => <option key={value} value={value} />)}</datalist>
         <label htmlFor="builder-question">Your question for the builder (optional)</label><textarea id="builder-question" value={question} onChange={event => setQuestion(event.target.value)} placeholder="Ask about suitability, next steps or additional costs." />
         <label htmlFor="builder-timing">Possible timing (optional)</label><input id="builder-timing" value={timing} onChange={event => setTiming(event.target.value)} placeholder="e.g. next year; unknown is fine" />
