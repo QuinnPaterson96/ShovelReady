@@ -1,5 +1,5 @@
 import { calculateRental, defaultMarket, rentalForProperty, rentalEvidence, withRentalReport, type RentalDraft } from '../rental_scenario/model'
-import type { AssessmentEntry } from '../navigation/assessmentEntry'
+import { focusAssessmentField, type AssessmentEntry, type AssessmentLanding } from '../navigation/assessmentEntry'
 import { buildingClearanceMove } from './buildingMove'
 import { useWalkthrough, walkthroughProgress } from './walkthrough'
 import { FloatingNext, PlaybackLayout } from '../FloatingNext'
@@ -177,7 +177,7 @@ export function enquiry(...args: Parameters<typeof enquiryDocument>) { return en
 export type BuilderProgress = import('../navigation/BuilderJourneyNav').BuilderJourneyCompletion
 type JourneyStep = import('../navigation/BuilderJourneyNav').JourneyStep
 
-export default function BuilderDemo({ onProgressChange, presetRequest = 0, entryRequest, visible = true }: { visible?: boolean; entryRequest?: AssessmentEntry | null; presetRequest?: number; onProgressChange?: (progress: BuilderProgress) => void } = {}) {
+export default function BuilderDemo({ onProgressChange, presetRequest = 0, entryRequest, visible = true, landing }: { visible?: boolean; entryRequest?: AssessmentEntry | null; presetRequest?: number; onProgressChange?: (progress: BuilderProgress) => void; landing?: AssessmentLanding } = {}) {
   const [modelId, setModelId] = useState(defaultJourneyModel.model_id)
   const model = journeyCatalogue.models.find(item => item.model_id === modelId)!
   const MODEL_ID = model.model_id
@@ -203,6 +203,11 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const [estimateBuffers, setEstimateBuffers] = useState({ area: 10, height: 10 })
   const [heightRevision, setHeightRevision] = useState(0)
   const [mode, setMode] = useState<'live' | 'manual' | 'retained' | 'example'>('live')
+  const addressQuery = useRef('')
+  const manualMunicipality = useRef<MunicipalityContext | null>(null)
+  const [manualOpened, setManualOpened] = useState(false)
+  const [propertyFocusRequest, setPropertyFocusRequest] = useState(0)
+  const focusedPropertyRequest = useRef(0)
   const [propertyReset, setPropertyReset] = useState(0)
   const [propertyInspect, setPropertyInspect] = useState(0)
   const [live, setLive] = useState<Confirmed | null>(null)
@@ -341,8 +346,20 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   function siteEdited() { resetPropertyAlternatives(); const retainedUse = demoAnswers?.intendedUse === use ? '' : use; setUse(retainedUse); setGeometryFailure(false); setDemoAnswers({}); setStreetDecisionFor(null); setStreetSkipTarget(null); setChecksRevealed(false); setBufferSuggestion(undefined); setMoveSuggestion(undefined); setAcknowledgedConflicts([]); setSelection(null); setImported(false); setMeasurementResult(null); setSiteAssumptions(null); setProjectSettings(applyIntendedUse(modelProjectSettings(model), retainedUse)); setGeometryPending(false); setAccess(''); setServices(''); setProjectContext(previous => ({ ...previous, relationship: '', nextStep: '' })); setWaterfrontMarks(null); setDrawingExport(null); setStreetMarks({ revision: null, data: { edge_ids: [], all_marked: false, origin: 'user' } }); setRearEdge(null); setSelectedBoundary(null); setBoundaryMark(null); setMarkingRole(null); setBoundaryMode('place'); setReadyFor(null); setRevision(value => value + 1) }
   function changeMode(next: typeof mode) {
     if (next !== 'example' && window.location.hash.startsWith('#examples/')) window.history.replaceState(null, '', '#assessment')
+    if (mode === 'manual' && next === 'live') manualMunicipality.current = currentMunicipality
     setExpanded({ property: next !== 'example', placement: next === 'example', next: false, email: false })
     setMode(next); siteEdited(); setLive(null); setManual(null)
+    if (next === 'example') {
+      addressQuery.current = ''
+      setManualOpened(false)
+    } else {
+      if (next === 'manual') {
+        if (manualOpened) setMunicipality(manualMunicipality.current)
+        setManualOpened(true)
+      }
+      setJourneyStep('property')
+      setPropertyFocusRequest(previous => previous + 1)
+    }
     if (next !== 'manual') setMunicipality(next === 'example' ? savedExampleMunicipality() : null)
     setDraft({ ...emptySiteInput, kind: 'address' })
     setDrawingExport(null)
@@ -924,10 +941,15 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const summaryPanel = summary && <>{!checksRevealed && <p className="builder-checks-preview">Your preliminary checks will appear after property details and intended purpose.</p>}<div id="builder-checks-disclosure" hidden={!checksRevealed}><HomeownerSummary updating={displayResult.updating} useQualification={displayResult.result?.useQualification} onApplyBuffer={applyBuffer} onMove={applyMove} actionsDisabled={buffersPending || checksPending} acknowledged={includedFindings.map(check => check.label)} onAcknowledge={acknowledgeFinding} summary={summary} onNavigate={navigateFlag} continuation={{ ...continuation, onContinue: () => advanceJourneyStep(nextJourneyStep) }} />{journeyStep === 'checks' && <FloatingNext active sectionId="builder-quick-checks"><div className="homeowner-summary__continue"><p>{continuation.hint}</p><button className="builder-continue" type="button" disabled={buffersPending || checksPending} onClick={() => advanceJourneyStep(nextJourneyStep)}>Next: {continuation.label}<span aria-hidden="true"> →</span></button></div></FloatingNext>}</div></>
   const placementContinuation = summary && ['placement', 'streets', 'boundaries'].includes(journeyStep) && <div className="homeowner-summary__continue"><p className="placement-action-status">{buffersPending ? 'Save planning buffers before continuing' : journeyStep === 'streets' ? streetAdjacency.all_marked ? `${streetAdjacency.edge_ids.length} street${streetAdjacency.edge_ids.length === 1 ? '' : 's'} marked · saved` : 'Mark the streets you know, or choose Not sure. Unknown street context can continue.' : journeyStep === 'boundaries' ? 'Review or accept suggested roles and buffers. Unknown roles can remain unresolved; save any buffer edits to continue.' : continuation.hint}</p><div className="step-action"><button className="builder-continue" type="button" disabled={buffersPending} onClick={() => advanceJourneyStep(nextJourneyStep)}>Next: {continuation.label}<span aria-hidden="true"> →</span></button><StepInfo label={continuation.label}>{continuation.hint} You can continue with open questions. Existing findings and unanswered questions remain in your enquiry.</StepInfo></div></div>
   function changeProperty() {
-    if (mode === 'live') { siteEdited(); setLive(null); setPropertyReset(value => value + 1) }
-    else changeMode('live')
+    if (mode === 'live') {
+      siteEdited(); setLive(null); setPropertyReset(value => value + 1)
+      setPropertyFocusRequest(previous => previous + 1)
+    } else {
+      setManualOpened(false)
+      addressQuery.current = ''
+      changeMode('live')
+    }
     setExpanded({ property: true, placement: false, next: false, email: false })
-    requestAnimationFrame(() => focusSummaryTarget(document, 'sd-address'))
   }
   function advanceJourneyStep(step: JourneyStep) {
     if (journeyStep === 'streets' && ['boundaries', 'details', 'purpose', 'checks', 'budget', 'enquiry', 'email'].includes(step) && !hasStreetAnswer) { setStreetSkipTarget(step); return }
@@ -947,15 +969,42 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     if (step === 'boundaries') changeBoundaryMode('rear', true)
     if (step === 'placement' || step === 'details' || step === 'purpose') setBoundaryMode('place')
     setExpanded({ property: step === 'property', placement: !['property', 'model', 'budget', 'enquiry', 'email'].includes(step), next: step === 'enquiry', email: step === 'email' })
-    const targets: Record<JourneyStep, string> = { model: 'builder-title', property: 'sd-address', placement: 'builder-placement-title', streets: 'placement-action-front', boundaries: 'placement-action-rear', details: 'builder-property-details', purpose: 'builder-intended-use', checks: 'builder-quick-checks', budget: 'builder-budget-title', enquiry: 'builder-enquiry-title', email: contextComplete ? 'builder-provider-website' : 'builder-contact-context' }
     if (playbackTransition) return // Playback owns one scroll after the target renders.
     requestAnimationFrame(() => {
       if (playbackActive || !visible) return
-      focusSummaryTarget(document, step === 'details' ? 'building-type' : targets[step], 'start')
+      focusJourneyStep(step)
       if (step === 'purpose') document.getElementById('builder-purpose')?.scrollIntoView({ block: 'center', behavior: window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
       if (step === 'checks') { const details = document.querySelector<HTMLDetailsElement>('.homeowner-summary__checks'); if (details) details.open = true }
     })
   }
+  function focusJourneyStep(step: JourneyStep) {
+    if (step === 'property') {
+      const focused = mode === 'manual' ? focusAssessmentField('manual-address', 'center') : focusAssessmentField('sd-address')
+      if (!focused) focusSummaryTarget(document, 'builder-property-title', 'start')
+      return
+    }
+    if (step === 'model') { focusAssessmentField('builder-model-choice'); return }
+    const targets: Record<Exclude<JourneyStep, 'property' | 'model'>, string> = {
+      placement: 'builder-placement-title', streets: 'placement-action-front',
+      boundaries: 'placement-action-rear', details: 'building-type', purpose: 'builder-intended-use',
+      checks: 'builder-quick-checks', budget: 'builder-budget-title', enquiry: 'builder-enquiry-title',
+      email: contextComplete ? 'builder-provider-website' : 'builder-contact-context',
+    }
+    focusSummaryTarget(document, targets[step], 'start')
+  }
+  useEffect(() => {
+    const focusProperty = propertyFocusRequest !== focusedPropertyRequest.current
+    if (!visible || (!focusProperty && (!landing || landing === 'example'))) return
+    let active = true
+    requestAnimationFrame(() => {
+      if (!active || playbackLayoutRef.current || economicsOpen || pendingEntry) return
+      focusedPropertyRequest.current = propertyFocusRequest
+      if (focusProperty) focusJourneyStep('property')
+      else if (landing === 'model') focusJourneyStep('model')
+      else focusJourneyStep(propertyComplete ? journeyStep : 'property')
+    })
+    return () => { active = false }
+  }, [visible, landing, propertyFocusRequest])
   function navigateFlag(target: string) {
     const propertyFact = ['building-type', 'existing-suites', 'principal-building', 'waterfront-lot', 'zsa-floor-area', 'separation-measurement-choice', 'scouting-height', 'scouting-area-buffer'].includes(target)
     if (!propertyFact && !['street-side', 'boundary-roles', 'boundary-offsets', 'placement-map', 'builder-intended-use'].includes(target)) setChecksRevealed(true)
@@ -1102,6 +1151,11 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
       if (journeyVisible.current && (document.activeElement === document.body || document.activeElement === trigger)) focusSummaryTarget(document, target)
     })
   }
+  const modelOverview = <>
+    <p><strong>{model.name}</strong> · {original('nominal_exterior_width')} × {original('nominal_exterior_depth')} · advertised height {original('advertised_overall_height')}. Provider dimensions are unreviewed.</p>
+    <p>Explore a placement, review potential concerns, and prepare a question for the provider.</p>
+    <p className="metadata">Model questions, placements, configuration and budget drafts stay in this open assessment. Changing property starts fresh placements and estimates. Reloading clears the current assessment. If a recovery copy was saved, you can recover the prepared enquiry text in this tab.</p>
+  </>
   return <PlaybackLayout.Provider value={playbackActive}><div ref={builder} className="builder-demo" data-playback={playbackActive || undefined}>
     <div hidden={economicsOpen}>
 
@@ -1137,16 +1191,17 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
       <p>This replaces your selected model, property, placement and property review answers with Model 300 on a saved Victoria property. Example inputs replace the local project answers too. Nothing is sent; you can keep your current assessment.</p>
       <div className="sr-actions"><button type="button" autoFocus onClick={() => { entryDialog.current?.close(); setPendingEntry(null); document.getElementById('builder-model-choice')?.focus() }}>Keep current assessment</button><button type="button" onClick={() => { if (pendingEntry) applyEntry(pendingEntry); entryDialog.current?.close(); setPendingEntry(null); document.getElementById('builder-model-choice')?.focus() }}>Load example assessment</button></div>
     </dialog>
-    <section className="builder-hero" id="builder-model" aria-labelledby="builder-title">
-      <label htmlFor="builder-model-choice">Choose a model</label>
-      <select id="builder-model-choice" value={modelId} onChange={event => switchModel(event.target.value)}>{journeyCatalogue.models.map(item => <option key={item.model_id} value={item.model_id}>{item.provider} · {item.name}</option>)}</select>
+    <section className={mode === 'example' ? 'builder-hero' : 'builder-hero builder-entry-model'} id="builder-model" aria-labelledby="builder-title">
       <p className="eyebrow">{mode === 'example' ? 'Example assessment' : 'Assessment'} · {model.provider}</p>
       <h1 id="builder-title">Explore {model.name} on your site</h1>
-      <p>Explore a placement, review potential concerns, and prepare a question for the provider.</p>
-      <p className="metadata">Model questions, placements, configuration and budget drafts stay in this open assessment. Changing property starts fresh placements and estimates; reloading clears these drafts.</p>
-      <p className="notice">Preliminary exploration · nothing is sent automatically.</p>
-      <p><strong>{model.name}</strong> · {original('nominal_exterior_width')} × {original('nominal_exterior_depth')} · advertised height {original('advertised_overall_height')}. Provider dimensions are unreviewed.</p>
+      <div className="builder-entry-model-choice">
+        <label htmlFor="builder-model-choice">Choose a model</label>
+        <select id="builder-model-choice" value={modelId} onChange={event => switchModel(event.target.value)}>{journeyCatalogue.models.map(item => <option key={item.model_id} value={item.model_id}>{item.provider} · {item.name}</option>)}</select>
+      </div>
+      <p className={mode === 'example' ? 'notice' : 'metadata builder-entry-scope'}>Preliminary exploration · nothing is sent automatically.</p>
+      {mode === 'example' && modelOverview}
       <details className="builder-model-overview"><summary>About {model.name} · photos, price and specifications</summary>
+      {mode !== 'example' && modelOverview}
       <ModelImage model={model} />
       <PriceTiming model={model} />
       {model.model_id === 'wcch-ch-studio' && <p className="notice">Observational footprint comparison only. Permanent dwelling suitability is unconfirmed; ask West Coast Container Homes about this exact configuration before pursuing residential use.</p>}
@@ -1167,16 +1222,16 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     {checksPending && <p role="status">Updating checks. {summary ? 'Previous findings are shown for reference; ' : ''}copy and save will use the updated results when ready.</p>}
     <EnquiryRecovery enquiry={!checksPending && (expanded.next || enquiryReady) ? draftText : null} report={reportDoc ? enquiryPlainText(reportDoc) : null} technicalEvidence={JSON.stringify(technicalEvidence, null, 2)} />
     <section className="builder-stage" id="builder-property" aria-labelledby="builder-property-title">
-    <p className="eyebrow">Property</p><h2 id="builder-property-title">Could this fit on your property?</h2>
+    <p className="eyebrow">Property</p><h2 id="builder-property-title">{mode === 'example' ? 'Could this fit on your property?' : 'Find your property'}</h2>
     <p>{propertyComplete ? (mode === 'example' ? 'Saved Victoria example selected.' : live ? live.address.label : `${manual?.facts.address || selection?.candidate?.address.value || selection?.manual.address.value || 'Site description'} · user-supplied; unverified.`) : 'Choose an address result or confirm a manual site description to continue.'}</p>
     {propertyComplete && <button type="button" aria-expanded={expanded.property} aria-controls="builder-property-content" onClick={() => toggleStep('property')}>{expanded.property ? 'Collapse property' : 'Review or change property'}</button>}
     <div id="builder-property-content" hidden={propertyComplete && !expanded.property}>
-    {mode === 'live' && <SiteDiscovery autoProceed municipality={currentMunicipality} onMunicipalityChange={changeMunicipality} resetKey={propertyReset} inspectKey={propertyInspect} onConfirm={next => { siteEdited(); setLive(next) }} onManual={() => changeMode('manual')} />}
+    {mode === 'live' && <SiteDiscovery autoProceed municipality={currentMunicipality} onMunicipalityChange={changeMunicipality} resetKey={propertyReset} inspectKey={propertyInspect} initialQuery={addressQuery.current} onQueryChange={query => { addressQuery.current = query }} onConfirm={next => { siteEdited(); setLive(next); if (next) setManualOpened(false) }} onManual={() => changeMode('manual')} />}
     {mode === 'example' && <p>Example property—not your property. <button type="button" onClick={() => changeMode('live')}>Enter your address instead</button></p>}
     {mode === 'manual' && <><button type="button" onClick={() => changeMode('live')}>Back to address search</button><MunicipalityCoverage value={currentMunicipality} onChange={changeMunicipality} />{victoriaCoverage && <p>Manual sketches provide geometry checks. Choose a supported mapped property for city-specific rule comparisons.</p>}</>}
     {mode === 'retained' && <SitePreparation draft={draft} onDraftChange={next => { setDraft(next); setReadyFor(null) }} selection={selection}
       onEdit={siteEdited} onConfirm={next => { setSelection(next); setImported(false); setMeasurementResult(null); setReadyFor(null); setRevision(value => value + 1) }} />}
-      {mode === 'manual' && <ManualSiteInput key={propertyReset} alternativeKey={modelId} initialPlacement={placementSeed?.position} onPlacementDraftChange={position => placementEdited({ position, widthOrigin: "user", depthOrigin: "user", minima: { parcel: "", building: "" } })} onChange={value => { if (JSON.stringify(value) !== JSON.stringify(manual)) { setManual(value); setReadyFor(null) } }} footprint={{ widthM: Number(measurement('nominal_exterior_width')?.quantity?.value) || null, depthM: Number(measurement('nominal_exterior_depth')?.quantity?.value) || null, label: `${model.provider} ${model.name} · unreviewed nominal dimensions` }} />}
+      {manualOpened && <div hidden={mode !== 'manual'}><ManualSiteInput active={mode === 'manual'} key={propertyReset} alternativeKey={modelId} initialPlacement={placementSeed?.position} onPlacementDraftChange={position => placementEdited({ position, widthOrigin: "user", depthOrigin: "user", minima: { parcel: "", building: "" } })} onChange={value => { if (JSON.stringify(value) !== JSON.stringify(manual)) { setManual(value); setReadyFor(null) } }} footprint={{ widthM: Number(measurement('nominal_exterior_width')?.quantity?.value) || null, depthM: Number(measurement('nominal_exterior_depth')?.quantity?.value) || null, label: `${model.provider} ${model.name} · unreviewed nominal dimensions` }} /></div>}
       {mode === 'manual' && hasSite && <button type="button" onClick={() => setManualConfirmedFor(manualSignature)} disabled={propertyComplete}>Confirm my site description</button>}
     </div>
     </section>

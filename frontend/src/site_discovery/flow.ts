@@ -26,9 +26,10 @@ export class DiscoveryFlow {
   private onConfirm: (value: Confirmed | null) => void
   private onMunicipalityChange: (value: MunicipalityContext | null) => void
   private autoProceed: boolean
-  constructor(transport: Transport, notify: (state: State) => void, onConfirm: (value: Confirmed | null) => void, autoProceed = false, onMunicipalityChange: (value: MunicipalityContext | null) => void = () => {}) {
+  constructor(transport: Transport, notify: (state: State) => void, onConfirm: (value: Confirmed | null) => void, autoProceed = false, onMunicipalityChange: (value: MunicipalityContext | null) => void = () => {}, query = '') {
     this.autoProceed = autoProceed; this.transport = transport; this.notify = notify; this.onConfirm = onConfirm
     this.onMunicipalityChange = onMunicipalityChange
+    this.state = { ...initial, query }
   }
   private publish(patch: Partial<State>) {
     const previous = this.state.municipality

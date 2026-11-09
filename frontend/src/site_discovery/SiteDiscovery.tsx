@@ -29,8 +29,8 @@ export function AddressCandidates({ addresses, selectedId, onChoose }: { address
     </>} />
   </section>
 }
-export function SiteDiscovery({ onConfirm, onMunicipalityChange, municipality: municipalityOverride, transport = liveTransport, onManual, autoProceed = false, resetKey = 0, inspectKey = 0 }: { onConfirm: (value: Confirmed | null) => void; onMunicipalityChange?: (value: MunicipalityContext | null) => void; municipality?: MunicipalityContext | null; transport?: Transport; onManual?: () => void; autoProceed?: boolean; resetKey?: number; inspectKey?: number }) {
-  const [state, setState] = useState<State>(initial)
+export function SiteDiscovery({ onConfirm, onMunicipalityChange, municipality: municipalityOverride, transport = liveTransport, onManual, autoProceed = false, resetKey = 0, inspectKey = 0, initialQuery = '', onQueryChange }: { onConfirm: (value: Confirmed | null) => void; onMunicipalityChange?: (value: MunicipalityContext | null) => void; municipality?: MunicipalityContext | null; transport?: Transport; onManual?: () => void; autoProceed?: boolean; resetKey?: number; inspectKey?: number; initialQuery?: string; onQueryChange?: (query: string) => void }) {
+  const [state, setState] = useState<State>(() => ({ ...initial, query: initialQuery }))
   const [addressOpen, setAddressOpen] = useState(true)
   const [parcelOpen, setParcelOpen] = useState(true)
   const [observationOpen, setObservationOpen] = useState(true)
@@ -38,8 +38,8 @@ export function SiteDiscovery({ onConfirm, onMunicipalityChange, municipality: m
   onConfirmRef.current = onConfirm
   const onMunicipalityRef = useRef(onMunicipalityChange)
   onMunicipalityRef.current = onMunicipalityChange
-  const [flow] = useState(() => new DiscoveryFlow(transport, setState, value => onConfirmRef.current(value), autoProceed, value => onMunicipalityRef.current?.(value)))
-  useEffect(() => { void import('./site-discovery.css'); return () => flow.dispose() }, [flow])
+  const [flow] = useState(() => new DiscoveryFlow(transport, setState, value => onConfirmRef.current(value), autoProceed, value => onMunicipalityRef.current?.(value), initialQuery))
+  useEffect(() => () => flow.dispose(), [flow])
   useEffect(() => { if (resetKey) { flow.reject(); setAddressOpen(true); setParcelOpen(true); setObservationOpen(true) } }, [resetKey, flow])
   useEffect(() => { if (inspectKey) setParcelOpen(true) }, [inspectKey])
   useEffect(() => { if (parcelOpen && state.parcels.length > 1) document.getElementById('sd-parcels')?.focus() }, [parcelOpen, state.parcels.length, inspectKey])
@@ -55,7 +55,7 @@ export function SiteDiscovery({ onConfirm, onMunicipalityChange, municipality: m
     {displayedMunicipality && <MunicipalityCoverage value={displayedMunicipality} onManual={onManual} />}
     {addressOpen && <form onSubmit={event => { event.preventDefault(); setParcelOpen(true); setObservationOpen(true); void flow.search() }}>
       <label htmlFor="sd-address">Street address in British Columbia</label>
-      <div className="sd-search"><input id="sd-address" value={query} maxLength={160} onChange={event => { setParcelOpen(true); setObservationOpen(true); flow.edit(event.target.value) }} placeholder="Street address, city" autoComplete="street-address" />
+      <div className="sd-search"><input id="sd-address" value={query} maxLength={160} onChange={event => { const value = event.target.value; setParcelOpen(true); setObservationOpen(true); flow.edit(value); onQueryChange?.(value) }} placeholder="Street address, city" autoComplete="street-address" />
         <button className="sd-search-primary" type="submit" disabled={busy || query.trim().length < 3}>Search</button></div>
     </form>}
     {busy && <p role="status">{state.stage === 'addresses' ? 'Searching addresses…' : state.stage === 'parcels' ? 'Searching municipal parcels…' : 'Fetching parcel and rooflines…'}</p>}

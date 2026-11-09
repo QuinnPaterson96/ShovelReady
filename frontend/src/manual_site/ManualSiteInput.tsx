@@ -6,6 +6,7 @@ import { parseResult } from '../occupied_lots/contract'
 
 export type ManualSiteInputProps = {
   onChange: (output: ManualSiteOutput) => void
+  active?: boolean
   footprint?: { widthM: number | null; depthM: number | null; label?: string }
   alternativeKey?: string
   initialPlacement?: PlacementDraft | null
@@ -17,8 +18,7 @@ const emptyPlacement: PlacementDraft = { x: '', y: '', width: '', depth: '', ang
 const blankBuilding = (): RectangleDraft => ({ label: '', x: '', y: '', width: '', depth: '' })
 const validFootprint = (n: number | null | undefined) => typeof n === 'number' && Number.isFinite(n) && n > 0 ? String(n) : ''
 
-export function ManualSiteInput({ onChange, footprint, alternativeKey, initialPlacement, onPlacementDraftChange }: ManualSiteInputProps) {
-  useEffect(() => { void import('./manual-site.css') }, [])
+export function ManualSiteInput({ onChange, active = true, footprint, alternativeKey, initialPlacement, onPlacementDraftChange }: ManualSiteInputProps) {
   const [facts, setFacts] = useState(emptyFacts)
   const [siteWidth, setSiteWidth] = useState('')
   const [siteDepth, setSiteDepth] = useState('')
@@ -45,9 +45,9 @@ export function ManualSiteInput({ onChange, footprint, alternativeKey, initialPl
     setPlacement(previous => initialPlacement ?? { ...(alternativeKey === undefined ? previous : emptyPlacement), width: validFootprint(footprint?.widthM), depth: validFootprint(footprint?.depthM) })
   }, [footprint?.widthM, footprint?.depthM, footprint?.label, alternativeKey])
 
-  useEffect(() => { placementCallback.current?.(placement) }, [placement])
+  useEffect(() => { if (active) placementCallback.current?.(placement) }, [active, placement])
 
-  useEffect(() => { onChangeRef.current({ facts, site, placement: site ? placed : null, assessment }) }, [facts, siteWidth, siteDepth, buildings, coverage, placement, assessment])
+  useEffect(() => { if (active) onChangeRef.current({ facts, site, placement: site ? placed : null, assessment }) }, [active, facts, siteWidth, siteDepth, buildings, coverage, placement, assessment])
 
   async function measure() {
     if (!site || !placed) return
