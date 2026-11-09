@@ -97,13 +97,13 @@ definition ID and revision. A different definition cannot gain a match. Percenta
 conversion shifts the decimal exponent without losing supplied precision.
 
 Zone permission, Sewer Service Area **or** Urban Containment Boundary, and an
-existing single-family dwelling are separate findings. One true location branch
+existing single-family dwelling and the absence of an existing garden suite are separate findings. One true location branch
 satisfies that provisional condition; two false branches conflict; false plus
 unknown stays unknown. Missing eligibility facts leave useful scalar comparisons
 visible within their stated scope. A known contradictory prerequisite or an
 unsupported intended use withholds scalar matches.
 
-Height/roof-linked setbacks, other siting, suite count, parcel/strata relationship,
+Height/roof-linked setbacks, other siting, parcel/strata relationship,
 overlays and servicing design are explicitly outside this subset. No Victoria
 setbacks, property scan or fee reference is applied to Saanich.
 

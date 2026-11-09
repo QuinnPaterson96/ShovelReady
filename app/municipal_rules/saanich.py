@@ -175,6 +175,7 @@ def evaluate(payload: dict):
     single_family = (
         None if dwelling.value in (None, "unknown") else dwelling.value == "single_detached"
     )
+    existing_suites = body.assumptions.existing_garden_suites
     prerequisites = (
         (
             "zone_permits",
@@ -199,6 +200,15 @@ def evaluate(payload: dict):
             "journey_default" if dwelling.origin == "journey_default" else "user_assumption",
             "Confirm the main building is a single-family dwelling.",
             "§5.35(b)(v)",
+        ),
+        (
+            "no_existing_suite",
+            "Existing garden suites",
+            None if existing_suites.value is None else existing_suites.value == 0,
+            "journey_default" if existing_suites.origin == "journey_default" else "user_assumption",
+            "Confirm the existing suite count. An existing garden suite needs a separate "
+            "replacement or retention scenario before exploring another new suite.",
+            "§5.35(c)",
         ),
     )
     outside_use = body.proposed_use != "garden_suite"
@@ -289,7 +299,7 @@ def evaluate(payload: dict):
                 profile().scope,
                 "Scalar matches can support preliminary investigation while zoning and location "
                 "remain open questions; they do not establish the full pathway.",
-                "Siting, roof/height branches, suite count, parcel/strata relationship, overlays, "
+                "Siting, roof/height branches, parcel/strata relationship, overlays, "
                 "servicing design and permits remain outside this comparison.",
             ),
             site_assumptions=body.assumptions.model_dump(mode="json"),
@@ -340,7 +350,7 @@ def evaluate(payload: dict):
                 input_id="sewer_service_area"
                 if key == "location"
                 else None
-                if key == "single_family"
+                if key in ("single_family", "no_existing_suite")
                 else key,
                 next_action=next_action,
                 source=check.rule.source,
@@ -351,7 +361,7 @@ def evaluate(payload: dict):
             id="saanich-unmapped-checks",
             label="Siting and other requirements",
             status="unsupported",
-            detail="Height, roof-dependent setbacks, suite count, parcel/strata relationship and "
+            detail="Height, roof-dependent setbacks, parcel/strata relationship and "
             "other applicable provisions are outside the implemented subset.",
             next_action="Ask the provider or District which siting and servicing questions "
             "need investigation for this proposal.",

@@ -155,6 +155,17 @@ def test_definition_mismatch_bad_geometry_and_unavailable_pathway_never_gain_mat
         [[0, 0], [20, 20], [0, 20], [20, 0], [0, 0]]
     ]
     assert checks(evaluate(body))["lot_area"]["status"] == "needs_information"
+    # The captured pathway permits at most one garden suite. A known existing
+    # suite cannot disappear behind otherwise favourable scalar comparisons.
+    body = request()
+    body["payload"]["assumptions"]["existing_garden_suites"] = {
+        "value": 1,
+        "origin": "user",
+        "note": None,
+    }
+    rows = checks(evaluate(body))
+    assert rows["no_existing_suite"]["status"] == "apparent_conflict_under_assumptions"
+    assert rows["lot_area"]["status"] == "unsupported"
     body = request()
     body["payload"]["proposed_use"] = "other"
     assert all(row["status"] == "unsupported" for row in checks(evaluate(body)).values())
