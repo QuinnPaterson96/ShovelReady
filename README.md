@@ -1,5 +1,9 @@
 # ShovelReady
 
+The homeowner journey now uses [stable continuation controls, guided demo progress
+and task-directed entry focus](docs/navigation-reliability.md). The integration
+record distinguishes browser checks from physical-device and homeowner validation.
+
 The homeowner map prefills editable [street](docs/municipal-street-prefill.md) and [waterfront](docs/municipal-waterfront-prefill.md) edges in Victoria and Saanich. Both municipalities support mapped placement. Victoria has a separate preliminary zoning comparison.
 
 The homeowner demo now [suggests an editable starting position, shows setback margins and selects local rules from the address](docs/integration-placement-guidance.md). For places outside current coverage, visitors can request their municipality or continue with a manual sketch.

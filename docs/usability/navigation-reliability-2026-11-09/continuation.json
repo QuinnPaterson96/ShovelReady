@@ -1,0 +1,38 @@
+[
+  {
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "reducedMotion": "no-preference",
+    "boundaryActionY": 760.21875,
+    "boundaryMapY": 1301.4375
+  },
+  {
+    "viewport": {
+      "width": 390,
+      "height": 844
+    },
+    "reducedMotion": "reduce",
+    "boundaryActionY": 760.21875,
+    "boundaryMapY": 1301.4375
+  },
+  {
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "reducedMotion": "no-preference",
+    "boundaryActionY": 833,
+    "boundaryMapY": 229.515625
+  },
+  {
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "reducedMotion": "reduce",
+    "boundaryActionY": 833,
+    "boundaryMapY": 229.515625
+  }
+]
