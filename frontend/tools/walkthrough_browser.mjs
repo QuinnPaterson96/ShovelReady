@@ -68,6 +68,17 @@ const wait = async predicate => {
   for (let i = 0; i < 150; i++) { if (await predicate()) return; await page.waitForTimeout(100) }
   throw new Error('Current walkthrough result did not become ready')
 }
+const assertEnquiryTakeover = async () => {
+  await page.waitForFunction(() => document.activeElement?.id === 'builder-use')
+  // Wait past smooth-scroll and rail relayout, which used to strand the focused field.
+  await page.waitForTimeout(750)
+  const field = await page.locator('#builder-use').evaluate(input => {
+    const bounds = input.getBoundingClientRect()
+    return { focused: document.activeElement === input, top: bounds.top, bottom: bounds.bottom, height: innerHeight }
+  })
+  assert.ok(field.focused && field.top >= 0 && field.bottom <= field.height, `Takeover leaves the focused edit visible: ${JSON.stringify(field)}`)
+  results.push({ enquiryTakeover: field })
+}
 const settled = async () => { await page.waitForTimeout(150); await wait(async () => { const e = await evidence(); return e.evaluation_state === 'current' && e.measurement }); await page.waitForTimeout(150); await wait(async () => { const e = await evidence(); return e.evaluation_state === 'current' && e.measurement }) }
 const next = async () => { await wait(() => button('Next').isEnabled()); await click('Next') }
 try {
@@ -170,7 +181,7 @@ try {
   assert.equal(await player.count(), 0)
   await rail.waitFor({ state: 'visible' })
   assert.equal(await rail.locator('[aria-current="step"]').getAttribute('href'), '#builder-next')
-  await page.waitForFunction(() => document.activeElement?.id === 'builder-use')
+  await assertEnquiryTakeover()
   await page.locator('#builder-relationship').fill('I am helping the owner')
   await wait(async () => (await evidence()).enquiry_inputs.relationship === 'I am helping the owner')
   e = await evidence()
@@ -246,7 +257,7 @@ try {
   assert.equal(await page.getByText('Highlighted fields still need an answer.').count(), 0)
   await page.screenshot({ path: `${output}/mobile-enquiry.png` })
   await page.keyboard.press('Enter')
-  await page.waitForFunction(() => document.activeElement?.id === 'builder-use')
+  await assertEnquiryTakeover()
   assert.equal(await rail.locator('[aria-current="step"]').getAttribute('href'), '#builder-next')
   results.push({ narrowHeadings: true, takeoverProgress: true })
   // With normal motion, waiting longer than the old dwell cannot advance a step.
@@ -260,6 +271,7 @@ try {
   assert.match(await page.locator('#builder-enquiry-text').inputValue(), /Demo-supplied/)
   results.push({ explicitNavigation: true, normalMotionHoldMs: 7500 })
   await click('Let me try')
+  await assertEnquiryTakeover()
   verifyingExport = true
   const download = page.waitForEvent('download')
   await click('Save enquiry PDF')

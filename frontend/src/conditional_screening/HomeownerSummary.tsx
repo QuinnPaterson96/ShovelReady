@@ -53,9 +53,9 @@ export function HomeownerSummary({ summary, updating = false, useQualification, 
       </div>
     </li>
   }
-  return <section className="homeowner-summary" id="builder-quick-checks" tabIndex={-1} aria-label="Placement summary" aria-busy={updating}>
+  return <section className="homeowner-summary" id="builder-quick-checks" aria-label="Placement summary" aria-busy={updating}>
     {updating && <p className="homeowner-summary__updating" role="status"><strong>Updating checks</strong> · showing the previous result for this property and model. It cannot be saved as the current assessment.</p>}
-    <h3>{summary.conclusion}</h3><p>{summary.next}</p>
+    <h3 id="builder-quick-checks-title" tabIndex={-1}>{summary.conclusion}</h3><p>{summary.next}</p>
     {useQualification && <p className="homeowner-summary__scope">{useQualification}</p>}
     {priority.length > 0 && <p><strong>Placement concerns:</strong> {priority.map(check => check.label).join('; ')}.</p>}
     {questions.length > 0 && <p><strong>Priority questions:</strong> {questions.slice(0, 3).map(check => check.label).join('; ')}{questions.length > 3 ? `; ${questions.length - 3} more in the checks below` : ''}.</p>}

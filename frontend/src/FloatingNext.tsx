@@ -14,16 +14,17 @@ export function FloatingNext({ active, children, className = '' }: { active: boo
     const section = footer.parentElement
 
     // A browser may consider a tab target visible even when the sticky footer covers it.
+    // Programmatically focused headings and findings have their own scroll destinations.
     let frame = 0
     const revealFocus = (event: FocusEvent) => {
       const target = event.target
-      if (!(target instanceof Element) || footer.contains(target)) return
+      if (!(target instanceof Element) || footer.contains(target) || !target.matches('a[href], button, input, select, textarea, summary')) return
       cancelAnimationFrame(frame)
       frame = requestAnimationFrame(() => {
         if (document.activeElement !== target) return
         const field = target.getBoundingClientRect()
         const action = footer.getBoundingClientRect()
-        if (field.bottom > action.top && field.top < action.bottom &&
+        if (field.height <= action.top && field.bottom > action.top && field.top < action.bottom &&
             field.right > action.left && field.left < action.right) {
           target.scrollIntoView({ block: 'center', behavior: 'instant' })
         }
