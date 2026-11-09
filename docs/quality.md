@@ -464,9 +464,13 @@ property-entry behavior and the combined scroll-interference correction. The
 real-browser continuation check samples button bounds and document height with
 normal and reduced motion, hit-tests before scrolling to the action, and checks
 keyboard visibility. Existing integration fixtures cover the same shared journey;
-they do not substitute for layout verification. The four-model financial run
-spanned a rebuild and is labelled accordingly. Exact merged-revision Sol checks
-and fresh independent visual review are required follow-ups, with results in the
-PR/handoff. Physical-device keyboards, actual screen-reader speech and homeowner
+they do not substitute for layout verification. Exact merged-revision Sol checks
+on `8140ac6` superseded the earlier mixed-build financial run: all 16 model visits
+passed on a stable build. Fresh independent review found additional destination
+focus and heading-shift defects; the navigation handoff records their reproduction
+and follow-up corrections. The strengthened browser checks cover held responses,
+settled takeover, visible outcome headings, phone map hit testing and explicit
+estimate return focus. Final combined and exact-merge results belong in the PR
+handoff. Physical-device keyboards, actual screen-reader speech and homeowner
 comprehension remain separate engineering/research follow-ups. No source review,
 accepted-data publication, database change or provider contact is implied.
