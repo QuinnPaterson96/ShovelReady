@@ -168,8 +168,15 @@ try {
         const heading = section.querySelector('h3')
         const counts = section.querySelector('[aria-label="Named check counts"]')
         const footer = document.querySelector('#builder-checks-disclosure .floating-next')
+        const labelsFit = [...counts.querySelectorAll('button')].every(button => {
+          const bounds = button.getBoundingClientRect()
+          const range = document.createRange()
+          range.selectNodeContents(button.querySelector('strong'))
+          const text = range.getBoundingClientRect()
+          return text.left >= bounds.left && text.right <= bounds.right
+        })
         return {
-          focus: document.activeElement === heading,
+          labelsFit, focus: document.activeElement === heading,
           titleY: heading.getBoundingClientRect().top, countsY: counts.getBoundingClientRect().top,
           countsBottom: counts.getBoundingClientRect().bottom,
           footerY: Math.min(innerHeight, footer.getBoundingClientRect().top),
@@ -177,6 +184,7 @@ try {
       })
       assert.ok(checksArrival.focus && checksArrival.titleY >= 0 && checksArrival.countsBottom <= checksArrival.footerY,
         `Quick checks opens at the visible headline and counts: ${JSON.stringify(checksArrival)}`)
+      assert.ok(checksArrival.labelsFit, 'Check count labels fit inside their own buttons')
       await active.press('Enter')
 
       await reach('Continue to enquiry', 'Project economics')
