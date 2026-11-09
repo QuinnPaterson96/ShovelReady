@@ -68,7 +68,9 @@ export default function App() {
         // History and step links reopen the mounted journey; only a new explicit
         // entry (or cold URL load) initializes a preset.
         if (!builderVisited.current) setEntryRequest(entry)
-        setBuilderLanding(assessmentLanding(window.location.hash, builderVisited.current && entry.example ? null : entry))
+        // History within the open assessment can return focus to a specific
+        // control. Only reclassify the landing when reopening the workspace.
+        if (page !== 'builder') setBuilderLanding(assessmentLanding(window.location.hash, builderVisited.current && entry.example ? null : entry))
         builderVisited.current = true; setBuilderOpened(true); setPage('builder')
       } else if (['#inputs', '#summary', '#evidence', '#pilot', '#occupied'].includes(window.location.hash)) {
         const destination = window.location.hash.slice(1) as Page
@@ -80,7 +82,7 @@ export default function App() {
     window.addEventListener('hashchange', followRoute)
     window.addEventListener('popstate', followRoute)
     return () => { window.removeEventListener('hashchange', followRoute); window.removeEventListener('popstate', followRoute) }
-  }, [])
+  }, [page])
   const openOccupied = () => { setOccupiedOpened(true); navigate('occupied', '#occupied') }
   const [draft, dispatch] = useReducer(draftReducer, initialDraft)
   const content = useRef<HTMLDivElement>(null)
