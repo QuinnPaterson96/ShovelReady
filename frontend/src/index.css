@@ -149,11 +149,38 @@ details > :not(summary) { margin-left: .35rem; margin-right: .35rem; }
 .sr-workspace-rail .builder-review-readiness p { margin: .5rem 0; text-transform: none; letter-spacing: normal; }
 .builder-review-readiness a { min-height: 44px; display: flex; align-items: center; font-weight: 650; }
 
-.floating-next { min-height: 7rem; }
-.floating-next__action { padding: .65rem .8rem; border: 1px solid var(--border-strong); border-radius: var(--radius-card); background: var(--surface); }
-.floating-next--docked > .floating-next__action { position: fixed; z-index: 50; bottom: max(.5rem, env(safe-area-inset-bottom)); left: var(--next-left); width: var(--next-width); box-sizing: border-box; box-shadow: 0 3px 16px color-mix(in srgb, var(--ink) 20%, transparent); }
+/* The footer keeps its own layout space at the end of each step. */
+html:has(.floating-next--active:not([hidden], [hidden] *)) {
+  scroll-padding-block-end: calc(7rem + env(safe-area-inset-bottom));
+}
+.floating-next {
+  min-width: 0;
+  margin-block: .75rem;
+  padding: .5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  background: var(--surface);
+}
+.floating-next--active {
+  position: sticky;
+  z-index: 50;
+  inset-block-end: max(.5rem, env(safe-area-inset-bottom));
+}
 .floating-next .homeowner-summary__continue { margin: 0; padding: 0; border: 0; }
-.floating-next .builder-continue { min-height: 52px; flex: 1; }
-.floating-next .step-action { display: flex; }
-.floating-next .builder-enquiry-confirm { margin: 0; padding: 0; border: 0; background: transparent; }
-.floating-next .builder-enquiry-confirm h3 { font-size: 1rem; margin: 0; }
+.builder-demo .floating-next .builder-continue {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+  gap: .5rem;
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  margin: 0;
+  padding: .65rem .8rem;
+  text-align: start;
+  font-size: 1rem;
+}
+.floating-next .step-action { display: flex; flex-wrap: nowrap; align-items: center; }
+.floating-next .step-info { flex: none; }
+.floating-next .placement-action-status { font-size: .85rem; margin: 0 0 .35rem; }

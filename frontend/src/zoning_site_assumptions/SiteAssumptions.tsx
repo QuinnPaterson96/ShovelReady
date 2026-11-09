@@ -152,10 +152,18 @@ function Editor({ initialValue, detailsTargetId, detailsIntro, detailsSummary, d
       {detailsInputs}
     </details>
       {detailsIntro}
-      {onFactsNext && <FloatingNext active={detailsStep === true} sectionId="builder-property-details"><div className="homeowner-summary__continue"><p>Review the property facts you know to continue. Unanswered questions can stay unknown. Next, choose the intended purpose.</p><div className="step-action"><button className="builder-continue" type="button" disabled={factsNextDisabled} onClick={() => { if (factsSection.current) factsSection.current.open = false; onFactsNext() }}>Next: Intended purpose<span aria-hidden="true"> →</span></button><StepInfo label="Intended purpose">Marks Property details reviewed and opens Intended purpose. Your answers remain editable and unknown answers stay unknown.</StepInfo></div>{factsNextDisabled && <p>Save your pending planning buffers before continuing.</p>}</div></FloatingNext>}
-
     </fieldset>
     </details>
+    {onFactsNext && <>
+      <p className="zsa__hint">Review the property facts you know to continue. Unanswered questions can stay unknown.</p>
+      <FloatingNext active={detailsStep === true}>
+        {factsNextDisabled && <p className="placement-action-status">Save your pending planning buffers before continuing.</p>}
+        <div className="step-action">
+          <button className="builder-continue" type="button" disabled={factsNextDisabled} onClick={() => { if (factsSection.current) factsSection.current.open = false; onFactsNext() }}>Next: Intended purpose<span aria-hidden="true"> →</span></button>
+          <StepInfo label="Intended purpose">Marks Property details reviewed and opens Intended purpose. Your answers remain editable and unknown answers stay unknown.</StepInfo>
+        </div>
+      </FloatingNext>
+    </>}
     </div></EvidenceAtFooter>
     {sharedMode === 'rear' && canAccept && <section className="zsa__defaults" aria-label="Suggested boundary plan"><h3>Use these suggested boundaries and buffers?</h3><p>Based on the current street/front/rear marks. Existing roles, measured offsets and saved buffers are kept.</p><ul>{value.edges.map(edge => <li key={edge.id}>{edgeLabel(edge)} · {roleNames[edge.role.value && edge.role.value !== 'unknown' ? edge.role.value : inference.roles[edge.id]]} · {value.planning_buffers_m?.[edge.id] ?? 0} m buffer{value.measurements.boundary[edge.id] ? ' · measured override kept' : ''}</li>)}</ul><div className="zsa__answer-buttons"><button type="button" disabled={buffersPending} onClick={acceptSuggestions}>Yes, use suggestions</button><button type="button" onClick={() => setBoundaryChoice('adjust')}>No, adjust them</button></div>{boundaryChoice === 'accepted' && <p role="status">Suggested · accepted for planning. Saved for this property; you can continue or adjust them later.</p>}{!streetAdjacency?.all_marked && <p>Proposal assumes no additional streets beyond your marks. Accepting these defaults saves planning assumptions; street completeness stays unconfirmed and dependent checks stay open.</p>}<p>Planning assumptions, not verified legal boundaries.</p></section>}
     <fieldset className="zsa__boundaries" hidden={sharedMode !== undefined && (sharedMode !== 'rear' || !showBoundaryEditor)}><legend>Parcel edge roles</legend>

@@ -1,3 +1,4 @@
+import { FloatingNext } from '../FloatingNext'
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import type { CatalogueModel } from '../model_catalogue/model'
 import { readableDate } from '../ReadableProvenance'
@@ -52,7 +53,7 @@ function RentalInterestQuestion({ value, onChange }: { value: RentalInterest; on
   return <div className="economics-interest" role="region" aria-label="Rental interest">
     {asking ? <><p id="economics-interest-question">Considering renting this suite?</p><div role="group" aria-labelledby="economics-interest-question">
       <button type="button" ref={yes} onClick={() => answer('rental')}>Include rental income</button>
-      <button type="button" onClick={() => answer('skipped')}>Skip for now</button>
+      <button type="button" onClick={() => answer('skipped')}>Skip rental estimate</button>
     </div></> : <><p>{value === 'rental' ? 'Rental scenario included' : 'Rental income skipped'}</p>
       <button type="button" ref={edit} onClick={() => { restoreFocus.current = true; setEditing(true) }}>Change rental preference</button></>}
   </div>
@@ -90,7 +91,7 @@ export function ProjectEconomicsSummary({ estimate, rental, rentalDraft, interes
     </div>
     <p className="metadata economics-source-line">{costSource(estimate)}{rental?.benchmark && rentalDraft.monthlyRent === null ? ` · Statistics Canada ${periodLabel}` : ''}.</p>
     <RentalInterestQuestion value={interest} onChange={onInterest} />
-    {onContinue && <button className="builder-continue economics-continue" type="button" onClick={onContinue}>Continue to enquiry <span aria-hidden="true">→</span></button>}
+    {onContinue && <FloatingNext active><button className="builder-continue" type="button" onClick={onContinue}>Continue to enquiry <span aria-hidden="true">→</span></button></FloatingNext>}
   </section>
 }
 

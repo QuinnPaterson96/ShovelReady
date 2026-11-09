@@ -179,7 +179,7 @@ try {
         const back = page.getByRole('link', { name: 'Back to project', exact: true }).first()
         await interests.scrollIntoViewIfNeeded()
         assert.equal(await page.locator('#builder-alternative-comparison').evaluate(element => element.open), false)
-        await interests.getByRole('button', { name: selected ? 'Include rental income' : 'Skip for now', exact: true }).click()
+        await interests.getByRole('button', { name: selected ? 'Include rental income' : 'Skip rental estimate', exact: true }).click()
         await inspect('rental-choice')
         assert.match(await economics.innerText(), /Project cost subtotal.*250,000/s)
         assert.match(await economics.innerText(), /187,000.*8,000.*55,000/s)

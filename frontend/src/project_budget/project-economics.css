@@ -96,7 +96,6 @@
 }
 .economics-interest p { margin: 0; font-size: .925rem; }
 .economics-interest button { margin: 0 .35rem 0 0; }
-.economics-continue { margin: 1rem 0 0; }
 .sr-workspace:has(.project-economics-detail) { grid-template-columns: minmax(0, 1fr); }
 .sr-workspace:has(.project-economics-detail) .builder-journey-rail { display: none; }
 .project-economics-detail {
