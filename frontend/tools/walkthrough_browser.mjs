@@ -88,6 +88,12 @@ try {
   assert.match(await caption().textContent(), /419 Cecelia/)
   await assertHeadingBelowPlayer('#builder-property-title')
   const propertyAction = await actionGeometry()
+  // Wait for the scheduled destination scroll before measuring stationarity.
+  await page.waitForFunction(() => {
+    const heading = document.getElementById('builder-property-title')?.getBoundingClientRect()
+    const player = document.querySelector('[data-playback-controls]')?.getBoundingClientRect()
+    return heading && player && heading.top >= player.bottom && heading.top - player.bottom <= 32
+  })
   const pendingPropertyHeading = await page.locator('#builder-property-title').boundingBox()
   hold = false
   release()
