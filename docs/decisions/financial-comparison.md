@@ -1,5 +1,16 @@
 # Financial comparison and retained alternatives
 
+**November 8 addition — Start rental scenarios with sourced defaults.** Quinn
+approved regional apartment asking-rent benchmarks as editable preliminary
+scenarios for each model, using metro and bedroom cohort rather than inventing a
+rent-per-square-foot adjustment. Show annual rent after vacancy, income after
+running costs and cash flow after debt as distinct measures. Keep illustrative
+allowances, owner overrides and source observations distinguishable, preserve
+unknown financing and missing data, and retain the source and assumptions in
+supporting exports. This authorizes the bounded scenario calculator deferred
+below; it does not establish achievable suite rent, installed-cost returns or a
+best-model ranking. See [implementation and remaining gaps](../rental-scenarios.md).
+
 Accepted by Quinn on November 4, 2026, following the October 23 rental-model
 walkthrough and the ticket triage in this chat. These decisions authorize the
 bounded implementation below; they do not claim that it is already delivered.

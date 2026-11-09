@@ -7,6 +7,8 @@ import type { OccupiedMeasurement } from '../occupied_lots/OccupiedLots'
 import { statusLabels, summaryFindings, type Summary } from '../conditional_screening/HomeownerSummary'
 import { categories, type BudgetDraft, type Context } from '../project_budget/contract'
 import { calculateBudget, displayMoney, scopeLabels } from '../project_budget/pipeline'
+import { RentalComparison, RentalScenario, RentalSummary } from '../rental_scenario/RentalScenario'
+import type { RentalDraft } from '../rental_scenario/model'
 
 /** A view of one coherent retained model scenario, not a new evaluation contract. */
 export type ComparisonAlternative = {
@@ -21,6 +23,7 @@ export type ComparisonAlternative = {
   placement: 'not_placed' | 'needs_recheck' | 'current'
   summary: Summary | null
   budget: { draft: BudgetDraft; context: Context }
+  rental?: RentalDraft
 }
 
 export type FinancialGoal = 'cost' | 'rental'
@@ -137,9 +140,10 @@ function Costs({ alternative }: { alternative: ComparisonAlternative }) {
   </>
 }
 
-export function AlternativeComparison({ alternatives, activeModelId, onSelectModel, financialGoals, onFinancialGoalsChange, onPrepareQuote }: {
+export function AlternativeComparison({ alternatives, activeModelId, onSelectModel, financialGoals, onFinancialGoalsChange, onPrepareQuote, onRentalChange }: {
   alternatives: ComparisonAlternative[]; activeModelId: string; onSelectModel: (modelId: string) => void
   financialGoals: FinancialGoal[] | null; onFinancialGoalsChange: (goals: FinancialGoal[]) => void; onPrepareQuote: (modelId: string) => void
+  onRentalChange?: (modelId: string, draft: RentalDraft) => void
 }) {
   useEffect(() => { void import('./alternative-comparison.css') }, [])
   const active = alternatives.find(item => item.model.model_id === activeModelId)
@@ -155,12 +159,17 @@ export function AlternativeComparison({ alternatives, activeModelId, onSelectMod
     <div className="alternative-comparison__body">
       {active && <section className="alternative-comparison__lead" aria-label="Current model financial next step">
         <h3>{rental ? `What could I earn from renting ${active.model.name}?` : `What would it cost to build ${active.model.name}?`}</h3>
+        {rental && active.rental && <RentalSummary draft={active.rental} />}
         <CostBasis alternative={active} />
         <CostCoverage alternative={active} />
         <div className="alternative-comparison__quote"><button type="button" onClick={() => onPrepareQuote(active.model.model_id)}>Prepare quote request for {active.model.name}</button><span>Optional · opens your unsent enquiry.</span></div>
-        {rental && <p><strong>For rental income:</strong> estimate local rent, when the unit could be occupied and your running costs. Compare what you could keep against the cost to install the unit.</p>}
+        {rental && <p><strong>For rental income:</strong> refine local rent, occupancy and running costs in the assumptions below. Installed costs still need a matching quote.</p>}
         <CompactFindings alternative={active} />
       </section>}
+      {rental && onRentalChange && <>
+        <RentalComparison alternatives={sameSite} onSelect={id => { onSelectModel(id); requestAnimationFrame(() => document.getElementById(`rental-${id}-rent`)?.focus()) }} />
+        {active?.rental && <div id="rental-assumptions"><RentalScenario model={active.model} draft={active.rental} onChange={draft => onRentalChange(active.model.model_id, draft)} /></div>}
+      </>}
       <section className="alternative-comparison__overview" aria-label="Explored model overview">
         <h3>Explored models at a glance</h3>
         <p>{active?.propertyLabel || 'Select a property to compare retained alternatives.'} · preliminary costs and suitability. Prices keep their own scope; no return ranking.</p>
@@ -179,7 +188,7 @@ export function AlternativeComparison({ alternatives, activeModelId, onSelectMod
       </section>
       {sameSite.length > 1 && <p>{differentPositions ? 'These models use different retained positions or rotations. Their findings are not an equivalent fit test.' : 'Each model uses its own dimensions and scenario. A shared position alone does not make the suitability checks equivalent.'} Compare the use, configuration and foundation assumptions alongside the findings.</p>}
       <p className="metadata">Your model work and financial interests stay in this open assessment; reloading starts again. Starting prices, partial subtotals and owner preferences remain separate from whole-project estimates. Missing costs are not zero.</p>
-      {rental && <details className="alternative-comparison__next"><summary>Inputs for a rental-return comparison later</summary><p>First choose the question, such as annual cash flow or return on total project cost, then gather consistent assumptions for the plausible alternatives:</p>
+      {rental && <details className="alternative-comparison__next"><summary>Improve these rental scenarios</summary><p>Refine the starting assumptions with evidence for each alternative:</p>
         <ul><li><strong>Provider and local installer:</strong> a matching dated quote, currency, inclusions and site-specific delivery, foundation, connections, fees and tax scope.</li>
           <li><strong>Homeowner with local rental evidence:</strong> achievable rent, occupancy and when renting could start for the intended use.</li>
           <li><strong>Homeowner or property manager:</strong> recurring owner-paid expenses, maintenance and replacement allowances.</li>

@@ -4,7 +4,18 @@ Implemented for #333 after the [accepted financial scope decision](decisions/fin
 The recipient is the homeowner choosing which alternative to investigate next;
 the next action is to open that model or prepare its provider enquiry. A rental
 prediction, numerical return calculator, financial winner and professional
-assessment checklist are outside this increment.
+assessment checklist were outside that increment. The November 8 addition below
+now provides an explicitly provisional income and cash-flow scenario.
+
+## November 8 rental scenarios
+
+[Regional rental scenarios](rental-scenarios.md) prefill studio or one-bedroom
+apartment asking rents for the selected metro, alongside editable vacancy,
+running-cost and financing assumptions. Each model retains its own edits and
+appears in an annual income comparison. The supporting homeowner report and
+technical record preserve the source and calculation. The quote enquiry remains
+focused on the provider. Installed-cost return and best-model ranking remain
+outside scope; broad regional proxies are not forecasts of small-suite rents.
 
 ## November 6 integration
 
