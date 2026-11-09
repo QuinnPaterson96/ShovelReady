@@ -52,6 +52,9 @@ For each model, edits survive model switching and changes to financial interests
 within the open assessment. Choosing a different benchmark market/layout explicitly
 restores the rent from that cohort; the restore button removes a rent override.
 Starting another property resets the drafts. This does not add reload persistence.
+Correcting the municipality refreshes an automatically suggested market while
+preserving authored rent and expense overrides. An explicitly chosen market stays
+with the owner's scenario.
 
 ## Calculations and evidence
 

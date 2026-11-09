@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { journeyCatalogue } from '../model_catalogue/demo'
-import { benchmarks, calculateRental, defaultRental, rentalEvidence, withRentalReport } from './model'
+import { benchmarks, calculateRental, defaultRental, rentalEvidence, rentalForProperty, withRentalReport } from './model'
 import { enquiryPlainText, type EnquiryDocument } from '../builder_demo/enquiry'
 
 // Independent arithmetic protects vacancy, expense and debt bases (including
@@ -50,6 +50,11 @@ test('regional and layout selection uses distinct sourced cohorts without invent
     assert.equal(calculateRental({ ...unsupported, monthlyRent: '1500' }).rent, 1500, 'manual scenario remains useful outside coverage')
   }
   const draft = defaultRental(journeyCatalogue.models[0], 'Victoria')
+  const corrected = rentalForProperty({ ...draft, expenses: '30' }, journeyCatalogue.models[0], 'Port Renfrew')
+  assert.equal(calculateRental(corrected).rent, null, 'a locality correction cannot keep a stale automatic benchmark')
+  assert.equal(corrected.expenses, '30', 'correcting the market preserves other authored assumptions')
+  assert.equal(rentalForProperty({ ...draft, monthlyRent: '1700' }, journeyCatalogue.models[0], 'Port Renfrew').monthlyRent, '1700')
+  assert.equal(rentalForProperty({ ...draft, marketOrigin: 'user' }, journeyCatalogue.models[0], 'Port Renfrew').marketId, draft.marketId)
   const missing = benchmarks.records.find(r => r.monthly_cad === null)
   if (missing) assert.equal(calculateRental({ ...draft, marketId: missing.market_id, bedrooms: missing.bedrooms as 0 | 1 | 2 | 3 }).rent, null)
 })

@@ -1,4 +1,4 @@
-import { defaultRental, rentalEvidence, withRentalReport, type RentalDraft } from '../rental_scenario/model'
+import { rentalForProperty, rentalEvidence, withRentalReport, type RentalDraft } from '../rental_scenario/model'
 import type { AssessmentEntry } from '../navigation/assessmentEntry'
 import { buildingClearanceMove } from './buildingMove'
 import { useWalkthrough, walkthroughPhase } from './walkthrough'
@@ -650,7 +650,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const propertyLabel = mode === 'example' ? '419 Cecelia Road · saved example' : live?.address.label ?? manual?.facts.address ?? 'User-supplied property'
   const currentAlternative: ComparisonAlternative = {
     model, propertyKey: budgetContext.property_key, propertyLabel, intendedUse: use,
-    rental: rentalDrafts[model.model_id] ?? defaultRental(model, currentMunicipality?.name),
+    rental: rentalForProperty(rentalDrafts[model.model_id], model, currentMunicipality?.name),
     configuration: projectContext.configuration, affordabilityPreference: budget, foundationAllowanceM,
     measurement: measurementResult, placement: !placementDraft?.position.x.trim() || !placementDraft.position.y.trim() ? 'not_placed' : checksPending || !measurementResult ? 'needs_recheck' : 'current',
     summary: checksPending ? null : computedSummary,
@@ -660,7 +660,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     ...Object.entries(alternatives).filter(([id, saved]) => id !== modelId && saved.comparison.propertyKey === budgetContext.property_key).map(([, saved]) => {
       const sharedChanged = saved.sharedKey !== sharedAlternativeKey
       const context = { ...saved.comparison.budget.context, scenario_key: costScenarioKey(saved.draft.placement, saved.draft.foundationAllowanceM, saved.draft.estimateBuffers, saved.draft.installedHeight) }
-      return { ...saved.comparison, rental: rentalDrafts[saved.comparison.model.model_id] ?? defaultRental(saved.comparison.model, currentMunicipality?.name), intendedUse: use, placement: sharedChanged && saved.comparison.placement !== 'not_placed' ? 'needs_recheck' as const : saved.comparison.placement,
+      return { ...saved.comparison, rental: rentalForProperty(rentalDrafts[saved.comparison.model.model_id], saved.comparison.model, currentMunicipality?.name), intendedUse: use, placement: sharedChanged && saved.comparison.placement !== 'not_placed' ? 'needs_recheck' as const : saved.comparison.placement,
         summary: sharedChanged ? null : saved.comparison.summary, budget: { context, draft: reconcile(saved.draft.budgetDraft, context) } }
     }),
   ]

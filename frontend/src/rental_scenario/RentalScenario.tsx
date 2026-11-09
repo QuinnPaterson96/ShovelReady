@@ -27,7 +27,7 @@ export function RentalScenario({ draft, model, onChange }: { draft: RentalDraft;
     <p>A full year of long-term renting, assuming a self-contained dwelling. {area?.unit === 'm2' ? `Published interior area: ${Number(area.value).toFixed(1)} m². ` : 'Interior rentable area is not established. '}
       Apartment averages are a starting point; no adjustment for this suite’s size, furnishings, parking or utilities is included.</p>
     <div className="rental-fields">
-      <div className="rental-field"><label htmlFor={`${id}-market`}>Rental market</label><select id={`${id}-market`} value={draft.marketId} onChange={e => update({ marketId: e.target.value, monthlyRent: null })}>
+      <div className="rental-field"><label htmlFor={`${id}-market`}>Rental market</label><select id={`${id}-market`} value={draft.marketId} onChange={e => update({ marketId: e.target.value, marketOrigin: 'user', monthlyRent: null })}>
         <option value="">Choose a market, or enter your own rent</option>{markets.map(m => <option key={m.id} value={m.id}>{m.label} metro area</option>)}
       </select><small>Suggested from the municipality when coverage matches. Changing market restores its benchmark.</small></div>
       <div className="rental-field"><label htmlFor={`${id}-bedrooms`}>Rental layout</label><select id={`${id}-bedrooms`} value={draft.bedrooms} onChange={e => update({ bedrooms: Number(e.target.value) as Bedrooms, layoutOrigin: 'user', monthlyRent: null })}>

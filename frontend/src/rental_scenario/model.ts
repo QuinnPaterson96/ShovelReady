@@ -7,6 +7,7 @@ export type Bedrooms = 0 | 1 | 2 | 3
 export type RentalDraft = {
   schema_version: 'rental-scenario.v1'
   marketId: string
+  marketOrigin: 'municipality' | 'user'
   bedrooms: Bedrooms
   layoutOrigin: 'catalogue_description' | 'planning_assumption' | 'user'
   monthlyRent: string | null // null follows the benchmark; empty is deliberately unknown
@@ -35,10 +36,16 @@ export function defaultRental(model: CatalogueModel, municipality?: string | nul
   // Retained catalogue descriptions identify Model 300 and Quadra as one-bedroom,
   // Model 240 and Studio Pod as studios. This selects an apartment proxy, not a legal use.
   const known = ['aux-300', 'aux-240', 'hewing-quadra4', 'wcch-ch-studio'].includes(model.model_id)
-  return { schema_version: 'rental-scenario.v1', marketId: defaultMarket(municipality),
+  return { schema_version: 'rental-scenario.v1', marketId: defaultMarket(municipality), marketOrigin: 'municipality',
     bedrooms: ['aux-300', 'hewing-quadra4'].includes(model.model_id) ? 1 : 0,
     layoutOrigin: known ? 'catalogue_description' : 'planning_assumption', monthlyRent: null,
     vacancyPercent: '5', expenseMode: 'allowance', expenses: '25', financing: 'unknown', monthlyDebt: '' }
+}
+
+/** A locality correction refreshes a suggested market, never an owner's chosen market or rent. */
+export function rentalForProperty(draft: RentalDraft | undefined, model: CatalogueModel, municipality?: string | null): RentalDraft {
+  if (!draft) return defaultRental(model, municipality)
+  return draft.marketOrigin === 'municipality' ? { ...draft, marketId: defaultMarket(municipality) } : draft
 }
 
 function number(value: string, max = 100000000): number | null {
