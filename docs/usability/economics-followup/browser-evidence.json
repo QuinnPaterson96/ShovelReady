@@ -1,0 +1,669 @@
+{
+  "capturedAt": "2026-11-09T20:15:19.528Z",
+  "recordedBaseCommit": "86ec21167757d70f00775c1929aaebf71eea3ece",
+  "implementationCommit": "26fa953a8d3b423208433e6ad613685bff7e6adf",
+  "entryAsset": "/assets/index-DdKjHp6d.js",
+  "entrySha256": "5178420254762c4c0251e5a0054147a07f2029abda1f8a338dd6eb6eb8d77478",
+  "browser": "156.0.8078.80",
+  "scope": "local bundled example; real stateless API; no source publication, database or provider contact",
+  "runs": [
+    {
+      "label": "phone-interests",
+      "completed": true,
+      "modelIds": [
+        "aux-300",
+        "aux-240",
+        "wcch-ch-studio",
+        "hewing-quadra4"
+      ],
+      "statusTextUpdates": [
+        "Project cost subtotal $251,000 CAD. Simple payback on priced costs 14.4 years.",
+        "Project cost subtotal $242,000 CAD. Simple payback Not estimated.",
+        "Project cost subtotal $250,000 CAD. Simple payback on priced costs 14.3 years.",
+        "Expected monthly rent $2,400. Annual running costs and reserves $6,840. Annual income after running costs $20,520. Before financing and income tax. Simple payback on priced costs 12.2 years.",
+        "Expected monthly rent Not estimated. Annual running costs and reserves Not estimated. Annual income after running costs Not estimated. Before financing and income tax. Simple payback Not estimated.",
+        "Expected monthly rent $2,040. Annual running costs and reserves $5,814. Annual income after running costs $17,442. Before financing and income tax. Simple payback on priced costs 14.3 years.",
+        "Annual running costs and reserves $24,000. Annual income after running costs negative $744. Before financing and income tax. Simple payback Not estimated.",
+        "Annual running costs and reserves $5,814. Annual income after running costs $17,442. Before financing and income tax. Simple payback on priced costs 14.3 years.",
+        "Annual cash flow after debt payments negative $18,558. Before income tax.",
+        "Annual cash flow after debt payments Not estimated. Before income tax."
+      ],
+      "observations": [
+        {
+          "phase": "home",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "rental-choice",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "initial-financial-overview",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "estimate-editor",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "aux-300-rental",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "aux-300-authored",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "aux-240-rental",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "aux-240-authored",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "wcch-ch-studio-rental",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "wcch-ch-studio-authored",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "hewing-quadra4-rental",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "hewing-quadra4-authored",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "four-model-comparison",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "aux-300-restored-quote",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "aux-240-restored-quote",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "wcch-ch-studio-restored-quote",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "hewing-quadra4-restored-quote",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "download-complete",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        }
+      ],
+      "errors": [],
+      "externalRequests": []
+    },
+    {
+      "label": "phone-skip",
+      "completed": true,
+      "modelIds": [
+        "aux-300",
+        "aux-240",
+        "wcch-ch-studio",
+        "hewing-quadra4"
+      ],
+      "statusTextUpdates": null,
+      "observations": [
+        {
+          "phase": "home",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "rental-choice",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "initial-financial-overview",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "estimate-editor",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "aux-300-authored",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "aux-240-authored",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "wcch-ch-studio-authored",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "hewing-quadra4-authored",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "four-model-comparison",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "aux-300-restored-quote",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "aux-240-restored-quote",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "wcch-ch-studio-restored-quote",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "hewing-quadra4-restored-quote",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        },
+        {
+          "phase": "download-complete",
+          "innerWidth": 390,
+          "innerHeight": 844,
+          "devicePixelRatio": 1,
+          "scrollWidth": 390,
+          "clientWidth": 390,
+          "touchPoints": 1
+        }
+      ],
+      "errors": [],
+      "externalRequests": []
+    },
+    {
+      "label": "desktop-interests",
+      "completed": true,
+      "modelIds": [
+        "aux-300",
+        "aux-240",
+        "wcch-ch-studio",
+        "hewing-quadra4"
+      ],
+      "statusTextUpdates": [
+        "Project cost subtotal $251,000 CAD. Simple payback on priced costs 14.4 years.",
+        "Project cost subtotal $242,000 CAD. Simple payback Not estimated.",
+        "Project cost subtotal $250,000 CAD. Simple payback on priced costs 14.3 years.",
+        "Expected monthly rent $2,400. Annual running costs and reserves $6,840. Annual income after running costs $20,520. Before financing and income tax. Simple payback on priced costs 12.2 years.",
+        "Expected monthly rent Not estimated. Annual running costs and reserves Not estimated. Annual income after running costs Not estimated. Before financing and income tax. Simple payback Not estimated.",
+        "Expected monthly rent $2,040. Annual running costs and reserves $5,814. Annual income after running costs $17,442. Before financing and income tax. Simple payback on priced costs 14.3 years.",
+        "Annual running costs and reserves $24,000. Annual income after running costs negative $744. Before financing and income tax. Simple payback Not estimated.",
+        "Annual running costs and reserves $5,814. Annual income after running costs $17,442. Before financing and income tax. Simple payback on priced costs 14.3 years.",
+        "Annual cash flow after debt payments negative $18,558. Before income tax.",
+        "Annual cash flow after debt payments Not estimated. Before income tax."
+      ],
+      "observations": [
+        {
+          "phase": "home",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "rental-choice",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "initial-financial-overview",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "estimate-editor",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "aux-300-rental",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "aux-300-authored",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "aux-240-rental",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "aux-240-authored",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "wcch-ch-studio-rental",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "wcch-ch-studio-authored",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "hewing-quadra4-rental",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "hewing-quadra4-authored",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "four-model-comparison",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "aux-300-restored-quote",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "aux-240-restored-quote",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "wcch-ch-studio-restored-quote",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "hewing-quadra4-restored-quote",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "download-complete",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        }
+      ],
+      "errors": [],
+      "externalRequests": []
+    },
+    {
+      "label": "desktop-skip",
+      "completed": true,
+      "modelIds": [
+        "aux-300",
+        "aux-240",
+        "wcch-ch-studio",
+        "hewing-quadra4"
+      ],
+      "statusTextUpdates": null,
+      "observations": [
+        {
+          "phase": "home",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "rental-choice",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "initial-financial-overview",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "estimate-editor",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "aux-300-authored",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "aux-240-authored",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "wcch-ch-studio-authored",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "hewing-quadra4-authored",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "four-model-comparison",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "aux-300-restored-quote",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "aux-240-restored-quote",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "wcch-ch-studio-restored-quote",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "hewing-quadra4-restored-quote",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        },
+        {
+          "phase": "download-complete",
+          "innerWidth": 1440,
+          "innerHeight": 1000,
+          "devicePixelRatio": 1,
+          "scrollWidth": 1440,
+          "clientWidth": 1440,
+          "touchPoints": 0
+        }
+      ],
+      "errors": [],
+      "externalRequests": []
+    }
+  ]
+}

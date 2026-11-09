@@ -412,6 +412,13 @@ The [waterfront prefill verification](municipal-waterfront-prefill.md) distingui
 
 ## Project economics verification — November 9, 2026
 
+The [labels and accessible-updates follow-up](usability/economics-followup/README.md)
+removes repeated cost headings and adds a shared, debounced result status at both
+screen sizes. Its verification record distinguishes Chrome accessibility-tree
+properties and result-text changes from unverified platform screen-reader speech.
+The product owner volunteered for the included comprehension task; unanswered
+tasks remain pending and are not counted as homeowner validation.
+
 The [independent visual review and correction confirmation](usability/project-economics-2026-11-09/README.md)
 records desktop and phone inspection, the initial 27/40 and corrected 31/40
 heuristic assessments, the clean seven-file Impeccable scan and remaining
