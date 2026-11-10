@@ -1,5 +1,9 @@
 # MVP backlog
 
+November 9 implementation: [project timeline](../project-timeline.md) adds sourced
+municipal timing, editable overlapping stages and optional first-year rent.
+Project-specific confirmation and human-validation gaps remain in that handoff.
+
 Latest integration: [live Victoria discovery and Model 300 placement](../integration-live-parcel-discovery.md).
 Source adapters #166/#167 and connected selection #168 are implemented, with
 builder/manual entry #159/#160 mounted. #169/#165 remain open for holdout addresses,

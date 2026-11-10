@@ -1,5 +1,10 @@
 # ShovelReady
 
+The homeowner journey includes a [location-aware project timeline](docs/project-timeline.md)
+beside economics: independent Victoria/Saanich timing sources, editable overlapping
+stages and optional first-project-year collected rent. It remains useful when rental
+income is skipped or local timing coverage is absent.
+
 The homeowner journey now uses [stable continuation controls, guided demo progress
 and task-directed entry focus](docs/navigation-reliability.md). The integration
 record distinguishes browser checks from physical-device and homeowner validation.

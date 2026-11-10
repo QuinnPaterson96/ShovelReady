@@ -1,4 +1,6 @@
 import { calculateRental, defaultMarket, rentalForProperty, rentalEvidence, withRentalReport, type RentalDraft } from '../rental_scenario/model'
+import { ProjectTimeline } from '../project_timeline/ProjectTimeline'
+import { calculateTimeline, emptyTimeline, firstYearIncome, timelineContextKey, withTimelineReport, type TimelineContext, type TimelineDraft } from '../project_timeline/model'
 import { focusAssessmentField, type AssessmentEntry, type AssessmentLanding } from '../navigation/assessmentEntry'
 import { buildingClearanceMove } from './buildingMove'
 import { useWalkthrough, walkthroughProgress } from './walkthrough'
@@ -833,12 +835,30 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const activeRental = currentAlternative.rental!
   const rentalResult = useMemo(() => effectiveRentalInterest === 'rental' ? calculateRental(activeRental) : null, [effectiveRentalInterest, activeRental])
   const economicsEstimate = useMemo(() => calculateEconomics(currentBudget, budgetContext, rentalResult), [currentBudget, budgetContextKey, rentalResult])
+  const timelineContext: TimelineContext = { propertyKey: budgetContext.property_key, municipality: currentMunicipality,
+    modelId: model.model_id, modelRevision: model.source_revision, snapshotId: modelSnapshot(model), configuration: budgetContext.configuration,
+    pathwayKey: JSON.stringify([use, pathway, currentMunicipalDraft]) }
+  const timelineKey = timelineContextKey(timelineContext)
+  const [timelineState, setTimelineState] = useState<{ current: TimelineDraft; archived: TimelineDraft[] }>(() => ({ current: emptyTimeline(timelineContext, model), archived: [] }))
+  // Reconcile during render so stale assumptions never flash or enter an export. Keep
+  // prior user work as inactive evidence, even if the user later returns to that context.
+  const timelineDraft = timelineState.current.contextKey === timelineKey ? timelineState.current : emptyTimeline(timelineContext, model)
+  useEffect(() => {
+    setTimelineState(previous => previous.current.contextKey === timelineKey ? previous : {
+      current: emptyTimeline(timelineContext, model), archived: [...previous.archived, previous.current],
+    })
+  }, [timelineKey])
+  const timelineResult = calculateTimeline(timelineDraft, timelineContext, model)
+  const timeline = <ProjectTimeline result={timelineResult} rental={rentalResult} onChange={next => {
+    setTimelineState(previous => ({ current: next, archived: previous.current.contextKey === timelineKey && previous.current.pathway === next.pathway && previous.current.schedule === next.schedule ? previous.archived : [...previous.archived, previous.current] }))
+    setReadyFor(null)
+  }} />
   function updateRentalDraft(next: RentalDraft) {
     setRentalDrafts(previous => ({ ...previous, [modelId]: next }))
     setReadyFor(null)
   }
   const contextComplete = !!(use.trim() && projectContext.relationship.trim() && projectContext.nextStep.trim())
-  const enquiryDoc = contextComplete && !checksPending ? withMunicipalReport(makeEnquiryDoc(), currentMunicipal) : null
+  const enquiryDoc = contextComplete && !checksPending ? withTimelineReport(withMunicipalReport(makeEnquiryDoc(), currentMunicipal), timelineResult, null) : null
   const exportMeasurement: OccupiedMeasurement | null = checksPending ? null : measurementResult ?? (manual?.assessment && manual.site ? {
     site: { case_id: 'manual', label: manual.facts.address || 'User-entered local sketch', site: manual.site }, model,
     widthOrigin: 'user', depthOrigin: 'user', result: { ...manual.assessment, checks: manual.assessment.checks.map(check => ({ ...check, source_feature_ids: [], margin_m: null, comparison: null })) },
@@ -871,7 +891,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     enquiryDoc.sections.push({ heading: 'Placement sketch', paragraphs, emailSummary: paragraphs[0], siteDetails: true })
   }
   const baseReportDoc = hasSite && !checksPending ? screeningDocument(selection, { question, intendedUse: use, timing, budget, budgetDraft: budgetInput, access, services, ...projectContext, propertyConcern, localComparisonsAvailable, municipalResult: currentMunicipal?.findings.length ? currentMunicipal : null }, measurementResult, imported, live, manual, mode === 'example', foundationAllowanceM, currentScreening, currentAssumptions, pathway, currentScenario, effectiveSettings, propertyScan.result, model) : null
-  const rentalReport = withRentalReport(withMunicipalReport(baseReportDoc, currentMunicipal, true), effectiveRentalInterest === 'rental' ? activeRental : undefined, model)
+  const rentalReport = withTimelineReport(withRentalReport(withMunicipalReport(baseReportDoc, currentMunicipal, true), effectiveRentalInterest === 'rental' ? activeRental : undefined, model), timelineResult, rentalResult, true)
   const reportDoc = rentalReport && economicsEstimate.payback ? { ...rentalReport, sections: [...rentalReport.sections, {
     heading: 'Simple payback', paragraphs: [`${paybackText(economicsEstimate.payback)} using ${economicsEstimate.wholeProject ? 'the whole-project estimate' : 'the priced project subtotal'} divided by annual income after running costs. Before financing and income tax.`], emailSummary: '',
   }] } : rentalReport
@@ -1089,7 +1109,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
       setEmailMessage('Full email body copied.')
     } catch { setEmailMessage('Clipboard unavailable. Select and copy the email body above.') }
   }
-  const technicalEvidence = { schema_version: 'builder-evidence.v1', municipal_evaluation: currentMunicipal, municipal_input_draft: { context: municipalDraftKey, values: currentMunicipalDraft }, rental_scenario: effectiveRentalInterest === 'rental' || rentalDrafts[model.model_id] ? rentalEvidence(activeRental, model) : null, municipality: currentMunicipality, project_budget: budgetInput ? { ...budgetEvidence(currentBudget, budgetContext), payback: economicsEstimate.payback, payback_cost_basis: economicsEstimate.payback ? economicsEstimate.subtotal : null, fee_references: victoriaBudget ? [victoriaBuildingPermitReference] : [] } : null, demo_answer_provenance: Object.fromEntries(Object.entries(currentDemoAnswers ?? {}).map(([key, value]) => [key, { value, origin: 'demo_supplied' }])), evaluation_state: checksPending ? 'updating' : 'current', planning_comparison_scope: { selected_use: pathway.proposed_use, garden_suite_comparisons_applied: localComparisonsAvailable && pathway.proposed_use === 'garden_suite', raw_scenario_results: 'Exploratory candidate comparisons; withheld from homeowner findings and recipient documents when intended use is unknown or outside the garden-suite scenario.' }, enquiry_inputs: { question, intendedUse: use, timing, budget, access, services, ...projectContext }, model_catalogue: { snapshot_id: modelSnapshot(model), model }, acknowledged_conflicts_for_discussion: currentAcknowledgements, open_questions_for_discussion: currentOpenQuestions, review_readiness: reviewReadiness, foundation_scenario: { allowance_m: foundationAllowanceM, basis: 'planning_assumption', used_in_preliminary_height: currentScenario?.additional_checks?.some(check => check.id === 'height' && check.basis.startsWith('advertised height')) ?? false }, selection, live, manual, example: mode === 'example' ? exampleCase : null, measurement: measurementResult, zoning_site_assumptions: currentAssumptions, project_settings: zoningCase ? effectiveSettings : null, street_prefill: streetPrefill, waterfront_prefill: waterfrontPrefill, municipal_zoning_lookup: currentZoning, municipal_zoning_error: currentZoningError || null, property_scan: propertyScan.result, property_scan_error: propertyScan.error || null, placement_scenario_request: scenarioRequest, placement_scenario_result: currentScenario, conditional_screening: currentScreening }
+  const technicalEvidence = { schema_version: 'builder-evidence.v1', project_timeline: { result: timelineResult, first_year_income: firstYearIncome(timelineResult, rentalResult), archived_drafts: timelineState.archived }, municipal_evaluation: currentMunicipal, municipal_input_draft: { context: municipalDraftKey, values: currentMunicipalDraft }, rental_scenario: effectiveRentalInterest === 'rental' || rentalDrafts[model.model_id] ? rentalEvidence(activeRental, model) : null, municipality: currentMunicipality, project_budget: budgetInput ? { ...budgetEvidence(currentBudget, budgetContext), payback: economicsEstimate.payback, payback_cost_basis: economicsEstimate.payback ? economicsEstimate.subtotal : null, fee_references: victoriaBudget ? [victoriaBuildingPermitReference] : [] } : null, demo_answer_provenance: Object.fromEntries(Object.entries(currentDemoAnswers ?? {}).map(([key, value]) => [key, { value, origin: 'demo_supplied' }])), evaluation_state: checksPending ? 'updating' : 'current', planning_comparison_scope: { selected_use: pathway.proposed_use, garden_suite_comparisons_applied: localComparisonsAvailable && pathway.proposed_use === 'garden_suite', raw_scenario_results: 'Exploratory candidate comparisons; withheld from homeowner findings and recipient documents when intended use is unknown or outside the garden-suite scenario.' }, enquiry_inputs: { question, intendedUse: use, timing, budget, access, services, ...projectContext }, model_catalogue: { snapshot_id: modelSnapshot(model), model }, acknowledged_conflicts_for_discussion: currentAcknowledgements, open_questions_for_discussion: currentOpenQuestions, review_readiness: reviewReadiness, foundation_scenario: { allowance_m: foundationAllowanceM, basis: 'planning_assumption', used_in_preliminary_height: currentScenario?.additional_checks?.some(check => check.id === 'height' && check.basis.startsWith('advertised height')) ?? false }, selection, live, manual, example: mode === 'example' ? exampleCase : null, measurement: measurementResult, zoning_site_assumptions: currentAssumptions, project_settings: zoningCase ? effectiveSettings : null, street_prefill: streetPrefill, waterfront_prefill: waterfrontPrefill, municipal_zoning_lookup: currentZoning, municipal_zoning_error: currentZoningError || null, property_scan: propertyScan.result, property_scan_error: propertyScan.error || null, placement_scenario_request: scenarioRequest, placement_scenario_result: currentScenario, conditional_screening: currentScreening }
   const exportIdentity = JSON.stringify([geometryRevision, model.model_id, modelSnapshot(model), checksPending, enquiryDoc, reportDoc, drawingKey, technicalEvidence])
   const latestExportIdentity = useRef(exportIdentity); latestExportIdentity.current = exportIdentity
   function downloadMarkdown(report = false) {
@@ -1317,7 +1337,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
       {propertyComplete && <div className="budget-actions"><button className="builder-continue" type="button" onClick={() => openJourneyStep('budget')}>View project economics</button><button type="button" onClick={() => openJourneyStep('enquiry')}>Prepare enquiry{placementComplete ? '' : ' with placement unknown'}</button></div>}
     </section>
     {propertyComplete && <div id="builder-budget-stage">
-      <ProjectEconomicsSummary key={budgetContext.property_key} estimate={economicsEstimate} rental={rentalResult} rentalDraft={activeRental} interest={effectiveRentalInterest}
+      <ProjectEconomicsSummary key={budgetContext.property_key} timeline={timeline} estimate={economicsEstimate} rental={rentalResult} rentalDraft={activeRental} interest={effectiveRentalInterest}
         onInterest={setRentalInterest} onOpen={openEconomics} onContinue={journeyStep === 'budget' ? () => openJourneyStep('enquiry') : undefined} />
       <AlternativeComparison alternatives={currentPropertyAlternatives} activeModelId={modelId} onSelectModel={switchModel}
         showRental={effectiveRentalInterest === 'rental'} onAdjustEstimate={(id, trigger) => { switchModel(id); openEconomics(trigger, id) }}
@@ -1418,7 +1438,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     </>}
     {propertyComplete && <footer className="builder-stage"><details><summary>Sources &amp; technical evidence</summary><p>Source records, exact geometry and candidate comparisons for the current placement. Review individual checks above for the main findings.</p><div id="builder-geometry-evidence" /><div id="builder-rule-evidence" /></details></footer>}
     </div>
-    {economicsOpen && propertyComplete && <ProjectEconomicsDetail model={model} propertyLabel={propertyLabel} draft={currentBudget} context={budgetContext}
+    {economicsOpen && propertyComplete && <ProjectEconomicsDetail timeline={timeline} model={model} propertyLabel={propertyLabel} draft={currentBudget} context={budgetContext}
       estimate={economicsEstimate} rentalDraft={activeRental} rental={rentalResult} victoria={victoriaBudget} onChange={updateCostDraft} onImport={importCostDraft}
       onRental={updateRentalDraft} onIncludeRental={() => setRentalInterest('rental')} onBack={closeEconomics} />}
   </div></PlaybackLayout.Provider>
