@@ -1,5 +1,5 @@
 import { FloatingNext } from '../FloatingNext'
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import type { CatalogueModel } from '../model_catalogue/model'
 import { readableDate } from '../ReadableProvenance'
 import { RentalScenario } from '../rental_scenario/RentalScenario'
@@ -72,9 +72,9 @@ function RentFigures({ estimate, draft, rental }: { estimate: EconomicsEstimate;
   </dl>
 }
 
-export function ProjectEconomicsSummary({ estimate, rental, rentalDraft, interest, onInterest, onOpen, onContinue }: {
+export function ProjectEconomicsSummary({ estimate, rental, rentalDraft, interest, onInterest, onOpen, onContinue, timeline }: {
   estimate: EconomicsEstimate; rental: RentalResult | null; rentalDraft: RentalDraft; interest: RentalInterest
-  onInterest: (value: RentalInterest) => void; onOpen: (trigger: HTMLAnchorElement) => void; onContinue?: () => void
+  onInterest: (value: RentalInterest) => void; onOpen: (trigger: HTMLAnchorElement) => void; onContinue?: () => void; timeline?: ReactNode
 }) {
   return <section className="project-economics" aria-labelledby="builder-budget-title">
     <header className="economics-summary-header">
@@ -90,6 +90,7 @@ export function ProjectEconomicsSummary({ estimate, rental, rentalDraft, interes
       {rental && <RentFigures estimate={estimate} draft={rentalDraft} rental={rental} />}
     </div>
     <p className="metadata economics-source-line">{costSource(estimate)}{rental?.benchmark && rentalDraft.monthlyRent === null ? ` · Statistics Canada ${periodLabel}` : ''}.</p>
+    {timeline}
     <RentalInterestQuestion value={interest} onChange={onInterest} />
     {onContinue && <FloatingNext active><button className="builder-continue" type="button" onClick={onContinue}>Continue to enquiry <span aria-hidden="true">→</span></button></FloatingNext>}
   </section>
@@ -135,9 +136,9 @@ function CostAmount({ items, category, estimate, onChange, onInvalid }: {
   </div>
 }
 
-export function ProjectEconomicsDetail({ model, propertyLabel, draft, context, estimate, rentalDraft, rental, victoria, onChange, onImport, onRental, onIncludeRental, onBack }: {
+export function ProjectEconomicsDetail({ model, propertyLabel, draft, context, estimate, rentalDraft, rental, victoria, onChange, onImport, onRental, onIncludeRental, onBack, timeline }: {
   model: CatalogueModel; propertyLabel: string; draft: BudgetDraft; context: Context; estimate: EconomicsEstimate
-  rentalDraft: RentalDraft; rental: RentalResult | null; victoria: boolean
+  rentalDraft: RentalDraft; rental: RentalResult | null; victoria: boolean; timeline?: ReactNode
   onChange: (draft: BudgetDraft) => void; onImport: (draft: BudgetDraft) => void; onRental: (draft: RentalDraft) => void; onIncludeRental: () => void; onBack: () => void
 }) {
   const missing = estimate.budget.missing.map(category => quickCostLabels[category].toLowerCase())
@@ -231,6 +232,7 @@ export function ProjectEconomicsDetail({ model, propertyLabel, draft, context, e
           </details>}
           <BudgetEvidenceEditor draft={draft} onChange={changeCosts} onImport={next => { setInvalidCostEdit(false); onImport(next) }} context={context} model={model} victoria={victoria} />
         </section>
+        {timeline}
         {rental ? <RentalScenario draft={rentalDraft} result={rental} model={model} onChange={onRental}
           localResult={<div className="economics-mobile-result economics-mobile-rental"><RentFigures estimate={estimate} draft={rentalDraft} rental={rental} /></div>} /> :
           <button type="button" className="economics-add-rental" onClick={() => { focusRental.current = true; onIncludeRental() }}>Include rental income</button>}

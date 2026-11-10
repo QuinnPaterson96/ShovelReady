@@ -1,5 +1,26 @@
 # Quality engineering agreement
 
+## Project timeline verification — November 9, 2026
+
+The [timeline integration record](project-timeline.md) describes independent
+Victoria/Saanich timing profiles, disclosed planning allowances and context
+invalidation. `frontend/src/project_timeline/timeline.test.tsx` protects source to
+schedule to report behavior, with independently calculable critical paths,
+missing-data propagation and calendar-year rent arithmetic. The dedicated
+`frontend/tools/timeline_browser.mjs` exercises the shared economics journey on
+phone/desktop, including rental skipped, editable bounds, scope/pathway/model/city/
+property changes and inactive evidence. Use the local stateless demo only; no
+database/live model calls are needed. Source timing is unreviewed; issuance and
+occupancy remain project-specific confirmations. Final-head CI and merged-revision
+Sol checks are separate evidence in the PR.
+
+The local 205-test frontend suite and production build passed. The
+[independent Impeccable review and correction confirmation](usability/project-timeline-2026-11-09/README.md)
+records a clean detector, 31/40 corrected assessment and phone/desktop integration
+with rental include/skip. The review distinguishes actual browser behavior from
+physical-device, screen-reader and homeowner validation. The existing full
+financial/export walkthrough is recorded separately in the PR.
+
 ## Shared municipal screening — November 9, 2026
 
 [The multi-city handoff](multi-city-screening.md) records the implemented shared

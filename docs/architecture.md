@@ -1,5 +1,23 @@
 # Architecture direction
 
+## Project timeline — November 9, 2026
+
+```mermaid
+flowchart LR
+  Context[Shared municipality / property / model / pathway] --> Draft[Scoped timeline draft]
+  Sources[Timing profiles + captured catalogue claims] --> Schedule[Fixed dependency calculation]
+  Draft --> Schedule
+  Schedule --> Views[Economics / stage editor / enquiry / evidence]
+  Schedule --> Rent[Optional first-project-year rent]
+```
+
+[The timeline decision and source record](project-timeline.md) keeps timing
+coverage independent of map and rule capabilities. Ordinary frontend modules
+resolve overlapping stages, retain sources and inactive overrides, and withhold
+incomplete readiness. No database, service or accepted-data publication is added.
+Revisit the fixed schedule only when a concrete provider contract requires a new
+supported dependency or bundle scope.
+
 ## Shared municipal screening — November 9, 2026
 
 ```mermaid

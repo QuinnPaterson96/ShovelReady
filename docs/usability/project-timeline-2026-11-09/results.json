@@ -1,0 +1,22 @@
+{
+  "commit": "46815e26d5b3aaa3ebfd9bf40e4d9ad9154f8248",
+  "date": "2026-11-10T00:11:10.234Z",
+  "runs": [
+    {
+      "name": "phone",
+      "width": 390,
+      "height": 844,
+      "passed": true,
+      "errors": [],
+      "checks": "include/skip rental, overlapping and serial schedules, unknown and reversed input, overrides, scope/pathway/model/city/property changes, evidence archive, shared expanded economics, keyboard field order"
+    },
+    {
+      "name": "desktop",
+      "width": 1440,
+      "height": 1000,
+      "passed": true,
+      "errors": [],
+      "checks": "include/skip rental, overlapping and serial schedules, unknown and reversed input, overrides, scope/pathway/model/city/property changes, evidence archive, shared expanded economics, keyboard field order"
+    }
+  ]
+}

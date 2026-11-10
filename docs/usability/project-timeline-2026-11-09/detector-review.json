@@ -1,0 +1,14 @@
+{
+  "assessment": "B",
+  "targets": ["frontend/src/project_timeline/ProjectTimeline.tsx", "frontend/src/project_budget/ProjectEconomics.tsx"],
+  "detector": {"runs":1,"exit_code":0,"findings":[],"primary_count":0,"advisory_count":0,"false_positives":[]},
+  "browser": {"tool":"native CUA IAB","fresh_tab":true,"visible":false,"overlay":false,"overlay_reason":"Documented evaluate API is read-only; mutable script injection unavailable","helper_server_started":false,"tab_closed":true,"viewport_reset":true,"viewports":[{"width":390,"height":844,"overflow":0},{"width":1440,"height":1000,"overflow":0}],"keyboard":{"enter_disclosure":true,"from_to_tab_order":true,"visible_focus":true}},
+  "issues": [
+    {"id":"B1","priority":2,"title":"Validation distant from invalid duration","file":"frontend/src/project_timeline/ProjectTimeline.tsx","line":52,"evidence":{"phone_error_top":-735.296875,"input_top":192.921875,"aria_invalid":null,"aria_describedby":null}},
+    {"id":"B2","priority":2,"title":"Manufacturer scope truncates on phone","file":"frontend/src/project_timeline/ProjectTimeline.tsx","line":46},
+    {"id":"B3","priority":3,"title":"Bounds label text split into separate rows","file":"frontend/src/project_timeline/ProjectTimeline.tsx","line":11},
+    {"id":"B4","priority":3,"title":"Inherited label margins expand settings","file":"frontend/src/project_timeline/project-timeline.css","line":10}
+  ],
+  "independence":"Assessment A not read",
+  "product_code_changed":false
+}
