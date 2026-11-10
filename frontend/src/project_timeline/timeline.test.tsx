@@ -6,11 +6,11 @@ import { userMunicipality } from '../municipality_coverage/model'
 import { calculateRental, defaultRental } from '../rental_scenario/model'
 import { enquiryMarkdown, type EnquiryDocument } from '../builder_demo/enquiry'
 import { ProjectTimeline } from './ProjectTimeline'
-import { calculateTimeline, durationInput, emptyTimeline, firstYearIncome, timelineContextKey, withTimelineReport, type DurationInput, type StageId, type TimelineContext } from './model'
+import { calculateTimeline, durationInput, emptyTimeline, firstYearIncome, timelineContextKey, timelineParagraphs, withTimelineReport, type DurationInput, type StageId, type TimelineContext } from './model'
 
 const model = defaultJourneyModel
 const context: TimelineContext = { propertyKey: 'synthetic-property-a', municipality: userMunicipality('Victoria'), modelId: model.model_id,
-  modelRevision: model.source_revision, snapshotId: modelSnapshot(model), configuration: model.configuration, pathwayKey: 'synthetic-garden-suite' }
+  modelRevision: model.source_revision, snapshotId: modelSnapshot(model), configuration: model.configuration, pathwayKey: 'synthetic-garden-suite', proposedUse: 'garden_suite' }
 const allowance = (minimum: string, maximum = minimum): DurationInput => ({ minimum, maximum, note: 'Synthetic owner allowance', recordedAt: '2026-11-09' })
 const exact = () => ({ ...emptyTimeline(context, model, '2027-01-01'), overrides: Object.fromEntries(Object.entries({ preparation: '2', permits: '4', production: '10', site: '3', installation: '1', completion: '2' }).map(([key, value]) => [key, allowance(value)])) })
 
@@ -96,10 +96,32 @@ test('additional approvals extend the permit branch; user overrides retain origi
   assert.equal(result.ready!.minimum, 224) // 2 + max(10,20+4+3) + 1 + 2 = 32 weeks.
   assert.equal(result.stages.find(stage => stage.id === 'production')?.origin, 'user')
   assert.deepEqual(result.manufacturer?.claim, model.timings![0])
+  assert.match(timelineParagraphs(result).join(' '), /override replaces the target-based allowance/)
   const other = journeyCatalogue.models.find(item => item.model_id === 'hewing-quadra4')!
   const nextContext = { ...context, modelId: other.model_id, configuration: other.configuration }
   const fallback = calculateTimeline(emptyTimeline(nextContext, other), nextContext, other)
   assert.equal(fallback.manufacturer, null) // Earliest qualitative claim cannot become a bounded range.
   assert.equal(fallback.stages.find(stage => stage.id === 'production')?.origin, 'planning_allowance')
   for (const stage of fallback.stages) assert.ok(stage.duration, stage.id satisfies StageId)
+})
+
+test('explicit other use cannot inherit residential municipal timing in the UI or report', () => {
+  // Reproduced in merged UI/ZIP: Saanich Home office was using the 12-business-day residential target.
+  for (const municipality of ['Victoria', 'Saanich']) {
+    const changed: TimelineContext = { ...context, municipality: userMunicipality(municipality), proposedUse: 'other', pathwayKey: 'home-office' }
+    const result = calculateTimeline(emptyTimeline(changed, model), changed, model)
+    assert.equal(result.profile, null)
+    assert.ok(result.availableProfile, 'original evidence retained without applying it')
+    const permit = result.stages.find(stage => stage.id === 'permits')!
+    assert.equal(permit.origin, 'planning_allowance')
+    assert.deepEqual(permit.duration, { minimum: 42, maximum: 112 }) // Explicit generic 6–16 week allowance.
+    const html = renderToStaticMarkup(<ProjectTimeline result={result} rental={null} onChange={() => {}} />)
+    assert.match(html, /Residential municipal timing targets do not apply/)
+    const doc: EnquiryDocument = { title: 'Synthetic office enquiry', question: 'Confirm timing', example: false, sections: [], closing: 'Unsent' }
+    const text = enquiryMarkdown(withTimelineReport(doc, result, null, true)!)
+    assert.match(text, /not applied to the selected other use/)
+    assert.doesNotMatch(text, /12-business-day|20-business-day/)
+  }
+  const undecided: TimelineContext = { ...context, proposedUse: null }
+  assert.ok(calculateTimeline(emptyTimeline(undecided, model), undecided, model).profile, 'disclosed residential planning scenario remains useful for undecided use')
 })
