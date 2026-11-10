@@ -2,6 +2,8 @@
 
 November 9 implementation: [project timeline](../project-timeline.md) adds sourced
 municipal timing, editable overlapping stages and optional first-year rent.
+The dedicated timeline modeling extension keeps the main flow compact and adds
+parallel-stage visualization and completion explanations using that same scenario.
 Project-specific confirmation and human-validation gaps remain in that handoff.
 
 Latest integration: [live Victoria discovery and Model 300 placement](../integration-live-parcel-discovery.md).

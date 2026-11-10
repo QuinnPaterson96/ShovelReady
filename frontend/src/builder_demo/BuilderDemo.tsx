@@ -1,5 +1,5 @@
 import { calculateRental, defaultMarket, rentalForProperty, rentalEvidence, withRentalReport, type RentalDraft } from '../rental_scenario/model'
-import { ProjectTimeline } from '../project_timeline/ProjectTimeline'
+import { ProjectTimelineSummary, ProjectTimelineDetail } from '../project_timeline/ProjectTimeline'
 import { calculateTimeline, emptyTimeline, firstYearIncome, timelineContextKey, withTimelineReport, type TimelineContext, type TimelineDraft } from '../project_timeline/model'
 import { focusAssessmentField, type AssessmentEntry, type AssessmentLanding } from '../navigation/assessmentEntry'
 import { buildingClearanceMove } from './buildingMove'
@@ -72,6 +72,8 @@ import { victoriaBuildingPermitReference } from '../project_budget/victoriaFee'
 import { placementDrawing, renderDrawing, renderEnquiryPdf, downloadFile, attachedEmail, enquiryPackageFiles, type DrawingAssets } from './placementExport'
 
 const economicsHash = '#builder-economics-estimate'
+const timelineHash = '#builder-timeline-estimate'
+type TimelineReturnPoint = { trigger: HTMLElement; scroll: number; fromEconomics: boolean }
 // Preserve the legacy export field for clients of the enquiry contract.
 const budget = ''
 
@@ -276,6 +278,11 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const [use, setUse] = useState('')
   const [rentalInterest, setRentalInterest] = useState<RentalInterest>(null)
   const [economicsOpen, setEconomicsOpen] = useState(false)
+  const [timelineOpen, setTimelineOpen] = useState(false)
+  const timelineReturn = useRef<TimelineReturnPoint | null>(null)
+  const timelineVisits = useRef(new Map<number, TimelineReturnPoint>())
+  const timelineVisitSequence = useRef(0)
+  const timelineWasOpen = useRef(false)
   const [estimatePlacementLocks, setEstimatePlacementLocks] = useState<string[]>([])
   const economicsReturn = useRef<{ trigger: HTMLElement; scroll: number } | null>(null)
   const economicsWasOpen = useRef(false)
@@ -292,22 +299,57 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     if (window.location.hash === economicsHash && window.history.state?.shovelReadyEconomics) window.history.back()
   }
   useEffect(() => {
-    const followEconomics = () => setEconomicsOpen(!!economicsReturn.current && window.location.hash === economicsHash)
+    const followEconomics = () => {
+      // Keep the financial editor mounted while its timeline child is open so
+      // its draft controls, return trigger and scroll position remain intact.
+      if (window.location.hash === timelineHash) {
+        timelineReturn.current = timelineVisits.current.get(window.history.state?.timelineVisit) ?? null
+        setEconomicsOpen(!!timelineReturn.current?.fromEconomics)
+      } else setEconomicsOpen(!!economicsReturn.current && window.location.hash === economicsHash)
+      setTimelineOpen(!!timelineReturn.current && window.location.hash === timelineHash)
+    }
     window.addEventListener('popstate', followEconomics)
     window.addEventListener('hashchange', followEconomics)
     return () => { window.removeEventListener('popstate', followEconomics); window.removeEventListener('hashchange', followEconomics) }
   }, [])
   useLayoutEffect(() => {
-    if (economicsOpen && visible) {
+    if (economicsOpen && visible && !timelineOpen) {
       document.getElementById('economics-detail-title')?.focus({ preventScroll: true })
       window.scrollTo({ top: 0, behavior: 'instant' })
-    } else if (economicsWasOpen.current && economicsReturn.current && visible) {
+    } else if (economicsWasOpen.current && economicsReturn.current && visible && !timelineOpen) {
       const { trigger, scroll } = economicsReturn.current
       trigger.focus({ preventScroll: true })
       window.scrollTo({ top: scroll, behavior: 'instant' })
     }
     economicsWasOpen.current = economicsOpen
   }, [economicsOpen, visible])
+  function openTimeline(trigger: HTMLAnchorElement) {
+    timelineReturn.current = { trigger, scroll: window.scrollY, fromEconomics: economicsOpen }
+    const visit = ++timelineVisitSequence.current
+    timelineVisits.current.set(visit, timelineReturn.current)
+    window.history.pushState({ shovelReadyTimeline: true, timelineVisit: visit }, '', timelineHash)
+    setTimelineOpen(true)
+  }
+  function closeTimeline() {
+    if (window.location.hash === timelineHash && window.history.state?.shovelReadyTimeline) window.history.back()
+    else setTimelineOpen(false)
+  }
+  useLayoutEffect(() => {
+    if (timelineOpen && visible) {
+      document.getElementById('timeline-detail-title')?.focus({ preventScroll: true })
+      window.scrollTo({ top: 0, behavior: 'instant' })
+    } else if (timelineWasOpen.current && timelineReturn.current && visible) {
+      const { trigger, scroll, fromEconomics } = timelineReturn.current
+      if (fromEconomics === economicsOpen) {
+        // A history jump may remount the financial page. Restore its equivalent
+        // link when the original DOM node no longer exists.
+        const returnTarget = trigger.isConnected ? trigger : document.querySelector<HTMLElement>(`${fromEconomics ? '#builder-economics-estimate' : '.project-economics'} a[href="${timelineHash}"]`)
+        returnTarget?.focus({ preventScroll: true })
+        window.scrollTo({ top: scroll, behavior: 'instant' })
+      }
+    }
+    timelineWasOpen.current = timelineOpen
+  }, [timelineOpen, visible])
   const [rentalDrafts, setRentalDrafts] = useState<Record<string, RentalDraft>>({})
   const [timing, setTiming] = useState('')
   const [budgetDraft, setBudgetDraft] = useState<BudgetDraft>(emptyEconomicsBudget)
@@ -335,8 +377,11 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   function resetPropertyAlternatives() {
     setRentalInterest(null)
     setEconomicsOpen(false)
+    setTimelineOpen(false)
     setEstimatePlacementLocks([])
     economicsReturn.current = null
+    timelineReturn.current = null
+    timelineVisits.current.clear()
     setRentalDrafts({})
     questions.current[modelId] = question
     setAlternatives({}); setPlacementSeed(null); setPlacementDraft(null)
@@ -849,10 +894,11 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     })
   }, [timelineKey])
   const timelineResult = calculateTimeline(timelineDraft, timelineContext, model)
-  const timeline = <ProjectTimeline result={timelineResult} rental={rentalResult} onChange={next => {
+  function updateTimeline(next: TimelineDraft) {
     setTimelineState(previous => ({ current: next, archived: previous.current.contextKey === timelineKey && previous.current.pathway === next.pathway && previous.current.schedule === next.schedule ? previous.archived : [...previous.archived, previous.current] }))
     setReadyFor(null)
-  }} />
+  }
+  const timeline = <ProjectTimelineSummary result={timelineResult} rental={rentalResult} onChange={updateTimeline} onOpen={openTimeline} />
   function updateRentalDraft(next: RentalDraft) {
     setRentalDrafts(previous => ({ ...previous, [modelId]: next }))
     setReadyFor(null)
@@ -1045,7 +1091,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     if (!visible || (!focusProperty && (!landing || landing === 'example'))) return
     let active = true
     requestAnimationFrame(() => {
-      if (!active || playbackLayoutRef.current || economicsOpen || pendingEntry) return
+      if (!active || playbackLayoutRef.current || economicsOpen || timelineOpen || pendingEntry) return
       focusedPropertyRequest.current = propertyFocusRequest
       if (focusProperty) focusJourneyStep('property')
       else if (landing === 'model') focusJourneyStep('model')
@@ -1216,7 +1262,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     <p className="metadata">Model questions, placements, configuration and budget drafts stay in this open assessment. Changing property starts fresh placements and estimates. Reloading clears the current assessment. If a recovery copy was saved, you can recover the prepared enquiry text in this tab.</p>
   </>
   return <PlaybackLayout.Provider value={playbackActive}><div ref={builder} className="builder-demo" data-playback={playbackActive || undefined}>
-    <div hidden={economicsOpen}>
+    <div hidden={economicsOpen || timelineOpen}>
 
     {playbackActive && playbackStop && <section ref={playbackControls} data-playback-controls className="builder-playback" aria-label="Walkthrough controls" onKeyDown={event => {
       if (event.repeat && (event.key === 'Enter' || event.key === ' ')) event.preventDefault()
@@ -1438,8 +1484,10 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     </>}
     {propertyComplete && <footer className="builder-stage"><details><summary>Sources &amp; technical evidence</summary><p>Source records, exact geometry and candidate comparisons for the current placement. Review individual checks above for the main findings.</p><div id="builder-geometry-evidence" /><div id="builder-rule-evidence" /></details></footer>}
     </div>
-    {economicsOpen && propertyComplete && <ProjectEconomicsDetail timeline={timeline} model={model} propertyLabel={propertyLabel} draft={currentBudget} context={budgetContext}
+    {economicsOpen && propertyComplete && <div hidden={timelineOpen}><ProjectEconomicsDetail timeline={timeline} model={model} propertyLabel={propertyLabel} draft={currentBudget} context={budgetContext}
       estimate={economicsEstimate} rentalDraft={activeRental} rental={rentalResult} victoria={victoriaBudget} onChange={updateCostDraft} onImport={importCostDraft}
-      onRental={updateRentalDraft} onIncludeRental={() => setRentalInterest('rental')} onBack={closeEconomics} />}
+      onRental={updateRentalDraft} onIncludeRental={() => setRentalInterest('rental')} onBack={closeEconomics} /></div>}
+    {timelineOpen && propertyComplete && <ProjectTimelineDetail result={timelineResult} rental={rentalResult} onChange={updateTimeline}
+      modelLabel={`${model.provider} · ${model.name}`} propertyLabel={propertyLabel} fromEconomics={timelineReturn.current?.fromEconomics ?? false} onBack={closeTimeline} />}
   </div></PlaybackLayout.Provider>
 }

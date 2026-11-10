@@ -1,5 +1,23 @@
 # Quality engineering agreement
 
+## Dedicated timeline modeling page — November 9, 2026
+
+The existing timeline browser journey now covers a compact main-flow range/date,
+the dedicated editor, paired overlap bars, completion-driver changes, stage-link
+focus, browser Back/Forward and returns to both main/financial launch controls.
+Existing checks retain rental include/skip, missing/reversed bounds, scoped
+overrides and property/municipality/model/use/pathway changes. Calculation/render
+tests use the existing independently specified schedule to check the explanation
+and chart's text equivalents; no second scheduling implementation was introduced.
+
+The local 206-test suite and production build passed. The 390px/1440px browser
+journeys passed; the final integration PR separately records the final-head CI,
+financial regression, Impeccable finish review and exact merged-revision Sol checks.
+Review evidence is linked from the timeline integration record. This work does not
+accept sources, promise issuance/occupancy dates or establish physical-device,
+screen-reader or homeowner comprehension results. Those gaps keep the owners in
+[the timeline record](project-timeline.md#verification-and-remaining-work).
+
 ## Project timeline verification — November 9, 2026
 
 The [timeline integration record](project-timeline.md) describes independent

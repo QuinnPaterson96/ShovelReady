@@ -5,7 +5,7 @@ import { defaultJourneyModel, journeyCatalogue, modelSnapshot } from '../model_c
 import { userMunicipality } from '../municipality_coverage/model'
 import { calculateRental, defaultRental } from '../rental_scenario/model'
 import { enquiryMarkdown, type EnquiryDocument } from '../builder_demo/enquiry'
-import { ProjectTimeline } from './ProjectTimeline'
+import { ProjectTimeline, ProjectTimelineSummary, ProjectTimelineDetail } from './ProjectTimeline'
 import { calculateTimeline, durationInput, emptyTimeline, firstYearIncome, timelineContextKey, timelineParagraphs, withTimelineReport, type DurationInput, type StageId, type TimelineContext } from './model'
 
 const model = defaultJourneyModel
@@ -24,8 +24,14 @@ test('captured catalogue and municipal timing -> overlapping project -> readable
   // 2–6 preparation + max(12–18 bundle, (4 review + 2–8 issuance) + 2–6 site)
   // + 1–7 installation days + 2–4 completion weeks = 113–203 days.
   assert.deepEqual(result.ready, { minimum: 113, maximum: 203 })
-  const html = renderToStaticMarkup(<ProjectTimeline result={result} rental={null} onChange={() => {}} />)
-  assert.match(html, /View and adjust timeline/)
+  const compact = renderToStaticMarkup(<ProjectTimelineSummary result={result} rental={null} onChange={() => {}} onOpen={() => {}} />)
+  assert.match(compact, /View and adjust timeline/)
+  assert.match(compact, /Project start date/)
+  assert.doesNotMatch(compact, /Permit planning pathway|Adjust permits/)
+  const html = renderToStaticMarkup(<ProjectTimelineDetail result={result} rental={null} onChange={() => {}} modelLabel={model.name} propertyLabel="Synthetic property" onBack={() => {}} fromEconomics={false} />)
+  assert.match(html, /How the stages overlap/)
+  assert.match(html, /With shorter allowances/)
+  assert.match(html, /With longer allowances/)
   assert.match(html, /review target.*not permit issuance/)
   assert.match(html, /Completion/)
   assert.doesNotMatch(html, /first year from project start/)
@@ -43,6 +49,13 @@ test('independent critical-path arithmetic, serial versus overlapping production
   const result = calculateTimeline(draft, context, model)
   assert.deepEqual(result.ready, { minimum: 105, maximum: 105 })
   assert.deepEqual(result.readyDates, { earliest: '2027-04-16', latest: '2027-04-16' })
+  // The manufacturer ends at week 12; the site at week 9. The explanation
+  // must follow that join, not merely choose the longest single duration.
+  const view = renderToStaticMarkup(<ProjectTimelineDetail result={result} rental={null} onChange={() => {}} modelLabel={model.name} propertyLabel="Synthetic property" onBack={() => {}} fromEconomics />)
+  assert.match(view, /manufacturer schedule finishes later than site work/)
+  assert.match(view, /Back to project economics/)
+  assert.match(view, /Shorter: week 2–12/)
+  assert.match(view, /Longer: week 6–9/)
   const sequential = calculateTimeline({ ...draft, schedule: 'production_after_permits' }, context, model)
   assert.equal(sequential.ready?.maximum, 133) // 2 + 4 + max(10,3) + 1 + 2 = 19 weeks.
   const rental = calculateRental({ ...defaultRental(model), monthlyRent: '2000', vacancyPercent: '0' })

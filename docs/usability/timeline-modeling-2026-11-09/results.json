@@ -1,0 +1,22 @@
+{
+  "commit": "7b11d5d25ad70a77f00ed3933db85824c889eb2c",
+  "date": "2026-11-10T00:51:38.322Z",
+  "runs": [
+    {
+      "name": "phone",
+      "width": 390,
+      "height": 844,
+      "passed": true,
+      "errors": [],
+      "checks": "compact main flow, dedicated page, chart and completion driver, browser back/forward and both return focus paths, include/skip rental, overlapping and serial schedules, unknown and reversed input, overrides, scope/pathway/model/city/property changes, evidence archive, shared expanded economics, keyboard field order"
+    },
+    {
+      "name": "desktop",
+      "width": 1440,
+      "height": 1000,
+      "passed": true,
+      "errors": [],
+      "checks": "compact main flow, dedicated page, chart and completion driver, browser back/forward and both return focus paths, include/skip rental, overlapping and serial schedules, unknown and reversed input, overrides, scope/pathway/model/city/property changes, evidence archive, shared expanded economics, keyboard field order"
+    }
+  ]
+}
