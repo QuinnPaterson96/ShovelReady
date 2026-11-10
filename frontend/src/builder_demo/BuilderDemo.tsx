@@ -282,7 +282,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const timelineReturn = useRef<TimelineReturnPoint | null>(null)
   const timelineVisits = useRef(new Map<number, TimelineReturnPoint>())
   const timelineVisitSequence = useRef(0)
-  const timelineWasOpen = useRef(false)
+  const timelineRestoreFrame = useRef<number | null>(null)
   const [estimatePlacementLocks, setEstimatePlacementLocks] = useState<string[]>([])
   const economicsReturn = useRef<{ trigger: HTMLElement; scroll: number } | null>(null)
   const economicsWasOpen = useRef(false)
@@ -299,7 +299,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     if (window.location.hash === economicsHash && window.history.state?.shovelReadyEconomics) window.history.back()
   }
   useEffect(() => {
-    const followEconomics = () => {
+    const followEconomics = (event: Event) => {
       // Keep the financial editor mounted while its timeline child is open so
       // its draft controls, return trigger and scroll position remain intact.
       if (window.location.hash === timelineHash) {
@@ -307,10 +307,16 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
         setEconomicsOpen(!!timelineReturn.current?.fromEconomics)
       } else setEconomicsOpen(!!economicsReturn.current && window.location.hash === economicsHash)
       setTimelineOpen(!!timelineReturn.current && window.location.hash === timelineHash)
+      // Native history traversals can restore the fragment's focus/scroll after
+      // React's layout effects. Restore our launch point after that traversal.
+      if (event.type === 'hashchange' && new URL((event as HashChangeEvent).oldURL).hash === timelineHash) restoreTimelineReturn()
     }
     window.addEventListener('popstate', followEconomics)
     window.addEventListener('hashchange', followEconomics)
-    return () => { window.removeEventListener('popstate', followEconomics); window.removeEventListener('hashchange', followEconomics) }
+    return () => {
+      window.removeEventListener('popstate', followEconomics); window.removeEventListener('hashchange', followEconomics)
+      if (timelineRestoreFrame.current !== null) cancelAnimationFrame(timelineRestoreFrame.current)
+    }
   }, [])
   useLayoutEffect(() => {
     if (economicsOpen && visible && !timelineOpen) {
@@ -324,6 +330,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     economicsWasOpen.current = economicsOpen
   }, [economicsOpen, visible])
   function openTimeline(trigger: HTMLAnchorElement) {
+    if (timelineRestoreFrame.current !== null) cancelAnimationFrame(timelineRestoreFrame.current)
     timelineReturn.current = { trigger, scroll: window.scrollY, fromEconomics: economicsOpen }
     const visit = ++timelineVisitSequence.current
     timelineVisits.current.set(visit, timelineReturn.current)
@@ -332,23 +339,29 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   }
   function closeTimeline() {
     if (window.location.hash === timelineHash && window.history.state?.shovelReadyTimeline) window.history.back()
-    else setTimelineOpen(false)
+    else { setTimelineOpen(false); restoreTimelineReturn() }
+  }
+  function restoreTimelineReturn() {
+    if (timelineRestoreFrame.current !== null) cancelAnimationFrame(timelineRestoreFrame.current)
+    timelineRestoreFrame.current = requestAnimationFrame(() => {
+      timelineRestoreFrame.current = null
+      if (!timelineReturn.current || window.location.hash === timelineHash) return
+      const { trigger, scroll, fromEconomics } = timelineReturn.current
+      if (fromEconomics === (window.location.hash === economicsHash)) {
+        // A history jump may remount the financial page. Restore its equivalent
+        // link when the original DOM node no longer exists.
+        const returnTarget = trigger.isConnected ? trigger : document.querySelector<HTMLElement>(`${fromEconomics ? '#builder-economics-estimate' : '.project-economics'} a[href="${timelineHash}"]`)
+        if (!returnTarget?.getClientRects().length) return
+        returnTarget.focus({ preventScroll: true })
+        window.scrollTo({ top: scroll, behavior: 'instant' })
+      }
+    })
   }
   useLayoutEffect(() => {
     if (timelineOpen && visible) {
       document.getElementById('timeline-detail-title')?.focus({ preventScroll: true })
       window.scrollTo({ top: 0, behavior: 'instant' })
-    } else if (timelineWasOpen.current && timelineReturn.current && visible) {
-      const { trigger, scroll, fromEconomics } = timelineReturn.current
-      if (fromEconomics === economicsOpen) {
-        // A history jump may remount the financial page. Restore its equivalent
-        // link when the original DOM node no longer exists.
-        const returnTarget = trigger.isConnected ? trigger : document.querySelector<HTMLElement>(`${fromEconomics ? '#builder-economics-estimate' : '.project-economics'} a[href="${timelineHash}"]`)
-        returnTarget?.focus({ preventScroll: true })
-        window.scrollTo({ top: scroll, behavior: 'instant' })
-      }
     }
-    timelineWasOpen.current = timelineOpen
   }, [timelineOpen, visible])
   const [rentalDrafts, setRentalDrafts] = useState<Record<string, RentalDraft>>({})
   const [timing, setTiming] = useState('')

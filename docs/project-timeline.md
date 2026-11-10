@@ -45,6 +45,9 @@ financial controls stay mounted while its timeline is open. A history replay can
 restore focus to a remounted equivalent link. Property replacement clears these
 return points alongside existing context resets. No reload/deep-link restoration
 or durable saved-scenario feature is added.
+Return focus/scroll is applied after the browser's fragment-history traversal,
+because a layout-effect restoration alone can be overwritten by native navigation.
+The browser acceptance case checks the settled scrolled financial launch point.
 
 This is an extension of the Civic Atlas financial-modeling pattern, with a stacked
 phone layout and a desktop summary beside the schedule/editor. Root owns shared
