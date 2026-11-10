@@ -18,6 +18,16 @@ accept sources, promise issuance/occupancy dates or establish physical-device,
 screen-reader or homeowner comprehension results. Those gaps keep the owners in
 [the timeline record](project-timeline.md#verification-and-remaining-work).
 
+Sol's exact-merge check of `989210d` reproduced a scrolled financial-return defect:
+native fragment traversal ran after the layout-effect focus/scroll restoration,
+leaving focus on the document body and moving to the financial page top. The
+follow-up restores the launch point after `hashchange` in an animation frame,
+with cancellation on new navigation/unmount and a visibility guard. The existing
+browser journey now authors cost/rent, launches from nonzero scroll and asserts
+settled focus/scroll after both visible Back and browser Back. Retained inputs and
+the same edited supporting-report/ZIP are checked by Sol's focused reproducer;
+the follow-up PR records its exact merged verification. No layout changes.
+
 ## Project timeline verification — November 9, 2026
 
 The [timeline integration record](project-timeline.md) describes independent

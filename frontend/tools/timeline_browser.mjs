@@ -25,6 +25,9 @@ try {
     })
     const evidence = async () => JSON.parse(await page.locator('#builder-technical-record').inputValue())
     const result = async () => (await evidence()).project_timeline.result
+    // Native fragment traversal can run after React has detached the page.
+    // Assert the final focus/scroll, not the transient layout-effect state.
+    const settledHistory = () => page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))))
     const reveal = async locator => {
       const details = locator.locator('xpath=ancestor::details')
       for (let index = await details.count() - 1; index >= 0; index--) {
@@ -43,6 +46,7 @@ try {
     const closeTimeline = async () => {
       await timeline.getByRole('link', { name: 'Back to project', exact: true }).click()
       await timeline.waitFor({ state: 'detached' })
+      await settledHistory()
       assert.equal(await compact.getByRole('link', { name: 'View and adjust timeline' }).evaluate(node => node === document.activeElement), true)
     }
     const bounds = label => ({ min: timeline.getByRole('textbox', { name: `From ${label} (weeks)`, includeHidden: true }), max: timeline.getByRole('textbox', { name: `To ${label} (weeks)`, includeHidden: true }) })
@@ -117,13 +121,32 @@ try {
       assert.ok((await evidence()).project_timeline.first_year_income)
       await closeTimeline()
       await page.getByRole('link', { name: 'View and adjust estimate', exact: false }).click()
-      const expanded = page.locator('#builder-economics-estimate .project-timeline')
-      await expanded.getByRole('link', { name: 'View and adjust timeline' }).click()
+      const financial = page.locator('#builder-economics-estimate')
+      const expanded = financial.locator('.project-timeline')
+      await financial.locator('#economics-cost-unit').fill('198500')
+      await financial.getByLabel('Monthly rent (CAD)', { exact: true }).fill('1500')
+      await financial.getByLabel('Vacancy allowance (%)', { exact: true }).fill('5')
+      const launch = expanded.getByRole('link', { name: 'View and adjust timeline' })
+      await launch.scrollIntoViewIfNeeded()
+      const launchScroll = await page.evaluate(() => window.scrollY)
+      assert.ok(launchScroll > 200, 'regression uses a scrolled financial launch point')
+      await launch.click()
       assert.match(await timeline.innerText(), /first year from project start/)
       assert.equal(await timeline.getByLabel('Project start date', { exact: true }).inputValue(), '2027-01-01')
       await timeline.getByRole('link', { name: 'Back to project economics', exact: true }).click()
       await timeline.waitFor({ state: 'detached' })
-      assert.equal(await expanded.getByRole('link', { name: 'View and adjust timeline' }).evaluate(node => node === document.activeElement), true)
+      await settledHistory()
+      assert.equal(await launch.evaluate(node => node === document.activeElement), true)
+      assert.ok(Math.abs(await page.evaluate(() => window.scrollY) - launchScroll) <= 2, 'visible Back restores financial scroll after fragment traversal')
+      assert.equal(await financial.locator('#economics-cost-unit').inputValue(), '198500')
+      assert.equal(await financial.getByLabel('Monthly rent (CAD)', { exact: true }).inputValue(), '1500')
+      await page.goForward()
+      await timeline.waitFor({ state: 'visible' })
+      await page.goBack()
+      await timeline.waitFor({ state: 'detached' })
+      await settledHistory()
+      assert.equal(await launch.evaluate(node => node === document.activeElement), true)
+      assert.ok(Math.abs(await page.evaluate(() => window.scrollY) - launchScroll) <= 2, 'browser Back restores the same scrolled launch point')
       await page.getByRole('link', { name: 'Back to project', exact: true }).last().click()
       // Replay financial → timeline after both views were unmounted. The return
       // link must recover the launching surface, not the last globally used view.
@@ -133,6 +156,7 @@ try {
       await timeline.waitFor({ state: 'visible' })
       await timeline.getByRole('link', { name: 'Back to project economics', exact: true }).click()
       await timeline.waitFor({ state: 'detached' })
+      await settledHistory()
       assert.equal(await expanded.getByRole('link', { name: 'View and adjust timeline' }).evaluate(node => node === document.activeElement), true)
       await page.getByRole('link', { name: 'Back to project', exact: true }).last().click()
       await openTimeline()
