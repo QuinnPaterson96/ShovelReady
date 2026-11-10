@@ -3,7 +3,9 @@
 The homeowner journey includes a [location-aware project timeline](docs/project-timeline.md)
 beside economics: independent Victoria/Saanich timing sources, editable overlapping
 stages and optional first-project-year collected rent. It remains useful when rental
-income is skipped or local timing coverage is absent.
+income is skipped or local timing coverage is absent. The main flow keeps a
+readiness range and start date; a dedicated timeline page shows overlapping
+schedules, completion drivers, stage controls and sources, using the same project.
 
 The homeowner journey now uses [stable continuation controls, guided demo progress
 and task-directed entry focus](docs/navigation-reliability.md). The integration

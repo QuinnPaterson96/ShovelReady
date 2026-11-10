@@ -7,7 +7,10 @@ flowchart LR
   Context[Shared municipality / property / model / pathway] --> Draft[Scoped timeline draft]
   Sources[Timing profiles + captured catalogue claims] --> Schedule[Fixed dependency calculation]
   Draft --> Schedule
-  Schedule --> Views[Economics / stage editor / enquiry / evidence]
+  Schedule --> Summary[Main-flow readiness + start date]
+  Schedule --> Page[Dedicated timeline page / overlapping stages]
+  Page -->|Edits same draft| Draft
+  Schedule --> Views[Enquiry / supporting report / evidence]
   Schedule --> Rent[Optional first-project-year rent]
 ```
 
@@ -15,6 +18,10 @@ flowchart LR
 coverage independent of map and rule capabilities. Ordinary frontend modules
 resolve overlapping stages, retain sources and inactive overrides, and withhold
 incomplete readiness. No database, service or accepted-data publication is added.
+The dedicated timeline view follows the financial editor's navigation pattern.
+Both launch points share the draft; each timeline history entry retains its return
+surface and scroll/focus target. The diagram and completion explanation consume
+calculated stage endpoints, without a separate scheduling algorithm.
 Revisit the fixed schedule only when a concrete provider contract requires a new
 supported dependency or bundle scope.
 

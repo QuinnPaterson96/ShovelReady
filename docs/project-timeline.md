@@ -6,7 +6,10 @@ flowchart LR
   Municipal[Independent timing profiles] --> Calculate[Deterministic schedule]
   Catalogue[Captured manufacturer timings] --> Calculate
   Draft --> Calculate
-  Calculate --> Views[Economics / stage editor / enquiry / evidence]
+  Calculate --> Summary[Main-flow range + start date]
+  Calculate --> Detail[Dedicated timeline model / overlap diagram]
+  Detail -->|Edits| Draft
+  Calculate --> Views[Enquiry / supporting report / evidence]
   Rental[Optional existing rental scenario] --> FirstYear[First project-year collected rent]
   Calculate --> FirstYear
 ```
@@ -17,6 +20,39 @@ homeowner journey; its profile registry does not consult mapping or zoning
 coverage. No API, database, accepted-data publication or provider contact is added.
 Reloading clears in-session drafts; the existing downloadable technical evidence
 preserves them. Timeline import/restoration is not implemented.
+
+## Dedicated modeling page
+
+The main flow and financial page show a compact readiness range, start-date field
+and link. The timeline page follows the financial page's project identity, Back
+navigation and live-summary layout. It provides six stage editors, sources and
+optional first-project-year rent; skipping rental never removes timing controls.
+Returning updates the same summary without copying or replacing a scenario.
+
+The overlap diagram uses the calculated start/end of every stage on one shared
+week axis. Paired rows represent using all shorter or all longer allowances, not
+probabilities or extra work. Additional approvals appear as a seventh row when
+selected. Text equivalents identify both starts and finishes; stage links focus
+their corresponding editor heading. Incomplete schedules remain open rather than
+drawing unknown durations as zero. The completion explanation compares exact
+manufacturer/site endpoints at each bound and identifies the later branch or tie;
+installation and completion still follow both. It does not infer a distribution,
+guarantee a date, or duplicate the scheduler.
+
+Each history entry records its launch surface and return position. Browser
+Back/Forward and the visible Back link work from the main flow or financial page;
+financial controls stay mounted while its timeline is open. A history replay can
+restore focus to a remounted equivalent link. Property replacement clears these
+return points alongside existing context resets. No reload/deep-link restoration
+or durable saved-scenario feature is added.
+
+This is an extension of the Civic Atlas financial-modeling pattern, with a stacked
+phone layout and a desktop summary beside the schedule/editor. Root owns shared
+source/docs/tests; independent review and verification use separate evidence files.
+The [dedicated-page review](usability/timeline-modeling-2026-11-09/README.md) records
+the independent Impeccable **ship** verdict, visual-system conformity, screenshots
+and browser evidence. Final-head CI and exact merged-revision Sol verification
+remain separately recorded in the integration PR.
 
 ## Schedule and assumptions
 
