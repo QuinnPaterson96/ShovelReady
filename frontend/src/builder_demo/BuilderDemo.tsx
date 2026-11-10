@@ -837,7 +837,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const economicsEstimate = useMemo(() => calculateEconomics(currentBudget, budgetContext, rentalResult), [currentBudget, budgetContextKey, rentalResult])
   const timelineContext: TimelineContext = { propertyKey: budgetContext.property_key, municipality: currentMunicipality,
     modelId: model.model_id, modelRevision: model.source_revision, snapshotId: modelSnapshot(model), configuration: budgetContext.configuration,
-    pathwayKey: JSON.stringify([use, pathway, currentMunicipalDraft]) }
+    pathwayKey: JSON.stringify([use, pathway, currentMunicipalDraft]), proposedUse: pathway.proposed_use }
   const timelineKey = timelineContextKey(timelineContext)
   const [timelineState, setTimelineState] = useState<{ current: TimelineDraft; archived: TimelineDraft[] }>(() => ({ current: emptyTimeline(timelineContext, model), archived: [] }))
   // Reconcile during render so stale assumptions never flash or enter an export. Keep

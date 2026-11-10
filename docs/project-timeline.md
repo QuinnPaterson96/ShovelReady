@@ -41,6 +41,11 @@ authorization. Delivery is never occupancy permission. Additional approvals can
 be allowed before the building-permit application; the default building-permit-only
 scenario does not determine which approvals the property requires.
 
+An undecided use can explore this disclosed residential scenario. An explicitly
+different use (for example, Home office) cannot apply the residential municipal
+target: the permit stage falls back to the editable 6–16-week allowance. The
+captured profile remains reference evidence, without contributing to that result.
+
 | Allowance | Starting range | Basis |
 |---|---|---|
 | Preparation | 2–6 weeks | Illustrative discovery, site information, design and complete application |
@@ -116,6 +121,14 @@ Local results: 205/205 frontend tests passed; TypeScript/Vite build passed with
 existing bundle-size/dynamic-import advisories. The dedicated phone/desktop
 timeline runner passed, with no page errors. [Impeccable review](usability/project-timeline-2026-11-09/README.md)
 completed independently, then confirmed all three corrections (31/40, Good).
+
+Sol's exact-merge check of `6d02cdc` passed those 205 tests and both timeline
+journeys, then reproduced a gap in a downloaded Saanich Home office report: a
+reset draft still used the residential 12-business-day target. The follow-up adds
+explicit proposed-use applicability and a sixth regression example, plus a
+normal-journey office/garden-suite switch. Reports now also identify a permit
+override as replacing the target-derived allowance, while preserving the source.
+The follow-up PR records final CI and Sol verification of its merged revision.
 
 Remaining gaps and owners:
 

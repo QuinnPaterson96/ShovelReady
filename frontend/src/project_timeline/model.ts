@@ -10,7 +10,7 @@ export const stageLabels = { preparation: 'Preparation', permits: 'Permits', pro
 export type StageId = keyof typeof stageLabels
 export type TimelineContext = {
   propertyKey: string; municipality: MunicipalityContext | null; modelId: string; modelRevision: string | null
-  snapshotId: string; configuration: string; pathwayKey: string
+  snapshotId: string; configuration: string; pathwayKey: string; proposedUse: 'garden_suite' | 'other' | null
 }
 export type DurationInput = { minimum: string; maximum: string; note: string; recordedAt: string }
 export type TimelineDraft = {
@@ -76,7 +76,10 @@ export function rangeWeeks(value: Range | null) {
 export const calendarDate = (value: string) => new Intl.DateTimeFormat('en-CA', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${value}T00:00:00Z`))
 
 export function calculateTimeline(draft: TimelineDraft, context: TimelineContext, model: CatalogueModel) {
-  const profile = timingProfiles.find(item => item.jurisdictionId === context.municipality?.jurisdiction_id) ?? null
+  const availableProfile = timingProfiles.find(item => item.jurisdictionId === context.municipality?.jurisdiction_id) ?? null
+  // An undisclosed/undecided use can explore the residential planning scenario.
+  // An explicit other use cannot inherit its residential municipal target.
+  const profile = context.proposedUse === 'other' ? null : availableProfile
   const manufacturer = manufacturerDuration(model, draft.schedule)
   // A five-day workweek approximation is an explicit planning conversion, not a holiday calendar or promised response date.
   const reviewDays = profile ? profile.businessDays * 7 / 5 : null
@@ -84,7 +87,7 @@ export function calculateTimeline(draft: TimelineDraft, context: TimelineContext
   const defaults: Record<StageId, { duration: Range; origin: Stage['origin']; note: string }> = {
     preparation: { duration: weeks(2, 6), origin: 'planning_allowance', note: 'Discovery, site information, drawings and a complete application. Assumes the purchase contract is signed at the end of preparation.' },
     permits: { duration: reviewDays !== null ? range(reviewDays + 14, reviewDays + 56) : weeks(6, 16), origin: profile ? 'source_based_allowance' : 'planning_allowance',
-      note: profile ? `${profile.businessDays} business days converted using a five-day workweek, plus an illustrative 2–8 calendar weeks for revisions and issuance. Holidays and actual queues may extend this. The published target is not an issuance date.` : 'No local timing profile. Illustrative 6–16 weeks from complete application to permit issuance; replace with municipal advice.' },
+      note: profile ? `${profile.businessDays} business days converted using a five-day workweek, plus an illustrative 2–8 calendar weeks for revisions and issuance. Holidays and actual queues may extend this. The published target is not an issuance date.` : `${context.proposedUse === 'other' ? 'Residential timing targets are not applied to the selected other use.' : 'No local timing profile.'} Illustrative 6–16 weeks from complete application to permit issuance; replace with municipal advice.` },
     production: { duration: manufacturer?.days ?? weeks(16, 28), origin: manufacturer ? 'manufacturer_claim' : 'planning_allowance',
       note: manufacturer ? `${model.provider}: ${manufacturer.claim.qualifications.join(' ')} ${draft.schedule === 'contract_to_delivery' ? 'One contract-to-delivery bundle includes the permitting dependency and production; do not add those periods to it.' : 'Production only; delivery and installation are allowed for separately.'}` : 'No applicable bounded manufacturer timing. Illustrative 16–28 weeks; ask the selected provider for its current queue, scope and clock start.' },
     site: { duration: weeks(2, 6), origin: 'planning_allowance', note: 'Foundation and service preparation after permit issuance; runs alongside the manufacturer schedule when possible. Major upgrades need a longer allowance.' },
@@ -116,7 +119,7 @@ export function calculateTimeline(draft: TimelineDraft, context: TimelineContext
     ...stages.filter(stage => !stage.duration).map(stage => `${stage.label}: enter both bounds from 0 to 520 weeks, with the upper bound at least the lower bound, or restore the default.`),
     ...(!additional ? ['Additional approvals: choose a planning pathway and enter its allowance to estimate completion.'] : [])]
   const ready = errors.length ? null : completion
-  return { schema_version: 'project-timeline-result.v1' as const, profile, manufacturer, context, draft, stages, additional, delivery: errors.length ? null : delivery,
+  return { schema_version: 'project-timeline-result.v1' as const, profile, availableProfile, manufacturer, context, draft, stages, additional, delivery: errors.length ? null : delivery,
     ready, readyDates: ready ? { earliest: dateAfter(draft.startDate, ready.minimum), latest: dateAfter(draft.startDate, ready.maximum) } : null, errors,
     assumptions: ['Building-permit-only is a planning scenario, not a determination of required approvals. Add development, variance or other approvals if needed.',
       'Site work waits for permits. Installation waits for both the manufacturer and site work. Overlapping periods are counted once.',
@@ -146,7 +149,7 @@ export function timelineParagraphs(result: TimelineResult, rental: ReturnType<ty
     `Project timeline for ${result.context.municipality?.name ?? 'municipality not supplied'}: ${rangeWeeks(result.ready)} from ${result.draft.startDate}${ready ? `; estimated ready for use ${calendarDate(ready.earliest)}–${calendarDate(ready.latest)}` : '. Complete the missing timing inputs to estimate readiness'}. Planning scenario, not a booked completion or occupancy approval.`,
     `Permit pathway: ${result.draft.pathway === 'building_permit' ? 'building permit only assumed; additional approvals excluded' : result.draft.pathway === 'additional_approvals' ? `additional approvals allowed ${rangeWeeks(result.additional)} before the building permit application` : 'not yet known'}. ${result.draft.schedule === 'contract_to_delivery' ? 'Manufacturer contract-to-delivery period overlaps permits and site work; it is not added to them.' : result.draft.schedule === 'production_with_permits' ? 'Production is assumed to overlap permitting.' : 'Production is assumed to start after permit issuance.'} Please confirm the required approvals, provider availability and what must happen before occupancy.`,
     ...(detailed ? result.stages.map(stage => `${stage.label}: ${rangeWeeks(stage.duration)} (${stage.origin.replace(/_/g, ' ')}). ${stage.origin === 'user' ? stage.scope + ' ' : ''}${stage.note}`) : []),
-    ...(result.profile ? [`${result.profile.provider}, ${result.profile.label}: ${result.profile.businessDays}-business-day ${result.profile.milestone.replace(/_/g, ' ')}; captured ${result.profile.capturedAt}, unreviewed. ${result.profile.url} Permit issuance includes a separate editable planning allowance.`] : ['Local permit timing is unsourced; a disclosed planning allowance is used.']),
+    ...(result.profile ? [`${result.profile.provider}, ${result.profile.label}: ${result.profile.businessDays}-business-day ${result.profile.milestone.replace(/_/g, ' ')}; captured ${result.profile.capturedAt}, unreviewed. ${result.profile.url} ${result.draft.overrides.permits ? 'Retained for reference; your permit-duration override replaces the target-based allowance.' : 'Permit issuance includes a separate editable planning allowance.'}`] : [result.context.proposedUse === 'other' ? 'The residential municipal timing profile is not applied to the selected other use; permit timing is a disclosed planning allowance. Ask the municipality for the applicable route and timing.' : 'Local permit timing is unsourced; a disclosed planning allowance is used.']),
     ...(detailed ? result.manufacturerEvidence.map(({ claim, source }) => `${claim.stage.replace(/_/g, ' ')}: ${claim.wording} ${claim.qualifications.join(' ')} ${source ? `${source.url}; captured ${source.captured_at}; unreviewed.` : 'Source record unavailable.'}`) : []),
     ...(income ? [`First year from project start: ${money(income.minimum)}–${money(income.maximum)} CAD collected rent through ${income.endDate}. ${income.basis}`] : []),
   ]

@@ -21,6 +21,18 @@ with rental include/skip. The review distinguishes actual browser behavior from
 physical-device, screen-reader and homeowner validation. The existing full
 financial/export walkthrough is recorded separately in the PR.
 
+The exact-merge Sol export check subsequently reproduced an explicit-other-use
+applicability defect: Saanich Home office retained the residential response target
+after draft reset. The follow-up passes proposed use to timing selection, withholds
+that target for explicit other uses, and preserves useful residential assumptions
+for undecided use. An added rendered/report regression and the normal browser
+journey protect this distinction; an owner permit override is now clearly described
+as replacing the target-based allowance. Updated merged verification is in the
+follow-up PR rather than inferred from the earlier 205-test run.
+The follow-up local checks passed 206/206 frontend tests, production build and
+both 390px/1440px timeline journeys, including explicit Home office and a return
+to Garden suite. No additional visual composition change was made.
+
 ## Shared municipal screening — November 9, 2026
 
 [The multi-city handoff](multi-city-screening.md) records the implemented shared
