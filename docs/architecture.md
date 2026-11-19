@@ -1,5 +1,29 @@
 # Architecture direction
 
+## A mapped property can be explored before choosing a model
+
+```mermaid
+flowchart LR
+    A[SiteDiscovery] -->|attributed parcel and rooflines| B[PropertyOptions]
+    C[Victoria zoning and map observations] -->|mapped facts| B
+    D[Saanich property opportunity] -->|parcel area and local rule source| B
+    B -->|selected parcel and optional house plan| E[Choose a model]
+    E -->|Try this model| F[Existing placement and enquiry]
+```
+
+An ordinary address search keeps its selected parcel through the options and
+model steps. Choosing to explore a garden suite leaves the intended-use answer
+open. The optional keep/replace preference belongs to the parcel and follows the
+enquiry. A changed parcel clears the preference and any findings from its
+predecessor. Model-linked entries, saved examples and manual sketches retain
+their existing paths.
+
+The Saanich parcel-only endpoint compares projected parcel area with the current
+candidate garden-suite lot-area rule. Its result identifies the selected source
+record, geometry and rule revision. Local eligibility and the fit of a specific
+building are assessed separately. Multiplex screening and land assemblies remain
+future design decisions.
+
 ## Project timeline — November 9, 2026
 
 ```mermaid

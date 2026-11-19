@@ -13,7 +13,15 @@ import type { CatalogueModel } from '../model_catalogue/model'
 import type { BudgetDraft, Context } from '../project_budget/contract'
 import { budgetQuestions, budgetEnquiryParagraph, recipientBudget } from '../project_budget/pipeline'
 
+export function housePlanNote(plan: EnquiryInput['housePlan']) {
+  if (plan === 'keep') return 'I would like to keep the existing house.'
+  if (plan === 'replace') return 'I am considering replacing the existing house. This garden-suite option assumes it stays.'
+  if (plan === 'exploring') return 'I am still exploring whether to keep the existing house.'
+  return ''
+}
+
 export type EnquiryInput = {
+  housePlan?: import('./PropertyOptions').HousePlan | null
   municipalResult?: import('../municipal_rules/model').MunicipalResult | null
   localComparisonsAvailable?: boolean
   budgetDraft?: { draft: BudgetDraft; context: Context; today?: string }
@@ -164,7 +172,7 @@ export function manufacturerDocument(input: EnquiryInput, address: string | null
   const concerns = [...(input.propertyConcern?.trim() ? [input.propertyConcern.trim()] : []), ...placementIssues]
   const supplied = (value?: string) => !!value?.trim() && !['unknown', 'not sure', 'prefer not to say'].includes(value.trim().toLowerCase())
   const sentence = (value: string) => /[.!?]$/.test(value.trim()) ? value.trim() : `${value.trim()}.`
-  const facts = [input.useNote?.trim() && sentence(input.useNote), !example && supplied(input.relationship) && sentence(input.relationship!),
+  const facts = [housePlanNote(input.housePlan), input.useNote?.trim() && sentence(input.useNote), !example && supplied(input.relationship) && sentence(input.relationship!),
     supplied(input.stage) && sentence(`My project stage is ${input.stage!.trim()}`),
     supplied(input.configuration) && sentence(`My configuration preference is ${input.configuration!.trim()}`),
     supplied(input.timing) && sentence(`My preferred timing is ${input.timing.trim()}`),

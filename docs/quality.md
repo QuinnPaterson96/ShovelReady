@@ -1,5 +1,18 @@
 # Quality engineering agreement
 
+## Property-first garden-suite entry
+
+The placement browser journey starts from Home, inspects the selected parcel
+before model choice, changes properties during a pending Saanich request, and
+continues with the selected model and the same parcel. The municipal API
+integration checks exercise both sides of the lot-area threshold and reject
+mismatched municipal provenance. The existing route and walkthrough journeys
+cover model links, the current demo and the dated example.
+
+These checks exercise the software and captured municipal records. Independent
+rule review and a homeowner test of the options screen remain open. A mapped
+area finding alone cannot establish whether a garden suite is permitted.
+
 ## Model 240 demo and homeowner use — November 19, 2026
 
 The mounted enquiry regression selects Garden suite and enters “Garden suite for

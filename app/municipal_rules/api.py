@@ -5,6 +5,7 @@ from pydantic import ValidationError
 
 from .models import EvaluationRequest, EvaluationResult
 from .registry import catalogue, evaluate, selected
+from .saanich import ParcelOpportunityRequest, ParcelOpportunityResult, parcel_opportunity
 
 router = APIRouter(prefix="/api/municipal-rules/v1", tags=["municipal-rules"])
 
@@ -12,6 +13,17 @@ router = APIRouter(prefix="/api/municipal-rules/v1", tags=["municipal-rules"])
 @router.get("/catalogue")
 def get_catalogue():
     return catalogue()
+
+
+@router.post("/property-opportunity", response_model=ParcelOpportunityResult)
+async def municipal_property_opportunity(request: Request):
+    raw = await request.body()
+    if len(raw) > 131_072:
+        raise HTTPException(status_code=413, detail="request too large")
+    try:
+        return parcel_opportunity(ParcelOpportunityRequest.model_validate_json(raw))
+    except (ValidationError, ValueError) as exc:
+        raise HTTPException(status_code=422, detail="Invalid or unsupported parcel") from exc
 
 
 @router.post("/evaluate", response_model=EvaluationResult)

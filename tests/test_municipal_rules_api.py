@@ -66,6 +66,70 @@ def checks(result):
     return {row["rule"]["fact_id"]: row for row in result["screening"]["checks"]}
 
 
+def test_saanich_property_opportunity_uses_current_parcel_and_preserves_both_sources():
+    # Exactly 20 x 20 m, then 19.999 x 20 m: the latter still displays 400.0
+    # at ordinary UI precision. Compare exact area before any presentation rounding.
+    observation = json.loads(
+        Path("frontend/tools/fixtures/prospect-lake-waterfront.json").read_text(encoding="utf-8")
+    )["observation"]
+    parcel_ref = observation["parcel_ref"]
+    source = observation["evidence"][0]
+    parcel = {
+        "id": f"live-parcel:{parcel_ref['source']}:{parcel_ref['object_id']}:0",
+        "shape": {"crs": "EPSG:3157", "geometry": observation["parcel"]["planar_geometry"]},
+        "source": {
+            "provider": source["provider"], "record_label": source["record_label"],
+            "capture_date": source["captured_at_utc"], "review_status": "unreviewed",
+            "reference": source["source_url"],
+        },
+    }
+    body = {
+        "schema_version": "municipal-property-opportunity.request.v1",
+        "parcel_ref": dict(parcel_ref),
+        "parcel": parcel,
+    }
+    url = "/api/municipal-rules/v1/property-opportunity"
+    for width, expected_area, status in (
+        (20, 400, "meets_under_assumptions"),
+        (19.999, 399.98, "apparent_conflict_under_assumptions"),
+    ):
+        parcel["shape"]["geometry"]["coordinates"] = [
+            [[0, 0], [width, 0], [width, 20], [0, 20], [0, 0]]
+        ]
+        response = client.post(url, json=body)
+        assert response.status_code == 200
+        result = response.json()
+        assert result["parcel_ref"] == body["parcel_ref"] and result["parcel"] == parcel
+        assert result["pathway_id"] == profile("ca-bc-saanich")["pathway_id"]
+        assert float(result["derived_area_m2"]) == pytest.approx(expected_area)
+        assert result["minimum_m2"] == "400" and result["status"] == status
+        assert result["definition"]["source"]["review_status"] == "unreviewed"
+        assert result["definition"]["source"]["source_revision"] is None
+        assert result["definition"]["revision"] and result["source_snapshot_id"]
+    parcel["shape"]["geometry"]["coordinates"] = [
+        [[0, 0], [20, 20], [0, 20], [20, 0], [0, 0]]
+    ]
+    assert client.post(url, json=body).status_code == 422
+    parcel["shape"]["geometry"]["coordinates"] = [[[0, 0], [20, 0], [20, 20], [0, 0]]]
+    # Relabelling the envelope cannot make another city's parcel a Saanich parcel.
+    foreign_parcel = deepcopy(parcel)
+    foreign_parcel["id"] = "live-parcel:87:0"
+    foreign_parcel["source"]["provider"] = "City of Victoria Open Data"
+    foreign_parcel["source"]["reference"] = (
+        "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query"
+        "?objectIds=87"
+    )
+    assert client.post(url, json={**body, "parcel": foreign_parcel}).status_code == 422
+    # A plausible district object ID must agree independently with the municipal source URL.
+    wrong_capture = deepcopy(parcel)
+    wrong_capture["source"]["reference"] = source["source_url"].replace(
+        f"objectIds={parcel_ref['object_id']}", "objectIds=42"
+    )
+    assert client.post(url, json={**body, "parcel": wrong_capture}).status_code == 422
+    body["parcel_ref"]["source"] = "city-of-victoria-pid-parcels"
+    assert client.post(url, json=body).status_code == 422
+
+
 def test_victoria_dispatch_preserves_every_legacy_result_and_scenario_field():
     payload = victoria_payload()
     body = {

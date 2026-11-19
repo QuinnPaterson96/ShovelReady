@@ -29,7 +29,7 @@ const enquiry = (...args: Parameters<typeof screeningDocument>) => enquiryPlainT
 const questions = { intendedUse: 'family accommodation', timing: '', budget: '', access: '', services: '' }
 
 test('Model 240 entry uses its published Bath + Kitchen offer and keeps the dated example selectable', () => {
-  const html = renderToStaticMarkup(createElement(BuilderDemo))
+  const html = renderToStaticMarkup(<BuilderDemo entryRequest={{ modelId: 'aux-240' }} />)
   assert.match(html, /Model 300 \(October 2026 example\)/)
   assert.match(html, /Explore a placement, review potential concerns/)
   assert.match(html, /<section hidden="" class="builder-stage" id="builder-placement"/)

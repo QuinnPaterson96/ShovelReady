@@ -1,5 +1,7 @@
 /** Workflow milestones supplied by BuilderDemo, not assessment outcomes. */
 export type BuilderJourneyCompletion = Readonly<{
+  propertyFirst?: boolean
+  choosingModel?: boolean
   walkthroughActive?: boolean
   checksAvailable?: boolean
   reviewReadiness?: { total: number; addressed: number; busy: boolean; ready: boolean; targetId?: string }
@@ -47,8 +49,13 @@ export function BuilderJourneyNav({ completion }: { completion: BuilderJourneyCo
   if (completion.walkthroughActive) return null
   return <aside className="sr-workspace-rail builder-journey-rail">
     <nav aria-label="Prefab model steps">
-      <p>Prefab model journey</p>
-      {!completion.property && <div className="builder-entry-stages">
+      <p>{completion.propertyFirst ? 'Property assessment' : 'Prefab model journey'}</p>
+      {completion.propertyFirst && <div className="builder-entry-stages">
+        <a href="#builder-property" aria-current={completion.choosingModel ? undefined : 'step'}>1 · Find property and explore options</a>
+        {completion.choosingModel ? <a href="#builder-model" aria-current="step">2 · Choose a model</a> : <span>2 · Choose a model</span>}
+        <span>3 · Try a placement</span>
+      </div>}
+      {!completion.propertyFirst && !completion.property && <div className="builder-entry-stages">
         <a href="#builder-property" aria-current="step">1 · Find property</a>
         <span>2 · Place unit</span><span>3 · Review</span><span>4 · Contact provider</span>
         <a href="#builder-model">Change model</a>

@@ -40,6 +40,11 @@ def _geometry(feature, expected_crs, kind):
     return geom, None
 
 
+def parcel_polygon(feature, expected_crs):
+    """Return the validated single parcel polygon and any validation issue."""
+    return _geometry(feature, expected_crs, "Polygon")
+
+
 def _placement(placement):
     nums = (*placement.centre_xy, placement.width_m, placement.depth_m, placement.angle_degrees)
     if any(isinstance(n, bool) or not math.isfinite(n) for n in nums):
@@ -75,7 +80,7 @@ def assess(request: Request) -> Assessment:
     """Measure only this rectangle in the declared XY CRS; preserve the exact request."""
     crs_error = _crs_reason(request.projected_metre_crs)
     footprint, placement_error = _placement(request.placement)
-    parcel, parcel_error = _geometry(request.parcel, request.projected_metre_crs, "Polygon")
+    parcel, parcel_error = parcel_polygon(request.parcel, request.projected_metre_crs)
     buildings = {
         b.id: _geometry(b, request.projected_metre_crs, "Polygon") for b in request.buildings
     }

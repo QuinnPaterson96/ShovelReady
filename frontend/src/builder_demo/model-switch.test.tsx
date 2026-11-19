@@ -169,13 +169,12 @@ test('switching models recovers independent questions, placements and costs with
     // callback after a model switch. A later selected property must use Quadra's
     // explicit unknown defaults, not the reference model's residential/foundation defaults.
     await click('Wrong property? Change')
-    await act(async () => {
-      const select = document.getElementById('builder-model-choice') as HTMLSelectElement
-      select.value = 'hewing-quadra4'; select.dispatchEvent(new dom.window.Event('change', { bubbles: true }))
-    })
     await edit('sd-address', '1144 May St, Victoria')
     await act(async () => document.querySelector('form.sd-search, .site-discovery form')!.dispatchEvent(new dom.window.Event('submit', { bubbles: true, cancelable: true })))
     await click('1144 May St, Victoria, BC · Victoria')
+    await click('Explore a garden suite')
+    await switchTo('hewing-quadra4')
+    await click('Try this model')
     await settle()
     assert.equal(evidence().model_catalogue.model.model_id, 'hewing-quadra4')
     assert.ok(evidence().live?.parcel, 'live source fixture selected')

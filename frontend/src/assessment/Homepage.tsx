@@ -8,8 +8,8 @@ export default function Homepage({ onAssessment, onDemo, onWalkthrough }: Props)
     <section className="homepage-hero" aria-labelledby="home-title">
       <div className="homepage-promise">
         <p className="eyebrow">A place to start, before you build</p>
-        <h1 id="home-title">Could a prefab home fit on your lot?</h1>
-        <p className="homepage-lead">Explore your property using municipal map data and published model dimensions. Try a placement, see potential constraints, and prepare a useful enquiry.</p>
+        <h1 id="home-title">Could a garden suite fit on your property?</h1>
+        <p className="homepage-lead">Start with your address. See what municipal maps show about your lot, then try a prefab home and decide what to ask a builder.</p>
         <div className="homepage-actions">
           <button className="sr-primary" onClick={onAssessment}>Check my property <span aria-hidden="true">→</span></button>
           <button onClick={onWalkthrough}>Watch the demo</button>
@@ -40,7 +40,7 @@ export default function Homepage({ onAssessment, onDemo, onWalkthrough }: Props)
       <p className="eyebrow">From a possibility to a useful conversation</p>
       <h2 id="home-process">Give your next step a clearer starting point.</h2>
       <div className="homepage-steps">
-        <article><span className="homepage-step-number">01 / Placement</span><h3>Explore your lot</h3><p>Find your property, choose a model and move its footprint on the map. Considering a small, separate home in your yard? You may know it as a garden suite or backyard home.</p></article>
+        <article><span className="homepage-step-number">01 / Property</span><h3>Explore your lot</h3><p>Find your address and review the mapped property. If a garden suite interests you, try placing a small, separate home on the lot.</p></article>
         <article><span className="homepage-step-number">02 / Findings</span><h3>Know what to ask</h3><p>Review approximate distances, possible overlaps and available City map flags. See which planning questions depend on assumptions or still need information.</p></article>
         <article><span className="homepage-step-number">03 / Enquiry</span><h3>Bring the context</h3><p>Prepare a draft with your placement, project goals and outstanding questions. Review it, then share it with the provider yourself.</p></article>
       </div>
