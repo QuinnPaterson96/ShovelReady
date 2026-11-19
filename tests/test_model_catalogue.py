@@ -43,7 +43,8 @@ def test_demo_export_keeps_research_unknowns_separate_from_active_catalogue():
             assert measures["manufacturer_interior_area"].original_value == Decimal("146")
             assert measures["manufacturer_footprint"].original_value == Decimal("240")
             assert model.prices[0].amount.minimum == Decimal("156000")
-            assert model.prices[0].currency == "CAD" and model.prices[0].configuration == "Bath + Kitchen"
+            assert model.prices[0].currency == "CAD"
+            assert model.prices[0].configuration == "Bath + Kitchen"
         else:
             assert measures["manufacturer_interior_area"] is None
             assert measures["manufacturer_footprint"] is None
