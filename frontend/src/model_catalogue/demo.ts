@@ -5,15 +5,17 @@ import { initialProjectSettings } from '../conditional_screening/projectSettings
 // Separate observational bundle: neither this adapter nor code deployment publishes data.
 export const demoObservations = observations as Catalogue
 export const journeyModels = [
-  { id: 'aux-300', contact: 'https://www.auxbox.ca/contact', description: 'A prefabricated living space with a private bedroom, kitchen and full bathroom. The manufacturer lists a 300 sq ft footprint.' },
-  { id: 'aux-240', contact: 'https://www.auxbox.ca/contact', description: 'Studio accommodation. Confirm the kitchen and bathroom options for your project.' },
+  { id: 'aux-240', contact: 'https://www.auxbox.ca/contact', description: 'Studio dwelling. This example uses the Bath + Kitchen layout with a full bathroom and kitchenette.' },
+  { id: 'aux-300', contact: 'https://www.auxbox.ca/contact', description: 'Dated example from October 2026. The captured design has a private bedroom, kitchen and full bathroom. Ask aux box about current availability.' },
   { id: 'wcch-ch-studio', contact: 'https://westcoastcontainerhomes.ca/contact/', description: 'A compact sleeping/living space with kitchenette and bathroom. Permanent residential suitability needs provider confirmation.' },
   { id: 'hewing-quadra4', contact: 'https://hewinghaus.com/connect/', description: 'Published as a one-bedroom home. Confirm the kitchen and bathroom configuration with Hewing Haus.' },
 ] as const
 export const journeyCatalogue: Pick<Catalogue, 'models'> = {
-  models: journeyModels.map(item => [...bundledCatalogue.models, ...demoObservations.models].find(model => model.model_id === item.id)!) }
-export const defaultJourneyModel = journeyCatalogue.models.find(model => model.model_id === 'aux-300')!
-export const modelSnapshot = (model: CatalogueModel) => demoObservations.models.some(item => item.model_id === model.model_id)
+  models: journeyModels.map(item => [...demoObservations.models, ...bundledCatalogue.models].find(model => model.model_id === item.id)!) }
+export const defaultJourneyModel = journeyCatalogue.models.find(model => model.model_id === 'aux-240')!
+export const historicalModel300 = journeyCatalogue.models.find(model => model.model_id === 'aux-300')!
+export const historicalModelNote = 'October 2026 example. Current Model 300 availability is unconfirmed.'
+export const modelSnapshot = (model: CatalogueModel) => demoObservations.models.includes(model)
   ? demoObservations.snapshot_id : bundledCatalogue.snapshot_id
 export const modelContact = (model: CatalogueModel) => journeyModels.find(item => item.id === model.model_id)?.contact ?? model.provider_url
 export const modelDescription = (model: CatalogueModel) => journeyModels.find(item => item.id === model.model_id)?.description ?? model.intended_use_note

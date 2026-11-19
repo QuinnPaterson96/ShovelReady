@@ -28,6 +28,8 @@ test('same-property comparison preserves qualified findings, cost evidence and m
       placement: 'not_placed', summary: null, budget: { draft: { ...emptyBudget(), scope: 'whole_project' }, context } }
   }
   const first = alternative('aux-300'), missing = alternative('aux-240'), currency = alternative('wcch-ch-studio')
+  // Exercise the missing-price case even when the live demo gains a sourced offer.
+  missing.model = { ...missing.model, prices: [] }
   first.summary = { conclusion: 'Worth exploring with the provider', next: 'Discuss the roofline concern.', checks: [
     { label: 'Roof overlap', status: 'conflict', detail: 'This trial position overlaps the captured main roof.' },
     { label: 'Existing garden suite', status: 'probable', detail: 'Assuming no existing garden suite; correct this in property details.' },

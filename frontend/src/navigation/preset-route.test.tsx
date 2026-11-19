@@ -61,7 +61,7 @@ test('one assessment supports fresh, demo and model links without history resets
     await act(async () => { dom.window.history.forward(); await new Promise(resolve => setTimeout(resolve, 25)) })
     assert.equal(document.querySelector<HTMLSelectElement>('#builder-model-choice')!.value, 'hewing-quadra4', 'back/forward does not reapply Model 300')
     await click('Home'); await click('Try an example'); await click('Load example assessment')
-    assert.equal(document.querySelector<HTMLSelectElement>('#builder-model-choice')!.value, 'aux-300')
+    assert.equal(document.querySelector<HTMLSelectElement>('#builder-model-choice')!.value, 'aux-240')
     assert.ok(document.querySelector('#placement-map'))
     await click('Wrong property? Change')
     assert.ok(document.querySelector('#sd-address'), 'changing the preset opens address search')
@@ -106,10 +106,14 @@ test('one assessment supports fresh, demo and model links without history resets
     await act(async () => { dom.window.history.replaceState(null, '', '#inputs'); root.render(createElement(App, { key: 'old-inputs' })) })
     assert.ok(document.querySelector('[aria-label="Input preparation steps"]'), 'research preparation tools remain reachable')
     await act(async () => { dom.window.history.replaceState(null, '', '#home'); root.render(createElement(App, { key: 'homepage-walkthrough' })) })
+    const coverage = document.querySelector('.homepage-coverage')!.textContent!
+    assert.match(coverage, /City of Victoria/)
+    assert.match(coverage, /District of Saanich.*lot area, lot width, floor area and landscaped share/)
+    assert.match(coverage, /Elsewhere or missing map data.*manual sketch/)
     await click('Watch the demo')
     assert.ok(document.querySelector('[data-playback-controls]'), 'homepage secondary action starts the existing guided walkthrough')
     assert.match(document.querySelector('.builder-hero')!.textContent!, /Example assessment/)
-    assert.equal(document.querySelector<HTMLSelectElement>('#builder-model-choice')!.value, 'aux-300')
+    assert.equal(document.querySelector<HTMLSelectElement>('#builder-model-choice')!.value, 'aux-240')
 
   } finally {
     await act(async () => root.unmount())

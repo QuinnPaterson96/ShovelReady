@@ -14,13 +14,13 @@ export default function Homepage({ onAssessment, onDemo, onWalkthrough }: Props)
           <button className="sr-primary" onClick={onAssessment}>Check my property <span aria-hidden="true">→</span></button>
           <button onClick={onWalkthrough}>Watch the demo</button>
         </div>
-        <p className="homepage-entry-note">The demo has six stages, including an optional budget moment. Advance at your pace. Check my property returns to your work in this open session.</p>
-        <p className="homepage-scope">Preliminary exploration, starting in the City of Victoria. A promising placement still needs source review and site-specific advice; this is not a permit finding.</p>
+        <p className="homepage-entry-note">The six-stage demo explores aux box Model 240, including an optional budget estimate. Advance at your pace. Check my property returns to your work in this open session.</p>
+        <p className="homepage-scope">Explore mapped properties in the City of Victoria and the District of Saanich. A promising placement still needs source review and site-specific advice; this is not a permit finding.</p>
       </div>
       <figure className="homepage-product">
         <div className="homepage-product-bar"><span>Inside ShovelReady</span><span className="homepage-example-tag">Saved example</span></div>
         <div className="homepage-plan">
-          <img src={placementCapture} width="560" height="840" fetchPriority="high" alt="Actual placement map: the proposed Model 300 rectangle touches the saved Victoria parcel boundary and overlaps the assumed main building roofline. Red dashed outlines mark these conflicts." />
+          <img src={placementCapture} width="560" height="840" fetchPriority="high" alt="Actual placement map: the proposed Model 240 overlaps a captured roofline on the saved Victoria parcel." />
           <div className="homepage-plan-key">
             <p className="eyebrow">Try a position</p>
             <h2>See the space.<br />Spot the questions.</h2>
@@ -29,10 +29,10 @@ export default function Homepage({ onAssessment, onDemo, onWalkthrough }: Props)
               <li><span className="homepage-key-roof" aria-hidden="true" />Existing roofline</li>
               <li><span className="homepage-key-unit" aria-hidden="true" />Proposed prefab</li>
             </ul>
-            <p className="homepage-conflict">This position has a boundary and roofline conflict. Move the unit to explore another position.</p>
+            <p className="homepage-conflict">This position overlaps a mapped roofline. Move the unit to explore another position.</p>
           </div>
         </div>
-        <figcaption>Actual tool · aux box Model 300 · saved Victoria example, not your property. City of Victoria outlines captured September 26, 2026; approximate and unreviewed. <span className="homepage-attribution">Contains information licensed under the <a href="https://opendata.victoria.ca/pages/open-data-licence">Open Government Licence – City of Victoria</a>.</span> <button className="homepage-text-button" onClick={onDemo}>Try an example</button></figcaption>
+        <figcaption>aux box Model 240 · saved Victoria example. City of Victoria outlines captured October 7, 2026; approximate and unreviewed. <span className="homepage-attribution">Contains information licensed under the <a href="https://opendata.victoria.ca/pages/open-data-licence">Open Government Licence – City of Victoria</a>.</span> <button className="homepage-text-button" onClick={onDemo}>Try an example</button></figcaption>
       </figure>
     </section>
 
@@ -47,11 +47,11 @@ export default function Homepage({ onAssessment, onDemo, onWalkthrough }: Props)
     </section>
 
     <section className="homepage-coverage" aria-labelledby="home-coverage">
-      <div><p className="eyebrow">Where you can explore today</p><h2 id="home-coverage">Starting with Victoria.<br />Clear about the limits.</h2><p>The map helps you investigate a possibility. It cannot establish whether a home is permitted on a particular property.</p></div>
+      <div><p className="eyebrow">Where you can explore today</p><h2 id="home-coverage">Mapped coverage in Victoria and Saanich</h2><p>The map helps you investigate a possibility. It cannot establish whether a home is permitted on a particular property.</p></div>
       <dl>
-        <div><dt>City of Victoria map exploration</dt><dd>Address lookup, captured parcel and roofline outlines, and available municipal map flags. Confirm the property and review the source limits.</dd></div>
-        <div><dt>Selected Victoria planning comparisons</dt><dd>Preliminary garden-suite checks depend on your inputs and assumptions. Rules and applicability remain unreviewed; no accepted zoning dataset is published.</dd></div>
-        <div><dt>Outside Victoria or missing map data</dt><dd>Use a manual sketch with approximate dimensions. Local geometry exploration remains available; Victoria planning rules do not establish permission elsewhere.</dd></div>
+        <div><dt>City of Victoria</dt><dd>Find a property, place a model on available parcel and roofline outlines, and explore preliminary garden-suite checks and municipal map flags.</dd></div>
+        <div><dt>District of Saanich</dt><dd>Find a property and explore a mapped placement. Local garden-suite comparisons cover lot area, lot width, floor area and landscaped share where inputs are available.</dd></div>
+        <div><dt>Elsewhere or missing map data</dt><dd>Use a manual sketch with approximate dimensions. Local planning comparisons depend on municipal coverage, your inputs and the assumptions shown.</dd></div>
       </dl>
     </section>
 

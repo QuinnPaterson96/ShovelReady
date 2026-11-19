@@ -57,7 +57,8 @@ try {
     }
     try {
       await page.goto(origin)
-      await page.getByRole('button', { name: 'Try an example', exact: true }).click()
+      await page.goto(new URL('/#examples/model-300', page.url()).href)
+      await page.reload()
       await page.waitForFunction(() => { const field = document.getElementById('builder-technical-record'); return field && JSON.parse(field.value).measurement })
       await page.getByRole('button', { name: 'Skip rental estimate', exact: true }).click()
       await compact.scrollIntoViewIfNeeded()
@@ -181,11 +182,11 @@ try {
       assert.equal((await result()).profile.milestone, 'initial_response')
       assert.deepEqual((await result()).draft.overrides, {})
       await page.locator('nav[aria-label="Prefab model steps"] a[href="#builder-next"]').click()
-      await page.locator('#builder-use').fill('Home office')
+      await page.locator('#builder-use').selectOption('Home office')
       assert.equal((await result()).context.proposedUse, 'other')
       assert.equal((await result()).profile, null, 'explicit other use cannot apply the residential timing target')
       assert.deepEqual((await result()).stages.find(stage => stage.id === 'permits').duration, { minimum: 42, maximum: 112 })
-      await page.locator('#builder-use').fill('Garden suite')
+      await page.locator('#builder-use').selectOption('Garden suite')
       assert.equal((await result()).profile.jurisdictionId, 'ca-bc-saanich')
       assert.deepEqual((await result()).draft.overrides, {})
       await page.locator('nav[aria-label="Prefab model steps"] a[href="#builder-property-details"]').click()

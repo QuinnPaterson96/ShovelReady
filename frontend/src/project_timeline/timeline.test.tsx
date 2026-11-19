@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { renderToStaticMarkup } from 'react-dom/server'
-import { defaultJourneyModel, journeyCatalogue, modelSnapshot } from '../model_catalogue/demo'
+import { historicalModel300, journeyCatalogue, modelSnapshot } from '../model_catalogue/demo'
 import { userMunicipality } from '../municipality_coverage/model'
 import { calculateRental, defaultRental } from '../rental_scenario/model'
 import { enquiryMarkdown, type EnquiryDocument } from '../builder_demo/enquiry'
 import { ProjectTimeline, ProjectTimelineSummary, ProjectTimelineDetail } from './ProjectTimeline'
 import { calculateTimeline, durationInput, emptyTimeline, firstYearIncome, timelineContextKey, timelineParagraphs, withTimelineReport, type DurationInput, type StageId, type TimelineContext } from './model'
 
-const model = defaultJourneyModel
+const model = historicalModel300
 const context: TimelineContext = { propertyKey: 'synthetic-property-a', municipality: userMunicipality('Victoria'), modelId: model.model_id,
   modelRevision: model.source_revision, snapshotId: modelSnapshot(model), configuration: model.configuration, pathwayKey: 'synthetic-garden-suite', proposedUse: 'garden_suite' }
 const allowance = (minimum: string, maximum = minimum): DurationInput => ({ minimum, maximum, note: 'Synthetic owner allowance', recordedAt: '2026-11-09' })

@@ -42,6 +42,7 @@ test('switching models recovers independent questions, placements and costs with
   const settle = async () => { await act(async () => { await new Promise(resolve => setTimeout(resolve, 650)) }); await act(async () => { await new Promise(resolve => setTimeout(resolve, 450)) }) }
   let copied = ''
   Object.defineProperty(dom.window.navigator, 'clipboard', { configurable: true, value: { writeText: async (value: string) => { copied = value } } })
+  const chooseUse = async (value: string) => act(async () => { const select = document.getElementById('builder-use') as HTMLSelectElement; select.value = value; select.dispatchEvent(new dom.window.Event('change', { bubbles: true })) })
   const switchTo = async (id: string) => act(async () => { const select = document.getElementById('builder-model-choice') as HTMLSelectElement; select.value = id; select.dispatchEvent(new dom.window.Event('change', { bubbles: true })) })
   const question300 = 'Could Model 300 support a rental?\nPlease price sound insulation and explain the next step.'
   const question240 = 'For Model 240, could we use my Model 300 research?\nPlease quote a different window configuration.'
@@ -53,13 +54,13 @@ test('switching models recovers independent questions, placements and costs with
   try {
     await act(async () => root.render(createElement<{ presetRequest?: number }>(BuilderDemo, { presetRequest: 1 })))
     await settle()
-    await edit('builder-use', 'a rental suite')
+    await edit('builder-use-note', 'a rental suite')
     const interests = () => document.querySelector('[aria-label="Rental interest"]')!
     assert.match(interests().textContent!, /Rental scenario included/, 'an explicit rental answer is reflected without repeating the question')
     await click('Change rental preference')
     await click('Skip rental estimate')
     assert.match(interests().textContent!, /Rental income skipped/, 'an explicit skip takes precedence over a previous rental answer')
-    await edit('builder-use', 'Unknown'); await edit('builder-relationship', 'I own the property'); await edit('builder-nextStep', 'Please advise the next step.')
+    await edit('builder-use-note', ''); await chooseUse('Not sure'); await edit('builder-relationship', 'I own the property'); await edit('builder-nextStep', 'Please advise the next step.')
     const parcel = evidence().measurement.site.site.parcel.id
     for (const [id, answer] of [['building-type', 'Yes'], ['existing-suites', 'None'], ['waterfront-lot', 'No']]) {
       await act(async () => { [...document.querySelectorAll<HTMLButtonElement>(`#${id} button`)].find(button => button.textContent === answer)!.click() })
@@ -88,7 +89,7 @@ test('switching models recovers independent questions, placements and costs with
       assert.equal(reset.enquiry_inputs.configuration, id === 'aux-300' ? 'Model 300 special options' : '')
       assert.equal(reset.enquiry_inputs.question, id === 'aux-300' ? question300 : `Could ${journeyCatalogue.models.find(item => item.model_id === id)!.name} be suitable for this property?`)
       assert.equal(document.getElementById('builder-email-recipient'), null, 'pending model cannot prepare an email')
-      assert.equal(reset.enquiry_inputs.intendedUse, 'Unknown')
+      assert.equal(reset.enquiry_inputs.intendedUse, 'Not sure')
       assert.equal(reset.enquiry_inputs.relationship, 'I own the property')
       await settle()
       assert.equal((document.getElementById('builder-email-recipient') as HTMLInputElement).value, '')
@@ -156,7 +157,7 @@ test('switching models recovers independent questions, placements and costs with
     assert.equal(authoredCosts()[0].money.minimum, '175000')
     assert.ok(evidence().project_budget.draft.items.every((item: { context: { model_id: string } }) => item.context.model_id === 'aux-240'))
     assert.equal(authoredCosts()[0].recheck_reason, null, 'unchanged same-property alternative keeps its cost context')
-    await edit('builder-use', 'Home office')
+    await chooseUse('Home office')
     assert.equal(evidence().conditional_screening, null, 'use changes invalidate affected checks')
     await switchTo('aux-300'); await settle()
     assert.equal(evidence().enquiry_inputs.intendedUse, 'Home office', 'use remains shared property/project context')

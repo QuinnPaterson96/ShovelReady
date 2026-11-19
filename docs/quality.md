@@ -1,5 +1,21 @@
 # Quality engineering agreement
 
+## Model 240 demo and homeowner use — November 19, 2026
+
+The mounted enquiry regression selects Garden suite and enters “Garden suite for
+a parent” as a project note. It checks the recipient text and the garden-suite
+scenario together. The navigation and walkthrough checks distinguish the
+current 240 from the October 2026 Model 300 link and measure the actual footprint
+at the placement stops. The homepage map was captured from the 240's evaluated
+starting position on the saved Cecelia parcel. All 206 frontend tests passed locally.
+Desktop and phone walkthroughs, budget editing, exports and model comparison
+passed against the local stateless API.
+
+The demo uses an unreviewed, configuration-specific price from aux box.
+Provider confirmation of model revision, availability and a site-specific quote
+remains open. Local rule interpretations still need independent review before
+accepted evaluation. Household comprehension remains for product research.
+
 ## Dedicated timeline modeling page — November 9, 2026
 
 The existing timeline browser journey now covers a compact main-flow range/date,

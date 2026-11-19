@@ -36,6 +36,7 @@
 .builder-demo .builder-example-controls > button { margin-top: 1rem; }
 .builder-demo .builder-example pre { white-space: pre-wrap; overflow-wrap: anywhere; }
 .builder-demo .builder-questions { display: grid; grid-template-columns: 13rem minmax(0, 1fr); align-items: center; gap: .7rem 1rem; max-width: 52rem; }
+.builder-questions .intended-use-control { grid-column: 1 / -1; }
 .builder-demo .builder-questions label { margin: 0; }
 .builder-demo .builder-questions input { width: 100%; padding: .6rem .8rem; }
 .builder-demo .copyable-record textarea { min-height: 18rem; }

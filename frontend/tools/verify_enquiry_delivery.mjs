@@ -54,7 +54,7 @@ async function prepare(page, label) {
   })
   await page.locator('#builder-question').fill(`For ${label}, can you assess crane access from my photos?`)
   await page.locator('#builder-unsent-preview').getByText(`For ${label}, can you assess crane access from my photos?`, { exact: true }).waitFor()
-  assert.match(await page.locator('#builder-enquiry-text').inputValue(), /Model 300/)
+  assert.match(await page.locator('#builder-enquiry-text').inputValue(), /Model 240/)
 }
 async function download(page, label) {
   const pending = page.waitForEvent('download')
@@ -68,7 +68,7 @@ async function download(page, label) {
   assert.ok(bytes.length > 10000)
   painted[label] = await page.evaluate(() => window.deliveryPainted)
   assert.ok(painted[label].some(line => line.includes(`For ${label}, can you assess crane access`)))
-  assert.ok(painted[label].some(line => line.includes('Model 300')))
+  assert.ok(painted[label].some(line => line.includes('Model 240')))
   assert.ok(painted[label].some(line => line.includes('Approximate mapped outlines')))
   await writeFile(resolve(output, `${label}.txt`), await page.locator('#builder-enquiry-text').inputValue())
   await page.screenshot({ path: resolve(output, `${label}.png`), fullPage: true })

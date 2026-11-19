@@ -28,9 +28,9 @@ const manual: ManualFacts = { address: manualFact('Unmatched example address'), 
 const enquiry = (...args: Parameters<typeof screeningDocument>) => enquiryPlainText(screeningDocument(...args))
 const questions = { intendedUse: 'family accommodation', timing: '', budget: '', access: '', services: '' }
 
-test('Model 300 entry uses an explicit unreviewed catalogue choices and optional examples', () => {
+test('Model 240 entry uses its published Bath + Kitchen offer and keeps the dated example selectable', () => {
   const html = renderToStaticMarkup(createElement(BuilderDemo))
-  assert.match(html, /Model 300/)
+  assert.match(html, /Model 300 \(October 2026 example\)/)
   assert.match(html, /Explore a placement, review potential concerns/)
   assert.match(html, /<section hidden="" class="builder-stage" id="builder-placement"/)
   assert.match(html, /<section hidden="" class="builder-stage builder-enquiry" id="builder-next"/)
@@ -39,9 +39,9 @@ test('Model 300 entry uses an explicit unreviewed catalogue choices and optional
   assert.doesNotMatch(html, /Try an example property|Use my own property|builder-site-mode/)
   assert.match(html, /Can’t find your address/)
   assert.match(html, /What the published height tells us/)
-  assert.match(html, /Starting at CAD 187,000/)
-  assert.match(html, /Contract to delivery: roughly 12–18 weeks · provider-wide/)
-  assert.match(html, /On-site installation: 1 day · provider-wide/)
+  assert.match(html, /Starting at CAD 156,000/)
+  assert.match(html, /Bath \+ Kitchen/)
+  assert.doesNotMatch(html, /187,000/)
   assert.match(html, /<summary>Price &amp; timing details and sources<\/summary>/)
 })
 
@@ -86,7 +86,8 @@ test('saved example retains the licensed packet and an explicit measurable start
   assert.equal(request.parcel.source.review_status, 'unreviewed')
   assert.equal(request.buildings[0].basis, 'roofline')
   assert.equal(request.placement.width_m, 3.048)
-  assert.equal(request.placement.depth_m, 9.144)
+  assert.equal(request.placement.depth_m, 7.3406) // Model 240: 24 ft 1 in.
+  assert.equal(exampleRequest(initialExamplePosition(bundledCatalogue.models[2]))?.placement.depth_m, 9.144) // October Model 300: 30 ft.
   assert.deepEqual(request.placement.centre_xy, [471913, 5365834])
   assert.ok(request.placement.angle_degrees > -22 && request.placement.angle_degrees < -21, 'building length follows the saved Cecelia lot axis')
   assert.equal(exampleRequest({ ...initialExamplePosition(), width: '' }), null)
