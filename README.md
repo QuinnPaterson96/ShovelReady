@@ -1,5 +1,10 @@
 # ShovelReady
 
+**Check my property** opens an address search. On a mapped parcel, explore the
+outline, rooflines and available local findings before choosing a garden-suite
+model. The same parcel carries through placement and the unsent enquiry.
+Model-specific links and the saved examples also remain available.
+
 The homeowner journey includes a [location-aware project timeline](docs/project-timeline.md)
 beside economics: independent Victoria/Saanich timing sources, editable overlapping
 stages and optional first-project-year collected rent. It remains useful when rental

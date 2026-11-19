@@ -1,0 +1,78 @@
+.property-options-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: clamp(1rem, 3vw, 2.5rem);
+  align-items: start;
+}
+
+.property-options .observation-map {
+  min-width: 0;
+  height: auto;
+  margin: 0;
+  background: transparent;
+  border: 0;
+}
+
+.property-options-house-plan {
+  min-width: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+.property-options-house-plan legend {
+  padding: 0;
+  font-weight: 650;
+}
+
+.property-options-house-plan small {
+  color: var(--ink-muted);
+  font-weight: 400;
+}
+
+.property-options-house-plan > div {
+  display: flex;
+  gap: 0 1rem;
+  flex-wrap: wrap;
+}
+
+.property-options-house-plan label {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  min-height: 44px;
+  margin: 0;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.property-options-house-plan input[type="radio"] {
+  width: 1rem;
+  height: 1rem;
+  min-height: 0;
+  margin: 0;
+  accent-color: var(--primary);
+}
+
+.property-options-finding {
+  max-width: 65ch;
+  margin-bottom: 1.25rem;
+  overflow-wrap: anywhere;
+}
+
+.property-options-finding p {
+  margin: .25rem 0;
+}
+
+.property-options-source {
+  color: var(--ink-muted);
+  font-size: .875rem;
+}
+
+.property-options .sr-primary {
+  min-height: 44px;
+}
+
+@media (max-width: 48rem) {
+  .property-options-layout { grid-template-columns: minmax(0, 1fr); }
+}

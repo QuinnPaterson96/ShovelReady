@@ -24,6 +24,7 @@ const errors = [], requests = [], evidence = []
 page.on('pageerror', error => errors.push(error.message))
 let failSuggestion = false, holdSuggestion = false, heldStarted = false, releaseSuggestion
 let holdMunicipal = false, municipalStarted = false, releaseMunicipal
+let holdOpportunity = false, releaseOpportunity, opportunityReleased = false
 await context.route('**/*', async route => {
   const request = route.request(), url = new URL(request.url())
   if (url.origin !== new URL(base).origin) { errors.push(`Unexpected external request: ${url.origin}`); return route.abort() }
@@ -52,6 +53,14 @@ await context.route('**/*', async route => {
     return json(streets.victoria)
   }
   if (url.pathname.startsWith('/api/victoria-zoning/')) return route.fulfill({ status: 503, body: 'Offline municipal source boundary' })
+  if (url.pathname === '/api/municipal-rules/v1/property-opportunity' && holdOpportunity) {
+    const response = await route.fetch()
+    assert.ok(response.ok(), 'The Saanich fixture must produce a real parcel finding')
+    await new Promise(resolve => { releaseOpportunity = resolve })
+    await route.fulfill({ response }).catch(() => {}) // An aborted request is also a valid outcome.
+    opportunityReleased = true
+    return
+  }
   if (url.pathname === '/api/municipal-rules/v1/evaluate' && holdMunicipal) {
     municipalStarted = true
     const response = await fetch(base + url.pathname, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: request.postData() })
@@ -84,15 +93,65 @@ const settled = async () => until(async () => {
 const search = async text => { await page.locator('#sd-address').fill(text); await page.locator('#sd-address').press('Enter') }
 const suggest = () => page.getByRole('button', { name: 'Suggest a placement', exact: true })
 const map = () => page.locator('svg.occupied-map')
+const propertyOptions = page.locator('#property-options-title')
+const tryModel = page.getByRole('button', { name: 'Try this model', exact: true })
+async function chooseLayout(address, requestStart, { areaFinding = false, modelId = 'aux-240', keepHouse = false } = {}) {
+  await propertyOptions.waitFor()
+  const selectedProperty = page.getByRole('region', { name: 'Selected property', exact: true })
+  assert.match(await selectedProperty.innerText(), address)
+  assert.equal(await tryModel.isVisible(), false)
+  const option = page.locator('section[aria-labelledby="property-options-title"]')
+  assert.equal(await option.locator('input[type="radio"]:checked').count(), 0, 'House plans are optional and specific to the selected property')
+  if (areaFinding) {
+    await option.getByText(/400\s*m²/).first().waitFor()
+    assert.ok(await option.getByRole('link').first().isVisible(), 'A parcel finding identifies its local rule source')
+  } else {
+    assert.doesNotMatch(await option.innerText(), /400\s*m²/, 'A previous Saanich parcel result cannot become a Victoria finding')
+    await option.getByRole('radio', { name: 'Replace it' }).check()
+    assert.match(await option.getByRole('status').innerText(), /replacement.*outside current coverage/i)
+    await option.getByRole('radio', { name: 'Still exploring' }).check()
+  }
+  if (keepHouse) {
+    await option.getByRole('radio', { name: 'Replace it' }).check()
+    await option.getByRole('radio', { name: 'Keep it' }).check()
+  }
+  await page.getByRole('button', { name: 'Explore a garden suite', exact: true }).click()
+  await tryModel.waitFor()
+  const modelChoice = page.locator('#builder-model-choice')
+  await modelChoice.selectOption(modelId)
+  const placementRequests = requests.slice(requestStart).filter(path =>
+    path === '/api/placement-suggestions/v1/suggest' || path === '/api/scouting-geometry/assess')
+  assert.deepEqual(placementRequests, [], 'Selecting a parcel and previewing a model must not start a placement')
+  await tryModel.click()
+  await settled()
+  const record = await current()
+  assert.match(record.live.address.label, address)
+  assert.equal(record.model_catalogue.model.model_id, modelId)
+  assert.match(record.measurement.site.label, address)
+}
 
 try {
-  await page.goto(`${base}/#assessment`)
+  await page.goto(base)
+  await page.getByRole('button', { name: 'Check my property', exact: true }).click()
+  // Leave a selected Saanich parcel while its area check is in flight.
+  holdOpportunity = true
+  await search('200 Gorge Rd W')
+  await page.getByRole('button', { name: /200 Gorge Rd W, Saanich/ }).click()
+  await propertyOptions.waitFor()
+  await until(async () => !!releaseOpportunity, 'No Saanich parcel finding was requested')
+  await page.getByRole('button', { name: 'Change address', exact: true }).filter({ visible: true }).first().click()
+  assert.equal(await propertyOptions.isVisible(), false)
   await search('1144 May St')
   await page.getByRole('button', { name: /1144 May St, Victoria/ }).click()
-  await settled()
+  await propertyOptions.waitFor()
+  holdOpportunity = false
+  releaseOpportunity()
+  await until(async () => opportunityReleased, 'The delayed parcel finding did not finish')
+  await chooseLayout(/1144 May St, Victoria/, 0)
   let value = await current()
   assert.equal(value.municipality.jurisdiction_id, 'ca-bc-victoria')
   assert.equal(value.municipality.origin, 'municipal_parcel')
+  assert.equal(value.enquiry_inputs.housePlan, 'exploring', 'The property preference survives model selection')
   assert.equal(value.project_settings.proposal.proposed_use, null, 'the initial map preview must not answer intended use')
   assert.equal(value.planning_comparison_scope.garden_suite_comparisons_applied, false)
   assert.ok(value.measurement.startingSuggestion, 'automatic position retains its suggestion evidence')
@@ -175,9 +234,11 @@ try {
 
   // Saanich reuses discovery, street observations and the common evaluation flow.
   await page.getByRole('button', { name: 'Change address', exact: true }).filter({ visible: true }).first().click()
+  assert.equal(await propertyOptions.isVisible(), false, 'Clearing a parcel removes its option summary')
   const before = requests.length
   await search('200 Gorge Rd W')
   await page.getByRole('button', { name: /200 Gorge Rd W, Saanich/ }).click()
+  await chooseLayout(/200 Gorge Rd W, Saanich/, before, { areaFinding: true, keepHouse: true })
   await until(async () => (await current()).zoning_site_assumptions?.street_adjacency?.origin === 'municipal_map', 'Missing Saanich prefill')
   const observed = await current()
   assert.equal(observed.municipality.jurisdiction_id, 'ca-bc-saanich')
@@ -256,6 +317,8 @@ try {
   const enquiry = page.locator('#builder-unsent-preview')
   await until(async () => (await enquiry.textContent())?.includes('Local planning comparisons'), 'Saanich enquiry did not compose')
   const message = await enquiry.innerText()
+  assert.match(message, /I would like to keep the existing house\./)
+  assert.doesNotMatch(message, /considering replacing the existing house|still exploring whether to keep/i)
   assert.match(message, /Lot area:.*conflicts with the candidate threshold/)
   assert.match(message, /District of Saanich.*unreviewed/)
   assert.doesNotMatch(message, /No local rule comparison was run|Candidate Victoria|GRD-1|saanich-gs-min-lot-area/)
@@ -283,8 +346,10 @@ try {
   // Replay an actual lake parcel through the same editor. Keeping one mark and
   // replacing another must give the drawing and enquiry the correct provenance.
   await page.getByRole('button', { name: 'Change address', exact: true }).filter({ visible: true }).first().click()
+  const beforeLake = requests.length
   await search('5015 Prospect Lake Rd')
   await page.getByRole('button', { name: /5015 Prospect Lake Rd, Saanich/ }).click()
+  await chooseLayout(/5015 Prospect Lake Rd, Saanich/, beforeLake, { areaFinding: true, modelId: 'hewing-quadra4' })
   await until(async () => (await current()).zoning_site_assumptions?.waterfront?.origin === 'municipal_map', 'Lake marks did not arrive')
   const lakeSite = (await current()).zoning_site_assumptions
   assert.equal(lakeSite.waterfront.source.record_label, 'Prospect Lake')
@@ -305,9 +370,9 @@ try {
   evidence.push({phase: 'editable lake edge and grouped removal', suggested: lakeSite.waterfront, count: 4})
   assert.deepEqual(errors, [])
   await writeFile(`${output}/evidence.json`, JSON.stringify({ checks: evidence, requests, browserErrors: errors }, null, 2))
-  console.log('PASS: Victoria/Saanich street prefill, Prospect Lake waterfront prefill, editable marks, connected city routing, smart placement, setback overlays, edit race, recovery, municipality invalidation and narrow layout')
+  console.log('PASS: property-first options, stale property finding, explicit model choice, Victoria/Saanich street prefill, Prospect Lake waterfront prefill, editable marks, smart placement, setbacks, recovery and narrow layout')
 } catch (error) {
   await page.screenshot({ path: `${output}/failure.png`, fullPage: true }).catch(() => {})
   await writeFile(`${output}/failure.txt`, `${error.stack}\n\n${(await page.locator('body').innerText()).slice(0,22000)}`)
   throw error
-} finally { releaseStreets(); releaseSuggestion?.(); releaseMunicipal?.(); await browser.close() }
+} finally { releaseStreets(); releaseSuggestion?.(); releaseMunicipal?.(); releaseOpportunity?.(); await browser.close() }

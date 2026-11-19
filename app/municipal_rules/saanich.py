@@ -5,6 +5,7 @@ from decimal import Decimal
 from functools import lru_cache
 from pathlib import Path
 from typing import Literal
+from urllib.parse import parse_qs
 
 from pydantic import Field, model_validator
 from shapely.geometry import shape
@@ -12,7 +13,10 @@ from shapely.geometry import shape
 from app.conditional_screening.core import evaluate as compare
 from app.conditional_screening.payloads import Boundary, Fact, Quantity, Request, Rule, Source
 from app.conditional_screening.site_context import Assumptions
-from app.scouting_geometry.core import assess
+from app.municipal_sites.api import SaanichParcelRef
+from app.municipal_sites.sources import LAYERS
+from app.scouting_geometry.core import assess, parcel_polygon
+from app.scouting_geometry.payloads import Feature
 from app.scouting_geometry.payloads import Request as GeometryRequest
 
 from .models import Definition, Finding, InputField, Profile
@@ -59,8 +63,12 @@ def source(check: dict) -> Source:
     )
 
 
+def captured_checks() -> dict[str, dict]:
+    return {check["identity"]["logical_id"]: check for check in packet()["checks"]}
+
+
 def definitions() -> dict[str, Definition]:
-    checks = {check["identity"]["logical_id"]: check for check in packet()["checks"]}
+    checks = captured_checks()
     return {
         field: Definition(
             id=check["identity"]["logical_id"],
@@ -123,6 +131,75 @@ def profile() -> Profile:
             ),
         ),
     )
+
+
+class ParcelOpportunityRequest(Boundary):
+    schema_version: Literal["municipal-property-opportunity.request.v1"]
+    parcel_ref: SaanichParcelRef
+    parcel: Feature
+
+    @model_validator(mode="after")
+    def matching_observation(self):
+        # placementCase preserves the parcel adapter, object ID and candidate index.
+        # The municipal observation independently records the queried layer and object ID.
+        identity, _, candidate_index = self.parcel.id.rpartition(":")
+        ref = self.parcel_ref
+        layer = LAYERS["Saanich parcels"]
+        reference, _, query = (self.parcel.source.reference or "").partition("?")
+        if (
+            identity != f"live-parcel:{ref.source}:{ref.object_id}"
+            or not candidate_index.isdecimal()
+            or self.parcel.source.provider != layer.provider.name
+            or reference != f"{layer.url}/query"
+            or parse_qs(query).get("objectIds") != [str(ref.object_id)]
+        ):
+            raise ValueError("Parcel identity and municipal observation must match")
+        return self
+
+
+class ParcelOpportunityResult(Boundary):
+    schema_version: Literal["municipal-property-opportunity.result.v1"] = (
+        "municipal-property-opportunity.result.v1"
+    )
+    jurisdiction_id: Literal["ca-bc-saanich"] = "ca-bc-saanich"
+    pathway_id: str
+    package_revision: str
+    source_snapshot_id: str
+    parcel_ref: SaanichParcelRef
+    parcel: Feature
+    status: Literal["meets_under_assumptions", "apparent_conflict_under_assumptions"]
+    derived_area_m2: Decimal
+    minimum_m2: Decimal
+    definition: Definition
+
+
+def parcel_opportunity(request: ParcelOpportunityRequest) -> ParcelOpportunityResult:
+    """Compare one site measurement, without a proposal or assumptions about use."""
+    polygon, error = parcel_polygon(request.parcel, "EPSG:3157")
+    if error:
+        raise ValueError("A valid municipal parcel polygon in EPSG:3157 is required")
+    area = Decimal(str(polygon.area))
+    definition = definitions()["lot_area"]
+    minimum = scalar_threshold(captured_checks()[definition.id])
+    return ParcelOpportunityResult(
+        pathway_id=PATHWAY,
+        package_revision=REVISION,
+        source_snapshot_id=packet()["source"]["snapshot_id"],
+        parcel_ref=request.parcel_ref,
+        parcel=request.parcel,
+        derived_area_m2=area,
+        minimum_m2=minimum.value,
+        definition=definition,
+        status=(
+            "meets_under_assumptions"
+            if area >= minimum.value
+            else "apparent_conflict_under_assumptions"
+        ),
+    )
+
+
+def scalar_threshold(check: dict) -> Quantity:
+    return Quantity(value=check["quantity"]["value"], unit=check["quantity"]["unit"])
 
 
 class Measurement(Boundary):
@@ -233,9 +310,9 @@ def evaluate(payload: dict):
 
     measured = assess(body.geometry)
     valid_parcel = measured.checks[0].status == "observed"
-    captured_checks = {check["identity"]["logical_id"]: check for check in packet()["checks"]}
+    captured = captured_checks()
     for key, _label, kind, _unit, logical_id in _FIELDS:
-        check = captured_checks[logical_id]
+        check = captured[logical_id]
         definition = fields[key]
         supplied = getattr(body.inputs, key)
         quantity = supplied.quantity if supplied else None
@@ -272,9 +349,7 @@ def evaluate(payload: dict):
                 revision_id=definition.revision,
                 kind=kind,
                 fact_id=key,
-                threshold=Quantity(
-                    value=check["quantity"]["value"], unit=check["quantity"]["unit"]
-                ),
+                threshold=scalar_threshold(check),
                 measurement_definition=definition.basis,
                 source=definition.source,
                 applicability="unsupported" if outside_use or contradicted else "applicable",
@@ -365,7 +440,7 @@ def evaluate(payload: dict):
             "other applicable provisions are outside the implemented subset.",
             next_action="Ask the provider or District which siting and servicing questions "
             "need investigation for this proposal.",
-            source=source(captured_checks["saanich-gs-height-roof-branch"]),
+            source=source(captured["saanich-gs-height-roof-branch"]),
         )
     )
     return result, tuple(findings)
