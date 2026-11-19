@@ -17,7 +17,7 @@ The homeowner demo now [suggests an editable starting position, shows setback ma
 
 Review implementation: [optional homeowner budget journey](docs/project-budget-journey.md)
 connects captured prices, editable cost assumptions and unpriced work to the existing
-419 Cecelia / Model 300 walkthrough and unsent enquiry. It does not establish installed
+original 419 Cecelia / Model 300 walkthrough and unsent enquiry. It does not establish installed
 cost or affordability. [Same-facts enquiry comparison](docs/samples/budget-journey/comparison.html)
 retains the 435-word before and 348-word after; actual customer validation remains open.
 
@@ -35,8 +35,11 @@ ShovelReady explores a practical question: **given a prefabricated building desi
 
 The current commercial POC is a screening journey for a prefab builder's website:
 help a visitor explore a model on their property and prepare a useful enquiry. The
-reference company is **aux box**, starting with **Model 300** and a bounded City of
-Victoria demonstration. See the [builder screening brief](docs/builder-screening-demo.md)
+main demo uses **aux box Model 240, Bath + Kitchen**, on a saved Victoria
+property. Own-property exploration includes mapped placement in Victoria and
+Saanich, with different preliminary comparisons in each municipality.
+[Model 300’s October 2026 example](https://www.shovelready.ca/#examples/model-300)
+remains available with its captured dimensions and prices. See the [builder screening brief](docs/builder-screening-demo.md)
 for the choice, sourced constraints, acceptance cases and implementation sequence.
 This is an independent demonstration, not a commissioned aux box product.
 
@@ -318,12 +321,11 @@ Empty searched layers are scoped probable findings; permit documents, title and
 servicing remain review gaps. See [architecture](docs/architecture.md) for defaults,
 provenance and uncertainty handling. These features do not publish accepted data.
 
-The prefab demonstration now also offers Model 240, C.H. Studio Pod and Quadra 4.
+The prefab demonstration opens with Model 240 and also offers the dated Model 300, C.H. Studio Pod and Quadra 4.
 These are unreviewed observations, not accepted product/site evaluations.
 See [the model mapping, local demo and remaining evidence gaps](docs/prefab-generalization.md).
 
 ## Guided example walkthrough
 
-Home now offers Try an example and Watch a walkthrough beside Start assessment.
-Both use the same Model 300 / saved Victoria assessment; playback ends at an editable
-unsent enquiry. See [implementation, verification and remaining gaps](docs/guided-walkthrough.md).
+Home offers **Watch the demo**, **Try an example** and **Check my property**.
+Both demo actions use [Model 240 on the saved Victoria property](https://www.shovelready.ca/#examples/model-240). Playback ends at an editable, unsent enquiry. See [the original walkthrough implementation](docs/guided-walkthrough.md).

@@ -21,6 +21,7 @@ export function focusAssessmentField(id: string, block: ScrollLogicalPosition = 
 }
 
 export function assessmentEntry(hash: string): AssessmentEntry | null {
+  if (hash === '#examples/model-240') return { example: true, modelId: 'aux-240' }
   if (hash === '#examples/model-300') return { example: true, modelId: 'aux-300' }
   if (hash === '#builder' || hash.startsWith('#builder-') || hash.startsWith('#placement-action-')) return {}
   if (hash !== '#assessment' && !hash.startsWith('#assessment?')) return null

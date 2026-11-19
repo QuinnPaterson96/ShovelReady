@@ -1,7 +1,7 @@
 {
   "schema_version": "sr-40.catalogue.v1",
-  "snapshot_id": "demo.prefab-journey.2026-11-06.source-labels.v2",
-  "captured_at": "2026-10-07",
+  "snapshot_id": "demo.prefab-journey.2026-11-19.model-240",
+  "captured_at": "2026-11-19",
   "provenance": "manual_transcription_of_public_provider_specs",
   "review_status": "unreviewed",
   "models": [
@@ -437,6 +437,173 @@
           ]
         }
       ]
+    },
+    {
+      "model_id": "aux-240",
+      "provider": "aux box",
+      "name": "Model 240",
+      "provider_url": "https://www.auxbox.ca/model-240",
+      "source_revision": null,
+      "configuration": "Bath + Kitchen",
+      "construction_method": "Factory-built structure, per provider",
+      "intended_use_note": "Studio layout with a full bathroom and kitchenette. Confirm residential use and configuration for the site.",
+      "service_area_status": "provider_claim",
+      "service_area_note": "Provider says delivered anywhere in North America; Victoria project service and site feasibility unconfirmed.",
+      "installation_note": "Provider says crane placement; permitting, foundation, site services, shipping and installation are separate site work/costs.",
+      "footprint_note": "Provider labels 240 ft² a footprint, but roof overhangs and covered deck treatment are undefined.",
+      "height_note": "Provider exterior height 10 ft 3 in has no stated datum or roof-point definition; cannot populate regulatory building height.",
+      "missing_facts": [
+        "Controlled configuration and drawing revision",
+        "Roof high point and height datum",
+        "Overhang/projection envelope",
+        "Foundation and installed grade relationship",
+        "Regulatory floor area and occupancy footprint",
+        "Victoria site delivery and installation confirmation"
+      ],
+      "sources": [
+        {
+          "source_id": "aux-240-page",
+          "url": "https://www.auxbox.ca/model-240",
+          "locator": "The Specs > Dimensions; Site Prep, Delivery + Installation",
+          "captured_at": "2026-09-25",
+          "sha256": "5b565c75165e624be63d0d65c4f1ae7ca2a933605aefde89a13abda842708408",
+          "artifact_status": "capture_gap",
+          "upstream_revision": null,
+          "updated_at": null
+        },
+        {
+          "source_id": "aux-240-bath-kitchen",
+          "url": "https://www.auxbox.ca/model-240",
+          "locator": "Plan your space > Bath + Kitchen; The Specs > Site Prep, Delivery + Installation; page header (CAD)",
+          "captured_at": "2026-11-19",
+          "sha256": null,
+          "artifact_status": "capture_gap",
+          "upstream_revision": null,
+          "updated_at": null
+        }
+      ],
+      "measurements": [
+        {
+          "name": "nominal_exterior_width",
+          "status": "known",
+          "definition": "Provider exterior width; overhang inclusion unknown",
+          "quantity": {
+            "original_text": "10 ft",
+            "original_value": "10",
+            "original_unit": "ft",
+            "dimension": "length",
+            "value": "3.0480",
+            "unit": "m",
+            "basis": null
+          },
+          "source_id": "aux-240-page",
+          "reason": null
+        },
+        {
+          "name": "nominal_exterior_depth",
+          "status": "known",
+          "definition": "Provider exterior length; overhang inclusion unknown",
+          "quantity": {
+            "original_text": "24 ft 1 in",
+            "original_value": "24.083333333333333333",
+            "original_unit": "ft",
+            "dimension": "length",
+            "value": "7.3405999999999999998984",
+            "unit": "m",
+            "basis": null
+          },
+          "source_id": "aux-240-page",
+          "reason": null
+        },
+        {
+          "name": "manufacturer_interior_area",
+          "status": "known",
+          "definition": "Provider living space, not regulatory floor area",
+          "quantity": {
+            "original_text": "146 sq ft total living space",
+            "original_value": "146",
+            "original_unit": "ft2",
+            "dimension": "area",
+            "value": "13.56384384",
+            "unit": "m2",
+            "basis": null
+          },
+          "source_id": "aux-240-page",
+          "reason": null
+        },
+        {
+          "name": "manufacturer_footprint",
+          "status": "known",
+          "definition": "Provider footprint; projections/deck basis unknown",
+          "quantity": {
+            "original_text": "240 sq ft footprint",
+            "original_value": "240",
+            "original_unit": "ft2",
+            "dimension": "area",
+            "value": "22.29672960",
+            "unit": "m2",
+            "basis": null
+          },
+          "source_id": "aux-240-page",
+          "reason": null
+        },
+        {
+          "name": "advertised_overall_height",
+          "status": "known",
+          "definition": "Provider exterior height; datum/roof point unspecified",
+          "quantity": {
+            "original_text": "10 ft 3 in",
+            "original_value": "10.25",
+            "original_unit": "ft",
+            "dimension": "length",
+            "value": "3.124200",
+            "unit": "m",
+            "basis": null
+          },
+          "source_id": "aux-240-page",
+          "reason": null
+        },
+        {
+          "name": "roof_height",
+          "status": "missing",
+          "definition": "Roof high point measured from stated foundation datum",
+          "quantity": null,
+          "source_id": null,
+          "reason": "Exterior height has no stated datum or roof-point definition"
+        }
+      ],
+      "review_status": "unreviewed",
+      "prices": [
+        {
+          "source_id": "aux-240-bath-kitchen",
+          "wording": "Bath + Kitchen: Starting at $156,000",
+          "scope": "model",
+          "configuration": "Bath + Kitchen",
+          "region": null,
+          "qualifications": [
+            "Starting price for the Bath + Kitchen layout used in this demo. Other configurations have different prices.",
+            "Confirm upgrades, taxes and site costs with aux box."
+          ],
+          "amount": {
+            "minimum": "156000",
+            "maximum": null
+          },
+          "currency": "CAD",
+          "basis": "starting",
+          "inclusions": [
+            "Full bathroom and kitchenette"
+          ],
+          "exclusions": [
+            "Permitting",
+            "Foundations",
+            "Site services",
+            "Shipping",
+            "Installation"
+          ],
+          "tax_treatment": null
+        }
+      ],
+      "timings": []
     }
   ]
 }

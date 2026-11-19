@@ -18,11 +18,11 @@ export function applyIntendedUse(settings: ProjectSettings, value: string): Proj
     note: mapped.state === 'unanswered' ? 'Intended use has not been answered.' : mapped.state === 'unknown' ? 'The homeowner explicitly left intended use unknown.' : `Homeowner supplied intended use: ${mapped.intendedUse}; planning applicability remains unverified.` } } }
 }
 
-export function IntendedUseControl({ value, onChange, id = 'builder-intended-use' }: { value: string; onChange: (value: string) => void; id?: string }) {
-  const options = ['', 'Garden suite', 'Home office', 'Other use', 'Not sure']
+export function IntendedUseControl({ value, onChange, id = 'builder-intended-use', required = false }: { value: string; onChange: (value: string) => void; id?: string; required?: boolean }) {
+  const options = ['', 'Garden suite', 'Home office', 'Other use', 'Not sure', 'Prefer not to say']
   return <div className="intended-use-control">
-    <label htmlFor={id}>How would you use the unit?</label>
-    <select id={id} value={value} onChange={event => onChange(event.target.value)} aria-describedby={`${id}-help`}>
+    <label className={required ? 'builder-required-label' : undefined} htmlFor={id}>How would you use the unit? {required && <span>Required</span>}</label>
+    <select required={required} className={required ? `builder-required-input${value ? '' : ' is-missing'}` : undefined} id={id} value={value} onChange={event => onChange(event.target.value)} aria-describedby={`${id}-help`}>
       {options.map(option => <option key={option} value={option}>{option || 'Choose an intended use'}</option>)}
       {value && !options.includes(value) && <option value={value}>{value}</option>}
     </select>

@@ -52,7 +52,8 @@ const backToProject = () => page.getByRole('link', { name: 'Back to project', ex
 try {
   await page.goto(frontend)
   await inspect('home')
-  await page.getByRole('button', { name: 'Try an example', exact: true }).tap()
+  await page.goto(new URL('/#examples/model-300', page.url()).href)
+  await page.reload()
   await settle()
   await writeFile(`${output}/initial-ui.txt`, await page.locator('body').innerText())
   if (process.env.COMPARISON_BASELINE_ONLY) {
@@ -60,7 +61,7 @@ try {
     await page.screenshot({ path: `${output}/narrow-baseline.png`, fullPage: true })
   } else {
     await openEnquiry()
-    await page.locator('#builder-use').fill('Garden suite')
+    await page.locator('#builder-use').selectOption('Garden suite')
     await page.locator('#builder-relationship').fill('Public demonstration; no ownership claimed')
     await page.locator('#builder-nextStep').fill('Please advise what is needed for an initial call.')
     const question = 'For Model 300, can you confirm a matching quote and the foundation responsibilities?'
@@ -79,8 +80,8 @@ try {
     await openEnquiry()
     await page.locator('#builder-question').fill('For Model 240, which current configuration and currency apply?')
     await openEstimate()
-    assert.equal(await page.locator('#economics-cost-unit').inputValue(), '')
-    await inspect('missing-price-model240')
+    assert.equal(await page.locator('#economics-cost-unit').inputValue(), '156000')
+    await inspect('bath-kitchen-model240')
     await backToProject()
     await page.locator('#builder-model-choice').selectOption('wcch-ch-studio')
     await settle()

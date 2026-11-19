@@ -8,7 +8,7 @@ import type { ProjectSettings } from '../conditional_screening/projectSettings'
 import type { PropertyScanResult } from '../conditional_screening/PropertyScan'
 import type { SiteAssumptions } from '../zoning_site_assumptions/model'
 import { measurementWithUnit } from '../measurements'
-import { defaultJourneyModel } from '../model_catalogue/demo'
+import { historicalModel300, historicalModelNote } from '../model_catalogue/demo'
 import type { CatalogueModel } from '../model_catalogue/model'
 import type { BudgetDraft, Context } from '../project_budget/contract'
 import { budgetQuestions, budgetEnquiryParagraph, recipientBudget } from '../project_budget/pipeline'
@@ -18,7 +18,7 @@ export type EnquiryInput = {
   localComparisonsAvailable?: boolean
   budgetDraft?: { draft: BudgetDraft; context: Context; today?: string }
   demoAnswers?: Partial<Record<'intendedUse' | 'relationship' | 'nextStep' | 'streetContext', string>>; question?: string; propertyConcern?: string; intendedUse: string; timing: string; budget: string; access: string; services: string
-  relationship?: string; stage?: string; configuration?: string; nextStep?: string; contact?: string
+  useNote?: string; relationship?: string; stage?: string; configuration?: string; nextStep?: string; contact?: string
 }
 
 export function enquiryUseQualification(intendedUse: string, scenarioUse: Pathway['proposed_use'] = 'garden_suite', localComparisonsAvailable = true): string {
@@ -159,12 +159,12 @@ export function preparationChecklist(input: EnquiryInput): string[] {
 
 export function manufacturerDocument(input: EnquiryInput, address: string | null, example: boolean,
   measured: OccupiedMeasurement | null, conditional: ScreeningResult | null, scenarios: ScenarioResult | null, scan: PropertyScanResult | null,
-  linkedPlacement: boolean, sketchAvailable = false, scenarioUse: Pathway['proposed_use'] = 'garden_suite', model: CatalogueModel = defaultJourneyModel): EnquiryDocument {
+  linkedPlacement: boolean, sketchAvailable = false, scenarioUse: Pathway['proposed_use'] = 'garden_suite', model: CatalogueModel = historicalModel300): EnquiryDocument {
   const placementIssues = placementConcerns(measured, scenarioUse === 'garden_suite' ? conditional : null, scenarioUse === 'garden_suite' ? scenarios : null)
   const concerns = [...(input.propertyConcern?.trim() ? [input.propertyConcern.trim()] : []), ...placementIssues]
   const supplied = (value?: string) => !!value?.trim() && !['unknown', 'not sure', 'prefer not to say'].includes(value.trim().toLowerCase())
   const sentence = (value: string) => /[.!?]$/.test(value.trim()) ? value.trim() : `${value.trim()}.`
-  const facts = [!example && supplied(input.relationship) && sentence(input.relationship!),
+  const facts = [input.useNote?.trim() && sentence(input.useNote), !example && supplied(input.relationship) && sentence(input.relationship!),
     supplied(input.stage) && sentence(`My project stage is ${input.stage!.trim()}`),
     supplied(input.configuration) && sentence(`My configuration preference is ${input.configuration!.trim()}`),
     supplied(input.timing) && sentence(`My preferred timing is ${input.timing.trim()}`),
@@ -186,7 +186,7 @@ export function manufacturerDocument(input: EnquiryInput, address: string | null
     example,
     question: next || question || `Could you help establish whether ${model.name} is worth investigating for this project, and advise the next useful step?`,
     sections: [
-      section('Project', [`I’m exploring ${model.provider} ${model.name}${address ? ` at ${address}` : ' for a possible site'}.${use}`, ...(facts.length ? [facts.join(' ')] : [])], true),
+      section('Project', [`I’m exploring ${model.provider} ${model.name}${address ? ` at ${address}` : ' for a possible site'}.${use}`, ...(model.model_id === historicalModel300.model_id ? [historicalModelNote] : []), ...(model.model_id === 'aux-240' && !supplied(input.configuration) ? [`The illustrated layout is ${model.configuration}.`] : []), ...(facts.length ? [facts.join(' ')] : [])], true),
       ...(concerns.length ? [section('Preliminary concerns', [linkedPlacement ? 'The following matters remain unresolved before relying on this proposal.' : input.propertyConcern?.trim() ? 'The property identity question concerns the proposed site; any placement findings below concern a separate retained example.' : 'The following findings concern a separate retained example, not the proposed property.', ...concerns,
         placementIssues.length ? 'Could you advise whether relocation, rotation or another configuration is worth exploring? I will resolve the planning questions separately before relying on this position.' : 'What site information would help you advise while I confirm the property details?' ], true)] : []),
       ...(budgetLines.length ? [section('Cost scope for discussion', [budgetLines.join(' '),

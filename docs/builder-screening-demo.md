@@ -1,5 +1,16 @@
 # Builder website screening POC
 
+**Current demo — November 19, 2026.** The homepage and fresh assessments open
+with aux box Model 240. The walkthrough uses the listed Bath + Kitchen layout,
+starting at CAD 156,000 before site work. The manufacturer lists other layouts
+at different prices. The [model page](https://www.auxbox.ca/model-240) and
+[current catalogue](https://www.auxbox.ca/model-overview) were checked on
+November 19. Prices and dimensions are public observations. The older Model 300
+is labelled as an October 2026 example in the selector, enquiry and report.
+Its old product URL returned 404; current orderability requires provider
+confirmation. The original brief and acceptance cases below document that example.
+
+
 Decision date: September 27, 2026. Reference company: **aux box**. Lead product:
 **Model 300**. Geographic demonstration: **City of Victoria**, initially using the
 three retained site packets. This is an independent ShovelReady demonstration;

@@ -11,6 +11,7 @@ import { BuilderJourneyNav, emptyBuilderJourneyCompletion } from './navigation/B
 import './navigation/builder-journey-nav.css'
 import './builder_demo/model_image/model-image.css'
 import { Brand } from './brand/Brand'
+import { defaultJourneyModel } from './model_catalogue/demo'
 import Homepage from './assessment/Homepage'
 import { AssessmentForm, PreparationSummary } from './assessment/Assessment'
 import { draftReducer, initialDraft, submissionErrors } from './assessment/model'
@@ -58,7 +59,7 @@ export default function App() {
   const openDemo = (walkthrough = false) => {
     builderVisited.current = true; setBuilderOpened(true)
     setBuilderLanding('example')
-    setEntryRequest({ example: true, modelId: 'aux-300', walkthrough })
+    setEntryRequest({ example: true, modelId: defaultJourneyModel.model_id, walkthrough })
     navigate('builder', '#assessment')
   }
   useEffect(() => {

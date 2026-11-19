@@ -21,9 +21,7 @@ const show = (value: number | null, dimension: 'length' | 'area') => measurement
 
 
 export function ExampleProperty({ model = defaultJourneyModel, initialDraft, onDraftChange, onMeasurement, onAssessmentPending, boundaryInteraction, placementSummary, placementContinuation, evidenceTargetId, moveSuggestion, placementConcerns, showPlacementConcerns = true, onContinueUnresolved, onFailureChange, playbackPosition, suggestionContext, autoSuggest = true }: { suggestionContext?: SuggestionContext | null; autoSuggest?: boolean; initialDraft?: RetainedPlacementDraft | null; onDraftChange?: (draft: RetainedPlacementDraft) => void; onFailureChange?: (failed: boolean) => void; playbackPosition?: { token: number; position: ExamplePosition }; model?: CatalogueModel; onAssessmentPending?: (pending: boolean) => void; placementConcerns?: ReactNode; showPlacementConcerns?: boolean; onContinueUnresolved?: () => void; onMeasurement: (value: OccupiedMeasurement | null) => void; boundaryInteraction?: BoundaryMapInteraction; placementSummary?: ReactNode; placementContinuation?: ReactNode; evidenceTargetId?: string; moveSuggestion?: { dx: number; dy: number; token: number } }) {
-  const initialPosition = () => ({ ...initialExamplePosition(),
-    width: model.measurements.find(item => item.name === 'nominal_exterior_width')?.quantity?.value ?? '',
-    depth: model.measurements.find(item => item.name === 'nominal_exterior_depth')?.quantity?.value ?? '' })
+  const initialPosition = () => initialExamplePosition(model)
   const [position, setPosition] = useState(() => initialDraft?.position ?? initialPosition())
   const [startingSuggestion, setStartingSuggestion] = useState<PlacementSuggestion | null>(initialDraft?.startingSuggestion ?? null)
   const appliedMove = useRef<number | null>(null)

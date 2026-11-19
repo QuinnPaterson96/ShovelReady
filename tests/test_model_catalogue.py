@@ -37,8 +37,16 @@ def test_demo_export_keeps_research_unknowns_separate_from_active_catalogue():
     assert "browser inspection for Quadra price" in quadra.sources[0].locator
     for model in candidate.models:
         assert model.review_status == "unreviewed" and model.source_revision is None
-        for field in ["roof_height", "manufacturer_interior_area", "manufacturer_footprint"]:
-            assert next(m for m in model.measurements if m.name == field).quantity is None
+        measures = {m.name: m.quantity for m in model.measurements}
+        assert measures["roof_height"] is None
+        if model.model_id == "aux-240":
+            assert measures["manufacturer_interior_area"].original_value == Decimal("146")
+            assert measures["manufacturer_footprint"].original_value == Decimal("240")
+            assert model.prices[0].amount.minimum == Decimal("156000")
+            assert model.prices[0].currency == "CAD" and model.prices[0].configuration == "Bath + Kitchen"
+        else:
+            assert measures["manufacturer_interior_area"] is None
+            assert measures["manufacturer_footprint"] is None
     assert gaps
 
 

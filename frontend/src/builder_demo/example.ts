@@ -1,6 +1,6 @@
 import savedCase from './example-site.json'
 import { suggestPlacementOrientation } from '../placement_orientation'
-import { bundledCatalogue } from '../model_catalogue/model'
+import { defaultJourneyModel, modelMeasure } from '../model_catalogue/demo'
 import type { Case, Result } from '../occupied_lots/contract'
 import { parseResult } from '../occupied_lots/contract'
 import { overlapFinding } from '../occupied_lots/observations'
@@ -18,16 +18,6 @@ export const examplePlacement = {
   x: 471913, y: 5365834, angle: exampleOrientation.status === 'suggested' ? exampleOrientation.angle_degrees : 90,
 } as const
 
-const model = bundledCatalogue.models.find(item => item.model_id === 'aux-300')
-if (!model) throw new Error('Model 300 is unavailable')
-const dimension = (name: string) => {
-  const quantity = model.measurements.find(item => item.name === name)?.quantity
-  if (quantity?.unit !== 'm') throw new Error(`Model 300 ${name} is unavailable in metres`)
-  return Number(quantity.value)
-}
-export const exampleWidth = dimension('nominal_exterior_width')
-export const exampleDepth = dimension('nominal_exterior_depth')
-
 export type ExamplePosition = { x: string; y: string; width: string; depth: string; angle: string }
 export type ExampleAssumptions = { parcel: string; roofline: string }
 export const emptyExampleAssumptions = (): ExampleAssumptions => ({ parcel: '', roofline: '' })
@@ -38,9 +28,10 @@ export function validExampleAssumptions(value: ExampleAssumptions) {
     return minimum === null || Number.isFinite(minimum) && minimum >= 0
   })
 }
-export const initialExamplePosition = (): ExamplePosition => ({
+export const initialExamplePosition = (model = defaultJourneyModel): ExamplePosition => ({
   x: String(examplePlacement.x), y: String(examplePlacement.y),
-  width: String(exampleWidth), depth: String(exampleDepth), angle: String(examplePlacement.angle),
+  width: modelMeasure(model, 'nominal_exterior_width')?.quantity?.value ?? '',
+  depth: modelMeasure(model, 'nominal_exterior_depth')?.quantity?.value ?? '', angle: String(examplePlacement.angle),
 })
 
 export function exampleRequest(position: ExamplePosition, assumptions: ExampleAssumptions = emptyExampleAssumptions()) {
@@ -94,7 +85,7 @@ export function exampleObservation(result: Result) {
 
 // Supplied clear position retained in the Cecelia geometry fixture, rechecked by the API.
 // This is an input, never an expected result or a legal setback assertion.
-export const movedExamplePosition = (): ExamplePosition => ({ ...initialExamplePosition(), x: '471906.5401536183', y: '5365824.096762222' })
+export const movedExamplePosition = (model = defaultJourneyModel): ExamplePosition => ({ ...initialExamplePosition(model), x: '471906.5401536183', y: '5365824.096762222' })
 export const demoEnquiryAnswers = {
   streetContext: 'Not sure', intendedUse: 'Garden suite', relationship: 'Exploring an example; not my property',
   nextStep: 'Please advise what information is needed for initial suitability advice.',

@@ -1,4 +1,4 @@
-import { defaultJourneyModel, modelDescription } from '../../model_catalogue/demo'
+import { defaultJourneyModel, historicalModel300, modelDescription } from '../../model_catalogue/demo'
 import type { CatalogueModel } from '../../model_catalogue/model'
 import { useState } from 'react'
 
@@ -24,8 +24,9 @@ function PhotoPreview({ photo }: { photo: ClearedModelPhoto }) {
     : <img className="model-preview-visual" src={photo.localSrc} alt={photo.alt} loading="lazy" onError={() => setFailed(true)} />
 }
 
-/** A source-linked preview until a specifically licensed Model 300 photo is supplied. */
+/** A source-linked preview until a licensed model photo is supplied. */
 export function ModelImage({ photo, model = defaultJourneyModel }: ModelImageProps) {
+  const historical = model.model_id === historicalModel300.model_id
   const localPhoto = photo && /^\/(?!\/)/.test(photo.localSrc) &&
     [photo.alt, photo.sourcePage, photo.imageLabel, photo.photographerOrRightsHolder,
       photo.permissionBasis, photo.permissionRecord, photo.checkedAt].every(Boolean) ? photo : undefined
@@ -36,13 +37,13 @@ export function ModelImage({ photo, model = defaultJourneyModel }: ModelImagePro
         ? <PhotoPreview key={localPhoto.localSrc} photo={localPhoto} />
         : <div className="model-preview-visual model-preview-fallback" role="note">
           <span className="model-preview-mark" aria-hidden="true">{model.provider === 'aux box' ? model.name.replace('Model ', '') : '↗'}</span>
-          <span>Manufacturer photo available on {model.provider}</span>
+          <span>{historical ? 'October 2026 example' : `Manufacturer photo available on ${model.provider}`}</span>
         </div>}
       <figcaption className="model-preview-copy">
         <p className="model-preview-kicker">Manufacturer preview · {model.provider}</p>
         <h3>{model.name}</h3>
         <p>{modelDescription(model)}</p>
-        <a className="model-preview-link" href={model.provider_url} target="_blank" rel="noopener noreferrer">View photos and specifications on {model.provider} <span aria-hidden="true">↗</span></a>
+        <a className="model-preview-link" href={historical ? 'https://www.auxbox.ca/model-overview' : model.provider_url} target="_blank" rel="noopener noreferrer">{historical ? 'View current aux box models' : `View photos and specifications on ${model.provider}`} <span aria-hidden="true">↗</span></a>
         <p className="model-preview-disclaimer">Options and site installation may vary.</p>
       </figcaption>
     </div>

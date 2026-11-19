@@ -189,7 +189,12 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     for (const id of ['builder-use', 'builder-relationship', 'builder-nextStep']) assert.equal((document.getElementById(id) as HTMLInputElement).required, true)
     assert.equal((document.getElementById('builder-question') as HTMLTextAreaElement).required, false)
     assert.ok(document.getElementById('builder-relationship')!.classList.contains('is-missing'))
-    for (const [id, value] of [['builder-use', 'Garden suite'], ['builder-relationship', 'Prefer not to say'], ['builder-nextStep', 'Please advise whether this is worth investigating further.']]) {
+    await act(async () => {
+      const select = document.getElementById('builder-use') as HTMLSelectElement
+      select.value = 'Garden suite'
+      select.dispatchEvent(new dom.window.Event('change', { bubbles: true }))
+    })
+    for (const [id, value] of [['builder-use-note', 'Garden suite for a parent'], ['builder-relationship', 'Prefer not to say'], ['builder-nextStep', 'Please advise whether this is worth investigating further.']]) {
       await act(async () => { const node = document.getElementById(id) as HTMLInputElement; node.focus(); Object.getOwnPropertyDescriptor(dom.window.HTMLInputElement.prototype, 'value')!.set!.call(node, value); node.dispatchEvent(new dom.window.KeyboardEvent('keyup', { key: '5', bubbles: true })) })
     }
     assert.ok(document.querySelector('#builder-enquiry-text'))
@@ -197,6 +202,9 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     assert.match(document.querySelector('.builder-journey-rail')!.textContent!, /Contact providerTo do/)
     const reviewedEvidence = document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value
     const reviewedDraft = document.querySelector<HTMLTextAreaElement>('#builder-enquiry-text')!.value
+    assert.match(reviewedDraft, /Garden suite for a parent/)
+    assert.match(reviewedDraft, /planning comparisons use a garden-suite scenario/i)
+    assert.doesNotMatch(reviewedDraft, /selected other-use scenario/)
     for (const anchor of ['#placement-action-front', '#placement-action-rear', '#builder-property-details', '#builder-quick-checks', '#builder-budget-stage', '#builder-next']) {
       await act(async () => document.querySelector<HTMLAnchorElement>(`.builder-journey-rail a[href="${anchor}"]`)!.click())
       await act(async () => { await new Promise(resolve => setTimeout(resolve, 20)) })

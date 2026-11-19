@@ -2,13 +2,13 @@ import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { categories, parseBudget, type BudgetDraft, type Category, type Context, type CostItem } from './contract'
 import { budgetEvidence, budgetQuestions, budgetSummary, calculateBudget, catalogueSuggestions, emptyBudget, manualItem, reconcile, replaceItem, recipientBudget, type ManualEntry } from './pipeline'
-import { defaultJourneyModel, journeyCatalogue, modelSnapshot } from '../model_catalogue/demo'
+import { historicalModel300, journeyCatalogue, modelSnapshot } from '../model_catalogue/demo'
 import { manufacturerDocument } from '../builder_demo/manufacturer'
 import { enquiryEmailBody, enquiryMarkdown, enquiryPlainText } from '../builder_demo/enquiry'
 import { enquiryPackageFiles } from '../builder_demo/placementExport'
 import { screeningDocument } from '../builder_demo/BuilderDemo'
 
-const today = '2026-10-19', model = defaultJourneyModel
+const today = '2026-10-19', model = historicalModel300
 export const exampleContext: Context = { model_id: model.model_id, model_revision: model.source_revision, snapshot_id: modelSnapshot(model),
   configuration: model.configuration, property_key: 'synthetic property; no real quote', scenario_key: 'unknown-use, no placement' }
 const context = exampleContext
