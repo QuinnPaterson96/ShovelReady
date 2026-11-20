@@ -16,3 +16,5 @@
 .property-scan__help .step-info__button { display: flex; align-items: flex-start; gap: .6rem; width: 100%; padding: .75rem; border: 0; background: transparent; color: inherit; text-align: left; font-weight: normal; }
 .property-scan__help-hint { text-decoration: underline; font-size: .8rem; }
 .property-scan__card-content { min-width: 0; }
+.property-scan__list li:has(.property-scan__title-action) { flex-direction: column; align-items: flex-start; gap: 0; }
+.property-scan__title-action { margin: 0 .75rem .75rem; }

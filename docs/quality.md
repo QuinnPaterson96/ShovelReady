@@ -377,6 +377,12 @@ Retain original judgments and add attributed revisions when a human reviewer dis
 Preserve locally retained artifacts before cleaning temporary directories; a file hash
 or a tool-history locator alone does not make evidence portable or permanently available.
 
+## BC title reference checks
+
+Use the [pilot handoff](title-reference-pilot.md) to exercise the owner-directed ordering route and the existing-document route. From the frontend directory, run `node tools/verify_title_reference.mjs` against the built, stateless loopback app, setting `TITLE_REFERENCE_URL` to its URL. The browser uses captured municipal inputs and synthetic title references. Inspect the qualified reviewer’s draft and the separate builder enquiry, including what the email removes when site details are withheld.
+
+A successful run establishes behavior of the local software. Actual LTSA fulfillment, a professional's interpretation and homeowner comprehension require separate evidence. The [direct-delivery brief](bc-title-direct-feasibility.md) records the commercial and privacy questions. The pilot handoff records the proposed consented study and its expansion criteria.
+
 ## Integration handoff
 
 Use the [PR template](../.github/pull_request_template.md) to leave a short, reproducible
