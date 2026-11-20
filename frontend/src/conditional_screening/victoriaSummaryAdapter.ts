@@ -126,7 +126,7 @@ export function homeownerSummary(input: {
   if (input.propertyScan || input.propertyScanBusy || input.propertyScanError) {
     const clear = input.propertyScan?.findings.every(row => row.status === 'probably_clear') ?? false
     checks.push({ label: 'Mapped heritage and planning flags', status: input.propertyScan?.findings.some(row => row.status === 'review') ? 'review' : clear ? 'probable' : 'unknown',
-      detail: clear ? 'No flags found in the six searched City map/history sources. Permit documents, title, projections and servicing remain unsearched.'
+      detail: clear ? 'No flags found in the six searched City map and application history sources. Permit documents, title, projections and utility capacity still need review.'
         : input.propertyScanBusy ? 'Scanning City map flags and application history.'
         : input.propertyScanError ? 'The scan could not complete. Unsearched sources remain unknown.'
         : 'Some searched records need review or a source was unavailable. Review the individual findings.',

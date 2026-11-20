@@ -111,7 +111,13 @@ class SourceTruncated(SourceFailure):
     pass
 
 
-def _query(layer: str, params: dict[str, Any], label: str) -> tuple[dict, SourceRecord]:
+def _query(
+    layer: str,
+    params: dict[str, Any],
+    label: str,
+    *,
+    geometry_type: str = "esriGeometryPolygon",
+) -> tuple[dict, SourceRecord]:
     url = f"{layer}/query?{urlencode({'f': 'json', **params})}"
     if len(url) > MAX_QUERY_CHARS:
         raise SourceFailure("selected geometry exceeds bounded query size")
@@ -127,21 +133,24 @@ def _query(layer: str, params: dict[str, Any], label: str) -> tuple[dict, Source
             raise SourceFailure("provider query failed or exceeded transfer limit")
         if value.get("exceededTransferLimit"):
             raise SourceTruncated("provider query failed or exceeded transfer limit")
-        rows = value.get("features")
-        if not isinstance(rows, list):
-            raise SourceFailure("provider feature count unavailable or excessive")
-        if len(rows) >= MAX_FEATURES:
-            raise SourceTruncated("provider feature count unavailable or excessive")
-        if (
-            params.get("returnGeometry") != "false"
-            and value.get("spatialReference", {}).get("wkid") != 3157
-        ):
-            raise SourceFailure("unexpected provider CRS")
-        if (
-            params.get("returnGeometry") != "false"
-            and value.get("geometryType") != "esriGeometryPolygon"
-        ):
-            raise SourceFailure("unexpected provider geometry type")
+        if params.get("returnIdsOnly") == "true":
+            ids = value.get("objectIds")
+            if not isinstance(ids, list) or any(type(oid) is not int for oid in ids):
+                raise SourceFailure("provider object identities unavailable")
+            if len(ids) != len(set(ids)):
+                raise SourceFailure("provider object identities are duplicated")
+        else:
+            rows = value.get("features")
+            if not isinstance(rows, list):
+                raise SourceFailure("provider feature count unavailable or excessive")
+            if len(rows) >= MAX_FEATURES:
+                raise SourceTruncated("provider feature count unavailable or excessive")
+            if params.get("returnGeometry") != "false":
+                spatial_reference = value.get("spatialReference")
+                if not isinstance(spatial_reference, dict) or spatial_reference.get("wkid") != 3157:
+                    raise SourceFailure("unexpected provider CRS")
+                if value.get("geometryType") != geometry_type:
+                    raise SourceFailure("unexpected provider geometry type")
         record = SourceRecord(
             provider="City of Victoria Open Data",
             record_label=label,

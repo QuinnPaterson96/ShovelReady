@@ -18,6 +18,8 @@
 .property-scan__card-content { min-width: 0; }
 
 .property-scan__projection .property-scan__card-content > span { color: var(--link); text-decoration: underline; }
+
+.property-scan__service { padding: .75rem; }
 .property-scan__permit { width: 100%; min-width: 0; margin: 0; }
 details.property-scan__permit > summary {
   display: flex;

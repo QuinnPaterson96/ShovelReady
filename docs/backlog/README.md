@@ -6,6 +6,10 @@ The dedicated timeline modeling extension keeps the main flow compact and adds
 parallel-stage visualization and completion explanations using that same scenario.
 Project-specific confirmation and human-validation gaps remain in that handoff.
 
+The [Victoria sanitary sewer pilot](../victoria-sanitary-sewer.md) covers mapped
+connection evidence. Water, storm, power and other cities remain future work.
+The pilot handoff describes the proposed independent drawing comparison before expansion.
+
 Latest integration: [live Victoria discovery and Model 300 placement](../integration-live-parcel-discovery.md).
 Source adapters #166/#167 and connected selection #168 are implemented, with
 builder/manual entry #159/#160 mounted. #169/#165 remain open for holdout addresses,
