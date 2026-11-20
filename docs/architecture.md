@@ -530,6 +530,9 @@ The [Victoria permit records pilot](victoria-permit-records.md) projects file li
 from the same parcel-linked history response. Dated tracker observations add
 issuance evidence and approved-plan links for two identified cases where supported.
 Determining which permit conditions apply remains a separate professional review.
+The [Victoria sanitary sewer pilot](victoria-sanitary-sewer.md) links the parcel's
+GISLINK to the City's lateral TaxParcel field. The sewer observation is separate
+from planning-flag counts. City Engineering can confirm capacity for the proposed dwelling.
 No new dataset release or accepted source interpretation is published. Saved Parcel
 87 also receives the current zoning lookup; manual sketches receive no invented zone.
 

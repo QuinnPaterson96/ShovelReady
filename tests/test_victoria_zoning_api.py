@@ -3,6 +3,7 @@
 import json
 from urllib.parse import parse_qs, urlparse
 
+import pytest
 from fastapi.testclient import TestClient
 
 from app.main import create_app
@@ -147,6 +148,8 @@ def test_property_scan_replays_all_sources_and_preserves_partial_failures(monkey
     def saved(url, timeout):
         parsed = urlparse(url)
         params = parse_qs(parsed.query)
+        if "OpenData_Sewer" in parsed.path:
+            return SavedResponse(url, {"error": {"message": "source unavailable"}})
         if "OpenData_Land" in parsed.path:
             value = parcel()
             value["features"][0]["attributes"]["GISLINK"] = gislink
@@ -228,3 +231,133 @@ def test_property_scan_replays_all_sources_and_preserves_partial_failures(monkey
     body["expected_pid"] = "changed"
     result = http.post("/api/victoria-zoning/property-scan", json=body).json()
     assert all(row["status"] == "unknown" for row in result["findings"])
+
+
+@pytest.mark.parametrize(
+    ("case", "expected", "main_status"),
+    [
+        ("linked", "mapped_connection", "not_needed"),
+        ("shared_key", "ambiguous", "not_needed"),
+        ("reassigned_key", "ambiguous", "not_needed"),
+        ("multiple_lines", "ambiguous", "not_needed"),
+        ("displaced", "ambiguous", "not_needed"),
+        ("mismatched", "ambiguous", "not_needed"),
+        ("non_sanitary", "unavailable", "not_needed"),
+        ("inactive", "unavailable", "not_needed"),
+        ("main_only", "nearby_main_only", "nearby"),
+        ("outside_radius", "no_mapped_connection", "none"),
+        ("no_records", "no_mapped_connection", "none"),
+        ("main_failed", "no_mapped_connection", "unavailable"),
+        ("lateral_failed", "unavailable", "not_needed"),
+        ("uniqueness_failed", "unavailable", "not_needed"),
+        ("changed_pid", "unavailable", "not_needed"),
+        ("malformed_parcel", "unavailable", "not_needed"),
+    ],
+)
+def test_property_scan_sanitary_lookup(monkeypatch, case, expected, main_status):
+    # The fixture parcel is a 10 m square. The corroborating endpoint is on the
+    # edge, while the displaced one is 2 m away. Main segments are 20 or 21 m away.
+    key = "03229041"
+    non_match = {"main_only", "outside_radius", "no_records", "main_failed"}
+    invalid_parcel = {"changed_pid", "malformed_parcel"}
+    seen = []
+
+    def pipe(oid, low, high, **attributes):
+        return {
+            "attributes": {
+                "OBJECTID": oid, "WaterType": "SEW", "LifecycleStatus": "ACT",
+                "OwnedBy": "VC", "Jurisdiction": "VC", **attributes,
+            },
+            "geometry": {"paths": [[[X + 5, Y + low], [X + 5, Y + high]]]},
+        }
+
+    def polyline(rows):
+        return {**response(rows), "geometryType": "esriGeometryPolyline"}
+
+    def saved(url, timeout):
+        parsed = urlparse(url)
+        params = parse_qs(parsed.query)
+        if "OpenData_Land" in parsed.path:
+            if params.get("returnIdsOnly") == ["true"]:
+                assert params["where"] == [f"GISLINK='{key}'"]
+                value = {"objectIds": [87]}
+                if case == "shared_key":
+                    value["objectIds"].extend(range(100, 134))
+                if case == "reassigned_key":
+                    value["objectIds"] = [88]
+                if case == "uniqueness_failed":
+                    value = {"error": {"code": 500}}
+                return SavedResponse(url, value)
+            value = parcel()
+            value["features"][0]["attributes"]["GISLINK"] = key
+            if case == "malformed_parcel":
+                value["features"][0]["attributes"] = ["OBJECTID", 87]
+            return SavedResponse(url, value)
+        if "OpenData_Sewer" not in parsed.path:
+            return SavedResponse(url, {"features": []})
+        seen.append(parsed.path)
+        where = params["where"][0]
+        for clause in ("WaterType='SEW'", "LifecycleStatus='ACT'", "OwnedBy='VC'",
+                       "Jurisdiction='VC'"):
+            assert clause in where
+        if parsed.path.endswith("/12/query"):
+            assert f"TaxParcel='{key}'" in where
+            if case == "lateral_failed":
+                return SavedResponse(url, {"features": [], "exceededTransferLimit": True})
+            if case in non_match:
+                return SavedResponse(url, polyline([]))
+            lateral = pipe(
+                4280, -5, -2 if case == "displaced" else 0,
+                TaxParcel="different" if case == "mismatched" else key,
+                WaterType="STM" if case == "non_sanitary" else "SEW",
+                LifecycleStatus="ABD" if case == "inactive" else "ACT",
+            )
+            rows = [lateral]
+            if case == "multiple_lines":
+                rows.append(pipe(4281, -5, 0, TaxParcel=key))
+            return SavedResponse(url, polyline(rows))
+        assert parsed.path.endswith("/4/query")
+        assert "TaxParcel" not in where
+        assert params["geometryType"] == ["esriGeometryEnvelope"]
+        assert params["geometry"] == [f"{X - 20}.0,{Y - 20}.0,{X + 30}.0,{Y + 30}.0"]
+        if case == "main_failed":
+            return SavedResponse(url, {"error": {"code": 500}})
+        mains = []
+        if case in {"main_only", "outside_radius"}:
+            mains.append(pipe(4, -22, -20 if case == "main_only" else -21))
+        return SavedResponse(url, polyline(mains))
+
+    monkeypatch.setattr(api, "urlopen", saved)
+    http = TestClient(create_app())
+    result = http.post("/api/victoria-zoning/property-scan", json={
+        "schema_version": "victoria-property-scan.v1",
+        "parcel_ref": {"source": "city-of-victoria-pid-parcels", "object_id": 87},
+        "expected_pid": "changed" if case == "changed_pid" else "001-328-107",
+    })
+    assert result.status_code == 200
+    sewer = result.json()["sewer"]
+    assert sewer["status"] == expected
+    assert sewer["main_search_status"] == main_status
+    assert sewer["capacity_status"] == "requires_confirmation"
+    assert "additional wastewater demand" in sewer["question"]
+    assert sewer["authority"]["email"] == "eng@victoria.ca"
+    assert len(seen) == (0 if case in invalid_parcel else 2 if case in non_match else 1)
+    if case == "linked":
+        assert sewer["records"][0]["attributes"]["TaxParcel"] == key
+        assert sewer["source"]["review_status"] == "unreviewed_live_observation"
+        assert sewer["source"]["provider"] == "City of Victoria Open Data"
+        assert sewer["association_parcel_count"] == 1
+        assert sewer["association_parcel_ids"] == [87]
+        assert sewer["association_source"]["sha256"]
+    if case == "shared_key":
+        assert sewer["association_parcel_count"] == 35
+    if case == "reassigned_key":
+        assert sewer["association_parcel_ids"] == [88]
+    if case == "main_only":
+        assert sewer["main_records"][0]["distance_to_parcel_m"] == 20
+        assert sewer["main_source"]["sha256"]
+        assert not sewer["records"]
+    if case in non_match:
+        assert sewer["source"]["sha256"]
+    if case not in invalid_parcel:
+        assert all(row["status"] == "probably_clear" for row in result.json()["findings"])

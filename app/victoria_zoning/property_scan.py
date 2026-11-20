@@ -7,6 +7,7 @@ from typing import Literal
 
 from fastapi import APIRouter
 from pydantic import Field
+from shapely.errors import GEOSException
 
 from app.municipal_sites.api import ParcelRef
 from app.spatial.geometry import xy_polygon
@@ -21,6 +22,7 @@ from .api import (
     _query,
 )
 from .permit_records import PermitRecords, permit_records
+from .sewer import SewerResult, scan_sewer
 
 ROOT = "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer"
 LAYERS = (
@@ -53,6 +55,7 @@ class ScanResult(StrictModel):
     parcel_ref: ParcelRef
     findings: list[ScanFinding]
     parcel_source: SourceRecord | None
+    sewer: SewerResult
     permit_records: PermitRecords
     limitations: tuple[str, ...] = (
         "Only the listed City map layers and linked application-history table were searched.",
@@ -77,18 +80,28 @@ def scan(request: ScanRequest):
             "Selected parcel for planning flag scan",
         )
         rows = value["features"]
-        if len(rows) != 1 or rows[0]["attributes"]["OBJECTID"] != request.parcel_ref.object_id:
+        if len(rows) != 1 or not isinstance(rows[0], dict):
             raise SourceFailure("selected parcel missing or changed")
         attributes, raw = rows[0]["attributes"], rows[0]["geometry"]
+        if (
+            not isinstance(attributes, dict)
+            or type(attributes.get("OBJECTID")) is not int
+            or attributes["OBJECTID"] != request.parcel_ref.object_id
+        ):
+            raise SourceFailure("selected parcel missing or changed")
         if request.expected_pid is not None and request.expected_pid != attributes.get("PID"):
             raise SourceFailure("selected parcel PID changed")
         parcel, issue = xy_polygon({"spatialReference": {"wkid": 3157}, **raw})
         if parcel is None or issue or parcel.is_empty or not parcel.is_valid:
             raise SourceFailure("selected parcel geometry unavailable")
-    except (SourceFailure, KeyError, TypeError, ValueError) as exc:
+    except (SourceFailure, GEOSException, KeyError, OverflowError, TypeError, ValueError) as exc:
         return ScanResult(
             parcel_ref=request.parcel_ref,
             parcel_source=None,
+            sewer=SewerResult(
+                status="unavailable",
+                detail="The selected City parcel could not be confirmed for the sewer map check.",
+            ),
             permit_records=PermitRecords(
                 status="unavailable", detail="Permit history lookup needs a matched City parcel."
             ),
@@ -167,11 +180,13 @@ def scan(request: ScanRequest):
                 status="unavailable", detail="The City application history lookup is unavailable."
             )
 
-    with ThreadPoolExecutor(max_workers=3) as pool:
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        sewer = pool.submit(scan_sewer, attributes, parcel)
         results = list(pool.map(query_layer, LAYERS))
     return ScanResult(
         parcel_ref=request.parcel_ref,
         parcel_source=parcel_source,
         findings=[finding for finding, _ in results],
         permit_records=next(records for _, records in results if records is not None),
+        sewer=sewer.result(),
     )
