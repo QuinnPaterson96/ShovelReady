@@ -1,0 +1,124 @@
+{
+  "captured_local_date": "2026-10-07",
+  "timezone": "America/Vancouver",
+  "review_status": "unreviewed research observations",
+  "serialization": "Parsed source attributes/coordinates retained as JSON; hashes below identify serialized evidence, not HTTP bytes. Document and Saanich ZIP hashes inside evidence refer to original downloaded bytes.",
+  "files": [
+    {
+      "file": "ABMS_MUNICIPALITIES_SP-schema.xml",
+      "bytes": 3143,
+      "sha256": "0ab45a8c4caa24552f079f630cfab0b1cbf8022bded10a5293406fd2c33f18e5"
+    },
+    {
+      "file": "address-experiments.json",
+      "bytes": 22697,
+      "sha256": "a6aa31bff006dace3c31e5bf0b08fdd771b011fd13cc222c0158600683f809d5"
+    },
+    {
+      "file": "arcgis-items.json",
+      "bytes": 1254,
+      "sha256": "98f59348eca50e740e0f2fed1b6d71f059ca9f54855499c5c4169804fa58e713"
+    },
+    {
+      "file": "bc-catalogue.json",
+      "bytes": 94016,
+      "sha256": "47fff3a7aa7638c7150d7e1b46e5bc9ed36fcf4502c84c93b92a3ab4a38f8a77"
+    },
+    {
+      "file": "document-access.json",
+      "bytes": 3598,
+      "sha256": "91abba861663571df48d06c3a5b528db887cccf54a56f389d5941a0f9a4ef429"
+    },
+    {
+      "file": "langford-jenkins-geocoder.json",
+      "bytes": 5145,
+      "sha256": "18cea1bf4200cdf7537908b33e3cdb9cbe0439600ef2fa7e02378e2da7aecaa2"
+    },
+    {
+      "file": "langford-jenkins-pmbc.json",
+      "bytes": 14475,
+      "sha256": "d3c1d87dd9acd8e7572dc43925e01d1a7de9fe6edfe1badb253b6577edea2955"
+    },
+    {
+      "file": "langford-lone-oak-geocoder.json",
+      "bytes": 6016,
+      "sha256": "14ba0123452e27b05979a689d44aea430e6e8b3c5779864fc99e424a1abe476c"
+    },
+    {
+      "file": "langford-lone-oak-pmbc.json",
+      "bytes": 8779,
+      "sha256": "22fac0a59bae7e1d13b5c78e5581c87f4439893f8782ba855479a762d4b5959a"
+    },
+    {
+      "file": "municipal-boundaries.json",
+      "bytes": 176193,
+      "sha256": "7be2557a762e921bddcdb812e5359e08fab59ce2c0779d406567d7869646950b"
+    },
+    {
+      "file": "oakbay-transit-geocoder.json",
+      "bytes": 5249,
+      "sha256": "1dcd9f6ef417e48e25c750944bbda46fe3020bbc6e00c764e362b21d92a5e4f0"
+    },
+    {
+      "file": "oakbay-transit-pmbc.json",
+      "bytes": 1731,
+      "sha256": "47bffd023ba4a9ec15c4e682d0fa6a8d3bbf1118020549d8205bb5285b910c76"
+    },
+    {
+      "file": "oakbay-westdowne-geocoder.json",
+      "bytes": 5271,
+      "sha256": "3d6b9c0ee77e98b54edab30e334546c09da03410f45f9f674c79cba118fcd574"
+    },
+    {
+      "file": "oakbay-westdowne-pmbc.json",
+      "bytes": 4028,
+      "sha256": "39ce562cabedbcbcf4a25f5421b1408f71569530cc5298108c0f76aa51a399d4"
+    },
+    {
+      "file": "PMBC_PARCEL_POLY_SV-schema.xml",
+      "bytes": 2921,
+      "sha256": "3ce217769c4c8212abac7b6050f369725938a620b9cafe1bbd03a47347befbda"
+    },
+    {
+      "file": "saanich-cedar-geocoder.json",
+      "bytes": 5636,
+      "sha256": "2a8828f8c0307da4e817830af9b72df1ac8fa62e6c96f242cf03168235076375"
+    },
+    {
+      "file": "saanich-cedar-pmbc.json",
+      "bytes": 1732,
+      "sha256": "fc670d25335f5d4299f1dc89d97f7c3802bfa9f16af308fc172ac45ec37f590f"
+    },
+    {
+      "file": "saanich-downloads.json",
+      "bytes": 12667,
+      "sha256": "5f3688d0dce1adde963b2a0e14eb00a4be7ad38b8d2184510293cec78b91dcf6"
+    },
+    {
+      "file": "saanich-kingsley-geocoder.json",
+      "bytes": 5305,
+      "sha256": "7766c2a6ebd6c05ffd0e5f5fc9898d7807e55e0f2a64f579e69a382310c150dd"
+    },
+    {
+      "file": "saanich-kingsley-pmbc.json",
+      "bytes": 1648,
+      "sha256": "c27c985f88997b288dee85d6ec88034c6069b33364e267a9a957ff19ddd19cde"
+    },
+    {
+      "file": "service-metadata.json",
+      "bytes": 135206,
+      "sha256": "4f69fd321e9baa7f247348827e19c5c7d9ac451b342b189ad9c32e95432ea809"
+    },
+    {
+      "file": "terms-access.json",
+      "bytes": 657,
+      "sha256": "4ef3a9172d74c3f69b6ef0f892d1e22672118576a592d3936da47f6082c218f9"
+    },
+    {
+      "file": "wfs-capabilities-summary.json",
+      "bytes": 6431,
+      "sha256": "1dd84da4ac222db782d2a5b21a677110578a7a4e0601ce0f29c0000aaa359dd4"
+    }
+  ],
+  "hash_basis": "UTF-8 retained bytes with CRLF normalized to LF, to survive Git checkout newline conversion; byte count is the same normalized representation."
+}

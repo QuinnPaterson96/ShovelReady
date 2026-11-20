@@ -1,0 +1,1826 @@
+{
+  "parcelmap-bc-parcel-polygons-ogl": {
+    "id": "2f4117d9-41fc-44db-87d4-dbdb77f14086",
+    "name": "parcelmap-bc-parcel-polygons-ogl",
+    "title": "ParcelMap BC Parcel Polygons",
+    "license_id": "2",
+    "license_title": "Open Government Licence - British Columbia",
+    "license_url": "https://www2.gov.bc.ca/gov/content?id=A519A56BC2BF44E4A008B33FCF527F61",
+    "metadata_modified": "2026-10-05T12:42:27.783247",
+    "notes": "ParcelMap BC is the current, complete and trusted mapped representation of titled and Crown land parcels across British Columbia, considered to be the point of truth for the graphical representation of property boundaries. It is not the authoritative source for the legal property boundary or related records attributes; this will always be the plan of survey or the related registry information. This particular dataset is a subset of the complete ParcelMap BC data and is comprised of the parcel polygons and attributes for over two million parcels published under the Open Government Licence - British Columbia.\n\nThis dataset does __NOT__ include parcel representations (i.e. distinct polygons with unique PID identifiers) for [Building Strata Parcels](https://help.ltsa.ca/parcelmap-bc/building-strata-parcels) - Building Strata parcels are represented by a single polygon uniquely identified by the Strata Plan Number (i.e. individual strata lot PIDs are not included). For a dataset which includes unique polygon features (stacked geometries) for each Building Strata parcel, please use the [ParcelMap BC Parcel Fabric](https://catalogue.data.gov.bc.ca/dataset/4cf233c2-f020-4f7a-9b87-1923252fbc24) or [ParcelMap BC Parcel Fabric - Fully Attributed](https://catalogue.data.gov.bc.ca/dataset/219eebea-b19b-47bd-938f-47d53002a3f4) dataset _or refer to the [ParcelMap BC Shared Geometry Cross Reference Table](https://catalogue.data.gov.bc.ca/dataset/b918901e-9fd3-4f01-803d-eaeca027b794), which includes the strata lot (PID) to strata plan relationship._\n\n\nNotes: \n\n1. Parcel title information is sourced from the BC Land Title Register.  Title questions should be directed to a local [Land Title Office](https://ltsa.ca/land-title-office-locations).\n\n2. The ParcelMap BC Parcel Fabric is expected to eventually replace the [Integrated Cadastral Fabric](https://catalogue.data.gov.bc.ca/dataset/7eb82072-8c74-4fce-9934-349b545fdc21).\n",
+    "resources": [
+      {
+        "bcdc_type": "geographic",
+        "cache_last_updated": null,
+        "cache_url": null,
+        "created": "2022-08-02T20:45:15.779124",
+        "datastore_active": false,
+        "description": "The Distribution Service allows for data to be downloaded in various file formats from the B.C. Geographic Warehouse (BCGW), a central government repository of spatial and non-spatial data.",
+        "format": "oracle_sde",
+        "hash": "",
+        "id": "f5a96c73-c1cd-4867-a917-656f8090db82",
+        "iso_topic_category": [
+          "planningCadastre"
+        ],
+        "last_modified": "2026-10-05T01:16:44",
+        "metadata_modified": "2026-10-05T12:42:27.116440",
+        "mimetype": null,
+        "mimetype_inner": null,
+        "name": "View or Export BC Geographic Warehouse details (custom download)",
+        "object_name": "WHSE_CADASTRE.PMBC_PARCEL_POLY_SV",
+        "object_short_name": "PMBCPARCEL",
+        "package_id": "2f4117d9-41fc-44db-87d4-dbdb77f14086",
+        "position": 0,
+        "projection_name": "epsg3005",
+        "resource_access_method": "indirect access",
+        "resource_storage_location": "bc geographic warehouse",
+        "resource_type": "data",
+        "resource_update_cycle": "weekly",
+        "size": null,
+        "spatial_datatype": "SDO_GEOMETRY",
+        "state": "active",
+        "supplemental_info": "Click <b>Access/Download</b> in the toolbar to download this dataset. For more information on using the distribution order form see [How to download data using the Catalogue or iMapBC](https://www2.gov.bc.ca/gov/content?id=51F40E44C9ED433DAAFC976014C8AF73).",
+        "url": "",
+        "url_type": null,
+        "details": [
+          {
+            "column_name": "PMBC_PP_SYSID",
+            "data_precision": 10,
+            "data_type": "NUMBER",
+            "short_name": "PMBC_PP_SD"
+          },
+          {
+            "column_name": "PARCEL_NAME",
+            "data_precision": 50,
+            "data_type": "VARCHAR2",
+            "short_name": "PARCEL_NM"
+          },
+          {
+            "column_name": "PLAN_NUMBER",
+            "data_precision": 128,
+            "data_type": "VARCHAR2",
+            "short_name": "PLN_NMBR"
+          },
+          {
+            "column_name": "PIN",
+            "data_precision": 10,
+            "data_type": "NUMBER",
+            "short_name": "PIN"
+          },
+          {
+            "column_name": "PID",
+            "data_precision": 9,
+            "data_type": "CHAR",
+            "short_name": "PID"
+          },
+          {
+            "column_name": "PID_FORMATTED",
+            "data_precision": 4000,
+            "data_type": "VARCHAR2",
+            "short_name": "PD_FRMTTD"
+          },
+          {
+            "column_name": "PID_NUMBER",
+            "data_precision": 10,
+            "data_type": "NUMBER",
+            "short_name": "PID_NUMBER"
+          },
+          {
+            "column_name": "PARCEL_STATUS",
+            "data_precision": 20,
+            "data_type": "VARCHAR2",
+            "short_name": "PRCL_STTS"
+          },
+          {
+            "column_name": "PARCEL_CLASS",
+            "data_precision": 50,
+            "data_type": "VARCHAR2",
+            "short_name": "PRCL_CLSS"
+          },
+          {
+            "column_name": "OWNER_TYPE",
+            "data_precision": 50,
+            "data_type": "VARCHAR2",
+            "short_name": "OWNER_TYPE"
+          },
+          {
+            "column_name": "PARCEL_START_DATE",
+            "data_precision": 7,
+            "data_type": "DATE",
+            "short_name": "PRCL_STRTE"
+          },
+          {
+            "column_name": "MUNICIPALITY",
+            "data_precision": 254,
+            "data_type": "VARCHAR2",
+            "short_name": "MNCPLTY"
+          },
+          {
+            "column_name": "REGIONAL_DISTRICT",
+            "data_precision": 50,
+            "data_type": "VARCHAR2",
+            "short_name": "RGNL_DSTRT"
+          },
+          {
+            "column_name": "WHEN_UPDATED",
+            "data_precision": 7,
+            "data_type": "DATE",
+            "short_name": "WHEN_UPDTD"
+          },
+          {
+            "column_name": "FEATURE_AREA_SQM",
+            "data_precision": 19,
+            "data_type": "NUMBER",
+            "short_name": "FEAT_AREA"
+          },
+          {
+            "column_name": "FEATURE_LENGTH_M",
+            "data_precision": 19,
+            "data_type": "NUMBER",
+            "short_name": "FEAT_LEN"
+          },
+          {
+            "column_name": "SHAPE",
+            "data_precision": 64,
+            "data_type": "SDO_GEOMETRY",
+            "short_name": "SHAPE"
+          },
+          {
+            "column_name": "OBJECTID",
+            "data_precision": "38",
+            "data_type": "NUMBER",
+            "short_name": "OBJECTID"
+          },
+          {
+            "column_name": "SE_ANNO_CAD_DATA",
+            "data_precision": 4000,
+            "data_type": "BLOB"
+          }
+        ],
+        "preview_info": [
+          {
+            "layer_name": "WHSE_CADASTRE.PMBC_PARCEL_POLY_SV",
+            "link_to_imap": "https://maps.gov.bc.ca/ess/hm/imap4m/?catalogLayers=9679,9680&scale=37500&center=-13732101.98921509,6177592.345443808",
+            "preview_image_url": "",
+            "preview_latitude": "48.423445",
+            "preview_longitude": "-123.357571",
+            "preview_map_service_url": "https://openmaps.gov.bc.ca/geo/pub/WHSE_CADASTRE.PMBC_PARCEL_POLY_SV/ows?",
+            "preview_zoom_level": "14"
+          }
+        ]
+      },
+      {
+        "bcdc_type": "geographic",
+        "cache_last_updated": null,
+        "cache_url": null,
+        "created": "2022-08-03T16:30:39.769520",
+        "datastore_active": false,
+        "description": "",
+        "format": "fgdb",
+        "hash": "",
+        "id": "3451cddd-536c-480f-b32e-b346eebf5562",
+        "isUrl": "true",
+        "iso_topic_category": [
+          "planningCadastre"
+        ],
+        "metadata_modified": "2025-02-03T19:02:14.574785",
+        "mimetype": "application/zip",
+        "mimetype_inner": null,
+        "name": "File Geodatabase of ParcelMap BC Parcel Polygons for BC",
+        "package_id": "2f4117d9-41fc-44db-87d4-dbdb77f14086",
+        "position": 1,
+        "projection_name": "epsg3005",
+        "resource_access_method": "direct access",
+        "resource_storage_location": "pub.data.gov.bc.ca",
+        "resource_type": "data",
+        "resource_update_cycle": "weekly",
+        "size": null,
+        "spatial_datatype": "SDO_GEOMETRY",
+        "state": "active",
+        "url": "https://pub.data.gov.bc.ca/datasets/2f4117d9-41fc-44db-87d4-dbdb77f14086/pmbc_parcel_poly_sv.zip",
+        "url_type": null,
+        "geographic_extent": [
+          {
+            "east_bound_longitude": "-113.5",
+            "north_bound_latitude": "60.0",
+            "south_bound_latitude": "48.0",
+            "west_bound_longitude": "-139.5"
+          }
+        ]
+      },
+      {
+        "bcdc_type": "webservice",
+        "cache_last_updated": null,
+        "cache_url": null,
+        "created": "2022-08-04T20:34:07.780170",
+        "datastore_active": false,
+        "description": "Web Mapping Service (WMS) allows for data to be fed out via a service from the B.C. Geographic Warehouse (BCGW), a central government repository of spatial and non-spatial data.",
+        "format": "wms",
+        "hash": "",
+        "id": "68ee7880-d604-4479-a3c2-8c92c40f2710",
+        "iso_topic_category": [
+          "planningCadastre"
+        ],
+        "last_modified": "2026-10-05T01:16:44",
+        "metadata_modified": "2026-10-05T12:42:27.470836",
+        "mimetype": null,
+        "mimetype_inner": null,
+        "name": "WMS getCapabilities request",
+        "object_name": "WHSE_CADASTRE.PMBC_PARCEL_POLY_SV",
+        "package_id": "2f4117d9-41fc-44db-87d4-dbdb77f14086",
+        "position": 2,
+        "projection_name": "epsg4326",
+        "resource_access_method": "indirect access",
+        "resource_storage_location": "bc geographic warehouse",
+        "resource_type": "data",
+        "resource_update_cycle": "asNeeded",
+        "size": null,
+        "spatial_datatype": "SDO_GEOMETRY",
+        "state": "active",
+        "supplemental_info": "Click <b>Access/Download</b> in the toolbar to see or copy the WMS call. For more information see [Web Mapping Services](https://www2.gov.bc.ca/gov/content?id=95D78D544B244F34B89223EF069DF74E).",
+        "url": "https://openmaps.gov.bc.ca/geo/pub/WHSE_CADASTRE.PMBC_PARCEL_POLY_SV/ows?service=WMS&request=GetCapabilities",
+        "url_type": null,
+        "preview_info": [
+          {
+            "layer_name": "WHSE_CADASTRE.PMBC_PARCEL_POLY_SV",
+            "link_to_imap": "https://maps.gov.bc.ca/ess/hm/imap4m/?catalogLayers=9679,9680&scale=37500&center=-13732101.98921509,6177592.345443808",
+            "preview_image_url": "",
+            "preview_latitude": "48.423445",
+            "preview_longitude": "-123.357571",
+            "preview_map_service_url": "https://openmaps.gov.bc.ca/geo/pub/WHSE_CADASTRE.PMBC_PARCEL_POLY_SV/ows?",
+            "preview_zoom_level": "14"
+          }
+        ]
+      },
+      {
+        "bcdc_type": "webservice",
+        "cache_last_updated": null,
+        "cache_url": null,
+        "created": "2022-08-04T20:34:09.966382",
+        "datastore_active": false,
+        "description": "KML Ground Overlays can be used to display geographic data in mapping applications, including Google Earth. Data is served via WMS from the B.C. Geographic Warehouse (BCGW), a central government repository.",
+        "format": "kml",
+        "hash": "",
+        "id": "a0475792-2a52-4117-932c-5f7e0b65dd07",
+        "iso_topic_category": [
+          "planningCadastre"
+        ],
+        "last_modified": "2026-10-05T01:16:44",
+        "metadata_modified": "2026-10-05T12:42:27.787184",
+        "mimetype": null,
+        "mimetype_inner": null,
+        "name": "Download KML Ground Overlay file",
+        "object_name": "WHSE_CADASTRE.PMBC_PARCEL_POLY_SV",
+        "package_id": "2f4117d9-41fc-44db-87d4-dbdb77f14086",
+        "position": 3,
+        "projection_name": "epsg4326",
+        "resource_access_method": "indirect access",
+        "resource_storage_location": "bc geographic warehouse",
+        "resource_type": "data",
+        "resource_update_cycle": "asNeeded",
+        "size": null,
+        "spatial_datatype": "SDO_GEOMETRY",
+        "state": "active",
+        "supplemental_info": "Click <b>Access/Download</b> in the toolbar to download the KML Ground Overlay file. For more information see [Web Mapping Services](https://www2.gov.bc.ca/gov/content?id=95D78D544B244F34B89223EF069DF74E).",
+        "url": "https://openmaps.gov.bc.ca/kml/geo/layers/WHSE_CADASTRE.PMBC_PARCEL_POLY_SV_loader.kml",
+        "url_type": null,
+        "preview_info": [
+          {
+            "layer_name": "WHSE_CADASTRE.PMBC_PARCEL_POLY_SV",
+            "link_to_imap": "https://maps.gov.bc.ca/ess/hm/imap4m/?catalogLayers=9679,9680&scale=37500&center=-13732101.98921509,6177592.345443808",
+            "preview_image_url": "",
+            "preview_latitude": "48.423445",
+            "preview_longitude": "-123.357571",
+            "preview_map_service_url": "https://openmaps.gov.bc.ca/geo/pub/WHSE_CADASTRE.PMBC_PARCEL_POLY_SV/ows?",
+            "preview_zoom_level": "14"
+          }
+        ]
+      }
+    ]
+  },
+  "bc-address-geocoder-web-service": {
+    "id": "8f4a016f-14db-4def-8ef9-7c797de1cdd9",
+    "name": "bc-address-geocoder-web-service",
+    "title": "BC Address Geocoder Web Service",
+    "license_id": "2",
+    "license_title": "Open Government Licence - British Columbia",
+    "license_url": "https://www2.gov.bc.ca/gov/content?id=A519A56BC2BF44E4A008B33FCF527F61",
+    "metadata_modified": "2023-02-28T19:14:54.875741",
+    "notes": "The BC Address Geocoder is a REST API that can used to resolve the physical locations of addresses and place names in British Columbia (i.e., their latitude and longitude). It also provides additional capability, such as correcting and standardizing civic and non-civic addresses, reverse geocoding addresses within areas of interest, locating intersections and identifying parcels associated with specific addresses.\n\nFor more information please see the [glossary](https://github.com/bcgov/ols-geocoder/blob/gh-pages/glossary.md) and the [developer guide](https://github.com/bcgov/ols-geocoder/blob/gh-pages/geocoder-developer-guide.md).\n\nThe API is governed by [these terms of use](https://www2.gov.bc.ca/gov/content?id=D1EE0A405E584363B205CD4353E02C88), with the exception of the parcels API resource (see note below).\n\n__Note: the parcels API resource is restricted to B.C. government ministries use only.__  Ministries should [contact DataBC](https://api.gov.bc.ca/) to request an API key.",
+    "resources": [
+      {
+        "bcdc_type": "webservice",
+        "cache_last_updated": null,
+        "cache_url": "null",
+        "created": "2016-03-11T10:09:28.901000",
+        "datastore_active": "false",
+        "description": "",
+        "details": [],
+        "format": "openapi-json",
+        "geographic_extent": [],
+        "hash": "",
+        "id": "40d6411e-ab98-4df9-a24e-67f81c45f6fa",
+        "iso_topic_category": [],
+        "json_table_schema": {},
+        "metadata_modified": "2016-03-11T10:09:28.901000",
+        "mimetype": "null",
+        "mimetype_inner": "null",
+        "name": "API Specification",
+        "package_id": "8f4a016f-14db-4def-8ef9-7c797de1cdd9",
+        "position": 0,
+        "preview_info": [],
+        "projection_name": "epsg4326",
+        "resource_access_method": "service",
+        "resource_storage_location": "na",
+        "resource_type": "data",
+        "resource_update_cycle": "asNeeded",
+        "size": 0,
+        "spatial_datatype": "",
+        "state": "active",
+        "url": "https://raw.githubusercontent.com/bcgov/api-specs/master/geocoder/geocoder-combined.json",
+        "url_type": "",
+        "temporal_extent": [
+          {
+            "__extras": {
+              "[object Object]": ""
+            },
+            "beginning_date": "",
+            "end_date": ""
+          }
+        ]
+      },
+      {
+        "bcdc_type": "webservice",
+        "cache_last_updated": null,
+        "cache_url": null,
+        "created": "2016-04-29T15:59:59.349000",
+        "datastore_active": false,
+        "description": "",
+        "details": [],
+        "format": "html",
+        "geographic_extent": [],
+        "hash": "",
+        "id": "125ca593-70c6-4b58-9a5f-cfeeebc3a9a7",
+        "iso_topic_category": [],
+        "json_table_schema": {},
+        "metadata_modified": "2016-04-29T15:59:59.349000",
+        "mimetype": null,
+        "mimetype_inner": null,
+        "name": "Auto-completing Address Finder Code Widget",
+        "package_id": "8f4a016f-14db-4def-8ef9-7c797de1cdd9",
+        "position": 1,
+        "preview_info": [],
+        "projection_name": "epsg4326",
+        "resource_access_method": "service",
+        "resource_storage_location": "na",
+        "resource_type": "data",
+        "resource_update_cycle": "asNeeded",
+        "size": null,
+        "spatial_datatype": "",
+        "state": "active",
+        "url": "https://bcgov.github.io/ols-devkit/widget/",
+        "url_type": null,
+        "temporal_extent": [
+          {
+            "beginning_date": "",
+            "end_date": ""
+          }
+        ]
+      }
+    ]
+  },
+  "municipalities-legally-defined-administrative-areas-of-bc": {
+    "id": "e3c3c580-996a-4668-8bc5-6aa7c7dc4932",
+    "name": "municipalities-legally-defined-administrative-areas-of-bc",
+    "title": "Municipalities - Legally Defined Administrative Areas of BC",
+    "license_id": "2",
+    "license_title": "Open Government Licence - British Columbia",
+    "license_url": "https://www2.gov.bc.ca/gov/content?id=A519A56BC2BF44E4A008B33FCF527F61",
+    "metadata_modified": "2026-08-05T23:37:26.142220",
+    "notes": "Legally defined __Municipal__ polygons were drawn from metes and bounds descriptions as written in Letters Patent for Municipalities in the province of British Columbia. In the event of a discrepancy in the data, the metes and bounds description will prevail.\n\nAlthough the boundaries were drawn based on the legal metes and bounds descriptions, they may differ from how regional districts and their member municipalities and electoral areas currently view and/or manage their boundaries. Where discrepancies are noted, the Ministry of  Housing and Municipal Affairs (the custodian) enters into discussion with the local governments whose boundaries are affected. In order to effect a change to the boundary, Cabinet approval is required.  This is done through an Order in Council (OIC). While discrepancies to administrative boundaries are being resolved, boundaries may be adjusted on an ongoing basis until the requested changes are completed.\n \nThe OIC_YEAR and OIC_NUMBER fields indicate the year that the boundary was passed under OIC and its associated number. The AFFECTED_ADMIN_AREA_ABRVN identifies the administrative areas that are affected by the OIC.\n\nSee all of the administrative areas currently in the [__Administrative Boundaries Management System (ABMS)__](https://catalogue.data.gov.bc.ca/dataset/12f0fd64-94d5-422a-832e-6627a2a01702).\n\nThe complimentary [point dataset](https://catalogue.data.gov.bc.ca/dataset/e50b6560-0549-41a6-8035-6b828066692e) that defines the administrative areas is also available.\n\nOther individual legally defined administrative area datasets are available from the following records:\n\n[Regional Districts](https://catalogue.data.gov.bc.ca/dataset/d1aff64e-dbfe-45a6-af97-582b7f6418b9)\n[Electoral Areas](https://catalogue.data.gov.bc.ca/dataset/81940c47-a534-47e0-94d0-947c96a59de4) \n\n[Province of British Columbia](https://catalogue.data.gov.bc.ca/dataset/a7e32e45-63ae-4f5a-9275-9402b6deebdc)\n\n[Islands Trust](https://catalogue.data.gov.bc.ca/dataset/df3f5a9f-2dc0-4b9e-b593-fc205933e32d)\n\n[Local Trust Areas](https://catalogue.data.gov.bc.ca/dataset/cea5f554-f2f7-4cfd-a8f0-63e7c83dc191)",
+    "resources": [
+      {
+        "bcdc_type": "geographic",
+        "cache_last_updated": null,
+        "cache_url": "null",
+        "created": "2019-05-04T17:06:19.895000",
+        "datastore_active": "false",
+        "description": "The Distribution Service allows for data to be downloaded in various file formats from the B.C. Geographic Warehouse (BCGW), a central government repository of spatial and non-spatial data.",
+        "format": "multiple",
+        "hash": "",
+        "id": "0bd8e3d1-4d7f-4db8-a8b2-2cd4cd051074",
+        "iso_topic_category": [
+          "boundaries"
+        ],
+        "json_table_schema": {},
+        "last_modified": "2026-06-27T06:12:53",
+        "metadata_modified": "2026-08-05T23:37:26.148861",
+        "mimetype": "null",
+        "mimetype_inner": "null",
+        "name": "Export data or view details from the BC Geographic Warehouse (custom download)",
+        "object_name": "WHSE_LEGAL_ADMIN_BOUNDARIES.ABMS_MUNICIPALITIES_SP",
+        "object_short_name": "ABMS_MUNI",
+        "object_table_comments": "ABMS_MUNICIPALITIES_SP contains legally defined municipal administrative boundary areas in the Province of British Columbia. This spatial layer contains multipart features.",
+        "ofi": "True",
+        "package_id": "e3c3c580-996a-4668-8bc5-6aa7c7dc4932",
+        "position": 0,
+        "projection_name": "epsg3005",
+        "resource_access_method": "indirect access",
+        "resource_storage_location": "bc geographic warehouse",
+        "resource_type": "data",
+        "resource_update_cycle": "asNeeded",
+        "size": null,
+        "spatial_datatype": "SDO_GEOMETRY",
+        "state": "active",
+        "supplemental_info": "Click <b>Access/Download</b> in the toolbar to download this dataset. For more information on using the distribution order form see [How to download data using the Catalogue or iMapBC](https://bcgov.github.io/data-publication/pages/dps_data_distribution_w.html). If the data is visible through public WMS, click the <b>Preview</b> button on the toolbar.",
+        "url": "",
+        "url_type": "null",
+        "details": [
+          {
+            "column_comments": "An operationally-generated unique identification number, e.g., 1, 2,3.",
+            "column_name": "LGL_ADMIN_AREA_ID",
+            "data_precision": "10",
+            "data_type": "NUMBER",
+            "short_name": "AA_ID"
+          },
+          {
+            "column_comments": "The authoritative, officially approved name given to the Administrative Area, e.g., Corporation of the Village of Tofino.",
+            "column_name": "ADMIN_AREA_NAME",
+            "data_precision": "200",
+            "data_type": "VARCHAR2",
+            "short_name": "AA_NAME"
+          },
+          {
+            "column_comments": "A short form or commonly-known acronym for the Administrative Area name, e.g., Tofino (Corporation of the Village of Tofino).",
+            "column_name": "ADMIN_AREA_ABBREVIATION",
+            "data_precision": "40",
+            "data_type": "VARCHAR2",
+            "short_name": "ABRVN"
+          },
+          {
+            "column_comments": "BOUNDARY TYPE is a high-level grouping of Administrative Areas used to categorise features when reporting, e.g., Census, Legal, Administrative.",
+            "column_name": "ADMIN_AREA_BOUNDARY_TYPE",
+            "data_precision": "20",
+            "data_type": "VARCHAR2",
+            "short_name": "BDY_TYPE"
+          },
+          {
+            "column_comments": "The name given to the larger administrative area (if there is any) of which this feature is a member, e.g., Regional District of Alberni Clayquot (This would be the ADMIN_AREA_GROUP_NAME of the feature called \"The Corporation of the Village of Tofino\").",
+            "column_name": "ADMIN_AREA_GROUP_NAME",
+            "data_precision": "200",
+            "data_type": "VARCHAR2",
+            "short_name": "AA_PARENT"
+          },
+          {
+            "column_comments": "The government acronym of the Ministry or sub-org that last requested the change that resulted in the modification of the record, e.g., GeoBC, MMAH.",
+            "column_name": "CHANGE_REQUESTED_ORG",
+            "data_precision": "30",
+            "data_type": "VARCHAR2",
+            "short_name": "CHNG_ORG"
+          },
+          {
+            "column_comments": "A short description of the latest alteration of the feature's geographic or attribute content, e.g., Inserted (added new), Change in geometry.",
+            "column_name": "UPDATE_TYPE",
+            "data_precision": "50",
+            "data_type": "VARCHAR2",
+            "short_name": "UPT_TYPE"
+          },
+          {
+            "column_comments": "The date and time the record was last modified.",
+            "column_name": "WHEN_UPDATED",
+            "data_precision": "7",
+            "data_type": "DATE",
+            "short_name": "UPT_DATE"
+          },
+          {
+            "column_comments": "That the digital map has been appended to Letters Patent of the administrative area and has received cabinet or ministerial approval, i.e., \"Appended\": the digital map has been appended to Letters Patent of the municipality, electoral area, regional district or improvement district and has received cabinet or ministerial approval. The map is referred to as the legal map and forms Schedule 1 to Letters Patent. \"Not Appended\": the digital map exists but currently there is no legislative mechanism that enables the map to be appended to Letters Patent in the absence of a request for a boundary amendment. In other words, while the digital map is the exact representation of the administrative boundary, it is not considered legal until appended to Letters Patent. If there is a discrepancy in the boundary, the written metes and bounds prevail. Null values are permitted for Administrative Areas for which the map status does not apply.",
+            "column_name": "MAP_STATUS",
+            "data_precision": "12",
+            "data_type": "VARCHAR2",
+            "short_name": "MAP_STATUS"
+          },
+          {
+            "column_comments": "The most-recent Order-In-Council (OIC) or Ministerial Order (MO) identifier for a particular administrative area. This number is used in conjunction with the OIC_MO_YEAR and the OIC_MO_TYPE to determine the official OIC or MO Number, which is usually in the form ###/YY(YY), e.g., where OIC_MO_NUMBER is 245, the OIC_MO_YEAR is 2013 and the OIC_MO_TYPE is \"OIC\", the latest OIC for this administrative area is OIC 245/13 that was enacted into law in 2013. Similarily, where OIC_MO_NUMBER is 103 and the OIC_MO_YEAR is 2019 and the OIC_MO_TYPE is \"MO\", the latest Ministerial Order for this administrative area is MO 103/2019 enacted into law in 2019.",
+            "column_name": "OIC_MO_NUMBER",
+            "data_precision": "7",
+            "data_type": "VARCHAR2",
+            "short_name": "OC_M_NMBR"
+          },
+          {
+            "column_comments": "The four-digit year that the most recent Order-In-Council or Ministerial Order was approved, e.g., 2014.",
+            "column_name": "OIC_MO_YEAR",
+            "data_precision": "4",
+            "data_type": "VARCHAR2",
+            "short_name": "OC_M_YR"
+          },
+          {
+            "column_comments": "The short acronym that determines the type of identifier used in the OIC_MO_NUMBER, e.g., OIC (Order-In-Council), MO (Ministerial Order), OTHER (The boundary was issued using a procedure outside of the traditional mechanisms).",
+            "column_name": "OIC_MO_TYPE",
+            "data_precision": "20",
+            "data_type": "VARCHAR2",
+            "short_name": "OC_M_TYPE"
+          },
+          {
+            "column_comments": "An Internet URL link to additional project information and/or files related to the OIC_MO_NUMBER.",
+            "column_name": "WEBSITE_URL",
+            "data_precision": "254",
+            "data_type": "VARCHAR2",
+            "short_name": "WBST_RL"
+          },
+          {
+            "column_comments": "An Internet URL link to additional image files related to the OIC_MO_NUMBER.",
+            "column_name": "IMAGE_URL",
+            "data_precision": "254",
+            "data_type": "VARCHAR2",
+            "short_name": "IMAGE_URL"
+          },
+          {
+            "column_comments": "A semicolon-delimited list of the abbreviations (ADMIN_AREA_ABBREVIATION) of Administrative Area boundaries that are affected by the OIC number in the OIC year, e.g., NCRD-EA E / NCRD-EA H. If a record has the value \"NCRD-EA E / NCRD-EA H\" for AFFECTED_ADMIN_AREA_ABRVN, an ADMIN_AREA_ABBREVIATION of Prince Rupert, an OIC/MO (OIC_MO_NUMBER) value of 501/14, an OIC/MO Year (OIC_MO_YEAR) value of 2014, and an Administrative Area Group Name (ADMIN_AREA_GROUP_NAME) of North Coast Regional District, then the interpretation is that OIC 501 in the year 2014 for Prince Rupert also affects the boundaries of Electoral Areas NCRD-EA E and NCRD-EA H in the North Coast Regional District.",
+            "column_name": "AFFECTED_ADMIN_AREA_ABRVN",
+            "data_precision": "120",
+            "data_type": "VARCHAR2",
+            "short_name": "AFCTD_AREA"
+          },
+          {
+            "column_comments": "The system calculated area of a two-dimensional polygon in square meters.",
+            "column_name": "FEATURE_AREA_SQM",
+            "data_precision": "19",
+            "data_type": "NUMBER",
+            "short_name": "AREA_SQM"
+          },
+          {
+            "column_comments": "The system calculated length or perimeter of a geometry in meters.",
+            "column_name": "FEATURE_LENGTH_M",
+            "data_precision": "19",
+            "data_type": "NUMBER",
+            "short_name": "LENGTH_M"
+          },
+          {
+            "column_comments": "The column used to reference the spatial coordinates defining the feature.",
+            "column_name": "SHAPE",
+            "data_precision": "1",
+            "data_type": "SDO_GEOMETRY",
+            "short_name": "SHAPE"
+          },
+          {
+            "column_comments": "A column required by spatial layers that interact with ESRI ArcSDE. It is populated with unique values automatically by SDE.",
+            "column_name": "OBJECTID",
+            "data_precision": "38",
+            "data_type": "NUMBER",
+            "short_name": "OBEJCTID"
+          },
+          {
+            "column_comments": "A binary column used by spatial tools to store annotation, curve features and CAD data when using the SDO_GEOMETRY storage data type.",
+            "column_name": "SE_ANNO_CAD_DATA",
+            "data_precision": "4000",
+            "data_type": "BLOB"
+          }
+        ],
+        "geographic_extent": [
+          {
+            "east_bound_longitude": "-113.5",
+            "north_bound_latitude": "60.0",
+            "south_bound_latitude": "48.0",
+            "west_bound_longitude": "-139.5"
+          }
+        ],
+        "preview_info": [
+          {
+            "layer_name": "WHSE_LEGAL_ADMIN_BOUNDARIES.ABMS_MUNICIPALITIES_SP",
+            "link_to_imap": "http://maps.gov.bc.ca/ess/hm/imap4m/?catalogLayers=5380,5381&scale=8000000.0&center=-13659046.2059,6306007.3657",
+            "preview_image_url": "",
+            "preview_latitude": "49.18321997",
+            "preview_longitude": "-122.70129973",
+            "preview_map_service_url": "https://openmaps.gov.bc.ca/geo/pub/WHSE_LEGAL_ADMIN_BOUNDARIES.ABMS_MUNICIPALITIES_SP/ows?",
+            "preview_zoom_level": "7"
+          }
+        ]
+      },
+      {
+        "bcdc_type": "document",
+        "cache_last_updated": null,
+        "cache_url": "null",
+        "created": "2016-01-27T10:40:20.980000",
+        "datastore_active": "false",
+        "description": "Descriptions of Attribute Values",
+        "format": "xlsx",
+        "hash": "",
+        "id": "e33c3ae5-84c0-4ae0-adb0-6459907bf99e",
+        "iso_topic_category": [
+          "boundaries"
+        ],
+        "json_table_schema": {},
+        "metadata_modified": "2026-08-05T23:37:26.149015",
+        "mimetype": "null",
+        "mimetype_inner": "null",
+        "name": "Download the ABMS attribute codes and descriptions",
+        "object_name": "",
+        "object_short_name": "ABMS_MUNI",
+        "object_table_comments": "ABMS_MUNICIPALITIES_SP contains legally defined municipal administrative boundary areas in the Province of British Columbia. This spatial layer contains multipart features.",
+        "package_id": "e3c3c580-996a-4668-8bc5-6aa7c7dc4932",
+        "position": 1,
+        "projection_name": "na",
+        "resource_access_method": "direct access",
+        "resource_storage_location": "catalogue data store",
+        "resource_type": "reports",
+        "resource_update_cycle": "asNeeded",
+        "size": null,
+        "spatial_datatype": "UNKNOWN",
+        "state": "active",
+        "supplemental_info": "",
+        "url": "https://catalogue.data.gov.bc.ca/dataset/e3c3c580-996a-4668-8bc5-6aa7c7dc4932/resource/e33c3ae5-84c0-4ae0-adb0-6459907bf99e/download/abmsattributecodesanddescriptions.xlsx",
+        "url_type": "upload",
+        "details": [
+          {
+            "column_comments": "An operationally-generated unique identification number, e.g., 1, 2,3.",
+            "column_name": "LGL_ADMIN_AREA_ID",
+            "data_precision": "10",
+            "data_type": "NUMBER",
+            "short_name": "AA_ID"
+          },
+          {
+            "column_comments": "The authoritative, officially approved name given to the Administrative Area, e.g., Corporation of the Village of Tofino.",
+            "column_name": "ADMIN_AREA_NAME",
+            "data_precision": "200",
+            "data_type": "VARCHAR2",
+            "short_name": "AA_NAME"
+          },
+          {
+            "column_comments": "A short form or commonly-known acronym for the Administrative Area name, e.g., Tofino (Corporation of the Village of Tofino).",
+            "column_name": "ADMIN_AREA_ABBREVIATION",
+            "data_precision": "40",
+            "data_type": "VARCHAR2",
+            "short_name": "ABRVN"
+          },
+          {
+            "column_comments": "BOUNDARY TYPE is a high-level grouping of Administrative Areas used to categorise features when reporting, e.g., Census, Legal, Administrative.",
+            "column_name": "ADMIN_AREA_BOUNDARY_TYPE",
+            "data_precision": "20",
+            "data_type": "VARCHAR2",
+            "short_name": "BDY_TYPE"
+          },
+          {
+            "column_comments": "The name given to the larger administrative area (if there is any) of which this feature is a member, e.g., Regional District of Alberni Clayquot (This would be the ADMIN_AREA_GROUP_NAME of the feature called \"The Corporation of the Village of Tofino\").",
+            "column_name": "ADMIN_AREA_GROUP_NAME",
+            "data_precision": "200",
+            "data_type": "VARCHAR2",
+            "short_name": "AA_PARENT"
+          },
+          {
+            "column_comments": "The government acronym of the Ministry or sub-org that last requested the change that resulted in the modification of the record, e.g., GeoBC, MMAH.",
+            "column_name": "CHANGE_REQUESTED_ORG",
+            "data_precision": "30",
+            "data_type": "VARCHAR2",
+            "short_name": "CHNG_ORG"
+          },
+          {
+            "column_comments": "A short description of the latest alteration of the feature's geographic or attribute content, e.g., Inserted (added new), Change in geometry.",
+            "column_name": "UPDATE_TYPE",
+            "data_precision": "50",
+            "data_type": "VARCHAR2",
+            "short_name": "UPT_TYPE"
+          },
+          {
+            "column_comments": "The date and time the record was last modified.",
+            "column_name": "WHEN_UPDATED",
+            "data_precision": "7",
+            "data_type": "DATE",
+            "short_name": "UPT_DATE"
+          },
+          {
+            "column_comments": "That the digital map has been appended to Letters Patent of the administrative area and has received cabinet or ministerial approval, i.e., \"Appended\": the digital map has been appended to Letters Patent of the municipality, electoral area, regional district or improvement district and has received cabinet or ministerial approval. The map is referred to as the legal map and forms Schedule 1 to Letters Patent. \"Not Appended\": the digital map exists but currently there is no legislative mechanism that enables the map to be appended to Letters Patent in the absence of a request for a boundary amendment. In other words, while the digital map is the exact representation of the administrative boundary, it is not considered legal until appended to Letters Patent. If there is a discrepancy in the boundary, the written metes and bounds prevail. Null values are permitted for Administrative Areas for which the map status does not apply.",
+            "column_name": "MAP_STATUS",
+            "data_precision": "12",
+            "data_type": "VARCHAR2",
+            "short_name": "MAP_STATUS"
+          },
+          {
+            "column_comments": "The most-recent Order-In-Council (OIC) or Ministerial Order (MO) identifier for a particular administrative area. This number is used in conjunction with the OIC_MO_YEAR and the OIC_MO_TYPE to determine the official OIC or MO Number, which is usually in the form ###/YY(YY), e.g., where OIC_MO_NUMBER is 245, the OIC_MO_YEAR is 2013 and the OIC_MO_TYPE is \"OIC\", the latest OIC for this administrative area is OIC 245/13 that was enacted into law in 2013. Similarily, where OIC_MO_NUMBER is 103 and the OIC_MO_YEAR is 2019 and the OIC_MO_TYPE is \"MO\", the latest Ministerial Order for this administrative area is MO 103/2019 enacted into law in 2019.",
+            "column_name": "OIC_MO_NUMBER",
+            "data_precision": "7",
+            "data_type": "VARCHAR2",
+            "short_name": "OC_M_NMBR"
+          },
+          {
+            "column_comments": "The four-digit year that the most recent Order-In-Council or Ministerial Order was approved, e.g., 2014.",
+            "column_name": "OIC_MO_YEAR",
+            "data_precision": "4",
+            "data_type": "VARCHAR2",
+            "short_name": "OC_M_YR"
+          },
+          {
+            "column_comments": "The short acronym that determines the type of identifier used in the OIC_MO_NUMBER, e.g., OIC (Order-In-Council), MO (Ministerial Order), OTHER (The boundary was issued using a procedure outside of the traditional mechanisms).",
+            "column_name": "OIC_MO_TYPE",
+            "data_precision": "20",
+            "data_type": "VARCHAR2",
+            "short_name": "OC_M_TYPE"
+          },
+          {
+            "column_comments": "An Internet URL link to additional project information and/or files related to the OIC_MO_NUMBER.",
+            "column_name": "WEBSITE_URL",
+            "data_precision": "254",
+            "data_type": "VARCHAR2",
+            "short_name": "WBST_RL"
+          },
+          {
+            "column_comments": "An Internet URL link to additional image files related to the OIC_MO_NUMBER.",
+            "column_name": "IMAGE_URL",
+            "data_precision": "254",
+            "data_type": "VARCHAR2",
+            "short_name": "IMAGE_URL"
+          },
+          {
+            "column_comments": "A semicolon-delimited list of the abbreviations (ADMIN_AREA_ABBREVIATION) of Administrative Area boundaries that are affected by the OIC number in the OIC year, e.g., NCRD-EA E / NCRD-EA H. If a record has the value \"NCRD-EA E / NCRD-EA H\" for AFFECTED_ADMIN_AREA_ABRVN, an ADMIN_AREA_ABBREVIATION of Prince Rupert, an OIC/MO (OIC_MO_NUMBER) value of 501/14, an OIC/MO Year (OIC_MO_YEAR) value of 2014, and an Administrative Area Group Name (ADMIN_AREA_GROUP_NAME) of North Coast Regional District, then the interpretation is that OIC 501 in the year 2014 for Prince Rupert also affects the boundaries of Electoral Areas NCRD-EA E and NCRD-EA H in the North Coast Regional District.",
+            "column_name": "AFFECTED_ADMIN_AREA_ABRVN",
+            "data_precision": "120",
+            "data_type": "VARCHAR2",
+            "short_name": "AFCTD_AREA"
+          },
+          {
+            "column_comments": "The system calculated area of a two-dimensional polygon in square meters.",
+            "column_name": "FEATURE_AREA_SQM",
+            "data_precision": "19",
+            "data_type": "NUMBER",
+            "short_name": "AREA_SQM"
+          },
+          {
+            "column_comments": "The system calculated length or perimeter of a geometry in meters.",
+            "column_name": "FEATURE_LENGTH_M",
+            "data_precision": "19",
+            "data_type": "NUMBER",
+            "short_name": "LENGTH_M"
+          },
+          {
+            "column_comments": "The column used to reference the spatial coordinates defining the feature.",
+            "column_name": "SHAPE",
+            "data_precision": "1",
+            "data_type": "SDO_GEOMETRY",
+            "short_name": "SHAPE"
+          },
+          {
+            "column_comments": "A column required by spatial layers that interact with ESRI ArcSDE. It is populated with unique values automatically by SDE.",
+            "column_name": "OBJECTID",
+            "data_precision": "38",
+            "data_type": "NUMBER",
+            "short_name": "OBEJCTID"
+          },
+          {
+            "column_comments": "A binary column used by spatial tools to store annotation, curve features and CAD data when using the SDO_GEOMETRY storage data type.",
+            "column_name": "SE_ANNO_CAD_DATA",
+            "data_precision": "4000",
+            "data_type": "BLOB"
+          }
+        ],
+        "geographic_extent": [
+          {
+            "east_bound_longitude": "",
+            "north_bound_latitude": "",
+            "south_bound_latitude": "",
+            "west_bound_longitude": ""
+          }
+        ],
+        "preview_info": [
+          {
+            "layer_name": "",
+            "link_to_imap": "",
+            "preview_image_url": "",
+            "preview_latitude": "",
+            "preview_longitude": "",
+            "preview_map_service_url": "",
+            "preview_zoom_level": ""
+          }
+        ]
+      },
+      {
+        "bcdc_type": "webservice",
+        "cache_last_updated": null,
+        "cache_url": "null",
+        "created": "2016-05-16T17:07:21.266000",
+        "datastore_active": "false",
+        "description": "Web Mapping Service (WMS) allows for data to be fed out via a service from the B.C. Geographic Warehouse (BCGW), a central government repository of spatial and non-spatial data.",
+        "format": "wms",
+        "hash": "",
+        "id": "25c95b07-5882-47ff-970d-36cb243b8355",
+        "iso_topic_category": [
+          "boundaries"
+        ],
+        "json_table_schema": {},
+        "last_modified": "2026-06-27T06:12:53",
+        "metadata_modified": "2026-08-05T23:37:26.149152",
+        "mimetype": "null",
+        "mimetype_inner": "null",
+        "name": "View the WMS getCapabilities request",
+        "object_name": "WHSE_LEGAL_ADMIN_BOUNDARIES.ABMS_MUNICIPALITIES_SP",
+        "object_short_name": "ABMS_MUNI",
+        "object_table_comments": "ABMS_MUNICIPALITIES_SP contains legally defined municipal administrative boundary areas in the Province of British Columbia. This spatial layer contains multipart features.",
+        "package_id": "e3c3c580-996a-4668-8bc5-6aa7c7dc4932",
+        "position": 2,
+        "projection_name": "epsg4326",
+        "resource_access_method": "service",
+        "resource_storage_location": "bc geographic warehouse",
+        "resource_type": "data",
+        "resource_update_cycle": "asNeeded",
+        "size": null,
+        "spatial_datatype": "",
+        "state": "active",
+        "supplemental_info": "Click <b>Access/Download</b> in the toolbar to see or copy the WMS call. For more information see [Web Mapping Services](https://www2.gov.bc.ca/gov/content?id=95D78D544B244F34B89223EF069DF74E).",
+        "url": "https://openmaps.gov.bc.ca/geo/pub/WHSE_LEGAL_ADMIN_BOUNDARIES.ABMS_MUNICIPALITIES_SP/ows?service=WMS&request=GetCapabilities",
+        "url_type": "null",
+        "details": [
+          {
+            "column_comments": "An operationally-generated unique identification number, e.g., 1, 2,3.",
+            "column_name": "LGL_ADMIN_AREA_ID",
+            "data_precision": "10",
+            "data_type": "NUMBER",
+            "short_name": "AA_ID"
+          },
+          {
+            "column_comments": "The authoritative, officially approved name given to the Administrative Area, e.g., Corporation of the Village of Tofino.",
+            "column_name": "ADMIN_AREA_NAME",
+            "data_precision": "200",
+            "data_type": "VARCHAR2",
+            "short_name": "AA_NAME"
+          },
+          {
+            "column_comments": "A short form or commonly-known acronym for the Administrative Area name, e.g., Tofino (Corporation of the Village of Tofino).",
+            "column_name": "ADMIN_AREA_ABBREVIATION",
+            "data_precision": "40",
+            "data_type": "VARCHAR2",
+            "short_name": "ABRVN"
+          },
+          {
+            "column_comments": "BOUNDARY TYPE is a high-level grouping of Administrative Areas used to categorise features when reporting, e.g., Census, Legal, Administrative.",
+            "column_name": "ADMIN_AREA_BOUNDARY_TYPE",
+            "data_precision": "20",
+            "data_type": "VARCHAR2",
+            "short_name": "BDY_TYPE"
+          },
+          {
+            "column_comments": "The name given to the larger administrative area (if there is any) of which this feature is a member, e.g., Regional District of Alberni Clayquot (This would be the ADMIN_AREA_GROUP_NAME of the feature called \"The Corporation of the Village of Tofino\").",
+            "column_name": "ADMIN_AREA_GROUP_NAME",
+            "data_precision": "200",
+            "data_type": "VARCHAR2",
+            "short_name": "AA_PARENT"
+          },
+          {
+            "column_comments": "The government acronym of the Ministry or sub-org that last requested the change that resulted in the modification of the record, e.g., GeoBC, MMAH.",
+            "column_name": "CHANGE_REQUESTED_ORG",
+            "data_precision": "30",
+            "data_type": "VARCHAR2",
+            "short_name": "CHNG_ORG"
+          },
+          {
+            "column_comments": "A short description of the latest alteration of the feature's geographic or attribute content, e.g., Inserted (added new), Change in geometry.",
+            "column_name": "UPDATE_TYPE",
+            "data_precision": "50",
+            "data_type": "VARCHAR2",
+            "short_name": "UPT_TYPE"
+          },
+          {
+            "column_comments": "The date and time the record was last modified.",
+            "column_name": "WHEN_UPDATED",
+            "data_precision": "7",
+            "data_type": "DATE",
+            "short_name": "UPT_DATE"
+          },
+          {
+            "column_comments": "That the digital map has been appended to Letters Patent of the administrative area and has received cabinet or ministerial approval, i.e., \"Appended\": the digital map has been appended to Letters Patent of the municipality, electoral area, regional district or improvement district and has received cabinet or ministerial approval. The map is referred to as the legal map and forms Schedule 1 to Letters Patent. \"Not Appended\": the digital map exists but currently there is no legislative mechanism that enables the map to be appended to Letters Patent in the absence of a request for a boundary amendment. In other words, while the digital map is the exact representation of the administrative boundary, it is not considered legal until appended to Letters Patent. If there is a discrepancy in the boundary, the written metes and bounds prevail. Null values are permitted for Administrative Areas for which the map status does not apply.",
+            "column_name": "MAP_STATUS",
+            "data_precision": "12",
+            "data_type": "VARCHAR2",
+            "short_name": "MAP_STATUS"
+          },
+          {
+            "column_comments": "The most-recent Order-In-Council (OIC) or Ministerial Order (MO) identifier for a particular administrative area. This number is used in conjunction with the OIC_MO_YEAR and the OIC_MO_TYPE to determine the official OIC or MO Number, which is usually in the form ###/YY(YY), e.g., where OIC_MO_NUMBER is 245, the OIC_MO_YEAR is 2013 and the OIC_MO_TYPE is \"OIC\", the latest OIC for this administrative area is OIC 245/13 that was enacted into law in 2013. Similarily, where OIC_MO_NUMBER is 103 and the OIC_MO_YEAR is 2019 and the OIC_MO_TYPE is \"MO\", the latest Ministerial Order for this administrative area is MO 103/2019 enacted into law in 2019.",
+            "column_name": "OIC_MO_NUMBER",
+            "data_precision": "7",
+            "data_type": "VARCHAR2",
+            "short_name": "OC_M_NMBR"
+          },
+          {
+            "column_comments": "The four-digit year that the most recent Order-In-Council or Ministerial Order was approved, e.g., 2014.",
+            "column_name": "OIC_MO_YEAR",
+            "data_precision": "4",
+            "data_type": "VARCHAR2",
+            "short_name": "OC_M_YR"
+          },
+          {
+            "column_comments": "The short acronym that determines the type of identifier used in the OIC_MO_NUMBER, e.g., OIC (Order-In-Council), MO (Ministerial Order), OTHER (The boundary was issued using a procedure outside of the traditional mechanisms).",
+            "column_name": "OIC_MO_TYPE",
+            "data_precision": "20",
+            "data_type": "VARCHAR2",
+            "short_name": "OC_M_TYPE"
+          },
+          {
+            "column_comments": "An Internet URL link to additional project information and/or files related to the OIC_MO_NUMBER.",
+            "column_name": "WEBSITE_URL",
+            "data_precision": "254",
+            "data_type": "VARCHAR2",
+            "short_name": "WBST_RL"
+          },
+          {
+            "column_comments": "An Internet URL link to additional image files related to the OIC_MO_NUMBER.",
+            "column_name": "IMAGE_URL",
+            "data_precision": "254",
+            "data_type": "VARCHAR2",
+            "short_name": "IMAGE_URL"
+          },
+          {
+            "column_comments": "A semicolon-delimited list of the abbreviations (ADMIN_AREA_ABBREVIATION) of Administrative Area boundaries that are affected by the OIC number in the OIC year, e.g., NCRD-EA E / NCRD-EA H. If a record has the value \"NCRD-EA E / NCRD-EA H\" for AFFECTED_ADMIN_AREA_ABRVN, an ADMIN_AREA_ABBREVIATION of Prince Rupert, an OIC/MO (OIC_MO_NUMBER) value of 501/14, an OIC/MO Year (OIC_MO_YEAR) value of 2014, and an Administrative Area Group Name (ADMIN_AREA_GROUP_NAME) of North Coast Regional District, then the interpretation is that OIC 501 in the year 2014 for Prince Rupert also affects the boundaries of Electoral Areas NCRD-EA E and NCRD-EA H in the North Coast Regional District.",
+            "column_name": "AFFECTED_ADMIN_AREA_ABRVN",
+            "data_precision": "120",
+            "data_type": "VARCHAR2",
+            "short_name": "AFCTD_AREA"
+          },
+          {
+            "column_comments": "The system calculated area of a two-dimensional polygon in square meters.",
+            "column_name": "FEATURE_AREA_SQM",
+            "data_precision": "19",
+            "data_type": "NUMBER",
+            "short_name": "AREA_SQM"
+          },
+          {
+            "column_comments": "The system calculated length or perimeter of a geometry in meters.",
+            "column_name": "FEATURE_LENGTH_M",
+            "data_precision": "19",
+            "data_type": "NUMBER",
+            "short_name": "LENGTH_M"
+          },
+          {
+            "column_comments": "The column used to reference the spatial coordinates defining the feature.",
+            "column_name": "SHAPE",
+            "data_precision": "1",
+            "data_type": "SDO_GEOMETRY",
+            "short_name": "SHAPE"
+          },
+          {
+            "column_comments": "A column required by spatial layers that interact with ESRI ArcSDE. It is populated with unique values automatically by SDE.",
+            "column_name": "OBJECTID",
+            "data_precision": "38",
+            "data_type": "NUMBER",
+            "short_name": "OBEJCTID"
+          },
+          {
+            "column_comments": "A binary column used by spatial tools to store annotation, curve features and CAD data when using the SDO_GEOMETRY storage data type.",
+            "column_name": "SE_ANNO_CAD_DATA",
+            "data_precision": "4000",
+            "data_type": "BLOB"
+          }
+        ],
+        "geographic_extent": [
+          {
+            "east_bound_longitude": "-113.5",
+            "north_bound_latitude": "60.0",
+            "south_bound_latitude": "48.0",
+            "west_bound_longitude": "-139.5"
+          }
+        ],
+        "preview_info": [
+          {
+            "layer_name": "WHSE_LEGAL_ADMIN_BOUNDARIES.ABMS_MUNICIPALITIES_SP",
+            "link_to_imap": "http://maps.gov.bc.ca/ess/hm/imap4m/?catalogLayers=5380,5381&scale=8000000.0&center=-13659046.2059,6306007.3657",
+            "preview_image_url": "",
+            "preview_latitude": "49.18321997",
+            "preview_longitude": "-122.70129973",
+            "preview_map_service_url": "https://openmaps.gov.bc.ca/geo/pub/WHSE_LEGAL_ADMIN_BOUNDARIES.ABMS_MUNICIPALITIES_SP/ows?",
+            "preview_zoom_level": "7"
+          }
+        ]
+      },
+      {
+        "bcdc_type": "webservice",
+        "cache_last_updated": null,
+        "cache_url": null,
+        "created": "2017-09-05T16:51:23.176000",
+        "datastore_active": false,
+        "description": "KML Ground Overlays can be used to display geographic data in mapping applications, including Google Earth. Data is served via WMS from the B.C. Geographic Warehouse (BCGW), a central government repository.",
+        "format": "kml",
+        "hash": "",
+        "id": "1f5027a7-a778-42ad-9b50-52ed5be949ff",
+        "iso_topic_category": [
+          "boundaries"
+        ],
+        "json_table_schema": {},
+        "last_modified": "2026-06-27T06:12:53",
+        "metadata_modified": "2026-08-05T23:37:26.149283",
+        "mimetype": null,
+        "mimetype_inner": null,
+        "name": "Download KML Ground Overlay file",
+        "object_name": "WHSE_LEGAL_ADMIN_BOUNDARIES.ABMS_MUNICIPALITIES_SP",
+        "object_short_name": "ABMS_MUNI",
+        "object_table_comments": "ABMS_MUNICIPALITIES_SP contains legally defined municipal administrative boundary areas in the Province of British Columbia. This spatial layer contains multipart features.",
+        "package_id": "e3c3c580-996a-4668-8bc5-6aa7c7dc4932",
+        "position": 3,
+        "projection_name": "epsg4326",
+        "resource_access_method": "service",
+        "resource_storage_location": "bc geographic warehouse",
+        "resource_type": "data",
+        "resource_update_cycle": "asNeeded",
+        "size": 0,
+        "spatial_datatype": "",
+        "state": "active",
+        "supplemental_info": "Click <b>Access/Download</b> in the toolbar to download the KML Ground Overlay file. For more information see [Web Mapping Services](https://www2.gov.bc.ca/gov/content?id=95D78D544B244F34B89223EF069DF74E).",
+        "url": "https://openmaps.gov.bc.ca/kml/geo/layers/WHSE_LEGAL_ADMIN_BOUNDARIES.ABMS_MUNICIPALITIES_SP_loader.kml",
+        "url_type": null,
+        "details": [
+          {
+            "column_comments": "An operationally-generated unique identification number, e.g., 1, 2,3.",
+            "column_name": "LGL_ADMIN_AREA_ID",
+            "data_precision": "10",
+            "data_type": "NUMBER",
+            "short_name": "AA_ID"
+          },
+          {
+            "column_comments": "The authoritative, officially approved name given to the Administrative Area, e.g., Corporation of the Village of Tofino.",
+            "column_name": "ADMIN_AREA_NAME",
+            "data_precision": "200",
+            "data_type": "VARCHAR2",
+            "short_name": "AA_NAME"
+          },
+          {
+            "column_comments": "A short form or commonly-known acronym for the Administrative Area name, e.g., Tofino (Corporation of the Village of Tofino).",
+            "column_name": "ADMIN_AREA_ABBREVIATION",
+            "data_precision": "40",
+            "data_type": "VARCHAR2",
+            "short_name": "ABRVN"
+          },
+          {
+            "column_comments": "BOUNDARY TYPE is a high-level grouping of Administrative Areas used to categorise features when reporting, e.g., Census, Legal, Administrative.",
+            "column_name": "ADMIN_AREA_BOUNDARY_TYPE",
+            "data_precision": "20",
+            "data_type": "VARCHAR2",
+            "short_name": "BDY_TYPE"
+          },
+          {
+            "column_comments": "The name given to the larger administrative area (if there is any) of which this feature is a member, e.g., Regional District of Alberni Clayquot (This would be the ADMIN_AREA_GROUP_NAME of the feature called \"The Corporation of the Village of Tofino\").",
+            "column_name": "ADMIN_AREA_GROUP_NAME",
+            "data_precision": "200",
+            "data_type": "VARCHAR2",
+            "short_name": "AA_PARENT"
+          },
+          {
+            "column_comments": "The government acronym of the Ministry or sub-org that last requested the change that resulted in the modification of the record, e.g., GeoBC, MMAH.",
+            "column_name": "CHANGE_REQUESTED_ORG",
+            "data_precision": "30",
+            "data_type": "VARCHAR2",
+            "short_name": "CHNG_ORG"
+          },
+          {
+            "column_comments": "A short description of the latest alteration of the feature's geographic or attribute content, e.g., Inserted (added new), Change in geometry.",
+            "column_name": "UPDATE_TYPE",
+            "data_precision": "50",
+            "data_type": "VARCHAR2",
+            "short_name": "UPT_TYPE"
+          },
+          {
+            "column_comments": "The date and time the record was last modified.",
+            "column_name": "WHEN_UPDATED",
+            "data_precision": "7",
+            "data_type": "DATE",
+            "short_name": "UPT_DATE"
+          },
+          {
+            "column_comments": "That the digital map has been appended to Letters Patent of the administrative area and has received cabinet or ministerial approval, i.e., \"Appended\": the digital map has been appended to Letters Patent of the municipality, electoral area, regional district or improvement district and has received cabinet or ministerial approval. The map is referred to as the legal map and forms Schedule 1 to Letters Patent. \"Not Appended\": the digital map exists but currently there is no legislative mechanism that enables the map to be appended to Letters Patent in the absence of a request for a boundary amendment. In other words, while the digital map is the exact representation of the administrative boundary, it is not considered legal until appended to Letters Patent. If there is a discrepancy in the boundary, the written metes and bounds prevail. Null values are permitted for Administrative Areas for which the map status does not apply.",
+            "column_name": "MAP_STATUS",
+            "data_precision": "12",
+            "data_type": "VARCHAR2",
+            "short_name": "MAP_STATUS"
+          },
+          {
+            "column_comments": "The most-recent Order-In-Council (OIC) or Ministerial Order (MO) identifier for a particular administrative area. This number is used in conjunction with the OIC_MO_YEAR and the OIC_MO_TYPE to determine the official OIC or MO Number, which is usually in the form ###/YY(YY), e.g., where OIC_MO_NUMBER is 245, the OIC_MO_YEAR is 2013 and the OIC_MO_TYPE is \"OIC\", the latest OIC for this administrative area is OIC 245/13 that was enacted into law in 2013. Similarily, where OIC_MO_NUMBER is 103 and the OIC_MO_YEAR is 2019 and the OIC_MO_TYPE is \"MO\", the latest Ministerial Order for this administrative area is MO 103/2019 enacted into law in 2019.",
+            "column_name": "OIC_MO_NUMBER",
+            "data_precision": "7",
+            "data_type": "VARCHAR2",
+            "short_name": "OC_M_NMBR"
+          },
+          {
+            "column_comments": "The four-digit year that the most recent Order-In-Council or Ministerial Order was approved, e.g., 2014.",
+            "column_name": "OIC_MO_YEAR",
+            "data_precision": "4",
+            "data_type": "VARCHAR2",
+            "short_name": "OC_M_YR"
+          },
+          {
+            "column_comments": "The short acronym that determines the type of identifier used in the OIC_MO_NUMBER, e.g., OIC (Order-In-Council), MO (Ministerial Order), OTHER (The boundary was issued using a procedure outside of the traditional mechanisms).",
+            "column_name": "OIC_MO_TYPE",
+            "data_precision": "20",
+            "data_type": "VARCHAR2",
+            "short_name": "OC_M_TYPE"
+          },
+          {
+            "column_comments": "An Internet URL link to additional project information and/or files related to the OIC_MO_NUMBER.",
+            "column_name": "WEBSITE_URL",
+            "data_precision": "254",
+            "data_type": "VARCHAR2",
+            "short_name": "WBST_RL"
+          },
+          {
+            "column_comments": "An Internet URL link to additional image files related to the OIC_MO_NUMBER.",
+            "column_name": "IMAGE_URL",
+            "data_precision": "254",
+            "data_type": "VARCHAR2",
+            "short_name": "IMAGE_URL"
+          },
+          {
+            "column_comments": "A semicolon-delimited list of the abbreviations (ADMIN_AREA_ABBREVIATION) of Administrative Area boundaries that are affected by the OIC number in the OIC year, e.g., NCRD-EA E / NCRD-EA H. If a record has the value \"NCRD-EA E / NCRD-EA H\" for AFFECTED_ADMIN_AREA_ABRVN, an ADMIN_AREA_ABBREVIATION of Prince Rupert, an OIC/MO (OIC_MO_NUMBER) value of 501/14, an OIC/MO Year (OIC_MO_YEAR) value of 2014, and an Administrative Area Group Name (ADMIN_AREA_GROUP_NAME) of North Coast Regional District, then the interpretation is that OIC 501 in the year 2014 for Prince Rupert also affects the boundaries of Electoral Areas NCRD-EA E and NCRD-EA H in the North Coast Regional District.",
+            "column_name": "AFFECTED_ADMIN_AREA_ABRVN",
+            "data_precision": "120",
+            "data_type": "VARCHAR2",
+            "short_name": "AFCTD_AREA"
+          },
+          {
+            "column_comments": "The system calculated area of a two-dimensional polygon in square meters.",
+            "column_name": "FEATURE_AREA_SQM",
+            "data_precision": "19",
+            "data_type": "NUMBER",
+            "short_name": "AREA_SQM"
+          },
+          {
+            "column_comments": "The system calculated length or perimeter of a geometry in meters.",
+            "column_name": "FEATURE_LENGTH_M",
+            "data_precision": "19",
+            "data_type": "NUMBER",
+            "short_name": "LENGTH_M"
+          },
+          {
+            "column_comments": "The column used to reference the spatial coordinates defining the feature.",
+            "column_name": "SHAPE",
+            "data_precision": "1",
+            "data_type": "SDO_GEOMETRY",
+            "short_name": "SHAPE"
+          },
+          {
+            "column_comments": "A column required by spatial layers that interact with ESRI ArcSDE. It is populated with unique values automatically by SDE.",
+            "column_name": "OBJECTID",
+            "data_precision": "38",
+            "data_type": "NUMBER",
+            "short_name": "OBEJCTID"
+          },
+          {
+            "column_comments": "A binary column used by spatial tools to store annotation, curve features and CAD data when using the SDO_GEOMETRY storage data type.",
+            "column_name": "SE_ANNO_CAD_DATA",
+            "data_precision": "4000",
+            "data_type": "BLOB"
+          }
+        ],
+        "geographic_extent": [
+          {
+            "east_bound_longitude": "-113.5",
+            "north_bound_latitude": "60.0",
+            "south_bound_latitude": "48.0",
+            "west_bound_longitude": "-139.5"
+          }
+        ],
+        "preview_info": [
+          {
+            "layer_name": "WHSE_LEGAL_ADMIN_BOUNDARIES.ABMS_MUNICIPALITIES_SP",
+            "link_to_imap": "http://maps.gov.bc.ca/ess/hm/imap4m/?catalogLayers=5380,5381&scale=8000000.0&center=-13659046.2059,6306007.3657",
+            "preview_image_url": "",
+            "preview_latitude": "49.18321997",
+            "preview_longitude": "-122.70129973",
+            "preview_map_service_url": "https://openmaps.gov.bc.ca/geo/pub/WHSE_LEGAL_ADMIN_BOUNDARIES.ABMS_MUNICIPALITIES_SP/ows?",
+            "preview_zoom_level": "7"
+          }
+        ]
+      }
+    ]
+  },
+  "digital-road-atlas-dra-master-partially-attributed-roads": {
+    "id": "bb060417-b6e6-4548-b837-f9060d94743e",
+    "name": "digital-road-atlas-dra-master-partially-attributed-roads",
+    "title": "Digital Road Atlas (DRA) - Master Partially-Attributed Roads",
+    "license_id": "22",
+    "license_title": "Access Only",
+    "license_url": "https://www2.gov.bc.ca/gov/content?id=1AAACC9C65754E4D89A118B875E0FBDA",
+    "metadata_modified": "2026-09-11T12:47:40.053276",
+    "notes": "Digital Road Atlas Master Partially-Attributed Roads (DGTL ROAD ATLAS MPAR SP) provides partial information about roads in British Columbia. This data set represents the public data that is available for the Digital Road Atlas.  For more information on the DRA program please visit the [DRA info page](http://www2.gov.bc.ca/gov/content?id=21FFEC94B0AD40818D2D2AF06D522714)\n\nThis dataset is updated on the 6th of every month to the warehouse",
+    "resources": [
+      {
+        "bcdc_type": "geographic",
+        "cache_last_updated": null,
+        "cache_url": null,
+        "created": "2019-05-07T21:50:39.555000",
+        "datastore_active": false,
+        "description": "The Distribution Service allows for data to be downloaded in various file formats from the B.C. Geographic Warehouse (BCGW), a central government repository of spatial and non-spatial data.",
+        "format": "multiple",
+        "hash": "",
+        "id": "91178b21-0bcc-4f90-b130-e02fa4e4fda1",
+        "iso_topic_category": [
+          "economy"
+        ],
+        "last_modified": "2026-09-11T04:14:56",
+        "metadata_modified": "2026-09-11T12:47:39.211700",
+        "mimetype": null,
+        "mimetype_inner": null,
+        "name": "BC Geographic Warehouse Custom Download",
+        "object_name": "WHSE_BASEMAPPING.DRA_DGTL_ROAD_ATLAS_MPAR_SP",
+        "object_short_name": "DRA_MPAR",
+        "ofi": "True",
+        "package_id": "bb060417-b6e6-4548-b837-f9060d94743e",
+        "position": 0,
+        "projection_name": "epsg3005",
+        "resource_access_method": "indirect access",
+        "resource_storage_location": "bc geographic warehouse",
+        "resource_type": "data",
+        "resource_update_cycle": "asNeeded",
+        "size": null,
+        "spatial_datatype": "SDO_GEOMETRY",
+        "state": "active",
+        "supplemental_info": "Click <b>Access/Download</b> in the toolbar to download this dataset. For more information on using the distribution order form see [How to download data using the Catalogue or iMapBC](https://bcgov.github.io/data-publication/pages/dps_data_distribution_w.html). If the data is visible through public WMS, click the <b>Preview</b> button on the toolbar.",
+        "url": "",
+        "url_type": null,
+        "details": [
+          {
+            "column_comments": "DIGITAL ROAD ATLAS LINE ID is a unique numeric road segment identifier e.g. 453567.",
+            "column_name": "DIGITAL_ROAD_ATLAS_LINE_ID",
+            "data_precision": 10,
+            "data_type": "NUMBER",
+            "short_name": "DRA_LINEI"
+          },
+          {
+            "column_comments": "FEATURE TYPE is the feature type clasification, e.g. bridge, dam, ferry route, etc.",
+            "column_name": "FEATURE_TYPE",
+            "data_precision": 12,
+            "data_type": "VARCHAR2",
+            "short_name": "FTYPE"
+          },
+          {
+            "column_comments": "HIGHWAY EXIT NUMBER is a numeric or alpha-numeric identifier assigned to a road segment that allows egress from a segment designated as a highway, e.g. 5a.",
+            "column_name": "HIGHWAY_EXIT_NUMBER",
+            "data_precision": 6,
+            "data_type": "VARCHAR2",
+            "short_name": "HWYEXITNUM"
+          },
+          {
+            "column_comments": "HIGHWAY ROUTE NUMBER is the Highways and Arterials numbers, delimited by a plus sign, e.g. 1+5+97.",
+            "column_name": "HIGHWAY_ROUTE_NUMBER",
+            "data_precision": 12,
+            "data_type": "VARCHAR2",
+            "short_name": "HWYRTENUM"
+          },
+          {
+            "column_comments": "SEGMENT LENGTH 2D is the 2D road segment length in meters e.g. 123.345.",
+            "column_name": "SEGMENT_LENGTH_2D",
+            "data_precision": 10,
+            "data_type": "NUMBER",
+            "short_name": "SEGLNGTH2D"
+          },
+          {
+            "column_comments": "SEGMENT LENGTH 3D is the 3D Segment length in meters e.g. 123.345.",
+            "column_name": "SEGMENT_LENGTH_3D",
+            "data_precision": 10,
+            "data_type": "NUMBER",
+            "short_name": "SEGLNGTH3D"
+          },
+          {
+            "column_comments": "ROAD NAME ALIAS1 is the first full alias name, e.g. Trans-Canada Hwy E.",
+            "column_name": "ROAD_NAME_ALIAS1",
+            "data_precision": 70,
+            "data_type": "VARCHAR2",
+            "short_name": "RDALIAS1"
+          },
+          {
+            "column_comments": "ROAD NAME ALIAS2 is the Second full alias name, e.g. Hwy 1.",
+            "column_name": "ROAD_NAME_ALIAS2",
+            "data_precision": 70,
+            "data_type": "VARCHAR2",
+            "short_name": "RDALIAS2"
+          },
+          {
+            "column_comments": "ROAD NAME ALIAS3 is the third full alias name, e.g Hwy 5.",
+            "column_name": "ROAD_NAME_ALIAS3",
+            "data_precision": 70,
+            "data_type": "VARCHAR2",
+            "short_name": "RDALIAS3"
+          },
+          {
+            "column_comments": "ROAD NAME ALIAS4 is the fourth full alias name, e.g. Hwy 97.",
+            "column_name": "ROAD_NAME_ALIAS4",
+            "data_precision": 70,
+            "data_type": "VARCHAR2",
+            "short_name": "RDALIAS4"
+          },
+          {
+            "column_comments": "ROAD NAME FULL is the complete name for the road made up of the concatenation of the individual road name components, e.g. Elk Valley Hwy.",
+            "column_name": "ROAD_NAME_FULL",
+            "data_precision": 70,
+            "data_type": "VARCHAR2",
+            "short_name": "RDNAME"
+          },
+          {
+            "column_comments": "ROAD SURFACE is the road surface type, e.g boat, decommissioned, loose, overgrown, paved, rough, unknown.",
+            "column_name": "ROAD_SURFACE",
+            "data_precision": 15,
+            "data_type": "VARCHAR2",
+            "short_name": "RDSURFACE"
+          },
+          {
+            "column_comments": "ROAD CLASS is the navigational road classification, e.g alleyway, arterial, collector, etc.",
+            "column_name": "ROAD_CLASS",
+            "data_precision": 12,
+            "data_type": "VARCHAR2",
+            "short_name": "ROAD_CLASS"
+          },
+          {
+            "column_comments": "NUMBER OF LANES is the total number of lanes of through traffic on both sides of the segment, e.g. 2.",
+            "column_name": "NUMBER_OF_LANES",
+            "data_precision": 2,
+            "data_type": "NUMBER",
+            "short_name": "NUMLANES"
+          },
+          {
+            "column_comments": "DATA CAPTURE DATE is the Date of data capture in the format YYYYMMDD e.g. 20110623.",
+            "column_name": "DATA_CAPTURE_DATE",
+            "data_precision": 7,
+            "data_type": "DATE",
+            "short_name": "CPTRDATE"
+          },
+          {
+            "column_comments": "FEATURE CODE contains a value based on the Canadian Council of Surveys and Mapping''s (CCSM) system for classification of geographic features.",
+            "column_name": "FEATURE_CODE",
+            "data_precision": 10,
+            "data_type": "VARCHAR2",
+            "short_name": "FCODE"
+          },
+          {
+            "column_comments": "GEOMETRY is the column used to reference the spatial coordinates defining the feature. ",
+            "column_name": "GEOMETRY",
+            "data_precision": 1,
+            "data_type": "SDO_GEOMETRY",
+            "short_name": "GEOMETRY"
+          },
+          {
+            "column_comments": "OBJECTID is a required attribute of feature classes and object classes in a geodatabase. ",
+            "column_name": "OBJECTID",
+            "data_precision": "38",
+            "data_type": "NUMBER",
+            "short_name": "OBJECTID"
+          },
+          {
+            "column_comments": "SE_ANNO_CAD_DATA is a binary column used by spatial tools to store annotation, curve features and CAD data when using the SDO_GEOMETRY storage data type. ",
+            "column_name": "SE_ANNO_CAD_DATA",
+            "data_precision": 4000,
+            "data_type": "BLOB"
+          },
+          {
+            "column_comments": "FEATURE_LENGTH_M is the system calculated length or perimeter of a geometry in meters",
+            "column_name": "FEATURE_LENGTH_M",
+            "data_precision": 19,
+            "data_type": "NUMBER",
+            "short_name": "FEAT_LEN"
+          }
+        ],
+        "geographic_extent": [
+          {
+            "east_bound_longitude": "-113.5",
+            "north_bound_latitude": "60.0",
+            "south_bound_latitude": "48.0",
+            "west_bound_longitude": "-139.5"
+          }
+        ],
+        "preview_info": [
+          {
+            "layer_name": "WHSE_BASEMAPPING.DRA_DGTL_ROAD_ATLAS_MPAR_SP",
+            "link_to_imap": "http://maps.gov.bc.ca/ess/hm/imap4m/?catalogLayers=4489,3241&scale=16000.0&center=-13684558.0352,6307892.15725",
+            "preview_image_url": "",
+            "preview_latitude": "49.1942858",
+            "preview_longitude": "-122.93047639",
+            "preview_map_service_url": "https://openmaps.gov.bc.ca/geo/pub/WHSE_BASEMAPPING.DRA_DGTL_ROAD_ATLAS_MPAR_SP/ows?",
+            "preview_zoom_level": "16"
+          }
+        ]
+      },
+      {
+        "bcdc_type": "document",
+        "cache_last_updated": null,
+        "cache_url": "null",
+        "created": "2014-12-10T21:10:52.301000",
+        "datastore_active": "false",
+        "description": "",
+        "format": "zip",
+        "hash": "",
+        "id": "a06a2e11-a0b1-41d4-b857-cb2770e34fb0",
+        "isUrl": "true",
+        "iso_topic_category": [
+          "economy"
+        ],
+        "metadata_modified": "2025-04-11T12:50:12.051987",
+        "mimetype": "null",
+        "mimetype_inner": "null",
+        "name": "Full province in geodatabase format - 258MB\t",
+        "object_name": "",
+        "object_short_name": "",
+        "object_table_comments": "",
+        "package_id": "bb060417-b6e6-4548-b837-f9060d94743e",
+        "position": 1,
+        "projection_name": "na",
+        "resource_access_method": "direct access",
+        "resource_storage_location": "external",
+        "resource_type": "data",
+        "resource_update_cycle": "monthly",
+        "size": null,
+        "spatial_datatype": "NA",
+        "state": "active",
+        "supplemental_info": "",
+        "url": "https://nrs.objectstore.gov.bc.ca/itqlyp/DRA_Public/dgtl_road_atlas.gdb.zip",
+        "url_type": "null",
+        "geographic_extent": [
+          {
+            "east_bound_longitude": "-113.5",
+            "north_bound_latitude": "60.0",
+            "south_bound_latitude": "48.0",
+            "west_bound_longitude": "-139.5"
+          }
+        ]
+      },
+      {
+        "bcdc_type": "webservice",
+        "cache_last_updated": null,
+        "cache_url": null,
+        "created": "2015-12-14T10:53:19.396000",
+        "datastore_active": false,
+        "description": "Web Mapping Service (WMS) allows for data to be fed out via a service from the B.C. Geographic Warehouse (BCGW), a central government repository of spatial and non-spatial data.",
+        "format": "wms",
+        "hash": "",
+        "id": "a4f69e0f-a53d-4fc8-8de6-a08c7b05ee76",
+        "iso_topic_category": [
+          "economy"
+        ],
+        "last_modified": "2026-09-11T04:14:56",
+        "metadata_modified": "2026-09-11T12:47:39.622915",
+        "mimetype": null,
+        "mimetype_inner": null,
+        "name": "WMS getCapabilities request",
+        "object_name": "WHSE_BASEMAPPING.DRA_DGTL_ROAD_ATLAS_MPAR_SP",
+        "object_short_name": "DRA_MPAR",
+        "package_id": "bb060417-b6e6-4548-b837-f9060d94743e",
+        "position": 2,
+        "projection_name": "epsg4326",
+        "resource_access_method": "service",
+        "resource_storage_location": "bc geographic warehouse",
+        "resource_type": "data",
+        "resource_update_cycle": "monthly",
+        "size": null,
+        "spatial_datatype": "",
+        "state": "active",
+        "supplemental_info": "Click <b>Access/Download</b> in the toolbar to see or copy the WMS call. For more information see [Web Mapping Services](https://www2.gov.bc.ca/gov/content?id=95D78D544B244F34B89223EF069DF74E).",
+        "url": "https://openmaps.gov.bc.ca/geo/pub/WHSE_BASEMAPPING.DRA_DGTL_ROAD_ATLAS_MPAR_SP/ows?service=WMS&request=GetCapabilities",
+        "url_type": null,
+        "details": [
+          {
+            "column_comments": "DIGITAL ROAD ATLAS LINE ID is a unique numeric road segment identifier e.g. 453567.",
+            "column_name": "DIGITAL_ROAD_ATLAS_LINE_ID",
+            "data_precision": 10,
+            "data_type": "NUMBER",
+            "short_name": "DRA_LINEI"
+          },
+          {
+            "column_comments": "FEATURE TYPE is the feature type clasification, e.g. bridge, dam, ferry route, etc.",
+            "column_name": "FEATURE_TYPE",
+            "data_precision": 12,
+            "data_type": "VARCHAR2",
+            "short_name": "FTYPE"
+          },
+          {
+            "column_comments": "HIGHWAY EXIT NUMBER is a numeric or alpha-numeric identifier assigned to a road segment that allows egress from a segment designated as a highway, e.g. 5a.",
+            "column_name": "HIGHWAY_EXIT_NUMBER",
+            "data_precision": 6,
+            "data_type": "VARCHAR2",
+            "short_name": "HWYEXITNUM"
+          },
+          {
+            "column_comments": "HIGHWAY ROUTE NUMBER is the Highways and Arterials numbers, delimited by a plus sign, e.g. 1+5+97.",
+            "column_name": "HIGHWAY_ROUTE_NUMBER",
+            "data_precision": 12,
+            "data_type": "VARCHAR2",
+            "short_name": "HWYRTENUM"
+          },
+          {
+            "column_comments": "SEGMENT LENGTH 2D is the 2D road segment length in meters e.g. 123.345.",
+            "column_name": "SEGMENT_LENGTH_2D",
+            "data_precision": 10,
+            "data_type": "NUMBER",
+            "short_name": "SEGLNGTH2D"
+          },
+          {
+            "column_comments": "SEGMENT LENGTH 3D is the 3D Segment length in meters e.g. 123.345.",
+            "column_name": "SEGMENT_LENGTH_3D",
+            "data_precision": 10,
+            "data_type": "NUMBER",
+            "short_name": "SEGLNGTH3D"
+          },
+          {
+            "column_comments": "ROAD NAME ALIAS1 is the first full alias name, e.g. Trans-Canada Hwy E.",
+            "column_name": "ROAD_NAME_ALIAS1",
+            "data_precision": 70,
+            "data_type": "VARCHAR2",
+            "short_name": "RDALIAS1"
+          },
+          {
+            "column_comments": "ROAD NAME ALIAS2 is the Second full alias name, e.g. Hwy 1.",
+            "column_name": "ROAD_NAME_ALIAS2",
+            "data_precision": 70,
+            "data_type": "VARCHAR2",
+            "short_name": "RDALIAS2"
+          },
+          {
+            "column_comments": "ROAD NAME ALIAS3 is the third full alias name, e.g Hwy 5.",
+            "column_name": "ROAD_NAME_ALIAS3",
+            "data_precision": 70,
+            "data_type": "VARCHAR2",
+            "short_name": "RDALIAS3"
+          },
+          {
+            "column_comments": "ROAD NAME ALIAS4 is the fourth full alias name, e.g. Hwy 97.",
+            "column_name": "ROAD_NAME_ALIAS4",
+            "data_precision": 70,
+            "data_type": "VARCHAR2",
+            "short_name": "RDALIAS4"
+          },
+          {
+            "column_comments": "ROAD NAME FULL is the complete name for the road made up of the concatenation of the individual road name components, e.g. Elk Valley Hwy.",
+            "column_name": "ROAD_NAME_FULL",
+            "data_precision": 70,
+            "data_type": "VARCHAR2",
+            "short_name": "RDNAME"
+          },
+          {
+            "column_comments": "ROAD SURFACE is the road surface type, e.g boat, decommissioned, loose, overgrown, paved, rough, unknown.",
+            "column_name": "ROAD_SURFACE",
+            "data_precision": 15,
+            "data_type": "VARCHAR2",
+            "short_name": "RDSURFACE"
+          },
+          {
+            "column_comments": "ROAD CLASS is the navigational road classification, e.g alleyway, arterial, collector, etc.",
+            "column_name": "ROAD_CLASS",
+            "data_precision": 12,
+            "data_type": "VARCHAR2",
+            "short_name": "ROAD_CLASS"
+          },
+          {
+            "column_comments": "NUMBER OF LANES is the total number of lanes of through traffic on both sides of the segment, e.g. 2.",
+            "column_name": "NUMBER_OF_LANES",
+            "data_precision": 2,
+            "data_type": "NUMBER",
+            "short_name": "NUMLANES"
+          },
+          {
+            "column_comments": "DATA CAPTURE DATE is the Date of data capture in the format YYYYMMDD e.g. 20110623.",
+            "column_name": "DATA_CAPTURE_DATE",
+            "data_precision": 7,
+            "data_type": "DATE",
+            "short_name": "CPTRDATE"
+          },
+          {
+            "column_comments": "FEATURE CODE contains a value based on the Canadian Council of Surveys and Mapping''s (CCSM) system for classification of geographic features.",
+            "column_name": "FEATURE_CODE",
+            "data_precision": 10,
+            "data_type": "VARCHAR2",
+            "short_name": "FCODE"
+          },
+          {
+            "column_comments": "GEOMETRY is the column used to reference the spatial coordinates defining the feature. ",
+            "column_name": "GEOMETRY",
+            "data_precision": 1,
+            "data_type": "SDO_GEOMETRY",
+            "short_name": "GEOMETRY"
+          },
+          {
+            "column_comments": "OBJECTID is a required attribute of feature classes and object classes in a geodatabase. ",
+            "column_name": "OBJECTID",
+            "data_precision": "38",
+            "data_type": "NUMBER",
+            "short_name": "OBJECTID"
+          },
+          {
+            "column_comments": "SE_ANNO_CAD_DATA is a binary column used by spatial tools to store annotation, curve features and CAD data when using the SDO_GEOMETRY storage data type. ",
+            "column_name": "SE_ANNO_CAD_DATA",
+            "data_precision": 4000,
+            "data_type": "BLOB"
+          },
+          {
+            "column_comments": "FEATURE_LENGTH_M is the system calculated length or perimeter of a geometry in meters",
+            "column_name": "FEATURE_LENGTH_M",
+            "data_precision": 19,
+            "data_type": "NUMBER",
+            "short_name": "FEAT_LEN"
+          }
+        ],
+        "geographic_extent": [
+          {
+            "east_bound_longitude": "-113.5",
+            "north_bound_latitude": "60.0",
+            "south_bound_latitude": "48.0",
+            "west_bound_longitude": "-139.5"
+          }
+        ],
+        "preview_info": [
+          {
+            "layer_name": "WHSE_BASEMAPPING.DRA_DGTL_ROAD_ATLAS_MPAR_SP",
+            "link_to_imap": "http://maps.gov.bc.ca/ess/hm/imap4m/?catalogLayers=4489,3241&scale=16000.0&center=-13684558.0352,6307892.15725",
+            "preview_image_url": "",
+            "preview_latitude": "49.1942858",
+            "preview_longitude": "-122.93047639",
+            "preview_map_service_url": "https://openmaps.gov.bc.ca/geo/pub/WHSE_BASEMAPPING.DRA_DGTL_ROAD_ATLAS_MPAR_SP/ows?",
+            "preview_zoom_level": "16"
+          }
+        ]
+      },
+      {
+        "bcdc_type": "webservice",
+        "cache_last_updated": null,
+        "cache_url": null,
+        "created": "2017-11-06T19:25:12.275000",
+        "datastore_active": false,
+        "description": "KML Ground Overlays can be used to display geographic data in mapping applications, including Google Earth. Data is served via WMS from the B.C. Geographic Warehouse (BCGW), a central government repository.",
+        "format": "kml",
+        "hash": "",
+        "id": "dad1fc2c-d897-406c-a900-b4c6830af0eb",
+        "iso_topic_category": [
+          "economy"
+        ],
+        "last_modified": "2026-09-11T04:14:56",
+        "metadata_modified": "2026-09-11T12:47:40.058678",
+        "mimetype": null,
+        "mimetype_inner": null,
+        "name": "Download KML Ground Overlay file",
+        "object_name": "WHSE_BASEMAPPING.DRA_DGTL_ROAD_ATLAS_MPAR_SP",
+        "object_short_name": "DRA_MPAR",
+        "package_id": "bb060417-b6e6-4548-b837-f9060d94743e",
+        "position": 3,
+        "projection_name": "epsg4326",
+        "resource_access_method": "service",
+        "resource_storage_location": "bc geographic warehouse",
+        "resource_type": "data",
+        "resource_update_cycle": "monthly",
+        "size": 0,
+        "spatial_datatype": "",
+        "state": "active",
+        "supplemental_info": "Click <b>Access/Download</b> in the toolbar to download the KML Ground Overlay file. For more information see [Web Mapping Services](https://www2.gov.bc.ca/gov/content?id=95D78D544B244F34B89223EF069DF74E).",
+        "url": "https://openmaps.gov.bc.ca/kml/geo/layers/WHSE_BASEMAPPING.DRA_DGTL_ROAD_ATLAS_MPAR_SP_loader.kml",
+        "url_type": null,
+        "details": [
+          {
+            "column_comments": "DIGITAL ROAD ATLAS LINE ID is a unique numeric road segment identifier e.g. 453567.",
+            "column_name": "DIGITAL_ROAD_ATLAS_LINE_ID",
+            "data_precision": 10,
+            "data_type": "NUMBER",
+            "short_name": "DRA_LINEI"
+          },
+          {
+            "column_comments": "FEATURE TYPE is the feature type clasification, e.g. bridge, dam, ferry route, etc.",
+            "column_name": "FEATURE_TYPE",
+            "data_precision": 12,
+            "data_type": "VARCHAR2",
+            "short_name": "FTYPE"
+          },
+          {
+            "column_comments": "HIGHWAY EXIT NUMBER is a numeric or alpha-numeric identifier assigned to a road segment that allows egress from a segment designated as a highway, e.g. 5a.",
+            "column_name": "HIGHWAY_EXIT_NUMBER",
+            "data_precision": 6,
+            "data_type": "VARCHAR2",
+            "short_name": "HWYEXITNUM"
+          },
+          {
+            "column_comments": "HIGHWAY ROUTE NUMBER is the Highways and Arterials numbers, delimited by a plus sign, e.g. 1+5+97.",
+            "column_name": "HIGHWAY_ROUTE_NUMBER",
+            "data_precision": 12,
+            "data_type": "VARCHAR2",
+            "short_name": "HWYRTENUM"
+          },
+          {
+            "column_comments": "SEGMENT LENGTH 2D is the 2D road segment length in meters e.g. 123.345.",
+            "column_name": "SEGMENT_LENGTH_2D",
+            "data_precision": 10,
+            "data_type": "NUMBER",
+            "short_name": "SEGLNGTH2D"
+          },
+          {
+            "column_comments": "SEGMENT LENGTH 3D is the 3D Segment length in meters e.g. 123.345.",
+            "column_name": "SEGMENT_LENGTH_3D",
+            "data_precision": 10,
+            "data_type": "NUMBER",
+            "short_name": "SEGLNGTH3D"
+          },
+          {
+            "column_comments": "ROAD NAME ALIAS1 is the first full alias name, e.g. Trans-Canada Hwy E.",
+            "column_name": "ROAD_NAME_ALIAS1",
+            "data_precision": 70,
+            "data_type": "VARCHAR2",
+            "short_name": "RDALIAS1"
+          },
+          {
+            "column_comments": "ROAD NAME ALIAS2 is the Second full alias name, e.g. Hwy 1.",
+            "column_name": "ROAD_NAME_ALIAS2",
+            "data_precision": 70,
+            "data_type": "VARCHAR2",
+            "short_name": "RDALIAS2"
+          },
+          {
+            "column_comments": "ROAD NAME ALIAS3 is the third full alias name, e.g Hwy 5.",
+            "column_name": "ROAD_NAME_ALIAS3",
+            "data_precision": 70,
+            "data_type": "VARCHAR2",
+            "short_name": "RDALIAS3"
+          },
+          {
+            "column_comments": "ROAD NAME ALIAS4 is the fourth full alias name, e.g. Hwy 97.",
+            "column_name": "ROAD_NAME_ALIAS4",
+            "data_precision": 70,
+            "data_type": "VARCHAR2",
+            "short_name": "RDALIAS4"
+          },
+          {
+            "column_comments": "ROAD NAME FULL is the complete name for the road made up of the concatenation of the individual road name components, e.g. Elk Valley Hwy.",
+            "column_name": "ROAD_NAME_FULL",
+            "data_precision": 70,
+            "data_type": "VARCHAR2",
+            "short_name": "RDNAME"
+          },
+          {
+            "column_comments": "ROAD SURFACE is the road surface type, e.g boat, decommissioned, loose, overgrown, paved, rough, unknown.",
+            "column_name": "ROAD_SURFACE",
+            "data_precision": 15,
+            "data_type": "VARCHAR2",
+            "short_name": "RDSURFACE"
+          },
+          {
+            "column_comments": "ROAD CLASS is the navigational road classification, e.g alleyway, arterial, collector, etc.",
+            "column_name": "ROAD_CLASS",
+            "data_precision": 12,
+            "data_type": "VARCHAR2",
+            "short_name": "ROAD_CLASS"
+          },
+          {
+            "column_comments": "NUMBER OF LANES is the total number of lanes of through traffic on both sides of the segment, e.g. 2.",
+            "column_name": "NUMBER_OF_LANES",
+            "data_precision": 2,
+            "data_type": "NUMBER",
+            "short_name": "NUMLANES"
+          },
+          {
+            "column_comments": "DATA CAPTURE DATE is the Date of data capture in the format YYYYMMDD e.g. 20110623.",
+            "column_name": "DATA_CAPTURE_DATE",
+            "data_precision": 7,
+            "data_type": "DATE",
+            "short_name": "CPTRDATE"
+          },
+          {
+            "column_comments": "FEATURE CODE contains a value based on the Canadian Council of Surveys and Mapping''s (CCSM) system for classification of geographic features.",
+            "column_name": "FEATURE_CODE",
+            "data_precision": 10,
+            "data_type": "VARCHAR2",
+            "short_name": "FCODE"
+          },
+          {
+            "column_comments": "GEOMETRY is the column used to reference the spatial coordinates defining the feature. ",
+            "column_name": "GEOMETRY",
+            "data_precision": 1,
+            "data_type": "SDO_GEOMETRY",
+            "short_name": "GEOMETRY"
+          },
+          {
+            "column_comments": "OBJECTID is a required attribute of feature classes and object classes in a geodatabase. ",
+            "column_name": "OBJECTID",
+            "data_precision": "38",
+            "data_type": "NUMBER",
+            "short_name": "OBJECTID"
+          },
+          {
+            "column_comments": "SE_ANNO_CAD_DATA is a binary column used by spatial tools to store annotation, curve features and CAD data when using the SDO_GEOMETRY storage data type. ",
+            "column_name": "SE_ANNO_CAD_DATA",
+            "data_precision": 4000,
+            "data_type": "BLOB"
+          },
+          {
+            "column_comments": "FEATURE_LENGTH_M is the system calculated length or perimeter of a geometry in meters",
+            "column_name": "FEATURE_LENGTH_M",
+            "data_precision": 19,
+            "data_type": "NUMBER",
+            "short_name": "FEAT_LEN"
+          }
+        ],
+        "geographic_extent": [
+          {
+            "east_bound_longitude": "-113.5",
+            "north_bound_latitude": "60.0",
+            "south_bound_latitude": "48.0",
+            "west_bound_longitude": "-139.5"
+          }
+        ],
+        "preview_info": [
+          {
+            "layer_name": "WHSE_BASEMAPPING.DRA_DGTL_ROAD_ATLAS_MPAR_SP",
+            "link_to_imap": "http://maps.gov.bc.ca/ess/hm/imap4m/?catalogLayers=4489,3241&scale=16000.0&center=-13684558.0352,6307892.15725",
+            "preview_image_url": "",
+            "preview_latitude": "49.1942858",
+            "preview_longitude": "-122.93047639",
+            "preview_map_service_url": "https://openmaps.gov.bc.ca/geo/pub/WHSE_BASEMAPPING.DRA_DGTL_ROAD_ATLAS_MPAR_SP/ows?",
+            "preview_zoom_level": "16"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "5248082d10d9487b8445de9aafabd679": {
+    "url": "https://www.arcgis.com/sharing/rest/content/items/5248082d10d9487b8445de9aafabd679?f=json",
+    "accessed_utc": "2026-10-08T00:46:55.207127+00:00",
+    "metadata": {
+      "id": null,
+      "title": null,
+      "type": null,
+      "url": null,
+      "created": null,
+      "modified": null,
+      "access": null,
+      "licenseInfo": null,
+      "accessInformation": null,
+      "description": null
+    },
+    "response_error": {
+      "code": 400,
+      "messageCode": "CONT_0001",
+      "message": "Item does not exist or is inaccessible.",
+      "details": []
+    }
+  },
+  "e372974e1f214d27bc3ffd93dd46efb8": {
+    "url": "https://www.arcgis.com/sharing/rest/content/items/e372974e1f214d27bc3ffd93dd46efb8?f=json",
+    "accessed_utc": "2026-10-08T00:46:55.507367+00:00",
+    "metadata": {
+      "id": null,
+      "title": null,
+      "type": null,
+      "url": null,
+      "created": null,
+      "modified": null,
+      "access": null,
+      "licenseInfo": null,
+      "accessInformation": null,
+      "description": null
+    },
+    "response_error": {
+      "code": 400,
+      "messageCode": "CONT_0001",
+      "message": "Item does not exist or is inaccessible.",
+      "details": []
+    }
+  }
+}

@@ -1,0 +1,167 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "WHSE_CADASTRE.PMBC_PARCEL_POLY_SV.fid--702b30b4_1a118e3141a_-1c5f",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1198667.7775,
+              384549.1638
+            ],
+            [
+              1198627.9971,
+              384558.5789
+            ],
+            [
+              1198627.2632,
+              384555.6557
+            ],
+            [
+              1198625.8477,
+              384552.9948
+            ],
+            [
+              1198623.8338,
+              384550.7525
+            ],
+            [
+              1198664.846,
+              384503.2657
+            ],
+            [
+              1198671.4338,
+              384502.8189
+            ],
+            [
+              1198669.745,
+              384524.2321
+            ],
+            [
+              1198668.2919,
+              384542.6418
+            ],
+            [
+              1198667.7775,
+              384549.1638
+            ]
+          ]
+        ]
+      },
+      "geometry_name": "SHAPE",
+      "properties": {
+        "PMBC_PP_SYSID": 1412749,
+        "PARCEL_NAME": "005934206",
+        "PLAN_NUMBER": "VIP5858",
+        "PIN": null,
+        "PID": "005934206",
+        "PID_FORMATTED": "005-934-206",
+        "PID_NUMBER": 5934206,
+        "PARCEL_STATUS": "Active",
+        "PARCEL_CLASS": "Subdivision",
+        "OWNER_TYPE": "Private",
+        "PARCEL_START_DATE": null,
+        "MUNICIPALITY": "Oak Bay, The Corporation of the District of",
+        "REGIONAL_DISTRICT": "Capital Regional District",
+        "WHEN_UPDATED": "2024-09-12Z",
+        "FEATURE_AREA_SQM": 1333.6048,
+        "FEATURE_LENGTH_M": 165.7585,
+        "OBJECTID": 195737904,
+        "SE_ANNO_CAD_DATA": null
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "WHSE_CADASTRE.PMBC_PARCEL_POLY_SV.fid--702b30b4_1a118e3141a_-1c5e",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1198664.846,
+              384503.2657
+            ],
+            [
+              1198623.8338,
+              384550.7525
+            ],
+            [
+              1198621.8192,
+              384549.3484
+            ],
+            [
+              1198619.5645,
+              384548.3754
+            ],
+            [
+              1198617.1608,
+              384547.873
+            ],
+            [
+              1198614.7052,
+              384547.8615
+            ],
+            [
+              1198613.4671,
+              384506.7509
+            ],
+            [
+              1198615.4535,
+              384506.6161
+            ],
+            [
+              1198630.8081,
+              384505.5746
+            ],
+            [
+              1198646.084,
+              384504.5384
+            ],
+            [
+              1198661.2522,
+              384503.5095
+            ],
+            [
+              1198664.846,
+              384503.2657
+            ]
+          ]
+        ]
+      },
+      "geometry_name": "SHAPE",
+      "properties": {
+        "PMBC_PP_SYSID": 4189819,
+        "PARCEL_NAME": "005934133",
+        "PLAN_NUMBER": "VIP5858",
+        "PIN": null,
+        "PID": "005934133",
+        "PID_FORMATTED": "005-934-133",
+        "PID_NUMBER": 5934133,
+        "PARCEL_STATUS": "Active",
+        "PARCEL_CLASS": "Subdivision",
+        "OWNER_TYPE": "Private",
+        "PARCEL_START_DATE": null,
+        "MUNICIPALITY": "Oak Bay, The Corporation of the District of",
+        "REGIONAL_DISTRICT": "Capital Regional District",
+        "WHEN_UPDATED": "2024-09-12Z",
+        "FEATURE_AREA_SQM": 1328.4091,
+        "FEATURE_LENGTH_M": 165.1943,
+        "OBJECTID": 196874918,
+        "SE_ANNO_CAD_DATA": null
+      }
+    }
+  ],
+  "totalFeatures": 2,
+  "numberMatched": 2,
+  "numberReturned": 2,
+  "timeStamp": "2026-10-08T00:42:10.478Z",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:EPSG::3005"
+    }
+  }
+}

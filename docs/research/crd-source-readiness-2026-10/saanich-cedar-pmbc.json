@@ -1,0 +1,71 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "WHSE_CADASTRE.PMBC_PARCEL_POLY_SV.fid-35b26df0_1a118efc01f_-74f2",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              1197055.3072,
+              388753.8549
+            ],
+            [
+              1197052.5896,
+              388735.2383
+            ],
+            [
+              1197097.5131,
+              388736.8244
+            ],
+            [
+              1197099.6707,
+              388745.69
+            ],
+            [
+              1197102.0591,
+              388755.5058
+            ],
+            [
+              1197055.3072,
+              388753.8549
+            ]
+          ]
+        ]
+      },
+      "geometry_name": "SHAPE",
+      "properties": {
+        "PMBC_PP_SYSID": 2952279,
+        "PARCEL_NAME": "002559790",
+        "PLAN_NUMBER": "VIP27257",
+        "PIN": null,
+        "PID": "002559790",
+        "PID_FORMATTED": "002-559-790",
+        "PID_NUMBER": 2559790,
+        "PARCEL_STATUS": "Active",
+        "PARCEL_CLASS": "Subdivision",
+        "OWNER_TYPE": "Private",
+        "PARCEL_START_DATE": null,
+        "MUNICIPALITY": "Saanich, The Corporation of the District of",
+        "REGIONAL_DISTRICT": "Capital Regional District",
+        "WHEN_UPDATED": "2019-01-05Z",
+        "FEATURE_AREA_SQM": 848.9512,
+        "FEATURE_LENGTH_M": 129.773,
+        "OBJECTID": 196367818,
+        "SE_ANNO_CAD_DATA": null
+      }
+    }
+  ],
+  "totalFeatures": 1,
+  "numberMatched": 1,
+  "numberReturned": 1,
+  "timeStamp": "2026-10-08T00:42:11.420Z",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:EPSG::3005"
+    }
+  }
+}

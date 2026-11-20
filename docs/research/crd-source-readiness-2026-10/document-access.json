@@ -1,0 +1,92 @@
+{
+  "saanich-bylaw": {
+    "url": "https://www.saanich.ca/assets/Local~Government/Documents/Planning/zone8200.pdf",
+    "accessed_utc": "2026-10-08T00:43:21.237240+00:00",
+    "bytes": 32746793,
+    "sha256": "855fc03f07b22bebde8228a3762fb55a69ce6de250d294ce66bf67503a9316bb",
+    "pages": 409,
+    "http_status": 200,
+    "text_read": true,
+    "pdf_retained_in_repository": false
+  },
+  "saanich-building-metadata": {
+    "url": "https://map.saanich.ca/gisdata/Metadata/BuildingsMetadata.pdf",
+    "accessed_utc": "2026-10-08T00:43:21.237240+00:00",
+    "bytes": 110066,
+    "sha256": "c25893474010ec117579fda93c98557b6ceb0ecf8f30a276e668878fe6a83960",
+    "pages": 1,
+    "http_status": 200,
+    "text_read": true,
+    "pdf_retained_in_repository": false
+  },
+  "saanich-parcel-metadata": {
+    "url": "https://map.saanich.ca/gisdata/Metadata/ParcelsMetadata.pdf",
+    "accessed_utc": "2026-10-08T00:43:21.238244+00:00",
+    "bytes": 115955,
+    "sha256": "4a0101917b59abadb2097543def87179165477f17b767336abf728297ee26a4f",
+    "pages": 2,
+    "http_status": 200,
+    "text_read": true,
+    "pdf_retained_in_repository": false
+  },
+  "langford-part3": {
+    "url": "https://langford.ca/wp-content/uploads/2023/04/Part-3-General-Regulations.pdf",
+    "accessed_utc": "2026-10-08T00:43:21.238244+00:00",
+    "bytes": 296918,
+    "sha256": "c4413c8f072dd94df83c4d7c8815045701a28283cc95536f702da818a7666b06",
+    "pages": 26,
+    "http_status": 200,
+    "text_read": true,
+    "pdf_retained_in_repository": false
+  },
+  "langford-definitions": {
+    "url": "https://langford.ca/wp-content/uploads/2022/10/zoning-blyaw-part-1-interpretation.pdf",
+    "accessed_utc": "2026-10-08T00:43:21.238949+00:00",
+    "bytes": 288664,
+    "sha256": "b3d7ff210bc960e27dc8d41c715f00aa10214647e5b210b0f5c7882ee0ef3d54",
+    "pages": 22,
+    "http_status": 200,
+    "text_read": true,
+    "pdf_retained_in_repository": false
+  },
+  "langford-r2": {
+    "url": "https://langford.ca/wp-content/uploads/2023/04/2_One-and-Two-Family-Residential-Zones.pdf",
+    "accessed_utc": "2026-10-08T00:43:21.765290+00:00",
+    "bytes": 224029,
+    "sha256": "7fc078837749c1b2372e36c10d7b44fdb2aadab0071ae01389b9e9c35c18a903",
+    "pages": 20,
+    "http_status": 200,
+    "text_read": true,
+    "pdf_retained_in_repository": false
+  },
+  "langford-amendments": {
+    "url": "https://langford.ca/wp-content/uploads/2023/04/List-of-Amendments-1.pdf",
+    "accessed_utc": "2026-10-08T00:43:22.523854+00:00",
+    "bytes": 327443,
+    "sha256": "f2780346c826b97ada184fe77e8decbe73324118d33a97bf9df77fc9752b7c60",
+    "pages": 24,
+    "http_status": 200,
+    "text_read": true,
+    "pdf_retained_in_repository": false
+  },
+  "oakbay-transit-plan": {
+    "url": "https://onlineservice.oakbay.ca/WebApps/OurCity/Prospero/FileDownload.aspx?fileId=69548C260602113638282329&folderId=64600C260415103904605252",
+    "accessed_utc": "2026-10-08T00:43:22.756390+00:00",
+    "bytes": 933003,
+    "sha256": "39d809bdaed8486849a1ed740b47ed9bb6d8c8f5fdd09d9246a7b7198145086b",
+    "pages": 2,
+    "http_status": 200,
+    "text_read": true,
+    "pdf_retained_in_repository": false
+  },
+  "oakbay-westdowne-plan": {
+    "url": "https://onlineservice.oakbay.ca/WebApps/OurCity/Prospero/FileDownload.aspx?fileId=31B29BA1-66DE-4C27-BCAD-1BB4782EE081&folderId=35331C250604154543761007",
+    "accessed_utc": "2026-10-08T00:43:23.079560+00:00",
+    "bytes": 2165663,
+    "sha256": "03605b66dd3cc4fd9193919df009ea11bf18f3f0744205ac6f95a3ff1bf79492",
+    "pages": 7,
+    "http_status": 200,
+    "text_read": true,
+    "pdf_retained_in_repository": false
+  }
+}
