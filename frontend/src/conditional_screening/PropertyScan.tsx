@@ -3,6 +3,7 @@ import { TechnicalDetails, CopyableRecord, readableDate } from '../ReadableProve
 import type { ParcelRef } from './victoriaZoning'
 import { StepInfo } from '../StepInfo'
 import { StatusIcon } from './HomeownerSummary'
+import { parseSewerService, sewerStatusLabels, type SewerServiceFinding } from './SewerService'
 
 const scanLabels = ['Heritage properties', 'Heritage conservation areas', 'Development permit areas', 'Mapped special restrictions', 'Mapped development applications', 'Development application history']
 
@@ -30,6 +31,7 @@ export type PropertyScanResult = {
   schema_version: 'victoria-property-scan.v1'; parcel_ref: ParcelRef
   findings: { label: string; status: 'probably_clear' | 'review' | 'unknown'; records: Record<string, unknown>[]; detail: string; source: null | { provider: string; record_label: string; source_url: string; captured_at_utc: string; review_status: string; sha256: string } }[]
   limitations: string[]; parcel_source: unknown
+  sewer?: SewerServiceFinding | null
 }
 
 export function parsePropertyScan(raw: unknown, expected: ParcelRef): PropertyScanResult {
@@ -53,7 +55,7 @@ export function parsePropertyScan(raw: unknown, expected: ParcelRef): PropertySc
       (row.source === null ? row.status === 'unknown' : validSource(row.source)) &&
       (row.status !== 'probably_clear' || row.records.length === 0) &&
       (row.status !== 'review' || row.records.length > 0))) throw Error('Property scan is incomplete or belongs to another parcel.')
-  return value
+  return value.sewer === undefined ? value : { ...value, sewer: parseSewerService(value.sewer, expected) ?? null }
 }
 
 export function usePropertyScan(request: { parcel_ref: ParcelRef; expected_pid?: string } | null, revision: string | null) {
@@ -81,6 +83,8 @@ export function usePropertyScan(request: { parcel_ref: ParcelRef; expected_pid?:
 
 export function PropertyScan({ scan }: { scan: ReturnType<typeof usePropertyScan> }) {
   useEffect(() => { void import('./property-scan.css') }, [])
+  const sewer = scan.result?.sewer
+  const sewerUnavailable = sewer === null || !!scan.error
   return <section className="project-details" id="property-scan" tabIndex={-1} aria-label="Preliminary property scan">
     <h3>Preliminary property scan</h3>
     <p>City map flags and linked application history. Issued permit conditions, title covenants, projections and service capacity still need review.</p>
@@ -91,7 +95,11 @@ export function PropertyScan({ scan }: { scan: ReturnType<typeof usePropertyScan
       const row = scan.result?.findings.find(finding => finding.label === label)
       const status = row?.status === 'probably_clear' ? 'probable' : row?.status === 'review' ? 'review' : 'unknown'
       return <ScanCard key={label} label={label} row={row} status={status} answer={status === 'probable' ? 'No · Likely fine in searched scope' : status === 'review' ? 'Yes · Needs review' : `Maybe · ${scan.busy ? 'Scanning…' : 'Not established'}`} source={row?.source ? `City records · ${readableDate(row.source.captured_at_utc)} · unreviewed` : 'No source finding established'} />
-    })}{['Permit conditions', 'Title restrictions', 'Projections', 'Service capacity'].map(label => <ScanCard key={label} label={label} status="unknown" answer="Maybe · Not checked" source="Property-specific records needed" />)}</ul>
+    })}{['Permit conditions', 'Title restrictions', 'Projections'].map(label => <ScanCard key={label} label={label} status="unknown" answer="Maybe · Not checked" source="Property-specific records needed" />)}
+    {sewer || sewerUnavailable ? <li className="property-scan__unknown"><div className="property-scan__service"><strong>Service capacity</strong>
+      <p>{sewerStatusLabels[sewer?.status ?? 'unavailable']}. Capacity for this proposal still needs City confirmation. Water, storm drainage and power are outside this scan.</p>
+      <a href="#sewer-service">Review the sewer finding and City contact</a>
+    </div></li> : <ScanCard label="Service capacity" status="unknown" answer="Maybe · Not checked" source="Property-specific records needed" />}</ul>
     {scan.result && <details><summary>Scan findings and sources</summary>{scan.result.findings.map(row => <div key={row.label}><strong>{row.label} · {row.status === 'probably_clear' ? 'Likely fine in searched scope' : row.status === 'review' ? 'Needs review' : 'Unknown'}</strong><p>{row.detail}</p>{row.source && <p>{row.source.provider} · {row.source.record_label} · captured {readableDate(row.source.captured_at_utc)} · unreviewed. <a href={row.source.source_url} target="_blank" rel="noreferrer">City source</a></p>}{row.records.length > 0 && <ul>{row.records.map((record, index) => <li key={index}><strong>{String(record.Name ?? record.SUBJECT ?? record.Heritage ?? record.AppType ?? 'City record requiring review')}{record.STATUS ? ` (${String(record.STATUS)})` : ''}</strong></li>)}</ul>}{row.records.length > 0 && <TechnicalDetails title={`${row.label}: returned records`}><CopyableRecord id={`scan-${row.label.replace(/ /g, "-")}`} label="Source records" value={JSON.stringify(row.records, null, 2)} /></TechnicalDetails>}</div>)}</details>}
     <p><a href="https://www.victoria.ca/building-business/permits-development-construction/development-tracker" target="_blank" rel="noreferrer">Development Tracker</a> · <a href="https://tender.victoria.ca/WebApps/PIP/Pages/Search.aspx" target="_blank" rel="noreferrer">Property Information Portal</a> · <a href="https://www.victoria.ca/building-business/permits-development-construction/building-renovating/accessing-permit-records" target="_blank" rel="noreferrer">Permit records</a> · <a href="https://ltsa.ca/property-owners/how-can-i/find-information-on-a-title/" target="_blank" rel="noreferrer">LTSA title records</a></p>
   </section>

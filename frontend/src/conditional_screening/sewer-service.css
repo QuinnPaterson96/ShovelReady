@@ -1,0 +1,13 @@
+.builder-sewer-service__finding {
+  display: flex;
+  align-items: flex-start;
+  gap: .65rem;
+}
+.builder-sewer-service__finding p {
+  margin: 0 0 .35rem;
+}
+.builder-sewer-service__finding svg {
+  flex: 0 0 24px;
+  height: 24px;
+  color: var(--copper);
+}

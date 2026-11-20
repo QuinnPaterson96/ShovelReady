@@ -6,6 +6,7 @@ import { screeningCheckTitle } from '../conditional_screening/model'
 import type { ScreeningCheck, Pathway } from '../conditional_screening/model'
 import type { ProjectSettings } from '../conditional_screening/projectSettings'
 import type { PropertyScanResult } from '../conditional_screening/PropertyScan'
+import { sewerEnquiry } from '../conditional_screening/SewerService'
 import type { SiteAssumptions } from '../zoning_site_assumptions/model'
 import { measurementWithUnit } from '../measurements'
 import { historicalModel300, historicalModelNote } from '../model_catalogue/demo'
@@ -21,6 +22,7 @@ export function housePlanNote(plan: EnquiryInput['housePlan']) {
 }
 
 export type EnquiryInput = {
+  sewerScanFailed?: boolean
   housePlan?: import('./PropertyOptions').HousePlan | null
   municipalResult?: import('../municipal_rules/model').MunicipalResult | null
   localComparisonsAvailable?: boolean
@@ -215,6 +217,7 @@ export function manufacturerDocument(input: EnquiryInput, address: string | null
       section('Site information', [...placement, ...positivePropertyFindings(scan),
         ...(!measured ? ['No current measured placement is available; the proposed position and delivery access remain to be established.'] : []),
       ], true),
+      ...(scan?.sewer !== undefined || input.sewerScanFailed ? [sewerEnquiry(scan?.sewer ?? null)] : []),
       ...(sketchAvailable ? [section('Placement sketch', ['I have an approximate proposed placement sketch available. Please let me know the best way to share it.'], true)] : []),
     ],
     closing: input.contact?.trim() || 'Thank you.',

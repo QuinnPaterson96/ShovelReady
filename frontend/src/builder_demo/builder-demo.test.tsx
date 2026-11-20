@@ -17,6 +17,8 @@ import { reviewAddress, reviewInput, reviewConditional, reviewScenarios, reviewS
 import { PriceTiming, priceTimingParagraphs } from '../model_catalogue/PriceTiming'
 import { placementDrawing, attachedEmail, enquiryPackageFiles } from './placementExport'
 import { preparationChecklist } from './manufacturer'
+import { PropertyScan, parsePropertyScan, type PropertyScanResult } from '../conditional_screening/PropertyScan'
+import { SewerService } from '../conditional_screening/SewerService'
 
 const manualFact = (value: string | number | null): Fact => ({
   value, unit: null, basis: null, unresolved_reason: value === null ? 'unknown' : null,
@@ -353,4 +355,38 @@ test('package keeps complete evidence in JSON without embedding diagnostics in t
   assert.doesNotMatch(decode('prefab-supporting-report.md'), /```json|strict-input subset|Parcel containment contained|enter installed height/)
   assert.match(decode('prefab-supporting-report.md'), /prefab-technical-evidence.json/)
   assert.doesNotMatch(decode('prefab-enquiry.md'), /Owner preparation/)
+})
+
+test('Victoria property scan carries its dated sewer map finding into the site and recipient handoffs', () => {
+  const input = { ...questions, intendedUse: 'Garden suite' }
+  const source = { provider: 'City of Victoria Open Data', record_label: 'Active City sanitary sewer lateral records', review_status: 'unreviewed_live_observation', captured_at_utc: '2026-11-19T05:00:00Z', sha256: 'b'.repeat(64), source_url: 'https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Sewer/MapServer/12/query?f=json&where=parcel-reference' }
+  const planning = ['Heritage properties', 'Heritage conservation areas', 'Development permit areas', 'Mapped special restrictions', 'Mapped development applications', 'Development application history']
+  const raw: PropertyScanResult = { ...reviewScan, findings: planning.map(label => ({ label, records: [], status: 'unknown', detail: 'Unavailable in fixture.', source: null })), sewer: {
+    status: 'mapped_connection', detail: 'City map shows a sanitary sewer connection linked to this parcel.', source,
+    records: [{ attributes: { OBJECTID: 2420 } }], checked_at_utc: source.captured_at_utc, capacity_status: 'requires_confirmation',
+    authority: { name: 'City of Victoria Engineering', email: 'eng@victoria.ca', url: 'https://www.victoria.ca/' }, question: 'Can the proposed dwelling use the existing connection?',
+    association_source: { ...source, source_url: 'https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=json' },
+    association_parcel_count: 1, association_parcel_ids: [reviewScan.parcel_ref.object_id],
+  } }
+  const result = parsePropertyScan(raw, raw.parcel_ref)
+  assert.equal(result.sewer?.status, 'mapped_connection')
+  const rejected = parsePropertyScan({ ...raw, sewer: { ...raw.sewer, association_parcel_ids: [87] } }, raw.parcel_ref)
+  assert.equal(rejected.sewer, null)
+  assert.deepEqual(rejected.findings, result.findings)
+  const scan = { result, available: true, busy: false, error: '', retry() {} }
+  const html = renderToStaticMarkup(<><PropertyScan scan={scan} /><SewerService scan={scan} address={reviewAddress} intendedUse={input.intendedUse} /></>)
+  assert.match(html, /href="#sewer-service"/)
+  assert.match(html, /eng%40victoria\.ca/)
+  assert.match(html, /proposed garden suite/)
+  const args = [null, input, null, false, null, null, false, null, null, null, null, null, null, result] as const
+  const brief = enquiryDocument(...args), report = screeningDocument(...args)
+  const files = enquiryPackageFiles(brief, report, [], { property_scan: result }, null)
+  const decode = (name: string) => new TextDecoder().decode(files[name])
+  assert.match(decode('prefab-enquiry.md'), /Capacity and permission.*City confirmation/)
+  assert.match(decode('prefab-supporting-report.md'), /2026-11-19.*unreviewed/)
+  assert.match(decode('prefab-supporting-report.md'), /eng@victoria\.ca.*proposed garden suite/)
+  assert.doesNotMatch(decode('prefab-supporting-report.md'), /where=parcel-reference/)
+  assert.match(decode('prefab-technical-evidence.json'), /where=parcel-reference/)
+  assert.doesNotMatch(enquiryEmailBody(brief, false), /Connection shown on the City map/)
+  assert.match(enquiryPlainText(screeningDocument(null, input, null, false, null, null, false, null, null, null, null, null, null, rejected)), /City map check unavailable/)
 })
