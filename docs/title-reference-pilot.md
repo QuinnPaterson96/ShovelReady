@@ -16,6 +16,10 @@ Victoria’s Special Restrictions layer exposes an object identifier and point g
 
 LTSA’s public training example shows why the number and question belong together. Several rights of way can reference different portions of the same plan. An owner can bring the number from a document already in hand. If further investigation is warranted, LTSA supports document and plan searches by number. [LTSA worked example](https://ltsa.ca/wp-content/uploads/2022/10/2022_10_Fundamentals-of-LT-Applications.pdf) · [LTSA document and plan searches](https://help.ltsa.ca/ltsa-explorer/search-documents-and-plans)
 
+## Browser verification
+
+On the permits-integrated pilot branch, 211 frontend tests passed and the production build completed. Independent Sol verification ran the title journey in Chromium at 390 CSS pixels. It checked the copyable PID and the external ordering links, both return paths, ambiguous candidates and a missing PID. It exercised an actual reviewer text download and placement PNG, builder PDF, ZIP and unsent email file, then checked edits, removal and switching properties. The synthetic City map hit stayed distinct from the owner’s reference. Registry fulfillment and real recipient understanding remain open. See [how to repeat the browser check](quality.md#bc-title-reference-checks).
+
 ## Before expanding
 
 Product research should compare the existing checklist with the reference-and-question handoff on ten consented Victoria and Saanich cases. Include a map miss with a registered interest and a cancelled entry. Ask a qualified reviewer to identify the next document or professional. The proposed expansion threshold is at least eight correct next steps, an improvement over the existing card, and zero unsupported clearance or prohibition calls. Include homeowner and builder feedback on what they intended to share and what they would do next.
