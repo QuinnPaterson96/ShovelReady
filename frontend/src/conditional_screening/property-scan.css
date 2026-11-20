@@ -13,9 +13,11 @@
 
 .property-scan__list li { padding: 0; }
 .property-scan__help { display: block; width: 100%; }
-.property-scan__help .step-info__button { display: flex; align-items: flex-start; gap: .6rem; width: 100%; padding: .75rem; border: 0; background: transparent; color: inherit; text-align: left; font-weight: normal; }
+.property-scan__projection, .property-scan__help .step-info__button { display: flex; align-items: flex-start; gap: .6rem; width: 100%; padding: .75rem; border: 0; background: transparent; color: inherit; text-align: left; font-weight: normal; }
 .property-scan__help-hint { text-decoration: underline; font-size: .8rem; }
 .property-scan__card-content { min-width: 0; }
+
+.property-scan__projection .property-scan__card-content > span { color: var(--link); text-decoration: underline; }
 .property-scan__permit { width: 100%; min-width: 0; margin: 0; }
 details.property-scan__permit > summary {
   display: flex;

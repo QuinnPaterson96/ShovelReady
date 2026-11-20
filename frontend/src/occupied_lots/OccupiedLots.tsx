@@ -16,6 +16,7 @@ import ScenarioHandoff from '../scenario_handoff/ScenarioHandoff'
 import { BoundaryActionTabs, BoundaryMapTools, BoundaryOverlay, BoundaryRoleHelp, type BoundaryMapInteraction } from '../zoning_site_assumptions/BoundaryMapTools'
 import { SuggestionControls, usePlacementSuggestion, type PlacementSuggestion, type SuggestionContext, type SuggestionGeometry } from '../placement_suggestion/usePlacementSuggestion'
 import { useSetbackMap } from '../setback_overlays/SetbackMap'
+import { projectionPilotModel, usePlanProjections } from '../plan_projections/PlanProjections'
 
 import type { RetainedPlacementDraft } from '../builder_demo/retainedAlternatives'
 type Placement = RetainedPlacementDraft['position']
@@ -54,7 +55,7 @@ export function PlacementConcerns({ site, result, additional, onContinueUnresolv
   </section>
 }
 
-export function OccupiedLotPreview({ selected, placement, onMove, nudgeMetres, conflictIds, boundaryInteraction, placementSummary, placementContinuation, placementControls, placementConcerns, preferredScenarioKey, modelLabel = 'Proposed unit', showBoundaryTools = true }: { preferredScenarioKey?: string; placementControls?: ReactNode; placementSummary?: ReactNode; placementContinuation?: ReactNode; placementConcerns?: ReactNode; modelLabel?: string; showBoundaryTools?: boolean; selected: Case; placement: Placement; onMove: (x: number, y: number) => void; nudgeMetres: number; conflictIds?: Set<string>; boundaryInteraction?: BoundaryMapInteraction }) {
+export function OccupiedLotPreview({ selected, placement, onMove, nudgeMetres, conflictIds, boundaryInteraction, placementSummary, placementContinuation, placementControls, placementConcerns, preferredScenarioKey, modelLabel = 'Proposed unit', showBoundaryTools = true, showPlanProjections = false, projectionDimensionsEdited = false }: { showPlanProjections?: boolean; projectionDimensionsEdited?: boolean; preferredScenarioKey?: string; placementControls?: ReactNode; placementSummary?: ReactNode; placementContinuation?: ReactNode; placementConcerns?: ReactNode; modelLabel?: string; showBoundaryTools?: boolean; selected: Case; placement: Placement; onMove: (x: number, y: number) => void; nudgeMetres: number; conflictIds?: Set<string>; boundaryInteraction?: BoundaryMapInteraction }) {
   const svg = useRef<SVGSVGElement>(null)
   const preview = useRef<HTMLDialogElement>(null)
   const drag = useRef(false)
@@ -69,9 +70,13 @@ export function OccupiedLotPreview({ selected, placement, onMove, nudgeMetres, c
   const scaleX = minX - pad * .65, scaleY = -minY + pad * .55
   const px = number(placement.x), py = number(placement.y), w = number(placement.width), d = number(placement.depth), a = number(placement.angle)
   const setbacks = useSetbackMap(boundaryInteraction?.setbackContext, preferredScenarioKey)
+  const projections = usePlanProjections(showPlanProjections, selected,
+    px !== null && py !== null && w !== null && d !== null && a !== null && w > 0 && d > 0
+      ? { x: px, y: py, width: w, depth: d, angle: a } : null, projectionDimensionsEdited)
   const mapLayers = <>
       <path d={path(site.parcel)} fill="var(--map-parcel-fill)" stroke={conflictIds?.has(site.parcel.id) ? 'var(--danger)' : 'var(--map-parcel-stroke)'} strokeDasharray={conflictIds?.has(site.parcel.id) ? '7 4' : undefined} fillRule="evenodd" vectorEffect="non-scaling-stroke" strokeWidth={conflictIds?.has(site.parcel.id) ? '4' : '2'} />
       {setbacks.layer}
+      {projections.parcelLayer}
       {site.buildings.map((b, i) => {
         const coords = points(b), centreX = (Math.min(...coords.map(p => p[0])) + Math.max(...coords.map(p => p[0]))) / 2, centreY = (Math.min(...coords.map(p => p[1])) + Math.max(...coords.map(p => p[1]))) / 2
         const main = b.id === boundaryInteraction?.mainBuilding?.id
@@ -85,6 +90,7 @@ export function OccupiedLotPreview({ selected, placement, onMove, nudgeMetres, c
         <g transform={`translate(${px} ${-py}) rotate(${-a})`}>
           <rect x={-w / 2} y={-d / 2} width={w} height={d} fill="var(--map-zone-fill)" stroke="var(--map-zone-stroke)" strokeWidth="3" vectorEffect="non-scaling-stroke" style={{ cursor: 'grab', touchAction: 'none' }}
             onPointerDown={e => { if (boundaryInteraction && boundaryInteraction.mode !== 'place') return; drag.current = true; suppressClick.current = true; e.currentTarget.ownerSVGElement?.setPointerCapture(e.pointerId) }} />
+          {projections.modelLayer}
           <circle r={Math.min(w, d) / 12} fill="var(--map-zone-stroke)" pointerEvents="none" />
         </g>
         <g className="occupied-map-callout occupied-map-callout--model"><path d={`M${px} ${-py} V${-minY + pad * .4}`} /><text transform={`translate(${Math.max(minX, Math.min(maxX, px))} ${-minY + pad * .8})`} x="0" y="0" textAnchor="middle" fontSize={extent * .034}>{modelLabel} · proposed position</text></g>
@@ -124,7 +130,7 @@ export function OccupiedLotPreview({ selected, placement, onMove, nudgeMetres, c
       onPointerCancel={() => { drag.current = false; suppressClick.current = false }}>
       {mapLayers}
     </svg>
-    <p className="occupied-map-legend"><span>Teal · captured parcel</span><span>Purple · rooflines, not walls</span>{!!conflictIds?.size && <span>Red dashed outline · current conflict</span>}<span>Copper · proposed unit</span><span>North ↑</span>{!!boundaryInteraction?.streetIds?.length && <span>{boundaryInteraction.streetSource ? 'Grey · suggested street edges and current marks' : 'Grey road bands · your marks, diagram only'}</span>}</p>
+    <p className="occupied-map-legend"><span>Teal · captured parcel</span><span>Purple · rooflines, not walls</span>{!!conflictIds?.size && <span>Red dashed outline · current conflict</span>}<span>Copper · proposed unit</span>{projections.legend}<span>North ↑</span>{!!boundaryInteraction?.streetIds?.length && <span>{boundaryInteraction.streetSource ? 'Grey · suggested street edges and current marks' : 'Grey road bands · your marks, diagram only'}</span>}</p>
     {setbacks.legend}
     <dialog ref={preview} className="occupied-map-preview" aria-label="Full-size approximate placement preview">
       <div className="occupied-preview-heading"><h3>Approximate placement plan</h3><button type="button" onClick={() => preview.current?.close()}>Close preview</button></div>
@@ -133,6 +139,7 @@ export function OccupiedLotPreview({ selected, placement, onMove, nudgeMetres, c
       <p>Approximate source geometry only. Review the measurements and candidate requirements separately before relying on this position. Press Escape or Close preview to return to the map.</p>
     </dialog>
     {placementControls}
+    {projections.panel && <div hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}>{projections.panel}</div>}
     {placementConcerns && <div className="builder-placement-concerns">{placementConcerns}</div>}
     </div>
     {placementContinuation && <FloatingNext active className="builder-placement-next">{placementContinuation}</FloatingNext>}
@@ -396,7 +403,7 @@ export default function OccupiedLots({ catalogue = bundledCatalogue, initialDraf
       {compactPlacement && <div className="occupied-compact-summary"><strong>{model ? `${model.name} · ` : 'Manual footprint · '}{show(width)} wide × {show(depth)} long</strong><span>Nominal exterior rectangle · {dimensionOrigin('width').toLowerCase()} width, {dimensionOrigin('depth').toLowerCase()} length.</span><span>{source?.provider} · {source?.record_label} · captured {readableDate(source?.capture_date)} · {source?.review_status}. {publicSourceUrl(source?.reference) && <a href={publicSourceUrl(source?.reference)!} target="_blank" rel="noreferrer">Parcel source</a>}</span></div>}
       <div className="occupied-workspace">
         <div className="occupied-map-column">
-          <OccupiedLotPreview preferredScenarioKey={suggestion.preferredScenarioKey} modelLabel={model?.name ?? 'Proposed unit'} placementConcerns={currentConcerns} placementControls={compactPlacement ? <div className="occupied-placement-controls" hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}>{footprintControls}</div> : undefined} placementContinuation={placementContinuation} placementSummary={placementSummary} showBoundaryTools selected={selected} placement={placement} nudgeMetres={nudgeMetres} conflictIds={compactPlacement ? conflictIds : undefined} onMove={(x, y) => changePlacement({ x: String(x), y: String(y) })} boundaryInteraction={boundaryInteraction} />
+          <OccupiedLotPreview projectionDimensionsEdited={dimensionOrigins.width === 'user' || dimensionOrigins.depth === 'user'} showPlanProjections={compactPlacement && !!suppliedCase && projectionPilotModel(model)} preferredScenarioKey={suggestion.preferredScenarioKey} modelLabel={model?.name ?? 'Proposed unit'} placementConcerns={currentConcerns} placementControls={compactPlacement ? <div className="occupied-placement-controls" hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}>{footprintControls}</div> : undefined} placementContinuation={placementContinuation} placementSummary={placementSummary} showBoundaryTools selected={selected} placement={placement} nudgeMetres={nudgeMetres} conflictIds={compactPlacement ? conflictIds : undefined} onMove={(x, y) => changePlacement({ x: String(x), y: String(y) })} boundaryInteraction={boundaryInteraction} />
           {!compactPlacement && startingPositionControls}
         </div>
         <div className="occupied-side">
