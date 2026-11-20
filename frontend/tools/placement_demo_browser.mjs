@@ -95,6 +95,23 @@ const suggest = () => page.getByRole('button', { name: 'Suggest a placement', ex
 const map = () => page.locator('svg.occupied-map')
 const propertyOptions = page.locator('#property-options-title')
 const tryModel = page.getByRole('button', { name: 'Try this model', exact: true })
+const detachedTitle = page.locator('#replacement-plans-title')
+const detachedPanel = page.locator('section[aria-labelledby="replacement-plans-title"]')
+async function belowOptions(picker) {
+  assert.ok(await propertyOptions.isVisible(), 'Property options stay above the active picker')
+  const heading = await propertyOptions.elementHandle()
+  assert.ok(await picker.evaluate((node, options) => !!(options.compareDocumentPosition(node) & Node.DOCUMENT_POSITION_FOLLOWING) &&
+    node.getBoundingClientRect().top > options.getBoundingClientRect().bottom, heading), 'Picker follows the property options in reading and visual order')
+}
+async function compareDetached() {
+  await page.getByRole('radio', { name: 'Replace it' }).check()
+  await page.getByRole('button', { name: 'Compare detached plans' }).click()
+  await detachedTitle.waitFor()
+  await belowOptions(detachedTitle)
+  assert.equal(await page.locator('#builder-placement').isVisible(), false)
+  assert.equal(await page.locator('#builder-model-choice').isVisible(), false)
+  assert.equal(await detachedPanel.getByRole('radio').count(), 3)
+}
 async function chooseLayout(address, requestStart, { areaFinding = false, modelId = 'aux-240', keepHouse = false } = {}) {
   await propertyOptions.waitFor()
   const selectedProperty = page.getByRole('region', { name: 'Selected property', exact: true })
@@ -107,8 +124,24 @@ async function chooseLayout(address, requestStart, { areaFinding = false, modelI
     assert.ok(await option.getByRole('link').first().isVisible(), 'A parcel finding identifies its local rule source')
   } else {
     assert.doesNotMatch(await option.innerText(), /400\s*m²/, 'A previous Saanich parcel result cannot become a Victoria finding')
-    await option.getByRole('radio', { name: 'Replace it' }).check()
-    assert.match(await option.getByRole('status').innerText(), /replacement.*outside current coverage/i)
+    await compareDetached()
+    const removed = detachedPanel.locator('#replacement-removed-roof')
+    assert.ok(await removed.inputValue(), 'The May Street parcel has a suggested main building')
+    const originalRemoval = await removed.inputValue()
+    const preview = detachedPanel.locator('.replacement-trial').first()
+    assert.ok(await preview.isVisible(), 'At least one detached plan has a trial outline on the May Street lot')
+    const originalOutline = await preview.getAttribute('points')
+    await removed.selectOption('')
+    assert.notEqual(await detachedPanel.locator('polygon.replacement-trial').getAttribute('points', { timeout: 1000 }).catch(() => null), originalOutline,
+      'Keeping the May Street house changes the first plan trial')
+    await removed.selectOption(originalRemoval)
+    await detachedPanel.getByRole('radio', { name: 'Sedona', exact: true }).check()
+    assert.match(await detachedPanel.innerText(), /40\s*\u00d7\s*63 ft/)
+    assert.equal(await detachedPanel.getByRole('link', { name: /Sedona/ }).getAttribute('href'), 'https://pacific-homes.com/inspirational-home/sedona/')
+    await detachedPanel.getByRole('button', { name: 'Back to property options' }).click()
+    assert.equal(await detachedTitle.isVisible(), false)
+    await page.getByRole('button', { name: 'Compare detached plans' }).click()
+    assert.ok(await detachedPanel.getByRole('radio', { name: 'Sedona', exact: true }).isChecked(), 'Returning to this parcel keeps the chosen plan')
     await option.getByRole('radio', { name: 'Still exploring' }).check()
   }
   if (keepHouse) {
@@ -118,6 +151,7 @@ async function chooseLayout(address, requestStart, { areaFinding = false, modelI
   await page.getByRole('button', { name: 'Explore a garden suite', exact: true }).click()
   await tryModel.waitFor()
   const modelChoice = page.locator('#builder-model-choice')
+  await belowOptions(modelChoice)
   await modelChoice.selectOption(modelId)
   const placementRequests = requests.slice(requestStart).filter(path =>
     path === '/api/placement-suggestions/v1/suggest' || path === '/api/scouting-geometry/assess')
@@ -139,8 +173,10 @@ try {
   await page.getByRole('button', { name: /200 Gorge Rd W, Saanich/ }).click()
   await propertyOptions.waitFor()
   await until(async () => !!releaseOpportunity, 'No Saanich parcel finding was requested')
+  await compareDetached()
   await page.getByRole('button', { name: 'Change address', exact: true }).filter({ visible: true }).first().click()
   assert.equal(await propertyOptions.isVisible(), false)
+  assert.equal(await detachedTitle.isVisible(), false, 'Changing the address discards the detached plan preview')
   await search('1144 May St')
   await page.getByRole('button', { name: /1144 May St, Victoria/ }).click()
   await propertyOptions.waitFor()
@@ -370,7 +406,7 @@ try {
   evidence.push({phase: 'editable lake edge and grouped removal', suggested: lakeSite.waterfront, count: 4})
   assert.deepEqual(errors, [])
   await writeFile(`${output}/evidence.json`, JSON.stringify({ checks: evidence, requests, browserErrors: errors }, null, 2))
-  console.log('PASS: property-first options, stale property finding, explicit model choice, Victoria/Saanich street prefill, Prospect Lake waterfront prefill, editable marks, smart placement, setbacks, recovery and narrow layout')
+  console.log('PASS: property-first options, inline pickers, detached plan trial and roof changes, stale property finding, explicit model choice, Victoria/Saanich street prefill, Prospect Lake waterfront prefill, editable marks, smart placement, setbacks, recovery and narrow layout')
 } catch (error) {
   await page.screenshot({ path: `${output}/failure.png`, fullPage: true }).catch(() => {})
   await writeFile(`${output}/failure.txt`, `${error.stack}\n\n${(await page.locator('body').innerText()).slice(0,22000)}`)
