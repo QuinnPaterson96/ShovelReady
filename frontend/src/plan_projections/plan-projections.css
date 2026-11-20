@@ -1,0 +1,43 @@
+.plan-projections {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 1rem;
+  margin-block: 1rem;
+}
+.plan-projections h4 {
+  margin: 0;
+}
+.plan-projection-controls {
+  display: flex;
+  gap: 0.75rem 1rem;
+  flex-wrap: wrap;
+}
+.plan-projection-controls > div {
+  flex: 1 1 16rem;
+  min-width: 0;
+}
+.plan-projection-controls select,
+.plan-projection-controls input {
+  width: 100%;
+}
+.plan-projection-finding[data-projection-clearance="crosses"],
+.plan-projection-finding[data-projection-clearance="touches"] {
+  color: var(--danger);
+}
+.plan-projection-map-face,
+.plan-projection-map-strip,
+.plan-projection-map-edge {
+  stroke: var(--primary);
+  stroke-width: 2;
+  stroke-dasharray: 4 3;
+}
+.plan-projection-map-strip {
+  fill: var(--primary-soft);
+}
+.plan-projection-map-edge {
+  stroke-width: 4;
+}
+.plan-projection-map-strip[data-conflict],
+.plan-projection-map-edge[data-conflict] {
+  stroke: var(--danger);
+}

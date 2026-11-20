@@ -1,6 +1,7 @@
 import { defaultJourneyModel } from '../model_catalogue/demo'
 import type { CatalogueModel } from '../model_catalogue/model'
 import { OccupiedLotPreview, PlacementConcerns } from '../occupied_lots/OccupiedLots'
+import { projectionPilotModel } from '../plan_projections/PlanProjections'
 import { EvidenceAtFooter } from '../EvidenceAtFooter'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { MeasurementInput } from '../MeasurementInput'
@@ -153,7 +154,7 @@ export function ExampleProperty({ model = defaultJourneyModel, initialDraft, onD
 
   return <section className="builder-example" aria-label="Saved example property">
     <p className="builder-example-summary"><strong>{model.name} · {show(Number(position.width), 'length')} wide × {show(Number(position.depth), 'length')} long</strong><span>Nominal exterior rectangle · saved Victoria example · {source.provider}, {source.record_label} · captured {readableDate(source.capture_date)} · {source.review_status} · <a href={publicSourceUrl(source.reference) ?? '#builder-example-evidence'} target="_blank" rel="noreferrer">Parcel source</a></span></p>
-    <OccupiedLotPreview preferredScenarioKey={suggestion.preferredScenarioKey} selected={exampleCase} placement={position} modelLabel={model.name} onMove={move} nudgeMetres={step} conflictIds={conflictIds} boundaryInteraction={boundaryInteraction} placementSummary={placementSummary} placementContinuation={placementContinuation} placementControls={<div className="builder-footprint-controls" hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}>
+    <OccupiedLotPreview projectionDimensionsEdited={editedDimensions.width || editedDimensions.depth} showPlanProjections={projectionPilotModel(model)} preferredScenarioKey={suggestion.preferredScenarioKey} selected={exampleCase} placement={position} modelLabel={model.name} onMove={move} nudgeMetres={step} conflictIds={conflictIds} boundaryInteraction={boundaryInteraction} placementSummary={placementSummary} placementContinuation={placementContinuation} placementControls={<div className="builder-footprint-controls" hidden={!!boundaryInteraction && boundaryInteraction.mode !== 'place'}>
         <SuggestionControls suggestion={suggestion} />
         <div className="builder-example-main-actions"><div><label htmlFor="builder-example-angle">Rotation (degrees)</label><input id="builder-example-angle" type="number" step="any" value={rotationFocused || !position.angle.trim() || !Number.isFinite(Number(position.angle)) ? position.angle : String(Number(Number(position.angle).toFixed(2)))} onFocus={() => setRotationFocused(true)} onBlur={() => setRotationFocused(false)} onChange={event => edit('angle', event.target.value)} /></div>
         <button type="button" disabled={exampleOrientation.status !== 'suggested'} onClick={() => { if (exampleOrientation.status === 'suggested') edit('angle', String(exampleOrientation.angle_degrees)) }}>Align to lot</button>

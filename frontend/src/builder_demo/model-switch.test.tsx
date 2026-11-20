@@ -4,9 +4,10 @@ import assert from 'node:assert/strict'
 import { test } from 'node:test'
 import { readFileSync } from 'node:fs'
 import { JSDOM } from 'jsdom'
-import { act, createElement } from 'react'
+import { act, createElement, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import BuilderDemo from './BuilderDemo'
+import { BuilderJourneyNav, emptyBuilderJourneyCompletion } from '../navigation/BuilderJourneyNav'
 import { journeyCatalogue, modelSnapshot } from '../model_catalogue/demo'
 import { enquiryPackageFiles, placementDrawing } from './placementExport'
 import { enquiryDocument, screeningDocument } from './BuilderDemo'
@@ -51,8 +52,12 @@ test('switching models recovers independent questions, placements and costs with
   const backToProject = () => act(async () => document.querySelector<HTMLAnchorElement>('.economics-back')!.click())
   const authoredCosts = () => evidence().project_budget.draft.items.filter((item: { selected: boolean; evidence: { origin: string } }) => item.selected && item.evidence.origin === 'user_allowance')
   const evidence = () => JSON.parse((document.getElementById('builder-technical-record') as HTMLTextAreaElement).value)
+  function Journey() {
+    const [completion, setCompletion] = useState(emptyBuilderJourneyCompletion)
+    return <><BuilderJourneyNav completion={completion} /><BuilderDemo presetRequest={1} onProgressChange={setCompletion} /></>
+  }
   try {
-    await act(async () => root.render(createElement<{ presetRequest?: number }>(BuilderDemo, { presetRequest: 1 })))
+    await act(async () => root.render(createElement(Journey)))
     await settle()
     await edit('builder-use-note', 'a rental suite')
     const interests = () => document.querySelector('[aria-label="Rental interest"]')!
@@ -127,6 +132,21 @@ test('switching models recovers independent questions, placements and costs with
         assert.equal(document.getElementById('builder-enquiry-text')!.parentElement!.querySelector('button')!.disabled, false)
       }
       if (id === 'aux-240') {
+        const checks = document.querySelector<HTMLAnchorElement>('.builder-journey-rail a[href="#builder-quick-checks"]')
+        assert.ok(checks)
+        await act(async () => checks.click())
+        if (document.querySelector('dialog[open]')) await click('I’m not sure—continue')
+        await act(async () => { await new Promise(resolve => setTimeout(resolve, 20)) })
+        assert.equal(document.activeElement?.id, 'builder-quick-checks-title')
+        const projectionAction = [...document.querySelectorAll<HTMLButtonElement>('#property-scan button')]
+          .find(button => button.textContent?.includes('Check eave clearance in placement'))
+        assert.ok(projectionAction, 'the Projections row offers its placement action')
+        assert.equal(projectionAction.closest('[hidden]'), null, 'the action is visible from Checks')
+        await act(async () => projectionAction.click())
+        await act(async () => { await new Promise(resolve => setTimeout(resolve, 20)) })
+        assert.equal(document.activeElement?.id, 'placement-projections')
+        assert.equal(document.querySelector('#placement-action-panel')?.getAttribute('data-mode'), 'place')
+        assert.doesNotMatch(projectionAction.textContent!, /likely fine|complies|permitted/i)
         await edit('builder-question', question240)
         await edit('builder-configuration', 'Model 240 custom glazing')
         await edit('height-view-allowance', '0.15')

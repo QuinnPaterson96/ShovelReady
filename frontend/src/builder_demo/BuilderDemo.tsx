@@ -10,6 +10,7 @@ import { housePlanNote, enquiryUseQualification, manufacturerDocument, placement
 import { EvidenceAtFooter } from '../EvidenceAtFooter'
 import { EnquiryRecovery } from './EnquiryRecovery'
 import { TitleReferenceEditor, titleReferenceSection, titleReferenceTarget, titleParcelMatch, type TitleReference } from './TitleReference'
+import { projectionPilotModel } from '../plan_projections/PlanProjections'
 import { PropertyScan, usePropertyScan, type PropertyScanResult } from '../conditional_screening/PropertyScan'
 import { StepInfo } from '../StepInfo'
 import { AdditionalInputs } from '../conditional_screening/AdditionalInputs'
@@ -200,6 +201,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const builder = useRef<HTMLDivElement>(null)
   const playbackControls = useRef<HTMLElement>(null)
   const takeoverFocus = useRef<{ target: string; trigger: HTMLButtonElement } | null>(null)
+  const projectionFocusPending = useRef(false)
   const journeyVisible = useRef(visible)
   journeyVisible.current = visible
   const [journeyStep, setJourneyStep] = useState<JourneyStep>('property')
@@ -770,7 +772,13 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     previousPropertyComplete.current = propertyComplete
   }, [propertyComplete, comparingDetached])
   useEffect(() => {
-    if (!playbackLayoutRef.current && journeyStep === 'placement' && propertyComplete) requestAnimationFrame(() => { if (!playbackLayoutRef.current && journeyVisible.current) focusJourneyStep('placement') })
+    if (!playbackLayoutRef.current && journeyStep === 'placement' && propertyComplete) requestAnimationFrame(() => {
+      if (playbackLayoutRef.current || !journeyVisible.current) return
+      if (projectionFocusPending.current) {
+        projectionFocusPending.current = false
+        focusSummaryTarget(document, 'placement-projections', 'start')
+      } else focusJourneyStep('placement')
+    })
   }, [journeyStep, propertyComplete])
   useEffect(() => {
     function revealStep(event: MouseEvent) {
@@ -1164,6 +1172,15 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     })
     return () => { active = false }
   }, [visible, landing, propertyFocusRequest])
+  function reviewPlacementProjection() {
+    setExpanded({ property: false, placement: true, next: false, email: false })
+    if (journeyStep === 'placement') {
+      requestAnimationFrame(() => focusSummaryTarget(document, 'placement-projections', 'start'))
+      return
+    }
+    projectionFocusPending.current = true
+    changeBoundaryMode('place')
+  }
   function navigateFlag(target: string) {
     const propertyFact = target.startsWith('municipal-input-') || ['building-type', 'existing-suites', 'principal-building', 'waterfront-lot', 'zsa-floor-area', 'separation-measurement-choice', 'scouting-height', 'scouting-area-buffer'].includes(target)
     if (!propertyFact && !['street-side', 'boundary-roles', 'boundary-offsets', 'placement-map', 'builder-intended-use'].includes(target)) setChecksRevealed(true)
@@ -1494,7 +1511,8 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
         <ConditionalScreen compact result={currentScreening} busy={!!requestKey && conditionalBusy && !currentScreening} error={currentScreeningError} onRetry={() => setConditionalRetry(value => value + 1)} boundaryEvidence={<PlacementScenarios assumptions={currentAssumptions} request={scenarioRequest} result={currentScenario} legalResult={currentScreening} busy={!!scenarioKey && scenarioBusy && !currentScenario} error={currentScenarioError} frontEdge={streetEdge} rearEdge={rearEdge} boundaryMode={boundaryMode} onBoundaryMode={changeBoundaryMode} onRetry={() => setScenarioRetry(value => value + 1)} />} />
       </details></section></EvidenceAtFooter>
       <PropertyScan scan={propertyScan} titleReferenceDate={currentTitleReference?.document_date}
-        onTitleReference={mode === 'live' && live ? () => focusSummaryTarget(document, titleReferenceTarget) : undefined} /></>}
+        onTitleReference={mode === 'live' && live ? () => focusSummaryTarget(document, titleReferenceTarget) : undefined}
+        onReviewProjection={projectionPilotModel(model) && (mode === 'example' || !!liveCase && mode === 'live') ? reviewPlacementProjection : undefined} /></>}
       <ProjectDetails municipality={currentMunicipality} onMunicipalityChange={changeMunicipality} settings={effectiveSettings} mapped={mappedZoning} lookup={currentZoning} busy={!!zoningKey && zoningBusy && !currentZoning} error={currentZoningError} onRetry={() => setZoningRetry(value => value + 1)} onChange={next => { setProjectSettings(next); if (next.proposal.proposed_use !== projectSettings.proposal.proposed_use) { clearDemoAnswer('intendedUse'); setReviewedPurposeFor(null); setPropertyPurpose(propertyFirst && live ? 'edited' : null); setUse(next.proposal.proposed_use === 'garden_suite' ? 'Garden suite' : next.proposal.proposed_use === 'other' ? 'Other use' : 'Not sure'); } setReadyFor(null) }} />
 </>}
     {selection && <section className="builder-optional" aria-labelledby="builder-optional-title">
