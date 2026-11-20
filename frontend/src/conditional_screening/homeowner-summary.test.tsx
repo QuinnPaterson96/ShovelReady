@@ -167,6 +167,41 @@ test('scan failures and malformed empty results cannot become probable clearance
   assert.throws(() => parsePropertyScan({ ...scan, findings: scan.findings.slice(1) }, parcel_ref))
   assert.throws(() => parsePropertyScan({ ...scan, findings: scan.findings.map(row => ({ ...row, source: null })) }, parcel_ref))
   assert.throws(() => parsePropertyScan(scan, { ...parcel_ref, object_id: 88 }))
+
+  const permitSource = scan.findings[5].source!
+  const permitCase = (case_number: string) => ({
+    case_number, application_type: 'Development Permit', subject: null, application_status: 'ACTIVE',
+    case_url: `https://tender.victoria.ca/webapps/ourcity/Prospero/Details.aspx?folderNumber=${case_number}`,
+    application_date: '2026-11-02', evidence_checked_on: '2026-11-19', applicable_condition_reviewed: false as const,
+    issuance_task: 'no_completion_date' as const, issued_on: null, approved_plan_links: null,
+    follow_up: 'Ask City Planning if the decision changes the plans for your proposed location.',
+  })
+  const approvedDrawing = 'https://tender.victoria.ca/webapps/ourcity/Prospero/FileDownload.aspx?fileId=36EEF97B-5D89-469E-B051-2B7BBB25F6FE&folderId=40950C260317092306829401'
+  const permitRecords = { status: 'records_found' as const, source: permitSource, detail: 'Linked City files.',
+    records: [
+      { ...permitCase('DDP01126'), application_date: '2026-03-17', issuance_task: 'dated_completion' as const,
+        issued_on: '2026-04-02', approved_plan_links: [approvedDrawing],
+        follow_up: 'Ask City Planning if the approved drawings affect the footprint or access you’re considering.' },
+      permitCase('DDP01187'),
+    ],
+  }
+  const permits = checklist(parsePropertyScan({ ...scan, permit_records: permitRecords }, parcel_ref))
+  const permitCard = permits.match(/<details class="property-scan__permit">.*?<\/div><\/details><\/li>/s)?.[0] ?? ''
+  assert.match(permitCard, /Permit records to review.*?City of Victoria Open Data.*?DDP01126.*?Issuance recorded <time>2026-04-02<\/time>/s)
+  assert.ok(permitCard.includes(`href="${approvedDrawing.replace('&', '&amp;')}"`))
+  assert.match(permitCard, /Final approved drawing 1.*?2026-11-19.*?footprint or access.*?DDP01187.*?issuance task had no completion date/s)
+  assert.doesNotMatch(permitCard.slice(permitCard.indexOf('DDP01187'), permitCard.indexOf('Permit search evidence')), /Issuance recorded|Final approved drawing/)
+  assert.throws(() => parsePropertyScan({ ...scan, permit_records: { ...permitRecords, records: [{ ...permitCase('DDP01187'), issued_on: '2026-11-19' }] } }, parcel_ref))
+  for (const [status, source, expected] of [
+    ['no_match', permitSource, /No matching development or variance permit files in the searched City history/],
+    ['unavailable', null, /City permit lookup unavailable/],
+    ['unavailable', permitSource, /City permit lookup unavailable/],
+    ['truncated', null, /Search incomplete/],
+  ] as const) {
+    const html = checklist(parsePropertyScan({ ...scan, permit_records: { status, source, detail: 'Bounded City lookup.', records: [] } }, parcel_ref))
+    assert.match(html, expected)
+    assert.match(html, /Heritage properties<\/strong><span>No · Likely fine in searched scope/)
+  }
 })
 
 // Independent subtraction: 2.54 - 2 = .54 m available allowance;

@@ -3,6 +3,7 @@ import { TechnicalDetails, CopyableRecord, readableDate } from '../ReadableProve
 import type { ParcelRef } from './victoriaZoning'
 import { StepInfo } from '../StepInfo'
 import { StatusIcon } from './HomeownerSummary'
+import { PermitRecordsCard, validatePermitRecords, type PermitRecords } from './PermitRecordsCard'
 
 const scanLabels = ['Heritage properties', 'Heritage conservation areas', 'Development permit areas', 'Mapped special restrictions', 'Mapped development applications', 'Development application history']
 
@@ -14,7 +15,6 @@ const scanHelp: Record<string, string> = {
   'Mapped special restrictions': 'Restrictions and covenants shown in the searched City map layer. Review any returned records; this map does not replace a land-title search.',
   'Mapped development applications': 'Development applications shown near or on the parcel by the City map query. Check the application and its location in Development Tracker; a map hit is not an issued approval.',
   'Development application history': 'Application-history records linked by the City query. Review their status and underlying documents in Development Tracker or the Property Information Portal.',
-  'Permit conditions': 'Requirements attached to an issued permit or approved plans. Obtain the permit and approved drawings through the City Property Information Portal or permit-records request. They have not been reviewed by this scan.',
   'Title restrictions': 'Registered interests such as covenants, easements or rights of way that may affect how land can be used. Obtain the current title and relevant registered documents from LTSA; ask a qualified professional to interpret their effect. This scan has not searched title records.',
   'Projections': 'Parts extending beyond the main building walls, such as eaves, balconies or steps. Ask the provider for installed drawings and have the proposed projections checked against the applicable City rules. They are not captured by the nominal rectangle.',
   'Service capacity': 'Whether water, sewer, drainage and power can support the additional building. Ask City servicing staff and utility providers about the proposed connections and any upgrades. This scan does not assess capacity.',
@@ -26,9 +26,12 @@ function ScanCard({ label, status, answer, source, row }: { label: string; statu
   </StepInfo></li>
 }
 
+export type ScanSource = { provider: string; record_label: string; source_url: string; captured_at_utc: string; review_status: string; sha256: string }
+
 export type PropertyScanResult = {
   schema_version: 'victoria-property-scan.v1'; parcel_ref: ParcelRef
-  findings: { label: string; status: 'probably_clear' | 'review' | 'unknown'; records: Record<string, unknown>[]; detail: string; source: null | { provider: string; record_label: string; source_url: string; captured_at_utc: string; review_status: string; sha256: string } }[]
+  findings: { label: string; status: 'probably_clear' | 'review' | 'unknown'; records: Record<string, unknown>[]; detail: string; source: ScanSource | null }[]
+  permit_records?: PermitRecords
   limitations: string[]; parcel_source: unknown
 }
 
@@ -36,7 +39,7 @@ export function parsePropertyScan(raw: unknown, expected: ParcelRef): PropertySc
   const value = raw as PropertyScanResult
   const labels = ['Heritage properties', 'Heritage conservation areas', 'Development permit areas', 'Mapped special restrictions', 'Mapped development applications', 'Development application history']
   const nonempty = (item: unknown) => typeof item === 'string' && item.trim().length > 0
-  const validSource = (source: PropertyScanResult['findings'][number]['source']) => source !== null &&
+  const validSource = (source: ScanSource | null | undefined) => source != null &&
     source.provider === 'City of Victoria Open Data' && nonempty(source.record_label) &&
     source.review_status === 'unreviewed_live_observation' && nonempty(source.captured_at_utc) &&
     typeof source.sha256 === 'string' && /^[a-f0-9]{64}$/.test(source.sha256) &&
@@ -53,6 +56,7 @@ export function parsePropertyScan(raw: unknown, expected: ParcelRef): PropertySc
       (row.source === null ? row.status === 'unknown' : validSource(row.source)) &&
       (row.status !== 'probably_clear' || row.records.length === 0) &&
       (row.status !== 'review' || row.records.length > 0))) throw Error('Property scan is incomplete or belongs to another parcel.')
+  if (value.permit_records !== undefined) validatePermitRecords(value.permit_records, validSource)
   return value
 }
 
@@ -92,7 +96,7 @@ export function PropertyScan({ scan }: { scan: ReturnType<typeof usePropertyScan
       const status = row?.status === 'probably_clear' ? 'probable' : row?.status === 'review' ? 'review' : 'unknown'
       return <ScanCard key={label} label={label} row={row} status={status} answer={status === 'probable' ? 'No · Likely fine in searched scope' : status === 'review' ? 'Yes · Needs review' : `Maybe · ${scan.busy ? 'Scanning…' : 'Not established'}`} source={row?.source ? `City records · ${readableDate(row.source.captured_at_utc)} · unreviewed` : 'No source finding established'} />
     })}
-      <ScanCard label="Permit conditions" status="unknown" answer="Maybe · Not checked" source="Property-specific records needed" />
+      <PermitRecordsCard records={scan.result?.permit_records} busy={scan.busy} available={scan.available} />
       <ScanCard label="Title restrictions" status="unknown" answer="Maybe · Not checked" source="Property-specific records needed" />
       <ScanCard label="Projections" status="unknown" answer="Maybe · Not checked" source="Property-specific records needed" />
       <ScanCard label="Service capacity" status="unknown" answer="Maybe · Not checked" source="Property-specific records needed" />
