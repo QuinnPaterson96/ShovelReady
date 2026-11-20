@@ -1,95 +1,103 @@
-import { useEffect } from 'react'
-import { publicSourceUrl, readableDate } from '../ReadableProvenance'
+import { useEffect, useState } from 'react'
+import { CopyableRecord, publicSourceUrl, readableDate } from '../ReadableProvenance'
 import type { PropertyScanResult } from '../conditional_screening/PropertyScan'
 import type { ZoningLookup } from '../conditional_screening/victoriaZoning'
+import { measurementWithUnit } from '../measurements'
+import type { Opportunity } from '../municipal_rules/propertyOpportunity'
+import { victoriaResidentialUses } from '../municipal_rules/victoriaResidentialUses'
+import { municipalityFromProperty, parcelCoverage } from '../municipality_coverage/model'
 import type { Confirmed } from '../site_discovery/flow'
-import { ObservationMap } from '../site_discovery/ObservationMap'
+import { ParcelDrawing, crdImageryTerms } from '../site_discovery/ObservationMap'
+import { roofParcelDetails } from '../site_discovery/parcelComparison'
 
 export type HousePlan = 'keep' | 'replace' | 'exploring'
 
-const housePlans: { value: HousePlan; label: string }[] = [
-  { value: 'keep', label: 'Keep it' },
-  { value: 'replace', label: 'Replace it' },
-  { value: 'exploring', label: 'Still exploring' },
-]
-
 type Props = {
   selected: Confirmed
-  opportunity: { detail: string; sourceLabel: string; sourceUrl: string | null } | null
-  zoning?: ZoningLookup | null
-  scan?: PropertyScanResult | null
-  housePlan: HousePlan | null
-  onHousePlanChange: (value: HousePlan | null) => void
+  opportunity: Opportunity | null
+  zoning: ZoningLookup | null
+  municipalityMismatch: boolean
+  checkingZone: boolean
+  scan: PropertyScanResult | null
+  onChangeAddress: () => void
+  onInspectAlternatives?: () => void
+  onRetryObservation: () => void
   onExploreGarden: () => void
   onExploreDetached: () => void
 }
 
-function MapSource({ source }: { source: ZoningLookup['source_records'][number] | NonNullable<PropertyScanResult['findings'][number]['source']> }) {
-  const url = publicSourceUrl(source.source_url)
-  return <span className="property-options-source">{source.provider} · {url
-    ? <a href={url} target="_blank" rel="noreferrer">{source.record_label}</a>
-    : source.record_label} · {readableDate(source.captured_at_utc)} · unreviewed</span>
+function SourceLink({ url, label }: { url: string | null; label: string }) {
+  const href = publicSourceUrl(url)
+  return href ? <a href={href} target="_blank" rel="noreferrer">{label}</a> : <>{label}</>
 }
 
-function MunicipalMapFindings({ zoning, scan }: Pick<Props, 'zoning' | 'scan'>) {
-  const flags = scan?.findings.filter(row => row.status === 'review') ?? []
-  if (!zoning && !flags.length) return null
-  const zone = zoning?.status === 'single_covered_mapping' ? zoning.zones[0]?.source_fields.Zoning : null
-  const zoningCopy = zone ? `The city maps this parcel as ${zone}.`
-    : zoning?.status === 'split_zones' ? 'More than one zone crosses this parcel. Check which zone covers your proposed location.'
-    : zoning?.status === 'partial_coverage' ? 'The zoning map covers only part of this parcel. Check the proposed location with the city.'
-    : 'The city map did not establish a single zoning designation for this parcel.'
-  const zoningSource = zoning?.source_records.at(-1)
-  return <div className="property-options-records">
-    {zoning && <p>{zoningCopy}</p>}
-    {flags.length > 0 && <p>Ask the city how records for {flags.map(row => row.label.toLowerCase()).join(', ')} affect your project.</p>}
-    {(zoningSource || flags.length > 0) && <details>
-      <summary>City map records and sources</summary>
-      {zoningSource && <p><MapSource source={zoningSource} /></p>}
-      {flags.map(row => <p key={row.label}><strong>{row.label}.</strong> {row.detail}{row.source && <> <MapSource source={row.source} /></>}</p>)}
-    </details>}
-  </div>
+function zoneFinding(zoning: Props['zoning'], checking: boolean) {
+  if (checking) return 'Checking the zoning map…'
+  if (zoning?.status === 'split_zones') return 'More than one zone crosses this lot. Ask the city which applies to your project.'
+  if (zoning?.status === 'partial_coverage') return 'The zoning map covers only part of this lot. Ask the city about your project location.'
+  const zone = zoning?.zones[0]?.source_fields.Zoning
+  if (zone && zoning?.status === 'single_covered_mapping') return `This lot is mapped as ${zone}. Permitted uses still need checking.`
+  return 'Zoning is unresolved for this lot. You can still explore either project.'
 }
 
-export function PropertyOptions({ selected, opportunity, zoning, scan, housePlan, onHousePlanChange, onExploreGarden, onExploreDetached }: Props) {
+export function PropertyOptions({ selected, opportunity, zoning, municipalityMismatch, checkingZone, scan, onExploreGarden,
+  onExploreDetached, onChangeAddress, onInspectAlternatives, onRetryObservation }: Props) {
   useEffect(() => { void import('./property-options.css') }, [])
-  const sourceUrl = publicSourceUrl(opportunity?.sourceUrl)
-  return <section className="property-options" aria-labelledby="property-options-title">
-    <h2 id="property-options-title" tabIndex={-1}>What we found on this property</h2>
-    {opportunity && <div className="property-options-finding">
-      <p>{opportunity.detail}</p>
-      <p className="property-options-source">{sourceUrl
-        ? <a href={sourceUrl} target="_blank" rel="noreferrer">{opportunity.sourceLabel}</a>
-        : opportunity.sourceLabel}</p>
-    </div>}
-    <div className="property-options-layout">
+  const [showSources, setShowSources] = useState(false)
+  const { address, parcel, observation } = selected
+  const municipality = municipalityFromProperty(selected)
+  const town = parcelCoverage(municipality)?.name.replace(/^(City|District) of /, '') ?? municipality.name
+  const street = address.label.split(',')[0]
+  const count = observation.roofs.length
+  const partial = observation.buildingsState !== 'available'
+  const descriptor = [
+    observation.parcel.areaM2 === null ? null : `${measurementWithUnit(observation.parcel.areaM2, 'area')} mapped lot`,
+    count ? `${count} mapped roofline${count === 1 ? '' : 's'}` : null,
+  ].filter(Boolean).join(' · ')
+  const uses = victoriaResidentialUses(zoning)
+  const flags = scan?.findings.filter(row => row.status === 'review') ?? []
+  return <article className="property-options" aria-labelledby="property-options-title">
+    <header>
       <div>
-        <ObservationMap observation={selected.observation} parcel={selected.parcel} />
-        <MunicipalMapFindings zoning={zoning} scan={scan} />
+        <h1 id="property-options-title" tabIndex={-1}>{street}{town && <>, {town}</>}</h1>
+        {descriptor && <p>{descriptor}</p>}
       </div>
+      <button type="button" onClick={onChangeAddress}>Change address</button>
+    </header>
+    <div className="property-options-layout">
+      <figure className="observation-map"><ParcelDrawing observation={observation} showAerial /></figure>
       <div className="property-options-next">
-        <fieldset className="property-options-house-plan">
-          <legend>What are you hoping to do with the existing house? <small>(optional)</small></legend>
-          <div>{housePlans.map(plan => <label key={plan.value}>
-            <input type="radio" name="property-options-house-plan" value={plan.value}
-              checked={housePlan === plan.value} onChange={() => onHousePlanChange(plan.value)} />
-            {plan.label}
-          </label>)}</div>
-        </fieldset>
-        {housePlan !== 'replace' && <>
-          <h3>Could a garden suite fit here?</h3>
-          <p>{selected.observation.roofs.length
-            ? 'Place a prefab model on the map to see how much space it leaves beside the mapped buildings.'
-            : 'Place a prefab model inside the mapped lot. Check where any existing buildings stand before relying on the space shown.'}
-            {!opportunity && ' Check local rules to confirm whether this property allows a garden suite.'}</p>
-          <button type="button" className="sr-primary" onClick={onExploreGarden}>Explore a garden suite</button>
-        </>}
-        {(housePlan === 'replace' || housePlan === 'exploring') && <>
-          <h3>Which detached plans could fit here?</h3>
-          <p>Compare house plans on the lot and choose which mapped building you would remove.</p>
-          <button type="button" className={housePlan === 'replace' ? 'sr-primary' : undefined} onClick={onExploreDetached}>Compare detached plans</button>
-        </>}
+        <h2>What the zoning supports</h2>
+        {municipalityMismatch && <p>The municipality you entered differs from the parcel record. Check the address before relying on local rules.</p>}
+        {uses ? <>
+          <p>Housing types in the mapped {zoning?.zones[0].source_fields.Zoning} zone</p>
+          <ul className="property-use-list">{uses.labels.map(label => <li key={label}>{label} <span aria-hidden="true">✓</span></li>)}</ul>
+          <p>One garden suite can accompany a detached home or duplex. Site conditions and permits still apply.</p>
+        </> : <p>{opportunity?.detail ?? zoneFinding(zoning, checkingZone)}</p>}
+        {flags.length > 0 && <p>Ask the city about {flags.map(row => row.label.toLowerCase()).join(', ')}.</p>}
+        {partial && <p>Building outlines are incomplete. Check which buildings are on the lot.</p>}
+        {parcel.identityConcern && <p>{parcel.identityConcern} {onInspectAlternatives && <button type="button" onClick={onInspectAlternatives}>Inspect another parcel candidate</button>}</p>}
+        <h2>Choose a project</h2>
+        <div className="property-project-actions">
+          <button type="button" onClick={onExploreDetached}>Replace the main home<span className="property-action-arrow" aria-hidden="true" /></button>
+          <button type="button" onClick={onExploreGarden}>Add a garden suite<span className="property-action-arrow" aria-hidden="true" /></button>
+        </div>
       </div>
     </div>
-  </section>
+    <details className="property-option-sources" onToggle={event => setShowSources(event.currentTarget.open)}>
+      <summary>Property details and sources</summary>
+      {showSources && <>
+        <p>{parcel.match} The outline is approximate. Rooflines can include overhangs and neighbouring buildings. The sketch shows north up in projected metres (EPSG:3157).</p>
+        {roofParcelDetails(observation).map(detail => <p key={detail}>{detail}</p>)}
+        {partial && <p><button type="button" onClick={onRetryObservation}>Retry parcel and rooflines</button> Retrying clears property-dependent inputs and results.</p>}
+        {[address.source, observation.source, observation.roofSource].map((s, i) => s && <p key={i}>{s.provider} · <SourceLink url={s.url} label={s.record} /> · captured {readableDate(s.capturedAt)} · {s.review}</p>)}
+        <p><a href={crdImageryTerms}>Capital Regional District aerial photography</a> · 2025, 10 cm imagery. The parcel outline comes from the municipal record.</p>
+        {zoning?.source_records.map((s, i) => <p key={i}>{s.provider} · <SourceLink url={s.source_url} label={s.record_label} /> · {readableDate(s.captured_at_utc)} · unreviewed</p>)}
+        {uses && <p>{uses.source.provider} · <SourceLink url={uses.source.url} label={uses.source.title} /> · {uses.source.locator}. Read {uses.source.captured}. {uses.source.review}. The comparison covers base-zone use. Size, siting and site-specific approvals need separate checks.</p>}
+        {opportunity && <p><SourceLink url={opportunity.sourceUrl} label={opportunity.sourceLabel} /></p>}
+        {flags.map(row => <p key={row.label}><strong>{row.label}.</strong> {row.detail} {row.source && <SourceLink url={row.source.source_url} label={row.source.record_label} />}</p>)}
+        <CopyableRecord id="property-options-record" label="Complete property and zoning evidence" value={JSON.stringify({ selected, zoning, scan, useCheck: uses, lotAreaCheck: opportunity?.evidence }, null, 2)} />
+      </>}
+    </details>
+  </article>
 }

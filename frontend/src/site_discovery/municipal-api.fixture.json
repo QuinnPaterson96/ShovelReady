@@ -175,6 +175,7 @@
     "note": "Select a parcel explicitly; a source join or point lead is not verified legal identity."
   },
   "observation": {
+    "aerial": null,
     "schema_version": "municipal-sites.v1",
     "status": "available",
     "parcel_ref": {

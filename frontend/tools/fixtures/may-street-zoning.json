@@ -1,0 +1,118 @@
+{
+  "schema_version": "victoria-zoning.v1",
+  "status": "single_covered_mapping",
+  "parcel_ref": {
+    "source": "city-of-victoria-pid-parcels",
+    "object_id": 87
+  },
+  "parcel_source_fields": {
+    "OBJECTID": 87,
+    "PID": "001-328-107",
+    "ParcelType": "LA",
+    "ParcelStatus": "ACTIVE"
+  },
+  "parcel_source_geometry": {
+    "rings": [
+      [
+        [
+          473704.5708999997,
+          5362207.274800001
+        ],
+        [
+          473697.6003999999,
+          5362165.7161
+        ],
+        [
+          473682.57519999985,
+          5362168.232999999
+        ],
+        [
+          473689.5469000004,
+          5362209.7984
+        ],
+        [
+          473704.5708999997,
+          5362207.274800001
+        ]
+      ]
+    ]
+  },
+  "parcel_area_m2": 642.0220911965725,
+  "covered_area_m2": 642.0220911965724,
+  "uncovered_area_m2": 1.1368683772161603e-13,
+  "coverage_tolerance_m2": 1e-06,
+  "horizontal_crs": "EPSG:3157",
+  "zones": [
+    {
+      "object_id": 3,
+      "source_fields": {
+        "OBJECTID": 3,
+        "ZoningBylaw": "ZB2018",
+        "Zoning": "GRD-1 (PGA)",
+        "Title": "General Residential District-1 Zone Priority Growth Area",
+        "URL": "https://www.victoria.ca/media/file/zoning-bylaw-2018#page=30"
+      },
+      "source_geometry": {},
+      "intersection_geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              473697.6003999999,
+              5362165.7161
+            ],
+            [
+              473682.57519999985,
+              5362168.232999999
+            ],
+            [
+              473689.5469000004,
+              5362209.7984
+            ],
+            [
+              473704.5708999997,
+              5362207.274800001
+            ],
+            [
+              473697.6003999999,
+              5362165.7161
+            ]
+          ]
+        ]
+      },
+      "intersection_area_m2": 642.0220911965724,
+      "parcel_coverage_fraction": 0.9999999999999998,
+      "bylaw_name": "Zoning Bylaw 2018 (No. 18-072)",
+      "bylaw_url": "https://www.victoria.ca/building-business/permits-development-construction/zoning/zoning-regulation-bylaw-2018",
+      "mapping_status": "mapped"
+    }
+  ],
+  "source_records": [
+    {
+      "provider": "City of Victoria Open Data",
+      "record_label": "Selected City parcel polygon",
+      "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=json&objectIds=87&outFields=OBJECTID%2CPID%2CParcelType%2CParcelStatus&returnGeometry=true&outSR=3157",
+      "captured_at_utc": "2026-11-19T18:33:45.618313-07:00",
+      "review_status": "unreviewed_live_observation",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "sha256": "fd829c3ae2b221a86d32146c321be40a830ebe98e512e330d467d48d75a6f13f",
+      "source_date_limit": "Feature update date, legal revision and positional accuracy are not supplied."
+    },
+    {
+      "provider": "City of Victoria Open Data",
+      "record_label": "City zoning polygons intersecting selected parcel",
+      "source_url": "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/12/query?f=json&geometry=%7B%22spatialReference%22%3A%7B%22wkid%22%3A3157%7D%2C%22rings%22%3A%5B%5B%5B473704.5708999997%2C5362207.274800001%5D%2C%5B473697.6003999999%2C5362165.7161%5D%2C%5B473682.57519999985%2C5362168.232999999%5D%2C%5B473689.5469000004%2C5362209.7984%5D%2C%5B473704.5708999997%2C5362207.274800001%5D%5D%5D%7D&geometryType=esriGeometryPolygon&inSR=3157&outSR=3157&spatialRel=esriSpatialRelIntersects&outFields=OBJECTID%2CZoningBylaw%2CZoning%2CTitle%2CURL&returnGeometry=true",
+      "captured_at_utc": "2026-11-19T18:33:46.070939-07:00",
+      "review_status": "unreviewed_live_observation",
+      "licence_url": "https://opendata.victoria.ca/pages/open-data-licence",
+      "attribution": "Contains information licensed under the Open Government Licence - City of Victoria.",
+      "sha256": "2a1ea1dcd89c7bdc4ef50e26050129f64996764341c3ef48356051ce893305cb",
+      "source_date_limit": "Feature update date, legal revision and positional accuracy are not supplied."
+    }
+  ],
+  "issues": [
+    "zoning_geometry_exact_self_touch_decomposed_requires_review"
+  ],
+  "note": "Unreviewed map observation for investigation; check current bylaws, amendments, overlays and parcel identity. No accepted rules were published. Browser replay. The citywide zone outline is omitted; parcel intersection and source references retained."
+}

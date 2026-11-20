@@ -25,8 +25,40 @@ function scaleLength(width: number): number {
   return [5, 2, 1].map(step => step * magnitude).find(length => length <= target) ?? magnitude
 }
 
-/** A source observation only; this diagram does not measure buildable space. */
-export function ObservationMap({ observation, address, parcel }: { observation: Observation; address?: Address; parcel?: Parcel }) {
+const aerialService = 'https://mapservices.crd.bc.ca/arcgis/rest/services/Imagery/Orthos2025_10cm/ImageServer'
+export const crdImageryTerms = 'https://www.crd.ca/government-administration/data-documents/maps-geospatial-data'
+
+function ParcelAerial({ url, outline, width, height, sketch }: {
+  url: string; outline: string; width: number; height: number; sketch: React.ReactNode
+}) {
+  const [state, setState] = React.useState<'loading' | 'ready' | 'failed'>('loading')
+  function imageLoaded(image: HTMLImageElement) {
+    // ArcGIS can return a successful, transparent PNG where the mosaic has no data.
+    const sample = document.createElement('canvas')
+    sample.width = 16
+    sample.height = 12
+    const context = sample.getContext('2d')
+    if (!context) { setState('failed'); return }
+    context.drawImage(image, 0, 0, sample.width, sample.height)
+    const { data } = context.getImageData(0, 0, sample.width, sample.height)
+    setState(data.some((value, index) => index % 4 === 3 && value > 0) ? 'ready' : 'failed')
+  }
+  return <>
+    {state !== 'ready' && sketch}
+    {state !== 'failed' && <div className="property-aerial" hidden={state !== 'ready'}>
+      <img src={url} alt="2025 aerial photograph of the selected property" width={720} height={540}
+        crossOrigin="anonymous" referrerPolicy="no-referrer"
+        onLoad={event => imageLoaded(event.currentTarget)} onError={() => setState('failed')} />
+      <svg viewBox={`0 0 ${width} ${height}`} aria-label="Approximate parcel boundary outlined on the photograph" role="img">
+        <path className="property-aerial__halo" d={outline} />
+        <path className="property-aerial__boundary" d={outline} />
+      </svg>
+    </div>}
+    {state === 'ready' && <figcaption>2025 aerial · <a href={crdImageryTerms} target="_blank" rel="noreferrer">© Capital Regional District</a></figcaption>}
+  </>
+}
+
+export function ParcelDrawing({ observation, showAerial = false }: { observation: Observation; showAerial?: boolean }) {
   React.useEffect(() => { void import('./ObservationMap.css') }, [])
   const allPoints = [observation.parcel.geometry, ...observation.roofs.map(roof => roof.geometry)].flatMap(points)
   const valid = allPoints.length > 0 && allPoints.every(([x, y]) => Number.isFinite(x) && Number.isFinite(y))
@@ -43,19 +75,8 @@ export function ObservationMap({ observation, address, parcel }: { observation: 
   const viewHeight = height + pad * 2
   const scale = drawable ? scaleLength(width) : 0
   const fontSize = Math.max(extent * .033, 1)
-  const partial = observation.buildingsState !== 'available'
   const roofCount = observation.roofs.length
-  const parcelUrl = publicSourceUrl(observation.source.url)
-  const roofUrl = publicSourceUrl(observation.roofSource?.url)
-
-  return <figure className="observation-map" aria-label="Observed property map">
-    <figcaption>
-      <strong>Observed property · {parcel?.label ?? 'parcel label unavailable'}</strong>
-      {address && <span>Address lead: {address.label}. Address and parcel identity require confirmation.</span>}
-      {parcel && <span>Parcel match: {parcel.match}</span>}
-    </figcaption>
-    {partial && <p className="observation-map__partial" role="status">Partial building observation: {observation.buildingsState.replace(/_/g, ' ')}. Missing or incomplete rooflines do not establish open space.</p>}
-    {drawable ? <svg viewBox={`0 0 ${viewWidth} ${viewHeight}`} role="img" aria-label={`Projected parcel outline and ${roofCount} captured roofline ${roofCount === 1 ? 'outline' : 'outlines'}. North is up. Scale shown in metres.`}>
+  const sketch = (drawable ? <svg viewBox={`0 0 ${viewWidth} ${viewHeight}`} role="img" aria-label={`Projected parcel outline and ${roofCount} captured roofline ${roofCount === 1 ? 'outline' : 'outlines'}. North is up. Scale shown in metres.`}>
       <path className="observation-map__parcel" d={path(observation.parcel.geometry, minX, maxY, pad)} fillRule="evenodd" />
       {observation.roofs.map((roof, index) => {
         const roofPoints = points(roof.geometry)
@@ -75,7 +96,42 @@ export function ObservationMap({ observation, address, parcel }: { observation: 
         <path d={`M${pad} ${viewHeight - pad / 2} v${-fontSize * .35} h${scale} v${fontSize * .35}`} />
         <text x={pad + scale / 2} y={viewHeight - pad / 2 + fontSize * 1.2} textAnchor="middle">{scale} m</text>
       </g>
-    </svg> : <p className="observation-map__partial" role="status">Map geometry is unavailable or cannot be drawn in projected metres. Check the source record.</p>}
+    </svg> : <p className="observation-map__partial" role="status">Map geometry is unavailable or cannot be drawn in projected metres. Check the source record.</p>)
+  if (!showAerial || !drawable) return sketch
+
+  // One 4:3 extent in projected metres for both the raster and the boundary.
+  const parcelPoints = points(observation.parcel.geometry)
+  const xs = parcelPoints.map(([x]) => x), ys = parcelPoints.map(([, y]) => y)
+  const left = Math.min(...xs), right = Math.max(...xs), bottom = Math.min(...ys), top = Math.max(...ys)
+  const imageHeight = Math.max(top - bottom, (right - left) * 3 / 4) * 1.45
+  const imageWidth = imageHeight * 4 / 3
+  const x = (left + right - imageWidth) / 2, y = (bottom + top - imageHeight) / 2
+  const params = new URLSearchParams({ bbox: [x, y, x + imageWidth, y + imageHeight].join(','),
+    bboxSR: '3157', imageSR: '3157', size: '720,540', format: 'png32', f: 'image' })
+  const url = `${aerialService}/exportImage?${params}`
+  const captionedSketch = <>{sketch}<figcaption>Parcel sketch · approximate boundary and rooflines</figcaption></>
+  if (observation.aerial !== 'crd-2025-10cm') {
+    return <>{sketch}<figcaption>Parcel sketch · <a href={url} target="_blank" rel="noreferrer">View the 2025 aerial at CRD</a></figcaption></>
+  }
+  return <ParcelAerial key={url} url={url} outline={path(observation.parcel.geometry, x, y + imageHeight, 0)}
+    width={imageWidth} height={imageHeight} sketch={captionedSketch} />
+}
+
+/** A source observation only; this diagram does not measure buildable space. */
+export function ObservationMap({ observation, address, parcel }: { observation: Observation; address?: Address; parcel?: Parcel }) {
+  const partial = observation.buildingsState !== 'available'
+  const roofCount = observation.roofs.length
+  const parcelUrl = publicSourceUrl(observation.source.url)
+  const roofUrl = publicSourceUrl(observation.roofSource?.url)
+
+  return <figure className="observation-map" aria-label="Observed property map">
+    <figcaption>
+      <strong>Observed property · {parcel?.label ?? 'parcel label unavailable'}</strong>
+      {address && <span>Address lead: {address.label}. Address and parcel identity require confirmation.</span>}
+      {parcel && <span>Parcel match: {parcel.match}</span>}
+    </figcaption>
+    {partial && <p className="observation-map__partial" role="status">Partial building observation: {observation.buildingsState.replace(/_/g, ' ')}. Missing or incomplete rooflines do not establish open space.</p>}
+    <ParcelDrawing observation={observation} />
     <ul className="observation-map__legend" aria-label="Map legend">
       <li><span className="observation-map__key observation-map__key--parcel" aria-hidden="true" />Captured parcel boundary</li>
       <li><span className="observation-map__key observation-map__key--roof" aria-hidden="true" />Captured rooflines ({roofCount === 1 ? 'R1' : roofCount ? `R1–R${roofCount}` : 'none returned'}; not walls)</li>

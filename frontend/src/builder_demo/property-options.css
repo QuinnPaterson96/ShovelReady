@@ -1,78 +1,88 @@
-.property-options-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-  gap: clamp(1rem, 3vw, 2.5rem);
-  align-items: start;
-}
-
-.property-options .observation-map {
-  min-width: 0;
-  height: auto;
-  margin: 0;
-  background: transparent;
-  border: 0;
-}
-
-.property-options-house-plan {
-  min-width: 0;
-  padding: 0;
-  margin: 0;
-  border: 0;
-}
-
-.property-options-house-plan legend {
-  padding: 0;
-  font-weight: 650;
-}
-
-.property-options-house-plan small {
-  color: var(--ink-muted);
-  font-weight: 400;
-}
-
-.property-options-house-plan > div {
-  display: flex;
-  gap: 0 1rem;
-  flex-wrap: wrap;
-}
-
-.property-options-house-plan label {
-  display: inline-flex;
-  align-items: center;
-  gap: .35rem;
-  min-height: 44px;
-  margin: 0;
-  font-weight: 400;
-  cursor: pointer;
-}
-
-.property-options-house-plan input[type="radio"] {
-  width: 1rem;
-  height: 1rem;
-  min-height: 0;
-  margin: 0;
-  accent-color: var(--primary);
-}
-
-.property-options-finding {
-  max-width: 65ch;
-  margin-bottom: 1.25rem;
+.property-options {
   overflow-wrap: anywhere;
 }
 
-.property-options-finding p {
-  margin: .25rem 0;
+.property-options > header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: .5rem 1rem;
+  margin-bottom: 1.25rem;
 }
 
-.property-options-source {
+.property-options > header h1 { margin: 0; font-size: clamp(1.6rem, 3vw, 2.2rem); }
+.property-options > header p { margin: .3rem 0 0; color: var(--ink-muted); }
+.property-options > header button { color: var(--primary); min-height: 44px; }
+
+.property-options-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: clamp(1rem, 3vw, 2rem);
+  align-items: start;
+}
+
+.property-options .observation-map { min-width: 0; height: auto; margin: 0; background: transparent; border: 0; }
+.property-options .observation-map svg {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+}
+
+.property-options .observation-map figcaption {
+  margin: .35rem 0 0;
+  display: block;
+  font-size: .85rem;
   color: var(--ink-muted);
-  font-size: .875rem;
 }
 
-.property-options .sr-primary {
+.property-aerial { position: relative; overflow: hidden; border-radius: var(--radius-sm); }
+.property-aerial img { width: 100%; height: auto; aspect-ratio: 4 / 3; display: block; }
+.property-options .property-aerial svg { position: absolute; inset: 0; background: transparent; border: 0; }
+.property-aerial path { fill: none; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+.property-aerial__halo { stroke: var(--ink); stroke-width: 5; }
+.property-aerial__boundary { stroke: var(--surface); stroke-width: 2.5; }
+
+.property-options-next h2 { font-size: 1.2rem; margin: 0; }
+.property-options-next p { margin: .45rem 0; }
+.property-options-next h2:not(:first-child) { margin-top: 1.3rem; }
+.property-use-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .35rem 1.1rem;
+  padding: 0;
+  margin: .65rem 0;
+}
+.property-use-list li { margin: 0; font-weight: 650; }
+.property-use-list span { color: var(--primary); }
+
+.property-project-actions { display: grid; gap: .4rem; margin-top: .6rem; }
+.property-project-actions button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: .65rem;
   min-height: 44px;
+  text-align: left;
+  border-color: var(--primary);
+  color: var(--primary-hover);
+  background: var(--primary-soft);
 }
+.property-action-arrow {
+  width: .45rem;
+  height: .45rem;
+  margin-inline-end: .15rem;
+  transform: rotate(-45deg);
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+}
+.property-project-actions button:hover:not(:disabled) { color: var(--surface); background: var(--primary-hover); }
+.property-option-sources { margin-top: 1rem; }
+.property-option-sources summary { cursor: pointer; min-height: 44px; align-content: center; font-weight: 650; }
+.property-option-sources .copyable-record textarea { width: 100%; min-height: 7rem; }
 
-@media (max-width: 48rem) {
+@media (max-width: 45rem) {
   .property-options-layout { grid-template-columns: minmax(0, 1fr); }
+  .property-options .observation-map > svg { max-height: 15rem; }
 }
