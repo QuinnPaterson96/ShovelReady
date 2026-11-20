@@ -107,6 +107,9 @@
 .builder-selected-property { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem 1rem; background: var(--primary-soft); border: 1px solid var(--border); border-radius: var(--radius-card); padding: .75rem; }
 .builder-selected-property span { color: var(--ink-muted); }
 .builder-selected-property button { margin-left: auto; }
+.builder-title-reference-form { display: grid; gap: .75rem; }
+.builder-title-reference-form label { display: grid; gap: .25rem; }
+.builder-title-reference-form input, .builder-title-reference-form select { width: min(100%, 20rem); }
 @media (max-width: 600px) { .builder-progress ol { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .builder-progress button { margin: 0; min-width: 0; overflow-wrap: anywhere; }
 .builder-how-checked .cs-results { border: 0; padding: 0; margin: 0; }

@@ -1,6 +1,6 @@
 import type { Observation, Parcel, Polygon } from './flow'
 
-type Candidate = { pid?: string | null; gislink?: string | null; parcel_ref?: { source?: string; object_id?: number }; attributes?: Record<string, unknown> }
+type Candidate = { pid?: string | null; gislink?: string | null; relation?: string; parcel_ref?: { source?: string; object_id?: number }; attributes?: Record<string, unknown> }
 export function parcelRecord(parcel: Parcel): Candidate {
   return (parcel.raw as { candidate?: Candidate } | null)?.candidate ?? {}
 }
