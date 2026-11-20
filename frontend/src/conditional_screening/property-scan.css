@@ -18,3 +18,20 @@
 .property-scan__card-content { min-width: 0; }
 .property-scan__list li:has(.property-scan__title-action) { flex-direction: column; align-items: flex-start; gap: 0; }
 .property-scan__title-action { margin: 0 .75rem .75rem; }
+.property-scan__permit { width: 100%; min-width: 0; margin: 0; }
+details.property-scan__permit > summary {
+  display: flex;
+  align-items: flex-start;
+  gap: .6rem;
+  padding: .75rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-weight: normal;
+}
+.property-scan__permit > summary::-webkit-details-marker { display: none; }
+.property-scan__permit > summary::after { content: 'â–¸'; margin-inline-start: auto; }
+.property-scan__permit[open] > summary::after { content: 'â–¾'; }
+.property-scan__permit-details { margin: 0; padding: 0 .75rem .75rem; }
+.property-scan__permit-case { margin-block: .75rem; padding-top: .75rem; border-top: 1px solid var(--border); }
+.property-scan__permit-case p { margin: .35rem 0; }

@@ -141,19 +141,21 @@ def test_property_scan_replays_all_sources_and_preserves_partial_failures(monkey
     captured = {}
     failures = set()
     heritage = []
+    history = []
+    gislink = "02130017"
 
     def saved(url, timeout):
         parsed = urlparse(url)
         params = parse_qs(parsed.query)
         if "OpenData_Land" in parsed.path:
             value = parcel()
-            value["features"][0]["attributes"]["GISLINK"] = "12345"
+            value["features"][0]["attributes"]["GISLINK"] = gislink
             return SavedResponse(url, value)
         layer = int(parsed.path.split("/")[-2])
         captured[layer] = params
         if layer in failures:
             return SavedResponse(url, {"features": [], "exceededTransferLimit": True})
-        return SavedResponse(url, {"features": heritage if layer == 10 else []})
+        return SavedResponse(url, {"features": {10: heritage, 18: history}.get(layer, [])})
 
     monkeypatch.setattr(api, "urlopen", saved)
     http = TestClient(create_app())
@@ -164,18 +166,65 @@ def test_property_scan_replays_all_sources_and_preserves_partial_failures(monkey
     assert len(result["findings"]) == 6
     assert all(row["status"] == "probably_clear" for row in result["findings"])
     assert set(captured) == {1, 3, 10, 11, 14, 18}
-    assert captured[18]["where"] == ["gislink='12345'"]
+    assert captured[18]["where"] == ["gislink='02130017'"]
     assert captured[10]["returnGeometry"] == ["false"]
     assert captured[10]["spatialRel"] == ["esriSpatialRelIntersects"]
     assert all(row["source"]["sha256"] for row in result["findings"])
+    assert result["permit_records"]["status"] == "no_match"
     assert "service capacity" in " ".join(result["limitations"])
     heritage.append({"attributes": {"OBJECTID": 12, "Heritage": "Registered"}})
+    history.extend(
+        {"attributes": {"OBJECTID": oid, "FOLDER_NUMBER": case, "STATUS": status, "AppType": kind}}
+        for oid, case, status, kind in (
+            (6, "DDP01187", "ACTIVE", "Delegated Development Permit"),
+            (83, "DDP01126", "COMPLETED", "Delegated Development Permit"),
+            (537, "DDP00887", "COMPLETED", "Delegated Development Permit"),
+            (1138, "REZ00789", "COMPLETED", "Rezoning"),
+        )
+    )
     failures.add(14)
     result = http.post("/api/victoria-zoning/property-scan", json=body).json()
     assert result["findings"][0]["status"] == "review"
     assert result["findings"][0]["records"][0]["Heritage"] == "Registered"
     assert result["findings"][1]["status"] == "unknown"
     assert result["findings"][1]["source"] is None
+    review = result["permit_records"]
+    assert review["status"] == "records_found"
+    assert review["source"]["captured_at_utc"]
+    cases = {record["case_number"]: record for record in review["records"]}
+    assert set(cases) == {"DDP01126", "DDP01187", "DDP00887"}
+    assert cases["DDP01126"]["case_url"].endswith("folderNumber=DDP01126")
+    assert cases["DDP01126"]["issued_on"] == "2026-04-02"
+    assert cases["DDP01126"]["issuance_task"] == "dated_completion"
+    assert len(set(cases["DDP01126"]["approved_plan_links"])) == 3
+    assert cases["DDP01126"]["evidence_checked_on"] == "2026-11-19"
+    assert cases["DDP01187"]["issued_on"] is None
+    assert cases["DDP01187"]["issuance_task"] == "no_completion_date"
+    assert cases["DDP00887"]["issued_on"] is None  # History status alone proves no issue date.
+    assert all(row["applicable_condition_reviewed"] is False for row in cases.values())
+
+    gislink = "different-parcel"
+    result = http.post("/api/victoria-zoning/property-scan", json=body).json()
+    assert all(row["evidence_checked_on"] is None for row in result["permit_records"]["records"])
+
+    history[:] = [history[-1]]
+    result = http.post("/api/victoria-zoning/property-scan", json=body).json()
+    assert result["permit_records"]["status"] == "no_match"
+    history.append({"attributes": {"OBJECTID": 24, "AppType": "Development Permit"}})
+    result = http.post("/api/victoria-zoning/property-scan", json=body).json()
+    assert result["permit_records"]["status"] == "unavailable"
+
+    failures.add(18)
+    result = http.post("/api/victoria-zoning/property-scan", json=body).json()
+    assert result["permit_records"]["status"] == "truncated"
+    assert result["permit_records"]["records"] == []
+
+    gislink = None
+    captured.pop(18)
+    result = http.post("/api/victoria-zoning/property-scan", json=body).json()
+    assert result["permit_records"]["status"] == "unavailable"
+    assert 18 not in captured
+
     body["expected_pid"] = "changed"
     result = http.post("/api/victoria-zoning/property-scan", json=body).json()
     assert all(row["status"] == "unknown" for row in result["findings"])
