@@ -18,7 +18,6 @@ import { PriceTiming, priceTimingParagraphs } from '../model_catalogue/PriceTimi
 import { placementDrawing, attachedEmail, enquiryPackageFiles } from './placementExport'
 import { preparationChecklist } from './manufacturer'
 import { PropertyScan, parsePropertyScan, type PropertyScanResult } from '../conditional_screening/PropertyScan'
-import { SewerService } from '../conditional_screening/SewerService'
 
 const manualFact = (value: string | number | null): Fact => ({
   value, unit: null, basis: null, unresolved_reason: value === null ? 'unknown' : null,
@@ -374,19 +373,18 @@ test('Victoria property scan carries its dated sewer map finding into the site a
   assert.equal(rejected.sewer, null)
   assert.deepEqual(rejected.findings, result.findings)
   const scan = { result, available: true, busy: false, error: '', retry() {} }
-  const html = renderToStaticMarkup(<><PropertyScan scan={scan} /><SewerService scan={scan} address={reviewAddress} intendedUse={input.intendedUse} /></>)
-  assert.match(html, /href="#sewer-service"/)
-  assert.match(html, /eng%40victoria\.ca/)
-  assert.match(html, /proposed garden suite/)
+  const html = renderToStaticMarkup(<PropertyScan scan={scan} />)
+  assert.match(html, /The City maps an active sewer connection/)
+  assert.doesNotMatch(html, /mailto:|href="#sewer-service"/)
   const args = [null, input, null, false, null, null, false, null, null, null, null, null, null, result] as const
   const brief = enquiryDocument(...args), report = screeningDocument(...args)
   const files = enquiryPackageFiles(brief, report, [], { property_scan: result }, null)
   const decode = (name: string) => new TextDecoder().decode(files[name])
-  assert.match(decode('prefab-enquiry.md'), /Capacity and permission.*City confirmation/)
+  assert.match(decode('prefab-enquiry.md'), /Can you help confirm whether the existing sewer connection can serve the proposed garden suite/)
   assert.match(decode('prefab-supporting-report.md'), /2026-11-19.*unreviewed/)
-  assert.match(decode('prefab-supporting-report.md'), /eng@victoria\.ca.*proposed garden suite/)
+  assert.match(decode('prefab-supporting-report.md'), /Capacity for the proposed dwelling is unconfirmed/)
   assert.doesNotMatch(decode('prefab-supporting-report.md'), /where=parcel-reference/)
   assert.match(decode('prefab-technical-evidence.json'), /where=parcel-reference/)
-  assert.doesNotMatch(enquiryEmailBody(brief, false), /Connection shown on the City map/)
-  assert.match(enquiryPlainText(screeningDocument(null, input, null, false, null, null, false, null, null, null, null, null, null, rejected)), /City map check unavailable/)
+  assert.doesNotMatch(enquiryEmailBody(brief, false), /maps an active sewer connection|existing sewer connection can serve/)
+  assert.match(enquiryPlainText(screeningDocument(null, input, null, false, null, null, false, null, null, null, null, null, null, rejected)), /City sewer check is unavailable/)
 })

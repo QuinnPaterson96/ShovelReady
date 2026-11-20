@@ -157,7 +157,7 @@ test('scan failures and malformed empty results cannot become probable clearance
   assert.equal(homeownerSummary({ ...base, propertyScan: scan }).checks.flatMap(row => row.parts ?? [row]).find(row => row.label === 'Mapped records')?.status, 'probable')
   const checklist = (result: PropertyScanResult | null) => renderToStaticMarkup(createElement(PropertyScan, { scan: { result, available: true, busy: false, error: '', retry() {} } }))
   assert.match(checklist(scan), /No · Likely fine in searched scope/)
-  assert.match(checklist(scan), /Service capacity<\/strong><span>Maybe · Not checked/)
+  assert.match(checklist(scan), /Sewer service has not been established for this property/)
   const flagged = { ...scan, findings: scan.findings.map((row, index) => index === 0 ? { ...row, status: 'review' as const, records: [{ OBJECTID: 1, Name: 'Retained heritage lead' }] } : row) }
   assert.match(checklist(flagged), /Yes · Needs review/)
   assert.match(checklist(flagged), /Retained heritage lead/)

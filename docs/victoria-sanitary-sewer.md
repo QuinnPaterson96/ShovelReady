@@ -8,14 +8,14 @@ flowchart TD
     S --> R[Property scan and project handoff]
     L -->|No matching record| M[Check mapped gravity mains near the parcel]
     M --> R
-    R --> Q[Ask City Engineering about proposed wastewater demand and upgrades]
+    R --> Q[Edit the sewer question in Prepare enquiry]
 ```
 
-The scan answers a first-contact question about the existing mapped service.
-The owner can take the finding, property address and proposed dwelling details
-to City Engineering at eng@victoria.ca. Ask which connection can serve the
-project, what fixture or wastewater-demand information Engineering needs, and
-whether changes are required. A capacity finding would need an answer covering
+The preliminary property scan shows the mapped service and keeps the source
+records in its evidence disclosure. Prepare enquiry suggests a builder question
+about capacity and upgrades when the City maps a parcel-linked active connection.
+Otherwise it asks how to confirm service. Homeowners can edit or remove the
+question before copying or exporting their enquiry. A capacity finding would need an answer covering
 the actual proposal, the authority, date and any conditions. [City connection enquiries](https://www.victoria.ca/building-business/permits-development-construction/building-renovating/apply-permit/plumbing)
 
 ## Public source checks
@@ -89,7 +89,7 @@ All responses retained the need for demand-specific confirmation. These are date
 public observations. The isolated regressions use controlled City responses so CI
 can exercise the same distinctions and source failure without relying on live maps.
 
-A local Chrome check opened the saved 419 Cecelia example at 390 px and 1440 px,
+During the original pilot, a local Chrome check opened the saved 419 Cecelia example at 390 px and 1440 px,
 read the live mapped result, opened the Engineering email draft by keyboard and
 selected Garden suite. From Prepare enquiry it downloaded the ZIP and checked the
 manufacturer message, supporting report and technical JSON. Both widths preserved

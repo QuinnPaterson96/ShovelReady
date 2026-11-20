@@ -12,7 +12,7 @@ import { EnquiryRecovery } from './EnquiryRecovery'
 import { TitleReferenceEditor, titleReferenceSection, titleReferenceTarget, titleParcelMatch, type TitleReference } from './TitleReference'
 import { projectionPilotModel } from '../plan_projections/PlanProjections'
 import { PropertyScan, usePropertyScan, type PropertyScanResult } from '../conditional_screening/PropertyScan'
-import { SewerService, sewerReport } from '../conditional_screening/SewerService'
+import { suggestedSewerQuestion, sewerReport } from '../conditional_screening/SewerService'
 import { StepInfo } from '../StepInfo'
 import { AdditionalInputs } from '../conditional_screening/AdditionalInputs'
 import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
@@ -166,7 +166,7 @@ export function screeningDocument(selection: SitePreparationSelection | null, in
       ...(planningSummary.length ? [{ heading: 'Boundary planning assumptions', paragraphs: planningSummary, emailSummary: planningSummary.join(' ') }] : []),
       ...(scenarios?.additional_checks?.length ? [{ heading: 'Additional scouting checks', paragraphs: scenarios.additional_checks.map(check => `${additionalObservation(check)} Source: ${check.source.provider}, ${check.source.record_label}, ${check.source.review_status}; ${check.source.url} (${check.source.locator}).`), emailSummary: scenarios.additional_checks.map(check => `${check.label}: ${statusLabels[check.status]}. ${check.detail}`).join(' ') }] : []),
       ...(scan ? [{ heading: 'Preliminary property scan', paragraphs: [...scan.findings.map(row => `${row.label}: ${row.status === 'probably_clear' ? 'no matching records found in this searched dataset' : row.status === 'review' ? 'records need review' : 'unknown'}. ${row.status === 'probably_clear' ? 'This does not establish absence of restrictions.' : row.detail}${row.source ? ` Source: ${row.source.provider}, ${row.source.record_label}, captured ${row.source.captured_at_utc.slice(0, 10)}, unreviewed; ${row.source.source_url.split('?')[0]}.` : ''}`), ...scan.limitations], emailSummary: scan.findings.map(row => `${row.label}: ${row.status === 'probably_clear' ? 'Likely fine in searched scope' : row.status === 'review' ? 'Needs review' : 'Unknown'}.`).join(' ') + ' Permit documents, title, projections and utility capacity still need review.' }] : []),
-      ...(scan?.sewer !== undefined || input.sewerScanFailed ? [sewerReport(scan?.sewer ?? null, input.intendedUse, input.housePlan)] : []),
+      ...(scan?.sewer !== undefined || input.sewerScanFailed ? [sewerReport(scan?.sewer ?? null)] : []),
 
       { heading: 'Price & timing', paragraphs: priceTimingParagraphs(model), emailSummary: priceTimingParagraphs(model).join(' ') },
       ...(input.budgetDraft ? [{ heading: 'Project cost draft', paragraphs: budgetSummary(input.budgetDraft.draft, calculateBudget(input.budgetDraft.draft, input.budgetDraft.context, input.budgetDraft.today)), emailSummary: '' }] : []),
@@ -397,6 +397,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const [exportBusy, setExportBusy] = useState(false)
   const [exportMessage, setExportMessage] = useState('')
   const drawingRevision = useRef('')
+  const [editedSewerQuestion, setEditedSewerQuestion] = useState<string | null>(null)
   const [question, setQuestion] = useState(suggestedQuestion)
   const [readyFor, setReadyFor] = useState<string | null>(null)
   const [manualConfirmedFor, setManualConfirmedFor] = useState<string | null>(null)
@@ -439,6 +440,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   function siteEdited() {
     const retainedUse = propertyPurpose || demoAnswers?.intendedUse === use ? '' : use
     setPropertyPurpose(null); setEditingPurpose(false); setReviewedPurposeFor(null)
+    setEditedSewerQuestion(null)
     setTitleReference(null)
     setOpenedReplacement(false); setPropertyStage('options'); setHousePlan(null); resetPropertyAlternatives(); setUse(retainedUse); setGeometryFailure(false); setDemoAnswers({}); setStreetDecisionFor(null); setStreetSkipTarget(null); setChecksRevealed(false); setBufferSuggestion(undefined); setMoveSuggestion(undefined); setAcknowledgedConflicts([]); setSelection(null); setImported(false); setMeasurementResult(null); setSiteAssumptions(null); setProjectSettings(applyIntendedUse(modelProjectSettings(model), retainedUse)); setGeometryPending(false); setAccess(''); setServices(''); setProjectContext(previous => ({ ...previous, relationship: '', nextStep: '' })); setWaterfrontMarks(null); setDrawingExport(null); setStreetMarks({ revision: null, data: { edge_ids: [], all_marked: false, origin: 'user' } }); setRearEdge(null); setSelectedBoundary(null); setBoundaryMark(null); setMarkingRole(null); setBoundaryMode('place'); setReadyFor(null); setRevision(value => value + 1)
   }
@@ -581,6 +583,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const currentAssumptions = propertyAssumptions?.placement_revision === placementRevision ? propertyAssumptions : null
   const selectedRef = !victoriaCoverage ? null : mode === 'live' ? selectedParcelRef(live) : mode === 'example' ? { parcel_ref: { source: 'city-of-victoria-pid-parcels' as const, object_id: 10573 }, expected_pid: '008-118-221' } : null
   const propertyScan = usePropertyScan(selectedRef, geometryRevision)
+  const sewerQuestion = editedSewerQuestion ?? suggestedSewerQuestion(propertyScan.result?.sewer, use, housePlan)
   const zoningKey = selectedRef && geometryRevision ? JSON.stringify([selectedRef, geometryRevision, revision, zoningRetry]) : null
   const currentZoning = zoningKey && zoningState?.key === zoningKey ? zoningState.result : null
   const latestZoningKey = useRef(zoningKey); latestZoningKey.current = zoningKey
@@ -752,7 +755,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const boundaryInteraction = makeBoundaryInteraction()
   const selectedParcelPid = live ? parcelRecord(live.parcel).pid : null
   const propertyConcern = live?.parcel.identityConcern ? `${live.parcel.identityConcern.replace('Check which parcel your project concerns.', 'I need to confirm which parcel my project concerns.')}${selectedParcelPid ? ` The selected mapped parcel is PID ${selectedParcelPid}.` : ''}` : undefined
-  const makeEnquiryDoc = () => hasSite ? enquiryDocument(selection, { question, intendedUse: use, timing, budget, budgetDraft: budgetInput, access, services, ...projectContext, housePlan, propertyConcern, localComparisonsAvailable, sewerScanFailed: !!propertyScan.error, municipalResult: currentMunicipal?.findings.length ? currentMunicipal : null }, measurementResult, imported, live, manual, mode === 'example', foundationAllowanceM, currentScreening, currentAssumptions, pathway, currentScenario, effectiveSettings, propertyScan.result, model) : null
+  const makeEnquiryDoc = () => hasSite ? enquiryDocument(selection, { question, sewerQuestion, intendedUse: use, timing, budget, budgetDraft: budgetInput, access, services, ...projectContext, housePlan, propertyConcern, localComparisonsAvailable, sewerScanFailed: !!propertyScan.error, municipalResult: currentMunicipal?.findings.length ? currentMunicipal : null }, measurementResult, imported, live, manual, mode === 'example', foundationAllowanceM, currentScreening, currentAssumptions, pathway, currentScenario, effectiveSettings, propertyScan.result, model) : null
   const manualSignature = JSON.stringify({ facts: manual?.facts ?? null, site: manual?.site ?? null })
   const propertySelected = mode === 'example' || !!(live || selection || mode === 'manual' && manual && manualConfirmedFor === manualSignature)
   const propertyComplete = propertySelected && modelReady
@@ -786,7 +789,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     function revealStep(event: MouseEvent) {
       const anchor = event.target instanceof Element ? event.target.closest('a') : null
       if (event.defaultPrevented || !anchor?.closest('.builder-journey-rail') || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return
-      const routes: Record<string, JourneyStep> = { '#builder-model': 'model', '#builder-property': 'property', '#builder-placement': 'placement', '#placement-action-front': 'streets', '#placement-action-rear': 'boundaries', '#builder-property-details': 'details', '#builder-purpose': 'purpose', '#builder-quick-checks': 'checks', '#builder-budget-stage': 'budget', '#builder-next': 'enquiry', '#builder-email': 'email' }
+      const routes: Record<string, JourneyStep> = { '#property-scan': 'scan', '#builder-model': 'model', '#builder-property': 'property', '#builder-placement': 'placement', '#placement-action-front': 'streets', '#placement-action-rear': 'boundaries', '#builder-property-details': 'details', '#builder-purpose': 'purpose', '#builder-quick-checks': 'checks', '#builder-budget-stage': 'budget', '#builder-next': 'enquiry', '#builder-email': 'email' }
       const href = anchor.getAttribute('href') ?? ''
       if (href.startsWith('#summary-check-')) { event.preventDefault(); openJourneyStep('checks'); requestAnimationFrame(() => focusSummaryTarget(document, href.slice(1))); return }
       const step = routes[href]
@@ -997,7 +1000,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     const paragraphs = ['I have an approximate proposed placement sketch available. Please let me know the best way to share it.']
     enquiryDoc.sections.push({ heading: 'Placement sketch', paragraphs, emailSummary: paragraphs[0], siteDetails: true })
   }
-  const baseReportDoc = hasSite && !checksPending ? screeningDocument(selection, { question, intendedUse: use, timing, budget, budgetDraft: budgetInput, access, services, ...projectContext, housePlan, propertyConcern, localComparisonsAvailable, sewerScanFailed: !!propertyScan.error, municipalResult: currentMunicipal?.findings.length ? currentMunicipal : null }, measurementResult, imported, live, manual, mode === 'example', foundationAllowanceM, currentScreening, currentAssumptions, pathway, currentScenario, effectiveSettings, propertyScan.result, model) : null
+  const baseReportDoc = hasSite && !checksPending ? screeningDocument(selection, { question, sewerQuestion, intendedUse: use, timing, budget, budgetDraft: budgetInput, access, services, ...projectContext, housePlan, propertyConcern, localComparisonsAvailable, sewerScanFailed: !!propertyScan.error, municipalResult: currentMunicipal?.findings.length ? currentMunicipal : null }, measurementResult, imported, live, manual, mode === 'example', foundationAllowanceM, currentScreening, currentAssumptions, pathway, currentScenario, effectiveSettings, propertyScan.result, model) : null
   const rentalReport = withTimelineReport(withRentalReport(withMunicipalReport(baseReportDoc, currentMunicipal, true), effectiveRentalInterest === 'rental' ? activeRental : undefined, model), timelineResult, rentalResult, true)
   const reportDoc = rentalReport && economicsEstimate.payback ? { ...rentalReport, sections: [...rentalReport.sections, {
     heading: 'Simple payback', paragraphs: [`${paybackText(economicsEstimate.payback)} using ${economicsEstimate.wholeProject ? 'the whole-project estimate' : 'the priced project subtotal'} divided by annual income after running costs. Before financing and income tax.`], emailSummary: '',
@@ -1069,7 +1072,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     : nextJourneyStep === 'details' ? { label: 'Review property details', hint: 'Next, answer the property questions you know. You can leave the rest unknown.' }
     : nextJourneyStep === 'purpose' ? { label: 'Intended purpose', hint: use ? 'Next, review how you plan to use the unit.' : 'Next, choose how you would use the unit, or keep Not sure.' }
     : nextJourneyStep === 'budget' ? { label: 'Review project economics', hint: 'See a starting cost estimate and optionally explore rental income.' }
-    : { label: 'Review quick checks', hint: 'Next, review what looks promising and which questions to include in your enquiry.' }
+    : { label: 'Review placement checks', hint: 'Next, review what looks promising and which questions to include in your enquiry.' }
   const mapConcerns = findings.filter(check => check.status === 'conflict' && ['Distance to boundaries', 'Distance from the main building', 'Front boundary distance', 'Located behind the main building', 'Share of the rear yard'].includes(check.label))
   const placementResolutions = findings.flatMap(check => check.resolutions ?? [])
   const placementConcernsPanel = mapConcerns.length || placementResolutions.length ? <><p hidden={!checksPending} role="status">Updating checks · previous concerns below are awaiting the new measurements.</p><ul>{mapConcerns.map(check => <li key={check.label}><strong>{check.label}: </strong>{check.detail}</li>)}</ul>{placementResolutions.length > 0 && <FindingResolutions resolutions={placementResolutions} onApplyBuffer={applyBuffer} onMove={applyMove} disabled={checksPending || buffersPending} />}</> : undefined
@@ -1097,6 +1100,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     </>}</div></>
   const placementContinuation = summary && ['placement', 'streets', 'boundaries'].includes(journeyStep) && <div className="homeowner-summary__continue">{buffersPending && <p className="placement-action-status">Save planning buffers before continuing</p>}<div className="step-action"><button className="builder-continue" type="button" disabled={buffersPending} onClick={() => advanceJourneyStep(nextJourneyStep)}>Next: {continuation.label}<span aria-hidden="true"> →</span></button><StepInfo label={continuation.label}>{continuation.hint} You can continue with open questions. Existing findings and unanswered questions remain in your enquiry.</StepInfo></div></div>
   function changeProperty() {
+    setJourneyStep('property')
     if (mode === 'live') {
       siteEdited(); setLive(null); setPropertyReset(value => value + 1)
       setPropertyFocusRequest(previous => previous + 1)
@@ -1117,7 +1121,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   }
   function openJourneyStep(step: JourneyStep, answered = false, playbackTransition = false) {
     if (!answered && zoningCase && ['boundaries', 'details', 'purpose', 'checks', 'budget', 'enquiry', 'email'].includes(step) && !hasStreetAnswer) { setStreetSkipTarget(step); return }
-    if (!propertyComplete && step !== 'model' && step !== 'property') step = 'property'
+    if (!propertyComplete && !(step === 'scan' && propertySelected) && step !== 'model' && step !== 'property') step = 'property'
     if (!zoningCase && (step === 'streets' || step === 'boundaries' || step === 'details')) step = 'placement'
     setEditingPurpose(false)
     setJourneyStep(step)
@@ -1125,7 +1129,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     if (step === 'streets') changeBoundaryMode('front')
     if (step === 'boundaries') changeBoundaryMode('rear', true)
     if (step === 'placement' || step === 'details' || step === 'purpose') setBoundaryMode('place')
-    setExpanded({ property: step === 'property', placement: !['property', 'model', 'budget', 'enquiry', 'email'].includes(step), next: step === 'enquiry', email: step === 'email' })
+    setExpanded({ property: step === 'property', placement: !['property', 'scan', 'model', 'budget', 'enquiry', 'email'].includes(step), next: step === 'enquiry', email: step === 'email' })
     if (playbackTransition) return // Playback owns one scroll after the target renders.
     requestAnimationFrame(() => {
       if (playbackActive || !visible) return
@@ -1152,7 +1156,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
       if (details) details.open = true
     }
     const targets: Record<Exclude<JourneyStep, 'property' | 'model'>, string> = {
-      placement: zoningCase ? 'builder-placement-map-title' : 'builder-placement-title', streets: 'placement-action-front',
+      scan: 'property-scan-title', placement: zoningCase ? 'builder-placement-map-title' : 'builder-placement-title', streets: 'placement-action-front',
       boundaries: 'placement-action-rear', details: 'building-type', purpose: propertyPurpose === 'captured' ? 'builder-purpose-title' : 'builder-intended-use',
       checks: 'builder-quick-checks-title', budget: 'builder-budget-title', enquiry: 'builder-enquiry-title',
       email: contextComplete ? 'builder-provider-website' : 'builder-contact-context',
@@ -1184,6 +1188,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     changeBoundaryMode('place')
   }
   function navigateFlag(target: string) {
+    if (target === 'property-scan') { openJourneyStep('scan'); return }
     const propertyFact = target.startsWith('municipal-input-') || ['building-type', 'existing-suites', 'principal-building', 'waterfront-lot', 'zsa-floor-area', 'separation-measurement-choice', 'scouting-height', 'scouting-area-buffer'].includes(target)
     if (!propertyFact && !['street-side', 'boundary-roles', 'boundary-offsets', 'placement-map', 'builder-intended-use'].includes(target)) setChecksRevealed(true)
     setJourneyStep(propertyFact ? 'details' : target === 'street-side' ? 'streets' : target === 'boundary-roles' || target === 'boundary-offsets' ? 'boundaries' : target === 'placement-map' ? 'placement' : 'checks')
@@ -1205,8 +1210,8 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const progressCallback = useRef(onProgressChange)
   progressCallback.current = onProgressChange
   // Commit the assessment rail before a takeover measures its destination.
-  useLayoutEffect(() => { progressCallback.current?.({ walkthroughActive: playbackActive, reviewReadiness, checksAvailable: checksRevealed, propertyFirst, choosingModel, comparingDetached,
-    model: modelReady, property: propertyComplete, placement: placementComplete, streets: !!geometryRevision && hasStreetAnswer, boundaries: reviewedBoundariesFor === boundaryReviewRevision, details: reviewedDetailsFor === detailsReviewRevision, purpose: reviewedPurposeFor === use, checks: reviewedChecksFor === reviewRevision, enquiry: enquiryReady, email: !!draftText && (websiteRequestedFor === draftText || emailRequestedFor === JSON.stringify([draftText, recipient, includeSiteDetails])), handoff: websiteRequestedFor === draftText ? 'website' : 'email', current: journeyStep, mapAvailable: propertyComplete ? !!zoningCase : undefined }) }, [propertyFirst, modelReady, choosingModel, comparingDetached, playbackActive, checksRevealed, zoningCase, propertyComplete, placementComplete, enquiryReady, geometryRevision, hasStreetAnswer, reviewedBoundariesFor, reviewedDetailsFor, reviewedChecksFor, reviewRevision, detailsReviewRevision, boundaryReviewRevision, reviewedPurposeFor, use, websiteRequestedFor, emailRequestedFor, draftText, recipient, includeSiteDetails, journeyStep, readinessSignature])
+  useLayoutEffect(() => { progressCallback.current?.({ walkthroughActive: playbackActive, reviewReadiness, checksAvailable: checksRevealed, propertySelected, propertyFirst, choosingModel, comparingDetached,
+    model: modelReady, property: propertyComplete, placement: placementComplete, streets: !!geometryRevision && hasStreetAnswer, boundaries: reviewedBoundariesFor === boundaryReviewRevision, details: reviewedDetailsFor === detailsReviewRevision, purpose: reviewedPurposeFor === use, checks: reviewedChecksFor === reviewRevision, enquiry: enquiryReady, email: !!draftText && (websiteRequestedFor === draftText || emailRequestedFor === JSON.stringify([draftText, recipient, includeSiteDetails])), handoff: websiteRequestedFor === draftText ? 'website' : 'email', current: journeyStep, mapAvailable: propertyComplete ? !!zoningCase : undefined }) }, [propertySelected, propertyFirst, modelReady, choosingModel, comparingDetached, playbackActive, checksRevealed, zoningCase, propertyComplete, placementComplete, enquiryReady, geometryRevision, hasStreetAnswer, reviewedBoundariesFor, reviewedDetailsFor, reviewedChecksFor, reviewRevision, detailsReviewRevision, boundaryReviewRevision, reviewedPurposeFor, use, websiteRequestedFor, emailRequestedFor, draftText, recipient, includeSiteDetails, journeyStep, readinessSignature])
   useEffect(() => { setReadyFor(null) }, [draftText])
   const emailBody = enquiryDoc ? enquiryEmailBody(enquiryDoc, includeSiteDetails) : ''
   const emailSubject = enquiryDoc?.example ? `Saved example only — ${model.name} question` : includeSiteDetails ? enquiryDoc?.title ?? `${model.name} feasibility enquiry` : `${model.name} feasibility enquiry`
@@ -1240,7 +1245,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
       setEmailMessage('Full email body copied.')
     } catch { setEmailMessage('Clipboard unavailable. Select and copy the email body above.') }
   }
-  const technicalEvidence = { schema_version: 'builder-evidence.v1', property_title_reference: currentTitleReference, project_timeline: { result: timelineResult, first_year_income: firstYearIncome(timelineResult, rentalResult), archived_drafts: timelineState.archived }, municipal_evaluation: currentMunicipal, municipal_input_draft: { context: municipalDraftKey, values: currentMunicipalDraft }, rental_scenario: effectiveRentalInterest === 'rental' || rentalDrafts[model.model_id] ? rentalEvidence(activeRental, model) : null, municipality: currentMunicipality, project_budget: budgetInput ? { ...budgetEvidence(currentBudget, budgetContext), payback: economicsEstimate.payback, payback_cost_basis: economicsEstimate.payback ? economicsEstimate.subtotal : null, fee_references: victoriaBudget ? [victoriaBuildingPermitReference] : [] } : null, demo_answer_provenance: Object.fromEntries(Object.entries(currentDemoAnswers ?? {}).map(([key, value]) => [key, { value, origin: 'demo_supplied' }])), evaluation_state: checksPending ? 'updating' : 'current', planning_comparison_scope: { selected_use: pathway.proposed_use, garden_suite_comparisons_applied: localComparisonsAvailable && pathway.proposed_use === 'garden_suite', raw_scenario_results: 'Exploratory candidate comparisons; withheld from homeowner findings and recipient documents when intended use is unknown or outside the garden-suite scenario.' }, enquiry_inputs: { question, intendedUse: use, timing, budget, access, services, ...projectContext, housePlan }, model_catalogue: { snapshot_id: modelSnapshot(model), model }, acknowledged_conflicts_for_discussion: currentAcknowledgements, open_questions_for_discussion: currentOpenQuestions, review_readiness: reviewReadiness, foundation_scenario: { allowance_m: foundationAllowanceM, basis: 'planning_assumption', used_in_preliminary_height: currentScenario?.additional_checks?.some(check => check.id === 'height' && check.basis.startsWith('advertised height')) ?? false }, selection, live, manual, example: mode === 'example' ? exampleCase : null, measurement: measurementResult, zoning_site_assumptions: currentAssumptions, project_settings: zoningCase ? effectiveSettings : null, street_prefill: streetPrefill, waterfront_prefill: waterfrontPrefill, municipal_zoning_lookup: currentZoning, municipal_zoning_error: currentZoningError || null, property_scan: propertyScan.result, property_scan_error: propertyScan.error || null, placement_scenario_request: scenarioRequest, placement_scenario_result: currentScenario, conditional_screening: currentScreening }
+  const technicalEvidence = { schema_version: 'builder-evidence.v1', property_title_reference: currentTitleReference, project_timeline: { result: timelineResult, first_year_income: firstYearIncome(timelineResult, rentalResult), archived_drafts: timelineState.archived }, municipal_evaluation: currentMunicipal, municipal_input_draft: { context: municipalDraftKey, values: currentMunicipalDraft }, rental_scenario: effectiveRentalInterest === 'rental' || rentalDrafts[model.model_id] ? rentalEvidence(activeRental, model) : null, municipality: currentMunicipality, project_budget: budgetInput ? { ...budgetEvidence(currentBudget, budgetContext), payback: economicsEstimate.payback, payback_cost_basis: economicsEstimate.payback ? economicsEstimate.subtotal : null, fee_references: victoriaBudget ? [victoriaBuildingPermitReference] : [] } : null, demo_answer_provenance: Object.fromEntries(Object.entries(currentDemoAnswers ?? {}).map(([key, value]) => [key, { value, origin: 'demo_supplied' }])), evaluation_state: checksPending ? 'updating' : 'current', planning_comparison_scope: { selected_use: pathway.proposed_use, garden_suite_comparisons_applied: localComparisonsAvailable && pathway.proposed_use === 'garden_suite', raw_scenario_results: 'Exploratory candidate comparisons; withheld from homeowner findings and recipient documents when intended use is unknown or outside the garden-suite scenario.' }, enquiry_inputs: { question, sewerQuestion, intendedUse: use, timing, budget, access, services, ...projectContext, housePlan }, model_catalogue: { snapshot_id: modelSnapshot(model), model }, acknowledged_conflicts_for_discussion: currentAcknowledgements, open_questions_for_discussion: currentOpenQuestions, review_readiness: reviewReadiness, foundation_scenario: { allowance_m: foundationAllowanceM, basis: 'planning_assumption', used_in_preliminary_height: currentScenario?.additional_checks?.some(check => check.id === 'height' && check.basis.startsWith('advertised height')) ?? false }, selection, live, manual, example: mode === 'example' ? exampleCase : null, measurement: measurementResult, zoning_site_assumptions: currentAssumptions, project_settings: zoningCase ? effectiveSettings : null, street_prefill: streetPrefill, waterfront_prefill: waterfrontPrefill, municipal_zoning_lookup: currentZoning, municipal_zoning_error: currentZoningError || null, property_scan: propertyScan.result, property_scan_error: propertyScan.error || null, placement_scenario_request: scenarioRequest, placement_scenario_result: currentScenario, conditional_screening: currentScreening }
   const exportIdentity = JSON.stringify([geometryRevision, model.model_id, modelSnapshot(model), checksPending, enquiryDoc, reportDoc, drawingKey, technicalEvidence])
   const latestExportIdentity = useRef(exportIdentity); latestExportIdentity.current = exportIdentity
   function downloadMarkdown(report = false) {
@@ -1465,23 +1470,40 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     </section>
     {!propertySelected && <p className="builder-journey-preview">{propertyFirst ? 'Find property → Explore options → Try a model' : 'Find property → Place unit → Review → Contact provider'}</p>}
     {propertySelected && live && !expanded.property ? <SelectedProperty value={live} municipality={currentMunicipality} onChangeProperty={changeProperty} onInspectAlternatives={() => { setPropertyInspect(value => value + 1); setExpanded(previous => ({ ...previous, property: true })); setJourneyStep('property'); requestAnimationFrame(() => focusSummaryTarget(document, 'sd-parcels')); }} /> : propertyComplete && !live && <div className="builder-selected-property"><strong>Property: {mode === 'example' ? '419 Cecelia Road · saved example, not your property' : manual?.facts.address || 'User-supplied site'}</strong><span>Approximate and unreviewed</span><button type="button" onClick={changeProperty}>Wrong property? Change</button></div>}
-    {mode === 'live' && live && <TitleReferenceEditor key={live.parcel.id} selected={live} value={currentTitleReference}
-      sketch={exportMeasurement && titleParcelMatch(live) ? { key: drawingKey, prepare: async () => {
-        const assets = drawingAssets ?? await generateDrawing(exportMeasurement)
-        if (drawingRevision.current !== drawingKey) throw Error('Placement changed during export.')
-        return assets
-      } } : undefined}
-      onChange={next => {
-      setTitleReference(next)
-      setReadyFor(null)
-      setEmailRequestedFor(null)
-      setWebsiteRequestedFor(null)
-    }} />}
+    {propertySelected && <section className="builder-stage" id="property-scan" aria-labelledby="property-scan-title">
+      <h2 id="property-scan-title" tabIndex={-1}>Preliminary property scan</h2>
+      <button type="button" aria-expanded={journeyStep === 'scan'} aria-controls="property-scan-content"
+        onClick={() => {
+          if (journeyStep !== 'scan') openJourneyStep('scan')
+          else if (propertyFirst && live && !modelReady && !choosingModel && !comparingDetached) {
+            setJourneyStep('property')
+            requestAnimationFrame(() => focusSummaryTarget(document, 'property-options-title', 'start'))
+          } else openJourneyStep(choosingModel || comparingDetached ? 'model' : 'property')
+        }}>
+        {journeyStep === 'scan' ? 'Close property scan' : 'Review property scan'}
+      </button>
+      <div id="property-scan-content" hidden={journeyStep !== 'scan'}>
+        {victoriaCoverage ? <PropertyScan scan={propertyScan} titleReferenceDate={currentTitleReference?.document_date}
+          onTitleReference={mode === 'live' && live ? () => focusSummaryTarget(document, titleReferenceTarget) : undefined}
+          onReviewProjection={modelReady && projectionPilotModel(model) && (mode === 'example' || !!liveCase && mode === 'live') ? reviewPlacementProjection : undefined} /> : <p>Municipal permit and sewer records are outside the available scan coverage for this property.</p>}
+        {mode === 'live' && live && <TitleReferenceEditor key={live.parcel.id} selected={live} value={currentTitleReference}
+          sketch={exportMeasurement && titleParcelMatch(live) ? { key: drawingKey, prepare: async () => {
+            const assets = drawingAssets ?? await generateDrawing(exportMeasurement)
+            if (drawingRevision.current !== drawingKey) throw Error('Placement changed during export.')
+            return assets
+          } } : undefined}
+          onChange={next => {
+            setTitleReference(next)
+            setReadyFor(null)
+            setEmailRequestedFor(null)
+            setWebsiteRequestedFor(null)
+          }} />}
+      </div>
+    </section>}
     {propertyFirst && live && (!modelReady || expanded.property) && <PropertyOptions selected={live} opportunity={housePlan === 'replace' || comparingDetached ? null : opportunity} housePlan={housePlan} onHousePlanChange={next => {
       setHousePlan(next)
       if ((comparingDetached && next === 'keep') || (choosingModel && next === 'replace')) backToPropertyOptions()
     }} zoning={currentZoning} scan={propertyScan.result} onExploreGarden={() => explorePropertyOption('model')} onExploreDetached={() => explorePropertyOption('replacement')} />}
-    {propertySelected && <SewerService scan={propertyScan} address={mode === 'example' ? exampleCase.label : live?.address.label ?? null} intendedUse={use} housePlan={housePlan} detached={comparingDetached} example={mode === 'example'} />}
     {propertyFirst && modelPanel}
     {propertyFirst && openedReplacement && live && <div hidden={!comparingDetached} id={comparingDetached ? 'builder-model' : undefined}><ReplacementPlans key={geometryRevision} selected={live} onBack={backToPropertyOptions} /></div>}
     <section hidden={!propertyComplete} className="builder-stage" id="builder-placement" aria-labelledby="builder-placement-title">
@@ -1503,19 +1525,16 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
             }}>Change intended purpose</button>
             : <IntendedUseControl value={use} onChange={changeIntendedUse} />}
           {!use && <p>You can continue without choosing a purpose.</p>}
-          <FloatingNext active={journeyStep === 'purpose'}><button className="builder-continue" type="button" onClick={() => advanceJourneyStep(zoningCase ? 'checks' : 'enquiry')}>Next: {zoningCase ? 'Review quick checks' : 'Prepare enquiry'}<span aria-hidden="true"> →</span></button></FloatingNext>
+          <FloatingNext active={journeyStep === 'purpose'}><button className="builder-continue" type="button" onClick={() => advanceJourneyStep(zoningCase ? 'checks' : 'enquiry')}>Next: {zoningCase ? 'Review placement checks' : 'Prepare enquiry'}<span aria-hidden="true"> →</span></button></FloatingNext>
         </div>
       </section></EvidenceAtFooter>}
       {mode === 'example' && <ExampleProperty initialDraft={placementSeed} onDraftChange={placementEdited} suggestionContext={suggestionContext} autoSuggest={!playback.state && !estimatePlacementLocks.includes(modelId)} onFailureChange={setGeometryFailure} playbackPosition={playbackStop === 'initial' || playbackStop === 'moved' ? { token: playbackRun!, position: playbackStop === 'initial' ? initialExamplePosition(model) : movedExamplePosition(model) } : undefined} model={model} showPlacementConcerns={journeyStep === 'boundaries'} placementConcerns={placementConcernsPanel} onContinueUnresolved={checksPending ? undefined : continueWithPlacementConcerns} moveSuggestion={moveSuggestion?.geometryRevision === geometryRevision ? moveSuggestion : undefined} evidenceTargetId="builder-geometry-evidence" key={revision} placementContinuation={placementContinuation} placementSummary={summaryPanel} boundaryInteraction={boundaryInteraction} onAssessmentPending={setGeometryPending} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} />}
       {mode === 'live' && modelReady && (liveCase ? <OccupiedLots initialDraft={placementSeed} onDraftChange={placementEdited} suggestionContext={suggestionContext} autoSuggest={!estimatePlacementLocks.includes(modelId)} catalogue={journeyCatalogue} key={revision} showPlacementConcerns={journeyStep === 'boundaries'} placementConcerns={placementConcernsPanel} onContinueUnresolved={checksPending ? undefined : continueWithPlacementConcerns} placementContinuation={placementContinuation} placementSummary={summaryPanel} moveSuggestion={moveSuggestion?.geometryRevision === geometryRevision ? moveSuggestion : undefined} evidenceTargetId="builder-geometry-evidence" compactPlacement suppliedCase={liveCase} boundaryInteraction={boundaryInteraction} allowedModelIds={[MODEL_ID]} initialModelId={MODEL_ID} onAssessmentPending={setGeometryPending} onMeasurement={value => { setMeasurementResult(value); setReadyFor(null) }} showHandoff={false} /> : <p>Select a supported property above to open its captured parcel sketch. Available geometry is approximate and unreviewed.</p>)}
 
-    {zoningCase && <>{victoriaCoverage && <><EvidenceAtFooter targetId="builder-rule-evidence"><section className="builder-placement-results" aria-label="Current placement results">
+    {zoningCase && <>{victoriaCoverage && <EvidenceAtFooter targetId="builder-rule-evidence"><section className="builder-placement-results" aria-label="Current placement results">
       <details className="builder-how-checked"><summary>Candidate rules, assumptions and exact evidence</summary>
         <ConditionalScreen compact result={currentScreening} busy={!!requestKey && conditionalBusy && !currentScreening} error={currentScreeningError} onRetry={() => setConditionalRetry(value => value + 1)} boundaryEvidence={<PlacementScenarios assumptions={currentAssumptions} request={scenarioRequest} result={currentScenario} legalResult={currentScreening} busy={!!scenarioKey && scenarioBusy && !currentScenario} error={currentScenarioError} frontEdge={streetEdge} rearEdge={rearEdge} boundaryMode={boundaryMode} onBoundaryMode={changeBoundaryMode} onRetry={() => setScenarioRetry(value => value + 1)} />} />
-      </details></section></EvidenceAtFooter>
-      <PropertyScan scan={propertyScan} titleReferenceDate={currentTitleReference?.document_date}
-        onTitleReference={mode === 'live' && live ? () => focusSummaryTarget(document, titleReferenceTarget) : undefined}
-        onReviewProjection={projectionPilotModel(model) && (mode === 'example' || !!liveCase && mode === 'live') ? reviewPlacementProjection : undefined} /></>}
+      </details></section></EvidenceAtFooter>}
       <ProjectDetails municipality={currentMunicipality} onMunicipalityChange={changeMunicipality} settings={effectiveSettings} mapped={mappedZoning} lookup={currentZoning} busy={!!zoningKey && zoningBusy && !currentZoning} error={currentZoningError} onRetry={() => setZoningRetry(value => value + 1)} onChange={next => { setProjectSettings(next); if (next.proposal.proposed_use !== projectSettings.proposal.proposed_use) { clearDemoAnswer('intendedUse'); setReviewedPurposeFor(null); setPropertyPurpose(propertyFirst && live ? 'edited' : null); setUse(next.proposal.proposed_use === 'garden_suite' ? 'Garden suite' : next.proposal.proposed_use === 'other' ? 'Other use' : 'Not sure'); } setReadyFor(null) }} />
 </>}
     {selection && <section className="builder-optional" aria-labelledby="builder-optional-title">
@@ -1538,10 +1557,10 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
         onPrepareQuote={id => { switchModel(id); openJourneyStep('enquiry') }} />
     </div>}
     <section hidden={!propertyComplete} className="builder-stage builder-enquiry" id="builder-next" aria-labelledby="builder-enquiry-title">
-      <p className="eyebrow">Take away · local draft</p><h2 id="builder-enquiry-title">Prepare a useful question</h2>
+      <p className="eyebrow">Take away · local draft</p><h2 id="builder-enquiry-title">Prepare enquiry</h2>
       <p>Review your enquiry, then copy it into the provider’s website form or use an email contact you already have. Nothing is sent automatically.</p>
       {enquiryReady && !expanded.next && <p role="status">Enquiry confirmed. You can edit it again; no message has been sent.</p>}
-      <button type="button" aria-expanded={expanded.next} aria-controls="builder-enquiry-content" onClick={() => toggleStep('next')}>{expanded.next ? 'Collapse enquiry' : enquiryReady ? 'Edit enquiry' : 'Review enquiry'}</button>
+      <button type="button" aria-expanded={expanded.next} aria-controls="builder-enquiry-content" onClick={() => expanded.next ? toggleStep('next') : openJourneyStep('enquiry', true)}>{expanded.next ? 'Collapse enquiry' : enquiryReady ? 'Edit enquiry' : 'Review enquiry'}</button>
       <div id="builder-enquiry-content" hidden={!expanded.next}>
       {!hasSite && <p>Add a property or your known site facts above to prepare an unsent enquiry. Your answers stay local to this journey.</p>}
       {hasSite && <><p>Complete the three required fields to prepare your draft. Unknown, Not sure or Prefer not to say are accepted answers. All other fields are optional. These answers stay local until you share the enquiry.</p>
@@ -1554,6 +1573,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
         <datalist id="builder-relationship-options">{['I own the property', 'I am considering buying it', 'I am helping the owner', 'Unknown', 'Prefer not to say'].map(value => <option key={value} value={value} />)}</datalist>
         <label className="builder-required-label" htmlFor="builder-nextStep">What response would be most useful? <span>Required</span></label><input required aria-describedby={contextComplete ? undefined : 'builder-required-help'} className={`builder-required-input${!projectContext.nextStep.trim() ? ' is-missing' : ''}`} id="builder-nextStep" list="builder-response-options" value={projectContext.nextStep} onChange={event => { clearDemoAnswer('nextStep'); setProjectContext(previous => ({ ...previous, nextStep: event.target.value })) }} placeholder="Choose a suggestion or type your answer" />
         <datalist id="builder-response-options">{['Please advise whether this is worth investigating further.', 'I would like to arrange an initial call.', 'Please share standard pricing and inclusions.', 'Unknown', 'Prefer not to say'].map(value => <option key={value} value={value} />)}</datalist>
+        <label htmlFor="builder-sewer-question">Sewer question for the builder (optional)</label><textarea id="builder-sewer-question" value={sewerQuestion} onChange={event => setEditedSewerQuestion(event.target.value)} />
         <label htmlFor="builder-question">Your question for the builder (optional)</label><textarea id="builder-question" value={question} onChange={event => setQuestion(event.target.value)} placeholder="Ask about suitability, next steps or additional costs." />
         <label htmlFor="builder-timing">Possible timing (optional)</label><input id="builder-timing" value={timing} onChange={event => setTiming(event.target.value)} placeholder="e.g. next year; unknown is fine" />
       </div>

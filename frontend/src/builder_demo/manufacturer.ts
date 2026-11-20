@@ -6,7 +6,7 @@ import { screeningCheckTitle } from '../conditional_screening/model'
 import type { ScreeningCheck, Pathway } from '../conditional_screening/model'
 import type { ProjectSettings } from '../conditional_screening/projectSettings'
 import type { PropertyScanResult } from '../conditional_screening/PropertyScan'
-import { sewerEnquiry } from '../conditional_screening/SewerService'
+import { sewerReport, suggestedSewerQuestion } from '../conditional_screening/SewerService'
 import type { SiteAssumptions } from '../zoning_site_assumptions/model'
 import { measurementWithUnit } from '../measurements'
 import { historicalModel300, historicalModelNote } from '../model_catalogue/demo'
@@ -22,6 +22,7 @@ export function housePlanNote(plan: EnquiryInput['housePlan']) {
 }
 
 export type EnquiryInput = {
+  sewerQuestion?: string
   sewerScanFailed?: boolean
   housePlan?: import('./PropertyOptions').HousePlan | null
   municipalResult?: import('../municipal_rules/model').MunicipalResult | null
@@ -188,6 +189,9 @@ export function manufacturerDocument(input: EnquiryInput, address: string | null
   const question = withheld(input.question) ? '' : input.question!.trim()
   const sameRequest = (a: string, b: string) => a.toLowerCase().replace(/\s+/g, ' ').replace(/[.!?]+$/, '') === b.toLowerCase().replace(/\s+/g, ' ').replace(/[.!?]+$/, '')
   const additionalQuestion = next && question && !sameRequest(question, next) && !sameRequest(question, `Could ${model.name} be suitable for this property?`) ? question : null
+  const hasSewerFinding = scan?.sewer !== undefined || input.sewerScanFailed
+  const sewerQuestion = (input.sewerQuestion ?? (hasSewerFinding ? suggestedSewerQuestion(scan?.sewer, input.intendedUse, input.housePlan) : '')).trim()
+  const distinctSewerQuestion = [next, question, input.services.trim()].some(text => sameRequest(text, sewerQuestion)) ? '' : sewerQuestion
   const budgetView = input.budgetDraft ? recipientBudget(input.budgetDraft.draft, input.budgetDraft.context, input.budgetDraft.today) : null
   const budgetLines = budgetView ? [budgetEnquiryParagraph(budgetView.draft, budgetView.result)] : []
   const budgetNext = budgetView ? budgetQuestions(budgetView.draft, budgetView.result, model.name) : []
@@ -217,7 +221,8 @@ export function manufacturerDocument(input: EnquiryInput, address: string | null
       section('Site information', [...placement, ...positivePropertyFindings(scan),
         ...(!measured ? ['No current measured placement is available; the proposed position and delivery access remain to be established.'] : []),
       ], true),
-      ...(scan?.sewer !== undefined || input.sewerScanFailed ? [sewerEnquiry(scan?.sewer ?? null)] : []),
+      ...(hasSewerFinding ? [sewerReport(scan?.sewer ?? null, distinctSewerQuestion)]
+        : distinctSewerQuestion ? [section('Sewer connection', [distinctSewerQuestion], true)] : []),
       ...(sketchAvailable ? [section('Placement sketch', ['I have an approximate proposed placement sketch available. Please let me know the best way to share it.'], true)] : []),
     ],
     closing: input.contact?.trim() || 'Thank you.',

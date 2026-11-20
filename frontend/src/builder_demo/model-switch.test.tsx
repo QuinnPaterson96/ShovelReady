@@ -138,10 +138,11 @@ test('switching models recovers independent questions, placements and costs with
         if (document.querySelector('dialog[open]')) await click('I’m not sure—continue')
         await act(async () => { await new Promise(resolve => setTimeout(resolve, 20)) })
         assert.equal(document.activeElement?.id, 'builder-quick-checks-title')
+        await click('Review property scan')
         const projectionAction = [...document.querySelectorAll<HTMLButtonElement>('#property-scan button')]
           .find(button => button.textContent?.includes('Check eave clearance in placement'))
         assert.ok(projectionAction, 'the Projections row offers its placement action')
-        assert.equal(projectionAction.closest('[hidden]'), null, 'the action is visible from Checks')
+        assert.equal(projectionAction.closest('[hidden]'), null, 'the action is visible in the property scan')
         await act(async () => projectionAction.click())
         await act(async () => { await new Promise(resolve => setTimeout(resolve, 20)) })
         assert.equal(document.activeElement?.id, 'placement-projections')

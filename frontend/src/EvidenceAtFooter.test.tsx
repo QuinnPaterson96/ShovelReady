@@ -16,7 +16,7 @@ test('journey section follows a late and replaced map destination', async () => 
   const root = createRoot(dom.window.document.getElementById('root')!)
   const render = (map: boolean, revision: number) => <>
     <EvidenceAtFooter targetId="purpose-slot"><section id="purpose">Purpose</section></EvidenceAtFooter>
-    {map && <div key={revision} id="map"><div id="facts">Property details</div><div id="purpose-slot" /><div id="checks">Quick checks</div></div>}
+    {map && <div key={revision} id="map"><div id="facts">Property details</div><div id="purpose-slot" /><div id="checks">Placement checks</div></div>}
   </>
   const settle = () => new Promise(resolve => setTimeout(resolve, 0))
   try {
