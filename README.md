@@ -41,7 +41,7 @@ ShovelReady explores a practical question: **given a prefabricated building desi
 The current commercial POC is a screening journey for a prefab builder's website:
 help a visitor explore a model on their property and prepare a useful enquiry. The
 main demo uses **aux box Model 240, Bath + Kitchen**, on a saved Victoria
-property. From a mapped address, choose **Replace it** to compare three Pacific Homes detached plans against the lot shape and retained rooflines. Choose **Keep it** to explore a garden-suite model. Own-property exploration includes mapped placement in Victoria and
+property. From a mapped address, choose **Replace it** and **Compare detached plans** to compare three Pacific Homes plans against the lot shape and retained rooflines. **Explore a garden suite** carries Garden suite into the editable purpose step, preliminary planning checks and enquiry. Keep it, Replace it and Still exploring describe the existing house. Own-property exploration includes mapped placement in Victoria and
 Saanich, with different preliminary comparisons in each municipality.
 [Model 300’s October 2026 example](https://www.shovelready.ca/#examples/model-300)
 remains available with its captured dimensions and prices. See the [builder screening brief](docs/builder-screening-demo.md)

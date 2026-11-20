@@ -290,6 +290,9 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const [scoutingHeight, setScoutingHeight] = useState<{ key: string; value: number | null } | null>(null)
   const [revision, setRevision] = useState(0)
   const [use, setUse] = useState('')
+  const [propertyPurpose, setPropertyPurpose] = useState<'captured' | 'edited' | null>(null)
+  const [editingPurpose, setEditingPurpose] = useState(false)
+  const showCapturedPurpose = propertyPurpose === 'captured' && !editingPurpose
   const [rentalInterest, setRentalInterest] = useState<RentalInterest>(null)
   const [economicsOpen, setEconomicsOpen] = useState(false)
   const [timelineOpen, setTimelineOpen] = useState(false)
@@ -417,14 +420,20 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     setEstimateBuffers({ area: 10, height: 10 }); setScoutingHeight(null)
   }
   function clearDemoAnswer(key: 'intendedUse' | 'relationship' | 'nextStep' | 'streetContext') { setDemoAnswers(previous => { const next = { ...previous }; delete next[key]; return next }) }
-  function changeIntendedUse(value: string, demo = false) {
-    if (!demo) clearDemoAnswer('intendedUse')
+  function changeIntendedUse(value: string, source: 'edit' | 'demo' | 'garden_path' | 'leave_path' = 'edit') {
+    if (source !== 'demo') clearDemoAnswer('intendedUse')
+    setPropertyPurpose(source === 'garden_path' ? 'captured' : source === 'edit' && propertyFirst && live ? 'edited' : null)
+    if (source === 'garden_path') setEditingPurpose(false)
     if (value !== use) setReviewedPurposeFor(null)
     setUse(value)
     setProjectSettings(previous => applyIntendedUse(previous, value))
     setReadyFor(null)
   }
-  function siteEdited() { setOpenedReplacement(false); setPropertyStage('options'); setHousePlan(null); resetPropertyAlternatives(); const retainedUse = demoAnswers?.intendedUse === use ? '' : use; setUse(retainedUse); setGeometryFailure(false); setDemoAnswers({}); setStreetDecisionFor(null); setStreetSkipTarget(null); setChecksRevealed(false); setBufferSuggestion(undefined); setMoveSuggestion(undefined); setAcknowledgedConflicts([]); setSelection(null); setImported(false); setMeasurementResult(null); setSiteAssumptions(null); setProjectSettings(applyIntendedUse(modelProjectSettings(model), retainedUse)); setGeometryPending(false); setAccess(''); setServices(''); setProjectContext(previous => ({ ...previous, relationship: '', nextStep: '' })); setWaterfrontMarks(null); setDrawingExport(null); setStreetMarks({ revision: null, data: { edge_ids: [], all_marked: false, origin: 'user' } }); setRearEdge(null); setSelectedBoundary(null); setBoundaryMark(null); setMarkingRole(null); setBoundaryMode('place'); setReadyFor(null); setRevision(value => value + 1) }
+  function siteEdited() {
+    const retainedUse = propertyPurpose || demoAnswers?.intendedUse === use ? '' : use
+    setPropertyPurpose(null); setEditingPurpose(false); setReviewedPurposeFor(null)
+    setOpenedReplacement(false); setPropertyStage('options'); setHousePlan(null); resetPropertyAlternatives(); setUse(retainedUse); setGeometryFailure(false); setDemoAnswers({}); setStreetDecisionFor(null); setStreetSkipTarget(null); setChecksRevealed(false); setBufferSuggestion(undefined); setMoveSuggestion(undefined); setAcknowledgedConflicts([]); setSelection(null); setImported(false); setMeasurementResult(null); setSiteAssumptions(null); setProjectSettings(applyIntendedUse(modelProjectSettings(model), retainedUse)); setGeometryPending(false); setAccess(''); setServices(''); setProjectContext(previous => ({ ...previous, relationship: '', nextStep: '' })); setWaterfrontMarks(null); setDrawingExport(null); setStreetMarks({ revision: null, data: { edge_ids: [], all_marked: false, origin: 'user' } }); setRearEdge(null); setSelectedBoundary(null); setBoundaryMark(null); setMarkingRole(null); setBoundaryMode('place'); setReadyFor(null); setRevision(value => value + 1)
+  }
   function changeMode(next: typeof mode) {
     if (next !== 'example' && window.location.hash.startsWith('#examples/')) window.history.replaceState(null, '', '#assessment')
     if (mode === 'manual' && next === 'live') manualMunicipality.current = currentMunicipality
@@ -879,7 +888,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     if (playbackStop === 'result') {
       setStreetDecisionFor(geometryRevision) // Deliberately unknown; no street roles supplied.
       setDemoAnswers(demoEnquiryAnswers)
-      changeIntendedUse(demoEnquiryAnswers.intendedUse, true)
+      changeIntendedUse(demoEnquiryAnswers.intendedUse, 'demo')
       setProjectSettings(previous => {
         const next = applyIntendedUse(previous, demoEnquiryAnswers.intendedUse)
         return { ...next, evidence: { ...next.evidence, proposed_use: { ...next.evidence.proposed_use, origin: 'demo_supplied', note: 'Garden suite is a demo-supplied scenario, not an inferred property fact.' } } }
@@ -1039,7 +1048,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     : nextJourneyStep === 'streets' ? { label: 'Mark street edges', hint: 'Position saved. Next, mark the street edges you know, or choose Not sure.' }
     : nextJourneyStep === 'boundaries' ? { label: 'Review boundaries', hint: 'Review suggested boundary roles and buffers, or leave uncertain roles unknown. Save any buffer edits before continuing.' }
     : nextJourneyStep === 'details' ? { label: 'Review property details', hint: 'Next, answer the property questions you know. You can leave the rest unknown.' }
-    : nextJourneyStep === 'purpose' ? { label: 'Intended purpose', hint: 'Next, choose how you would use the unit, or keep Not sure.' }
+    : nextJourneyStep === 'purpose' ? { label: 'Intended purpose', hint: use ? 'Next, review how you plan to use the unit.' : 'Next, choose how you would use the unit, or keep Not sure.' }
     : nextJourneyStep === 'budget' ? { label: 'Review project economics', hint: 'See a starting cost estimate and optionally explore rental income.' }
     : { label: 'Review quick checks', hint: 'Next, review what looks promising and which questions to include in your enquiry.' }
   const mapConcerns = findings.filter(check => check.status === 'conflict' && ['Distance to boundaries', 'Distance from the main building', 'Front boundary distance', 'Located behind the main building', 'Share of the rear yard'].includes(check.label))
@@ -1091,6 +1100,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     if (!answered && zoningCase && ['boundaries', 'details', 'purpose', 'checks', 'budget', 'enquiry', 'email'].includes(step) && !hasStreetAnswer) { setStreetSkipTarget(step); return }
     if (!propertyComplete && step !== 'model' && step !== 'property') step = 'property'
     if (!zoningCase && (step === 'streets' || step === 'boundaries' || step === 'details')) step = 'placement'
+    setEditingPurpose(false)
     setJourneyStep(step)
     if (step === 'checks') setChecksRevealed(true)
     if (step === 'streets') changeBoundaryMode('front')
@@ -1124,7 +1134,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     }
     const targets: Record<Exclude<JourneyStep, 'property' | 'model'>, string> = {
       placement: zoningCase ? 'builder-placement-map-title' : 'builder-placement-title', streets: 'placement-action-front',
-      boundaries: 'placement-action-rear', details: 'building-type', purpose: 'builder-intended-use',
+      boundaries: 'placement-action-rear', details: 'building-type', purpose: propertyPurpose === 'captured' ? 'builder-purpose-title' : 'builder-intended-use',
       checks: 'builder-quick-checks-title', budget: 'builder-budget-title', enquiry: 'builder-enquiry-title',
       email: contextComplete ? 'builder-provider-website' : 'builder-contact-context',
     }
@@ -1309,12 +1319,17 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     <p className="metadata">Model questions, placements, configuration and budget drafts stay in this open assessment. Changing property starts fresh placements and estimates. Reloading clears the current assessment. If a recovery copy was saved, you can recover the prepared enquiry text in this tab.</p>
   </>
   function backToPropertyOptions() {
+    if (propertyPurpose === 'captured') changeIntendedUse('', 'leave_path')
     setPropertyStage('options')
     setJourneyStep('property')
   }
   function explorePropertyOption(next: 'model' | 'replacement') {
+    if (next === 'model' && !use && propertyPurpose !== 'edited') changeIntendedUse('Garden suite', 'garden_path')
     if (next === 'model' && modelReady) { openJourneyStep('placement'); return }
-    if (next === 'replacement') setOpenedReplacement(true)
+    if (next === 'replacement') {
+      if (propertyPurpose === 'captured') changeIntendedUse('', 'leave_path')
+      setOpenedReplacement(true)
+    }
     if (next === 'replacement' && modelReady) {
       setPlacementSeed(placementDraft)
       setMeasurementResult(null)
@@ -1436,12 +1451,17 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
       {mode === 'manual' && <p>Your manual sketch and placement controls are in Property. Reopen that step to adjust them.</p>}
 
       {hasSite && <EvidenceAtFooter targetId={zoningCase ? 'intended-purpose-below-map' : undefined}><section className="builder-stage" id="builder-purpose" aria-labelledby="builder-purpose-title" hidden={!['purpose', 'checks', 'enquiry', 'email'].includes(journeyStep)}>
-        <h3 id="builder-purpose-title">Intended purpose</h3>
-        <p>{use || 'Not answered yet. You can choose Not sure.'}</p>
+        <h3 id="builder-purpose-title" tabIndex={-1}>Intended purpose</h3>
+        {(journeyStep !== 'purpose' || showCapturedPurpose) && <p>{use || 'Not answered yet. You can choose Not sure.'}</p>}
         {journeyStep !== 'purpose' && <button type="button" onClick={() => openJourneyStep('purpose')}>Review intended purpose</button>}
         <div hidden={journeyStep !== 'purpose'}>
-          <IntendedUseControl value={use} onChange={changeIntendedUse} />
-          <p>Choose an intended use if known, or keep Not sure or unanswered and continue. Dependent planning checks remain unresolved.</p>
+          {showCapturedPurpose
+            ? <button type="button" onClick={() => {
+              setEditingPurpose(true)
+              requestAnimationFrame(() => focusSummaryTarget(document, 'builder-intended-use'))
+            }}>Change intended purpose</button>
+            : <IntendedUseControl value={use} onChange={changeIntendedUse} />}
+          {!use && <p>You can continue without choosing a purpose.</p>}
           <FloatingNext active={journeyStep === 'purpose'}><button className="builder-continue" type="button" onClick={() => advanceJourneyStep(zoningCase ? 'checks' : 'enquiry')}>Next: {zoningCase ? 'Review quick checks' : 'Prepare enquiry'}<span aria-hidden="true"> →</span></button></FloatingNext>
         </div>
       </section></EvidenceAtFooter>}
@@ -1453,7 +1473,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
         <ConditionalScreen compact result={currentScreening} busy={!!requestKey && conditionalBusy && !currentScreening} error={currentScreeningError} onRetry={() => setConditionalRetry(value => value + 1)} boundaryEvidence={<PlacementScenarios assumptions={currentAssumptions} request={scenarioRequest} result={currentScenario} legalResult={currentScreening} busy={!!scenarioKey && scenarioBusy && !currentScenario} error={currentScenarioError} frontEdge={streetEdge} rearEdge={rearEdge} boundaryMode={boundaryMode} onBoundaryMode={changeBoundaryMode} onRetry={() => setScenarioRetry(value => value + 1)} />} />
       </details></section></EvidenceAtFooter>
       <PropertyScan scan={propertyScan} /></>}
-      <ProjectDetails municipality={currentMunicipality} onMunicipalityChange={changeMunicipality} settings={effectiveSettings} mapped={mappedZoning} lookup={currentZoning} busy={!!zoningKey && zoningBusy && !currentZoning} error={currentZoningError} onRetry={() => setZoningRetry(value => value + 1)} onChange={next => { setProjectSettings(next); if (next.proposal.proposed_use !== projectSettings.proposal.proposed_use) { clearDemoAnswer('intendedUse'); setReviewedPurposeFor(null); setUse(next.proposal.proposed_use === 'garden_suite' ? 'Garden suite' : next.proposal.proposed_use === 'other' ? 'Other use' : 'Not sure'); } setReadyFor(null) }} />
+      <ProjectDetails municipality={currentMunicipality} onMunicipalityChange={changeMunicipality} settings={effectiveSettings} mapped={mappedZoning} lookup={currentZoning} busy={!!zoningKey && zoningBusy && !currentZoning} error={currentZoningError} onRetry={() => setZoningRetry(value => value + 1)} onChange={next => { setProjectSettings(next); if (next.proposal.proposed_use !== projectSettings.proposal.proposed_use) { clearDemoAnswer('intendedUse'); setReviewedPurposeFor(null); setPropertyPurpose(propertyFirst && live ? 'edited' : null); setUse(next.proposal.proposed_use === 'garden_suite' ? 'Garden suite' : next.proposal.proposed_use === 'other' ? 'Other use' : 'Not sure'); } setReadyFor(null) }} />
 </>}
     {selection && <section className="builder-optional" aria-labelledby="builder-optional-title">
       <p className="eyebrow">Optional placement</p><h2 id="builder-optional-title">Import a retained example only if useful</h2>

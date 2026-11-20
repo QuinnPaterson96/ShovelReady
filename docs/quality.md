@@ -1,5 +1,22 @@
 # Quality engineering agreement
 
+## Property-first intended purpose
+
+The connected placement browser check follows **Explore a garden suite** through
+model selection, the purpose summary, municipal comparisons and the unsent
+enquiry. It continues from the captured answer on desktop and uses the keyboard
+to open the editor at 390 px. Changing the answer to Home office withdraws
+garden-suite comparisons and updates the enquiry. The edit survives a detour
+through detached plans on the same parcel. Selecting another property starts a
+fresh purpose, and the house preference remains a separate enquiry answer.
+
+Local verification used the production frontend build, Chromium and the
+stateless FastAPI demo. Discovery replayed captured records at the provider
+boundary. Placement and planning requests used the local API. The saved-demo
+walkthrough and 211 frontend tests, including direct model routes, also passed.
+The browser checks establish software behavior. Homeowner comprehension and
+independent review of candidate municipal rules remain open.
+
 ## Property-first detached plan comparison
 
 The connected placement browser check starts at Home and compares plans on
