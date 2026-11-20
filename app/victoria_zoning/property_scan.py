@@ -12,7 +12,16 @@ from shapely.errors import GEOSException
 from app.municipal_sites.api import ParcelRef
 from app.spatial.geometry import xy_polygon
 
-from .api import PARCEL, SourceFailure, SourceRecord, StrictModel, _query
+from .api import (
+    MAX_FEATURES,
+    PARCEL,
+    SourceFailure,
+    SourceRecord,
+    SourceTruncated,
+    StrictModel,
+    _query,
+)
+from .permit_records import PermitRecords, permit_records
 from .sewer import SewerResult, scan_sewer
 
 ROOT = "https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer"
@@ -47,6 +56,7 @@ class ScanResult(StrictModel):
     findings: list[ScanFinding]
     parcel_source: SourceRecord | None
     sewer: SewerResult
+    permit_records: PermitRecords
     limitations: tuple[str, ...] = (
         "Only the listed City map layers and linked application-history table were searched.",
         "No mapped records is not proof that no conditions or variances apply.",
@@ -92,6 +102,9 @@ def scan(request: ScanRequest):
                 status="unavailable",
                 detail="The selected City parcel could not be confirmed for the sewer map check.",
             ),
+            permit_records=PermitRecords(
+                status="unavailable", detail="Permit history lookup needs a matched City parcel."
+            ),
             findings=[
                 ScanFinding(
                     label=label,
@@ -107,17 +120,21 @@ def scan(request: ScanRequest):
     def query_layer(item):
         layer, label, fields = item
         params = {"outFields": fields, "returnGeometry": "false"}
+        link = attributes.get("GISLINK")
         if layer == 18:
-            link = str(attributes.get("GISLINK", ""))
-            if not re.fullmatch(r"[A-Za-z0-9-]{1,40}", link):
-                return ScanFinding(
-                    label=label,
-                    status="unknown",
-                    records=[],
-                    source=None,
-                    detail="No usable parcel-to-history link was supplied.",
+            if not isinstance(link, str) or not re.fullmatch(r"[A-Za-z0-9-]{1,40}", link):
+                detail = "The City parcel has no usable link to its application history."
+                return (
+                    ScanFinding(
+                        label=label, status="unknown", records=[], source=None, detail=detail
+                    ),
+                    PermitRecords(status="unavailable", detail=detail),
                 )
-            params["where"] = f"gislink='{link}'"
+            params.update(
+                where=f"gislink='{link}'",
+                orderByFields="OBJECTID ASC",
+                resultRecordCount=MAX_FEATURES,
+            )
         else:
             params.update(
                 geometry=json.dumps({"spatialReference": {"wkid": 3157}, **raw}),
@@ -132,7 +149,7 @@ def scan(request: ScanRequest):
                 isinstance(row, dict) and type(row.get("OBJECTID")) is int for row in records
             ):
                 raise SourceFailure("source record identity missing")
-            return ScanFinding(
+            finding = ScanFinding(
                 label=label,
                 status="review" if records else "probably_clear",
                 records=records,
@@ -142,21 +159,34 @@ def scan(request: ScanRequest):
                 else "No records found in this searched City layer; "
                 "probably clear within this scope only.",
             )
+            return finding, permit_records(link, records, source) if layer == 18 else None
         except (SourceFailure, KeyError, TypeError) as exc:
-            return ScanFinding(
+            finding = ScanFinding(
                 label=label,
                 status="unknown",
                 records=[],
                 source=None,
                 detail=f"Source unavailable or incomplete: {exc}",
             )
+            if layer != 18:
+                return finding, None
+            if isinstance(exc, SourceTruncated):
+                return finding, PermitRecords(
+                    status="truncated",
+                    detail="Application history reached the lookup limit. "
+                    "Ask City Planning for the full history.",
+                )
+            return finding, PermitRecords(
+                status="unavailable", detail="The City application history lookup is unavailable."
+            )
 
     with ThreadPoolExecutor(max_workers=4) as pool:
         sewer = pool.submit(scan_sewer, attributes, parcel)
-        findings = list(pool.map(query_layer, LAYERS))
+        results = list(pool.map(query_layer, LAYERS))
     return ScanResult(
         parcel_ref=request.parcel_ref,
         parcel_source=parcel_source,
-        findings=findings,
+        findings=[finding for finding, _ in results],
+        permit_records=next(records for _, records in results if records is not None),
         sewer=sewer.result(),
     )

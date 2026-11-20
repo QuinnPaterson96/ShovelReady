@@ -107,6 +107,10 @@ class SourceFailure(Exception):
     pass
 
 
+class SourceTruncated(SourceFailure):
+    pass
+
+
 def _query(
     layer: str,
     params: dict[str, Any],
@@ -125,8 +129,10 @@ def _query(
         if len(raw) > MAX_BYTES:
             raise SourceFailure("provider response too large")
         value = json.loads(raw)
-        if not isinstance(value, dict) or value.get("error") or value.get("exceededTransferLimit"):
+        if not isinstance(value, dict) or value.get("error"):
             raise SourceFailure("provider query failed or exceeded transfer limit")
+        if value.get("exceededTransferLimit"):
+            raise SourceTruncated("provider query failed or exceeded transfer limit")
         if params.get("returnIdsOnly") == "true":
             ids = value.get("objectIds")
             if not isinstance(ids, list) or any(type(oid) is not int for oid in ids):
@@ -135,8 +141,10 @@ def _query(
                 raise SourceFailure("provider object identities are duplicated")
         else:
             rows = value.get("features")
-            if not isinstance(rows, list) or len(rows) >= MAX_FEATURES:
+            if not isinstance(rows, list):
                 raise SourceFailure("provider feature count unavailable or excessive")
+            if len(rows) >= MAX_FEATURES:
+                raise SourceTruncated("provider feature count unavailable or excessive")
             if params.get("returnGeometry") != "false":
                 spatial_reference = value.get("spatialReference")
                 if not isinstance(spatial_reference, dict) or spatial_reference.get("wkid") != 3157:

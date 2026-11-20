@@ -89,6 +89,16 @@ All responses retained the need for demand-specific confirmation. These are date
 public observations. The isolated regressions use controlled City responses so CI
 can exercise the same distinctions and source failure without relying on live maps.
 
+A local Chrome check opened the saved 419 Cecelia example at 390 px and 1440 px,
+read the live mapped result, opened the Engineering email draft by keyboard and
+selected Garden suite. From Prepare enquiry it downloaded the ZIP and checked the
+manufacturer message, supporting report and technical JSON. Both widths preserved
+the sanitary finding and lateral 2420. Nothing was sent. Run the focused backend
+checks with `uv run --locked pytest tests/test_victoria_zoning_api.py`. From
+`frontend/`, `npm test` exercises the scan-to-handoff regression and
+`npm run build` checks the production bundle. The PR records final-head CI and
+independent verification on the merged revision.
+
 ## Review and expansion
 
 | Open question | Practical impact and owner |
