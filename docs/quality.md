@@ -618,3 +618,10 @@ estimate return focus. Final combined and exact-merge results belong in the PR
 handoff. Physical-device keyboards, actual screen-reader speech and homeowner
 comprehension remain separate engineering/research follow-ups. No source review,
 accepted-data publication, database change or provider contact is implied.
+
+## Victoria sanitary sewer pilot
+
+The [service verification record](victoria-sanitary-sewer.md) covers live selected
+parcels, wrong-parcel and ambiguous associations, scoped empty results and source
+failure. It also identifies the proposed independent drawing comparison and
+homeowner comprehension check before expanding service coverage.

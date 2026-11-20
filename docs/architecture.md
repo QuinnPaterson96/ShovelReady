@@ -526,7 +526,11 @@ fixed City heritage/conservation/DPA/special-restriction/application/history sou
 using the selected parcel polygon and its GISLINK history join. Bounded failures,
 missing joins and truncated responses remain unknown; records require review.
 Successful empty searches are probably clear only within that searched scope.
-Issued permit documents, title covenants, projections and servicing are not scanned.
+The same response carries a separate [Victoria sanitary sewer observation](victoria-sanitary-sewer.md).
+The parcel's GISLINK links to the City's lateral TaxParcel field. Planning-flag
+counts exclude this service observation. Capacity for the proposed dwelling
+requires a demand-specific answer from City Engineering.
+Issued permit documents, title covenants and projections remain outside the lookup.
 The UI retains these as separate review gaps and links the City's records portals.
 No new dataset release or accepted source interpretation is published. Saved Parcel
 87 also receives the current zoning lookup; manual sketches receive no invented zone.
