@@ -1,5 +1,25 @@
 # Quality engineering agreement
 
+## Property-first detached plan comparison
+
+The connected placement browser check starts at Home and compares plans on
+captured Victoria and Saanich parcels. It checks that property options remain
+above each picker, that changing the address clears the detached selection, and
+that returning to the same parcel retains it. On the captured May Street lot,
+removing the assumed house produced trial positions for Concord, Everest and
+Sedona. Keeping every mapped roof left a trial position for Concord only.
+The user can still inspect each plan and its manufacturer specifications.
+
+Geometry tests use equal-area lots of different shapes, a rotated narrow lot,
+a retained building, a parcel hole and a concave notch. The rendering check
+covers partial roof capture. A separate seeded comparison of 120 trial sites
+with Shapely checked containment and the reported distances on the tested
+positions. The search samples a finite set of positions and orientations.
+A missed position can be discussed with a designer. A provider should confirm
+the detailed footprint and projections. The local planning team needs a
+detached rule package for any future regulatory assessment. Homeowner testing
+of how people use the two shortlist cues remains open.
+
 ## Property-first garden-suite entry
 
 The placement browser journey starts from Home, inspects the selected parcel

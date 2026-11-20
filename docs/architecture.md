@@ -1,14 +1,18 @@
 # Architecture direction
 
-## A mapped property can be explored before choosing a model
+## A mapped property leads to garden-suite or replacement-home exploration
 
 ```mermaid
 flowchart LR
     A[SiteDiscovery] -->|attributed parcel and rooflines| B[PropertyOptions]
     C[Victoria zoning and map observations] -->|mapped facts| B
     D[Saanich property opportunity] -->|parcel area and local rule source| B
-    B -->|selected parcel and optional house plan| E[Choose a model]
+    B -->|Explore a garden suite| E[Garden-suite model picker]
     E -->|Try this model| F[Existing placement and enquiry]
+    B -->|Compare detached plans| G[ReplacementPlans]
+    H[Pacific Homes plan dimensions] --> G
+    G -->|Parcel, retained rooflines and plan rectangles| I[Sample positions and rotations]
+    I -->|Trial positions and measured gaps| G
 ```
 
 An ordinary address search keeps its selected parcel through the options and
@@ -17,6 +21,20 @@ open. The optional keep/replace preference belongs to the parcel and follows the
 enquiry. A changed parcel clears the preference and any findings from its
 predecessor. Model-linked entries, saved examples and manual sketches retain
 their existing paths.
+
+The address-first journey displays the active picker below the property options.
+Choosing Replace it opens the detached-plan path. Still exploring offers both
+paths. The detached comparison uses the published width and depth of each plan
+and the mapped outline the visitor expects to remove. Where the map identifies a single largest roof on the lot, it serves as an
+editable starting assumption. Otherwise the trial starts with all roofs retained. The source observation stays
+intact when that assumption changes. The search samples translations along the
+cardinal and parcel-edge axes and tests both orientations of the plan rectangle.
+It reports the smallest distance to any lot edge, hole or retained roof at a
+sampled position. Incomplete roof coverage yields a partial comparison. A
+sampled position can guide a provider
+conversation about the plan. Detached zoning, demolition, access and costs
+require separate evidence. The detached catalogue and ranks are local to this
+comparison and do not enter the garden-suite evaluator or its enquiry.
 
 The Saanich parcel-only endpoint compares projected parcel area with the current
 candidate garden-suite lot-area rule. Its result identifies the selected source

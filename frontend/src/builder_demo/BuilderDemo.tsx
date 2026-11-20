@@ -24,6 +24,7 @@ import { invalidMunicipalInput, municipalInputs, municipalRequest, municipalSumm
 import type { Confirmed } from '../site_discovery/flow'
 import { SelectedProperty } from '../site_discovery/SelectedProperty'
 import { parcelRecord } from '../site_discovery/parcelComparison'
+import { ReplacementPlans } from '../replacement/ReplacementPlans'
 import { PropertyOptions, type HousePlan } from './PropertyOptions'
 import { usePropertyOpportunity } from '../municipal_rules/propertyOpportunity'
 import { placementCase } from '../site_discovery/placement'
@@ -222,12 +223,14 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const [propertyReset, setPropertyReset] = useState(0)
   const [propertyInspect, setPropertyInspect] = useState(0)
   const [live, setLive] = useState<Confirmed | null>(null)
-  const [propertyStage, setPropertyStage] = useState<'options' | 'model' | 'assessment'>('options')
+  const [propertyStage, setPropertyStage] = useState<'options' | 'model' | 'replacement' | 'assessment'>('options')
+  const [openedReplacement, setOpenedReplacement] = useState(false)
   const [housePlan, setHousePlan] = useState<HousePlan | null>(null)
   const enteredAtModel = useRef(landing === 'model')
   const modelLinked = !entryRequest?.example && (!!entryRequest?.modelId || enteredAtModel.current)
   const propertyFirst = mode === 'live' && !modelLinked
   const choosingModel = propertyFirst && !!live && propertyStage === 'model'
+  const comparingDetached = propertyFirst && !!live && propertyStage === 'replacement'
   const modelReady = !propertyFirst || propertyStage === 'assessment'
   const [municipality, setMunicipality] = useState<MunicipalityContext | null>(null)
   const observedMunicipality = mode === 'example' ? savedExampleMunicipality() : live ? municipalityFromProperty(live) : null
@@ -421,7 +424,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     setProjectSettings(previous => applyIntendedUse(previous, value))
     setReadyFor(null)
   }
-  function siteEdited() { setPropertyStage('options'); setHousePlan(null); resetPropertyAlternatives(); const retainedUse = demoAnswers?.intendedUse === use ? '' : use; setUse(retainedUse); setGeometryFailure(false); setDemoAnswers({}); setStreetDecisionFor(null); setStreetSkipTarget(null); setChecksRevealed(false); setBufferSuggestion(undefined); setMoveSuggestion(undefined); setAcknowledgedConflicts([]); setSelection(null); setImported(false); setMeasurementResult(null); setSiteAssumptions(null); setProjectSettings(applyIntendedUse(modelProjectSettings(model), retainedUse)); setGeometryPending(false); setAccess(''); setServices(''); setProjectContext(previous => ({ ...previous, relationship: '', nextStep: '' })); setWaterfrontMarks(null); setDrawingExport(null); setStreetMarks({ revision: null, data: { edge_ids: [], all_marked: false, origin: 'user' } }); setRearEdge(null); setSelectedBoundary(null); setBoundaryMark(null); setMarkingRole(null); setBoundaryMode('place'); setReadyFor(null); setRevision(value => value + 1) }
+  function siteEdited() { setOpenedReplacement(false); setPropertyStage('options'); setHousePlan(null); resetPropertyAlternatives(); const retainedUse = demoAnswers?.intendedUse === use ? '' : use; setUse(retainedUse); setGeometryFailure(false); setDemoAnswers({}); setStreetDecisionFor(null); setStreetSkipTarget(null); setChecksRevealed(false); setBufferSuggestion(undefined); setMoveSuggestion(undefined); setAcknowledgedConflicts([]); setSelection(null); setImported(false); setMeasurementResult(null); setSiteAssumptions(null); setProjectSettings(applyIntendedUse(modelProjectSettings(model), retainedUse)); setGeometryPending(false); setAccess(''); setServices(''); setProjectContext(previous => ({ ...previous, relationship: '', nextStep: '' })); setWaterfrontMarks(null); setDrawingExport(null); setStreetMarks({ revision: null, data: { edge_ids: [], all_marked: false, origin: 'user' } }); setRearEdge(null); setSelectedBoundary(null); setBoundaryMark(null); setMarkingRole(null); setBoundaryMode('place'); setReadyFor(null); setRevision(value => value + 1) }
   function changeMode(next: typeof mode) {
     if (next !== 'example' && window.location.hash.startsWith('#examples/')) window.history.replaceState(null, '', '#assessment')
     if (mode === 'manual' && next === 'live') manualMunicipality.current = currentMunicipality
@@ -740,18 +743,19 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     if (!live || !propertyFirst || modelReady) return
     const frame = requestAnimationFrame(() => {
       if (!journeyVisible.current) return
-      if (choosingModel) focusAssessmentField('builder-model-choice')
+      if (comparingDetached) focusSummaryTarget(document, 'replacement-plans-title', 'start')
+      else if (choosingModel) focusAssessmentField('builder-model-choice')
       else focusSummaryTarget(document, 'property-options-title', 'start')
     })
     return () => cancelAnimationFrame(frame)
-  }, [live, propertyFirst, modelReady, choosingModel])
+  }, [live, propertyFirst, modelReady, choosingModel, comparingDetached])
   const placementComplete = !!(measurementResult || mode === 'manual' && manual?.assessment)
   const previousPropertyComplete = useRef(false)
   useEffect(() => {
     if (!playbackLayoutRef.current && propertyComplete && !previousPropertyComplete.current) { setExpanded({ property: false, placement: true, next: false, email: false }); setJourneyStep('placement') }
-    if (!propertyComplete && previousPropertyComplete.current) { setExpanded({ property: true, placement: false, next: false, email: false }); setJourneyStep('property') }
+    if (!propertyComplete && previousPropertyComplete.current && !comparingDetached) { setExpanded({ property: true, placement: false, next: false, email: false }); setJourneyStep('property') }
     previousPropertyComplete.current = propertyComplete
-  }, [propertyComplete])
+  }, [propertyComplete, comparingDetached])
   useEffect(() => {
     if (!playbackLayoutRef.current && journeyStep === 'placement' && propertyComplete) requestAnimationFrame(() => { if (!playbackLayoutRef.current && journeyVisible.current) focusJourneyStep('placement') })
   }, [journeyStep, propertyComplete])
@@ -1102,15 +1106,18 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   function focusJourneyStep(step: JourneyStep) {
     if (step === 'property') {
       if (live && propertyFirst && !modelReady && !expanded.property) {
-        if (choosingModel) focusAssessmentField('builder-model-choice')
-        else focusSummaryTarget(document, 'property-options-title', 'start')
+        focusSummaryTarget(document, 'property-options-title', 'start')
         return
       }
       const focused = mode === 'manual' ? focusAssessmentField('manual-address', 'center') : focusAssessmentField('sd-address')
       if (!focused) focusSummaryTarget(document, 'builder-property-title', 'start', 'instant')
       return
     }
-    if (step === 'model') { focusAssessmentField('builder-model-choice'); return }
+    if (step === 'model') {
+      if (comparingDetached) focusSummaryTarget(document, 'replacement-plans-title', 'start')
+      else focusAssessmentField('builder-model-choice')
+      return
+    }
     if (step === 'checks') {
       const details = builder.current?.querySelector<HTMLDetailsElement>('.homeowner-summary__checks')
       if (details) details.open = true
@@ -1160,8 +1167,8 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const progressCallback = useRef(onProgressChange)
   progressCallback.current = onProgressChange
   // Commit the assessment rail before a takeover measures its destination.
-  useLayoutEffect(() => { progressCallback.current?.({ walkthroughActive: playbackActive, reviewReadiness, checksAvailable: checksRevealed, propertyFirst: propertyFirst && !modelReady, choosingModel,
-    model: modelReady, property: propertyComplete, placement: placementComplete, streets: !!geometryRevision && hasStreetAnswer, boundaries: reviewedBoundariesFor === boundaryReviewRevision, details: reviewedDetailsFor === detailsReviewRevision, purpose: reviewedPurposeFor === use, checks: reviewedChecksFor === reviewRevision, enquiry: enquiryReady, email: !!draftText && (websiteRequestedFor === draftText || emailRequestedFor === JSON.stringify([draftText, recipient, includeSiteDetails])), handoff: websiteRequestedFor === draftText ? 'website' : 'email', current: journeyStep, mapAvailable: propertyComplete ? !!zoningCase : undefined }) }, [propertyFirst, modelReady, choosingModel, playbackActive, checksRevealed, zoningCase, propertyComplete, placementComplete, enquiryReady, geometryRevision, hasStreetAnswer, reviewedBoundariesFor, reviewedDetailsFor, reviewedChecksFor, reviewRevision, detailsReviewRevision, boundaryReviewRevision, reviewedPurposeFor, use, websiteRequestedFor, emailRequestedFor, draftText, recipient, includeSiteDetails, journeyStep, readinessSignature])
+  useLayoutEffect(() => { progressCallback.current?.({ walkthroughActive: playbackActive, reviewReadiness, checksAvailable: checksRevealed, propertyFirst, choosingModel, comparingDetached,
+    model: modelReady, property: propertyComplete, placement: placementComplete, streets: !!geometryRevision && hasStreetAnswer, boundaries: reviewedBoundariesFor === boundaryReviewRevision, details: reviewedDetailsFor === detailsReviewRevision, purpose: reviewedPurposeFor === use, checks: reviewedChecksFor === reviewRevision, enquiry: enquiryReady, email: !!draftText && (websiteRequestedFor === draftText || emailRequestedFor === JSON.stringify([draftText, recipient, includeSiteDetails])), handoff: websiteRequestedFor === draftText ? 'website' : 'email', current: journeyStep, mapAvailable: propertyComplete ? !!zoningCase : undefined }) }, [propertyFirst, modelReady, choosingModel, comparingDetached, playbackActive, checksRevealed, zoningCase, propertyComplete, placementComplete, enquiryReady, geometryRevision, hasStreetAnswer, reviewedBoundariesFor, reviewedDetailsFor, reviewedChecksFor, reviewRevision, detailsReviewRevision, boundaryReviewRevision, reviewedPurposeFor, use, websiteRequestedFor, emailRequestedFor, draftText, recipient, includeSiteDetails, journeyStep, readinessSignature])
   useEffect(() => { setReadyFor(null) }, [draftText])
   const emailBody = enquiryDoc ? enquiryEmailBody(enquiryDoc, includeSiteDetails) : ''
   const emailSubject = enquiryDoc?.example ? `Saved example only — ${model.name} question` : includeSiteDetails ? enquiryDoc?.title ?? `${model.name} feasibility enquiry` : `${model.name} feasibility enquiry`
@@ -1301,6 +1308,59 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     <p>Explore a placement, review potential concerns, and prepare a question for the provider.</p>
     <p className="metadata">Model questions, placements, configuration and budget drafts stay in this open assessment. Changing property starts fresh placements and estimates. Reloading clears the current assessment. If a recovery copy was saved, you can recover the prepared enquiry text in this tab.</p>
   </>
+  function backToPropertyOptions() {
+    setPropertyStage('options')
+    setJourneyStep('property')
+  }
+  function explorePropertyOption(next: 'model' | 'replacement') {
+    if (next === 'model' && modelReady) { openJourneyStep('placement'); return }
+    if (next === 'replacement') setOpenedReplacement(true)
+    if (next === 'replacement' && modelReady) {
+      setPlacementSeed(placementDraft)
+      setMeasurementResult(null)
+      setGeometryPending(false)
+      setChecksRevealed(false)
+    }
+    setExpanded(previous => ({ ...previous, property: false }))
+    setJourneyStep('model')
+    if (next === propertyStage) focusJourneyStep('model')
+    else setPropertyStage(next)
+  }
+  const ModelHeading = propertyFirst ? 'h2' : 'h1'
+  const modelPanel = (modelReady || choosingModel) && <section className={mode === 'example' ? 'builder-hero' : 'builder-hero builder-entry-model'} id="builder-model" aria-labelledby="builder-title">
+      <p className="eyebrow">{mode === 'example' ? 'Example assessment' : 'Assessment'} · {model.provider}</p>
+      <ModelHeading id="builder-title">{choosingModel ? 'Choose a garden-suite model to try' : `Explore ${model.name} on your site`}</ModelHeading>
+      {choosingModel && <p>{live?.address.label}</p>}
+      <div className="builder-entry-model-choice">
+        <label htmlFor="builder-model-choice">Choose a model</label>
+        <select id="builder-model-choice" value={modelId} onChange={event => switchModel(event.target.value)}>{journeyCatalogue.models.map(item => <option key={item.model_id} value={item.model_id}>{item.provider} · {item.name}{item.model_id === historicalModel300.model_id ? ' (October 2026 example)' : ''}</option>)}</select>
+      </div>
+      {choosingModel && <div className="sr-actions">
+        <button type="button" className="sr-primary" onClick={() => setPropertyStage('assessment')}>Try this model</button>
+        <button type="button" onClick={backToPropertyOptions}>Back to property options</button>
+      </div>}
+      {modelId === historicalModel300.model_id && <p className="metadata">{historicalModelNote}</p>}
+      {modelId === 'aux-240' && <p className="metadata">Demo configuration · {model.configuration}</p>}
+      <p className={mode === 'example' ? 'notice' : 'metadata builder-entry-scope'}>Preliminary exploration · nothing is sent automatically.</p>
+      {mode === 'example' && modelOverview}
+      <details className="builder-model-overview"><summary>About {model.name} · photos, price and specifications</summary>
+      {mode !== 'example' && modelOverview}
+      <ModelImage model={model} />
+      <PriceTiming model={model} />
+      {model.model_id === 'wcch-ch-studio' && <p className="notice">Observational footprint comparison only. Permanent dwelling suitability is unconfirmed; ask West Coast Container Homes about this exact configuration before pursuing residential use.</p>}
+      <details><summary>Configuration and what to confirm next</summary><p>{model.configuration}</p><p>{model.intended_use_note}</p><p>{model.installation_note}</p><ul>{model.missing_facts.map(item => <li key={item}>{item}</li>)}</ul><p>Public-source observations, unreviewed. Demo availability is separate from accepted data publication.</p></details>
+      <details className="builder-model-details"><summary>Model photos, specifications and sources</summary>
+      <div className="builder-specs" aria-label="Captured model information">
+        <div><strong>{original('nominal_exterior_width')} × {original('nominal_exterior_depth')}</strong><span>Provider nominal exterior rectangle · {metres('nominal_exterior_width')} × {metres('nominal_exterior_depth')}</span></div>
+        <div><strong>{original('advertised_overall_height')}</strong><span>Advertised exterior height; installed regulatory height and datum unknown</span></div>
+        <div><strong>{original('manufacturer_footprint')}</strong><span>Provider footprint; roof projections and regulatory area unverified</span></div>
+      </div>
+      <p className="metadata">{model.provider} · {model.name} public product page · captured {readableDate(model.sources[0]?.captured_at)} · {model.review_status}; manufacturer revision unknown. {modelId === historicalModel300.model_id ? 'Original page unavailable. The captured source is in the catalogue record below' : <a href={model.provider_url} target="_blank" rel="noreferrer">Provider source page</a>}.</p>
+      <p className="metadata">{model.footprint_note} {model.height_note} {model.service_area_note}</p>
+      <TechnicalDetails title="Catalogue source and exact model record"><pre>{JSON.stringify({ snapshot_id: modelSnapshot(model), model }, null, 2)}</pre></TechnicalDetails>
+      </details>
+      </details>
+    </section>
   return <PlaybackLayout.Provider value={playbackActive}><div ref={builder} className="builder-demo" data-playback={playbackActive || undefined}>
     <div hidden={economicsOpen || timelineOpen}>
 
@@ -1336,46 +1396,13 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
       <p>This replaces your selected model, property, placement and property review answers with {journeyCatalogue.models.find(item => item.model_id === pendingEntry?.modelId)?.name ?? model.name} on a saved Victoria property. Example inputs replace the local project answers too. Nothing is sent; you can keep your current assessment.</p>
       <div className="sr-actions"><button type="button" autoFocus onClick={() => { entryDialog.current?.close(); setPendingEntry(null); document.getElementById('builder-model-choice')?.focus() }}>Keep current assessment</button><button type="button" onClick={() => { if (pendingEntry) applyEntry(pendingEntry); entryDialog.current?.close(); setPendingEntry(null); document.getElementById('builder-model-choice')?.focus() }}>Load example assessment</button></div>
     </dialog>
-    {(modelReady || choosingModel) && <section className={mode === 'example' ? 'builder-hero' : 'builder-hero builder-entry-model'} id="builder-model" aria-labelledby="builder-title">
-      <p className="eyebrow">{mode === 'example' ? 'Example assessment' : 'Assessment'} · {model.provider}</p>
-      <h1 id="builder-title">{choosingModel ? 'Choose a garden-suite model to try' : `Explore ${model.name} on your site`}</h1>
-      {choosingModel && <p>{live?.address.label}</p>}
-      <div className="builder-entry-model-choice">
-        <label htmlFor="builder-model-choice">Choose a model</label>
-        <select id="builder-model-choice" value={modelId} onChange={event => switchModel(event.target.value)}>{journeyCatalogue.models.map(item => <option key={item.model_id} value={item.model_id}>{item.provider} · {item.name}{item.model_id === historicalModel300.model_id ? ' (October 2026 example)' : ''}</option>)}</select>
-      </div>
-      {choosingModel && <div className="sr-actions">
-        <button type="button" className="sr-primary" onClick={() => setPropertyStage('assessment')}>Try this model</button>
-        <button type="button" onClick={() => setPropertyStage('options')}>Back to property options</button>
-      </div>}
-      {modelId === historicalModel300.model_id && <p className="metadata">{historicalModelNote}</p>}
-      {modelId === 'aux-240' && <p className="metadata">Demo configuration · {model.configuration}</p>}
-      <p className={mode === 'example' ? 'notice' : 'metadata builder-entry-scope'}>Preliminary exploration · nothing is sent automatically.</p>
-      {mode === 'example' && modelOverview}
-      <details className="builder-model-overview"><summary>About {model.name} · photos, price and specifications</summary>
-      {mode !== 'example' && modelOverview}
-      <ModelImage model={model} />
-      <PriceTiming model={model} />
-      {model.model_id === 'wcch-ch-studio' && <p className="notice">Observational footprint comparison only. Permanent dwelling suitability is unconfirmed; ask West Coast Container Homes about this exact configuration before pursuing residential use.</p>}
-      <details><summary>Configuration and what to confirm next</summary><p>{model.configuration}</p><p>{model.intended_use_note}</p><p>{model.installation_note}</p><ul>{model.missing_facts.map(item => <li key={item}>{item}</li>)}</ul><p>Public-source observations, unreviewed. Demo availability is separate from accepted data publication.</p></details>
-      <details className="builder-model-details"><summary>Model photos, specifications and sources</summary>
-      <div className="builder-specs" aria-label="Captured model information">
-        <div><strong>{original('nominal_exterior_width')} × {original('nominal_exterior_depth')}</strong><span>Provider nominal exterior rectangle · {metres('nominal_exterior_width')} × {metres('nominal_exterior_depth')}</span></div>
-        <div><strong>{original('advertised_overall_height')}</strong><span>Advertised exterior height; installed regulatory height and datum unknown</span></div>
-        <div><strong>{original('manufacturer_footprint')}</strong><span>Provider footprint; roof projections and regulatory area unverified</span></div>
-      </div>
-      <p className="metadata">{model.provider} · {model.name} public product page · captured {readableDate(model.sources[0]?.captured_at)} · {model.review_status}; manufacturer revision unknown. {modelId === historicalModel300.model_id ? 'Original page unavailable. The captured source is in the catalogue record below' : <a href={model.provider_url} target="_blank" rel="noreferrer">Provider source page</a>}.</p>
-      <p className="metadata">{model.footprint_note} {model.height_note} {model.service_area_note}</p>
-      <TechnicalDetails title="Catalogue source and exact model record"><pre>{JSON.stringify({ snapshot_id: modelSnapshot(model), model }, null, 2)}</pre></TechnicalDetails>
-      </details>
-      </details>
-    </section>}
+    {!propertyFirst && modelPanel}
 
     {/* Playback reports readiness in its stable player; removing a second banner here would move its destination. */}
     {modelReady && checksPending && !playbackActive && <p role="status">Updating checks. {summary ? 'Previous findings are shown for reference; ' : ''}copy and save will use the updated results when ready.</p>}
     <EnquiryRecovery enquiry={!checksPending && (expanded.next || enquiryReady) ? draftText : null} report={reportDoc ? enquiryPlainText(reportDoc) : null} technicalEvidence={JSON.stringify(technicalEvidence, null, 2)} />
     <section className="builder-stage" id="builder-property" aria-labelledby="builder-property-title">
-    {propertyFirst && !modelReady && !choosingModel
+    {propertyFirst
       ? <h1 id="builder-property-title">{live ? 'Your property' : 'Find your property'}</h1>
       : <h2 id="builder-property-title">{mode === 'example' ? 'Could this fit on your property?' : 'Find your property'}</h2>}
     <p>{propertySelected ? (mode === 'example' ? 'Saved Victoria example selected.' : live ? live.address.label : `${manual?.facts.address || selection?.candidate?.address.value || selection?.manual.address.value || 'Site description'} · user-supplied; unverified.`) : 'Choose an address result or confirm a manual site description to continue.'}</p>
@@ -1395,11 +1422,12 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     </section>
     {!propertySelected && <p className="builder-journey-preview">{propertyFirst ? 'Find property → Explore options → Try a model' : 'Find property → Place unit → Review → Contact provider'}</p>}
     {propertySelected && live && !expanded.property ? <SelectedProperty value={live} municipality={currentMunicipality} onChangeProperty={changeProperty} onInspectAlternatives={() => { setPropertyInspect(value => value + 1); setExpanded(previous => ({ ...previous, property: true })); setJourneyStep('property'); requestAnimationFrame(() => focusSummaryTarget(document, 'sd-parcels')); }} /> : propertyComplete && !live && <div className="builder-selected-property"><strong>Property: {mode === 'example' ? '419 Cecelia Road · saved example, not your property' : manual?.facts.address || 'User-supplied site'}</strong><span>Approximate and unreviewed</span><button type="button" onClick={changeProperty}>Wrong property? Change</button></div>}
-    {propertyFirst && live && ((!expanded.property && propertyStage === 'options') || (expanded.property && modelReady)) && <PropertyOptions selected={live} opportunity={opportunity} housePlan={housePlan} onHousePlanChange={setHousePlan}
-      zoning={currentZoning} scan={propertyScan.result} onExplore={() => {
-        if (modelReady) { openJourneyStep('placement'); return }
-        setPropertyStage('model'); setJourneyStep('model')
-      }} />}
+    {propertyFirst && live && (!modelReady || expanded.property) && <PropertyOptions selected={live} opportunity={housePlan === 'replace' || comparingDetached ? null : opportunity} housePlan={housePlan} onHousePlanChange={next => {
+      setHousePlan(next)
+      if ((comparingDetached && next === 'keep') || (choosingModel && next === 'replace')) backToPropertyOptions()
+    }} zoning={currentZoning} scan={propertyScan.result} onExploreGarden={() => explorePropertyOption('model')} onExploreDetached={() => explorePropertyOption('replacement')} />}
+    {propertyFirst && modelPanel}
+    {propertyFirst && openedReplacement && live && <div hidden={!comparingDetached} id={comparingDetached ? 'builder-model' : undefined}><ReplacementPlans key={geometryRevision} selected={live} onBack={backToPropertyOptions} /></div>}
     <section hidden={!propertyComplete} className="builder-stage" id="builder-placement" aria-labelledby="builder-placement-title">
       <p className="eyebrow">Placement</p><h2 id="builder-placement-title">Explore one approximate placement</h2>
       <p>{propertyComplete ? zoningCase ? 'Place the unit and see what is worth exploring.' : placementSummary : 'Choose a property to explore placement.'}</p>

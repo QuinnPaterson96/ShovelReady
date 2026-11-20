@@ -2,6 +2,7 @@
 export type BuilderJourneyCompletion = Readonly<{
   propertyFirst?: boolean
   choosingModel?: boolean
+  comparingDetached?: boolean
   walkthroughActive?: boolean
   checksAvailable?: boolean
   reviewReadiness?: { total: number; addressed: number; busy: boolean; ready: boolean; targetId?: string }
@@ -47,20 +48,25 @@ const steps: readonly Step[] = [
 /** Keep this inside the builder workspace's hidden-but-mounted wrapper. */
 export function BuilderJourneyNav({ completion }: { completion: BuilderJourneyCompletion }) {
   if (completion.walkthroughActive) return null
+  const [modelStep, propertyStep, ...laterSteps] = steps
+  const picking = completion.choosingModel || completion.comparingDetached
+  const orderedSteps = completion.propertyFirst ? [propertyStep, modelStep, ...laterSteps] : steps
   return <aside className="sr-workspace-rail builder-journey-rail">
     <nav aria-label="Prefab model steps">
       <p>{completion.propertyFirst ? 'Property assessment' : 'Prefab model journey'}</p>
-      {completion.propertyFirst && <div className="builder-entry-stages">
-        <a href="#builder-property" aria-current={completion.choosingModel ? undefined : 'step'}>1 · Find property and explore options</a>
-        {completion.choosingModel ? <a href="#builder-model" aria-current="step">2 · Choose a model</a> : <span>2 · Choose a model</span>}
-        <span>3 · Try a placement</span>
+      {completion.propertyFirst && !completion.property && <div className="builder-entry-stages">
+        <a href="#builder-property" aria-current={picking ? undefined : 'step'}>1 · Find property and explore options</a>
+        {picking
+          ? <a href="#builder-model" aria-current="step">2 · {completion.comparingDetached ? 'Compare detached plans' : 'Choose a model'}</a>
+          : <span>2 · Choose a model</span>}
+        {!completion.comparingDetached && <span>3 · Try a placement</span>}
       </div>}
       {!completion.propertyFirst && !completion.property && <div className="builder-entry-stages">
         <a href="#builder-property" aria-current="step">1 · Find property</a>
         <span>2 · Place unit</span><span>3 · Review</span><span>4 · Contact provider</span>
         <a href="#builder-model">Change model</a>
       </div>}
-      {completion.property && steps.map(({ key, label, anchor }, index) => {
+      {completion.property && orderedSteps.map(({ key, label, anchor }, index) => {
         const done = key === 'budget' ? false : completion[key]
         const current = completion.current === key
         const unavailable = completion.mapAvailable === false && (key === 'streets' || key === 'boundaries' || key === 'checks' || key === 'details')

@@ -20,7 +20,8 @@ type Props = {
   scan?: PropertyScanResult | null
   housePlan: HousePlan | null
   onHousePlanChange: (value: HousePlan | null) => void
-  onExplore: () => void
+  onExploreGarden: () => void
+  onExploreDetached: () => void
 }
 
 function MapSource({ source }: { source: ZoningLookup['source_records'][number] | NonNullable<PropertyScanResult['findings'][number]['source']> }) {
@@ -50,7 +51,7 @@ function MunicipalMapFindings({ zoning, scan }: Pick<Props, 'zoning' | 'scan'>) 
   </div>
 }
 
-export function PropertyOptions({ selected, opportunity, zoning, scan, housePlan, onHousePlanChange, onExplore }: Props) {
+export function PropertyOptions({ selected, opportunity, zoning, scan, housePlan, onHousePlanChange, onExploreGarden, onExploreDetached }: Props) {
   useEffect(() => { void import('./property-options.css') }, [])
   const sourceUrl = publicSourceUrl(opportunity?.sourceUrl)
   return <section className="property-options" aria-labelledby="property-options-title">
@@ -75,13 +76,19 @@ export function PropertyOptions({ selected, opportunity, zoning, scan, housePlan
             {plan.label}
           </label>)}</div>
         </fieldset>
-        <h3>Could a garden suite fit here?</h3>
-        {housePlan === 'replace' && <p role="status">Replacement homes are outside current coverage. You can explore a garden suite as an alternative that keeps the house.</p>}
-        <p>{selected.observation.roofs.length
-          ? 'Place a prefab model on the map to see how much space it leaves beside the mapped buildings.'
-          : 'Place a prefab model inside the mapped lot. Check where any existing buildings stand before relying on the space shown.'}
-          {!opportunity && ' Check local rules to confirm whether this property allows a garden suite.'}</p>
-        <button type="button" className="sr-primary" onClick={onExplore}>Explore a garden suite</button>
+        {housePlan !== 'replace' && <>
+          <h3>Could a garden suite fit here?</h3>
+          <p>{selected.observation.roofs.length
+            ? 'Place a prefab model on the map to see how much space it leaves beside the mapped buildings.'
+            : 'Place a prefab model inside the mapped lot. Check where any existing buildings stand before relying on the space shown.'}
+            {!opportunity && ' Check local rules to confirm whether this property allows a garden suite.'}</p>
+          <button type="button" className="sr-primary" onClick={onExploreGarden}>Explore a garden suite</button>
+        </>}
+        {(housePlan === 'replace' || housePlan === 'exploring') && <>
+          <h3>Which detached plans could fit here?</h3>
+          <p>Compare house plans on the lot and choose which mapped building you would remove.</p>
+          <button type="button" className={housePlan === 'replace' ? 'sr-primary' : undefined} onClick={onExploreDetached}>Compare detached plans</button>
+        </>}
       </div>
     </div>
   </section>
