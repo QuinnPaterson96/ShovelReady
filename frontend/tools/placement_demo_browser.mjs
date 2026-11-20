@@ -56,11 +56,7 @@ await context.route('**/*', async route => {
   }
   if (lakeSelected) {
     if (url.pathname === '/api/municipal-sites/search') return json(lake.search)
-    if (cardCase && url.pathname === '/api/municipal-sites/observe') return json({ ...municipal.observation, aerial: 'crd-2025-10cm' })
-  if (cardCase && url.pathname === '/api/victoria-zoning/lookup') return json(cardCase === 'mapped' ? mayZoning
-    : cardCase === 'empty' ? { ...mayZoning, zones: mayZoning.zones.map(zone => ({ ...zone, source_fields: { ...zone.source_fields, Zoning: 'GRD-1 - Site Specific' } })) }
-    : { ...mayZoning, status: 'partial_coverage', covered_area_m2: 300, uncovered_area_m2: mayZoning.parcel_area_m2 - 300 })
-  if (url.pathname === '/api/municipal-sites/observe') return json(lake.observation)
+    if (url.pathname === '/api/municipal-sites/observe') return json(lake.observation)
     if (url.pathname === '/api/municipal-sites/street-edges') return route.fulfill({status: 503, body: 'Offline streets'})
   }
   if (url.pathname === '/api/municipal-sites/search') return json(body.municipality === 'saanich' ? streets.saanich.search : municipal.search)
@@ -322,7 +318,8 @@ try {
   await page.screenshot({ path: `${output}/desktop-captured-purpose.png` })
   await nextChecks.click()
   await page.locator('#builder-quick-checks-title').waitFor()
-  assert.equal((await current()).placement_scenario_request.proposal.proposed_use, 'garden_suite')
+  await until(async () => (await current()).placement_scenario_request?.proposal.proposed_use === 'garden_suite',
+    'Captured purpose did not reach the current placement scenario')
   await page.locator('a[href="#builder-purpose"]').first().click()
   await settled()
   await page.locator('#placement-action-place').click()
