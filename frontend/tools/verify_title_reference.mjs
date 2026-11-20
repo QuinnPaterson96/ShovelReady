@@ -95,7 +95,16 @@ await context.route('**/*', async route => {
         source_url: 'https://maps.victoria.ca/server/rest/services/OpenData/OpenData_PlanningAndDevelopment/MapServer/1/query?f=json',
       },
     } : { label, status: 'unknown', source: null, records: [], detail: 'Outside this synthetic replay.' })
-    return json({ schema_version: 'victoria-property-scan.v1', parcel_ref: body.parcel_ref, findings, limitations: [], parcel_source: null })
+    const source = { ...findings.find(row => row.source).source, record_label: 'Active sewer lateral',
+      source_url: 'https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Sewer/MapServer/12/query?f=json' }
+    const sewer = { status: 'mapped_connection', checked_at_utc: source.captured_at_utc, source,
+      detail: 'Active lateral linked to this parcel in the fixture.', records: [{ OBJECTID: 1 }],
+      association_source: { ...source, record_label: 'Associated parcel',
+        source_url: 'https://maps.victoria.ca/server/rest/services/OpenData/OpenData_Land/MapServer/11/query?f=json' },
+      association_parcel_count: 1, association_parcel_ids: [body.parcel_ref.object_id],
+      capacity_status: 'requires_confirmation', authority: { name: 'City Engineering', email: 'eng@victoria.ca' },
+      question: 'Confirm capacity.' }
+    return json({ schema_version: 'victoria-property-scan.v1', parcel_ref: body.parcel_ref, findings, limitations: [], parcel_source: null, sewer })
   }
   if (url.pathname === '/api/municipal-sites/waterfront-edges' || url.pathname.startsWith('/api/victoria-zoning/')) {
     return route.fulfill({ status: 503, body: 'Offline map-source boundary' })
@@ -122,8 +131,20 @@ async function openDetails(parent, text) {
   if (!(await summary.evaluate(node => node.parentElement.open))) await summary.click()
 }
 
-const getTitle = () => openDetails(titleEditor, 'Get my BC title')
-const haveTitle = () => openDetails(titleEditor, 'I already have my title')
+const scanLink = page.locator('nav a[href="#property-scan"]')
+async function openScan() {
+  await scanLink.click()
+  await page.waitForFunction(() => document.activeElement?.id === 'property-scan-title')
+  assert.equal(await scanLink.getAttribute('aria-current'), 'step')
+}
+async function getTitle() {
+  if (!(await titleEditor.isVisible())) await openScan()
+  await openDetails(titleEditor, 'Get my BC title')
+}
+async function haveTitle() {
+  if (!(await titleEditor.isVisible())) await openScan()
+  await openDetails(titleEditor, 'I already have my title')
+}
 const reviewHandoff = () => openDetails(titleEditor, 'Preview title review handoff')
 const clipboard = () => page.evaluate(() => navigator.clipboard.readText())
 
@@ -175,6 +196,10 @@ try {
   await page.goto(base.href)
   await button('Check my property').click()
   await selectProperty('1144 May St', /1144 May St, Victoria/)
+  await openScan()
+  assert.match(await scanLink.locator('xpath=preceding-sibling::a[1]').innerText(), /property/i)
+  assert.match(await checklist.innerText(), /The City maps an active sewer connection/)
+  assert.equal(await page.locator('a[href*="eng%40victoria.ca"], a[href="mailto:eng@victoria.ca"]').count(), 0)
   await getTitle()
   assert.equal(await field('Selected parcel identifier (PID)').inputValue(), mappedPid)
   await button('Copy PID').click()
@@ -189,14 +214,45 @@ try {
   assert.match(await acquireTitle.innerText(), /Return to this assessment tab and open I already have my title/i)
   await haveTitle()
   await addReference().waitFor()
+  await button('Close property scan').click()
+  await page.waitForFunction(() => document.activeElement?.id === 'property-options-title')
   await prepareEnquiry()
+  const sewerField = field('Sewer question for the builder (optional)')
+  const proposedQuestion = await sewerField.inputValue()
+  assert.match(proposedQuestion, /existing sewer connection can serve the proposed garden suite/)
+  assert.equal((await draft()).split(proposedQuestion).length, 2)
+  const editedQuestion = 'Could our builder check the mapped sewer connection before quoting?'
+  await sewerField.fill(editedQuestion)
+  assert.ok(!(await draft()).includes(proposedQuestion))
   assert.doesNotMatch(await preview.innerText(), /Title reference for follow-up/i)
+  await page.locator('nav a[href="#builder-placement"]').click()
+  const roof = page.locator('#placement-projections')
+  const adjust = roof.getByText('Adjust assumption', { exact: true })
+  assert.ok(!(await roof.getByRole('combobox').isVisible()))
+  await adjust.focus()
+  await page.keyboard.press('Enter')
+  await roof.getByRole('combobox').selectOption('includes_projection')
+  await adjust.click()
+  assert.match(await roof.innerText(), /mapped edge.*width includes the gutter/is)
+  await adjust.click()
+  await roof.getByRole('combobox').selectOption('wall_face')
+  const depth = roof.getByLabel('Example projection past the wall (m)')
+  await depth.click()
+  await depth.press('ControlOrMeta+a')
+  await depth.pressSequentially('100')
+  await roof.locator('[data-projection-clearance="crosses"]').waitFor()
+  await adjust.click()
+  assert.match(await roof.innerText(), /Crosses the mapped parcel boundary near mapped edge/i)
+  assert.ok(!(await roof.getByRole('combobox').isVisible()))
+  assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1))
+  await page.locator('nav a[href="#builder-next"]').click()
+  assert.equal(await sewerField.inputValue(), editedQuestion)
   assert.doesNotMatch(await draft(), new RegExp(mappedPid))
   assert.ok(!(await evidence()).property_title_reference)
   assert.equal((await evidence()).live.parcel.raw.candidate.pid, mappedPid, 'The city PID remains available as a distinct map lead')
   assert.deepEqual((await evidence()).property_scan.findings.find(finding => finding.label === 'Mapped special restrictions').records, [mappedRestriction])
 
-  await page.locator('a[href="#builder-property-details"]').first().click()
+  await openScan()
   const mappedRow = checklist.getByRole('listitem').filter({ hasText: 'Mapped special restrictions' })
   assert.match(await mappedRow.innerText(), /Yes · Needs review/)
   assert.match(await titleRow.innerText(), /Maybe · Not checked/)
@@ -251,7 +307,7 @@ try {
     schema_version: 'property-title-reference.v1', origin: 'owner_supplied', review_status: 'legal_effect_unreviewed',
     kind: 'instrument', number: firstNumber, document_date: '2026-01-15', title_date: '2026-02-15', question,
   })
-  await page.locator('a[href="#builder-property-details"]').first().click()
+  await openScan()
   assert.match(await titleRow.innerText(), /Reference supplied · Legal effect needs review/)
   assert.match(await mappedRow.innerText(), /Yes · Needs review/, 'An owner-supplied reference does not change the mapped lead')
   await page.locator('a[href="#builder-next"]').first().click()
@@ -269,6 +325,7 @@ try {
     assert.ok(report.includes(firstNumber) && report.includes(question))
     assert.ok(!report.includes(reviewerOnly))
   }
+  assert.equal(strFromU8(files['prefab-enquiry.md']).split(editedQuestion).length, 2)
   const technical = JSON.parse(strFromU8(files['prefab-technical-evidence.json']))
   assert.deepEqual(technical.property_title_reference, (await evidence()).property_title_reference)
 
@@ -279,12 +336,14 @@ try {
   await field('Recipient email (optional; edit before opening)').fill('verification@example.invalid')
   const included = await download(button('Download email draft with placement attachment'), 'prefab-enquiry.eml')
   assert.ok(emailText(included).includes(question))
+  assert.equal(emailText(included).split(editedQuestion).length, 2)
   assert.match(emailText(included), new RegExp(firstNumber))
   await field('Include site details in the email').uncheck()
   assert.doesNotMatch(await email.inputValue(), new RegExp(firstNumber))
   assert.ok(!(await email.inputValue()).includes(question))
   const eml = await download(button('Download email draft'), 'prefab-enquiry.eml')
   assert.doesNotMatch(emailText(eml), new RegExp(firstNumber))
+  assert.ok(!emailText(eml).includes(editedQuestion))
   assert.ok(!emailText(eml).includes(question))
   assert.doesNotMatch(eml.toString(), /Content-Disposition: attachment/i)
 
@@ -327,6 +386,8 @@ try {
   await haveTitle()
   await addReference().waitFor()
   await prepareEnquiry()
+  assert.equal(await sewerField.inputValue(), 'How would we confirm sewer service for this property?')
+  assert.ok(!(await draft()).includes(editedQuestion) && !(await draft()).includes(proposedQuestion))
   assert.doesNotMatch(await draft(), new RegExp(revisedNumber))
   assert.ok(!(await evidence()).property_title_reference)
   await page.locator('a[href="#builder-property"]').first().click()
@@ -385,7 +446,7 @@ try {
   assert.equal(await page.evaluate(values => [localStorage, sessionStorage].some(storage =>
     Object.values(storage).some(entry => values.some(value => entry.includes(value)))), [firstNumber, revisedNumber, reviewerOnly]), false)
   assert.deepEqual(errors, [])
-  console.log(`Title reference at ${width}px: acquisition guidance and PID safety, qualified reviewer handoff, homeowner PDF/ZIP/EML, edit, removal, reset and privacy passed.`)
+  console.log(`Homeowner flow at ${width}px: early scan and focus, title review, roof adjustment and crossing, sewer draft and PDF/ZIP/EML handoff, edits, property reset and privacy passed.`)
 } finally {
   await browser.close()
 }

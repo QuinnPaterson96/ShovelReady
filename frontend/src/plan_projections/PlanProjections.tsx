@@ -18,7 +18,7 @@ function edgeLabel(value: ProjectionClearance) {
 
 function finding(value: ProjectionClearance | null) {
   if (!value) return 'Mapped clearance is unavailable for this parcel outline or position.'
-  if (value.status === 'crosses') return `Extends outside the mapped parcel near ${edgeLabel(value)}.`
+  if (value.status === 'crosses') return `Crosses the mapped parcel boundary near ${edgeLabel(value)}.`
   if (value.status === 'touches') return `Touches ${edgeLabel(value)} of the parcel.`
   return `About ${measurementWithUnit(value.distance, 'length')} to ${edgeLabel(value)} of the parcel.`
 }
@@ -53,32 +53,31 @@ export function usePlanProjections(enabled: boolean, site: Case, placed: PlacedR
     <title>{edgeLabel(mappedFinding)}</title>
   </line>
   const panel = <section className="plan-projections" id="placement-projections" tabIndex={-1} aria-labelledby="placement-projections-title">
-    <h4 id="placement-projections-title">Eave and gutter clearance</h4>
-    <p>The Model 240 Bath + Kitchen floor plan measures 9 ft 11 in across the drawn outer sides. The published exterior width is 10 ft. Use the marked long side to explore where the gutter might end.</p>
-    <div className="plan-projection-controls">
-      <div><label htmlFor="placement-projections-basis">{editedDimensions ? 'What does the sketch width include?' : 'What does the nominal width include?'}</label>
-        <select id="placement-projections-basis" value={basis} onChange={event => setBasis(event.target.value as ProjectionBasis)}>
-          <option value="unknown">Not sure</option>
-          <option value="wall_face">Assume width ends at the walls</option>
-          <option value="includes_projection">Assume width includes the eave and gutter</option>
-        </select>
-      </div>
-      {basis === 'wall_face' && <div><label htmlFor="placement-projections-depth">Example projection past the wall (m)</label>
-        <MeasurementInput dimension="length" id="placement-projections-depth" type="number" min="0" step="any" value={depth}
-          onChange={event => setDepth(event.target.value)} />
-      </div>}
-    </div>
-    <p className="plan-projection-finding"><strong>{editedDimensions ? 'Gap from the edited sketch face.' : 'Gap from the nominal long face.'}</strong> {placed ? finding(nominal) : 'Place the model to measure its gap to a mapped parcel edge.'}</p>
+    <h4 id="placement-projections-title">Roof overhang</h4>
     <p className="plan-projection-finding" data-projection-clearance={projection?.status ?? 'unknown'}>
-      <strong>Physical eave and gutter clearance.</strong>{' '}
-      {basis === 'unknown' ? 'Unknown until the width basis and projection extent are known. To explore a what-if, choose an assumption.'
-        : basis === 'wall_face' && addedDepth === null ? 'Enter an example projection of zero or more metres to check the mapped clearance.'
-          : `${basis === 'wall_face' ? 'Using your example projection. ' : 'Using the placed line with no extra depth. '}${finding(projection)}`}
+      {!placed ? 'Place the model to see the gap to the property edge.'
+        : basis === 'unknown' ? `${finding(nominal)} Measured from the marked long side. Gutter depth is unknown.`
+        : addedDepth === null ? 'Enter a depth of zero or more metres to check the overhang.'
+        : `${finding(projection)} ${basis === 'wall_face' ? `Assuming the gutter extends ${measurementWithUnit(addedDepth, 'length')} past the wall.` : 'Assuming the width includes the gutter.'}`}
     </p>
-    <p className="metadata">Setback treatment and any permitted encroachment still need separate confirmation.</p>
-    <p><strong>Ask the provider.</strong> {providerQuestion}</p>
     <details>
-      <summary>Plan sources and exact map measurements</summary>
+      <summary>Adjust assumption</summary>
+      <div className="plan-projection-controls">
+        <div><label htmlFor="placement-projections-basis">{editedDimensions ? 'What does the sketch width include?' : 'What does the nominal width include?'}</label>
+          <select id="placement-projections-basis" value={basis} onChange={event => setBasis(event.target.value as ProjectionBasis)}>
+            <option value="unknown">Not sure</option>
+            <option value="wall_face">Assume width ends at the walls</option>
+            <option value="includes_projection">Assume width includes the eave and gutter</option>
+          </select>
+        </div>
+        {basis === 'wall_face' && <div><label htmlFor="placement-projections-depth">Example projection past the wall (m)</label>
+          <MeasurementInput dimension="length" id="placement-projections-depth" type="number" min="0" step="any" value={depth}
+            onChange={event => setDepth(event.target.value)} />
+        </div>}
+      </div>
+      <p className="metadata">This measures physical clearance. Setback treatment and any permitted encroachment still need separate confirmation.</p>
+      <p><strong>Ask the provider.</strong> {providerQuestion}</p>
+      <p><strong>Plan sources and exact map measurements</strong></p>
       <p>The advertised exterior length is 24 ft 1 in. The dimensioned floor plan includes the covered-deck and mechanical-storage ends in that length. It shows 9 ft 11 in across the drawn outer sides, compared with the advertised 10 ft width. The plan gives no eave or gutter dimension. {editedDimensions ? ' This sketch uses your edited dimensions.' : ' The map keeps the nominal placement dimensions.'}</p>
       <p>aux box Model 240 public materials · inspected November 19, 2026 · controlled plan revision unknown. <a href="https://www.auxbox.ca/model-240" target="_blank" rel="noreferrer">Model 240 specifications</a> · <a href={planUrl} target="_blank" rel="noreferrer">Dimensioned floor plan</a></p>
       {nominal && <p className="metadata">Exact distance to the mapped boundary from this sketch face: {nominal.distance} m.{projection && ` Scenario: ${projection.distance} m.`}</p>}

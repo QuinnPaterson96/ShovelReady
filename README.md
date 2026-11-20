@@ -16,8 +16,10 @@ The homeowner journey now uses [stable continuation controls, guided demo progre
 and task-directed entry focus](docs/navigation-reliability.md). The integration
 record distinguishes browser checks from physical-device and homeowner validation.
 
-On a selected Victoria parcel, the [sanitary sewer pilot](docs/victoria-sanitary-sewer.md)
-checks City connection records and prepares a project-specific question for City Engineering.
+Open **Preliminary property scan** after selecting a property, or go straight to
+choosing a model. The scan groups available permit, title and sewer information.
+On a Victoria parcel, the [sewer check](docs/victoria-sanitary-sewer.md) looks for
+a mapped connection. **Prepare enquiry** suggests an editable question for the builder.
 
 The homeowner map prefills editable [street](docs/municipal-street-prefill.md) and [waterfront](docs/municipal-waterfront-prefill.md) edges in Victoria and Saanich. Both municipalities support mapped placement. [Shared municipal screening](docs/multi-city-screening.md) preserves Victoria's existing comparisons and adds bounded Saanich lot-area, defined-width, floor-area and landscaped-share checks, with city-specific definitions and an unsent enquiry.
 

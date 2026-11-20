@@ -156,12 +156,12 @@ try {
       }, undefined, { timeout: 3000 })
       await active.press('Enter')
 
-      await reach('Review quick checks', 'Intended purpose')
+      await reach('Review placement checks', 'Intended purpose')
       await steady('Intended purpose')
       if (phone) await pointerAdvance()
       else await active.press('Enter')
 
-      await reach('Review project economics', 'Quick checks')
+      await reach('Review project economics', 'Placement checks')
       await page.waitForFunction(() => !document.querySelector('.floating-next--active .builder-continue')?.disabled)
       await page.waitForLoadState('networkidle')
       const checksArrival = await page.locator('#builder-quick-checks').evaluate(section => {
@@ -183,7 +183,7 @@ try {
         }
       })
       assert.ok(checksArrival.focus && checksArrival.titleY >= 0 && checksArrival.countsBottom <= checksArrival.footerY,
-        `Quick checks opens at the visible headline and counts: ${JSON.stringify(checksArrival)}`)
+        `Placement checks opens at the visible headline and counts: ${JSON.stringify(checksArrival)}`)
       assert.ok(checksArrival.labelsFit, 'Check count labels fit inside their own buttons')
       await active.press('Enter')
 

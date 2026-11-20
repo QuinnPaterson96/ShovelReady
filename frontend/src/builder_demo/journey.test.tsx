@@ -158,7 +158,7 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     assert.deepEqual(lastScroll, { id: 'builder-intended-use', options: { block: 'center', behavior: 'instant' } }, 'one destination scroll centers the focused purpose control')
     assert.equal(document.querySelector('.builder-journey-rail [aria-current="step"]')?.getAttribute('href'), '#builder-purpose')
     assert.equal(document.getElementById('builder-purpose')!.compareDocumentPosition(summary) & dom.window.Node.DOCUMENT_POSITION_FOLLOWING, dom.window.Node.DOCUMENT_POSITION_FOLLOWING)
-    await click('Next: Review quick checks →')
+    await click('Next: Review placement checks →')
     assert.equal(document.getElementById('builder-checks-disclosure')!.hidden, false, 'purpose continuation reveals the checks without requiring known answers')
     assert.match(document.querySelector('.builder-journey-rail')!.textContent!, /Intended purpose.*Reviewed/s)
     assert.equal(document.activeElement?.id, 'builder-quick-checks-title')
@@ -181,7 +181,7 @@ test('saved journey puts results below map, focuses facts, invalidates late meas
     await click('Continue to enquiry →')
     assert.equal(document.activeElement?.id, 'builder-enquiry-title')
     assert.equal(document.getElementById('builder-enquiry-content')!.hidden, false)
-    assert.match(document.querySelector('.builder-journey-rail')!.textContent!, /Quick checks✓Reviewed/)
+    assert.match(document.querySelector('.builder-journey-rail')!.textContent!, /Placement checks✓Reviewed/)
     const afterProgression = JSON.parse(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value)
     assert.deepEqual(afterProgression.measurement, JSON.parse(initialMeasurement).measurement)
     assert.equal(document.querySelector('#builder-enquiry-text'), null, 'missing context must not generate a recipient message')
@@ -662,7 +662,7 @@ test('one current boundary checklist recovers timeout, derives roles, preserves 
     assert.ok(JSON.parse(document.querySelector<HTMLTextAreaElement>('#builder-technical-record')!.value).open_questions_for_discussion.length > 0)
     await click('Change intended use'); await settle()
     assert.equal(document.activeElement?.id, 'builder-intended-use', 'dependent check opens and focuses the real use control')
-    await click('Next: Review quick checks →'); await settle()
+    await click('Next: Review placement checks →'); await settle()
     assert.equal(document.querySelector<HTMLSelectElement>('#builder-intended-use')!.value, 'Not sure', 'purpose progression preserves explicit uncertainty')
 
 
