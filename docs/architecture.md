@@ -526,8 +526,10 @@ fixed City heritage/conservation/DPA/special-restriction/application/history sou
 using the selected parcel polygon and its GISLINK history join. Bounded failures,
 missing joins and truncated responses remain unknown; records require review.
 Successful empty searches are probably clear only within that searched scope.
-Issued permit documents, title covenants, projections and servicing are not scanned.
-The UI retains these as separate review gaps and links the City's records portals.
+The [Victoria permit records pilot](victoria-permit-records.md) projects file links
+from the same parcel-linked history response. Dated tracker observations add
+issuance evidence and approved-plan links for two identified cases where supported.
+Determining which permit conditions apply remains a separate professional review.
 No new dataset release or accepted source interpretation is published. Saved Parcel
 87 also receives the current zoning lookup; manual sketches receive no invented zone.
 

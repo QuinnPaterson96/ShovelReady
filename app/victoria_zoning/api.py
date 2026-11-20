@@ -107,6 +107,10 @@ class SourceFailure(Exception):
     pass
 
 
+class SourceTruncated(SourceFailure):
+    pass
+
+
 def _query(layer: str, params: dict[str, Any], label: str) -> tuple[dict, SourceRecord]:
     url = f"{layer}/query?{urlencode({'f': 'json', **params})}"
     if len(url) > MAX_QUERY_CHARS:
@@ -119,11 +123,15 @@ def _query(layer: str, params: dict[str, Any], label: str) -> tuple[dict, Source
         if len(raw) > MAX_BYTES:
             raise SourceFailure("provider response too large")
         value = json.loads(raw)
-        if not isinstance(value, dict) or value.get("error") or value.get("exceededTransferLimit"):
+        if not isinstance(value, dict) or value.get("error"):
             raise SourceFailure("provider query failed or exceeded transfer limit")
+        if value.get("exceededTransferLimit"):
+            raise SourceTruncated("provider query failed or exceeded transfer limit")
         rows = value.get("features")
-        if not isinstance(rows, list) or len(rows) >= MAX_FEATURES:
+        if not isinstance(rows, list):
             raise SourceFailure("provider feature count unavailable or excessive")
+        if len(rows) >= MAX_FEATURES:
+            raise SourceTruncated("provider feature count unavailable or excessive")
         if (
             params.get("returnGeometry") != "false"
             and value.get("spatialReference", {}).get("wkid") != 3157

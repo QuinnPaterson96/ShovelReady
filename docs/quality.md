@@ -276,6 +276,8 @@ issue, reported status, completion and occupancy as distinct events. Current por
 zoning labels on historical rows are not evidence of historical law; a completed
 permit record does not itself discharge each condition or fix a plan revision.
 Listings and provider offers may identify later changes but remain attributed claims.
+The [Victoria permit pilot](victoria-permit-records.md) records the same-parcel dated
+and undated issuance-task examples, verification and proposed expansion test.
 
 Separate not found in reviewed scope, not applicable under stated facts, extraction failure, unsupported semantics, and missing parcel facts. Model confidence is not a substitute for review or measured accuracy. Quarantine malformed data; preserve useful unresolved rules with explicit status.
 
