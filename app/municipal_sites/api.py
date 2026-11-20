@@ -3,6 +3,7 @@
 import hashlib
 import json
 import math
+import os
 import time
 from datetime import UTC, datetime
 from typing import Any, Literal
@@ -142,6 +143,7 @@ class Roofline(GeometryFeature):
 
 
 class ObserveResponse(StrictModel):
+    aerial: Literal["crd-2025-10cm"] | None = None
     schema_version: Literal["municipal-sites.v1"]
     status: Literal["available", "partial", "missing", "invalid", "stale"]
     parcel_ref: MunicipalParcelRef
@@ -459,6 +461,8 @@ def observe(request: ObserveRequest) -> dict:
             "issues": [f"parcel_{issue}"],
             "evidence": [parcel_evidence],
         }
+    # CRD public viewing does not grant public display rights to this application.
+    aerial = "crd-2025-10cm" if os.getenv("SHOVELREADY_LICENSED_CRD_2025") == "1" else None
     parcel = {
         "attributes": row["attributes"],
         "geometry": raw_geometry,
@@ -490,6 +494,7 @@ def observe(request: ObserveRequest) -> dict:
             "status": "partial",
             "parcel_ref": request.parcel_ref.model_dump(),
             "parcel": parcel,
+            "aerial": aerial,
             "rooflines": [],
             "issues": ["roofline_fetch_failed", str(exc.detail)],
             "evidence": [parcel_evidence],
@@ -532,6 +537,7 @@ def observe(request: ObserveRequest) -> dict:
     return {
         "schema_version": VERSION,
         "status": "partial" if issues else "available",
+        "aerial": aerial,
         "parcel_ref": request.parcel_ref.model_dump(),
         "parcel": parcel,
         "rooflines": rooflines,

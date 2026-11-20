@@ -29,7 +29,9 @@ export function AddressCandidates({ addresses, selectedId, onChoose }: { address
     </>} />
   </section>
 }
-export function SiteDiscovery({ onConfirm, onMunicipalityChange, municipality: municipalityOverride, transport = liveTransport, onManual, autoProceed = false, resetKey = 0, inspectKey = 0, initialQuery = '', onQueryChange }: { onConfirm: (value: Confirmed | null) => void; onMunicipalityChange?: (value: MunicipalityContext | null) => void; municipality?: MunicipalityContext | null; transport?: Transport; onManual?: () => void; autoProceed?: boolean; resetKey?: number; inspectKey?: number; initialQuery?: string; onQueryChange?: (query: string) => void }) {
+type SelectionActions = { onInspectAlternatives?: () => void; onRetryObservation: () => void }
+
+export function SiteDiscovery({ renderSelection, onConfirm, onMunicipalityChange, municipality: municipalityOverride, transport = liveTransport, onManual, autoProceed = false, resetKey = 0, inspectKey = 0, initialQuery = '', onQueryChange }: { renderSelection?: (value: Confirmed, actions: SelectionActions) => React.ReactNode; onConfirm: (value: Confirmed | null) => void; onMunicipalityChange?: (value: MunicipalityContext | null) => void; municipality?: MunicipalityContext | null; transport?: Transport; onManual?: () => void; autoProceed?: boolean; resetKey?: number; inspectKey?: number; initialQuery?: string; onQueryChange?: (query: string) => void }) {
   const [state, setState] = useState<State>(() => ({ ...initial, query: initialQuery }))
   const [addressOpen, setAddressOpen] = useState(true)
   const [parcelOpen, setParcelOpen] = useState(true)
@@ -45,10 +47,15 @@ export function SiteDiscovery({ onConfirm, onMunicipalityChange, municipality: m
   useEffect(() => { if (parcelOpen && state.parcels.length > 1) document.getElementById('sd-parcels')?.focus() }, [parcelOpen, state.parcels.length, inspectKey])
   const { query, busy, addresses, address, municipality, parcels, parcel, observation, confirmed, message } = state
   const displayedMunicipality = municipalityOverride === undefined ? municipality : municipalityOverride
-  if (autoProceed && confirmed && (parcels.length === 1 || !parcelOpen)) return <SelectedProperty value={confirmed} municipality={displayedMunicipality}
-    onChangeProperty={() => { flow.changeProperty(); setAddressOpen(true); setParcelOpen(true); setObservationOpen(true) }}
-    onInspectAlternatives={parcels.length > 1 ? () => setParcelOpen(true) : undefined}
-    onRetryObservation={() => void flow.chooseParcel(confirmed.parcel.id)} />
+  if (autoProceed && confirmed && (parcels.length === 1 || !parcelOpen)) {
+    const actions: SelectionActions = {
+      onInspectAlternatives: parcels.length > 1 ? () => setParcelOpen(true) : undefined,
+      onRetryObservation: () => void flow.chooseParcel(confirmed.parcel.id),
+    }
+    if (renderSelection) return renderSelection(confirmed, actions)
+    return <SelectedProperty value={confirmed} municipality={displayedMunicipality} {...actions}
+      onChangeProperty={() => { flow.changeProperty(); setAddressOpen(true); setParcelOpen(true); setObservationOpen(true) }} />
+  }
   return <section className="site-discovery" aria-labelledby="site-discovery-title">
     <div className="sd-address-heading"><h4 id="site-discovery-title">Enter your address</h4><StepInfo label="Address search and property outlines"><p>Choose an address result. A sole usable municipal parcel opens placement automatically; several parcels require your choice.</p><p>Address suggestions and municipal outlines are unreviewed source leads. Neither a geocoder score nor a nearby point proves parcel identity. Rooflines are mapped roof outlines, not legal building walls. Check the property identity and source dates independently.</p></StepInfo></div>
     {address && !addressOpen && <div className="sd-selected"><p><strong>Address lead:</strong> {address.label}{address.locality ? ` · ${address.locality}` : ''}. Parcel identity is still separate.</p><button type="button" onClick={() => setAddressOpen(true)}>Change address</button></div>}

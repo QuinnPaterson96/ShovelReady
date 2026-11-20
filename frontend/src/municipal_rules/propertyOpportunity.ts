@@ -5,7 +5,7 @@ import type { Confirmed } from '../site_discovery/flow'
 import { placementCase } from '../site_discovery/placement'
 import { municipalProfile } from './model'
 
-type Opportunity = { detail: string; sourceLabel: string; sourceUrl: string | null }
+export type Opportunity = { evidence: unknown; detail: string; sourceLabel: string; sourceUrl: string | null }
 const profile = municipalProfile('ca-bc-saanich')
 const areaDefinition = profile?.inputs.find(field => field.id === 'lot_area')?.definition
 
@@ -39,7 +39,8 @@ export function usePropertyOpportunity(selected: Confirmed | null): Opportunity 
       const roundedToMinimum = observed === minimum && Number(value.derived_area_m2) !== Number(value.minimum_m2)
       const close = roundedToMinimum ? ` (unrounded ${value.derived_area_m2} m²)` : ''
       setResult({ property: selected, opportunity: {
-        detail: `The mapped parcel is approximately ${observed}${close}. It ${meets ? 'meets' : 'falls below'} the ${minimum} lot-area minimum in the preliminary Saanich garden-suite check. The zone and other site conditions still need checking.`,
+        evidence: value,
+        detail: `This lot ${meets ? 'meets' : 'falls below'} the ${minimum} garden-suite lot-area minimum${close}. The zone still needs checking.`,
         sourceLabel: `District of Saanich · ${source.locator} · captured ${readableDate(source.capture_date)} · unreviewed`,
         sourceUrl: publicSourceUrl(source.url),
       } })

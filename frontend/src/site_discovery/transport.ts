@@ -160,7 +160,7 @@ export function parseObservation(value: unknown, selected: Parcel): Observation 
       !object(roof.attributes)) throw Error('Invalid roofline observation')
     return { id: String(roof.attributes.OBJECTID ?? index), geometry: polygon(roof.planar_geometry) }
   })
-  return { parcel: { geometry: parcelGeometry, areaM2: value.parcel.area_m2 }, roofs, crs: 'EPSG:3157',
+  return { aerial: value.aerial === 'crd-2025-10cm' ? value.aerial : undefined, parcel: { geometry: parcelGeometry, areaM2: value.parcel.area_m2 }, roofs, crs: 'EPSG:3157',
     buildingsState: value.status as string, issues: [...value.issues, (value.evidence[0] as Record<string, unknown>).source_date_limit as string,
       ...(parcelGeometry.type === 'MultiPolygon' ? ['This parcel has separate components. The placement engine cannot measure multipart parcels yet; inspect or continue manually.'] : [])],
     source, roofSource, raw: value }

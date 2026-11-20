@@ -79,6 +79,7 @@ def fixture(name):
 
 def test_address_selection_to_geometry_and_export(monkeypatch):
     http = client(monkeypatch)
+    monkeypatch.delenv("SHOVELREADY_LICENSED_CRD_2025", raising=False)
     result = http.post("/api/municipal-sites/search", json=request_search()).json()
     assert result["status"] == "candidates"
     assert [(x["pid"], x["relation"]) for x in result["candidates"]] == [
@@ -89,6 +90,10 @@ def test_address_selection_to_geometry_and_export(monkeypatch):
         "/api/municipal-sites/observe", json=request_observe(expected_pid="001-328-107")
     ).json()
     assert observation["status"] == "available"
+    assert observation["aerial"] is None
+    monkeypatch.setenv("SHOVELREADY_LICENSED_CRD_2025", "1")
+    enabled = http.post("/api/municipal-sites/observe", json=request_observe()).json()
+    assert enabled["aerial"] == "crd-2025-10cm"
     assert observation["parcel"]["horizontal_crs"] == "EPSG:3157"
     assert abs(observation["parcel"]["area_m2"] - 642.02) < 0.02
     assert len(observation["rooflines"]) == 1

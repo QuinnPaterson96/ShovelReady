@@ -248,7 +248,8 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const victoriaCoverage = hasVictoriaCoverage(currentMunicipality)
   const localProfile = ruleProfile(currentMunicipality)
   const localComparisonsAvailable = supports(localProfile, 'screening') && (mode === 'example' || mode === 'live')
-  const opportunity = usePropertyOpportunity(propertyFirst && (!modelReady || expanded.property) && localProfile?.jurisdiction_id === 'ca-bc-saanich' ? live : null)
+  const showPropertyOptions = propertyFirst && !!live && (!modelReady || expanded.property)
+  const opportunity = usePropertyOpportunity(showPropertyOptions && localProfile?.jurisdiction_id === 'ca-bc-saanich' ? live : null)
   const municipalityKey = JSON.stringify([currentMunicipality?.name, currentMunicipality?.rule_coverage])
   const [manual, setManual] = useState<ManualSiteOutput | null>(null)
   const liveCase = useMemo(() => live ? placementCase(live) : undefined, [live])
@@ -770,9 +771,9 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   const previousPropertyComplete = useRef(false)
   useEffect(() => {
     if (!playbackLayoutRef.current && propertyComplete && !previousPropertyComplete.current) { setExpanded({ property: false, placement: true, next: false, email: false }); setJourneyStep('placement') }
-    if (!propertyComplete && previousPropertyComplete.current && !comparingDetached) { setExpanded({ property: true, placement: false, next: false, email: false }); setJourneyStep('property') }
+    if (!propertyComplete && previousPropertyComplete.current && !comparingDetached && !choosingModel) { setExpanded({ property: true, placement: false, next: false, email: false }); setJourneyStep('property') }
     previousPropertyComplete.current = propertyComplete
-  }, [propertyComplete, comparingDetached])
+  }, [propertyComplete, comparingDetached, choosingModel])
   useEffect(() => {
     if (!playbackLayoutRef.current && journeyStep === 'placement' && propertyComplete) requestAnimationFrame(() => {
       if (playbackLayoutRef.current || !journeyVisible.current) return
@@ -1134,7 +1135,7 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
   }
   function focusJourneyStep(step: JourneyStep) {
     if (step === 'property') {
-      if (live && propertyFirst && !modelReady && !expanded.property) {
+      if (showPropertyOptions && document.getElementById('property-options-title')) {
         focusSummaryTarget(document, 'property-options-title', 'start')
         return
       }
@@ -1352,13 +1353,13 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     setJourneyStep('property')
   }
   function explorePropertyOption(next: 'model' | 'replacement') {
-    if (next === 'model' && !use && propertyPurpose !== 'edited') changeIntendedUse('Garden suite', 'garden_path')
-    if (next === 'model' && modelReady) { openJourneyStep('placement'); return }
+    setHousePlan(next === 'replacement' ? 'replace' : 'keep')
+    if (next === 'model' && propertyPurpose !== 'edited') changeIntendedUse('Garden suite', 'garden_path')
     if (next === 'replacement') {
       if (propertyPurpose === 'captured') changeIntendedUse('', 'leave_path')
       setOpenedReplacement(true)
     }
-    if (next === 'replacement' && modelReady) {
+    if (modelReady) {
       setPlacementSeed(placementDraft)
       setMeasurementResult(null)
       setGeometryPending(false)
@@ -1444,7 +1445,8 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     {/* Playback reports readiness in its stable player; removing a second banner here would move its destination. */}
     {modelReady && checksPending && !playbackActive && <p role="status">Updating checks. {summary ? 'Previous findings are shown for reference; ' : ''}copy and save will use the updated results when ready.</p>}
     <EnquiryRecovery enquiry={!checksPending && (expanded.next || enquiryReady) ? draftText : null} report={reportDoc ? enquiryPlainText(reportDoc) : null} technicalEvidence={JSON.stringify(technicalEvidence, null, 2)} />
-    <section className="builder-stage" id="builder-property" aria-labelledby="builder-property-title">
+    <section className="builder-stage" id="builder-property" aria-label={showPropertyOptions ? 'Selected property' : undefined} aria-labelledby={showPropertyOptions ? undefined : 'builder-property-title'}>
+    {!showPropertyOptions && <>
     {propertyFirst
       ? <h1 id="builder-property-title">{live ? 'Your property' : 'Find your property'}</h1>
       : <h2 id="builder-property-title">{mode === 'example' ? 'Could this fit on your property?' : 'Find your property'}</h2>}
@@ -1453,8 +1455,13 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
       if (propertyFirst && modelReady && !expanded.property) openJourneyStep('property')
       else toggleStep('property')
     }}>{expanded.property ? 'Collapse property' : 'Review or change property'}</button>}
-    <div id="builder-property-content" hidden={propertySelected && !expanded.property}>
-    {mode === 'live' && <SiteDiscovery autoProceed municipality={currentMunicipality} onMunicipalityChange={changeMunicipality} resetKey={propertyReset} inspectKey={propertyInspect} initialQuery={addressQuery.current} onQueryChange={query => { addressQuery.current = query }} onConfirm={next => { siteEdited(); setLive(next); if (next) { setManualOpened(false); setExpanded(previous => ({ ...previous, property: false })) } }} onManual={() => changeMode('manual')} />}
+    </>}
+    <div id="builder-property-content" hidden={propertySelected && !expanded.property && !showPropertyOptions}>
+    {mode === 'live' && <SiteDiscovery autoProceed renderSelection={showPropertyOptions ? (selected, actions) =>
+      <PropertyOptions key={selected.parcel.id} selected={selected} opportunity={opportunity} zoning={currentZoning} scan={propertyScan.result}
+        municipalityMismatch={currentMunicipality?.origin === 'user' && currentMunicipality.name !== observedMunicipality?.name}
+        checkingZone={!!zoningKey && !currentZoning && !currentZoningError} onChangeAddress={changeProperty} {...actions}
+        onExploreGarden={() => explorePropertyOption('model')} onExploreDetached={() => explorePropertyOption('replacement')} /> : undefined} municipality={currentMunicipality} onMunicipalityChange={changeMunicipality} resetKey={propertyReset} inspectKey={propertyInspect} initialQuery={addressQuery.current} onQueryChange={query => { addressQuery.current = query }} onConfirm={next => { siteEdited(); setLive(next); if (next) { setManualOpened(false); setExpanded(previous => ({ ...previous, property: false })) } }} onManual={() => changeMode('manual')} />}
     {mode === 'example' && <p>Example property—not your property. <button type="button" onClick={() => changeMode('live')}>Enter your address instead</button></p>}
     {mode === 'manual' && <><button type="button" onClick={() => changeMode('live')}>Back to address search</button><MunicipalityCoverage value={currentMunicipality} onChange={changeMunicipality} />{victoriaCoverage && <p>Manual sketches provide geometry checks. Choose a supported mapped property for city-specific rule comparisons.</p>}</>}
     {mode === 'retained' && <SitePreparation draft={draft} onDraftChange={next => { setDraft(next); setReadyFor(null) }} selection={selection}
@@ -1464,7 +1471,9 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
     </div>
     </section>
     {!propertySelected && <p className="builder-journey-preview">{propertyFirst ? 'Find property → Explore options → Try a model' : 'Find property → Place unit → Review → Contact provider'}</p>}
-    {propertySelected && live && !expanded.property ? <SelectedProperty value={live} municipality={currentMunicipality} onChangeProperty={changeProperty} onInspectAlternatives={() => { setPropertyInspect(value => value + 1); setExpanded(previous => ({ ...previous, property: true })); setJourneyStep('property'); requestAnimationFrame(() => focusSummaryTarget(document, 'sd-parcels')); }} /> : propertyComplete && !live && <div className="builder-selected-property"><strong>Property: {mode === 'example' ? '419 Cecelia Road · saved example, not your property' : manual?.facts.address || 'User-supplied site'}</strong><span>Approximate and unreviewed</span><button type="button" onClick={changeProperty}>Wrong property? Change</button></div>}
+    {propertySelected && live && !expanded.property && !showPropertyOptions ? <SelectedProperty value={live} municipality={currentMunicipality} onChangeProperty={changeProperty} onInspectAlternatives={() => { setPropertyInspect(value => value + 1); setExpanded(previous => ({ ...previous, property: true })); setJourneyStep('property'); requestAnimationFrame(() => focusSummaryTarget(document, 'sd-parcels')); }} /> : propertyComplete && !live && <div className="builder-selected-property"><strong>Property: {mode === 'example' ? '419 Cecelia Road · saved example, not your property' : manual?.facts.address || 'User-supplied site'}</strong><span>Approximate and unreviewed</span><button type="button" onClick={changeProperty}>Wrong property? Change</button></div>}
+    {propertyFirst && modelPanel}
+    {propertyFirst && openedReplacement && live && <div hidden={!comparingDetached} id={comparingDetached ? 'builder-model' : undefined}><ReplacementPlans key={geometryRevision} selected={live} onBack={backToPropertyOptions} /></div>}
     {mode === 'live' && live && <TitleReferenceEditor key={live.parcel.id} selected={live} value={currentTitleReference}
       sketch={exportMeasurement && titleParcelMatch(live) ? { key: drawingKey, prepare: async () => {
         const assets = drawingAssets ?? await generateDrawing(exportMeasurement)
@@ -1477,13 +1486,9 @@ export default function BuilderDemo({ onProgressChange, presetRequest = 0, entry
       setEmailRequestedFor(null)
       setWebsiteRequestedFor(null)
     }} />}
-    {propertyFirst && live && (!modelReady || expanded.property) && <PropertyOptions selected={live} opportunity={housePlan === 'replace' || comparingDetached ? null : opportunity} housePlan={housePlan} onHousePlanChange={next => {
-      setHousePlan(next)
-      if ((comparingDetached && next === 'keep') || (choosingModel && next === 'replace')) backToPropertyOptions()
-    }} zoning={currentZoning} scan={propertyScan.result} onExploreGarden={() => explorePropertyOption('model')} onExploreDetached={() => explorePropertyOption('replacement')} />}
+
     {propertySelected && <SewerService scan={propertyScan} address={mode === 'example' ? exampleCase.label : live?.address.label ?? null} intendedUse={use} housePlan={housePlan} detached={comparingDetached} example={mode === 'example'} />}
-    {propertyFirst && modelPanel}
-    {propertyFirst && openedReplacement && live && <div hidden={!comparingDetached} id={comparingDetached ? 'builder-model' : undefined}><ReplacementPlans key={geometryRevision} selected={live} onBack={backToPropertyOptions} /></div>}
+
     <section hidden={!propertyComplete} className="builder-stage" id="builder-placement" aria-labelledby="builder-placement-title">
       <p className="eyebrow">Placement</p><h2 id="builder-placement-title">Explore one approximate placement</h2>
       <p>{propertyComplete ? zoningCase ? 'Place the unit and see what is worth exploring.' : placementSummary : 'Choose a property to explore placement.'}</p>

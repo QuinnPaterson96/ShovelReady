@@ -139,7 +139,7 @@ async function selectProperty(query, result) {
 }
 
 async function measurePlacement() {
-  await button('Explore a garden suite').click()
+  await button('Add a garden suite').click()
   await button('Try this model').click()
   await page.waitForFunction(() => {
     const record = document.querySelector('#builder-technical-record')

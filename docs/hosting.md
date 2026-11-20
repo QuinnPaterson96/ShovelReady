@@ -25,6 +25,7 @@ the immutable-image delivery/restore criteria in SR-15.
   migration, volume, source publication, contact storage or automatic ingestion runs.
 - Railway's RAILWAY_GIT_COMMIT_SHA provides the application/frontend identity when
   explicit ShovelReady commit variables are absent. The same Docker build produces both.
+- The property card defaults to a sketch with a link to CRD's aerial for the selected parcel. Keep `SHOVELREADY_LICENSED_CRD_2025` unset for the public demo. Set it to `1` only for a deployment with public-display rights covering that mosaic and attribution. [Coverage and verification](quality.md#property-first-options-card)
 - The BC geocoder and Victoria APIs are queried on demand. Provider failure remains
   visible and manual entry remains available. Do not include secrets in frontend builds.
 - /health is process liveness, not a promise of upstream availability or zoning accuracy.

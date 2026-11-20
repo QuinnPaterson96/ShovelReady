@@ -14,6 +14,9 @@ const [may, outside, municipal] = await Promise.all([
 ])
 const streets = JSON.parse(await readFile(new URL('./fixtures/municipal-street-edges.json', import.meta.url), 'utf8'))
 const lake = JSON.parse(await readFile(new URL('./fixtures/prospect-lake-waterfront.json', import.meta.url), 'utf8'))
+const mayZoning = JSON.parse(await readFile(new URL('./fixtures/may-street-zoning.json', import.meta.url), 'utf8'))
+let cardCase = null
+let requestedImage = null
 let lakeSelected = false
 let releaseStreets
 const delayedStreets = new Promise(resolve => { releaseStreets = resolve })
@@ -27,6 +30,17 @@ let holdMunicipal = false, municipalStarted = false, releaseMunicipal
 let holdOpportunity = false, releaseOpportunity, opportunityReleased = false
 await context.route('**/*', async route => {
   const request = route.request(), url = new URL(request.url())
+  if (cardCase && url.origin === 'https://mapservices.crd.bc.ca' && url.pathname.endsWith('/Orthos2025_10cm/ImageServer/exportImage')) {
+    requestedImage = url
+    if (cardCase === 'mapped' || cardCase === 'empty') {
+      // Synthetic raster exercises the transport and overlay without redistributing photography.
+      const raster = cardCase === 'empty'
+        ? 'iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAYAAAC09K7GAAAADElEQVR4nGNgIBkAAAAzAAGHXpxVAAAAAElFTkSuQmCC'
+        : 'iVBORw0KGgoAAAANSUhEUgAAAAQAAAADCAYAAAC09K7GAAAAEklEQVR4nGPoW9D9HxkzEBQAADjcIKF4Z9HzAAAAAElFTkSuQmCC'
+      return route.fulfill({ contentType: 'image/png', headers: { 'Cache-Control': 'no-store', 'Access-Control-Allow-Origin': '*' }, body: Buffer.from(raster, 'base64') })
+    }
+    return route.abort()
+  }
   if (url.origin !== new URL(base).origin) { errors.push(`Unexpected external request: ${url.origin}`); return route.abort() }
   if (!url.pathname.startsWith('/api/')) return route.continue()
   requests.push(url.pathname)
@@ -42,10 +56,18 @@ await context.route('**/*', async route => {
   }
   if (lakeSelected) {
     if (url.pathname === '/api/municipal-sites/search') return json(lake.search)
-    if (url.pathname === '/api/municipal-sites/observe') return json(lake.observation)
+    if (cardCase && url.pathname === '/api/municipal-sites/observe') return json({ ...municipal.observation, aerial: 'crd-2025-10cm' })
+  if (cardCase && url.pathname === '/api/victoria-zoning/lookup') return json(cardCase === 'mapped' ? mayZoning
+    : cardCase === 'empty' ? { ...mayZoning, zones: mayZoning.zones.map(zone => ({ ...zone, source_fields: { ...zone.source_fields, Zoning: 'GRD-1 - Site Specific' } })) }
+    : { ...mayZoning, status: 'partial_coverage', covered_area_m2: 300, uncovered_area_m2: mayZoning.parcel_area_m2 - 300 })
+  if (url.pathname === '/api/municipal-sites/observe') return json(lake.observation)
     if (url.pathname === '/api/municipal-sites/street-edges') return route.fulfill({status: 503, body: 'Offline streets'})
   }
   if (url.pathname === '/api/municipal-sites/search') return json(body.municipality === 'saanich' ? streets.saanich.search : municipal.search)
+  if (cardCase && url.pathname === '/api/municipal-sites/observe') return json({ ...municipal.observation, aerial: 'crd-2025-10cm' })
+  if (cardCase && url.pathname === '/api/victoria-zoning/lookup') return json(cardCase === 'mapped' ? mayZoning
+    : cardCase === 'empty' ? { ...mayZoning, zones: mayZoning.zones.map(zone => ({ ...zone, source_fields: { ...zone.source_fields, Zoning: 'GRD-1 - Site Specific' } })) }
+    : { ...mayZoning, status: 'partial_coverage', covered_area_m2: 300, uncovered_area_m2: mayZoning.parcel_area_m2 - 300 })
   if (url.pathname === '/api/municipal-sites/observe') return json(body.parcel_ref.source === 'district-of-saanich-parcels' ? streets.saanich.observation : municipal.observation)
   if (url.pathname === '/api/municipal-sites/street-edges') {
     if (body.parcel_ref.source === 'district-of-saanich-parcels') return json(streets.saanich.streets)
@@ -104,8 +126,7 @@ async function belowOptions(picker) {
     node.getBoundingClientRect().top > options.getBoundingClientRect().bottom, heading), 'Picker follows the property options in reading and visual order')
 }
 async function compareDetached() {
-  await page.getByRole('radio', { name: 'Replace it' }).check()
-  await page.getByRole('button', { name: 'Compare detached plans' }).click()
+  await page.getByRole('button', { name: 'Replace the main home' }).click()
   await detachedTitle.waitFor()
   await belowOptions(detachedTitle)
   assert.equal(await page.locator('#builder-placement').isVisible(), false)
@@ -113,16 +134,21 @@ async function compareDetached() {
   assert.equal(await detachedPanel.getByRole('radio').count(), 3)
   assert.equal(await page.locator('#builder-next').isVisible(), false, 'The detached path has no garden-suite enquiry')
 }
-async function chooseLayout(address, requestStart, { areaFinding = false, modelId = 'aux-240', keepHouse = false } = {}) {
+async function chooseLayout(address, requestStart, { areaFinding = false, modelId = 'aux-240' } = {}) {
   await propertyOptions.waitFor()
   const selectedProperty = page.getByRole('region', { name: 'Selected property', exact: true })
   assert.match(await selectedProperty.innerText(), address)
   assert.equal(await tryModel.isVisible(), false)
-  const option = page.locator('section[aria-labelledby="property-options-title"]')
-  assert.equal(await option.locator('input[type="radio"]:checked').count(), 0, 'House plans are optional and specific to the selected property')
+  const option = page.locator('article[aria-labelledby="property-options-title"]')
+  assert.equal(await option.locator('input[type="radio"]').count(), 0, 'Both project choices are direct actions')
+  const sourcePhoto = option.getByRole('link', { name: 'View the 2025 aerial at CRD' })
+  assert.equal(new URL(await sourcePhoto.getAttribute('href')).hostname, 'mapservices.crd.bc.ca')
   if (areaFinding) {
     await option.getByText(/400\s*m²/).first().waitFor()
-    assert.ok(await option.getByRole('link').first().isVisible(), 'A parcel finding identifies its local rule source')
+    const sources = option.getByText('Property details and sources', { exact: true })
+    await sources.click()
+    await option.getByRole('link', { name: /District of Saanich.*5.35/ }).waitFor()
+    await sources.click()
   } else {
     assert.doesNotMatch(await option.innerText(), /400\s*m²/, 'A previous Saanich parcel result cannot become a Victoria finding')
     await compareDetached()
@@ -141,20 +167,14 @@ async function chooseLayout(address, requestStart, { areaFinding = false, modelI
     assert.equal(await detachedPanel.getByRole('link', { name: /Sedona/ }).getAttribute('href'), 'https://pacific-homes.com/inspirational-home/sedona/')
     await detachedPanel.getByRole('button', { name: 'Back to property options' }).click()
     assert.equal(await detachedTitle.isVisible(), false)
-    await page.getByRole('button', { name: 'Compare detached plans' }).click()
+    await page.getByRole('button', { name: 'Replace the main home' }).click()
     assert.ok(await detachedPanel.getByRole('radio', { name: 'Sedona', exact: true }).isChecked(), 'Returning to this parcel keeps the chosen plan')
-    await option.getByRole('radio', { name: 'Still exploring' }).check()
   }
-  if (keepHouse) {
-    await option.getByRole('radio', { name: 'Replace it' }).check()
-    await option.getByRole('radio', { name: 'Keep it' }).check()
-  }
-  assert.equal(await tryModel.isVisible(), false, 'House preferences do not open the garden-suite model picker')
-  const exploreGarden = option.getByRole('button', { name: 'Explore a garden suite', exact: true })
+  const exploreGarden = option.getByRole('button', { name: 'Add a garden suite', exact: true })
   await exploreGarden.click()
   await tryModel.waitFor()
   if (!areaFinding) {
-    await option.getByRole('button', { name: 'Compare detached plans' }).click()
+    await option.getByRole('button', { name: 'Replace the main home' }).click()
     await detachedTitle.waitFor()
     assert.equal(await tryModel.isVisible(), false, 'The detached path closes the garden-suite model picker')
     await exploreGarden.click()
@@ -175,9 +195,63 @@ async function chooseLayout(address, requestStart, { areaFinding = false, modelI
   assert.equal(record.enquiry_inputs.intendedUse, 'Garden suite', 'The path choice supplies purpose before the purpose step')
 }
 
+async function checkCardViews() {
+  const card = page.locator('article[aria-labelledby="property-options-title"]')
+  for (const width of [1280, 390]) {
+    await page.setViewportSize({ width, height: 850 })
+    for (const scenario of ['mapped', 'partial', 'empty']) {
+      // A fresh document isolates image-load outcomes for the same parcel URL.
+      await page.goto('about:blank')
+      await page.goto(base)
+      await page.getByRole('button', { name: 'Check my property', exact: true }).click()
+      cardCase = scenario
+      requestedImage = null
+      await search('1144 May St')
+      await page.getByRole('button', { name: /1144 May St, Victoria/ }).click()
+      await propertyOptions.waitFor()
+      assert.equal(await propertyOptions.innerText(), '1144 May St, Victoria')
+      if (scenario === 'mapped') {
+        await card.getByRole('img', { name: /aerial photograph/ }).waitFor()
+        await card.getByRole('link', { name: /Capital Regional District/ }).waitFor()
+        await card.getByText('Garden suite ✓', { exact: true }).waitFor()
+        assert.deepEqual(await card.locator('.property-use-list li').allTextContents(), ['Detached home ✓', 'Plex ✓', 'Apartment ✓', 'Garden suite ✓'])
+        assert.equal(requestedImage.searchParams.get('imageSR'), '3157')
+        const [west, south, east, north] = requestedImage.searchParams.get('bbox').split(',').map(Number)
+        for (const [x, y] of municipal.observation.parcel.planar_geometry.coordinates[0]) {
+          assert.ok(x > west && x < east && y > south && y < north, 'Image extent encloses this parcel')
+        }
+      } else {
+        await card.getByText(scenario === 'empty' ? /Permitted uses still need checking/ : /zoning map covers only part/i).waitFor()
+        await until(async () => requestedImage && await card.locator('.property-aerial').count() === 0, 'Failed image should leave the sketch')
+        assert.ok(await card.getByRole('img', { name: /projected parcel outline/i }).isVisible())
+        assert.equal(await card.locator('.property-use-list li').count(), 0)
+      }
+      const sources = card.locator('summary')
+      assert.equal(await sources.count(), 1)
+      await sources.focus()
+      await page.keyboard.press('Enter')
+      await card.getByLabel('Complete property and zoning evidence').waitFor()
+      await page.keyboard.press('Enter')
+      await card.scrollIntoViewIfNeeded()
+      await card.screenshot({ path: `${output}/property-card-${width}-${scenario}.png` })
+      assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1))
+      await compareDetached()
+      await card.getByRole('button', { name: 'Add a garden suite' }).click()
+      await tryModel.waitFor()
+      await belowOptions(tryModel)
+      await card.getByRole('button', { name: 'Change address' }).click()
+      assert.equal(await card.count(), 0)
+      assert.equal(await tryModel.isVisible(), false)
+    }
+  }
+  cardCase = null
+  await page.setViewportSize({ width: 1280, height: 900 })
+}
+
 try {
   await page.goto(base)
   await page.getByRole('button', { name: 'Check my property', exact: true }).click()
+  await checkCardViews()
   // Leave a selected Saanich parcel while its area check is in flight.
   holdOpportunity = true
   await search('200 Gorge Rd W')
@@ -198,7 +272,7 @@ try {
   let value = await current()
   assert.equal(value.municipality.jurisdiction_id, 'ca-bc-victoria')
   assert.equal(value.municipality.origin, 'municipal_parcel')
-  assert.equal(value.enquiry_inputs.housePlan, 'exploring', 'The property preference survives model selection')
+  assert.equal(value.enquiry_inputs.housePlan, 'keep', 'Adding a suite retains the existing house')
   assert.equal(value.project_settings.proposal.proposed_use, 'garden_suite')
   assert.equal(value.planning_comparison_scope.garden_suite_comparisons_applied, true)
   assert.equal(value.demo_answer_provenance.intendedUse, undefined)
@@ -287,9 +361,9 @@ try {
   const editedEnquiry = page.locator('#builder-unsent-preview')
   await until(async () => (await editedEnquiry.textContent())?.includes('Home office'), 'The corrected purpose did not reach the enquiry')
   await page.locator('a[href="#builder-property"]').first().click()
-  await page.getByRole('button', { name: 'Compare detached plans' }).click()
+  await page.getByRole('button', { name: 'Replace the main home' }).click()
   await detachedTitle.waitFor()
-  await page.getByRole('button', { name: 'Explore a garden suite', exact: true }).click()
+  await page.getByRole('button', { name: 'Add a garden suite', exact: true }).click()
   await tryModel.click()
   await settled()
   assert.equal((await current()).enquiry_inputs.intendedUse, 'Home office', 'Reopening the garden path preserves the explicit edit on the same parcel')
@@ -323,7 +397,7 @@ try {
   const before = requests.length
   await search('200 Gorge Rd W')
   await page.getByRole('button', { name: /200 Gorge Rd W, Saanich/ }).click()
-  await chooseLayout(/200 Gorge Rd W, Saanich/, before, { areaFinding: true, keepHouse: true })
+  await chooseLayout(/200 Gorge Rd W, Saanich/, before, { areaFinding: true })
   await until(async () => (await current()).zoning_site_assumptions?.street_adjacency?.origin === 'municipal_map', 'Missing Saanich prefill')
   const observed = await current()
   assert.equal(observed.municipality.jurisdiction_id, 'ca-bc-saanich')
