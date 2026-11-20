@@ -17,7 +17,7 @@ const scanHelp: Record<string, string> = {
   'Mapped development applications': 'Development applications shown near or on the parcel by the City map query. Check the application and its location in Development Tracker; a map hit is not an issued approval.',
   'Development application history': 'Application-history records linked by the City query. Review their status and underlying documents in Development Tracker or the Property Information Portal.',
   'Title restrictions': 'Registered interests such as covenants, easements or rights of way that may affect how land can be used. Obtain the current title and relevant registered documents from LTSA; ask a qualified professional to interpret their effect. This scan has not searched title records.',
-  'Projections': 'Parts extending beyond the main building walls, such as eaves, balconies or steps. Ask the provider for installed drawings and have the proposed projections checked against the applicable City rules. They are not captured by the nominal rectangle.',
+  'Projections': 'Parts extending beyond the main building walls, such as eaves, balconies or steps. Ask the provider which edges the published dimensions include, then check the installed projections against the applicable City rules.',
   'Service capacity': 'Whether water, sewer, drainage and power can support the additional building. Ask City servicing staff and utility providers about the proposed connections and any upgrades. This scan does not assess capacity.',
 }
 function ScanCard({ label, status, answer, source, row }: { label: string; status: 'probable' | 'review' | 'unknown'; answer: string; source: string; row?: PropertyScanResult['findings'][number] }) {
@@ -85,7 +85,7 @@ export function usePropertyScan(request: { parcel_ref: ParcelRef; expected_pid?:
   return { result: key && state?.key === key ? state.result : null, error: key && state?.key === key ? state.error : '', busy: !!key && state?.key !== key, available: !!key, retry: () => setAttempt(value => value + 1) }
 }
 
-export function PropertyScan({ scan }: { scan: ReturnType<typeof usePropertyScan> }) {
+export function PropertyScan({ scan, onReviewProjection }: { scan: ReturnType<typeof usePropertyScan>; onReviewProjection?: () => void }) {
   useEffect(() => { void import('./property-scan.css') }, [])
   const sewer = scan.result?.sewer
   const sewerUnavailable = sewer === null || !!scan.error
@@ -102,7 +102,11 @@ export function PropertyScan({ scan }: { scan: ReturnType<typeof usePropertyScan
     })}
       <PermitRecordsCard records={scan.result?.permit_records} busy={scan.busy} available={scan.available} />
       <ScanCard label="Title restrictions" status="unknown" answer="Maybe · Not checked" source="Property-specific records needed" />
-      <ScanCard label="Projections" status="unknown" answer="Maybe · Not checked" source="Property-specific records needed" />
+      {onReviewProjection
+        ? <li className="property-scan__unknown"><button type="button" className="property-scan__projection" onClick={onReviewProjection}>
+          <StatusIcon status="unknown" /><span className="property-scan__card-content"><strong>Projections</strong><span>Check eave clearance in placement</span><small>Model 240 · local setback treatment unresolved</small></span>
+        </button></li>
+        : <ScanCard label="Projections" status="unknown" answer="Maybe · Not checked" source="Ask for a dimensioned installed plan" />}
       {sewer || sewerUnavailable ? <li className="property-scan__unknown"><div className="property-scan__service"><strong>Service capacity</strong>
         <p>{sewerStatusLabels[sewer?.status ?? 'unavailable']}. Capacity for this proposal still needs City confirmation. Water, storm drainage and power are outside this scan.</p>
         <a href="#sewer-service">Review the sewer finding and City contact</a>

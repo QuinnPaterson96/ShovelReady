@@ -621,6 +621,12 @@ handoff. Physical-device keyboards, actual screen-reader speech and homeowner
 comprehension remain separate engineering/research follow-ups. No source review,
 accepted-data publication, database change or provider contact is implied.
 
+## Model 240 eave clearance pilot
+
+The [pilot source and validation record](model-240-projection-pilot.md) identifies the dimensions and open provider question. The mounted placement check uses a 13 m square parcel and a nominal face 0.226 m inside its boundary. A 0.30 m added projection crosses that edge. The includes-gutter assumption keeps the original gap. Nudging and rotating the model change the limiting gap. The saved-example journey covers navigation from the projections row.
+
+On the pilot branch, an additional deterministic cross-check against Shapely/GEOS compared 2,400 rotated faces and bands on rectangular and concave parcels, including a hole. Gap distances and inside/outside classifications agreed within 0.0000001 m. A Chrome keyboard check at 390 px wide reached the placement panel from Quick checks with focus and no horizontal overflow. The saved position showed 5.86 m with the example extension and 6.16 m when the gutter was assumed included. The browser exercise used offline service responses. Provider confirmation, local clause review and homeowner validation are separate open steps.
+
 ## Victoria sanitary sewer pilot
 
 The [service verification record](victoria-sanitary-sewer.md) covers live selected
