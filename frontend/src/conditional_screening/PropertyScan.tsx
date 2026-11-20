@@ -3,7 +3,7 @@ import { TechnicalDetails, CopyableRecord, readableDate } from '../ReadableProve
 import type { ParcelRef } from './victoriaZoning'
 import { StepInfo } from '../StepInfo'
 import { StatusIcon } from './HomeownerSummary'
-import { parseSewerService, sewerStatusLabels, type SewerServiceFinding } from './SewerService'
+import { parseSewerService, sewerFinding, sewerSources, type SewerServiceFinding } from './SewerService'
 import { PermitRecordsCard, validatePermitRecords, type PermitRecords } from './PermitRecordsCard'
 
 const scanLabels = ['Heritage properties', 'Heritage conservation areas', 'Development permit areas', 'Mapped special restrictions', 'Mapped development applications', 'Development application history']
@@ -18,7 +18,6 @@ const scanHelp: Record<string, string> = {
   'Development application history': 'Application-history records linked by the City query. Review their status and underlying documents in Development Tracker or the Property Information Portal.',
   'Title restrictions': 'Registered interests such as covenants, easements or rights of way may affect how land can be used. The City scan does not search title records.',
   'Projections': 'Parts extending beyond the main building walls, such as eaves, balconies or steps. Ask the provider which edges the published dimensions include, then check the installed projections against the applicable City rules.',
-  'Service capacity': 'Whether water, sewer, drainage and power can support the additional building. Ask City servicing staff and utility providers about the proposed connections and any upgrades. This scan does not assess capacity.',
 }
 function ScanCard({ label, status, answer, source, row, nextAction, onTitleReference }: { label: string; status: 'probable' | 'review' | 'unknown'; answer: string; source: string; row?: PropertyScanResult['findings'][number]; nextAction?: string; onTitleReference?: () => void }) {
   return <li className={`property-scan__${status}`}><StepInfo className="property-scan__help" label={label} trigger={<><StatusIcon status={status} /><span className="property-scan__card-content"><strong>{label}</strong><span>{answer}</span><small>{source}</small><small className="property-scan__help-hint">Hover or tap for details</small></span></>}>
@@ -64,7 +63,7 @@ export function parsePropertyScan(raw: unknown, expected: ParcelRef): PropertySc
 
 export function usePropertyScan(request: { parcel_ref: ParcelRef; expected_pid?: string } | null, revision: string | null) {
   const [attempt, setAttempt] = useState(0)
-  const key = request && revision ? JSON.stringify([request, revision, attempt]) : null
+  const key = request ? JSON.stringify([request, revision, attempt]) : null
   const [state, setState] = useState<{ key: string; result: PropertyScanResult | null; error: string } | null>(null)
   useEffect(() => {
     if (!key || !request) return
@@ -88,10 +87,11 @@ export function usePropertyScan(request: { parcel_ref: ParcelRef; expected_pid?:
 export function PropertyScan({ scan, titleReferenceDate, onTitleReference, onReviewProjection }: { scan: ReturnType<typeof usePropertyScan>; titleReferenceDate?: string; onTitleReference?: () => void; onReviewProjection?: () => void }) {
   useEffect(() => { void import('./property-scan.css') }, [])
   const sewer = scan.result?.sewer
-  const sewerUnavailable = sewer === null || !!scan.error
-  return <section className="project-details" id="property-scan" tabIndex={-1} aria-label="Preliminary property scan">
-    <h3>Preliminary property scan</h3>
-    <p>City map flags and linked application history. Issued permit conditions, title covenants, projections and service capacity still need review.</p>
+  const sewerSummary = scan.busy ? 'Checking City sewer records…'
+    : sewer !== undefined || scan.error ? sewerFinding(sewer)
+    : 'Sewer service has not been established for this property.'
+  return <div>
+    <p>City map flags and linked application history. Issued permit conditions, title covenants, projections and service capacity still need review. Water, storm drainage and power are outside this scan.</p>
     {scan.busy ? <p role="status">Scanning City records…</p> : scan.error ? <p role="status">{scan.error} Unsearched records remain unknown.</p> : !scan.available ? <p>A selected City parcel is needed for this scan. Manual sketches cannot establish property records.</p> : null}
     {scan.available && <button type="button" onClick={scan.retry}>Refresh property scan</button>}
     <p className="property-scan__legend">Yes: City records found. No: none found in the searched City sources. Maybe: unknown or not checked.</p>
@@ -111,12 +111,17 @@ export function PropertyScan({ scan, titleReferenceDate, onTitleReference, onRev
           <StatusIcon status="unknown" /><span className="property-scan__card-content"><strong>Projections</strong><span>Check eave clearance in placement</span><small>Model 240 · local setback treatment unresolved</small></span>
         </button></li>
         : <ScanCard label="Projections" status="unknown" answer="Maybe · Not checked" source="Ask for a dimensioned installed plan" />}
-      {sewer || sewerUnavailable ? <li className="property-scan__unknown"><div className="property-scan__service"><strong>Service capacity</strong>
-        <p>{sewerStatusLabels[sewer?.status ?? 'unavailable']}. Capacity for this proposal still needs City confirmation. Water, storm drainage and power are outside this scan.</p>
-        <a href="#sewer-service">Review the sewer finding and City contact</a>
-      </div></li> : <ScanCard label="Service capacity" status="unknown" answer="Maybe · Not checked" source="Property-specific records needed" />}
+      <li className="property-scan__unknown"><div className="property-scan__service"><strong>Sewer connection</strong>
+        <p>{sewerSummary}</p>
+      </div></li>
     </ul>
-    {scan.result && <details><summary>Scan findings and sources</summary>{scan.result.findings.map(row => <div key={row.label}><strong>{row.label} · {row.status === 'probably_clear' ? 'Likely fine in searched scope' : row.status === 'review' ? 'Needs review' : 'Unknown'}</strong><p>{row.detail}</p>{row.source && <p>{row.source.provider} · {row.source.record_label} · captured {readableDate(row.source.captured_at_utc)} · unreviewed. <a href={row.source.source_url} target="_blank" rel="noreferrer">City source</a></p>}{row.records.length > 0 && <ul>{row.records.map((record, index) => <li key={index}><strong>{String(record.Name ?? record.SUBJECT ?? record.Heritage ?? record.AppType ?? 'City record requiring review')}{record.STATUS ? ` (${String(record.STATUS)})` : ''}</strong></li>)}</ul>}{row.records.length > 0 && <TechnicalDetails title={`${row.label}: returned records`}><CopyableRecord id={`scan-${row.label.replace(/ /g, "-")}`} label="Source records" value={JSON.stringify(row.records, null, 2)} /></TechnicalDetails>}</div>)}</details>}
+    {scan.result && <details><summary>Scan findings and sources</summary>{scan.result.findings.map(row => <div key={row.label}><strong>{row.label} · {row.status === 'probably_clear' ? 'Likely fine in searched scope' : row.status === 'review' ? 'Needs review' : 'Unknown'}</strong><p>{row.detail}</p>{row.source && <p>{row.source.provider} · {row.source.record_label} · captured {readableDate(row.source.captured_at_utc)} · unreviewed. <a href={row.source.source_url} target="_blank" rel="noreferrer">City source</a></p>}{row.records.length > 0 && <ul>{row.records.map((record, index) => <li key={index}><strong>{String(record.Name ?? record.SUBJECT ?? record.Heritage ?? record.AppType ?? 'City record requiring review')}{record.STATUS ? ` (${String(record.STATUS)})` : ''}</strong></li>)}</ul>}{row.records.length > 0 && <TechnicalDetails title={`${row.label}: returned records`}><CopyableRecord id={`scan-${row.label.replace(/ /g, "-")}`} label="Source records" value={JSON.stringify(row.records, null, 2)} /></TechnicalDetails>}</div>)}
+      {sewer && <div>
+        <strong>Sewer connection</strong><p>{sewer.detail}</p>
+        {sewerSources(sewer).map(({ text, url }) => <p key={url ?? text}>{text}{url && <> · <a href={url} target="_blank" rel="noreferrer">City source</a></>}</p>)}
+        <TechnicalDetails title="Sewer source records"><CopyableRecord id="scan-sewer" label="Source evidence" value={JSON.stringify(sewer, null, 2)} /></TechnicalDetails>
+      </div>}
+    </details>}
     <p><a href="https://www.victoria.ca/building-business/permits-development-construction/development-tracker" target="_blank" rel="noreferrer">Development Tracker</a> · <a href="https://tender.victoria.ca/WebApps/PIP/Pages/Search.aspx" target="_blank" rel="noreferrer">Property Information Portal</a> · <a href="https://www.victoria.ca/building-business/permits-development-construction/building-renovating/accessing-permit-records" target="_blank" rel="noreferrer">Permit records</a> · <a href="https://ltsa.ca/property-owners/how-can-i/find-information-on-a-title/" target="_blank" rel="noreferrer">LTSA title records</a></p>
-  </section>
+  </div>
 }

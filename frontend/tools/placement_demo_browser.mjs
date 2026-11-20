@@ -315,7 +315,7 @@ try {
   const purpose = page.locator('#builder-purpose')
   const purposeChoice = page.locator('#builder-intended-use')
   const changePurpose = purpose.getByRole('button', { name: 'Change intended purpose' })
-  const nextChecks = purpose.getByRole('button', { name: /Next: Review quick checks/ })
+  const nextChecks = purpose.getByRole('button', { name: /Next: Review placement checks/ })
   await until(async () => await page.locator('#builder-purpose-title').evaluate(el => document.activeElement === el), 'Purpose heading did not receive focus')
   assert.ok(await purpose.getByText('Garden suite', { exact: true }).isVisible())
   assert.equal(await purposeChoice.isVisible(), false, 'The captured answer is ready to use without opening the editor')

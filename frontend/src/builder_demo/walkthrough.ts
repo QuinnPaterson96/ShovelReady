@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 // Seven stops, six narrated phases: placement has a before and an after.
 export type WalkthroughStop = 'model' | 'property' | 'initial' | 'moved' | 'result' | 'budget' | 'enquiry'
 export const walkthroughStops: WalkthroughStop[] = ['model', 'property', 'initial', 'moved', 'result', 'budget', 'enquiry']
-const walkthroughStages = ['Model', 'Property', 'Placement', 'Quick checks', 'Project economics', 'Enquiry']
+const walkthroughStages = ['Model', 'Property', 'Placement', 'Placement checks', 'Project economics', 'Enquiry']
 const walkthroughPhase: Record<WalkthroughStop, number> = { model: 1, property: 2, initial: 3, moved: 3, result: 4, budget: 5, enquiry: 6 }
 export function walkthroughProgress(stop: WalkthroughStop) {
   const step = walkthroughPhase[stop]

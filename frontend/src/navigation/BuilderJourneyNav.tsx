@@ -1,5 +1,6 @@
 /** Workflow milestones supplied by BuilderDemo, not assessment outcomes. */
 export type BuilderJourneyCompletion = Readonly<{
+  propertySelected?: boolean
   propertyFirst?: boolean
   choosingModel?: boolean
   comparingDetached?: boolean
@@ -20,7 +21,7 @@ export type BuilderJourneyCompletion = Readonly<{
   current?: JourneyStep
   mapAvailable?: boolean
 }>
-export type JourneyStep = 'model' | 'property' | 'placement' | 'streets' | 'boundaries' | 'details' | 'purpose' | 'checks' | 'budget' | 'enquiry' | 'email'
+export type JourneyStep = 'model' | 'property' | 'scan' | 'placement' | 'streets' | 'boundaries' | 'details' | 'purpose' | 'checks' | 'budget' | 'enquiry' | 'email'
 
 export const emptyBuilderJourneyCompletion: BuilderJourneyCompletion = {
   model: false,
@@ -34,12 +35,13 @@ type Step = { key: JourneyStep; label: string; anchor: string }
 const steps: readonly Step[] = [
   { key: 'model', label: 'Model', anchor: 'builder-model' },
   { key: 'property', label: 'Property', anchor: 'builder-property' },
+  { key: 'scan', label: 'Preliminary property scan', anchor: 'property-scan' },
   { key: 'placement', label: 'Placement', anchor: 'builder-placement' },
   { key: 'streets', label: 'Street edges', anchor: 'placement-action-front' },
   { key: 'boundaries', label: 'Boundaries', anchor: 'placement-action-rear' },
   { key: 'details', label: 'Property details', anchor: 'builder-property-details' },
   { key: 'purpose', label: 'Intended purpose', anchor: 'builder-purpose' },
-  { key: 'checks', label: 'Quick checks', anchor: 'builder-quick-checks' },
+  { key: 'checks', label: 'Placement checks', anchor: 'builder-quick-checks' },
   { key: 'budget', label: 'Project economics', anchor: 'builder-budget-stage' },
   { key: 'enquiry', label: 'Prepare enquiry', anchor: 'builder-next' },
   { key: 'email', label: 'Contact provider', anchor: 'builder-email' },
@@ -48,26 +50,29 @@ const steps: readonly Step[] = [
 /** Keep this inside the builder workspace's hidden-but-mounted wrapper. */
 export function BuilderJourneyNav({ completion }: { completion: BuilderJourneyCompletion }) {
   if (completion.walkthroughActive) return null
-  const [modelStep, propertyStep, ...laterSteps] = steps
+  const [modelStep, propertyStep, scanStep, ...laterSteps] = steps
   const picking = completion.choosingModel || completion.comparingDetached
-  const orderedSteps = completion.propertyFirst ? [propertyStep, modelStep, ...laterSteps] : steps
+  const earlyScan = completion.propertySelected && <a href="#property-scan" aria-current={completion.current === 'scan' ? 'step' : undefined}>Preliminary property scan</a>
+  const orderedSteps = completion.propertyFirst ? [propertyStep, scanStep, modelStep, ...laterSteps] : steps
   return <aside className="sr-workspace-rail builder-journey-rail">
     <nav aria-label="Prefab model steps">
       <p>{completion.propertyFirst ? 'Property assessment' : 'Prefab model journey'}</p>
       {completion.propertyFirst && !completion.property && <div className="builder-entry-stages">
-        <a href="#builder-property" aria-current={picking ? undefined : 'step'}>1 · Find property and explore options</a>
+        <a href="#builder-property" aria-current={completion.current === 'property' || !completion.current && !picking ? 'step' : undefined}>1 · Find property and explore options</a>
+        {earlyScan}
         {picking
-          ? <a href="#builder-model" aria-current="step">2 · {completion.comparingDetached ? 'Compare detached plans' : 'Choose a model'}</a>
+          ? <a href="#builder-model" aria-current={completion.current === 'model' ? 'step' : undefined}>2 · {completion.comparingDetached ? 'Compare detached plans' : 'Choose a model'}</a>
           : <span>2 · Choose a model</span>}
         {!completion.comparingDetached && <span>3 · Try a placement</span>}
       </div>}
       {!completion.propertyFirst && !completion.property && <div className="builder-entry-stages">
-        <a href="#builder-property" aria-current="step">1 · Find property</a>
+        <a href="#builder-property" aria-current={completion.current === 'scan' ? undefined : 'step'}>1 · Find property</a>
+        {earlyScan}
         <span>2 · Place unit</span><span>3 · Review</span><span>4 · Contact provider</span>
         <a href="#builder-model">Change model</a>
       </div>}
       {completion.property && orderedSteps.map(({ key, label, anchor }, index) => {
-        const done = key === 'budget' ? false : completion[key]
+        const done = key === 'budget' || key === 'scan' ? false : completion[key]
         const current = completion.current === key
         const unavailable = completion.mapAvailable === false && (key === 'streets' || key === 'boundaries' || key === 'checks' || key === 'details')
         return <a key={key} href={`#${anchor}`} aria-current={current ? 'step' : undefined} aria-disabled={unavailable || undefined} onClick={event => { if (unavailable) event.preventDefault() }}>
@@ -75,7 +80,7 @@ export function BuilderJourneyNav({ completion }: { completion: BuilderJourneyCo
           <span className="builder-journey-label">{label}</span>
           <span className={`builder-journey-state${done ? ' is-complete' : ''}`}>
             {done && <span className="builder-journey-check" aria-hidden="true">✓</span>}
-            {unavailable ? 'Map unavailable' : done ? key === 'email' ? completion.handoff === 'website' ? 'Website requested' : 'Draft requested' : key === 'checks' || key === 'boundaries' || key === 'details' || key === 'purpose' ? 'Reviewed' : 'Complete' : current ? 'Current step' : key === 'budget' ? 'Optional' : 'To do'}
+            {unavailable ? 'Map unavailable' : done ? key === 'email' ? completion.handoff === 'website' ? 'Website requested' : 'Draft requested' : key === 'checks' || key === 'boundaries' || key === 'details' || key === 'purpose' ? 'Reviewed' : 'Complete' : current ? 'Current step' : key === 'budget' || key === 'scan' ? 'Optional' : 'To do'}
           </span>
         </a>
       })}

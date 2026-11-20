@@ -640,6 +640,24 @@ parcels, wrong-parcel and ambiguous associations, scoped empty results and sourc
 failure. It also identifies the proposed independent drawing comparison and
 homeowner comprehension check before expanding service coverage.
 
+## Homeowner property scan, builder question and roof overhang
+
+From `frontend/`, run `npm test` and `npm run build`. Serve the built app on
+loopback with `SHOVELREADY_ENV=demo` and database access disabled. Run
+`node tools/verify_title_reference.mjs` with `TITLE_REFERENCE_URL` pointing at
+that app and `TITLE_REFERENCE_WIDTH` set to 390 and 1440 in turn.
+
+Both Chromium viewports exercised address selection, keyboard focus in the scan
+before model selection, title acquisition and reviewer handoff, and the model's
+roof overhang disclosure. A deliberately large example depth produced a visible
+mapped boundary crossing with the controls closed. The enquiry contained the
+edited sewer question once in the downloaded ZIP and email draft. Switching
+to a Saanich address cleared the Victoria wording and restored the question
+about confirming service. The run used replayed municipal responses and local
+placement calculations. Physical phone use and homeowner comprehension still
+need a homeowner session. Service capacity and installed gutter dimensions
+require the project team's servicing and provider follow-up.
+
 ## Property-first options card
 
 At 419 Cecelia Rd, the live City lookup returned GRD-1 (PGA), a mapped lot of 483.1 m² and two intersecting rooflines. A browser check on November 19, 2026 followed both project actions on the same parcel at 1280 and 390 px, opened the CRD image source, and checked direct Quadra entry and the saved Model 300 route. The CRD endpoint returned a 720 × 540 PNG for the selected extent. Source observations can change.
