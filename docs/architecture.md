@@ -7,8 +7,8 @@ flowchart LR
     A[SiteDiscovery] -->|attributed parcel and rooflines| B[PropertyOptions]
     C[Victoria zoning and map observations] -->|mapped facts| B
     D[Saanich property opportunity] -->|parcel area and local rule source| B
-    B -->|Explore a garden suite| E[Garden-suite model picker]
-    E -->|Try this model| F[Existing placement and enquiry]
+    B -->|Explore a garden suite records Garden suite| E[Garden-suite model picker]
+    E -->|Try this model| F[Placement, editable purpose, checks and enquiry]
     B -->|Compare detached plans| G[ReplacementPlans]
     H[Pacific Homes plan dimensions] --> G
     G -->|Parcel, retained rooflines and plan rectangles| I[Sample positions and rotations]
@@ -16,11 +16,15 @@ flowchart LR
 ```
 
 An ordinary address search keeps its selected parcel through the options and
-model steps. Choosing to explore a garden suite leaves the intended-use answer
-open. The optional keep/replace preference belongs to the parcel and follows the
-enquiry. A changed parcel clears the preference and any findings from its
-predecessor. Model-linked entries, saved examples and manual sketches retain
-their existing paths.
+model steps. **Explore a garden suite** records Garden suite in the existing
+intended-use answer for that parcel. The purpose step shows the answer with a
+Change action and the usual continuation. The same answer drives preliminary
+planning comparisons and the enquiry. Leaving the garden-suite path clears an
+answer captured by its entry button. A later edit takes precedence when the
+visitor returns to that path on the same parcel. A changed parcel clears the
+property-first purpose, house preference and earlier findings. The optional
+house preference follows the enquiry as its own answer. Model-linked entries,
+saved examples and manual sketches retain their existing paths.
 
 The address-first journey displays the active picker below the property options.
 Choosing Replace it opens the detached-plan path. Still exploring offers both
